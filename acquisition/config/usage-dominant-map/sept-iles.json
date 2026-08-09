@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "CI": null,
+    "CN": "environnemental",
+    "CV": null,
+    "I": "industriel",
+    "REC": "environnemental",
+    "S": null,
+    "F": "agricole",
+    "A": "agricole"
+  },
+  "source": "Règlement de zonage n° 2007-103 (compilation administrative janv. 2026), Ville de Sept-Îles, MRC de Sept-Rivières — https://www.septiles.ca/CLIENTS/1-villesi/docs/upload/reglements/2007103_zonageAmendee.pdf, art. 3.2 « Codification des zones ».",
+  "note": "Art. 3.2 (verbatim, « un suffixe indiquant le ou les groupe(s) dominant(s) »): « R Habitation ou résidentielle; C Commerciale et service ou multifonctionnelle; Ci Commercialo-industrielle; S Publique et institutionnelle; I Industrielle; REC Récréation, parc et espace vert; A Agricole; F Forestière; CN Conservation; CV Commerciale et service centre-ville traditionnel ». -> R « Habitation ou résidentielle » -> residentiel; C « Commerciale et service » -> commercial; I « Industrielle » -> industriel; REC « Récréation, parc et espace vert » -> environnemental; CN « Conservation » -> environnemental; F « Forestière » -> agricole; A « Agricole » -> agricole. Null explicite: S « Publique et institutionnelle »; CI (Ci) « Commercialo-industrielle » (duale); CV « centre-ville ». Longest-prefix OBLIGATOIRE: REC bat un éventuel R (Récréation ≠ résidentielle), CI/CN/CV bat C. Codes servis numéro-en-tête (816 R/940 CI/2009 CN), réversés par canonZoneCodeServe; la forme composite « 822-1 R » n'est pas réversée -> null; réserves autochtones (UASHAT/MALIOTENAM/RES IND) hors tableau -> null. La matrice des usages permis n'est pas utilisée."
+}

@@ -1,0 +1,410 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:22:41.819Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 6060,
+    "limit": 20,
+    "requested": 20,
+    "selected": 7,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/f346e3a2317a85c173713672737259187dd21d30bb28897312a692fa4ef241de.pdf",
+      "raw/pv-index/cas/f346f2e8bc8f4607cde622a0a70d959caa7bc462dac84293e73e8f93c51916fc.pdf",
+      "raw/pv-index/cas/f364edb097fbeb3672932ba97026d8713b7a21d17f34d29150b66eb52a38f409.pdf",
+      "raw/pv-index/cas/f37c68e2c081e916ecc96bb6a7456853e60ce71e17f4aca85961437076f5be53.pdf",
+      "raw/pv-index/cas/f3897b61f158189dcd88e298c1f738ce0a2af3d5f3158a908cdef57d8e49c01e.pdf",
+      "raw/pv-index/cas/f3a3ddf4ebc004b7c7e4eccc504858a625d361b5cdcb4d3fadd54fcd9288b972.pdf",
+      "raw/pv-index/cas/f3c1887d2d68b19aae84cc6ff6a6c165d24d4c0032e968c61a71c647cd500ccc.pdf",
+      "raw/pv-index/cas/f3c26af3d2682f2c271a6986240bbc9a901645e340d2ec1050218d86ca55e1b9.pdf",
+      "raw/pv-index/cas/f3cba61ef952ee2050251270449ab67b0057ff681af8892c611e431f0e7f4d34.pdf",
+      "raw/pv-index/cas/f3d0403b6d478777a31fce71def863c43908c85e63993be25c538dd7db925784.pdf",
+      "raw/pv-index/cas/f42744b89cfca150b03e2dc0d99d1225979019fe09405007d62724a9158ba030.pdf",
+      "raw/pv-index/cas/f42e3f7101f761bf29c74b0460dd36c7f9104b25dde64857aa57e481b5587718.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 7,
+  "indexing": {
+    "indexed_pvs": 2,
+    "failed_pvs": 5,
+    "outcomes": {
+      "INDEXED": 2,
+      "OWNER_NOT_CONFIRMED": 3,
+      "CONTAMINATION_OWNER_MISMATCH": 1,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": [
+      {
+        "storage_key": "raw/pv-index/cas/f346eea33216f6d69d14a709fae22b8a22c4da071104718e84132ec06a741fbc.pdf",
+        "manifest_scope_slug": "hebertville-station",
+        "printed_owner_slugs": [
+          "hebertville"
+        ]
+      }
+    ]
+  },
+  "entity_counts": {
+    "Municipality": 2,
+    "Document": 2,
+    "Resolution": 5,
+    "Regulation": 3,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 13,
+    "edges": 2,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "begin",
+      "storage_key": "raw/pv-index/cas/f3e1b3103aab60e3e03a1f1c3c2eea10a8f759f3341247124d154f47b65c4895.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6094239",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:64",
+      "quote": "              8.1 Demande de dérogation mineure – lot 6 094 239"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 7,
+      "zone_code_count": 189,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 7,
+      "served_municipalities": 6,
+      "total_lot_numbers": 3919,
+      "missing": [
+        "hebertville-station"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z",
+  "documents": [
+    {
+      "slug": "hebertville-station",
+      "municipality_name": "Hébertville-Station",
+      "url": "https://www.hebertville-station.com/wp-content/uploads/2026/06/odj150626spec-modifie.pdf",
+      "storage_key": "raw/pv-index/cas/f346eea33216f6d69d14a709fae22b8a22c4da071104718e84132ec06a741fbc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/hebertville-station/2ec06a741fbc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/hebertville-station/2ec06a741fbc.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "hebertville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "huberdeau",
+      "municipality_name": "Huberdeau",
+      "url": "https://huberdeau.ca/wp-content/uploads/2026/01/Ordre-du-jour-janvier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/f35e1974e55cd653167b4c19db7fb62c7c97e154c09c129dd5bcc17851e29e63.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/huberdeau/c17851e29e63.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/huberdeau/c17851e29e63.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "url": "https://municipalitecloridorme.ca/download/36/proces-verbaux/3517/13_pv_4-juin-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f3788e3b65fd2bc179f71b2bf30794ee293c8296846773c6b97546a1f5efa8bd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/cloridorme/46a1f5efa8bd.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/cloridorme/46a1f5efa8bd.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2025/08/pv-2025-06-09.pdf",
+      "storage_key": "raw/pv-index/cas/f38fc998219575d7e82d0514bb1ebc51f692ea22dc47e3c99458ad26480a9441.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 5,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-05-123",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "                 9.1. Abrogation de la résolution 2025-05-123"
+            }
+          },
+          {
+            "label": "2025-05-097",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:269",
+              "quote": "2025-06-135       Considérant la résolution 2025-05-097 spécifiant que le prix de base"
+            }
+          },
+          {
+            "label": "2024-08-189",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:392",
+              "quote": "                   spécifie la résolution 2024-08-189;"
+            }
+          },
+          {
+            "label": "2025-05-104",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:708",
+              "quote": "2025-06-150      Remplacement de la résolution 2025-05-104"
+            }
+          },
+          {
+            "label": "2025-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:710",
+              "quote": "                 Considérant qu'il manque des informations à la résolution 2025-05-"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "383",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:250",
+              "quote": "                  et greffière-trésorière, effectuée en vertu du règlement no 383"
+            }
+          },
+          {
+            "label": "463",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:426",
+              "quote": "                   règlement no 463 établissant la politique de gestion contractuelle;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/bearn/ad26480a9441.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/bearn/ad26480a9441.pdf/.graphify/.graphify_extract.json — 9 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-saint-joseph",
+      "municipality_name": "Lac-Saint-Joseph",
+      "url": "https://www.villelacstjoseph.com/fichiersUpload/fichiers/20250613141346-ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/f3d4ce63e0da0a47a0ddcde474b3104bf50c9c30e2a7c9f651fc976b1078f841.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/lac-saint-joseph/976b1078f841.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/lac-saint-joseph/976b1078f841.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "begin",
+      "municipality_name": "Bégin",
+      "url": "https://www.begin.ca/app/uploads/2024/12/PV-241007.pdf",
+      "storage_key": "raw/pv-index/cas/f3e1b3103aab60e3e03a1f1c3c2eea10a8f759f3341247124d154f47b65c4895.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bégin",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              MRC DU FJORD-DU-SAGUENAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              MRC DU FJORD-DU-SAGUENAY"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "20-357",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:354",
+              "quote": "              ATTENDU QUE le conseil municipal a adopté le règlement numéro 20-357"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6094239",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "              8.1 Demande de dérogation mineure – lot 6 094 239"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/begin/4f47b65c4895.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/begin/4f47b65c4895.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "begin"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bolton-ouest",
+      "municipality_name": "Bolton-Ouest",
+      "url": "https://www.bolton-ouest.ca/fichiersUpload/fichiers/20250704092026-notice-of-special-meeting-june-12-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f410ddc544e913d0104b4b005d185694c3b919b7748afbacc7f2416e46078e26.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/bolton-ouest/416e46078e26.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T192218Z/bolton-ouest/416e46078e26.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

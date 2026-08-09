@@ -1,0 +1,1657 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T14:13:04.080Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 2300,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 20,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 20,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 20,
+    "Document": 20,
+    "CouncilSession": 14,
+    "MeetingDate": 14,
+    "Regulation": 11,
+    "LotCadastre": 3,
+    "Resolution": 8
+  },
+  "graphify": {
+    "nodes": 90,
+    "edges": 49,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 3,
+    "documents_with_zone": 0,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "campbells-bay",
+      "storage_key": "raw/pv-index/cas/2c5fe70c7679323cc61ef77bcf14d32172e3945335619eb62c8fb11c14dcd8b9.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3544993",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:85",
+      "quote": "                      résidentiel collectif comprenant treize (13) logements sur le lot 3 544 993, situé au 1, rue Ringrose;"
+    },
+    {
+      "municipality_slug": "campbells-bay",
+      "storage_key": "raw/pv-index/cas/5e2d6d81e35302a272377bc4747e57c28b603a5f89015d5d5a661f0e38e56e9d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3544988",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:58",
+      "quote": "235-09-2022   AUTORISATION DE DÉPENSE – AVIS FORMEL – LOT 3 544 988"
+    },
+    {
+      "municipality_slug": "campbells-bay",
+      "storage_key": "raw/pv-index/cas/7f188ee543b2a4a53344eeaa399566ef0ddd9e1b9eefe54d4f4f8ced5677307d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3545281",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:79",
+      "quote": "              de jardin sur la rue Temperance près du lot no 3 545 281 de la municipalité ;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 533,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z",
+  "documents": [
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2026/04/01-2026-janv-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/29207781f96a0799f2692d037a1f2bdbd91367e21bb87af3b2372823f03264c0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 13 JANVIER 2026 À L'HÔTEL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 13 JANVIER 2026 À L'HÔTEL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/2823f03264c0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/2823f03264c0.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2023/03/11-2022-nov-proces-verbaux-special_3.pdf",
+      "storage_key": "raw/pv-index/cas/29ab7cb2ba1498c397c3c80b9b05847ff3fa0d841ff0f04657b14c2806b87aa8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 NOVEMBRE 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                PROCÈS-VERBAL D’UNE RÉUNION EXTRAORDINAIRE DU CONSEIL TENUE LE 3 NOVEMBRE 2022"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 NOVEMBRE 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                PROCÈS-VERBAL D’UNE RÉUNION EXTRAORDINAIRE DU CONSEIL TENUE LE 3 NOVEMBRE 2022"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "102-2022",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "309-11-2022     DEUXIÈME PROJET DE RÈGLEMENT NO 102-2022 MODIFIANT LE RÈGLEMENT DE ZONAGE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/4c2806b87aa8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/4c2806b87aa8.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2026/05/02-2026-fevrier-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/2c5fe70c7679323cc61ef77bcf14d32172e3945335619eb62c8fb11c14dcd8b9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          MAIRE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 FÉVRIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                      PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 3 FÉVRIER 2026 À L'HÔTEL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 FÉVRIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                      PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 3 FÉVRIER 2026 À L'HÔTEL"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "100-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "                      de dépense – entretien de la piste de ski ; 12g) Adoption du règlement 100-2026 ; 12h) Autorisation"
+            }
+          },
+          {
+            "label": "SQ 2023-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "                      ATTENDU QUE l’article 5 du règlement SQ 2023-03 concernant les nuisances permet au Conseil"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3544993",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "                      résidentiel collectif comprenant treize (13) logements sur le lot 3 544 993, situé au 1, rue Ringrose;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/b11c14dcd8b9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/b11c14dcd8b9.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay",
+          "litchfield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2025/11/09-2025-sept-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/2f7a908d1436ea76fb17d26d3148bf035a7919e3f90da20682ca37d335c2fc5c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 SEPTEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 2 SEPTEMBRE 2025, À LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 SEPTEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 2 SEPTEMBRE 2025, À LA"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/37d335c2fc5c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/37d335c2fc5c.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bristol",
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2022/02/07-2021-juil-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/38c07aa8911072f476ca5f8b9966cde990911a04aa9e85ae0e9becd964b26238.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 juillet 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              Procès-verbal de la séance régulière du conseil tenue le 6 juillet 2021 au bureau du Club des Lions"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 juillet 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              Procès-verbal de la séance régulière du conseil tenue le 6 juillet 2021 au bureau du Club des Lions"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "66-05-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:482",
+              "quote": "              ATTENDU QUE la municipalité de St-Félix-de-Dalquier a joint le mouvement par la résolution 66-05-21"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/ecd964b26238.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/ecd964b26238.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2024/11/10-2024-oct-proces-verbaux-special.pdf",
+      "storage_key": "raw/pv-index/cas/38f7c93fce1f872753d22fbaaa02b549ddfdea10227e2ccdf5ee37f1d46ebe11.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/37f1d46ebe11.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/37f1d46ebe11.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2024/01/12-2023-dec-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/39fdec17db63f4defe01ddfa855cc6728556fa27ed8008b322e6c9fde9df6ad7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CAMPBELL'S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CAMPBELL'S BAY"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/c9fde9df6ad7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/c9fde9df6ad7.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2023/03/11-2022-nov-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/4617ae5096e9ac38c78cb74f2dd14f1e6fefb0aa96ab9854f45748696219aa75.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1ER NOVEMBRE 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL D’UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 1ER NOVEMBRE 2022 AU"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1ER NOVEMBRE 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL D’UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 1ER NOVEMBRE 2022 AU"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "91-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "              Il est à noter que conformément au règlement no 91-11 du Comité consultatif d’urbanisme, le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/48696219aa75.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/48696219aa75.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay",
+          "litchfield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2026/01/11-2025-nov-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/4a142cb036db2365db07e22deede5606025fddf0159a2682b2d9c827be3952f6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          MAIRE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 NOVEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                      PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 18 NOVEMBRE 2025 À"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 NOVEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                      PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 18 NOVEMBRE 2025 À"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/c827be3952f6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/c827be3952f6.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay",
+          "litchfield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2024/01/10-2023-oct-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/5850070a883d1ffad3e3fbf410cc293592e85574b1f7cf45da70f9fa7ff218c2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CAMPBELL'S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CAMPBELL'S BAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 OCTOBRE 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL TENUE LE 3 OCTOBRE 2023"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 OCTOBRE 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL TENUE LE 3 OCTOBRE 2023"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "126-05-2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:299",
+              "quote": "              ATTENDU QUE cette résolution abroge les résolutions 126-05-2023 et 151-06-2023 ;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "101-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:182",
+              "quote": "224-10-2023   RÈGLEMENT N° 101-2023 101-2023 MODIFIANT LE RÈGLEMENT NO. 102-16 DÉCRÉTANT"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/f9fa7ff218c2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/f9fa7ff218c2.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2024/10/09-2024-sept-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/5a7a411865962d6acfdd17b8c629d72e4e7c28d0699358c1bfd17462e2ca2974.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 SEPTEMBRE 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL TENUE LE 3 SEPTEMBRE 2024"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 SEPTEMBRE 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL TENUE LE 3 SEPTEMBRE 2024"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "061-01-2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:374",
+              "quote": "                     (résolution no 061-01-2019) et qu’une mise à jour s’impose à la suite de l’adoption de la Loi visant"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "294-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:511",
+              "quote": "                     Il est à noter qu'une copie du règlement 294-2024 de la MRC de Pontiac concernant la déclaration"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/7462e2ca2974.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/7462e2ca2974.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2023/03/09-2022-sept-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/5e2d6d81e35302a272377bc4747e57c28b603a5f89015d5d5a661f0e38e56e9d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 SEPTEMBRE 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL D’UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 13 SEPTEMBRE 2022 AU CLUB DES"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 SEPTEMBRE 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL D’UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 13 SEPTEMBRE 2022 AU CLUB DES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "186-07-2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:97",
+              "quote": "              Proposé par Stéphanie Hébert-Shea et résolue d’annuler la résolution no 186-07-2022 et à accepter le"
+            }
+          },
+          {
+            "label": "s 174-06-2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:301",
+              "quote": "              2022 réf. résolutions nos 174-06-2022 et 2022-07-308 (Litchfield);"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3544988",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "235-09-2022   AUTORISATION DE DÉPENSE – AVIS FORMEL – LOT 3 544 988"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/1f0e38e56e9d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/1f0e38e56e9d.pdf/.graphify/.graphify_extract.json — 7 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay",
+          "litchfield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2025/08/07-2025-juil-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/6f2492e711c71d0681fe4c51c815e495b2881aba6fea4864af235dbf0525d3dd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 JUILLET 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL TENUE LE 8 JUILLET 2025 À"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 JUILLET 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL TENUE LE 8 JUILLET 2025 À"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "102-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:186",
+              "quote": "                     AVIS DE MOTION ET PRÉSENTATION DU PROJET DE RÈGLEMENT NO 102-2025 MODIFIANT LE"
+            }
+          },
+          {
+            "label": "106-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:187",
+              "quote": "                     RÈGLEMENT 106-2024 SUR LA GESTION CONTRACTUELLE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/5dbf0525d3dd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/5dbf0525d3dd.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay",
+          "litchfield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2026/04/01-2026-janv-proces-verbaux-special.pdf",
+      "storage_key": "raw/pv-index/cas/7c4c6918d97c88605a10acc1f5ac0f44e52ed05929a9a905019b46e9bcff54c3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "        MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "        MAIRE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 23 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "                    ATTENDU QUE le Conseil a participé à une séance de travail relative à la préparation du budget 2026 le 26"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "23 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "                    2026 le 23 janvier 2026 ;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "100-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:379",
+              "quote": "                                      AVIS DE MOTION ET PRÉSENTATION DU PROJET DE RÈGLEMENT N° 100-2026 CONCERNANT LA FIXATION"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/46e9bcff54c3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/46e9bcff54c3.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay",
+          "litchfield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2022/02/11-2021-nov-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/7f188ee543b2a4a53344eeaa399566ef0ddd9e1b9eefe54d4f4f8ced5677307d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 NOVEMBRE 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 9 NOVEMBRE 2021, AU"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 NOVEMBRE 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL D'UNE RÉUNION ORDINAIRE DU CONSEIL TENUE LE 9 NOVEMBRE 2021, AU"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "117-05-2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:356",
+              "quote": "293-11-2021   RÉPONSE DE LA MRC CONCERNANT LA RÉSOLUTION 117-05-2021"
+            }
+          },
+          {
+            "label": "207-09-2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:371",
+              "quote": "              RÉPONSE DE LA MRC CONCERNANT LA RÉSOLUTION 207-09-2021"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3545281",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "              de jardin sur la rue Temperance près du lot no 3 545 281 de la municipalité ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/8ced5677307d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/8ced5677307d.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay",
+          "litchfield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2022/02/12-2021-dec-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/7f2ca86dfb814402fe9d141156a82b2590ce071022c875379bd5682656283c13.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 DÉCEMBRE 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL D'UNE SÉANCE ORDINAIRE DU CONSEIL TENUE LE 7 DÉCEMBRE 2021, AU BUREAU"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 DÉCEMBRE 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL D'UNE SÉANCE ORDINAIRE DU CONSEIL TENUE LE 7 DÉCEMBRE 2021, AU BUREAU"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "117-05-2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:210",
+              "quote": "315-12-2021   RÉPONSE DE LA MRC CONCERNANT LA RÉSOLUTION 117-05-2021"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/682656283c13.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/682656283c13.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay",
+          "portage-du-fort"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2024/11/10-2024-oct-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/83d3a9f50936722a2d6e2200178e62e3632f901b77f96146cda971003eea5df2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "104-2024",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:316",
+              "quote": "                     AVIS DE MOTION ET DE DÉPÔT DU PROJET DE RÈGLEMENT 104-2024 RELATIF AU CONTRÔLE ET A"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/71003eea5df2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/71003eea5df2.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2023/10/09-2023-sept-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/9127ff37812cd647b7019c852b600bbd84987d235e09f190a9e43e596404774e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CAMPBELL'S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CAMPBELL'S BAY"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/3e596404774e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/3e596404774e.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2024/12/11-2024-nov-proces-verbaux.pdf",
+      "storage_key": "raw/pv-index/cas/9954b8423410fc26876323696e93f0edfae9d26d958b13ea1287f87587f24629.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "         MAIRE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "104-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:304",
+              "quote": "280-11-2024          RÈGLEMENT NUMÉRO 104-2024 FIXANT LES RÈGLES DE CONTRÔLE ET DE SUIVI BUDGÉTAIRES"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/f87587f24629.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/f87587f24629.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay",
+          "litchfield"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "campbells-bay",
+      "municipality_name": "Campbell's Bay",
+      "url": "https://www.campbellsbay.ca/wp-content/uploads/2023/03/09-2022-sept-proces-verbaux-special.pdf",
+      "storage_key": "raw/pv-index/cas/9d32050dbfe4a454daf60e31d7dfb70a6b99e7d9509f4e38eb7e460912a44ef1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Campbell's Bay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                  MUNICIPALITÉ DE CAMPBELL’S BAY"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/460912a44ef1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T141131Z/campbells-bay/460912a44ef1.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "campbells-bay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

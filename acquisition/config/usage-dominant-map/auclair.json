@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "EAA": "agricole",
+    "EAB": "agricole",
+    "EAF": "agricole",
+    "EF": "agricole",
+    "I": "industriel",
+    "M": null,
+    "P": null,
+    "R": "residentiel",
+    "RU": null,
+    "V": "residentiel"
+  },
+  "source": "work/zonage-norms/auclair/annexe-grille.pdf — Règlement de zonage numéro 2014-07 de la municipalité d'Auclair (corps consolidé, 146 p.; le corpus local grille.pdf/regl-zonage-2018-05.pdf est un AMENDEMENT, écarté)",
+  "note": "Article 1.15 « Identification des zones »: « Chacune des zones est identifiée par un code unique, composé d'initiales suivies d'un chiffre. Les initiales qualifient la zone de la manière suivante : 1° EA : agricole (qui comprend EA/A et EA/B) ; 2° EAF : agroforestière ; 3° EF : forestière ; 4° I : industrielle ; 5° M : mixte ; 6° P : publique ; 7° R : résidentielle ; 8° RC : récréative ; 9° RU : de réserve urbaine ; 10° V : de villégiature ». Les codes servis EAA/EAB sont les formes sans barre oblique de EA/A et EA/B (« EA : agricole »). Mapping VERBATIM: EAA -> agricole (EA/A) ; EAB -> agricole (EA/B) ; EAF -> agricole (agroforestière) ; EF -> agricole (forestière) ; I -> industriel (industrielle) ; R -> residentiel (résidentielle) ; V -> residentiel (villégiature). Null explicite: M « mixte » -> null (duale) ; P « publique » -> null ; RU « de réserve urbaine » -> null (réserve). Longest-prefix: RU (null) bat R (residentiel) sur les codes RU-*; EF ne collisionne pas avec EA*. RC « récréative » (-> environnemental) est dans la légende mais AUCUNE zone RC n'est servie, donc non mappée (inutile). La grille des spécifications (matrice des usages permis) n'est pas utilisée."
+}

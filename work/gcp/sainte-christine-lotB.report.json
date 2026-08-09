@@ -1,0 +1,491 @@
+{
+  "slug": "sainte-christine",
+  "method": "auto-seed-cadastre-bbox-rotations",
+  "fit": "affine",
+  "pass": false,
+  "reason": "11 seed(s) cleared the residual+holdout gate but none cleared the orientation/isotropy gate (anisotropy/mirror/north-up)",
+  "cadastre_features": 798,
+  "cadastre_bbox_wgs84": [
+    -72.49686341978529,
+    45.56056908188907,
+    -72.31555022066654,
+    45.672962693562965
+  ],
+  "svg_points": 3147,
+  "extents": {
+    "density": {
+      "fx0": 0.09015151515151514,
+      "fy0": 0.14166666666666664,
+      "fx1": 0.7727272727272727,
+      "fy1": 0.7416666666666666
+    },
+    "density+10%": {
+      "fx0": 0.02189393939393937,
+      "fy0": 0.08166666666666664,
+      "fx1": 0.8409848484848484,
+      "fy1": 0.8016666666666665
+    },
+    "density+20%": {
+      "fx0": 0,
+      "fy0": 0.02166666666666664,
+      "fx1": 0.9092424242424242,
+      "fy1": 0.8616666666666666
+    },
+    "percentile": {
+      "fx0": 0.10712101515151515,
+      "fy0": 0.14990234395424842,
+      "fx1": 0.7772722342171717,
+      "fy1": 0.8305887459150327
+    },
+    "full": {
+      "fx0": 0.032273417929292926,
+      "fy0": 0.02764693137254909,
+      "fx1": 0.9587870896464646,
+      "fy1": 0.9677447148692809
+    }
+  },
+  "attempts": [
+    {
+      "extent": "density",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0.09015151515151514,
+        "fy0": 0.14166666666666664,
+        "fx1": 0.7727272727272727,
+        "fy1": 0.7416666666666666
+      },
+      "pass": true,
+      "selected_gcps": 9,
+      "residual_max_m": 12.742,
+      "residual_rms_m": 7.129,
+      "holdout_max_m": 14.961,
+      "holdout_rms_m": 13.121,
+      "seed_candidate_matches": 1502,
+      "anisotropy": 1.526,
+      "singular_ratio": 1.526,
+      "bearing_right_deg": 0.1,
+      "bearing_down_deg": -90.1,
+      "mirror": false,
+      "shear_deg": 0.2,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.526 > 1.1; singular-value anisotropy 1.526 > 1.1"
+    },
+    {
+      "extent": "density",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0.09015151515151514,
+        "fy0": 0.14166666666666664,
+        "fx1": 0.7727272727272727,
+        "fy1": 0.7416666666666666
+      },
+      "pass": false,
+      "reason": "only 1 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 1,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1860
+    },
+    {
+      "extent": "density",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0.09015151515151514,
+        "fy0": 0.14166666666666664,
+        "fx1": 0.7727272727272727,
+        "fy1": 0.7416666666666666
+      },
+      "pass": true,
+      "selected_gcps": 7,
+      "residual_max_m": 6.015,
+      "residual_rms_m": 3.943,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2006,
+      "anisotropy": 1.53,
+      "singular_ratio": 1.53,
+      "bearing_right_deg": -180,
+      "bearing_down_deg": 90.3,
+      "mirror": false,
+      "shear_deg": 0.2,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.530 > 1.1; singular-value anisotropy 1.530 > 1.1; orientation not north-up: page-right -180.0° (Δ180.0° from East), page-down 90.3° (Δ179.7° from South), tol 15°"
+    },
+    {
+      "extent": "density",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0.09015151515151514,
+        "fy0": 0.14166666666666664,
+        "fx1": 0.7727272727272727,
+        "fy1": 0.7416666666666666
+      },
+      "pass": true,
+      "selected_gcps": 8,
+      "residual_max_m": 7.332,
+      "residual_rms_m": 5.366,
+      "holdout_max_m": 9.755,
+      "holdout_rms_m": 7.903,
+      "seed_candidate_matches": 1798,
+      "anisotropy": 1.202,
+      "singular_ratio": 1.202,
+      "bearing_right_deg": 89.9,
+      "bearing_down_deg": 0,
+      "mirror": false,
+      "shear_deg": 0.1,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.202 > 1.1; singular-value anisotropy 1.202 > 1.1; orientation not north-up: page-right 89.9° (Δ89.9° from East), page-down 0.0° (Δ90.0° from South), tol 15°"
+    },
+    {
+      "extent": "density+10%",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0.02189393939393937,
+        "fy0": 0.08166666666666664,
+        "fx1": 0.8409848484848484,
+        "fy1": 0.8016666666666665
+      },
+      "pass": false,
+      "reason": "only 2 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 2,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2051
+    },
+    {
+      "extent": "density+10%",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0.02189393939393937,
+        "fy0": 0.08166666666666664,
+        "fx1": 0.8409848484848484,
+        "fy1": 0.8016666666666665
+      },
+      "pass": false,
+      "reason": "matched parcel/linework residual 6.99m > 15m",
+      "selected_gcps": 11,
+      "residual_max_m": 6.988,
+      "residual_rms_m": 5.135,
+      "holdout_max_m": 19.695,
+      "holdout_rms_m": 13.197,
+      "seed_candidate_matches": 2136
+    },
+    {
+      "extent": "density+10%",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0.02189393939393937,
+        "fy0": 0.08166666666666664,
+        "fx1": 0.8409848484848484,
+        "fy1": 0.8016666666666665
+      },
+      "pass": true,
+      "selected_gcps": 7,
+      "residual_max_m": 5.776,
+      "residual_rms_m": 3.934,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2256,
+      "anisotropy": 1.533,
+      "singular_ratio": 1.533,
+      "bearing_right_deg": 180,
+      "bearing_down_deg": 89.8,
+      "mirror": false,
+      "shear_deg": 0.1,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.533 > 1.1; singular-value anisotropy 1.533 > 1.1; orientation not north-up: page-right 180.0° (Δ180.0° from East), page-down 89.8° (Δ179.8° from South), tol 15°"
+    },
+    {
+      "extent": "density+10%",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0.02189393939393937,
+        "fy0": 0.08166666666666664,
+        "fx1": 0.8409848484848484,
+        "fy1": 0.8016666666666665
+      },
+      "pass": false,
+      "reason": "only 5 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 5,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2225
+    },
+    {
+      "extent": "density+20%",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0,
+        "fy0": 0.02166666666666664,
+        "fx1": 0.9092424242424242,
+        "fy1": 0.8616666666666666
+      },
+      "pass": false,
+      "reason": "only 5 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 5,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2432
+    },
+    {
+      "extent": "density+20%",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0,
+        "fy0": 0.02166666666666664,
+        "fx1": 0.9092424242424242,
+        "fy1": 0.8616666666666666
+      },
+      "pass": true,
+      "selected_gcps": 14,
+      "residual_max_m": 8.831,
+      "residual_rms_m": 5.802,
+      "holdout_max_m": 6.036,
+      "holdout_rms_m": 3.667,
+      "seed_candidate_matches": 2230,
+      "anisotropy": 1.265,
+      "singular_ratio": 1.265,
+      "bearing_right_deg": -90,
+      "bearing_down_deg": 180,
+      "mirror": false,
+      "shear_deg": 0.1,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.265 > 1.1; singular-value anisotropy 1.265 > 1.1; orientation not north-up: page-right -90.0° (Δ90.0° from East), page-down 180.0° (Δ90.0° from South), tol 15°"
+    },
+    {
+      "extent": "density+20%",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0,
+        "fy0": 0.02166666666666664,
+        "fx1": 0.9092424242424242,
+        "fy1": 0.8616666666666666
+      },
+      "pass": true,
+      "selected_gcps": 19,
+      "residual_max_m": 12.503,
+      "residual_rms_m": 7.549,
+      "holdout_max_m": 8.171,
+      "holdout_rms_m": 6.035,
+      "seed_candidate_matches": 2538,
+      "anisotropy": 1.612,
+      "singular_ratio": 1.612,
+      "bearing_right_deg": 179.9,
+      "bearing_down_deg": 90.3,
+      "mirror": false,
+      "shear_deg": 0.4,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.612 > 1.1; singular-value anisotropy 1.612 > 1.1; orientation not north-up: page-right 179.9° (Δ179.9° from East), page-down 90.3° (Δ179.7° from South), tol 15°"
+    },
+    {
+      "extent": "density+20%",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0,
+        "fy0": 0.02166666666666664,
+        "fx1": 0.9092424242424242,
+        "fy1": 0.8616666666666666
+      },
+      "pass": true,
+      "selected_gcps": 13,
+      "residual_max_m": 12.623,
+      "residual_rms_m": 7.188,
+      "holdout_max_m": 8.948,
+      "holdout_rms_m": 6.333,
+      "seed_candidate_matches": 2416,
+      "anisotropy": 1.27,
+      "singular_ratio": 1.27,
+      "bearing_right_deg": 89.8,
+      "bearing_down_deg": 0.1,
+      "mirror": false,
+      "shear_deg": 0.2,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.270 > 1.1; singular-value anisotropy 1.270 > 1.1; orientation not north-up: page-right 89.8° (Δ89.8° from East), page-down 0.1° (Δ90.1° from South), tol 15°"
+    },
+    {
+      "extent": "percentile",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0.10712101515151515,
+        "fy0": 0.14990234395424842,
+        "fx1": 0.7772722342171717,
+        "fy1": 0.8305887459150327
+      },
+      "pass": false,
+      "reason": "only 2 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 2,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1671
+    },
+    {
+      "extent": "percentile",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0.10712101515151515,
+        "fy0": 0.14990234395424842,
+        "fx1": 0.7772722342171717,
+        "fy1": 0.8305887459150327
+      },
+      "pass": false,
+      "reason": "only 3 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 3,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1959
+    },
+    {
+      "extent": "percentile",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0.10712101515151515,
+        "fy0": 0.14990234395424842,
+        "fx1": 0.7772722342171717,
+        "fy1": 0.8305887459150327
+      },
+      "pass": false,
+      "reason": "only 5 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 5,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 2000
+    },
+    {
+      "extent": "percentile",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0.10712101515151515,
+        "fy0": 0.14990234395424842,
+        "fx1": 0.7772722342171717,
+        "fy1": 0.8305887459150327
+      },
+      "pass": false,
+      "reason": "only 4 independent parcel/linework matches after residual pruning (< 6)",
+      "selected_gcps": 4,
+      "residual_max_m": null,
+      "residual_rms_m": null,
+      "holdout_max_m": null,
+      "holdout_rms_m": null,
+      "seed_candidate_matches": 1871
+    },
+    {
+      "extent": "full",
+      "rotation": 0,
+      "extent_frac": {
+        "fx0": 0.032273417929292926,
+        "fy0": 0.02764693137254909,
+        "fx1": 0.9587870896464646,
+        "fy1": 0.9677447148692809
+      },
+      "pass": true,
+      "selected_gcps": 19,
+      "residual_max_m": 11.474,
+      "residual_rms_m": 6.793,
+      "holdout_max_m": 13.111,
+      "holdout_rms_m": 7.967,
+      "seed_candidate_matches": 2229,
+      "anisotropy": 1.769,
+      "singular_ratio": 1.769,
+      "bearing_right_deg": 0.1,
+      "bearing_down_deg": -89.9,
+      "mirror": false,
+      "shear_deg": 0,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.769 > 1.1; singular-value anisotropy 1.769 > 1.1"
+    },
+    {
+      "extent": "full",
+      "rotation": 90,
+      "extent_frac": {
+        "fx0": 0.032273417929292926,
+        "fy0": 0.02764693137254909,
+        "fx1": 0.9587870896464646,
+        "fy1": 0.9677447148692809
+      },
+      "pass": true,
+      "selected_gcps": 9,
+      "residual_max_m": 11.357,
+      "residual_rms_m": 7.45,
+      "holdout_max_m": 13.917,
+      "holdout_rms_m": 11.871,
+      "seed_candidate_matches": 2162,
+      "anisotropy": 1.393,
+      "singular_ratio": 1.393,
+      "bearing_right_deg": -90.2,
+      "bearing_down_deg": 179.8,
+      "mirror": false,
+      "shear_deg": 0,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.393 > 1.1; singular-value anisotropy 1.393 > 1.1; orientation not north-up: page-right -90.2° (Δ90.2° from East), page-down 179.8° (Δ90.2° from South), tol 15°"
+    },
+    {
+      "extent": "full",
+      "rotation": 180,
+      "extent_frac": {
+        "fx0": 0.032273417929292926,
+        "fy0": 0.02764693137254909,
+        "fx1": 0.9587870896464646,
+        "fy1": 0.9677447148692809
+      },
+      "pass": true,
+      "selected_gcps": 8,
+      "residual_max_m": 9.341,
+      "residual_rms_m": 4.651,
+      "holdout_max_m": 5.183,
+      "holdout_rms_m": 4.436,
+      "seed_candidate_matches": 2432,
+      "anisotropy": 1.768,
+      "singular_ratio": 1.768,
+      "bearing_right_deg": -179.8,
+      "bearing_down_deg": 89.8,
+      "mirror": false,
+      "shear_deg": 0.3,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.768 > 1.1; singular-value anisotropy 1.768 > 1.1; orientation not north-up: page-right -179.8° (Δ179.8° from East), page-down 89.8° (Δ179.8° from South), tol 15°"
+    },
+    {
+      "extent": "full",
+      "rotation": 270,
+      "extent_frac": {
+        "fx0": 0.032273417929292926,
+        "fy0": 0.02764693137254909,
+        "fx1": 0.9587870896464646,
+        "fy1": 0.9677447148692809
+      },
+      "pass": true,
+      "selected_gcps": 14,
+      "residual_max_m": 14.757,
+      "residual_rms_m": 7.977,
+      "holdout_max_m": 13.381,
+      "holdout_rms_m": 9.065,
+      "seed_candidate_matches": 2314,
+      "anisotropy": 1.384,
+      "singular_ratio": 1.384,
+      "bearing_right_deg": 90,
+      "bearing_down_deg": -0.2,
+      "mirror": false,
+      "shear_deg": 0.2,
+      "affine_gate_pass": false,
+      "affine_gate_reason": "scale anisotropy 1.384 > 1.1; singular-value anisotropy 1.384 > 1.1; orientation not north-up: page-right 90.0° (Δ90.0° from East), page-down -0.2° (Δ89.8° from South), tol 15°"
+    }
+  ],
+  "residual_max_m": null,
+  "holdout_max_m": null,
+  "selected_gcps": null,
+  "max_candidate_distance_m": 450,
+  "max_residual_gate_m": 15
+}

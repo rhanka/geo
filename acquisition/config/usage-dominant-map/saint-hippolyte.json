@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "EX": "industriel",
+    "A": "agricole",
+    "REC": "environnemental",
+    "P": null
+  },
+  "source": "https://saint-hippolyte.ca/wp-content/uploads/2022/07/COD-ADM-1171-19-15.pdf",
+  "note": "Règlement de zonage no 1171-19 de la Municipalité de Saint-Hippolyte, codification administrative (numéro VERBATIM au pied de page: « RÈGLEMENT DE ZONAGE NO 1171-19 »). ARTICLE 2.6.3 « Identification des zones », p. 60, VERBATIM: « Aux fins d'identification et de référence, chaque zone est désignée par un sigle alphanumérique permettant de se référer aux différentes dispositions du présent règlement et à la grille des spécifications qui lui est relative. Les lettres utilisées pour l'identification des zones font référence à la vocation principale de la zone, soit : H : Habitation / C : Commerciale / I : Industrielle / P : Publique et institutionnelle / REC : Récréative / A : Agricole / EX : Extractive ». C'est la liste officielle des lettres de vocation principale: elle fait foi. La matrice des usages permis des grilles des spécifications n'est PAS utilisée. Mapping: H « Habitation » -> residentiel; C « Commerciale » -> commercial; I « Industrielle » et EX « Extractive » -> industriel (le brief range Extraction avec Industrielle); A « Agricole » -> agricole; REC « Récréative » -> environnemental (famille Récréative/Conservation). Null explicite: P « Publique et institutionnelle » (4 polygones) est public + libellé dual public/institutionnel, aucune des cinq catégories, non forcé. MILLÉSIME corroboré par la FORME du code: l'art. 2.6.3 donne l'exemple VERBATIM « Toute zone est identifiée par une lettre et un chiffre, par exemple « H-101 » ou « H-201 » » — exactement la forme servie par le SIG (H-315, C-112, REC-603, A-500, EX-800, I-700, P-209). Préfixes SIG réellement présents (93 polygones, sansCode=0, lus sur la collection servie via `fold-usage-dominant.ts --list-prefixes`): H(59), REC(15), C(10), P(4), A(3), EX(1), I(1) — les 7 préfixes du SIG sont TOUS couverts par la liste de l'art. 2.6.3, et aucun préfixe mappé n'est absent du SIG. LONGEST-PREFIX (vérifié dans le fold): « REC » et « EX » (préfixes longs) sont sans collision, le SIG ne portant aucun préfixe « R » ni « E » seul. NOTE: le chiffre en centaine « renvoie aux grandes affectations du sol déterminées au Règlement sur le plan d'urbanisme » (art. 2.6.3) et ne modifie PAS la vocation portée par la lettre; le mapping à la lettre est donc correct."
+}

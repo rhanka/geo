@@ -21,7 +21,7 @@ import { readFileSync, existsSync, writeFileSync } from "node:fs";
 import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { websiteForSlug } from "../../packages/geo-sources-americas/src/ca-qc/municipalities/municipal-directory.js";
+import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 import { ALL_PV_CITIES, PV_USER_AGENT, type PvFetchLike } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
 import type { RawDocumentRef } from "../../packages/qc-sources/src/SourceAdapter.js";
 import { s3Client, exists, putBytes } from "./lib/s3.js";

@@ -1,0 +1,1696 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T17:33:26.553Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4060,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/041c939cb2e12f5773f1d39a08c0762c7c67ed784c3fdb0f50a911f9ca100e47.pdf",
+      "raw/pv-index/cas/04e74dae9995f115a7bbb4885c7d94fd323aa33d3e828f448503303c8fab9df5.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 17,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 17,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 17,
+    "Document": 17,
+    "CouncilSession": 12,
+    "MeetingDate": 12,
+    "Resolution": 16,
+    "Regulation": 30,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 105,
+    "edges": 41,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "clarenceville",
+      "storage_key": "raw/pv-index/cas/232c5909b571100af268949c8db1143d4b604bc2cb8d6da237a9aaa11f366041.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5239024",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:90",
+      "quote": "      23. Demande d’autorisation à la CPTAQ – lots 5 239 024 et 5 239 040"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 36,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 2586,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z",
+  "documents": [
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20251121111030-seance-11-2025.pdf",
+      "storage_key": "raw/pv-index/cas/5d7aff6d1fc99276922730ea007330ada1aedae6ae4e801c990c9eb6d403acf4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:190",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:190",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 18 novembre 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 18 novembre 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13034-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:269",
+              "quote": "             PAR LA RÉSOLUTION N° 13034-2025"
+            }
+          },
+          {
+            "label": "12734-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:740",
+              "quote": "CONSIDÉRANT          La résolution 12734-2024 envoyés au ministère, et les multiples échanges avec les"
+            }
+          },
+          {
+            "label": "13020-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:764",
+              "quote": "ATTENDU              La résolution 13020-2025 autorisant l’affichage de l’appel d’offres en lien avec la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/9eb6d403acf4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/9eb6d403acf4.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20260313135457-seance-03-2026.pdf",
+      "storage_key": "raw/pv-index/cas/5da522ce4c56dfe433682351ee9d526eb636d6d71d77b0778b54dc8d37834528.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 9
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "       13.2 Règlement 330-2026 relatif à l’occupation et à l’entretien des bâtiments patrimoniaux de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "       13.2 Règlement 330-2026 relatif à l’occupation et à l’entretien des bâtiments patrimoniaux de la"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 9 mars 2026, à 19 h, tenue dans la salle du conseil municipal, située au"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 9 mars 2026, à 19 h, tenue dans la salle du conseil municipal, située au"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12567-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "      9.4    Abrogation résolution 12567-2024 – Autorisation compensation cellulaire contremaitre aux travaux"
+            }
+          },
+          {
+            "label": "12802-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:631",
+              "quote": "                         Philippe a dument été nommé par la résolution 12802-2024, fournit avec la demande,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "329-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "       13.1 Règlement 329-2026 relatif aux feux à ciel ouvert, les grands feux d’artifice et les pièces"
+            }
+          },
+          {
+            "label": "167",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "            pyrotechniques à effets théâtraux, abrogeant le règlement numéro 167 et ses amendements;"
+            }
+          },
+          {
+            "label": "330-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "       14.2 Dépôt du projet de règlement numéro 330-2026 relatif à l’occupation et à l’entretien des bâtiments"
+            }
+          },
+          {
+            "label": "328-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "       15.1   Règlement numéro 328-2026 édictant code d’éthique et de déontologie des élus-es municipaux de"
+            }
+          },
+          {
+            "label": "307-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "              Chute-Saint-Philippe, abrogeant le règlement 307-2022;"
+            }
+          },
+          {
+            "label": "139",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:428",
+              "quote": "des spécifications pour la zone de villégiature 03 du règlement 139 relatif au zonage."
+            }
+          },
+          {
+            "label": "195",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:553",
+              "quote": "                     règlement 195 relatif aux nuisances, sous peine d’annulation de l’évènement avec les"
+            }
+          },
+          {
+            "label": "137",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1079",
+              "quote": "   2) Le Règlement numéro 137 relatif aux divers permis et certificats."
+            }
+          },
+          {
+            "label": "333-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1408",
+              "quote": "        Code :                     Le Règlement numéro 333-2026 édictant le Code d’éthique et de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/dc8d37834528.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/dc8d37834528.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20260616151035-seanceextra-22juin.pdf",
+      "storage_key": "raw/pv-index/cas/68c6e691089fe2c31eacbaf2e4087bf5ce3a1369764ea67a35d80939dd093bde.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/0939dd093bde.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/0939dd093bde.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250411124451-seance-04-2025.pdf",
+      "storage_key": "raw/pv-index/cas/7cbaf808cae2283be5253f5820dad8b936785f39fc85d718e046df0b17b8ab0a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:152",
+              "quote": "Éric Paiement, directeur général à représenter, agir et signer pour et au nom de la Municipalité de Chute-Saint-"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:152",
+              "quote": "Éric Paiement, directeur général à représenter, agir et signer pour et au nom de la Municipalité de Chute-Saint-"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 8 avril 2025, à 19 heures, tenue dans la salle du conseil municipal, située"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 8 avril 2025, à 19 heures, tenue dans la salle du conseil municipal, située"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "326-2025",
+            "legal_quality": "DEPOT_CERTIFICAT",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "     5.2.   Dépôt certificat procédure enregistrement personnes habiles à voter – Règlement 326-2025;"
+            }
+          },
+          {
+            "label": "327-2025",
+            "legal_quality": "DEPOT_CERTIFICAT",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "     5.3.   Dépôt certificat procédure enregistrement personnes habiles à voter – Règlement 327-2025;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/df0b17b8ab0a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/df0b17b8ab0a.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20251007091607-seance-10-2025.pdf",
+      "storage_key": "raw/pv-index/cas/9be397a6209afe720225723dd6ba9d74ddba30ac64b85409c129596f9db95439.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": "ATTENDU                   Que conformément aux règlements d'emprunts suivants et pour les montants indiqués en"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": "ATTENDU                   Que conformément aux règlements d'emprunts suivants et pour les montants indiqués en"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 2 octobre 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 2 octobre 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12997-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "     6.2.    Abrogation résolution 12997-2025 – Prévisions budgétaires de la Régie sécurité incendie et civile"
+            }
+          },
+          {
+            "label": "12758-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:458",
+              "quote": "CONSIDÉRANT              La résolution 12758-2024 autorisant un emprunt au fonds de roulement au montant de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "139",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:297",
+              "quote": "et ainsi déroger à l’article 7.2.1 du règlement 139 relatif au zonage de 1.92 mètre"
+            }
+          },
+          {
+            "label": "193",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:462",
+              "quote": "CONSIDÉRANT              Que l’article 6 du règlement 193 relatif au fonds de roulement ainsi que de l’article"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/596f9db95439.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/596f9db95439.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe",
+          "lascension"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250829082302-seance-08-2025.pdf",
+      "storage_key": "raw/pv-index/cas/ace317d25b9cb26868189e93cafd1107c568e527b63324b0d55e490df33b7ff7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:421",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:421",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 26 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 26 août 2025, à 19 heures, tenue dans la salle du conseil municipal, située"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "26 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 26 août 2025, à 19 heures, tenue dans la salle du conseil municipal, située"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12167-2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:216",
+              "quote": "CONSIDÉRANT          La résolution 12167-2022 et 12434-2023 autorisant un emprunt au fonds de roulement"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "193",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:220",
+              "quote": "CONSIDÉRANT          Que l’article 6 du règlement 193 relatif au fonds de roulement ainsi que de l’article"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/490df33b7ff7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/490df33b7ff7.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250711094510-seance-07-2025.pdf",
+      "storage_key": "raw/pv-index/cas/bd1519b297d7137a4920458a4c983f1066145c644f5b17c25fb2c5bd9e6ba373.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "                          leurs aspects significatifs, une image fidèle de la situation financière de la Municipalité"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "                          leurs aspects significatifs, une image fidèle de la situation financière de la Municipalité"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 juillet 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 8 juillet 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 juillet 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 8 juillet 2025, à 19 heures, tenue dans la salle du conseil municipal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "195",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:333",
+              "quote": "                        règlement 195 relatif aux nuisances, sous peine d’annulation de l’évènement avec les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/c5bd9e6ba373.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/c5bd9e6ba373.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20260212144052-seance-02-2026.pdf",
+      "storage_key": "raw/pv-index/cas/eb9320ea7e78bfcfd7755db14299e68752927c67d305b1df13a26303e9a5c8d7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:187",
+              "quote": "                        d'autoriser les versements de la contribution financière 2026 de la Municipalité de Chute-"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:187",
+              "quote": "                        d'autoriser les versements de la contribution financière 2026 de la Municipalité de Chute-"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 9 février 2026, à 19 h, tenue dans la salle du conseil municipal, située au"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "Procès-verbal de la séance ordinaire du 9 février 2026, à 19 h, tenue dans la salle du conseil municipal, située au"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "328-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "       13.1 Règlement 328-2026 édictant code d’éthique et de déontologie des élus-es municipaux de Chute-"
+            }
+          },
+          {
+            "label": "307-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:601",
+              "quote": "       de déontologie des élus·es municipaux, abrogeant le règlement 307-2022."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/6303e9a5c8d7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/6303e9a5c8d7.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "municipality_name": "Chute-Saint-Philippe",
+      "url": "https://www.chute-saint-philippe.ca/fichiersUpload/fichiers/20250328100623-seance-extra-24-03-2025-entente-supra-local.pdf",
+      "storage_key": "raw/pv-index/cas/f97ef58d4666f50287cab56be04eb2c5cca5015a3cbc805acd1c28f0d868e5fe.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chute-Saint-Philippe",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "Un avis de convocation a été signifié tel que requis par le Code municipal, article 153, à tous les membres du"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "Un avis de convocation a été signifié tel que requis par le Code municipal, article 153, à tous les membres du"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 24 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "Procès-verbal de la séance extraordinaire du 24 mars 2025, à 17 heures, tenue dans la salle du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "24 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "Procès-verbal de la séance extraordinaire du 24 mars 2025, à 17 heures, tenue dans la salle du conseil"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "12803-2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "                          2024 avec la résolution 12803-2024 transmise à la Ville de Mont-Laurier;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/28f0d868e5fe.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/chute-saint-philippe/28f0d868e5fe.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chute-saint-philippe",
+          "mont-laurier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260609092432-pv-26-mai-2026-extra.pdf",
+      "storage_key": "raw/pv-index/cas/0a410740fa7eb01bab5e0b07027907df580683bd48b67adfab234e41eb9bca35.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 26 MAI 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "PROCÈS-VERBAL de la séance extraordinaire du conseil municipal de la Municipalité"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "26 MAI 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                  SÉANCE EXTRAORDINAIRE DU 26 MAI 2026"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/4e41eb9bca35.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/4e41eb9bca35.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20251126164731-pv-seance-du-1-octobre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/118c26ecae7db808cbda9f703cdeed540d00889710a06435f3f480b58cba33ca.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 1er octobre 2025, en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 1er octobre 2025, en"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-111",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:364",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-04-111 à Artelia"
+            }
+          },
+          {
+            "label": "2025-08-200",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:395",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-08-200 à Artelia"
+            }
+          },
+          {
+            "label": "2025-04-110",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:418",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-04-110 à MPotvin pour les"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "428-21",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "     6. A) Avis de motion du projet de règlement 428-21 modifiant le règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/80b58cba33ca.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/80b58cba33ca.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bedford--brome-missisquoi",
+          "bedford--brome-missisquoi--2",
+          "clarenceville",
+          "noyan",
+          "venise-en-quebec"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250506135524-odj-seance-1-avril-2025.pdf",
+      "storage_key": "raw/pv-index/cas/132b3a9ab72f142e7f534eae09e73ddb7d31cf1fdf3e03f96a248f1addc4980c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/8f1addc4980c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/8f1addc4980c.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260609092348-odj-26-mai-2026-extra.pdf",
+      "storage_key": "raw/pv-index/cas/150f1b2a7eb3123a8d0b3f1df5d923d67f7b4d13e9e86dc8a32a28dba2578e0e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/28dba2578e0e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/28dba2578e0e.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250604151737-pv-seance-du-6-mai-2025.pdf",
+      "storage_key": "raw/pv-index/cas/232c5909b571100af268949c8db1143d4b604bc2cb8d6da237a9aaa11f366041.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                   MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                   MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 6 mai 2025, en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 6 mai 2025, en"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-10-230",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:883",
+              "quote": "              CONSIDÉRANT un mandat accordé à DWB Consultants (résolution 2024-10-230)"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "601-3",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "      11. Avis de motion du projet de règlement 601-3 modifiant le règlement 601-2"
+            }
+          },
+          {
+            "label": "601-2",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "      11. Avis de motion du projet de règlement 601-3 modifiant le règlement 601-2"
+            }
+          },
+          {
+            "label": "654-1",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:270",
+              "quote": "              CONSIDÉRANT QUE du Règlement N°654-1 De Gestion Contractuelle est"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5239024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "      23. Demande d’autorisation à la CPTAQ – lots 5 239 024 et 5 239 040"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/aaa11f366041.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/aaa11f366041.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville",
+          "saint-alexandre"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260305111804-pv-seance-13-janvier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/25e36ec53fd4fe8560272534ffe5fbbc47ae87e73ca1c2f38c9fb8b41b7879a0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 13 janvier 2026, en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 13 janvier 2026, en"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-08-180",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:673",
+              "quote": "               CONSIDÉRANT l’adoption de la résolution 2023-08-180 octroyant à la compagnie"
+            }
+          },
+          {
+            "label": "2025-04-110",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:831",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-04-110 à MPotvin pour les"
+            }
+          },
+          {
+            "label": "2025-04-111",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:858",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-04-111 à Artelia"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2020-644",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:150",
+              "quote": "2026-01-003   REFINANCEMENT DU RÈGLEMENT 2020-644 : 239 300$"
+            }
+          },
+          {
+            "label": "2022-666",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:684",
+              "quote": "               règlement 2022-666 article 15 : Afin de pourvoir au service de vidange des"
+            }
+          },
+          {
+            "label": "2024-674",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:686",
+              "quote": "              propriétaire, chaque année et selon le règlement 2024-674 (taux de taxation"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/b8b41b7879a0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/b8b41b7879a0.pdf/.graphify/.graphify_extract.json — 10 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville",
+          "noyan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250422092249-odj-seance-extra-22-avril-2025.pdf",
+      "storage_key": "raw/pv-index/cas/283f922231b182c6e12ff8365293c30d8fb000ed8e698fad20be83a6c195acb3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/83a6c195acb3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/83a6c195acb3.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260601153742-odj-2-juin-2026.pdf",
+      "storage_key": "raw/pv-index/cas/3daa7d7322328c5ad728ce216d178e6345514f91797c81fe7e7e51d84221a47e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "431-03",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "    11. Adoption du 2e projet de règlement 431-03 concernant les permis pour changer les montants des amendes"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/51d84221a47e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/51d84221a47e.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville",
+          "saint-edouard"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260505171721-projet-d-ordre-du-jour-seance-du-5-mai-2026.pdf",
+      "storage_key": "raw/pv-index/cas/4927ef0e0bec9d9f2cdc749399db28d828d9017813d1ce54b8b5d77b38a1ceec.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                  MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                  MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-428-22",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "    6. Avis de motion du 1er projet de Règlement 2026-428-22 : Roulotte, VR et logement accessoire"
+            }
+          },
+          {
+            "label": "2026-431-03",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "    8. Avis de motion du projet de Règlement 2026-431-03: Article 16, Augmentation du coût des"
+            }
+          },
+          {
+            "label": "2026-389-9",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "    10. Adoption du Règlement 2026-389-9, Modifiant le Règlement 389-8 sur les tarifications diverses"
+            }
+          },
+          {
+            "label": "389-8",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "    10. Adoption du Règlement 2026-389-9, Modifiant le Règlement 389-8 sur les tarifications diverses"
+            }
+          },
+          {
+            "label": "2026-681",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "    11. Adoption du Règlement 2026-681 relatif à la dimension maximale des conduites servant à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/d77b38a1ceec.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173146Z/clarenceville/d77b38a1ceec.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
