@@ -1,0 +1,29 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AD": "agricole",
+    "C": "commercial",
+    "COMV": "commercial",
+    "CONSV": "environnemental",
+    "CV": null,
+    "F": "agricole",
+    "FD": "agricole",
+    "HBD": "residentiel",
+    "HDB": "residentiel",
+    "I": "industriel",
+    "IC": null,
+    "P": null,
+    "PCV": null,
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "RC": "residentiel",
+    "RD": "residentiel",
+    "RE": "residentiel",
+    "RIEV": "residentiel",
+    "RM": null,
+    "RT": "environnemental",
+    "RV": "residentiel"
+  },
+  "source": "ca-qc-zonage-mrcdecoaticook-arcgis — couche de zonage de la MRC de Coaticook servie dans normalized/ca-qc-zonage/qc-zonage-coaticook.geojson, attribut « DESCRIPTIO » (nom tronqué à 10 caractères par le shapefile source, pour « DESCRIPTION »)",
+  "note": "AUCUN PDF LU — la vocation est portée VERBATIM PAR LE SIG LUI-MÊME, par feature, dans l'attribut « DESCRIPTIO » de la couche de zonage de la MRC de Coaticook (175/178 entités renseignées; seules RC-431, RC-432, RC-433 ont l'attribut vide et héritent du préfixe RC). Libellés VERBATIM relevés (npx tsx acquisition/src/_ud-code-vocation-dump.ts --slugs coaticook), un par préfixe: A « Agricole »; AD « Agricole déstructurée »; C « Commerciale »; COMV « Commerciale de villégiature »; CONSV « Conservation » (codes CONSV1-*/CONSV2-*); CV « Centre-Ville »; F « Forestière »; FD « Forestière déstructurée »; HBD et HDB « Habitation basse densité » (HDB-924 est une inversion de sigle dans la source, même libellé); I « Industrielle »; IC « Industrielle et commerciale »; P « Publique »; PCV « Publique centre-ville »; RA « Résidentielle faible densité »; RB « Résidentielle faible à moyenne densité »; RC « Résidentielle moyenne densité »; RD « Résidentielle forte densité »; RE « Résidentielle projet d'ensemble »; RIEV « Résidentielle intégrée à l'environnement » (codes RIEV1-*/RIEV2-*); RM « Résidentielle mixte »; RT « Récréotouristique »; RV « Résidentielle de villégiature » (codes RV1-*/RV2-*). Catégorisation: « Agricole »/« Agricole déstructurée »/« Forestière »/« Forestière déstructurée » -> agricole (famille agricole-forestière, même traitement que champlain.json); « Commerciale »/« Commerciale de villégiature » -> commercial; « Conservation » -> environnemental; « Récréotouristique » -> environnemental (famille récréative); « Industrielle » -> industriel; toutes les zones dont le libellé a pour tête « Résidentielle » ou « Habitation » (RA, RB, RC, RD, RE, RIEV, RV, HBD, HDB) -> résidentiel, le qualificatif (densité, projet d'ensemble, villégiature, intégrée à l'environnement) ne changeant pas la dominante ÉNONCÉE. Null explicite: CV « Centre-Ville » et PCV « Publique centre-ville » sont des zones de centre-ville (mixtes par nature, aucune dominante unique énoncée); P « Publique » est publique; IC « Industrielle et commerciale » nomme DEUX des cinq catégories (duale); RM « Résidentielle mixte » énonce elle-même la mixité. Aucune déduction faite à partir de la lettre: chaque préfixe est adossé à un libellé servi. Mesuré le 2026-07-20."
+}

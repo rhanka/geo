@@ -1,0 +1,167 @@
+{
+  "slug": "trois-pistoles",
+  "reglement": "591 de zonage, mis à jour par les règlements nos 921 et 925 en 2026",
+  "source_url": "non-disponible",
+  "snapshot": "2026-07-17",
+  "methode": "native-text/categorie-map-section5.5.1",
+  "_doc": [
+    "Carte des normes PAR FAMILLE DE ZONES pour Trois-Pistoles (MRC des Basques).",
+    "Le règlement de zonage no 591 (consolidé 921+925 en 2026, 209 p., couche texte native)",
+    "N'A AUCUNE grille des spécifications : son §1.5 « DOCUMENTS ANNEXES » ne déclare qu'UN",
+    "seul document annexe, l'« Annexe A » = le Plan de zonage (carte 1:5000). Vérifié à $0 :",
+    "`_probe-page-text.ts <pdf> --find 'ANNEXE|grille'` ne retourne aucune annexe-grille, et",
+    "`_normes-doc-identity.ts` ne trouve AUCUNE page portant les en-têtes canoniques de grille.",
+    "Les normes d'implantation sont définies PAR FAMILLE DE ZONES à la section 5.5.1, dans une",
+    "table dont les COLONNES sont les familles du plan de zonage (et non des sous-lignes de type",
+    "d'usage). Chaque valeur y est donc uniforme sur toute la famille PAR CONSTRUCTION.",
+    "URL PUBLIQUE : le site ville-trois-pistoles.ca est JS-gated (0 lien statique via",
+    "_probe-html-links.ts) ; seule la consolidation ANTÉRIEURE 2023 est indexée publiquement",
+    "(https://www.ville-trois-pistoles.ca/upload/kcfinder/files/591%20ZONAGE%20incl%20883%202023%20a%20jour.pdf).",
+    "L'URL de la consolidation 2026 effectivement extraite n'a PAS pu être confirmée → source_url",
+    "= 'non-disponible' (aucune URL inventée). Le numéro de règlement reste verbatim (pied de page",
+    "p.77 : « Règlement no 591 de zonage mis à jour par le règlement no 921 et 925 en 2026 »)."
+  ],
+  "classification_basis": {
+    "section": "5.5.1 / 4.11",
+    "verbatim": "Zones du plan de zonage : HA, HB, HC, HD, MA, MB, RA, RB, RC, RD | CVA, CVB, PA, PB, PC | HM | VA, VB | CO | I, UA, UB, A, AR",
+    "note": "§4.11 « CLASSES D'USAGES AUTORISÉES PAR ZONE » énumère les mêmes familles (HABITATION HA/HB/HC/HD/HM, COMMERCE CO, COMMUNAUTAIRE PA/PB…). Les 91 codes du SIG servi sont TOUS préfixés par l'une des familles de la table 5.5.1 → couverture 100% sans code fabriqué."
+  },
+  "category_application_basis": "Section 5.5.1 « DISPOSITIONS RELATIVES À L'IMPLANTATION D'UN BÂTIMENT PRINCIPAL EN FONCTION DES ZONES DU PLAN DE ZONAGE » (p.77) : table à 6 colonnes dont l'en-tête est « Zones du plan de zonage » et dont chaque colonne énumère explicitement les familles de zones visées. Les 4 lignes sont « Marge de recul avant », « Marge de recul latérale », « Somme des marges de recul latérales », « Marge de recul arrière ».",
+  "semantic_caveats": [
+    "hauteur_max = null PARTOUT. La hauteur est définie à la section 5.5.2 « DISPOSITIONS RELATIVES AUX DIMENSIONS D'UN BÂTIMENT PRINCIPAL EN FONCTION DES CLASSES D'USAGES » — donc par CLASSE D'USAGE (h1-1, h2, h3, c1…), PAS par zone. Une même zone autorise plusieurs classes d'usages aux hauteurs différentes (§4.11) → la valeur n'est pas uniforme par zone → null (pas de fabrication). Idem « Nombre d'étages maximal » et « Façade minimale ».",
+    "« Somme des marges de recul latérales » (4/5/4/6/6/6 m) n'a PAS de champ dans le schéma NORM_FIELDS déployé → transcrite ici pour l'audit, non déposée. Elle ne doit PAS être confondue avec marge_laterale_min (la marge d'UN côté).",
+    "densite / superficie_min / frontage_min = null partout : ces normes relèvent du règlement de LOTISSEMENT (non acquis), pas du règlement de zonage 591.",
+    "Marge arrière de la famille HM : la valeur retenue est 2 m, verbatim « 2 m (0,6 m sans portes ni fenêtres) ». Le 0,6 m est un cas conditionnel (mur aveugle), pas la norme par défaut → raw conserve la mention intégrale.",
+    "Marge avant de la famille VA/VB : 6 m, avec surcharge explicite « (10 m dans la zone VB-3) » → portée en surcharges_par_zone, jamais propagée à VB-1/VB-2/VB-4.",
+    "Les familles MA et MB apparaissent à la table 5.5.1 mais AUCUN code SIG servi ne les porte → mappées quand même (inoffensif), sans effet."
+  ],
+  "prefix_to_category": {
+    "HA": "hab_res_mixte",
+    "HB": "hab_res_mixte",
+    "HC": "hab_res_mixte",
+    "HD": "hab_res_mixte",
+    "MA": "hab_res_mixte",
+    "MB": "hab_res_mixte",
+    "RA": "hab_res_mixte",
+    "RB": "hab_res_mixte",
+    "RC": "hab_res_mixte",
+    "RD": "hab_res_mixte",
+    "CVA": "coeur_villageois_public",
+    "CVB": "coeur_villageois_public",
+    "PA": "coeur_villageois_public",
+    "PB": "coeur_villageois_public",
+    "PC": "coeur_villageois_public",
+    "HM": "hab_hm",
+    "VA": "villegiature",
+    "VB": "villegiature",
+    "CO": "commerce_co",
+    "I": "indus_util_agricole",
+    "UA": "indus_util_agricole",
+    "UB": "indus_util_agricole",
+    "A": "indus_util_agricole",
+    "AR": "indus_util_agricole"
+  },
+  "categories": {
+    "hab_res_mixte": {
+      "section": "§5.5.1",
+      "header_verbatim": "Zones du plan de zonage : HA, HB, HC, HD, MA, MB, RA, RB, RC, RD",
+      "table_row_verbatim": {
+        "marge_de_recul_avant": "6 m",
+        "marge_de_recul_laterale": "1,5 m",
+        "somme_des_marges_de_recul_laterales": "4 m",
+        "marge_de_recul_arriere": "6 m"
+      },
+      "uniform_norms": {
+        "marge_avant_min": {"value": 6, "raw": "6 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « HA, HB, HC, HD, MA, MB, RA, RB, RC, RD » ligne « Marge de recul avant » = 6 m"},
+        "marge_laterale_min": {"value": 1.5, "raw": "1,5 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « HA, HB, HC, HD, MA, MB, RA, RB, RC, RD » ligne « Marge de recul latérale » = 1,5 m"},
+        "marge_arriere_min": {"value": 6, "raw": "6 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « HA, HB, HC, HD, MA, MB, RA, RB, RC, RD » ligne « Marge de recul arrière » = 6 m"}
+      },
+      "not_uniform_null": ["hauteur_max", "superficie_min", "densite", "frontage_min"]
+    },
+    "coeur_villageois_public": {
+      "section": "§5.5.1",
+      "header_verbatim": "Zones du plan de zonage : CVA, CVB, PA, PB, PC",
+      "table_row_verbatim": {
+        "marge_de_recul_avant": "4 m",
+        "marge_de_recul_laterale": "1,5 m",
+        "somme_des_marges_de_recul_laterales": "5 m",
+        "marge_de_recul_arriere": "6 m"
+      },
+      "uniform_norms": {
+        "marge_avant_min": {"value": 4, "raw": "4 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « CVA, CVB, PA, PB, PC » ligne « Marge de recul avant » = 4 m"},
+        "marge_laterale_min": {"value": 1.5, "raw": "1,5 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « CVA, CVB, PA, PB, PC » ligne « Marge de recul latérale » = 1,5 m"},
+        "marge_arriere_min": {"value": 6, "raw": "6 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « CVA, CVB, PA, PB, PC » ligne « Marge de recul arrière » = 6 m"}
+      },
+      "not_uniform_null": ["hauteur_max", "superficie_min", "densite", "frontage_min"]
+    },
+    "hab_hm": {
+      "section": "§5.5.1",
+      "header_verbatim": "Zones du plan de zonage : HM",
+      "table_row_verbatim": {
+        "marge_de_recul_avant": "2 m",
+        "marge_de_recul_laterale": "2 m",
+        "somme_des_marges_de_recul_laterales": "4 m",
+        "marge_de_recul_arriere": "2 m (0,6 m sans portes ni fenêtres)"
+      },
+      "uniform_norms": {
+        "marge_avant_min": {"value": 2, "raw": "2 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « HM » ligne « Marge de recul avant » = 2 m"},
+        "marge_laterale_min": {"value": 2, "raw": "2 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « HM » ligne « Marge de recul latérale » = 2 m"},
+        "marge_arriere_min": {"value": 2, "raw": "2 m (0,6 m sans portes ni fenêtres)", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « HM » ligne « Marge de recul arrière » = « 2 m (0,6 m sans portes ni fenêtres) » ; 2 m = norme par défaut, 0,6 m = cas conditionnel d'un mur sans ouverture"}
+      },
+      "not_uniform_null": ["hauteur_max", "superficie_min", "densite", "frontage_min"]
+    },
+    "villegiature": {
+      "section": "§5.5.1",
+      "header_verbatim": "Zones du plan de zonage : VA, VB",
+      "table_row_verbatim": {
+        "marge_de_recul_avant": "6 m (10 m dans la zone VB-3)",
+        "marge_de_recul_laterale": "2 m",
+        "somme_des_marges_de_recul_laterales": "6 m",
+        "marge_de_recul_arriere": "6 m"
+      },
+      "uniform_norms": {
+        "marge_avant_min": {"value": 6, "raw": "6 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « VA, VB » ligne « Marge de recul avant » = 6 m ; la mention « (10 m dans la zone VB-3) » est une surcharge de la seule zone VB-3, portée en surcharges_par_zone"},
+        "marge_laterale_min": {"value": 2, "raw": "2 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « VA, VB » ligne « Marge de recul latérale » = 2 m"},
+        "marge_arriere_min": {"value": 6, "raw": "6 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « VA, VB » ligne « Marge de recul arrière » = 6 m"}
+      },
+      "not_uniform_null": ["hauteur_max", "superficie_min", "densite", "frontage_min"]
+    },
+    "commerce_co": {
+      "section": "§5.5.1",
+      "header_verbatim": "Zones du plan de zonage : CO",
+      "table_row_verbatim": {
+        "marge_de_recul_avant": "6 m",
+        "marge_de_recul_laterale": "2 m",
+        "somme_des_marges_de_recul_laterales": "6 m",
+        "marge_de_recul_arriere": "6 m"
+      },
+      "uniform_norms": {
+        "marge_avant_min": {"value": 6, "raw": "6 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « CO » ligne « Marge de recul avant » = 6 m"},
+        "marge_laterale_min": {"value": 2, "raw": "2 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « CO » ligne « Marge de recul latérale » = 2 m"},
+        "marge_arriere_min": {"value": 6, "raw": "6 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « CO » ligne « Marge de recul arrière » = 6 m"}
+      },
+      "not_uniform_null": ["hauteur_max", "superficie_min", "densite", "frontage_min"]
+    },
+    "indus_util_agricole": {
+      "section": "§5.5.1",
+      "header_verbatim": "Zones du plan de zonage : I, UA, UB, A, AR",
+      "table_row_verbatim": {
+        "marge_de_recul_avant": "10 m",
+        "marge_de_recul_laterale": "2 m",
+        "somme_des_marges_de_recul_laterales": "6 m",
+        "marge_de_recul_arriere": "10 m"
+      },
+      "uniform_norms": {
+        "marge_avant_min": {"value": 10, "raw": "10 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « I, UA, UB, A, AR » ligne « Marge de recul avant » = 10 m"},
+        "marge_laterale_min": {"value": 2, "raw": "2 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « I, UA, UB, A, AR » ligne « Marge de recul latérale » = 2 m"},
+        "marge_arriere_min": {"value": 10, "raw": "10 m", "unit": "m", "confidence": 0.9, "basis": "§5.5.1 col. « I, UA, UB, A, AR » ligne « Marge de recul arrière » = 10 m"}
+      },
+      "not_uniform_null": ["hauteur_max", "superficie_min", "densite", "frontage_min"]
+    }
+  },
+  "surcharges_par_zone": {
+    "VB-3": {
+      "marge_avant_min": {"value": 10, "raw": "10 m", "unit": "m", "confidence": 0.95, "basis": "§5.5.1 col. « VA, VB » ligne « Marge de recul avant » : « 6 m (10 m dans la zone VB-3) »"}
+    }
+  }
+}

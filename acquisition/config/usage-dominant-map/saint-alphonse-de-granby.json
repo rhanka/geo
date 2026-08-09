@@ -1,0 +1,28 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AB": "agricole",
+    "AI": "agricole",
+    "AR": "agricole",
+    "CA": "commercial",
+    "CB": "commercial",
+    "CC": "commercial",
+    "CD": "commercial",
+    "CE": "commercial",
+    "MA": null,
+    "MC": null,
+    "MD": null,
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "RM": "residentiel",
+    "RAA": "residentiel",
+    "RAT": "residentiel",
+    "EX": "industriel",
+    "ICL": "industriel",
+    "P": null,
+    "REC": "environnemental",
+    "CO": "environnemental"
+  },
+  "source": "https://st-alphonse.qc.ca/wp-content/uploads/2025/07/Reglement-372-2017-Codif-2025-04-14.pdf",
+  "note": "Règlement de zonage no 372-2017 de la Municipalité de Saint-Alphonse-de-Granby (codification 2025-04-14), art. 2.4 « IDENTIFICATION DES ZONES », « Tableau 1 - Zones de la municipalité ». Table à COLONNE DE DOMINANCE citée VERBATIM: « Pour les fins de la réglementation des usages, le territoire de la Municipalité est divisé en zones, tel que montré au plan de zonage. Ces zones sont regroupées sous les appellations suivantes : | ZONES / VOCATION DOMINANTE | A, AB, AI, AR → Agricole | CA, CB, CC, CD, CE → Commerciale | MA, MB, MC, MD → Mixte | RA, RB, RM, RAA, RA-T → Résidentielle | EX, I, ICL → Extractive, industrielle | P → Publique | REC → Récréative | CO → Conservation ». La colonne « VOCATION DOMINANTE » PRIME et est corroborée en amont par l'art. 2.2 « RÈGLES D'INTERPRÉTATION DU PLAN DE ZONAGE », verbatim: « Chacune des zones identifiées au plan de zonage comprend des lettres identifiant l'usage dominant permis. Ces lettres sont suivies par un trait et un chiffre identifiant le numéro de la zone. » AUCUN alinéa ne suit le Tableau 1 (il est immédiatement suivi du chapitre 3 « LA GRILLE DES USAGES ET DES NORMES »), donc AUCUN renversement de la colonne (motif ormstown écarté). A/AB/AI/AR → agricole: ⚠️ AI et AR sont explicitement rangés par la colonne « VOCATION DOMINANTE » sous « Agricole » — contrairement à ormstown (où AI = industrielle EN zone agricole) et à victoriaville (où Ar « Agro-résidentielle » = résidentiel); c'est le verbatim de CETTE muni qui tranche, aucune inférence sur les lettres. CA/CB/CC/CD/CE « Commerciale » → commercial. RA/RB/RM « Résidentielle » → résidentiel (⚠️ chez cette muni RA est le RÉSIDENTIEL et AR l'AGRICOLE: ce sont deux codes inverses et distincts). RAA déclaré pour le code servi « Raa » (le fold compare en majuscules) et RAT pour le code servi « RAT » (le règlement l'écrit « RA-T » avec le trait; le SIG sert la forme sans trait) — les deux sont « Résidentielle » → résidentiel. EX/ICL « Extractive, industrielle » → industriel: les DEUX termes du libellé retombent sur la MÊME catégorie (extraction et industrie), ce n'est donc PAS une dualité. REC « Récréative » → environnemental (couvre aussi le code servi « REC-I » par préfixe). CO « Conservation » → environnemental: déclaré sous sa forme VERBATIM « CO »; le SIG sert « CONS », capté par le match au plus long préfixe (aucun autre code servi ne commence par « CO », et aucun préfixe « C » nu n'est déclaré, donc CONS ne peut pas retomber sur le commercial). NULLS EXPLICITES (verbatim): MA/MC/MD « Mixte » = vocation DUALE affirmée par le règlement lui-même; P « Publique » = publique, aucune des cinq catégories. Préfixes OMIS car NON servis par le SIG: MB (« Mixte ») et I (« Extractive, industrielle »). La matrice des usages permis des grilles (annexe A) n'a PAS été utilisée. URL vérifiée à $0 le 2026-07-17: téléchargement 3 515 323 o depuis st-alphonse.qc.ca, Tableau 1 identique octet pour octet au corpus local work/zonage-norms/saint-alphonse-de-granby/grille.pdf (162 p, en-tête de chaque page « Règlement de zonage / Municipalité de Saint-Alphonse-de-Granby / No 372-2017 »)."
+}
