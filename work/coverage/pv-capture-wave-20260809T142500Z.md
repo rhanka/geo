@@ -5,16 +5,18 @@
 - Cible : `https://hlhedx.c1.bhs5.k8s.ovh.net`, namespace `geo` ; droit `create jobs` vérifié.
 - Image : `ghcr.io/rhanka/geo-capture@sha256:60f048b5ac667805bf90b3e1a1e75b3b85fd2a4dc634aa11c13fee8b27fa629b`.
 - Limite mémoire : `256Mi` ; aucun pod OOM observé.
-- Les objets ci-dessous sont les lignes de manifeste ayant un CAS, vérifiées par
-  `_capture-e2e-probe.ts` (CAS, sidecar et preuve v2). Une ligne HTTP sans octet
-  n'est jamais comptée.
+- Les valeurs S3 ci-dessous sont les **réceptions de manifeste avec CAS**,
+  vérifiées par `_capture-e2e-probe.ts` (CAS, sidecar et preuve v2). Une même
+  clé CAS peut être dédupliquée pour plusieurs URL : ce ne sont donc pas des
+  clés physiques distinctes déduites. Une ligne HTTP sans octet n'est jamais
+  comptée.
 - `acquisition/src/capture-run-resolve.ts` était absent du checkout. Les `run_id`
   ont donc été résolus de façon déterministe depuis le pod terminal :
   `pv-<RUN_STAMP>-<SHARD>-<POD_UID>`, conformément à
   `deploy/capture-job/run-capture-job.sh`, puis sondés avec
   `_capture-e2e-probe.ts`.
 
-| Worklist | Villes soumises | Job / runs | Pods OK / Pending / OOM | Objets S3 vérifiés |
+| Worklist | Villes soumises | Job / runs | Pods OK / Pending / OOM | Réceptions CAS S3 vérifiées |
 | --- | ---: | --- | --- | ---: |
 | `pv-decouverte-vides-20260808T173612Z-capture-lot-0001.json` | 0 | Non soumis : garde `CaptureWorklistSchema.min(1)` | 0 / 0 / 0 | 0 |
 | `pv-decouverte-vides-20260808T173612Z-capture-lot-0002.json` | 0 | Non soumis : garde `CaptureWorklistSchema.min(1)` | 0 / 0 / 0 | 0 |
@@ -28,11 +30,11 @@
 ## État arrêté pour ce reçu
 
 - Villes avec au moins un dépôt S3 prouvé : **16**.
-- Objets CAS prouvés via E2E : **902**.
+- Réceptions CAS prouvées via E2E : **902** (le décompte de clés CAS physiques
+  distinctes reste indisponible sans le résolveur absent).
 - Rejets de garde : les lots `173612Z-0001` et `173612Z-0002` sont vides et
   refusés avant tout PUT ou Job.
 - Pending/OOM : seul Macamic (`202000Z-0004`, 257 URL, délai nominal 2 s)
   était encore `Running` au moment du reçu ; **0 OOM**. La vague a aussi connu
   des Pending transitoires dus à `Insufficient cpu` (deux nœuds disponibles,
   un troisième `NotReady`), tous résorbés sauf ce Job long encore actif.
-
