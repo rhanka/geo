@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "CONS": "environnemental",
+    "P": null
+  },
+  "source": "https://chambly.ca/storage/app/media/ville/organisation-municipale/reglementation/reglements-d-urbanisme/reglement-2020-1431-de-zonage-modifie-2025-1431-37a.pdf",
+  "note": "Règlement de zonage numéro 2020-1431 (version modifiée 2025-1431-37a). Art. 16 « RÉPARTITION EN ZONES »: « le territoire municipal est divisé en zones, telles que montrées au plan de zonage joint au présent règlement pour en faire partie intégrante comme annexe « A », ces zones sont identifiées de la façon suivante : 1° une ou plusieurs lettres identifiant le groupe d'usage dominant, tel que défini au chapitre 4; 6° des chiffres identifiant la séquence numérique. » — la lettre du code de zone EST donc le groupe d'usage dominant, par renvoi exprès au chapitre 4. Art. 36 « REGROUPEMENT DES USAGES » (chapitre 4): « Pour les fins du présent règlement, les groupes d'usages sont identifiés par une ou des lettres faisant référence au groupe d'usages visé : 1° Résidentiel (R); 2° Commerce (C); 3° Industrie (I); 4° Public (P); 5° Agricole (A); 6° Conservation (CONS). » -> R résidentiel, C commercial, I industriel, A agricole, CONS « Conservation » -> environnemental. Null explicite: P « Public » n'énonce pas une dominante parmi les cinq catégories. Les 6 groupes de l'art. 36 couvrent exactement les 6 préfixes présents au SIG (R 126, P 64, C 23, CONS 21, I 6, A 6 codes). CONS est déclaré explicitement (match longest-prefix) pour ne pas retomber sur C -> commercial. La matrice des usages permis des grilles n'est pas utilisée."
+}

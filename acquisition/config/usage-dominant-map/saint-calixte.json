@@ -1,0 +1,10 @@
+{
+  "prefix_map": {
+    "F": "agricole",
+    "AD": "agricole",
+    "RV": "residentiel",
+    "REC": null
+  },
+  "source": "work/zonage-norms/saint-calixte/grille.pdf — Règlement de zonage n° 722-2023, Municipalité de Saint-Calixte (VERSION ADMINISTRATIVE CODIFIÉE; corpus local, reglement_url=null au registre reglement-provenance)",
+  "note": "Règlement de zonage n° 722-2023, art. 2.7.3 « Identification des zones » (p.128) + Tableau 20 « Identification des zones » (p.129): « Les lettres utilisées pour l'identification des zones font référence à son affectation identifiée au Plan d'urbanisme ou la vocation principale de la zone, soit : [Préfixe / Affectation ou vocation principale] AD : Agricole dynamique ; CR : Commerciale-récréative ; PI : Para-industrielle ; F : Exploitation forestière ; RV : Résidentiel de villégiature ; I : Industrielle ; C : Commerciale ; M : Multifonctionnelle ; P : Publique et institutionnelle et grands parcs et espaces verts ; H1 : Résidentielle unifamiliale ; H1B ; H2 ; H3 ; H4 : Résidentielle ». Préfixes RÉELLEMENT servis (S3 fold --list-prefixes): F (30 pol.), AD (2), RV (1), REC (1). Mapping VERBATIM sur le Tableau 20: F « Exploitation forestière » -> agricole (famille ressource rurale forestière) ; AD « Agricole dynamique » -> agricole ; RV « Résidentiel de villégiature » -> residentiel. NULL explicite: REC (1 pol., REC-1) n'existe PAS dans le Tableau 20 (la nomenclature 722-2023 ne définit aucun préfixe « REC ») -> null honnête (vocation non attestée par la légende, ne pas deviner « récréative » à partir de la lettre). La matrice des usages permis des grilles n'est pas utilisée."
+}

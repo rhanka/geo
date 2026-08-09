@@ -1,0 +1,44 @@
+{
+  "slug": "ange-gardien",
+  "muni": "Municipalité d'Ange-Gardien",
+  "mrc": "MRC de Rouville (Montérégie)",
+  "mrc_evidence": "Le plan de zonage lui-meme porte 'MRC Rouville' et 'Base de donnees de la MRC de Rouville' (work/zones-recalage/shard5/ange-gardien-urbain.pdf) -- distingue de l'homonyme 'L'Ange-Gardien' (Capitale-Nationale / Outaouais).",
+  "source_page": "https://www.municipalite.ange-gardien.qc.ca/services-aux-citoyens/urbanisme/zonage-et-cartographie",
+  "source_kind": "grilles des usages principaux et des normes (11 PDF distincts, un par plage de zones)",
+  "source_base_url": "https://www.municipalite.ange-gardien.qc.ca/storage/app/media/services-aux-citoyens/urbanisme/zonage-et-cartographie/",
+  "local_dir": "work/zones-recalage/shard5/ag-grilles/",
+  "extraction": "pdftotext -layout, ligne d'en-tete 'Zones' de chaque grille (verbatim, $0)",
+  "reglement_series": "Reglement de zonage de la Municipalite d'Ange-Gardien, amende par r.643-07, r.684-09, r.712-11, r728-12, r.734-12, r760-14, r793--16, r.805-16 (Concordance 2017), r.877-21. Le numero du reglement de base n'est PAS imprime sur les grilles (aucun cartouche) -- non renseigne plutot qu'invente.",
+  "verbatim_headers": [
+    { "pdf": "101-105.pdf", "url_title": "Zone 101 à 105", "zones_header": "101   102   103   104   105" },
+    { "pdf": "106-110.pdf", "url_title": "Zone 106 à 110", "zones_header": "106   107-P   108   109   110" },
+    { "pdf": "111-116.pdf", "url_title": "Zone 111 à 116", "zones_header": "111   112   113   114   115   116" },
+    { "pdf": "117-120.pdf", "url_title": "Zone 117 à 120", "zones_header": "117 (r.684-09)   118 (r.684-09)   119 (r.734-12)   120 (760-14, art.3)" },
+    { "pdf": "201-205.pdf", "url_title": "Zone 201 à 205", "zones_header": "201   202 (r728-12)   203   204-P   205" },
+    { "pdf": "206-211.pdf", "url_title": "Zone 206-P à 211", "zones_header": "206-P   207-P   208   209   210   211" },
+    { "pdf": "grille 2012-303.pdf", "url_title": "Zone 212 à 303", "zones_header": "212   213   301   302-P   303" },
+    { "pdf": "grille 401-405.pdf", "url_title": "Zone 402 à 405", "zones_header": "401 Abrogé r728-12   402   403   404 Abrogé r.877-21   405" },
+    { "pdf": "Grille des usages_501-505.pdf", "url_title": "Zone 501 à 505", "zones_header": "501   502   503   504   505" },
+    { "pdf": "Grille des usages_506-510.pdf", "url_title": "Zone 506 à 510", "zones_header": "506   507   508   509   510" },
+    { "pdf": "511-512.pdf", "url_title": "Zone 511 et 512", "zones_header": "511   512" }
+  ],
+  "abrogated_excluded": [
+    { "code": "401", "verbatim": "401 / Abrogé / r728-12", "pdf": "grille 401-405.pdf" },
+    { "code": "404", "verbatim": "404 / Abrogé / r.877-21", "pdf": "grille 401-405.pdf" }
+  ],
+  "abrogated_note": "401 et 404 portent 'Abrogé' DANS la ligne d'en-tete 'Zones' (la zone elle-meme, pas une classe d'usage) ; la page municipale intitule d'ailleurs ce PDF 'Zone 402 à 405'. Exclus de `codes` : la couche texte du plan contient ~479 numeros de LOT cadastraux (dont la serie 4xx), donc admettre un code abroge ferait passer un lot pour une zone. Reintegrables si le conducteur le souhaite.",
+  "codes": [
+    "101", "102", "103", "104", "105",
+    "106", "107-P", "108", "109", "110",
+    "111", "112", "113", "114", "115", "116",
+    "117", "118", "119", "120",
+    "201", "202", "203", "204-P", "205",
+    "206-P", "207-P", "208", "209", "210", "211",
+    "212", "213",
+    "301", "302-P", "303",
+    "402", "403", "405",
+    "501", "502", "503", "504", "505",
+    "506", "507", "508", "509", "510",
+    "511", "512"
+  ]
+}

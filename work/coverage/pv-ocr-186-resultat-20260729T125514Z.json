@@ -1,0 +1,34 @@
+{
+  "contract": "pv-ocr-186-result/v1",
+  "generated_at": "2026-07-29T12:55:14Z",
+  "status": "BLOCKED_CAS_IMMUTABILITY",
+  "authorization": {
+    "inventory": "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json",
+    "unique_authorized_cas_keys": 186,
+    "hard_cap_usd": "2.000"
+  },
+  "execution": {
+    "ocr_requests_sent": 0,
+    "actual_billed_pages": 0,
+    "actual_cost_usd": "0.000",
+    "cas_head_checks": 10,
+    "cas_content_length_mismatches": 10,
+    "remaining_unchecked_keys": 176,
+    "evidence": "work/coverage/pv-ocr-186-stage-known-001-r2-20260729T125514Z.json"
+  },
+  "indexing": {
+    "indexed_documents": 0,
+    "owner_not_confirmed": null,
+    "remaining_failures": 186,
+    "reason": "Aucun texte OCR n'a été produit: le CAS courant ne correspond pas aux objets autorisés par l'inventaire."
+  },
+  "municipal_impact": {
+    "baseline_municipalities_without_another_indexed_document": 16,
+    "now_with_at_least_one_indexed_document": 0
+  },
+  "provenance": {
+    "ocr_marked_in_report": false,
+    "reason": "Aucune entité OCR n'a été émise."
+  },
+  "conductor_action_required": "Réconcilier/restaurer les 186 objets raw/pv-index/cas/ par leur SHA-256 avant toute reprise OCR."
+}

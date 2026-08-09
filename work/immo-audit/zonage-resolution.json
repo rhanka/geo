@@ -1,0 +1,368 @@
+[
+  {
+    "ville": "sainte-catherine",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Seul hit spatial = qc-zonage-martin-lessard0-arcgis, mais c'est une couche milieux-humides/pression (ZONE='VOIE MARITIME', Classifi='Marais') et non un grille de zonage. Aucune grille municipale. (NB: Ste-Catherine Monteregie/Roussillon, -73.57)"
+  },
+  {
+    "ville": "saint-eustache",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-pantaleona-arcgis",
+    "couche": "zonage municipal (ZONAGEMUNICIPALID/Zone)",
+    "methode_match": "bbox",
+    "confidence": "medium",
+    "sample_attr": {
+      "ZONAGEMUNICIPALID": "5-A-09",
+      "Zone": "3"
+    },
+    "note": "Compte ArcGIS 'pantaleona'. bbox chevauche les lots St-Eustache; 3 polygones de zonage retournes au centroide ville. Id non-mappe par slug -> quick win."
+  },
+  {
+    "ville": "saint-mathieu-de-beloeil",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Candidat sample-bbox ludyvine-cnmsh mais aucun feature au point ville (probe reel n=0). Pas de couverture."
+  },
+  {
+    "ville": "alma",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Aucun hit reel (hors faux-positif a-mercier global). Absent."
+  },
+  {
+    "ville": "saint-charles-borromee",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Aucun hit reel. Absent."
+  },
+  {
+    "ville": "saint-boniface",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Aucun hit reel. Absent."
+  },
+  {
+    "ville": "coaticook",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-mrcdecoaticook-arcgis",
+    "couche": "zonage municipal MRC Coaticook (ZONE/ETIQUETTE, MuniTopo='Ville de Coaticook')",
+    "methode_match": "nom+bbox",
+    "confidence": "high",
+    "sample_attr": {
+      "MuniTopo": "Ville de Coaticook",
+      "ETIQUETTE": "A-920",
+      "ZONE": "A"
+    },
+    "note": "Id MRC non-mappe par slug-ville -> quick win. Filtrer MuniTopo='Ville de Coaticook'."
+  },
+  {
+    "ville": "la-sarre",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Aucun hit reel. Absent."
+  },
+  {
+    "ville": "saint-raphael",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-jdube-mrcbellechasse-arcgis",
+    "couche": "zonage municipal MRC Bellechasse (no_zone, mun_nom='Saint-Raphaël')",
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": {
+      "mun_nom": "Saint-Raphaël",
+      "no_zone": "AF-111",
+      "affectation": "Agro-forestier"
+    },
+    "note": "Id compte ArcGIS (MRC Bellechasse) non-mappe -> quick win. Filtrer mun_nom='Saint-Raphaël'."
+  },
+  {
+    "ville": "saint-come-liniere",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Aucun hit reel. Absent."
+  },
+  {
+    "ville": "petite-riviere-saint-francois",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Candidat sample-bbox claudialarrotamrccdb (MRC Charlevoix) mais aucun feature au point ville. Absent."
+  },
+  {
+    "ville": "champlain",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Aucun hit reel. Absent."
+  },
+  {
+    "ville": "plaisance",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Aucun hit reel. Absent."
+  },
+  {
+    "ville": "notre-dame-de-lourdes--lerable",
+    "statut": "absent",
+    "collection_id": null,
+    "couche": null,
+    "methode_match": "bbox",
+    "confidence": "high",
+    "sample_attr": null,
+    "note": "Centroide lots = -71.80,46.34 (region de l'Erable, Centre-du-Quebec). Collection qc-zonage-notre-dame-de-lourdes--joliette existe mais c'est l'AUTRE NDL (Lanaudiere/Joliette, ~-73.4) -> NE PAS puller pour la ville Erable. Aucune couverture pour la NDL-Erable."
+  },
+  {
+    "ville": "mont-tremblant",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-mont-tremblant-arcgis",
+    "couche": "zonage municipal (NUM_ZONE/NOM_ZONE)",
+    "methode_match": "nom",
+    "confidence": "medium",
+    "sample_attr": {
+      "NUM_ZONE": 939,
+      "NOM_ZONE": "CO-939",
+      "CODE_AFFEC": "CO"
+    },
+    "note": "ANOMALIE: la couche melange affectation (NOM_AFFECT/CODE_AFFEC) et zonage (NUM_ZONE). Utilisable mais id -arcgis non-slug."
+  },
+  {
+    "ville": "rimouski",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-rimouski",
+    "couche": "grille municipale (NO_ZONAGE + URL_GRILLE PDF)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "NO_ZONAGE": "AN-649",
+      "URL_GRILLE": "https://rimouski.ca/.../0649.pdf"
+    },
+    "note": "Primaire propre = qc-zonage-rimouski. Existe aussi qc-zonage-rimouski-arcgis (ZONAGEMUNICIPALID) + nombreuses couches bruit (affectations-sol/piia/perimetre/aires-contraintes/sites-patrimoine) a ECARTER."
+  },
+  {
+    "ville": "preissac",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-preissac",
+    "couche": "zone_code/kind (extraction geopdf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "AF-1",
+      "kind": "A"
+    },
+    "note": null
+  },
+  {
+    "ville": "chelsea",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-chelsea",
+    "couche": "zone_code/kind (extraction geopdf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "AGV-1",
+      "kind": "A"
+    },
+    "note": null
+  },
+  {
+    "ville": "saint-amable",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-saint-amable",
+    "couche": "zone_code/kind (extraction geopdf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "A1-10",
+      "kind": "A"
+    },
+    "note": null
+  },
+  {
+    "ville": "cowansville",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-cowansville",
+    "couche": "zone_code/kind (extraction geopdf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "AA-1",
+      "kind": "A"
+    },
+    "note": null
+  },
+  {
+    "ville": "saint-gilbert",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-saint-gilbert",
+    "couche": "zone_code/kind (shp MRC Portneuf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "A-3",
+      "kind": "A"
+    },
+    "note": null
+  },
+  {
+    "ville": "rosemere",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-rosemere",
+    "couche": "zone_code/kind (ocg-street-georef)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "P 38",
+      "kind": "public"
+    },
+    "note": null
+  },
+  {
+    "ville": "stratford",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-stratford",
+    "couche": "zone_code/kind (vision-read)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "A-1",
+      "kind": "A"
+    },
+    "note": null
+  },
+  {
+    "ville": "neuville",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-neuville",
+    "couche": "zone_code/kind (shp MRC Portneuf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "Rc-2",
+      "kind": "H"
+    },
+    "note": null
+  },
+  {
+    "ville": "saint-raymond",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-saint-raymond",
+    "couche": "zone_code/kind (shp MRC Portneuf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "AD-13",
+      "kind": "AD"
+    },
+    "note": null
+  },
+  {
+    "ville": "sutton",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-sutton",
+    "couche": "zone_code/kind (extraction geopdf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "A-10",
+      "kind": "A"
+    },
+    "note": null
+  },
+  {
+    "ville": "mont-saint-hilaire",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-mont-saint-hilaire",
+    "couche": "zone_code/kind (vision-read)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "AF-11",
+      "kind": "AF"
+    },
+    "note": null
+  },
+  {
+    "ville": "saint-stanislas-de-kostka",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-saint-stanislas-de-kostka",
+    "couche": "zone_code/kind (extraction geopdf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "A-1",
+      "kind": "A"
+    },
+    "note": null
+  },
+  {
+    "ville": "hemmingford",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-hemmingford--les-jardins-de-napierville--2",
+    "couche": "zone_code/kind (extraction geopdf)",
+    "methode_match": "nom",
+    "confidence": "high",
+    "sample_attr": {
+      "zone_code": "AF-1",
+      "kind": "A"
+    },
+    "note": "Slug attendu 'hemmingford' absent; id reel suffixe '--les-jardins-de-napierville--2'."
+  },
+  {
+    "ville": "saint-frederic",
+    "statut": "couvert",
+    "collection_id": "qc-zonage-saint-frederic",
+    "couche": "zone_code (vision-vectorized) - DEGRADE",
+    "methode_match": "nom",
+    "confidence": "low",
+    "sample_attr": {
+      "zone_code": null,
+      "codes_inside": [
+        "A-10",
+        "A-11",
+        "A-25",
+        "A-26"
+      ],
+      "confidence": "group-envelope-unattributed"
+    },
+    "note": "ANOMALIE: zones non attribuees individuellement (PDF dessine une enveloppe groupee, anti-invention). codes_inside present mais pas de zone_code par polygone -> qualite faible."
+  }
+]
