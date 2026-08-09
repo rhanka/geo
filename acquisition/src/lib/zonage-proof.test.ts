@@ -174,6 +174,9 @@ describe("served zonage geometry proof", () => {
       entry.isDirectory() ? walk(join(dir, entry.name)) : entry.name.endsWith(".ts") ? [join(dir, entry.name)] : [],
     );
     const users = walk(root)
+      // Test doubles dispatch on command class names; only production sources
+      // can introduce an S3 writer that bypasses the two guarded helpers.
+      .filter((file) => !file.endsWith(".test.ts"))
       .filter((file) => readFileSync(file, "utf8").includes(token))
       .map((file) => relative(root, file).replaceAll("\\", "/"))
       .sort();
