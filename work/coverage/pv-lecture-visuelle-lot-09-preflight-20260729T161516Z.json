@@ -1,0 +1,326 @@
+{
+  "contract": "pv-lecture-visuelle-preflight/v1",
+  "generated_at": "2026-07-29T16:15:34.429Z",
+  "read_only": true,
+  "source_triage": "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json",
+  "selection": {
+    "description": "les 26 clés CAS suivantes parmi les 186 échecs, ordonnées par premier offset de sélection puis clé CAS, après exclusion de tous les lots antérieurs",
+    "prior_lot_reports": [
+      "work/coverage/pv-lecture-visuelle-lot-01-20260729T134941Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-02-20260729T144959Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-03-20260729T151721Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-04-20260729T152221Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-05-20260729T154806Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-06-20260729T155254Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-07-20260729T155819Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-08-20260729T160137Z.json"
+    ],
+    "source_inventory": "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json (clés, slugs et offsets seulement; pages/taille ignorées)",
+    "candidate_cas_keys": 186,
+    "prior_lot_collisions_avoided": 160,
+    "remaining_after_dedupe": 26
+  },
+  "guard": {
+    "before_visual_reading": true,
+    "transport": "S3 GetObject",
+    "hash": "sha256 streamé; aucune mise en mémoire intégrale du PDF",
+    "mismatch_stop_threshold": 3,
+    "stopped_for_integrity_incident": false
+  },
+  "summary": {
+    "requested": 26,
+    "attempted": 26,
+    "sha_passed": 26,
+    "cas_sha_mismatch": 0,
+    "get_failed": 0
+  },
+  "local_visual_workspace": "/home/antoinefa/src/geo/work/graphify/pv-lecture-visuelle-lot-09-preflight-20260729T161516Z",
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/c882aa9d212a666885f126a2a64928f15dc5141158e0a32f0aebdb106ddca070.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "c882aa9d212a666885f126a2a64928f15dc5141158e0a32f0aebdb106ddca070",
+      "calculated_sha256": "c882aa9d212a666885f126a2a64928f15dc5141158e0a32f0aebdb106ddca070",
+      "streamed_bytes": 2643195,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c8aedfb0435d8fc4d6404cbcb55351e048c1c103cc50d1e68e9b5fe72fc7181f.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "c8aedfb0435d8fc4d6404cbcb55351e048c1c103cc50d1e68e9b5fe72fc7181f",
+      "calculated_sha256": "c8aedfb0435d8fc4d6404cbcb55351e048c1c103cc50d1e68e9b5fe72fc7181f",
+      "streamed_bytes": 921636,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c9bcb4d24ff71e5b5bf33adc7e80525f0fd666c728e298c2c0e2d90b6e3f4232.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "c9bcb4d24ff71e5b5bf33adc7e80525f0fd666c728e298c2c0e2d90b6e3f4232",
+      "calculated_sha256": "c9bcb4d24ff71e5b5bf33adc7e80525f0fd666c728e298c2c0e2d90b6e3f4232",
+      "streamed_bytes": 4170273,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/cbba4a486fde33c2a481476569cec49e43898423f24b33c988fcb1795aa77cb7.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "cbba4a486fde33c2a481476569cec49e43898423f24b33c988fcb1795aa77cb7",
+      "calculated_sha256": "cbba4a486fde33c2a481476569cec49e43898423f24b33c988fcb1795aa77cb7",
+      "streamed_bytes": 2107168,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ce30007511991d078ee4e89291c6cf041d884a13679500b5c20c6777822d160e.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "ce30007511991d078ee4e89291c6cf041d884a13679500b5c20c6777822d160e",
+      "calculated_sha256": "ce30007511991d078ee4e89291c6cf041d884a13679500b5c20c6777822d160e",
+      "streamed_bytes": 3467727,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ce872f6eb65b42a538eaec007a46f5b4f9360dc7205eacfc433bf7301282f256.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "ce872f6eb65b42a538eaec007a46f5b4f9360dc7205eacfc433bf7301282f256",
+      "calculated_sha256": "ce872f6eb65b42a538eaec007a46f5b4f9360dc7205eacfc433bf7301282f256",
+      "streamed_bytes": 4248247,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ce9431e51d3d140feb8edf2bf575cf81d69aaf5256e70916b5da02a83a0256f1.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "ce9431e51d3d140feb8edf2bf575cf81d69aaf5256e70916b5da02a83a0256f1",
+      "calculated_sha256": "ce9431e51d3d140feb8edf2bf575cf81d69aaf5256e70916b5da02a83a0256f1",
+      "streamed_bytes": 4574281,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/db979b62236468a4938831950e79e933e30dffa8a3b0cb71989e637d3840bf48.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "db979b62236468a4938831950e79e933e30dffa8a3b0cb71989e637d3840bf48",
+      "calculated_sha256": "db979b62236468a4938831950e79e933e30dffa8a3b0cb71989e637d3840bf48",
+      "streamed_bytes": 4919067,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e1e75733f5f748c0854bb6dd458bddbf63306b5f33846016707449a4d3441535.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "e1e75733f5f748c0854bb6dd458bddbf63306b5f33846016707449a4d3441535",
+      "calculated_sha256": "e1e75733f5f748c0854bb6dd458bddbf63306b5f33846016707449a4d3441535",
+      "streamed_bytes": 1948892,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e42c290dc8aed5ecdb704fa08c10adf9f146d8bc3e72ff9d730e898957a281f1.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "e42c290dc8aed5ecdb704fa08c10adf9f146d8bc3e72ff9d730e898957a281f1",
+      "calculated_sha256": "e42c290dc8aed5ecdb704fa08c10adf9f146d8bc3e72ff9d730e898957a281f1",
+      "streamed_bytes": 3013549,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e491b51eb5702a9531f0554a3378fe64da07dc13e98af7d36628ed66dba3cf88.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "e491b51eb5702a9531f0554a3378fe64da07dc13e98af7d36628ed66dba3cf88",
+      "calculated_sha256": "e491b51eb5702a9531f0554a3378fe64da07dc13e98af7d36628ed66dba3cf88",
+      "streamed_bytes": 3070822,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e658f46b7951431c8be8fd804c34177f054b04a4b8810e578c93bfa1a787a3d0.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "e658f46b7951431c8be8fd804c34177f054b04a4b8810e578c93bfa1a787a3d0",
+      "calculated_sha256": "e658f46b7951431c8be8fd804c34177f054b04a4b8810e578c93bfa1a787a3d0",
+      "streamed_bytes": 2408603,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ebbcf51d5d5dba307beb089bc6fdeab610007909f96cd4d20245d7aa8f8ebf47.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "ebbcf51d5d5dba307beb089bc6fdeab610007909f96cd4d20245d7aa8f8ebf47",
+      "calculated_sha256": "ebbcf51d5d5dba307beb089bc6fdeab610007909f96cd4d20245d7aa8f8ebf47",
+      "streamed_bytes": 1400997,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/eee9dff0aeb777e52dc5c5cb92cf40a1b99ddb0e7a6a50ee4ca7552d22f0536a.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "eee9dff0aeb777e52dc5c5cb92cf40a1b99ddb0e7a6a50ee4ca7552d22f0536a",
+      "calculated_sha256": "eee9dff0aeb777e52dc5c5cb92cf40a1b99ddb0e7a6a50ee4ca7552d22f0536a",
+      "streamed_bytes": 772562,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f24fc7825a972c66864bc0824d4071d2393b61cee1ce78ed290dfec444e1aa9a.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "f24fc7825a972c66864bc0824d4071d2393b61cee1ce78ed290dfec444e1aa9a",
+      "calculated_sha256": "f24fc7825a972c66864bc0824d4071d2393b61cee1ce78ed290dfec444e1aa9a",
+      "streamed_bytes": 1264485,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f6ee876974ea7d979eee61593d85b971236febac1013ddc203eb0cb8a26c3745.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "f6ee876974ea7d979eee61593d85b971236febac1013ddc203eb0cb8a26c3745",
+      "calculated_sha256": "f6ee876974ea7d979eee61593d85b971236febac1013ddc203eb0cb8a26c3745",
+      "streamed_bytes": 4852556,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/fa6718439c2b80c926c524b497dc368ba1ee87ddc2cdecf30d7dd675be14500e.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "fa6718439c2b80c926c524b497dc368ba1ee87ddc2cdecf30d7dd675be14500e",
+      "calculated_sha256": "fa6718439c2b80c926c524b497dc368ba1ee87ddc2cdecf30d7dd675be14500e",
+      "streamed_bytes": 3249167,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ff2b10c64786a8b17492bc03137fc08d77a5a7e614039823dac354b6643bfef2.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "ff2b10c64786a8b17492bc03137fc08d77a5a7e614039823dac354b6643bfef2",
+      "calculated_sha256": "ff2b10c64786a8b17492bc03137fc08d77a5a7e614039823dac354b6643bfef2",
+      "streamed_bytes": 2977933,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/410a4290544245169663095dacb5855e47a70fde1fda41bc297023c7c1243f4f.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "expected_sha256": "410a4290544245169663095dacb5855e47a70fde1fda41bc297023c7c1243f4f",
+      "calculated_sha256": "410a4290544245169663095dacb5855e47a70fde1fda41bc297023c7c1243f4f",
+      "streamed_bytes": 564638,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/41731f860fbc55c0f46cc153346d5f9846753b8b7a055053cee3b6b8d066ee71.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "expected_sha256": "41731f860fbc55c0f46cc153346d5f9846753b8b7a055053cee3b6b8d066ee71",
+      "calculated_sha256": "41731f860fbc55c0f46cc153346d5f9846753b8b7a055053cee3b6b8d066ee71",
+      "streamed_bytes": 276605,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/44441dd939838d9133e81ac5535ac029b66f1ea4ab8938d9932fff0edd7dbd1f.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "expected_sha256": "44441dd939838d9133e81ac5535ac029b66f1ea4ab8938d9932fff0edd7dbd1f",
+      "calculated_sha256": "44441dd939838d9133e81ac5535ac029b66f1ea4ab8938d9932fff0edd7dbd1f",
+      "streamed_bytes": 4221386,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4a5306566cbce5ec56f4176f9fe39c36aba53192b5ea8f4f3a081432b52d3b95.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "expected_sha256": "4a5306566cbce5ec56f4176f9fe39c36aba53192b5ea8f4f3a081432b52d3b95",
+      "calculated_sha256": "4a5306566cbce5ec56f4176f9fe39c36aba53192b5ea8f4f3a081432b52d3b95",
+      "streamed_bytes": 635130,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4b9987ca49a81ea20faf752dbb480c551fa688b85f5efee2ef0b9506dd4833a0.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "expected_sha256": "4b9987ca49a81ea20faf752dbb480c551fa688b85f5efee2ef0b9506dd4833a0",
+      "calculated_sha256": "4b9987ca49a81ea20faf752dbb480c551fa688b85f5efee2ef0b9506dd4833a0",
+      "streamed_bytes": 879836,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/6b022c34da8f17c29b1242c519309162babca262a246ade3b5f752249086b41c.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "expected_sha256": "6b022c34da8f17c29b1242c519309162babca262a246ade3b5f752249086b41c",
+      "calculated_sha256": "6b022c34da8f17c29b1242c519309162babca262a246ade3b5f752249086b41c",
+      "streamed_bytes": 385931,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/777b5efbb0b614c1f6f09151e83d0d14d869ab37f1a2733d470f4648a606a62d.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "expected_sha256": "777b5efbb0b614c1f6f09151e83d0d14d869ab37f1a2733d470f4648a606a62d",
+      "calculated_sha256": "777b5efbb0b614c1f6f09151e83d0d14d869ab37f1a2733d470f4648a606a62d",
+      "streamed_bytes": 1332555,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/8211973e31f7ef5bd55825c2d2121aa59af503e8bc9005e979e2cc5dfd4ef15c.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "expected_sha256": "8211973e31f7ef5bd55825c2d2121aa59af503e8bc9005e979e2cc5dfd4ef15c",
+      "calculated_sha256": "8211973e31f7ef5bd55825c2d2121aa59af503e8bc9005e979e2cc5dfd4ef15c",
+      "streamed_bytes": 768537,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    }
+  ]
+}

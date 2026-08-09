@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AF": "agricole",
+    "H": "residentiel",
+    "C": "commercial",
+    "CE": "environnemental",
+    "CH": null,
+    "P": null
+  },
+  "source": "Règlement de zonage de la Municipalité de Saint-Edmond-les-Plaines, corpus local work/zonage-norms/saint-edmond-les-plaines/grille.pdf",
+  "note": "Legende lue VERBATIM dans le corps du reglement, qui nomme chaque zone par sa «vocation dominante» + sa lettre: «zone a vocation dominante Habitation (H)», «zone a vocation dominante Commerciale, de service et habitation (CH) et Commerciale et de service (C)», «zone a vocation dominante Publique et institutionnelle (P)», «zone a vocation dominante Agricole (A) et Agro forestiere (AF)»; le groupe «Conservation (CE)» est defini a l'art. 5.3.6. Tous les prefixes du SIG (A, H, CH, AF, P, CE, C) sont couverts. Mapping: A «Agricole» -> agricole; AF «Agro forestiere» -> agricole; H «Habitation» -> residentiel; C «Commerciale et de service» -> commercial; CE «Conservation» -> environnemental. NULL EXPLICITE: CH «Commerciale, de service et habitation» -> vocation dominante MIXTE (commerce+habitation), pas de dominante unique -> null (le longest-prefix garantit que CH-xx tombe sur CH=null et non sur C=commercial); P «Publique et institutionnelle» -> public -> null. La matrice des usages permis n'est pas utilisee; seules les libelles de vocation dominante le sont."
+}

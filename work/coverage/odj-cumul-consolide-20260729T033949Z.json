@@ -1,0 +1,324 @@
+{
+  "contract": "odj-cumul-consolide/v1",
+  "generated_at": "2026-07-29T03:39:49Z",
+  "committer": "rhanka <fabien.antoine@m4x.org>",
+  "producer": "Codex",
+  "repository": {
+    "branch": "feat/cadre-acquisition",
+    "audit_script": "acquisition/src/pv-capture-campaign-audit.ts",
+    "capture_performed": false,
+    "pods_started": false,
+    "raw_or_capture_runs_written": false
+  },
+  "population": {
+    "reference_total": 3058,
+    "definition": "ODJ worklist population planned from the observable PV-index classification for years 2025 and 2026",
+    "source_plan": "work/coverage/pv-ordre-du-jour-2026-2025-plan-20260727.json",
+    "source_classification": "work/coverage/pv-observable-classification-20260727-b32de19169bc907c.json",
+    "source_snapshot_sha256": "sha256:b32de19169bc907c3711c684500533164875897d30c1d37c2385890f8f17b88d",
+    "counts_by_year": {
+      "2025": 1163,
+      "2026": 1895
+    },
+    "not_the_probe_denominator": true,
+    "note": "The observable classifier has 6565 ordre_du_jour entries across its wider corpus; 3058 is the committed 2025/2026 plan total, not a sonde denominator."
+  },
+  "method": {
+    "unit": "distinct CAS storage_key",
+    "deduplication": "Set union on storage_key across the official audit's verified source manifests; never line count or URL count.",
+    "capture_definition": "unique_cas_keys returned by pv-capture-campaign-audit/v1 for terminally admissible source runs; nonterminal manifests are reported but excluded by the reference implementation.",
+    "confirmation_definition": "unique storage_key whose classification is PV_LISIBLE_PROPRIETAIRE_CONFIRME in complete classification reports whose observations match a verified S3 manifest.",
+    "terminality_rule": "A run without run.json/finished_at/exit_code is nonterminal and is not admitted to the CAS aggregate by the reference audit.",
+    "closed_partition": {
+      "captured_unique_cas_keys": 948,
+      "confirmed_unique_cas_keys": 656,
+      "captured_not_confirmed_unique_cas_keys": 292,
+      "equation": "948 = 656 + 292"
+    },
+    "official_audit_result": {
+      "all_source_manifest_count": 18,
+      "observations": 1350,
+      "duplicate_observations": 400,
+      "durable_observations": 1346,
+      "unique_durably_captured_document_urls": 946,
+      "unique_cas_keys": 948,
+      "unique_confirmed_classification_cas_keys": 656,
+      "nonterminal_source_runs": 5,
+      "nonzero_exit_source_runs": 0
+    },
+    "classification_reports_used": [
+      "work/coverage/pv-ordre-du-jour-lot-0001-octets.json",
+      "work/coverage/pv-ordre-du-jour-lot-0002-octets.json",
+      "work/coverage/pv-ordre-du-jour-lot-0003-octets.json",
+      "work/coverage/pv-ordre-du-jour-lot-0004-octets.json",
+      "work/coverage/pv-ordre-du-jour-lot-0005-octets.json",
+      "work/coverage/pv-ordre-du-jour-lot-0006-octets.json",
+      "work/coverage/pv-ordre-du-jour-lot-0007-octets.json",
+      "work/coverage/pv-capture-octets-classification-20260729-023400Z-0.json",
+      "work/coverage/pv-capture-octets-classification-20260729-023400Z-1.json",
+      "work/coverage/pv-capture-octets-classification-20260729-023401Z-0.json",
+      "work/coverage/pv-capture-octets-classification-20260729-023401Z-1.json",
+      "work/coverage/pv-capture-octets-classification-20260729-023402Z-0.json"
+    ],
+    "scope_correction": "The campaign-only prefix misses the four raw 20260728 runs and five raw 20260729 runs. They are admitted only by passing their complete reports to the same official audit, which joins each report to its S3 manifest; no parallel CAS counter was used."
+  },
+  "campaigns": [
+    {
+      "id": "pv-ordre-du-jour-20260728-01",
+      "registry_prefix": "registry/capture-orchestrators/pv-ordre-du-jour-20260728-01/",
+      "capture_run_prefix": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-",
+      "campaign_state": "halted",
+      "campaign_lot_counts": {
+        "settled": 2,
+        "blocked": 3,
+        "pending": 26
+      },
+      "run_manifests_found": 9,
+      "produced_odj": true,
+      "in_official_union": true
+    },
+    {
+      "id": "pv-ordre-du-jour-20260729-1000-1299",
+      "registry_prefix": "registry/capture-orchestrators/pv-ordre-du-jour-20260729-1000-1299/",
+      "capture_run_prefix": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260729-1000-1299-",
+      "campaign_state": "running",
+      "campaign_lot_counts": {
+        "pending": 6
+      },
+      "run_manifests_found": 0,
+      "produced_odj": false,
+      "in_official_union": false,
+      "reason": "No capture run was present under its campaign prefix at measurement time."
+    },
+    {
+      "id": "pv-control-20260728-02",
+      "registry_prefix": "registry/capture-orchestrators/pv-control-20260728-02/",
+      "capture_run_prefix": "capture/_runs/pv-geo-capture-pv-pv-control-20260728-02-",
+      "campaign_state": "running",
+      "campaign_lot_counts": {
+        "pending": 31
+      },
+      "run_manifests_found": 0,
+      "produced_odj": false,
+      "in_official_union": false,
+      "reason": "Its worklists share the ODJ plan hashes, but no run exists under this campaign prefix."
+    }
+  ],
+  "runs": [
+    {
+      "prefix_s3": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0001-0-9fb510b2-9d60-4235-8d41-2aee4d18e0cb",
+      "campaign": "pv-ordre-du-jour-20260728-01",
+      "terminality": "terminal",
+      "observations": 100,
+      "odj_observations": 100,
+      "durable_observations": 100,
+      "counted_by_audit": true,
+      "classification_report": null
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0001-0-d44e25a0-3970-4b72-92aa-acbb1c35d715",
+      "campaign": "pv-ordre-du-jour-20260728-01",
+      "terminality": "terminal",
+      "observations": 100,
+      "odj_observations": 100,
+      "durable_observations": 100,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-ordre-du-jour-lot-0001-octets.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-449db52a-dd38-489d-8ac0-329c008bc8c6",
+      "campaign": "pv-ordre-du-jour-20260728-01",
+      "terminality": "terminal",
+      "observations": 100,
+      "odj_observations": 100,
+      "durable_observations": 100,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-ordre-du-jour-lot-0002-octets.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0003-0-ddb91e9e-c7ab-4eaf-85a4-bb216e20ed7b",
+      "campaign": "pv-ordre-du-jour-20260728-01",
+      "terminality": "terminal",
+      "observations": 100,
+      "odj_observations": 100,
+      "durable_observations": 100,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-ordre-du-jour-lot-0003-octets.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0002-0-c7887bf3-6b36-4ee2-ab79-b05d22a19cc4",
+      "campaign": "pv-ordre-du-jour-20260728-01",
+      "terminality": "nonterminal",
+      "observations": 11,
+      "odj_observations": 11,
+      "durable_observations": 11,
+      "counted_by_audit": false,
+      "classification_report": null,
+      "excluded_reason": "manifest.jsonl exists but run.json is absent; partial bytes are not a terminal capture receipt"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-900b3bbd-7fc9-4a43-8129-af65f82be351",
+      "campaign": "pv-ordre-du-jour-20260728-01",
+      "terminality": "nonterminal",
+      "observations": 11,
+      "odj_observations": 11,
+      "durable_observations": 11,
+      "counted_by_audit": false,
+      "classification_report": null,
+      "excluded_reason": "manifest.jsonl exists but run.json is absent; partial bytes are not a terminal capture receipt"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0004-0-c145976e-78a1-40ab-838c-645a670b496a",
+      "campaign": "pv-ordre-du-jour-20260728-01",
+      "terminality": "nonterminal",
+      "observations": 14,
+      "odj_observations": 14,
+      "durable_observations": 14,
+      "counted_by_audit": false,
+      "classification_report": null,
+      "excluded_reason": "manifest.jsonl exists but run.json is absent; partial bytes are not a terminal capture receipt"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-8befc677-0bdd-4c18-9264-9f9888294fd6",
+      "campaign": "pv-ordre-du-jour-20260728-01",
+      "terminality": "nonterminal",
+      "observations": 14,
+      "odj_observations": 14,
+      "durable_observations": 14,
+      "counted_by_audit": false,
+      "classification_report": null,
+      "excluded_reason": "manifest.jsonl exists but run.json is absent; partial bytes are not a terminal capture receipt"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-geo-capture-pv-pv-ordre-du-jour-20260728-01-0005-0-ec34afea-ba87-4e28-9dfb-6044c580a475",
+      "campaign": "pv-ordre-du-jour-20260728-01",
+      "terminality": "nonterminal",
+      "observations": 13,
+      "odj_observations": 13,
+      "durable_observations": 13,
+      "counted_by_audit": false,
+      "classification_report": null,
+      "excluded_reason": "manifest.jsonl exists but run.json is absent; partial bytes are not a terminal capture receipt"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-20260728T210706Z-0-4ec88cd8-46fc-42b3-8cf7-448d243d8f15",
+      "campaign": null,
+      "campaign_association": "unbound_by_campaign_prefix",
+      "terminality": "terminal",
+      "observations": 100,
+      "odj_observations": 100,
+      "durable_observations": 100,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-ordre-du-jour-lot-0004-octets.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-20260728T210712Z-0-feec8503-6e77-4524-9330-7d194fb81792",
+      "campaign": null,
+      "campaign_association": "unbound_by_campaign_prefix",
+      "terminality": "terminal",
+      "observations": 100,
+      "odj_observations": 100,
+      "durable_observations": 100,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-ordre-du-jour-lot-0005-octets.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-20260728T210709Z-0-9a9ea072-4f56-4568-9b5a-e9d79031c541",
+      "campaign": null,
+      "campaign_association": "unbound_by_campaign_prefix",
+      "terminality": "terminal",
+      "observations": 100,
+      "odj_observations": 100,
+      "durable_observations": 100,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-ordre-du-jour-lot-0006-octets.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-20260728T210840Z-0-a5a9ae69-0862-4578-9d57-0860a45027b7",
+      "campaign": null,
+      "campaign_association": "unbound_by_campaign_prefix",
+      "terminality": "terminal",
+      "observations": 100,
+      "odj_observations": 100,
+      "durable_observations": 97,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-ordre-du-jour-lot-0007-octets.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-20260729T023400Z-0-6384fb31-33fb-4764-beb6-50e501797832",
+      "campaign": null,
+      "campaign_association": "unbound_by_campaign_prefix",
+      "terminality": "terminal",
+      "observations": 50,
+      "odj_observations": 50,
+      "durable_observations": 49,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-capture-octets-classification-20260729-023400Z-0.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-20260729T023400Z-1-9fe3950c-a810-4d96-bb5a-1e0b15a98eaf",
+      "campaign": null,
+      "campaign_association": "unbound_by_campaign_prefix",
+      "terminality": "terminal",
+      "observations": 50,
+      "odj_observations": 50,
+      "durable_observations": 50,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-capture-octets-classification-20260729-023400Z-1.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-20260729T023401Z-0-10c8ccbc-b5ab-4ebc-9e65-82745fd67188",
+      "campaign": null,
+      "campaign_association": "unbound_by_campaign_prefix",
+      "terminality": "terminal",
+      "observations": 50,
+      "odj_observations": 50,
+      "durable_observations": 50,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-capture-octets-classification-20260729-023401Z-0.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-20260729T023401Z-1-17eb841d-7f8e-404f-9218-caa7adc8eb4a",
+      "campaign": null,
+      "campaign_association": "unbound_by_campaign_prefix",
+      "terminality": "terminal",
+      "observations": 50,
+      "odj_observations": 50,
+      "durable_observations": 50,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-capture-octets-classification-20260729-023401Z-1.json"
+    },
+    {
+      "prefix_s3": "capture/_runs/pv-20260729T023402Z-0-afaaf7c1-31dc-4f31-89a9-85d93ebdb558",
+      "campaign": null,
+      "campaign_association": "unbound_by_campaign_prefix",
+      "terminality": "terminal",
+      "observations": 50,
+      "odj_observations": 50,
+      "durable_observations": 50,
+      "counted_by_audit": true,
+      "classification_report": "work/coverage/pv-capture-octets-classification-20260729-023402Z-0.json"
+    }
+  ],
+  "additional_odj_evidence_not_in_official_union": [
+    {
+      "prefix_s3": "capture/_runs/pv-20260728T165200Z-0-82e799a4-19d2-412b-b2ce-98b93ba2ca9d",
+      "terminality": "terminal",
+      "observations": 100,
+      "odj_observations": 100,
+      "classification_report": "work/coverage/pv-ordre-du-jour-20260728-lot-001-control-classification.json",
+      "report_scope_prefix": "capture/_runs/pv-20260728t165200z-0-82e799a4-19d2-412b-b2ce-98b93ba2ca9d",
+      "admissibility": "unknown",
+      "reason": "The report names a lowercase-t run prefix while the official audit requires the run_id and S3 prefix to match exactly. The audit therefore rejects this report; no parallel recount or report rewrite was performed. Its possible contribution to a full discovered-run CAS union is unknown."
+    }
+  ],
+  "answer": {
+    "confirmed_odj_unique_cas_keys": 656,
+    "confirmed_656_reproducible": true,
+    "confirmed_656_definition": "Official pv-capture-campaign-audit/v1 union with 12 admissible complete classification reports: 7 ODJ reports for the 28 July campaign/raw runs and the 5 complete reports for pv-20260729T0234*; deduplicate on CAS storage_key, require manifest/report equality, and exclude the 5 nonterminal campaign manifests.",
+    "captured_odj_unique_cas_keys": 948,
+    "captured_odj_definition": "Durable unique CAS keys in the same terminally admissible audit union; 946 distinct durable URLs are a different measure and are not substituted for CAS keys.",
+    "comparison_to_3058": "3058 is the planned ODJ population. The requested confirmation KPI is 656/3058; 948/3058 is the separate durable-capture coverage, not a confirmation count.",
+    "full_union_including_malformed_control": "unknown"
+  }
+}
