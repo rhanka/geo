@@ -1,0 +1,1993 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:54:57.408Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 391,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 20,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 20,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 20,
+    "Document": 20,
+    "CouncilSession": 13,
+    "MeetingDate": 13,
+    "Resolution": 33,
+    "Regulation": 21,
+    "LotCadastre": 3,
+    "Zone": 2
+  },
+  "graphify": {
+    "nodes": 125,
+    "edges": 54,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 2,
+    "lot_entities": 3,
+    "documents_with_zone": 2,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "audet",
+      "storage_key": "raw/pv-index/cas/bfa0337fc4b515146bce4258acabdcf7cd8dc360a48eb456c67ea70f0f0e6cac.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4188550",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:624",
+      "quote": "            réseau d’égout privé du propriétaire du lot 4188550;"
+    },
+    {
+      "municipality_slug": "audet",
+      "storage_key": "raw/pv-index/cas/bfa0337fc4b515146bce4258acabdcf7cd8dc360a48eb456c67ea70f0f0e6cac.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4188844",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:651",
+      "quote": "            propriétaire du lot 4 188 844;"
+    },
+    {
+      "municipality_slug": "audet",
+      "storage_key": "raw/pv-index/cas/bfe1766da555f2c2e0df235f08ec74792632cca0dc08f322a671a803474f43b1.pdf",
+      "entity_type": "Zone",
+      "value": "M-1",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:101",
+      "quote": "    récréation extensive à la zone M-1 et des normes relatives aux"
+    },
+    {
+      "municipality_slug": "audet",
+      "storage_key": "raw/pv-index/cas/bfe1766da555f2c2e0df235f08ec74792632cca0dc08f322a671a803474f43b1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4445896",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:713",
+      "quote": "            d’achat pour le lot 4 445 896 d’une superficie d’environ 29 hectares, d’un"
+    },
+    {
+      "municipality_slug": "audet",
+      "storage_key": "raw/pv-index/cas/d38549d0117ca4a5197050718fe5b0e63249b54addcf7426f878f884c09243d4.pdf",
+      "entity_type": "Zone",
+      "value": "RU-6",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1066",
+      "quote": "            permis dans la zone RU-6;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 44,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 759,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z",
+  "documents": [
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=db391eaa-f1ed-40c1-8e3d-bd8eecc3befc",
+      "storage_key": "raw/pv-index/cas/ad3753c38ffb226e0dde73f715aa1ff63d0756319c52401cc8c811d5a67c7b3a.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 5,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 DÉCEMBRE 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "               À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 DÉCEMBRE 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "               LE 6 DÉCEMBRE 2021 À 20h00 ET À LAQUELLE SONT"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-281",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:220",
+              "quote": "            dernier, la résolution numéro 2021-281 a été adopté par le conseil de la"
+            }
+          },
+          {
+            "label": "2016-163",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:322",
+              "quote": "            résolution numéro 2016-163 a été adopté par le conseil de la Municipalité"
+            }
+          },
+          {
+            "label": "2021-278",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:451",
+              "quote": "            la résolution numéro 2021-278 a été adoptée par le conseil relativement"
+            }
+          },
+          {
+            "label": "2021-286",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:595",
+              "quote": "            la résolution numéro 2021-286 a été adoptée par le conseil relativement"
+            }
+          },
+          {
+            "label": "2021-297",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:866",
+              "quote": "            Les résolutions 2021-297 à 2021-323, consignées dans ce procès-verbal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "363",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:695",
+              "quote": "            règlement numéro 363 modifiant le règlement sur la garde et le contrôle"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/11d5a67c7b3a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/11d5a67c7b3a.pdf/.graphify/.graphify_extract.json — 10 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet",
+          "lac-drolet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=d3171cf7-9455-447e-8d96-b628dd066462",
+      "storage_key": "raw/pv-index/cas/ae2b67e4012347e643c0c69558c8e91c98c39eddf84d486bb6722120876f2169.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE CETTE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             MUNICIPALITÉ, TENUE À LA SALLE DU CONSEIL, LUNDI LE 3 MARS 2025 À"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-01-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:595",
+              "quote": "             tenue le 13 janvier dernier par la résolution numéro 2025-01-13 s'est engagé à"
+            }
+          },
+          {
+            "label": "2025-03-48",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:929",
+              "quote": "             Les résolutions 2025-03-48 à 2025-03-74, consignées dans ce procès-verbal, sont"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "383",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "                  6.5 -   Adoption de règlement - Règlement numéro 383 Règlement relatif à la"
+            }
+          },
+          {
+            "label": "384",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:376",
+              "quote": "règlement numéro 384 modifiant le règlement numéro 322 décrétant la création"
+            }
+          },
+          {
+            "label": "322",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:386",
+              "quote": "             présentation d’un règlement numéro 384 modifiant le règlement numéro 322"
+            }
+          },
+          {
+            "label": "264",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:627",
+              "quote": "             CONSIDÉRANT QUE le règlement numéro 264 constituant un comité consultatif"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/2120876f2169.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/2120876f2169.pdf/.graphify/.graphify_extract.json — 10 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=f3c60225-205d-4de0-a603-d8e2c63fd704",
+      "storage_key": "raw/pv-index/cas/af07643f4444e0faeae805340b3421fca0efc1f2807aa97637309ce27ccafb97.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2019-324",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:201",
+              "quote": "            Les résolutions 2019-324 à 2019-327, consignées dans ce procès-verbal,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/9ce27ccafb97.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/9ce27ccafb97.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=da1674ab-2b5d-4860-a77c-09af040f7ba8",
+      "storage_key": "raw/pv-index/cas/b50b8cec1375791310be45ab40f45927044434d97dff385f5a444486dbce8721.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 AVRIL 2011",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 AVRIL 2011",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "             LE 4 AVRIL 2011 À 20h00 ET À LAQUELLE SONT PRÉSENTS LES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2010-32",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:362",
+              "quote": "            la résolution numéro 2010-32 lors de la séance de conseil du 1er février"
+            }
+          },
+          {
+            "label": "2010-271",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:629",
+              "quote": "           résolution numéro 2010-271 lors de la séance de conseil du 6 décembre"
+            }
+          },
+          {
+            "label": "2011-73",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:689",
+              "quote": "           Les résolutions 2011-73 à 2010-95, consignées dans ce procès-verbal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "257",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:154",
+              "quote": "2011- 75           ATTENDU QUE le règlement numéro 257 sous-section 7.5.3"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/4486dbce8721.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/4486dbce8721.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=f933dbe0-9f46-4b85-83d3-5a67ffe62355",
+      "storage_key": "raw/pv-index/cas/b71bc6ef7503f449ab1b72d03262104307a11f801cd69f08c2f473c8223c140b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 AVRIL 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "              À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 AVRIL 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              LE 3 AVRIL 2017 À 20h00 ET À LAQUELLE SONT PRÉSENTS LES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2017-77",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:416",
+              "quote": "            résolution numéro 2017-77 a été adoptée relativement à l’acceptation de"
+            }
+          },
+          {
+            "label": "2017-90",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:648",
+              "quote": "            Les résolutions 2017-90 à 2017-112, consignées dans ce procès-verbal,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/73c8223c140b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/73c8223c140b.pdf/.graphify/.graphify_extract.json — 6 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet",
+          "lac-drolet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=8bf3514d-8f8c-464d-87c4-7a7ffbc52865",
+      "storage_key": "raw/pv-index/cas/b7969797a91c4daeaea29e0b3434dd2500617fff5e8dd589ac62eaecb52cd4a6.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2018-237",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:109",
+              "quote": "\fLes résolutions 2018-237 à 2018-238, consignées dans ce procès-verbal,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/eaecb52cd4a6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/eaecb52cd4a6.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=bbe3230e-4f3c-4653-aef1-62ccd8d9467a",
+      "storage_key": "raw/pv-index/cas/b8ed666381ccad28df5ecd69cc9b389b7638559999f8744c694a8b4dff7fa8b9.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 AOÛT 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "               À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 AOÛT 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               LE 14 AOÛT 2017 À 20h00 ET À LAQUELLE SONT PRÉSENTS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2016-323",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:162",
+              "quote": "            résolution numéro 2016-323, relativement à l’article 148 du Code"
+            }
+          },
+          {
+            "label": "2017-197",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:618",
+              "quote": "\fLes résolutions 2017-197 à 2017-214, consignées dans ce procès-verbal,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/8b4dff7fa8b9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/8b4dff7fa8b9.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=d7e6e50b-fd25-407b-a3c4-88fe4f23d798",
+      "storage_key": "raw/pv-index/cas/b98f56bbfdf6ef968d2fa21e7cc3f98ab42fd178c3882b6ed2930f0ce7e4eff7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 MAI 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "              À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 MAI 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              LE 4 MAI 2009 À 20h00 ET À LAQUELLE SONT PRÉSENTS LES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2009-97",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:746",
+              "quote": "Les résolutions 2009-97 à 2009-116, consignées dans ce procès-verbal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "273",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "8. Avis de motion de modification du règlement no 273 pour déterminer"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/0f0ce7e4eff7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/0f0ce7e4eff7.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=9f980a00-b703-4e05-bcd5-88d71c07624f",
+      "storage_key": "raw/pv-index/cas/ba3d6f315c5f288c3cb6e112678de2df592cf124fcd962fffdf377da2c48b694.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 AVRIL 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                 À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 AVRIL 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                 LE 4 AVRIL 2022 À 20h00 ET À LAQUELLE SONT PRÉSENTS LES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-317",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:733",
+              "quote": "              compteurs d'eau intelligents, par la résolution numéro 2021-317 adoptée"
+            }
+          },
+          {
+            "label": "2022-04-125",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:827",
+              "quote": "              bâtiment par la résolution numéro 2022-04-125;"
+            }
+          },
+          {
+            "label": "2022-03-94",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1082",
+              "quote": "              résolution numéro 2022-03-94 a été adoptée par le conseil de la"
+            }
+          },
+          {
+            "label": "2022-04-103",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1475",
+              "quote": "              Les résolutions 2022-04-103 à 2022-04-146, consignées dans ce procès-"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "367",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "31. Avis de motion et présentation - Règlement no 367 modifiant le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/77da2c48b694.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/77da2c48b694.pdf/.graphify/.graphify_extract.json — 9 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet",
+          "frontenac",
+          "lac-drolet",
+          "piopolis"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=deb7d4d6-dbc3-4bbb-9db6-bab35beaa7ca",
+      "storage_key": "raw/pv-index/cas/bc3a30c8d1743b4f78d42ecc0e7251d13cd90c6e7139fac92b70becd5dfa20e1.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2014-263",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "            Les résolutions 2014-263 à 2014-265, consignées dans ce procès-verbal,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/becd5dfa20e1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/becd5dfa20e1.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=a37d47c1-e89d-44fb-8962-26cb08124a45",
+      "storage_key": "raw/pv-index/cas/be2521a04edbc318140b3feb45740601b99dcd765f657416dc2bb01ee56a4e34.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 DÉCEMBRE 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "               À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 DÉCEMBRE 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               LE 2 DÉCEMBRE 2019 À 20h00 ET À LAQUELLE SONT"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2019-299",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:727",
+              "quote": "            Les résolutions 2019-299 à 2019-323, consignées dans ce procès-verbal,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/b01ee56a4e34.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/b01ee56a4e34.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=b9e81b3e-e83d-4855-9c0c-8400cf6c9b88",
+      "storage_key": "raw/pv-index/cas/bf9b00d68dbe3e7ce7c49b0e0c0e5a574b13ec9ab80347e8f3c1d3b669de8a8f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2020-229",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:221",
+              "quote": "\fLes résolutions 2020-229 à 2020-234, consignées dans ce procès-verbal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "358",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "            4. Adoption de règlement - Règlement numéro 358 décrétant une"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/d3b669de8a8f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/d3b669de8a8f.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=e33244a8-20d8-4268-9541-8f9b32d6edfb",
+      "storage_key": "raw/pv-index/cas/bfa0337fc4b515146bce4258acabdcf7cd8dc360a48eb456c67ea70f0f0e6cac.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 5,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 NOVEMBRE 2012",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "               À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 NOVEMBRE 2012",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               LE 5 NOVEMBRE 2012 À 20h00 ET À LAQUELLE SONT"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2012-284",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:877",
+              "quote": "            Les résolutions 2012-284 à 2012-315, consignées dans ce procès-verbal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "309",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "16. Adoption du règlement no 309 modifiant les règlements 306 intitulés"
+            }
+          },
+          {
+            "label": "307",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "    Mégantic et le règlement 307 sur les nuisances afin d’en modifier les"
+            }
+          },
+          {
+            "label": "306",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:371",
+              "quote": "            ATTENDU QUE le 13 août 2012 le règlement no 306 autorisant la"
+            }
+          },
+          {
+            "label": "310",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:401",
+              "quote": "                   Ville de Lac-Mégantic par le titre suivant Règlement no 310"
+            }
+          },
+          {
+            "label": "311",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:406",
+              "quote": "                   Règlement no 311 sur les nuisances."
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4188550",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:624",
+              "quote": "            réseau d’égout privé du propriétaire du lot 4188550;"
+            }
+          },
+          {
+            "label": "4188844",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:651",
+              "quote": "            propriétaire du lot 4 188 844;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/a70f0f0e6cac.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/a70f0f0e6cac.pdf/.graphify/.graphify_extract.json — 12 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet",
+          "frontenac",
+          "lac-megantic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=fe7df303-3814-4c67-9618-b6391da89156",
+      "storage_key": "raw/pv-index/cas/bfe1766da555f2c2e0df235f08ec74792632cca0dc08f322a671a803474f43b1.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 2,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 JUILLET 2014",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "               À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 JUILLET 2014",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               LE 7 JUILLET 2014 À 20h05 ET À LAQUELLE SONT PRÉSENTS"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2014-190",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:967",
+              "quote": "            Les résolutions 2014-190 à 2014-219, consignées dans ce procès-verbal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "319",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:91",
+              "quote": "23. Adoption du Règlement numéro 319 concernant l’obligation d’installer"
+            }
+          },
+          {
+            "label": "320",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:99",
+              "quote": "27. Adoption : Projet de règlement no 320 modifiant le règlement de"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "M-1",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "    récréation extensive à la zone M-1 et des normes relatives aux"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4445896",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:713",
+              "quote": "            d’achat pour le lot 4 445 896 d’une superficie d’environ 29 hectares, d’un"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/a803474f43b1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/a803474f43b1.pdf/.graphify/.graphify_extract.json — 9 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet",
+          "saint-georges"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=ea0ab6b9-898b-4b4e-8884-687c40a32b76",
+      "storage_key": "raw/pv-index/cas/c2bb3949e1f47eddfb940fe94c8d8e3c4e0ffb21213cffd694188779eae8d669.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 AOÛT 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "               À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 AOÛT 2009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               LE 3 AOÛT 2009 À 20h00 ET À LAQUELLE SONT PRÉSENTS LES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2009-155",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:724",
+              "quote": "\fLes résolutions 2009-155 à 2009-178, consignées dans ce procès-verbal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "278",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:396",
+              "quote": "  2009-166           ATTENDU QUE suite à l’adoption du règlement no 278"
+            }
+          },
+          {
+            "label": "279",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:426",
+              "quote": "           établissant un service de sécurité incendie et le règlement no 279"
+            }
+          },
+          {
+            "label": "280",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:462",
+              "quote": "                                       Règlement no 280"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/8779eae8d669.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/8779eae8d669.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet",
+          "lac-drolet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=b77e0bdb-acb5-42c8-8fb0-dab62254a2f8",
+      "storage_key": "raw/pv-index/cas/c99fe03c90f5c0dec68eb94db2f63c98bd4a68ef183d4e90effb442b0feee343.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2011-312",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:202",
+              "quote": "             Les résolutions 2011-312 à 2011-315, consignées dans ce procès-verbal,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/442b0feee343.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/442b0feee343.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=df0a45f9-26b6-4b69-a7cc-a4e3246db19a",
+      "storage_key": "raw/pv-index/cas/ccc647a804bd6d603c52c0d394baa617dd0b3629d34754121bc38bd02c33aff6.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2018-302",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:200",
+              "quote": "            Les résolutions 2018-302 à 2018-305, consignées dans ce procès-verbal,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/8bd02c33aff6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/8bd02c33aff6.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=88a5a138-4caa-46ce-a866-9d8bf4633520",
+      "storage_key": "raw/pv-index/cas/cf57f38fc3ca7e9b971663ce2c63d16542a1925c74046de43b2faf86b96ccf7f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1 MAI 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "              À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE CETTE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1 MAI 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "              MUNICIPALITÉ, TENUE À LA SALLE DU CONSEIL, LUNDI LE 1 MAI 2023 À 20h00"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-05-112",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:717",
+              "quote": "              Les résolutions 2023-05-112 à 2023-05-134, consignées dans ce procès-verbal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "373",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:224",
+              "quote": "              règlement numéro 373 décrétant les règles de contrôle et de suivi budgétaire est"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/af86b96ccf7f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/af86b96ccf7f.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet",
+          "lac-drolet",
+          "lac-megantic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=f0c459d2-aa49-4d83-b9da-94f8cf9b2be2",
+      "storage_key": "raw/pv-index/cas/d24c58471a393e22da1d6f99c0b22ed2dfc073daa920de0c05605459f35ed04f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-255",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "            résolution numéro 2021-255 a été adoptée relativement à l’achat et"
+            }
+          },
+          {
+            "label": "2021-271",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "            Les résolutions 2021-271 à 2021-273, consignées dans ce procès-verbal,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/5459f35ed04f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/5459f35ed04f.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "audet",
+      "municipality_name": "Audet",
+      "url": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=fd0c36d9-885c-422d-b85f-1a9421c6579c",
+      "storage_key": "raw/pv-index/cas/d38549d0117ca4a5197050718fe5b0e63249b54addcf7426f878f884c09243d4.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Audet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 NOVEMBRE 2011",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "               À LA SÉANCE ORDINAIRE ET RÉGULIÈRE DU CONSEIL DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 NOVEMBRE 2011",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "               LE 7 NOVEMBRE 2011 À 20h00 ET À LAQUELLE SONT"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2011-255",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1245",
+              "quote": "\fLes résolutions 2011-255 à 2011-288, consignées dans ce procès-verbal,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "235",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "23. Avis de motion – Règlement pour abroger le règlement no 235, relatif"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "RU-6",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1066",
+              "quote": "            permis dans la zone RU-6;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/f884c09243d4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045155Z/audet/f884c09243d4.pdf/.graphify/.graphify_extract.json — 7 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "audet",
+          "lac-megantic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

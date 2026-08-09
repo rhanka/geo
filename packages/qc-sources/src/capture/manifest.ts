@@ -198,15 +198,23 @@ export function assertCaptureWritableKey(key: string): void {
  * sha256 du NOM ne correspond pas au sha256 des OCTETS est un bug, pas une donnée.
  * Pendant exact de `isServedZoneKey` côté zonage servi.
  */
-export function assertCasKeyMatchesBytes(key: string, body: Uint8Array): void {
+export function assertCasKeyMatchesSha256(key: string, sha256: string): void {
   const m = CAS_KEY_RE.exec(key);
   if (!m) throw new Error(`clé CAS malformée (attendu raw/<source>/cas/<sha256>.<ext>) : ${key}`);
-  const actual = sha256Hex(body);
-  if (actual !== m[2]) {
+  if (!/^[a-f0-9]{64}$/.test(sha256) || sha256 !== m[2]) {
     throw new Error(
-      `clé CAS mensongère : ${key} annonce ${m[2]} mais les octets valent ${actual} — écriture refusée`,
+      `clé CAS mensongère : ${key} annonce ${m[2]} mais les octets valent ${sha256} — écriture refusée`,
     );
   }
+}
+
+/**
+ * Vérifie la même invariance CAS quand les octets sont déjà disponibles. Le
+ * chemin streaming appelle `assertCasKeyMatchesSha256` avec le digest calculé
+ * sur les mêmes chunks avant leur dépôt, sans re-matérialiser le document.
+ */
+export function assertCasKeyMatchesBytes(key: string, body: Uint8Array): void {
+  assertCasKeyMatchesSha256(key, sha256Hex(body));
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

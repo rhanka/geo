@@ -44,6 +44,12 @@
  *   npx tsx acquisition/src/_lot-zone-refold-batch.ts \
  *     --slugs-file work/coverage/_refold-batch-slugs.txt \
  *     --out work/coverage/_refold-batch-progress.json
+ *
+ *   # Matérialiser des normes déjà pliées : ne pas pré-juger la géométrie,
+ *   # mais révoquer sur toute perte absolue mesurée :
+ *   npx tsx acquisition/src/_lot-zone-refold-batch.ts \
+ *     --slugs arundel --simplify-zones-m 0 --allow-geometry-suspect \
+ *     --out work/coverage/immo-bprime-normes-lots-rematerialization-20260726.json
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -53,7 +59,7 @@ import { fileURLToPath } from "node:url";
 import type { S3Client } from "@aws-sdk/client-s3";
 
 import { auditCity, type CityReport } from "./lot-zone-consistency-audit.js";
-import { exists, s3Client } from "./lib/s3.js";
+import { exists, getJson, s3Client } from "./lib/s3.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ACQ_DIR = join(HERE, ".."); // acquisition/ — cwd pour npx tsx (résout node_modules/.bin/tsx local)
@@ -85,13 +91,22 @@ class BatchAbortError extends Error {
 interface Args {
   slugs: string[];
   simplifyZonesM: number;
+  /** Materialisation de normes : laisse la garde de compteurs décider du rollback. */
+  allowGeometrySuspect: boolean;
+  /** Évite les audits géométriques hors périmètre quand seuls les compteurs Immo sont requis. */
+  metricsOnly: boolean;
   out: string;
 }
 
 function parseArgs(argv: string[]): Args {
   const slugs: string[] = [];
   let slugsFile: string | null = null;
-  let simplifyZonesM = 1;
+  // La simplification peut déplacer une frontière et faire perdre de vrais
+  // lots. Le re-fold de matérialisation doit donc reprendre la géométrie servie
+  // à l'identique; l'opt-in explicite reste disponible pour les diagnostics.
+  let simplifyZonesM = 0;
+  let allowGeometrySuspect = false;
+  let metricsOnly = false;
   let out = "";
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
@@ -104,6 +119,8 @@ function parseArgs(argv: string[]): Args {
       );
     } else if (a === "--slugs-file") slugsFile = String(argv[++i] ?? "");
     else if (a === "--simplify-zones-m") simplifyZonesM = Math.max(0, Number(argv[++i] ?? "1") || 0);
+    else if (a === "--allow-geometry-suspect") allowGeometrySuspect = true;
+    else if (a === "--metrics-only") metricsOnly = true;
     else if (a === "--out") out = String(argv[++i] ?? "");
     else throw new Error(`unknown argument: ${a}`);
   }
@@ -116,7 +133,7 @@ function parseArgs(argv: string[]): Args {
   const uniqueSlugs = [...new Set(slugs)];
   if (uniqueSlugs.length === 0) throw new Error("pass --slugs a,b,c and/or --slugs-file <path>");
   if (!out) throw new Error("--out <path> required (resume-safe progress journal)");
-  return { slugs: uniqueSlugs, simplifyZonesM, out };
+  return { slugs: uniqueSlugs, simplifyZonesM, allowGeometrySuspect, metricsOnly, out };
 }
 
 // ── journal (resume-safe) ────────────────────────────────────────────────────
@@ -132,6 +149,19 @@ interface AuditSnapshot {
   note?: string;
 }
 
+/**
+ * Compteurs absolus du produit qc-lots réellement servi.  Ils viennent du
+ * fichier stats écrit dans la même transaction que le GeoJSON par
+ * lots-enriched-run; ils sont donc la mesure contractuelle du KPI Immo, pas un
+ * pourcentage dont le dénominateur pourrait se rétrécir.
+ */
+interface LotMetrics {
+  stats_key: string;
+  num_lots: number;
+  num_with_norms: number;
+  num_with_code_zone: number;
+}
+
 interface JournalEntry {
   slug: string;
   deposited: boolean;
@@ -142,6 +172,14 @@ interface JournalEntry {
   mirror: "mirrored" | "flat-only" | null;
   join_summary: string | null;
   enrich_summary: string | null;
+  lot_metrics_before: LotMetrics | null;
+  /** Mesure du candidat, avant un éventuel rollback. */
+  lot_metrics_after: LotMetrics | null;
+  /** Surface effectivement servie à la fin (égale à before après rollback). */
+  lot_metrics_final: LotMetrics | null;
+  complete_before: boolean;
+  complete_after: boolean;
+  complete_final: boolean;
   started_at: string;
   finished_at: string;
 }
@@ -187,6 +225,50 @@ function saveJournal(path: string, map: Map<string, JournalEntry>, simplifyZones
     entries: [...map.values()],
   };
   writeFileSync(path, JSON.stringify(file, null, 2) + "\n", "utf8");
+}
+
+function isComplete(metrics: LotMetrics | null): boolean {
+  // Un zéro porteur est inconnu, jamais "complete" par vacuité.
+  return metrics !== null && metrics.num_with_norms > 0 && metrics.num_with_norms === metrics.num_lots;
+}
+
+/**
+ * geo-api préfère le sous-dossier lorsqu'il existe.  Lire cette stats en
+ * priorité garantit que la mesure avant/après vise bien le produit consommé;
+ * le runner miroir le rend identique au plat après dépôt.
+ */
+async function readLotMetrics(s3: S3Client, slug: string): Promise<LotMetrics | null> {
+  const keys = [
+    `normalized/qc-lots/qc-lots-${slug}/qc-lots-${slug}.stats.json`,
+    `normalized/qc-lots/qc-lots-${slug}.stats.json`,
+  ];
+  for (const key of keys) {
+    if (!(await exists(s3, key))) continue;
+    const raw = await getJson(s3, key) as Record<string, unknown>;
+    const numLots = raw["num_lots"];
+    const withNorms = raw["num_with_norms"];
+    const withCode = raw["num_with_zone_code"];
+    if (
+      typeof numLots !== "number" || !Number.isFinite(numLots) ||
+      typeof withNorms !== "number" || !Number.isFinite(withNorms) ||
+      typeof withCode !== "number" || !Number.isFinite(withCode)
+    ) {
+      throw new Error(`${slug}: stats qc-lots invalides (${key})`);
+    }
+    return { stats_key: key, num_lots: numLots, num_with_norms: withNorms, num_with_code_zone: withCode };
+  }
+  return null;
+}
+
+function regressionReason(before: LotMetrics, after: LotMetrics): string | null {
+  const losses: string[] = [];
+  if (after.num_with_norms < before.num_with_norms) {
+    losses.push(`normes ${before.num_with_norms}->${after.num_with_norms}`);
+  }
+  if (after.num_with_code_zone < before.num_with_code_zone) {
+    losses.push(`code_zone ${before.num_with_code_zone}->${after.num_with_code_zone}`);
+  }
+  return losses.length ? losses.join(", ") : null;
 }
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -287,9 +369,11 @@ async function processSlug(
 ): Promise<void> {
   const startedAt = new Date().toISOString();
   let before: CityReport | null = null;
+  let metricsBefore: LotMetrics | null = null;
+  let metricsAfter: LotMetrics | null = null;
   let ts: string | null = null;
 
-  const finalizeSkip = (reason: string): void => {
+  const finalizeSkip = (reason: string, finalMetrics: LotMetrics | null = metricsBefore): void => {
     const entry: JournalEntry = {
       slug,
       deposited: false,
@@ -300,6 +384,12 @@ async function processSlug(
       mirror: null,
       join_summary: null,
       enrich_summary: null,
+      lot_metrics_before: metricsBefore,
+      lot_metrics_after: metricsAfter,
+      lot_metrics_final: finalMetrics,
+      complete_before: isComplete(metricsBefore),
+      complete_after: isComplete(metricsAfter),
+      complete_final: isComplete(finalMetrics),
       started_at: startedAt,
       finished_at: new Date().toISOString(),
     };
@@ -309,24 +399,39 @@ async function processSlug(
   };
 
   try {
-    before = await withRetry(`audit-before ${slug}`, () => auditCity(s3, slug, EXAMPLE_LIMIT));
-    if (before.note) {
-      finalizeSkip(`not-served: ${before.note}`);
+    if (!args.metricsOnly) {
+      before = await withRetry(`audit-before ${slug}`, () => auditCity(s3, slug, EXAMPLE_LIMIT));
+      if (before.note) {
+        finalizeSkip(`not-served: ${before.note}`);
+        return;
+      }
+    }
+    metricsBefore = await withRetry(`metrics-before ${slug}`, () => readLotMetrics(s3, slug));
+    if (!metricsBefore) {
+      finalizeSkip("metrics-unavailable: qc-lots stats absent; ne pas écraser sans mesure absolue", null);
       return;
     }
 
-    const mismatchTotal = before.misassigned + before.outside_all;
-    if (mismatchTotal > 0 && before.outside_all / mismatchTotal > OUTSIDE_ALL_SKIP_FRACTION) {
+    const mismatchTotal = (before?.misassigned ?? 0) + (before?.outside_all ?? 0);
+    if (before && !args.allowGeometrySuspect && mismatchTotal > 0 && before.outside_all / mismatchTotal > OUTSIDE_ALL_SKIP_FRACTION) {
       finalizeSkip(
         `geometry-suspect (outside_all=${before.outside_all}/${mismatchTotal} mismatch, ` +
           `mismatch_pct=${before.mismatch_pct}%) — ne dépose pas`,
       );
       return;
     }
-    console.log(
-      `[refold-batch] ${slug}: audit-before lots=${before.lots} assigned=${before.assigned} ` +
-        `mismatch=${before.mismatch_pct}% (misassigned=${before.misassigned} outside_all=${before.outside_all} unassigned=${before.unassigned})`,
-    );
+    if (before && args.allowGeometrySuspect && mismatchTotal > 0 && before.outside_all / mismatchTotal > OUTSIDE_ALL_SKIP_FRACTION) {
+      console.log(
+        `[refold-batch] ${slug}: geometry-suspect admis pour matérialisation; ` +
+          `la garde des compteurs absolus décidera du rollback`,
+      );
+    }
+    if (before) {
+      console.log(
+        `[refold-batch] ${slug}: audit-before lots=${before.lots} assigned=${before.assigned} ` +
+          `mismatch=${before.mismatch_pct}% (misassigned=${before.misassigned} outside_all=${before.outside_all} unassigned=${before.unassigned})`,
+      );
+    }
 
     ts = stamp();
     runChildSync("backup", S3_HELPER, ["--slug", slug, "--mode", "backup", "--ts", ts]);
@@ -339,8 +444,11 @@ async function processSlug(
     const joinSummary = firstLineStartingWith(joinOut, `OK ${slug} `);
     console.log(`[refold-batch] ${slug}: lot-zone-join ${joinSummary ?? "ok (pas de ligne OK trouvée)"}`);
 
+    const enrichArgs = args.metricsOnly
+      ? ["--slugs", slug, "--no-role", "--no-fsa", "--preserve-existing-optional-attrs"]
+      : ["--slugs", slug];
     const enrichOut = await withRetry(`lots-enriched ${slug}`, () =>
-      runChildSync("lots-enriched", ENRICH_RUN, ["--slugs", slug]),
+      runChildSync("lots-enriched", ENRICH_RUN, enrichArgs),
     );
     checkForSkip(enrichOut, slug, "lots-enriched");
     const enrichSummary = firstLineStartingWith(enrichOut, `OK ${slug} `);
@@ -355,28 +463,79 @@ async function processSlug(
     }
     console.log(`[refold-batch] ${slug}: mirror=${mirror}`);
 
-    const after = await withRetry(`audit-after ${slug}`, () => auditCity(s3, slug, EXAMPLE_LIMIT));
-    console.log(
-      `[refold-batch] ${slug}: audit-after mismatch=${after.mismatch_pct}% ` +
-        `(misassigned=${after.misassigned} outside_all=${after.outside_all} unassigned=${after.unassigned})`,
-    );
+    const after = args.metricsOnly ? null : await withRetry(`audit-after ${slug}`, () => auditCity(s3, slug, EXAMPLE_LIMIT));
+    metricsAfter = await withRetry(`metrics-after ${slug}`, () => readLotMetrics(s3, slug));
+    if (!metricsAfter) {
+      throw new Error(`${slug}: stats qc-lots absentes après dépôt`);
+    }
+    if (after) {
+      console.log(
+        `[refold-batch] ${slug}: audit-after mismatch=${after.mismatch_pct}% ` +
+          `(misassigned=${after.misassigned} outside_all=${after.outside_all} unassigned=${after.unassigned})`,
+      );
+    }
+
+    const regression = regressionReason(metricsBefore, metricsAfter);
+    if (regression) {
+      console.error(`[refold-batch] ${slug}: ROLLBACK requis — perte absolue ${regression}`);
+      await withRetry(`rollback ${slug}`, () => runChildSync("rollback", S3_HELPER, ["--slug", slug, "--mode", "restore", "--ts", ts!]));
+      const restored = await withRetry(`metrics-restored ${slug}`, () => readLotMetrics(s3, slug));
+      if (!restored || regressionReason(metricsBefore, restored) || regressionReason(restored, metricsBefore)) {
+        throw new Error(
+          `${slug}: rollback non vérifié (avant=${JSON.stringify(metricsBefore)} final=${JSON.stringify(restored)})`,
+        );
+      }
+      const entry: JournalEntry = {
+        slug,
+        deposited: false,
+        skipped_reason: `REVOKED: perte absolue ${regression}`,
+        before: before ? trimReport(before) : null,
+        after: after ? trimReport(after) : null,
+        backup_ts: ts,
+        mirror,
+        join_summary: joinSummary,
+        enrich_summary: enrichSummary,
+        lot_metrics_before: metricsBefore,
+        lot_metrics_after: metricsAfter,
+        lot_metrics_final: restored,
+        complete_before: isComplete(metricsBefore),
+        complete_after: isComplete(metricsAfter),
+        complete_final: isComplete(restored),
+        started_at: startedAt,
+        finished_at: new Date().toISOString(),
+      };
+      journalMap.set(slug, entry);
+      saveJournal(args.out, journalMap, args.simplifyZonesM);
+      console.log(`REVOKED ${slug}: ${regression}`);
+      return;
+    }
 
     const entry: JournalEntry = {
       slug,
       deposited: true,
       skipped_reason: null,
-      before: trimReport(before),
-      after: trimReport(after),
+      before: before ? trimReport(before) : null,
+      after: after ? trimReport(after) : null,
       backup_ts: ts,
       mirror,
       join_summary: joinSummary,
       enrich_summary: enrichSummary,
+      lot_metrics_before: metricsBefore,
+      lot_metrics_after: metricsAfter,
+      lot_metrics_final: metricsAfter,
+      complete_before: isComplete(metricsBefore),
+      complete_after: isComplete(metricsAfter),
+      complete_final: isComplete(metricsAfter),
       started_at: startedAt,
       finished_at: new Date().toISOString(),
     };
     journalMap.set(slug, entry);
     saveJournal(args.out, journalMap, args.simplifyZonesM);
-    console.log(`OK ${slug}: mismatch ${before.mismatch_pct}% -> ${after.mismatch_pct}% (deposited=true)`);
+    console.log(
+      `OK ${slug}: ` +
+        (before && after ? `mismatch ${before.mismatch_pct}% -> ${after.mismatch_pct}% ` : "métriques absolues vérifiées ") +
+        "(deposited=true)",
+    );
   } catch (e) {
     if (e instanceof ExhaustedTimeoutError) {
       const entry: JournalEntry = {
@@ -389,6 +548,12 @@ async function processSlug(
         mirror: null,
         join_summary: null,
         enrich_summary: null,
+        lot_metrics_before: metricsBefore,
+        lot_metrics_after: metricsAfter,
+        lot_metrics_final: metricsBefore,
+        complete_before: isComplete(metricsBefore),
+        complete_after: isComplete(metricsAfter),
+        complete_final: isComplete(metricsBefore),
         started_at: startedAt,
         finished_at: new Date().toISOString(),
       };
@@ -411,8 +576,8 @@ async function main(): Promise<void> {
   const pending = args.slugs.filter((s) => journalMap.get(s)?.deposited !== true);
   if (already.length) console.log(`RESUME: ${already.length} déjà deposited=true, sautées: ${already.join(", ")}`);
   console.log(
-    `[refold-batch] slugs=${args.slugs.length} pending=${pending.length} ` +
-      `simplify_zones_m=${args.simplifyZonesM} out=${args.out}`,
+      `[refold-batch] slugs=${args.slugs.length} pending=${pending.length} ` +
+      `simplify_zones_m=${args.simplifyZonesM} allow_geometry_suspect=${args.allowGeometrySuspect} metrics_only=${args.metricsOnly} out=${args.out}`,
   );
 
   const doneThisRun: string[] = [];
