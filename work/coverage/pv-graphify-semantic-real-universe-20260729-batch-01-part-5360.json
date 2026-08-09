@@ -1,0 +1,1716 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:59:22.044Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5360,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 16,
+    "failed_pvs": 4,
+    "outcomes": {
+      "INDEXED": 16,
+      "OWNER_NOT_CONFIRMED": 4,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 16,
+    "Document": 16,
+    "CouncilSession": 3,
+    "MeetingDate": 3,
+    "Regulation": 58,
+    "Zone": 3,
+    "LotCadastre": 4
+  },
+  "graphify": {
+    "nodes": 103,
+    "edges": 25,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 3,
+    "lot_entities": 4,
+    "documents_with_zone": 2,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "mont-laurier",
+      "storage_key": "raw/pv-index/cas/ebb42e421d0f65f3d334032d8b9ed9bb9283270bb06fbc1db00e95cf6ab40558.pdf",
+      "entity_type": "Zone",
+      "value": "H-456",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:84",
+      "quote": "       représentée par monsieur Vincent Fontaine, dans la zone H-456"
+    },
+    {
+      "municipality_slug": "mont-laurier",
+      "storage_key": "raw/pv-index/cas/ebb42e421d0f65f3d334032d8b9ed9bb9283270bb06fbc1db00e95cf6ab40558.pdf",
+      "entity_type": "Zone",
+      "value": "H-616",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:98",
+      "quote": "       Alexandre De Tonnancour dans la zone H-616"
+    },
+    {
+      "municipality_slug": "mont-tremblant",
+      "storage_key": "raw/pv-index/cas/047545b983583e13f35b50354626e893500de2ce66b6d23a6a70b5674abdbcd1.pdf",
+      "entity_type": "Zone",
+      "value": "PI-318",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:109",
+      "quote": "    8.10 Demande de modification règlementaire - déplacement limite de la zone PI-318 - chemin de Brébeuf"
+    },
+    {
+      "municipality_slug": "mont-tremblant",
+      "storage_key": "raw/pv-index/cas/047545b983583e13f35b50354626e893500de2ce66b6d23a6a70b5674abdbcd1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4474664",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:67",
+      "quote": "\f           8.2.2 Demande 2025-DM-206 - écran végétal - allée Robert - lot 4 474 664"
+    },
+    {
+      "municipality_slug": "mont-tremblant",
+      "storage_key": "raw/pv-index/cas/047545b983583e13f35b50354626e893500de2ce66b6d23a6a70b5674abdbcd1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3278147",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:74",
+      "quote": "           8.2.5 Demande 2025-DM-245 - aménagement de terrain et implantation - rue Beattie - lot 3 278 147"
+    },
+    {
+      "municipality_slug": "mont-tremblant",
+      "storage_key": "raw/pv-index/cas/047545b983583e13f35b50354626e893500de2ce66b6d23a6a70b5674abdbcd1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4177882",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:92",
+      "quote": "                 lots 4 177 882 et 6 504 194"
+    },
+    {
+      "municipality_slug": "mont-tremblant",
+      "storage_key": "raw/pv-index/cas/047545b983583e13f35b50354626e893500de2ce66b6d23a6a70b5674abdbcd1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4650077",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:95",
+      "quote": "           8.4.2 Étude plan image - 2025-183 - projet intégré - 7e rang - lot 4 650 077"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 950,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 18585,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z",
+  "documents": [
+    {
+      "slug": "mont-laurier",
+      "municipality_name": "Mont-Laurier",
+      "url": "https://www.villemontlaurier.qc.ca/storage/app/media/2026-02-09%20-%20Ordre%20du%20jour%20S%C3%A9ance%20Ville.pdf",
+      "storage_key": "raw/pv-index/cas/dc56547d3998f3eb250d9aa709bc662ef3a5668f0c1c1005c80519a9b06a9b69.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-laurier/19a9b06a9b69.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-laurier/19a9b06a9b69.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-laurier",
+      "municipality_name": "Mont-Laurier",
+      "url": "https://www.villemontlaurier.qc.ca/storage/app/media/Ordre%20du%20jour/2026-03-30%20-%20Ordre%20du%20jour%20S%C3%A9ance%20Ville%20Extra.pdf",
+      "storage_key": "raw/pv-index/cas/dec1efaec8bb369896f2105756fb9c8fae2991c146188e492da23a3d67271adf.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Laurier",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "AVIS vous est donné, par la soussignée, Stéphanie Lelièvre, greffière de la Ville de Mont-"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "AVIS vous est donné, par la soussignée, Stéphanie Lelièvre, greffière de la Ville de Mont-"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 30 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "Laurier, qu’une séance extraordinaire du conseil municipal de cette ville est convoquée,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "30 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "par monsieur le maire Daniel Bourdon, pour être tenue le 30 mars 2026 à 17 h 35, à la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "5-27",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": " 5.1      Adoption du règlement numéro 5-27 relatif à la régie, l'administration et la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-laurier/3a3d67271adf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-laurier/3a3d67271adf.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-laurier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-laurier",
+      "municipality_name": "Mont-Laurier",
+      "url": "https://www.villemontlaurier.qc.ca/storage/app/media/Ordre%20du%20jour/2026-04-27%20-%20Ordre%20du%20jour%20S%C3%A9ance%20Ville.pdf",
+      "storage_key": "raw/pv-index/cas/ebb42e421d0f65f3d334032d8b9ed9bb9283270bb06fbc1db00e95cf6ab40558.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 7,
+        "Zone": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Laurier",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": " 5.2      Adoption du règlement numéro 446 relatif au Code d'éthique et de déontologie"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": " 5.2      Adoption du règlement numéro 446 relatif au Code d'éthique et de déontologie"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "446",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": " 5.2      Adoption du règlement numéro 446 relatif au Code d'éthique et de déontologie"
+            }
+          },
+          {
+            "label": "24-7",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:103",
+              "quote": "9.9    Adoption du projet de règlement numéro 24-7 relatif aux dérogations mineures"
+            }
+          },
+          {
+            "label": "134-94",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:111",
+              "quote": "9.12   Adoption du premier projet de règlement numéro 134-94 relatif au zonage de"
+            }
+          },
+          {
+            "label": "135-14",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:117",
+              "quote": "9.14   Adoption du projet de règlement numéro 135-14 relatif au lotissement"
+            }
+          },
+          {
+            "label": "136-5",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:121",
+              "quote": "\f9.16    Adoption du projet de règlement numéro 136-5 relatif à la construction"
+            }
+          },
+          {
+            "label": "137-9",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:126",
+              "quote": "9.18    Adoption du projet de règlement numéro 137-9 relatif aux plans d'implantation"
+            }
+          },
+          {
+            "label": "131-17",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "9.20    Adoption du projet de règlement numéro 131-17 relatif au plan d'urbanisme"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "H-456",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:84",
+              "quote": "       représentée par monsieur Vincent Fontaine, dans la zone H-456"
+            }
+          },
+          {
+            "label": "H-616",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "       Alexandre De Tonnancour dans la zone H-616"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-laurier/95cf6ab40558.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-laurier/95cf6ab40558.pdf/.graphify/.graphify_extract.json — 11 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-laurier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-laurier",
+      "municipality_name": "Mont-Laurier",
+      "url": "https://www.villemontlaurier.qc.ca/storage/app/media/Ordre%20du%20jour/2026-04-13%20-%20Ordre%20du%20jour%20S%C3%A9ance%20Agglo.pdf",
+      "storage_key": "raw/pv-index/cas/f5e5f364a1da0654b03a2f25b5dd89ac8cb3b76f663b27cceda115428003a625.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Laurier",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "AVIS vous est donné, par la soussignée Stéphanie Lelièvre, greffière de la Ville de Mont-"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "AVIS vous est donné, par la soussignée Stéphanie Lelièvre, greffière de la Ville de Mont-"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Laurier, qu’une séance ordinaire du conseil d'agglomération de Mont-Laurier est"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "convoquée pour être tenue le 13 avril 2026 à 18 h 00, à la salle du conseil de l’hôtel de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-laurier/15428003a625.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-laurier/15428003a625.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-laurier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-2026-02-17-web-et-reglements.pdf",
+      "storage_key": "raw/pv-index/cas/022ac475bc85c9d7436dad0d1c249cf0a41705d5b2af5bfc1d8753db52e61f91.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 15
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1384-51",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "Adoption du Règlement No 1384-51 modifiant           24.   Adoption of By-law No. 1384-51 to amend"
+            }
+          },
+          {
+            "label": "1384",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:147",
+              "quote": "le Règlement N° 1384 sur la circulation et le              Traffic and parking By-law No. 1384 with"
+            }
+          },
+          {
+            "label": "1439-4",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:152",
+              "quote": "Adoption du Règlement No 1439-4 modifiant le         25.   Adoption of By-law No. 1439-4 to amend"
+            }
+          },
+          {
+            "label": "1439",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "Règlement No 1439 sur la délégation de                     By-law No. 1439, concerning the delegation of"
+            }
+          },
+          {
+            "label": "1478",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:158",
+              "quote": "Adoption du Règlement      No 1478 relatif à un      26.   Adoption of By-law No. 1478 concerning a"
+            }
+          },
+          {
+            "label": "1435-4",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:165",
+              "quote": "Règlement No 1435-4 modifiant le Règlement                 By-law No. 1435-4 to amend By-law No. 1435"
+            }
+          },
+          {
+            "label": "1440-3",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:170",
+              "quote": "projet de Règlement N° 1440-3 modifiant le                 draft By-law No. 1440-3 amending By-law"
+            }
+          },
+          {
+            "label": "1441-23",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:177",
+              "quote": "projet de Règlement N° 1441-23 modifiant le                Draft By-law No. 1441-23 to amend Zoning"
+            }
+          },
+          {
+            "label": "1444-6",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:186",
+              "quote": "Règlement No 1444-6 modifiant le règlement                 No. 1444-6 to amend By-law No. 1444 with"
+            }
+          },
+          {
+            "label": "1479",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:197",
+              "quote": "de règlement No 1479 sur la rémunération                    By-law No. 1479 concerning the remuneration"
+            }
+          },
+          {
+            "label": "1435",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1247",
+              "quote": "\fPROJET DE RÈGLEMENT N° 1435-4 MODIFIANT LE RÈGLEMENT N°1435"
+            }
+          },
+          {
+            "label": "1440",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1571",
+              "quote": "              1.   L’annexe 1 du Règlement n° 1440, intitulée « Plan d’urbanisme de"
+            }
+          },
+          {
+            "label": "1441",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2921",
+              "quote": "paramètres ont déjà été incorporés dans le Règlement n° 1441 concernant le zonage de la ville"
+            }
+          },
+          {
+            "label": "1444",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5817",
+              "quote": "\f                  RÈGLEMENT N°1444-6 MODIFIANT LE RÈGLEMENT N°1444 SUR LES"
+            }
+          },
+          {
+            "label": "1455",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5961",
+              "quote": "6. Le Règlement n°1455 sur la rémunération versée aux membres du conseil pour les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/53db52e61f91.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/53db52e61f91.pdf/.graphify/.graphify_extract.json — 17 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 17,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dorval",
+          "mont-royal",
+          "montreal",
+          "quebec"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-2026-03-24-extra-web.pdf",
+      "storage_key": "raw/pv-index/cas/0ee294e951b216e13ae6a3f79d889e07b497387986a45ebbee950c3b4bb18f3b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "       SÉANCE EXTRAORDINAIRE                          SPECIAL MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "       SÉANCE EXTRAORDINAIRE                          SPECIAL MEETING"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/0c3b4bb18f3b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/0c3b4bb18f3b.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-royal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-2026-05-26-web.pdf",
+      "storage_key": "raw/pv-index/cas/14114a0b007ea284facae97aba72d3d1c90bded525f631322ebee5451507a3a2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1480",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "Adoption du Règlement N° 1480 sur la vente et    22.   Adoption of By-law No. 1480 concerning the"
+            }
+          },
+          {
+            "label": "1384-52",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:143",
+              "quote": "Règlement No 1384-52 modifiant le Règlement               1384-52 to amend Traffic and parking By-law"
+            }
+          },
+          {
+            "label": "1472",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:707",
+              "quote": "Règlement 1472      36. Le règlement N° 1472 sur la sécurité publique et la conformité"
+            }
+          },
+          {
+            "label": "1384",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1490",
+              "quote": "\f                  RÈGLEMENT No 1384-52 MODIFIANT LE RÈGLEMENT No 1384 SUR LA"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/e5451507a3a2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/e5451507a3a2.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-royal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-seance-extraordinaire-6-mai-2026-web.pdf",
+      "storage_key": "raw/pv-index/cas/20e8168c4a6f73205a46dc4da3f4ee0f9e61eeb70fb4e82b7b7052cdfd600c73.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "       SÉANCE EXTRAORDINAIRE                          SPECIAL MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "       SÉANCE EXTRAORDINAIRE                          SPECIAL MEETING"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/52cdfd600c73.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/52cdfd600c73.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-royal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-27-janvier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/4c3646ada69d67603a473ab54f40e3f4c23cf60a92b7bf158917847bf308216f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 8
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1477",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:154",
+              "quote": "Adoption du Règlement No 1477 concernant la          24.   Adoption of By-law No. 1477 concerning the"
+            }
+          },
+          {
+            "label": "1384-51",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:161",
+              "quote": "Règlement No 1384-51 modifiant le Règlement                No. 1384-51 to amend Traffic and parking"
+            }
+          },
+          {
+            "label": "26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:167",
+              "quote": "Dépôt et avis de motion du Projet de règlement       26.   Filing and notice of motion of Draft By-law"
+            }
+          },
+          {
+            "label": "1439",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:168",
+              "quote": "No 1439-4 modifiant le Règlement No 1439 sur               No. 1439-4 to amend By-law No. 1439,"
+            }
+          },
+          {
+            "label": "1478",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:174",
+              "quote": "Règlement No 1478 relatif à un programme                   No. 1478 concerning a subsidized inspection"
+            }
+          },
+          {
+            "label": "1404-26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1067",
+              "quote": "\fRÈGLEMENT N° 1404-26 SUR LA TAXATION DE LA VILLE DE MONT-ROYAL"
+            }
+          },
+          {
+            "label": "1384",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1692",
+              "quote": "\f\f                  RÈGLEMENT No 1384-51 MODIFIANT LE RÈGLEMENT No 1384 SUR LA"
+            }
+          },
+          {
+            "label": "1439-4",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1837",
+              "quote": "\f                  RÈGLEMENT NO 1439-4 MODIFIANT LE RÈGLEMENT NO 1439 SUR LA"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/847bf308216f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/847bf308216f.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-royal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-extra-23-janvier-2026-8h30.pdf",
+      "storage_key": "raw/pv-index/cas/5061a0cd8f8087cd1affd11b0c5dd2885006aad62ceae2e56679bdd3f64744ce.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "       SÉANCE EXTRAORDINAIRE                          SPECIAL MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "       SÉANCE EXTRAORDINAIRE                          SPECIAL MEETING"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/bdd3f64744ce.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/bdd3f64744ce.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-royal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-2026-03-24-web.pdf",
+      "storage_key": "raw/pv-index/cas/685b07f61e7136cd2d383869fc2e8473e353658ce7f178c8c7e14defbc3c2560.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1435-4",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "Adoption du Règlement No 1435-4 modifiant le     19.   Adoption of By-law No. 1435-4 to amend By-"
+            }
+          },
+          {
+            "label": "1435",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "Règlement No 1435 régissant la démolition des          law No. 1435 with respect to the demolition of"
+            }
+          },
+          {
+            "label": "1441-23",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:143",
+              "quote": "\fSecond Projet de règlement No 1441-23                20.   Second Draft By-law No. 1441-23 to amend"
+            }
+          },
+          {
+            "label": "1444-6",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:151",
+              "quote": "Adoption du Règlement No 1444-6 modifiant le         21.   Adoption of By-law No. 1444-6 to amend By-"
+            }
+          },
+          {
+            "label": "1444",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:152",
+              "quote": "règlement No1444 sur les permis et certificats             law No.1444 with respect to permits and"
+            }
+          },
+          {
+            "label": "1479",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:156",
+              "quote": "Adoption du Règlement No 1479 sur la                 22.   Adoption of By-law No. 1479 concerning the"
+            }
+          },
+          {
+            "label": "1441",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:162",
+              "quote": "Règlement No 1441 de zonage pour faire suite               No. 1441 following the amendment of the"
+            }
+          },
+          {
+            "label": "1449-2",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:175",
+              "quote": "règlement No 1449-2 modifiant le Règlement                 By-law No. 1449-2 to amend By-law on Site"
+            }
+          },
+          {
+            "label": "1455",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:777",
+              "quote": "6. Le Règlement n°1455 sur la rémunération versée aux membres du conseil pour les"
+            }
+          },
+          {
+            "label": "1441-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:919",
+              "quote": "\fRÈGLEMENT No 1441-24"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/4defbc3c2560.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/4defbc3c2560.pdf/.graphify/.graphify_extract.json — 12 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-royal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-2026-06-16-pour-le-web.pdf",
+      "storage_key": "raw/pv-index/cas/81c6ff9437db250183cd939a22f53a90142d7e2541a47bb35be125dd5b229a9f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1384-52",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "Adoption du Règlement No 1384-52 modifiant         10.     Adoption of By-law No. 1384-52 to amend"
+            }
+          },
+          {
+            "label": "1384",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "le Règlement No 1384 sur la circulation et le              Traffic and parking By-law No. 1384 with"
+            }
+          },
+          {
+            "label": "1475-1",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "Règlement No 1475-1 modifiant le règlement                 No.1475-1 to amend By-law No.1475"
+            }
+          },
+          {
+            "label": "1475",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:294",
+              "quote": "\f\f                  RÈGLEMENT NO 1475-1 MODIFIANT LE RÈGLEMENT NO 1475 CONCERNANT LA"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/25dd5b229a9f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/25dd5b229a9f.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-royal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-extra-23-janvier-2026-8h45.pdf",
+      "storage_key": "raw/pv-index/cas/992e6941296f412d4580510963e1f58492281ed314beb8b38c2d5baf64f4ac32.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "       SÉANCE EXTRAORDINAIRE                          SPECIAL MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "       SÉANCE EXTRAORDINAIRE                          SPECIAL MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "3",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "Dépôt et avis de motion du projet de règlement    3.      Filling and Notice of Motion of Draft By-law No."
+            }
+          },
+          {
+            "label": "1477",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "Règlement No 1477 concernant la tarification              1477 concerning the rate for the 2026 fiscal"
+            }
+          },
+          {
+            "label": "1404-26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "\fRÈGLEMENT N° 1404-26 SUR LA TAXATION DE LA VILLE DE MONT-ROYAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/5baf64f4ac32.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/5baf64f4ac32.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-royal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-royal",
+      "municipality_name": "Mont-Royal",
+      "url": "https://www.ville.mont-royal.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour/2026/odj-2026-04-21-web.pdf",
+      "storage_key": "raw/pv-index/cas/f1b854a60a2e98a2ffee417be27deb9e5e763ce998310b012424fe58b77a65ee.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Royal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "          SÉANCE ORDINAIRE                           REGULAR MEETING"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "20",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "Dépôt et avis de motion du projet de règlement     20.   Filing and notice of motion of Draft By-law"
+            }
+          },
+          {
+            "label": "1441-23",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "Adoption du Règlement No 1441-23 modifiant         21.   Adoption of By-law No. 1441-23 to amend"
+            }
+          },
+          {
+            "label": "1449-2",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:156",
+              "quote": "Adoption du Règlement No 1449-2 modifiant le        24.   Adoption of By-law No. 1449-2 to amend"
+            }
+          },
+          {
+            "label": "1480",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:212",
+              "quote": "\f              RÈGLEMENT No 1480 SUR LA VENTE ET L’UTILISATION DES PESTICIDES"
+            }
+          },
+          {
+            "label": "1472",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:741",
+              "quote": "Règlement 1472      36. Le règlement N° 1472 sur la sécurité publique et la conformité"
+            }
+          },
+          {
+            "label": "1441-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1677",
+              "quote": "\fRÈGLEMENT No 1441-24"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/fe58b77a65ee.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-royal/fe58b77a65ee.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-royal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-tremblant",
+      "municipality_name": "Mont-Tremblant",
+      "url": "https://vdmt.ca/storage/app/media/informations-municipales/democratie-et-participation-citoyenne/seances-des-conseils/ODJ-2026/20260119-ville-odj-FINAL.pdf",
+      "storage_key": "raw/pv-index/cas/047545b983583e13f35b50354626e893500de2ce66b6d23a6a70b5674abdbcd1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Zone": 1,
+        "LotCadastre": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Tremblant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": ""
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "PI-318",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:109",
+              "quote": "    8.10 Demande de modification règlementaire - déplacement limite de la zone PI-318 - chemin de Brébeuf"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4474664",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "\f           8.2.2 Demande 2025-DM-206 - écran végétal - allée Robert - lot 4 474 664"
+            }
+          },
+          {
+            "label": "3278147",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "           8.2.5 Demande 2025-DM-245 - aménagement de terrain et implantation - rue Beattie - lot 3 278 147"
+            }
+          },
+          {
+            "label": "4177882",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "                 lots 4 177 882 et 6 504 194"
+            }
+          },
+          {
+            "label": "4650077",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "           8.4.2 Étude plan image - 2025-183 - projet intégré - 7e rang - lot 4 650 077"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/b5674abdbcd1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/b5674abdbcd1.pdf/.graphify/.graphify_extract.json — 7 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-tremblant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-tremblant",
+      "municipality_name": "Mont-Tremblant",
+      "url": "https://vdmt.ca/storage/app/media/informations-municipales/democratie-et-participation-citoyenne/seances-des-conseils/ODJ-2026/20260407-odj-extra-ville_final.pdf",
+      "storage_key": "raw/pv-index/cas/060aadcf2a85eca20a64d2c143a15acaaf57f3ff593c461a20584cfed95e731b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/4cfed95e731b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/4cfed95e731b.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-tremblant",
+      "municipality_name": "Mont-Tremblant",
+      "url": "https://vdmt.ca/storage/app/media/informations-municipales/democratie-et-participation-citoyenne/seances-des-conseils/ODJ-2026/20260129-odj-se-agglo-budget.pdf",
+      "storage_key": "raw/pv-index/cas/0bb2068a0acc1ffa81a263039576c4af2749079715f87706316a770e0c34e05f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/770e0c34e05f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/770e0c34e05f.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-tremblant",
+      "municipality_name": "Mont-Tremblant",
+      "url": "https://vdmt.ca/storage/app/media/informations-municipales/democratie-et-participation-citoyenne/seances-des-conseils/ODJ-2026/20260413_agglo_PV_modifie-2026-06-23.pdf",
+      "storage_key": "raw/pv-index/cas/1431f80313388837ec23cbd248c1cf70e53703a2ad8e48b119f755e9796cf9a1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Tremblant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              Procès-verbal du conseil d'agglomération"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              Procès-verbal du conseil d'agglomération"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "SÉANCE ORDINAIRE du conseil d'agglomération de la Ville de Mont-Tremblant, sous la présidence"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "du maire, tenue le 13 avril 2026 à 19 h 12, à l'hôtel de ville situé au 1145, rue de Saint-Jovite et à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/55e9796cf9a1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/55e9796cf9a1.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel",
+          "barkmere",
+          "lac-tremblant-nord",
+          "mont-tremblant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-tremblant",
+      "municipality_name": "Mont-Tremblant",
+      "url": "https://vdmt.ca/storage/app/media/informations-municipales/democratie-et-participation-citoyenne/seances-des-conseils/ODJ-2026/20260318-odj-extra-ville_ANNULEE.pdf",
+      "storage_key": "raw/pv-index/cas/25873dc10a7362c68de1483f29021478d3ef4d9855172e9f80d74a6d717bc7b5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/4a6d717bc7b5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/4a6d717bc7b5.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mont-tremblant",
+      "municipality_name": "Mont-Tremblant",
+      "url": "https://vdmt.ca/storage/app/media/informations-municipales/democratie-et-participation-citoyenne/seances-des-conseils/ODJ-2026/ODJ-seance-agglo-compile_FINAL.pdf",
+      "storage_key": "raw/pv-index/cas/2b3945e97a92674ea59cb2d30232a92e0fb7e424fe493e80f1c2a61a0d65968d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Tremblant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "        héliportuaire sur le lac Tremblant et à tout projet similaire sur les lacs et plans d'eau du territoire de la Ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "        héliportuaire sur le lac Tremblant et à tout projet similaire sur les lacs et plans d'eau du territoire de la Ville de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/a61a0d65968d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185527Z/mont-tremblant/a61a0d65968d.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-tremblant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

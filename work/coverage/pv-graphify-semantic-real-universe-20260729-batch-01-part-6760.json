@@ -1,0 +1,2222 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T20:48:10.934Z",
+  "mode": "unverdict-cas-batch",
+  "unverdict_list": "work/coverage/pv-graphify-semantic-real-universe-20260729-unverdict-list-01.json",
+  "unverdict_selection": {
+    "offset": 360,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 337,
+  "eligible_documents": 337,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 14,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 13,
+    "failed_pvs": 7,
+    "outcomes": {
+      "INDEXED": 13,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0,
+      "UNKNOWN_NO_TERMINAL_PV_MANIFEST": 7,
+      "UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 13,
+    "Document": 13,
+    "Regulation": 104,
+    "CouncilSession": 2,
+    "MeetingDate": 2,
+    "Resolution": 27,
+    "Zone": 1,
+    "LotCadastre": 3
+  },
+  "graphify": {
+    "nodes": 165,
+    "edges": 18,
+    "failures": 7
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 3,
+    "documents_with_zone": 1,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "becancour",
+      "storage_key": "raw/pv-index/cas/de5f5fc925f61a17417f817c358415bb9ff81035665257da4aa858c61d6302f3.pdf",
+      "entity_type": "Zone",
+      "value": "C02-220",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:48",
+      "quote": "            les normes d’implantation pour les bâtiments à usage mixte dans la zone C02-220 (Secteur"
+    },
+    {
+      "municipality_slug": "becancour",
+      "storage_key": "raw/pv-index/cas/de5f5fc925f61a17417f817c358415bb9ff81035665257da4aa858c61d6302f3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3539503",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:37",
+      "quote": "     4.2    Partie du lot 3 539 503 du cadastre du Québec – 5355, rue du Chemin-de-Fer"
+    },
+    {
+      "municipality_slug": "becancour",
+      "storage_key": "raw/pv-index/cas/de5f5fc925f61a17417f817c358415bb9ff81035665257da4aa858c61d6302f3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3294843",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:100",
+      "quote": "             spécialisé », sur le lot 3 294 843 du cadastre du Québec (futur 8400, boulevard Bécancour),"
+    },
+    {
+      "municipality_slug": "beauharnois",
+      "storage_key": "raw/pv-index/cas/dee8a9b4efa77c6de7dda67330036fdce12b9d51c8a7ff43f69bd505656063b4.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6569937",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:102",
+      "quote": "            immeuble PPCMOI 2026-0005 - lot 6 569 937, 22e Avenue"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 7,
+      "zone_code_count": 367,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 7,
+      "served_municipalities": 6,
+      "total_lot_numbers": 15744,
+      "missing": [
+        "beloeil"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z",
+  "documents": [
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/d832599e2cb4fc1291bbed5ec3fb49ee72f0e08290dc866bc0146309711f6adc.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/d89d11515e9f1edce663ac64fe1670b3684bcc7461c5b0b8ad95db4475f63769.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20230831095526-proces-verbal-du-10-aout-2023pdf.pdf",
+      "storage_key": "raw/pv-index/cas/d94ef4a363c9a4eb4816acafdb83ecb3489a991336a7154e1125637faff663b4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "262-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "             4 - Avis de motion et dépôt du projet de règlement 262-2023 décrétant une"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beaulac-garthby/637faff663b4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beaulac-garthby/637faff663b4.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2025/07/pv-2025-05-12.pdf",
+      "storage_key": "raw/pv-index/cas/d9907e4ecd5a1f353d2bb28bcf0d58256f81097d50a56cabf07b9a30134f52fd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "517",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:211",
+              "quote": "                 subséquente du conseil, du Règlement 517 établissant les règles de"
+            }
+          },
+          {
+            "label": "518",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:235",
+              "quote": "                  le règlement no 518 intitulé Règlement no 518 sur les branchements"
+            }
+          },
+          {
+            "label": "519",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:265",
+              "quote": " d'adopter le règlement no 519 intitulé Règlement no 519 établissant"
+            }
+          },
+          {
+            "label": "516",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "   7.3. Règlement 519 modifiant règlement 516 sur les tarifs 2025"
+            }
+          },
+          {
+            "label": "383",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:130",
+              "quote": "                  et greffière-trésorière, effectué en vertu du règlement n° 383"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/bearn/9a30134f52fd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/bearn/9a30134f52fd.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2023/09/oj20230918-2.pdf",
+      "storage_key": "raw/pv-index/cas/d9e1ad1ba321a2f97672f4d76be2c040daf64c486cb94fb9fc66aea4abf8ca4f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "013-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "       10.2 - Avis de motion et présentation du règlement 013-2023 modifiant le règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/acton-vale/aea4abf8ca4f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/acton-vale/aea4abf8ca4f.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/daa27bd3794b1fa3a749f9fa7e50a6f0337b3b8cdd15ea60b365f494a30fc097.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20240315082325-proces-verbal-de-la-seance-du-5-fevrier-2024pdf.pdf",
+      "storage_key": "raw/pv-index/cas/db9efe8054228ccbaa3e5f7b370da0f413a5946181ab082265b24f36cdbfbdf2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "275-2024",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "         6.1 - Avis de motion du projet de règlement 275-2024 portant sur les projets"
+            }
+          },
+          {
+            "label": "274-2024",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "         6.3 - Adoption du projet de règlement 274-2024 portant sur les dérogations"
+            }
+          },
+          {
+            "label": "275-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:604",
+              "quote": "Par ailleurs, le projet de règlement 275-2023 portant sur les projets particuliers de"
+            }
+          },
+          {
+            "label": "39-2002",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1574",
+              "quote": "Le présent Règlement abroge le Règlement numéro 39-2002 concernant les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beaulac-garthby/4f36cdbfbdf2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beaulac-garthby/4f36cdbfbdf2.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beloeil",
+      "municipality_name": "Beloeil",
+      "url": "https://beloeil.ca/wp-content/uploads/2026/06/06_conseil_20260525_pv.pdf",
+      "storage_key": "raw/pv-index/cas/dc29e6ec3369d3eedeb881204e62bf373f7e15449dbf382470c1cf3ffe8fde7b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 11
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beloeil",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "                                          PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "                                          PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 27 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "6. APPROBATION DU PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL DU 27 AVRIL 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "27 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "6. APPROBATION DU PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL DU 27 AVRIL 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-04-193",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:232",
+              "quote": "        Le conseil tient une assemblée publique de consultation sur la résolution 2026-04-193."
+            }
+          },
+          {
+            "label": "2026-03-143",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:929",
+              "quote": "        CONSIDÉRANT que, par sa résolution 2026-03-143, la Ville de Beloeil a adopté un projet de"
+            }
+          },
+          {
+            "label": "2026-04-166",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:937",
+              "quote": "délais prescrits relativement aux dispositions du second projet de résolution 2026-04-166;"
+            }
+          },
+          {
+            "label": "2026/05/65",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1022",
+              "quote": "       CONSIDÉRANT que le Comité consultatif d'urbanisme, par sa résolution 2026/05/65, s'est"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1667-129-2026",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:162",
+              "quote": "         D'adopter le Règlement 1667-129-2026 modifiant le Règlement de zonage 1667-00-2011 afin de"
+            }
+          },
+          {
+            "label": "1667-130-2026",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:219",
+              "quote": "       D'adopter le second projet du Règlement 1667-130-2026 modifiant le Règlement de zonage 1667-"
+            }
+          },
+          {
+            "label": "1643",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:290",
+              "quote": "        1. D'accorder, conformément au Règlement 1643‐00‐2010 relatif aux projets particuliers de"
+            }
+          },
+          {
+            "label": "1766-00-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:355",
+              "quote": "       CONSIDÉRANT que cette demande est assujettie au Règlement 1766-00-2019 relatif aux"
+            }
+          },
+          {
+            "label": "1813-00-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:613",
+              "quote": "        CONSIDÉRANT que le projet en titre est assujetti au Règlement 1813-00-2025 sur les plans"
+            }
+          },
+          {
+            "label": "1751-09-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:882",
+              "quote": "30. AVIS DE MOTION ET DÉPÔT DU PROJET DE RÈGLEMENT 1751-09-2026 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "1751-00-2018",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:887",
+              "quote": "modifier le Règlement 1751-00-2018 afin de modifier les règles de contrôle et de suivi budgétaires et la"
+            }
+          },
+          {
+            "label": "1821-00-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:896",
+              "quote": "31. AVIS DE MOTION ET DÉPÔT DU PROJET DE RÈGLEMENT 1821-00-2026 CONCERNANT LA GESTION"
+            }
+          },
+          {
+            "label": "1653-17-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:911",
+              "quote": "32. ADOPTION DU RÈGLEMENT 1653-17-2026 MODIFIANT LE RÈGLEMENT 1653-00-2011 CONCERNANT"
+            }
+          },
+          {
+            "label": "1653-00-2011",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:911",
+              "quote": "32. ADOPTION DU RÈGLEMENT 1653-17-2026 MODIFIANT LE RÈGLEMENT 1653-00-2011 CONCERNANT"
+            }
+          },
+          {
+            "label": "1643-00-2010",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1019",
+              "quote": "         CONSIDÉRANT que le projet en titre est assujetti au Règlement 1643-00-2010 relatif aux projets"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beloeil/cf3ffe8fde7b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beloeil/cf3ffe8fde7b.pdf/.graphify/.graphify_extract.json — 19 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 19,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beloeil"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "becancour",
+      "municipality_name": "Bécancour",
+      "url": "https://becancour.net/app/uploads/2026/01/odj-2026-01-26-budget.pdf",
+      "storage_key": "raw/pv-index/cas/dc887b6bdb3ad7a39f5e6c0e13182d175620d9094442c13a5e0da38ef693b5ee.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bécancour",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "     Pour en savoir plus, vous pouvez consulter le règlement n° 1780 relatif à la régie interne du conseil municipal de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "     Pour en savoir plus, vous pouvez consulter le règlement n° 1780 relatif à la régie interne du conseil municipal de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1841",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "     3.1    Projet de règlement numéro 1841 intitulé : « Règlement décrétant l'imposition d'une variété"
+            }
+          },
+          {
+            "label": "1780",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "     Pour en savoir plus, vous pouvez consulter le règlement n° 1780 relatif à la régie interne du conseil municipal de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/becancour/a38ef693b5ee.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/becancour/a38ef693b5ee.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "becancour"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/oj20201005.pdf",
+      "storage_key": "raw/pv-index/cas/dd0a4d50cc63084a94dcb5bea7bd5ad745bd29b428ffe0189040841f4d78e691.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "009-2020",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "   5.7    Avis de motion du règlement numéro 009-2020 établissant la tarification"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/acton-vale/841f4d78e691.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/acton-vale/841f4d78e691.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/dda1de0d3673a3ad7138a06d1a47d80dbc4a8f386754fa687ded26d12d3f6061.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/ddcdd87c0bc74644ffa2b26b765bab7be9094d2be5a80f4927e6b3cdefbdf8f3.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/ddda9a4c026f13edd3c378e220769ec60ae06cf03321594444dee52b47685363.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/de0eb614d516e397e13ef2f75e1a80050a3bc95902d14d8ac868408efbdcc609.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "becancour",
+      "municipality_name": "Bécancour",
+      "url": "https://becancour.net/app/uploads/2026/01/odj-2026-02-02.pdf",
+      "storage_key": "raw/pv-index/cas/de5f5fc925f61a17417f817c358415bb9ff81035665257da4aa858c61d6302f3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 19,
+        "Zone": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bécancour",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "      12.1 Règlement numéro 1840 intitulé : « Règlement établissant le Code d'éthique et de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "      12.1 Règlement numéro 1840 intitulé : « Règlement établissant le Code d'éthique et de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "26-030",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:215",
+              "quote": "17.   Modification des résolutions numéros 26-030, 26-033 et 26-036 afin d’y modifier le mode de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1851",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "     5.1    Règlement numéro 1851 modifiant le règlement de zonage numéro 1787 afin de modifier"
+            }
+          },
+          {
+            "label": "1850",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "6.   Règlement numéro 1850 intitulé : « Règlement relatif aux dérogations mineures aux"
+            }
+          },
+          {
+            "label": "337",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "     Objet du règlement : Ce règlement a pour but de remplacer le règlement numéro 337 suite à la refonte des"
+            }
+          },
+          {
+            "label": "1853",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "\f7.    Règlement numéro 1853 intitulé : « Règlement modifiant le règlement de zonage numéro"
+            }
+          },
+          {
+            "label": "1854",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "8.    Règlement numéro 1854 intitulé : « Règlement modifiant le règlement de zonage numéro"
+            }
+          },
+          {
+            "label": "1840",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "      12.1 Règlement numéro 1840 intitulé : « Règlement établissant le Code d'éthique et de"
+            }
+          },
+          {
+            "label": "1841",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:129",
+              "quote": "      12.2 Règlement numéro 1841 intitulé : « Règlement décrétant l'imposition d'une variété de taux"
+            }
+          },
+          {
+            "label": "1842",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:136",
+              "quote": "      13.1 Règlement numéro 1842 intitulé : « Règlement décrétant une dépense et un emprunt de"
+            }
+          },
+          {
+            "label": "1843",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:142",
+              "quote": "      13.2 Règlement numéro 1843 intitulé : « Règlement modifiant le règlement numéro 1735"
+            }
+          },
+          {
+            "label": "1735",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:142",
+              "quote": "      13.2 Règlement numéro 1843 intitulé : « Règlement modifiant le règlement numéro 1735"
+            }
+          },
+          {
+            "label": "1844",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:149",
+              "quote": "      13.3 Règlement numéro 1844 intitulé : « Règlement décrétant une dépense et un emprunt de"
+            }
+          },
+          {
+            "label": "1845",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:159",
+              "quote": "      13.4 Règlement numéro 1845 intitulé : « Règlement modifiant le règlement de prévention"
+            }
+          },
+          {
+            "label": "1199",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:162",
+              "quote": "             Objet du règlement : Ce règlement a pour but de modifier le règlement numéro 1199 afin de"
+            }
+          },
+          {
+            "label": "1846",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:168",
+              "quote": "      13.5 Règlement numéro 1846 intitulé : « Règlement modifiant le règlement numéro 1761 relatif"
+            }
+          },
+          {
+            "label": "1761",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:168",
+              "quote": "      13.5 Règlement numéro 1846 intitulé : « Règlement modifiant le règlement numéro 1761 relatif"
+            }
+          },
+          {
+            "label": "1849",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:174",
+              "quote": "      13.6 Règlement numéro 1849 intitulé : « Règlement modifiant le règlement numéro 1838 sur la"
+            }
+          },
+          {
+            "label": "1838",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:174",
+              "quote": "      13.6 Règlement numéro 1849 intitulé : « Règlement modifiant le règlement numéro 1838 sur la"
+            }
+          },
+          {
+            "label": "1852",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:182",
+              "quote": "      13.7 Règlement numéro 1852 intitulé : « Règlement décrétant une dépense et un emprunt de"
+            }
+          },
+          {
+            "label": "1780",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:402",
+              "quote": "      Pour en savoir plus, vous pouvez consulter le règlement n° 1780 relatif à la régie interne du conseil municipal de la"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "C02-220",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "            les normes d’implantation pour les bâtiments à usage mixte dans la zone C02-220 (Secteur"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3539503",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "     4.2    Partie du lot 3 539 503 du cadastre du Québec – 5355, rue du Chemin-de-Fer"
+            }
+          },
+          {
+            "label": "3294843",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "             spécialisé », sur le lot 3 294 843 du cadastre du Québec (futur 8400, boulevard Bécancour),"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/becancour/58c61d6302f3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/becancour/58c61d6302f3.pdf/.graphify/.graphify_extract.json — 25 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 25,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "becancour"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beauharnois",
+      "municipality_name": "Beauharnois",
+      "url": "https://ville.beauharnois.qc.ca/wp-content/uploads/ODJ_09062026.pdf",
+      "storage_key": "raw/pv-index/cas/dee8a9b4efa77c6de7dda67330036fdce12b9d51c8a7ff43f69bd505656063b4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 8,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beauharnois",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Ville de Beauharnois"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Ville de Beauharnois"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-16",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "     3.1.    Avis de motion et projet de règlement - Règlement 2026-16 modifiant le"
+            }
+          },
+          {
+            "label": "2024-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "             Règlement 2024-20 sur la tarification des services, des biens et des activités"
+            }
+          },
+          {
+            "label": "701-103",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "     3.2.    Avis de motion - Règlement 701-103 modifiant le Règlement de zonage 701"
+            }
+          },
+          {
+            "label": "701-102",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "     3.4.    Adoption du deuxième projet de Règlement 701-102 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "2026-12",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "     4.1.  Adoption du Règlement 2026-12 modifiant le règlement 2024-18 relatif à la"
+            }
+          },
+          {
+            "label": "2024-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "     4.1.  Adoption du Règlement 2026-12 modifiant le règlement 2024-18 relatif à la"
+            }
+          },
+          {
+            "label": "2026-14",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "     4.2.  Adoption du Règlement 2026-14 décrétant une dépense de 1 213 000 $ et"
+            }
+          },
+          {
+            "label": "2026-15",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "     4.3.  Adoption du Règlement 2026-15 décrétant une dépense de 322 000 $ et un"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6569937",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:102",
+              "quote": "            immeuble PPCMOI 2026-0005 - lot 6 569 937, 22e Avenue"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beauharnois/d505656063b4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beauharnois/d505656063b4.pdf/.graphify/.graphify_extract.json — 11 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beauharnois"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "begin",
+      "municipality_name": "Bégin",
+      "url": "https://www.begin.ca/app/uploads/2026/04/PV-260302.pdf",
+      "storage_key": "raw/pv-index/cas/dfb1978f368751b67404e40426058f496304eceb0e4aee35b212ced0a5886322.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bégin",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "  MRC DU FJORD-DU-SAGUENAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "  MRC DU FJORD-DU-SAGUENAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "  PROCÈS-VERBAL de la séance ordinaire du conseil municipal de Bégin tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "  le 2 mars 2026 à 19h30, à la salle du conseil de l’édifice municipal."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26-406",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "  11.1 Avis de motion règlement 26-406 – code d’éthique des élus"
+            }
+          },
+          {
+            "label": "26-405",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:418",
+              "quote": "            11.2 Dépôt et présentation du projet de règlement 26-405"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/begin/ced0a5886322.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/begin/ced0a5886322.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "begin"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2022/05/PV-MARS-POUR-SITE-INTERNET.pdf",
+      "storage_key": "raw/pv-index/cas/dfc595d3e0499d00bb607f7cb21708309870706a6d7d11a8f501d5f8eac28a01.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4,
+        "Regulation": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-12-266",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1403",
+              "quote": "    3.1. Veto - Résolution 2021-12-266"
+            }
+          },
+          {
+            "label": "2022-01-014",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2556",
+              "quote": "                     résolution 2022-01-014 informait Greenfirst Forest Products que"
+            }
+          },
+          {
+            "label": "2022-03-041",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3060",
+              "quote": "                    maire par mairesse dans la résolution 2022-03-041."
+            }
+          },
+          {
+            "label": "2022-02-033",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3231",
+              "quote": "2022-03-054          Considérant que par la résolution 2022-02-033, la municipalité"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "180",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:148",
+              "quote": "2022-01-004         Considérant que le règlement numéro 180 autorise l'imposition"
+            }
+          },
+          {
+            "label": "488",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1620",
+              "quote": "                     Avis de motion et dépôt du projet de règlement 488"
+            }
+          },
+          {
+            "label": "467",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1672",
+              "quote": "agricoles, telles que définies au règlement no 467."
+            }
+          },
+          {
+            "label": "489",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1818",
+              "quote": "      Avis de motion et dépôt du projet de règlement 489"
+            }
+          },
+          {
+            "label": "490",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1842",
+              "quote": "       Avis de motion et dépôt du projet de règlement 490"
+            }
+          },
+          {
+            "label": "491",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3165",
+              "quote": "                     Avis de motion et dépôt du projet de règlement 491"
+            }
+          },
+          {
+            "label": "492",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3181",
+              "quote": "                     Avis de motion et dépôt du projet de règlement no 492"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/bearn/d5f8eac28a01.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/bearn/d5f8eac28a01.pdf/.graphify/.graphify_extract.json — 13 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn",
+          "latulipe-et-gaboury",
+          "saint-edouard",
+          "saint-edouard-de-fabre",
+          "ville-marie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2023/12/oj20231218ss-budget.pdf",
+      "storage_key": "raw/pv-index/cas/e09a42d2e33e9abf06be69c9a01ddbd33828efb3163fe5d47903b92a4527d25c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         VILLE D’ACTON VALE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/acton-vale/b92a4527d25c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/acton-vale/b92a4527d25c.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beloeil",
+      "municipality_name": "Beloeil",
+      "url": "https://beloeil.ca/wp-content/uploads/2026/01/proces_verbaux_2024.pdf",
+      "storage_key": "raw/pv-index/cas/e0db8cc6f2738eaf1953047e6a6163dc713f06aef42b80849966e1b79a27cb6e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 18,
+        "Regulation": 43
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beloeil",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:168",
+              "quote": "                                           PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:168",
+              "quote": "                                           PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-12-574",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "       de dépôt – résolution 2023-12-574 – abrogation"
+            }
+          },
+          {
+            "label": "2023-12-547",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2394",
+              "quote": "        Cette résolution abroge la résolution 2023-12-547."
+            }
+          },
+          {
+            "label": "2023-06-281",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2601",
+              "quote": "        CONSIDÉRANT que la Ville de Beloeil, par sa résolution 2023-06-281 a accepté de participer au"
+            }
+          },
+          {
+            "label": "2023-12-549",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4213",
+              "quote": "        D’abroger la résolution 2023-12-549."
+            }
+          },
+          {
+            "label": "2024-01-21",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4614",
+              "quote": "critères d'évaluation approuvés par le conseil municipal par la résolution 2024-01-21;"
+            }
+          },
+          {
+            "label": "2024-01-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5475",
+              "quote": "       CONSIDÉRANT que par la résolution 2024-01-03, le conseil a nommé les membres du comité de"
+            }
+          },
+          {
+            "label": "09-06-167",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5512",
+              "quote": "en adoptant la résolution numéro 09-06-167, le 4 juin 2009, et qu’à la suite de cette demande, la CPTAQ"
+            }
+          },
+          {
+            "label": "20-02-065",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5516",
+              "quote": "résolution numéro 20-02-065, lors de la séance du Conseil de la MRCVR tenue le 20 février 2020;"
+            }
+          },
+          {
+            "label": "2024-05-204",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8766",
+              "quote": "       2023-9036) – 871-879, rue Laurier — résolution 2024-05-204 – assemblée publique de"
+            }
+          },
+          {
+            "label": "CC23-035",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9224",
+              "quote": "tout véhicule de promenade (résolution CC23-035) lors de la séance du conseil d’administration tenue le"
+            }
+          },
+          {
+            "label": "2023-11-500",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9647",
+              "quote": "       CONSIDÉRANT la résolution 2023-11-500 autorisant le paiement de la quote-part de la Ville à la"
+            }
+          },
+          {
+            "label": "2024-06-231",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10659",
+              "quote": "délais prescrits relativement aux dispositions du second projet de résolution 2024-06-231;"
+            }
+          },
+          {
+            "label": "2023-03-135",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10900",
+              "quote": "chaussées, selon la résolution 2023-03-135;"
+            }
+          },
+          {
+            "label": "2024-01-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12336",
+              "quote": "        CONSIDÉRANT que la Ville de Beloeil a octroyé un mandat, par sa résolution 2024-01-10, à Me"
+            }
+          },
+          {
+            "label": "2024-05-206",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12469",
+              "quote": "        CONSIDÉRANT l’adoption de la résolution 2024-05-206, ordonnant l’évaluation d’un chien de sexe"
+            }
+          },
+          {
+            "label": "2024-06-369",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12882",
+              "quote": "        CONSIDÉRANT l’adoption, le 4 juin 2024, par la Ville de Boisbriand, de la résolution 2024-06-369;"
+            }
+          },
+          {
+            "label": "2017-02-119",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15756",
+              "quote": "        CONSIDÉRANT la résolution 2017-02-119 adoptée lors de la séance ordinaire du 27 février 2017"
+            }
+          },
+          {
+            "label": "2024-08-318",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15868",
+              "quote": "        CONSIDERANT la résolution 2024-08-318 par laquelle la Ville de Beloeil autorise uniquement le"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1669-07-2023",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:345",
+              "quote": "        D’adopter le Règlement 1669-07-2023 modifiant le Règlement de construction 1669-00-2011 afin"
+            }
+          },
+          {
+            "label": "1800-00-2023",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:542",
+              "quote": "        D’adopter le Règlement 1800-00-2023 établissant un programme d’aide financière pour des"
+            }
+          },
+          {
+            "label": "1803-00-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "       d)   Règlement 1803-00-2023 concernant la création d'une réserve financière pour le financement"
+            }
+          },
+          {
+            "label": "1751-00-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:575",
+              "quote": "       CONSIDÉRANT le Règlement 1751-00-2018 concernant les règles de contrôle et de suivi"
+            }
+          },
+          {
+            "label": "1767-00-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1230",
+              "quote": "31.    Règlement 1767-00-2019 instaurant un programme d'aide financière pour la rénovation"
+            }
+          },
+          {
+            "label": "1667-119-2024",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5639",
+              "quote": "        D’adopter le Règlement 1667-119-2024 modifiant les usages permis dans la zone H-101."
+            }
+          },
+          {
+            "label": "1802-00-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1256",
+              "quote": "40.    Règlement 1802-00-2024 établissant un programme d’aide financière pour la participation à un"
+            }
+          },
+          {
+            "label": "1805-00-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1258",
+              "quote": "41.    Règlement 1805-00-2024 abrogeant le Règlement 1728-00-2016 établissant un programme de"
+            }
+          },
+          {
+            "label": "1728-00-2016",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1258",
+              "quote": "41.    Règlement 1805-00-2024 abrogeant le Règlement 1728-00-2016 établissant un programme de"
+            }
+          },
+          {
+            "label": "1806-00-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1261",
+              "quote": "42.    Règlement 1806-00-2024 décrétant une dépense de 7 630 000 $ et un emprunt de 2 800 000 $"
+            }
+          },
+          {
+            "label": "1807-00-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1263",
+              "quote": "43.    Règlement 1807-00-2024 relatif à la régie interne des comités – avis de motion – dépôt du projet"
+            }
+          },
+          {
+            "label": "1766-00-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1505",
+              "quote": "       CONSIDÉRANT que cette demande est assujettie au Règlement 1766-00-2019 relatif aux"
+            }
+          },
+          {
+            "label": "1646-00-2011",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5611",
+              "quote": "modifier le Règlement 1646-00-2011 relatif aux usages conditionnels afin d’introduire des dispositions"
+            }
+          },
+          {
+            "label": "1680-00-2012",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1940",
+              "quote": "        CONSIDÉRANT que le projet en titre est assujetti au Règlement 1680-00-2012 sur les plans"
+            }
+          },
+          {
+            "label": "1670-00-2011",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2312",
+              "quote": "        CONSIDÉRANT que le Règlement 1670-00-2011 sur les permis et certificats stipule qu’un permis"
+            }
+          },
+          {
+            "label": "1692-00-2014",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18025",
+              "quote": "3. RÈGLEMENT 1692-25-2024 MODIFIANT LE RÈGLEMENT 1692-00-2014 CONCERNANT LA"
+            }
+          },
+          {
+            "label": "1770-00-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2342",
+              "quote": "      CONSIDÉRANT que le Règlement 1770-00-2019 relatif à la régie interne des comités et des"
+            }
+          },
+          {
+            "label": "1670-11-2024",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5242",
+              "quote": "          D’adopter le Règlement 1670-11-2024 modifiant les dispositions pénales relatives à l'abattage"
+            }
+          },
+          {
+            "label": "1777-00-2020",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4278",
+              "quote": "        CONSIDÉRANT que l'article 6 du Règlement 1777-00-2020 relatif à la gestion contractuelle,"
+            }
+          },
+          {
+            "label": "1646-06-2024",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9396",
+              "quote": "        D’adopter le Règlement 1646-06-2024 modifiant le Règlement 1646-00-2011 relatif aux usages"
+            }
+          },
+          {
+            "label": "1667-120-2024",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9417",
+              "quote": "        D’adopter le Règlement 1667-120-2024 modifiant le Règlement de zonage 1667-00-2011 afin"
+            }
+          },
+          {
+            "label": "1667-121-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4947",
+              "quote": "25.     Règlement 1667-121-2024 modifiant le Règlement de zonage 1667-00-2011 afin de créer la zone"
+            }
+          },
+          {
+            "label": "1667-122-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4951",
+              "quote": "27.     Règlement 1667-122-2024 modifiant le Règlement de zonage 1667-00-2011 afin de modifier les"
+            }
+          },
+          {
+            "label": "1775-10-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4955",
+              "quote": "29.     Règlement 1775-10-2024 modifiant le règlement général 1775-00-2020 afin de réviser les normes"
+            }
+          },
+          {
+            "label": "1760-02-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6670",
+              "quote": "33.    Règlement 1760-02-2024 modifiant le Règlement 1760-00-2019 concernant le régime de retraite"
+            }
+          },
+          {
+            "label": "1760-00-2019",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6670",
+              "quote": "33.    Règlement 1760-02-2024 modifiant le Règlement 1760-00-2019 concernant le régime de retraite"
+            }
+          },
+          {
+            "label": "1775-11-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6674",
+              "quote": "35.    Règlement 1775-11-2024 modifiant le règlement général 1775-00-2020 concernant l’entretien"
+            }
+          },
+          {
+            "label": "1808-00-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6676",
+              "quote": "36.    Règlement 1808-00-2024 établissant un programme d’aide à la plantation d’arbres pour les"
+            }
+          },
+          {
+            "label": "1643-00-2010",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7787",
+              "quote": "         CONSIDÉRANT que le projet en titre est assujetti au Règlement 1643-00-2010 relatif aux projets"
+            }
+          },
+          {
+            "label": "1692-24-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8807",
+              "quote": "18.    Règlement 1692-24-2024 modifiant le Règlement 1692-00-2014 concernant la tarification des"
+            }
+          },
+          {
+            "label": "2019-79",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9223",
+              "quote": "numéro 2023-107 modifiant le règlement numéro 2019-79 concernant la taxe sur l’immatriculation de"
+            }
+          },
+          {
+            "label": "2023-107",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9227",
+              "quote": "        CONSIDÉRANT que le règlement numéro 2023-107 établit la taxe sur l’immatriculation de tout"
+            }
+          },
+          {
+            "label": "1799-00-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11330",
+              "quote": "27.    Règlement 1799-00-2023 établissant un programme d'aide financière pour la rénovation"
+            }
+          },
+          {
+            "label": "1667-123-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11341",
+              "quote": "30.    Règlement 1667-123-2024 modifiant le Règlement de zonage 1667-00-2011 afin de modifier les"
+            }
+          },
+          {
+            "label": "1792-00-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11757",
+              "quote": "Règlement 1792-00-2022 relatif à la citation des immeubles patrimoniaux;"
+            }
+          },
+          {
+            "label": "26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12199",
+              "quote": "               Précise que le présent processus contractuel est assujetti au « Règlement numéro 26 sur"
+            }
+          },
+          {
+            "label": "1809-00-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13502",
+              "quote": "21.    Règlement 1809-00-2024 établissant un programme d’aide financière pour la rénovation"
+            }
+          },
+          {
+            "label": "1778-00-2020",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15619",
+              "quote": "      CONSIDÉRANT que cette demande est assujettie au Règlement 1778-00-2020 relatif aux plans"
+            }
+          },
+          {
+            "label": "1692-25-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17931",
+              "quote": "3.      Règlement 1692-25-2024 modifiant le Règlement 1692-00-2014 concernant la tarification des"
+            }
+          },
+          {
+            "label": "1810-00-2024",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17933",
+              "quote": "4.      Règlement 1810-00-2024 concernant l’imposant des taxes, des compensations et des tarifs pour"
+            }
+          },
+          {
+            "label": "1667-124-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18554",
+              "quote": "9.     Règlement 1667-124-2025 modifiant le Règlement de zonage 1667-00-2011 afin de modifier les"
+            }
+          },
+          {
+            "label": "1811-00-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18572",
+              "quote": "13.    Règlement 1811-00-2025 décrétant des dépenses en immobilisations de 7 568 000 $ et un"
+            }
+          },
+          {
+            "label": "1643",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18827",
+              "quote": "        D'accorder, conformément au Règlement 1643‐00‐2010 relatif aux projets particuliers de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beloeil/e1b79a27cb6e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T204303Z/beloeil/e1b79a27cb6e.pdf/.graphify/.graphify_extract.json — 63 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 63,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beloeil",
+          "boisbriand",
+          "mcmasterville",
+          "mont-saint-hilaire",
+          "otterburn-park"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

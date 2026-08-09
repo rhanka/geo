@@ -1,0 +1,548 @@
+{
+  "contract": "proof-mitigation-queue/v1",
+  "lane": "recovery-r2",
+  "as_of": "2026-07-22",
+  "mode": "planning-and-local-evidence-only",
+  "scope": {
+    "logical_zone_collections": 871,
+    "zone_features": 95551,
+    "served_lot_collections": 897,
+    "served_lot_features": 3429863,
+    "included_work": [
+      "track the six immutable provenance cohorts",
+      "define local-evidence and acceptance gates",
+      "define owner, dependency, metric, and future API-rollout requirements"
+    ],
+    "excluded_work": [
+      "S3 reads or writes",
+      "network access or endpoint probing",
+      "retrospective source refetch",
+      "served-object mutation",
+      "deployment",
+      "lot-zone rejoin or recomputation"
+    ]
+  },
+  "snapshot_inputs": [
+    {
+      "path": "work/coverage/served-proof-registry-20260722.json",
+      "contract": "served-proof-registry/v2",
+      "sha256": "4ccdf46a7f76d26e74bcf9bdfc8f147e6eb54322092b134c171a776b39afab17",
+      "role": "authoritative logical zone-serving status"
+    },
+    {
+      "path": "work/coverage/proof-legacy-515-historical-20260722.json",
+      "contract": "proof-legacy-515-historical/v1",
+      "sha256": "c8c1ef9671862fd671269c283da60ba06a94dad99934314d2702b118e3a4628d",
+      "role": "local historical classification for the 515 recoverable collections"
+    },
+    {
+      "path": "work/coverage/proof-orphan-356-reconciliation-20260722.json",
+      "contract": "proof-orphan-reconciliation/v1",
+      "sha256": "afe412b7e38d4ee51f6a19c53cfcbe5c4c8e01e63d54d8e5f857fbab820b91c9",
+      "role": "local reconciliation classification for the 356 quarantined collections"
+    },
+    {
+      "path": "work/coverage/lot-zoning-proof-status-20260722.json",
+      "contract": "lot-zoning-proof-status/v1",
+      "sha256": "b0d9b5c40fda1327356bcd4e936a99fbc7c05d9761841f8b222427bc00f337ae",
+      "role": "authoritative lot assignment and geometry-provenance impact baseline"
+    }
+  ],
+  "non_negotiable_rules": {
+    "snapshot_immutability": "Counts, classifications, source identity strings, and hashes from the four inputs are evidence snapshots. This queue may add review decisions but may not silently rewrite them.",
+    "no_retrospective_refetch": "No network request, endpoint probe, S3 read, or new download may be used to recreate or strengthen historical proof for a 2026-07-22 served object. A later remote response is a new observation, not evidence of the historical bytes or lineage.",
+    "forward_only_evidence": "Any future acquisition must be separately authorized, timestamped as new, retain its own source bytes and hash, and must not promote a historical cohort unless it independently satisfies the v2 proof contract for the object then proposed for service.",
+    "no_inference": "A generic municipal URL, homepage, S3 locator, pipeline label, inferred URL, or slug-only document match is not source identity and cannot advance a queue item.",
+    "assignment_is_independent": "A provenance-state transition does not create, remove, or recompute a lot-zone assignment. The retained 2,276,056 recorded assignments remain a separate fact.",
+    "no_served_status_promotion": "Historical-verified and legacy-traceable are local evidence classes, not exact v2 eligibility. No cohort may emit geometry-verified until the exact v2 proof gate passes.",
+    "single_writer": "Only the designated queue steward may alter a cohort's state; every transition requires an appended decision record with reviewer, date, and cited local evidence."
+  },
+  "owners": {
+    "queue_steward": "recovery-r2 provenance steward",
+    "evidence_reviewer": "provenance reviewer",
+    "human_linkage_owner": "municipal/source-record owner",
+    "proof_authority": "geometry proof contract owner",
+    "api_contract_owner": "Immo/OGC API contract owner",
+    "release_owner": "service release owner",
+    "lot_join_owner": "lot-zone assignment owner"
+  },
+  "state_machine": {
+    "states": [
+      {
+        "id": "snapshot-locked",
+        "meaning": "Cohort is registered against immutable input hashes; no claim beyond the input classification is made.",
+        "entry_gate": "All four snapshot hashes and cohort arithmetic match this queue.",
+        "exit_gate": "Evidence reviewer records the cited local chain or the explicit absence of admissible lineage.",
+        "owner": "queue_steward"
+      },
+      {
+        "id": "local-evidence-reviewed",
+        "meaning": "Only local retained evidence has been reviewed and classified without endpoint or object-store access.",
+        "entry_gate": "Every reviewed collection has a source-report pointer; exact identity strings remain byte-for-byte preserved; exclusions were applied.",
+        "exit_gate": "The class-specific acceptance gate passes, or the cohort is routed to blocked-no-admissible-lineage.",
+        "owner": "evidence_reviewer"
+      },
+      {
+        "id": "human-linkage-review",
+        "meaning": "A candidate identity needs an accountable human decision about its link to the served logical collection.",
+        "entry_gate": "The candidate has a cited local artifact or endpoint identity but lacks a proven collection link.",
+        "exit_gate": "Human linkage owner either supplies admissible local linkage evidence, or records that no linkage is available.",
+        "owner": "human_linkage_owner"
+      },
+      {
+        "id": "blocked-no-admissible-lineage",
+        "meaning": "No admissible local lineage supports advancement. The cohort remains explicitly quarantined; it is not retried by refetch.",
+        "entry_gate": "Reviewer documents the rejected evidence categories and records the unresolved owner/dependency.",
+        "exit_gate": "Only newly supplied, separately preserved local records can return an item to local-evidence-reviewed.",
+        "owner": "human_linkage_owner",
+        "terminal_for_this_lane": true
+      },
+      {
+        "id": "ready-for-forward-validation-authorization",
+        "meaning": "Local review is complete enough to request a distinct future validation scope; no validation or retrieval is performed by this lane.",
+        "entry_gate": "Class-specific local gate passes, a proof authority is named, and the current API label remains non-verified.",
+        "exit_gate": "A separately authorized forward-only validation plan is accepted outside recovery-r2.",
+        "owner": "proof_authority"
+      },
+      {
+        "id": "v2-proof-validated",
+        "meaning": "External successor state only: exact collection and feature proof for a newly proposed served object has passed the v2 contract.",
+        "entry_gate": "Separate authorization, immutable new-source capture, exact source/object linkage, feature-level proof completeness, and proof-contract-owner approval.",
+        "exit_gate": "API canary gate passes with no assignment or geometry regression.",
+        "owner": "proof_authority"
+      },
+      {
+        "id": "api-canary-approved",
+        "meaning": "External successor state only: additive provenance fields have passed contract and regression checks for a bounded canary.",
+        "entry_gate": "v2-proof-validated, API schema approved, response labels verified, and rollback artifact prepared.",
+        "exit_gate": "Release owner approves progressive rollout metrics.",
+        "owner": "api_contract_owner"
+      },
+      {
+        "id": "api-general-availability",
+        "meaning": "External successor state only: the additive API label is generally available after approved rollout.",
+        "entry_gate": "Canary error, schema, and assignment-preservation gates pass for the agreed observation window.",
+        "owner": "release_owner"
+      }
+    ],
+    "allowed_transitions": [
+      "snapshot-locked -> local-evidence-reviewed",
+      "local-evidence-reviewed -> human-linkage-review",
+      "local-evidence-reviewed -> blocked-no-admissible-lineage",
+      "local-evidence-reviewed -> ready-for-forward-validation-authorization",
+      "human-linkage-review -> local-evidence-reviewed",
+      "human-linkage-review -> blocked-no-admissible-lineage",
+      "ready-for-forward-validation-authorization -> v2-proof-validated",
+      "v2-proof-validated -> api-canary-approved",
+      "api-canary-approved -> api-general-availability"
+    ],
+    "forbidden_transitions": [
+      "snapshot-locked -> v2-proof-validated",
+      "local-evidence-reviewed -> geometry-verified API label",
+      "human-linkage-review -> geometry-verified API label",
+      "blocked-no-admissible-lineage -> ready-for-forward-validation-authorization without new admissible local evidence",
+      "any-state -> assignment recomputed",
+      "any-state -> source proof strengthened by retrospective refetch"
+    ]
+  },
+  "queue": [
+    {
+      "id": "R2-REC-HV-006",
+      "cohort": "recoverable / historical-verified",
+      "source_report": "work/coverage/proof-legacy-515-historical-20260722.json#/summary",
+      "served_registry_status": "recoverable",
+      "local_evidence_class": "historical-verified",
+      "collections": 6,
+      "features": 4629,
+      "current_state": "snapshot-locked",
+      "next_state": "local-evidence-reviewed",
+      "priority": "P0-local-review",
+      "owner": "evidence_reviewer",
+      "actions": [
+        "Reconcile each retained exact-byte/artifact chain to its served logical collection using only the cited local paths and hashes.",
+        "Record a reviewer decision per collection; preserve source identity and artifact hash without normalizing either.",
+        "Prepare a proof-authority request only after all six chains pass local review."
+      ],
+      "acceptance_gate": {
+        "pass_when": [
+          "All 6 collection-to-source chains cite retained local bytes or artifacts and the source-to-output link.",
+          "The six artifact hashes and 4,629-feature subtotal reconcile to the source report.",
+          "Reviewer records that this is historical linkage only and not exact v2 proof."
+        ],
+        "fail_or_hold_when": [
+          "Any chain lacks a local linking record or its artifact hash no longer matches the snapshot.",
+          "A current endpoint response is offered as substitute evidence."
+        ]
+      },
+      "dependencies": [
+        "snapshot integrity",
+        "provenance reviewer availability",
+        "proof authority for any later forward-only validation"
+      ],
+      "api_baseline": {
+        "zone_provenance_status": "recoverable",
+        "assigned_lot_status": "geometry-legacy-traceable/recoverable",
+        "rule": "The immutable lot report provides only the 514-collection recoverable aggregate; it does not support an exact six-collection lot subtotal."
+      }
+    },
+    {
+      "id": "R2-REC-LT-509",
+      "cohort": "recoverable / legacy-traceable",
+      "source_report": "work/coverage/proof-legacy-515-historical-20260722.json#/summary",
+      "served_registry_status": "recoverable",
+      "local_evidence_class": "legacy-traceable",
+      "collections": 509,
+      "features": 52640,
+      "current_state": "snapshot-locked",
+      "next_state": "local-evidence-reviewed",
+      "priority": "P1-lineage-register",
+      "owner": "evidence_reviewer",
+      "actions": [
+        "Freeze each exact historical URL, layer, item, filter, or dataset identity as a non-fetchable lineage record.",
+        "Review source identity specificity and retained local link; record the missing upstream-byte gap explicitly.",
+        "Batch only review decisions that have the same gate result; do not infer source linkage from host family alone."
+      ],
+      "acceptance_gate": {
+        "pass_when": [
+          "Every advanced collection keeps one exact, collection-specific historical identity and a cited local link.",
+          "The absence of exact upstream bytes is recorded for every item, including shared-layer selector gaps.",
+          "509 collections and 52,640 features reconcile to the snapshot."
+        ],
+        "fail_or_hold_when": [
+          "The identity is generic, inferred, truncated, or cannot be tied to the collection.",
+          "A refetch is proposed to fill the historical-byte gap."
+        ]
+      },
+      "dependencies": [
+        "snapshot integrity",
+        "collection-specific local linkage review",
+        "proof authority for any later forward-only validation"
+      ],
+      "api_baseline": {
+        "zone_provenance_status": "recoverable",
+        "assigned_lot_status": "geometry-legacy-traceable/recoverable",
+        "rule": "No exact 509-cohort lot count is derivable from the retained aggregate."
+      }
+    },
+    {
+      "id": "R2-QUAR-HV-021",
+      "cohort": "quarantine / historical-verified",
+      "source_report": "work/coverage/proof-orphan-356-reconciliation-20260722.json#/counts",
+      "served_registry_status": "quarantine",
+      "local_evidence_class": "historical-verified",
+      "collections": 21,
+      "features": 1246,
+      "current_state": "snapshot-locked",
+      "next_state": "local-evidence-reviewed",
+      "priority": "P0-local-review",
+      "owner": "evidence_reviewer",
+      "actions": [
+        "Verify the successful local deposit/serve record, exact admissible geometry source, and logical-collection link for each row.",
+        "Keep the served registry classification quarantine until a separately authorized v2 gate succeeds.",
+        "Escalate only a complete local chain to the proof authority; do not change the current served response."
+      ],
+      "acceptance_gate": {
+        "pass_when": [
+          "All 21 rows retain an explicit successful local record and collection-specific admissible source identity.",
+          "The 1,246-feature subtotal reconciles and the missing v2 retrieval/hash fields are declared.",
+          "Reviewer confirms no generic URL, S3 locator, or inferred identity was used."
+        ],
+        "fail_or_hold_when": [
+          "The evidence is only a pipeline label or cannot link source and served collection.",
+          "Historical linkage is mislabeled as present v2 proof."
+        ]
+      },
+      "dependencies": [
+        "snapshot integrity",
+        "local deposit/serve records",
+        "proof authority for any later forward-only validation"
+      ],
+      "api_baseline": {
+        "zone_provenance_status": "quarantine",
+        "assigned_lot_status": "geometry-quarantine",
+        "rule": "No exact 21-cohort lot count is derivable from the retained quarantine aggregate."
+      }
+    },
+    {
+      "id": "R2-QUAR-LT-191",
+      "cohort": "quarantine / legacy-traceable",
+      "source_report": "work/coverage/proof-orphan-356-reconciliation-20260722.json#/counts",
+      "served_registry_status": "quarantine",
+      "local_evidence_class": "legacy-traceable",
+      "collections": 191,
+      "features": 20595,
+      "current_state": "snapshot-locked",
+      "next_state": "local-evidence-reviewed",
+      "priority": "P1-lineage-register",
+      "owner": "evidence_reviewer",
+      "actions": [
+        "Review surviving serve/deposit, legacy geometry, transform/output, or geometry-specific git evidence against the collection.",
+        "Record the precise missing segment of the upstream-to-v2 chain for each advanced row.",
+        "Route a row to human-linkage-review when a source artifact exists but the collection link is not proven."
+      ],
+      "acceptance_gate": {
+        "pass_when": [
+          "Every advanced row has a cited admissible local chain and its unresolved v2 gap.",
+          "191 collections and 20,595 features reconcile to the source report.",
+          "No legacy evidence is promoted to exact source eligibility."
+        ],
+        "fail_or_hold_when": [
+          "The alleged evidence is generic, unrelated, rejected by the input policy, or source-to-collection linkage is absent.",
+          "A remote response is proposed as retrospective proof."
+        ]
+      },
+      "dependencies": [
+        "snapshot integrity",
+        "provenance reviewer",
+        "human linkage owner for incomplete collection links"
+      ],
+      "api_baseline": {
+        "zone_provenance_status": "quarantine",
+        "assigned_lot_status": "geometry-quarantine",
+        "rule": "No exact 191-cohort lot count is derivable from the retained quarantine aggregate."
+      }
+    },
+    {
+      "id": "R2-QUAR-CAND-032",
+      "cohort": "quarantine / candidate-needs-human-confirmation",
+      "source_report": "work/coverage/proof-orphan-356-reconciliation-20260722.json#/counts",
+      "served_registry_status": "quarantine",
+      "local_evidence_class": "candidate-needs-human-confirmation",
+      "collections": 32,
+      "features": 1857,
+      "current_state": "snapshot-locked",
+      "next_state": "human-linkage-review",
+      "priority": "P2-human-correlation",
+      "owner": "human_linkage_owner",
+      "actions": [
+        "Ask the accountable municipal/source-record owner to confirm or reject the collection-to-artifact relationship using retained local records only.",
+        "Record the decision and citations; a confirmation may reclassify only to local-evidence-reviewed/legacy-traceable unless the stricter historical gate is met.",
+        "Route a rejected or unanswerable candidate to blocked-no-admissible-lineage."
+      ],
+      "acceptance_gate": {
+        "pass_when": [
+          "A named accountable owner provides collection-specific linkage supported by admissible retained local evidence.",
+          "The decision distinguishes confirmation of historical linkage from v2 proof.",
+          "32 collections and 1,857 features reconcile to the snapshot."
+        ],
+        "fail_or_hold_when": [
+          "Confirmation rests on memory, a generic municipal page, a filename/slug match, or a new remote fetch.",
+          "No accountable owner can provide an admissible local record."
+        ]
+      },
+      "dependencies": [
+        "named municipal/source-record owner",
+        "admissible retained local record",
+        "provenance reviewer"
+      ],
+      "api_baseline": {
+        "zone_provenance_status": "quarantine",
+        "assigned_lot_status": "geometry-quarantine",
+        "rule": "Candidate status is an internal provenance detail and cannot improve the public lot label."
+      }
+    },
+    {
+      "id": "R2-QUAR-ORPH-112",
+      "cohort": "quarantine / orphan",
+      "source_report": "work/coverage/proof-orphan-356-reconciliation-20260722.json#/counts",
+      "served_registry_status": "quarantine",
+      "local_evidence_class": "orphan",
+      "collections": 112,
+      "features": 14584,
+      "current_state": "snapshot-locked",
+      "next_state": "blocked-no-admissible-lineage",
+      "priority": "P3-manual-record-recovery",
+      "owner": "human_linkage_owner",
+      "actions": [
+        "Record each item as blocked with its excluded evidence categories and the accountable record owner, if known.",
+        "Accept only separately supplied, preserved local records for a future return to review.",
+        "Maintain quarantine and do not schedule a retrospective endpoint query, S3 lookup, or source reconstruction."
+      ],
+      "acceptance_gate": {
+        "pass_when": [
+          "All 112 collections are explicitly represented as blocked rather than silently omitted.",
+          "14,584 features reconcile to the source report.",
+          "Each later reopening names new admissible local evidence and its custodian."
+        ],
+        "fail_or_hold_when": [
+          "A generic URL, S3 locator, unsupported inference, or refetch is treated as recovered lineage."
+        ]
+      },
+      "dependencies": [
+        "municipal/source-record owner",
+        "newly supplied retained local record",
+        "provenance reviewer"
+      ],
+      "api_baseline": {
+        "zone_provenance_status": "quarantine",
+        "assigned_lot_status": "geometry-quarantine",
+        "rule": "The public state remains quarantine; no positive provenance claim is exposed."
+      }
+    }
+  ],
+  "metrics": {
+    "collection_partition": {
+      "recoverable_historical_verified": 6,
+      "recoverable_legacy_traceable": 509,
+      "quarantine_historical_verified": 21,
+      "quarantine_legacy_traceable": 191,
+      "quarantine_candidate_needs_human_confirmation": 32,
+      "quarantine_orphan": 112,
+      "total": 871,
+      "check": "6 + 509 + 21 + 191 + 32 + 112 = 871"
+    },
+    "feature_partition": {
+      "recoverable_historical_verified": 4629,
+      "recoverable_legacy_traceable": 52640,
+      "quarantine_historical_verified": 1246,
+      "quarantine_legacy_traceable": 20595,
+      "quarantine_candidate_needs_human_confirmation": 1857,
+      "quarantine_orphan": 14584,
+      "total": 95551,
+      "check": "4629 + 52640 + 1246 + 20595 + 1857 + 14584 = 95551"
+    },
+    "review_targets": {
+      "historical_linkage_local_review": {
+        "collections": 27,
+        "features": 5875
+      },
+      "legacy_lineage_local_review": {
+        "collections": 700,
+        "features": 73235
+      },
+      "human_linkage_decision": {
+        "collections": 32,
+        "features": 1857
+      },
+      "blocked_without_admissible_lineage": {
+        "collections": 112,
+        "features": 14584
+      }
+    },
+    "lot_baseline": {
+      "recorded_spatial_assignment": 2276056,
+      "geometry_legacy_traceable_recoverable": 1164678,
+      "geometry_quarantine": 1111378,
+      "no_zone_assignment": 1153807,
+      "geometry_verified": 0,
+      "checks": [
+        "1164678 + 1111378 = 2276056 recorded assignments",
+        "0 + 1164678 + 1111378 + 1153807 = 3429863 served lots"
+      ],
+      "constraint": "The input preserves lot impact only by recoverable/quarantine zone status. Per-cohort lot counts for 6, 509, 21, 191, 32, and 112 are intentionally not derived."
+    },
+    "operational_success": [
+      "Every cohort has one owner, next state, acceptance gate, and dependency.",
+      "All transitions retain an evidence citation and an explicit decision record.",
+      "Retrospective-refetch attempts: 0.",
+      "Unauthorized S3 reads/writes, network calls, deployments, and assignment recomputations: 0.",
+      "API responses never emit geometry-verified before v2-proof-validated."
+    ]
+  },
+  "api_rollout_mapping": {
+    "status": "proposed; no API or served-object change is authorized by this queue",
+    "compatibility_rule": "Add fields only. Do not repurpose zone_geometry_status, which denotes geometric quality (clean/suspect/fragmented/dispersed), not source provenance.",
+    "proposed_additive_fields": {
+      "zone_feature": {
+        "field": "geometry_provenance",
+        "shape": {
+          "serving_status": "recoverable | quarantine | exact-source-eligible",
+          "local_evidence_class": "historical-verified | legacy-traceable | candidate-needs-human-confirmation | orphan | null",
+          "proof_state": "no-v2-proof | v2-validated",
+          "evidence_as_of": "YYYY-MM-DD"
+        },
+        "rule": "proof_state is no-v2-proof for every cohort in this queue at creation."
+      },
+      "lot_feature": {
+        "field": "zoning_proof_status",
+        "allowed_values": [
+          "geometry-verified",
+          "geometry-legacy-traceable/recoverable",
+          "geometry-quarantine",
+          "no-zone-assignment"
+        ],
+        "rule": "Preserve the lot-status precedence and existing assignment_method; provenance rollouts must not recompute zone_code, assignment_method, or zone_assignment_status."
+      }
+    },
+    "cohort_to_response_mapping": [
+      {
+        "cohorts": [
+          "R2-REC-HV-006",
+          "R2-REC-LT-509"
+        ],
+        "zone_geometry_provenance": {
+          "serving_status": "recoverable",
+          "proof_state": "no-v2-proof"
+        },
+        "lot_zoning_proof_status": "geometry-legacy-traceable/recoverable",
+        "lot_scope": "Only the aggregate 1,164,678 assigned lots joined to recoverable zone collections is known; no per-cohort split is emitted."
+      },
+      {
+        "cohorts": [
+          "R2-QUAR-HV-021",
+          "R2-QUAR-LT-191",
+          "R2-QUAR-CAND-032",
+          "R2-QUAR-ORPH-112"
+        ],
+        "zone_geometry_provenance": {
+          "serving_status": "quarantine",
+          "proof_state": "no-v2-proof"
+        },
+        "lot_zoning_proof_status": "geometry-quarantine",
+        "lot_scope": "Only the aggregate 1,111,378 assigned lots joined to quarantined zone collections is known; no per-cohort split is emitted."
+      },
+      {
+        "cohorts": [],
+        "zone_geometry_provenance": null,
+        "lot_zoning_proof_status": "no-zone-assignment",
+        "lot_scope": "1,153,807 lots remain unaffected by this geometry-provenance queue; 57,924 are in 30 lot collections with no matching logical zone collection."
+      }
+    ],
+    "rollout_waves": [
+      {
+        "id": "API-0",
+        "name": "contract review",
+        "change": "No response change; approve enum semantics, precedence, and rollback behavior.",
+        "gate": "API contract owner signs that geometry_provenance is additive and distinct from geometry quality."
+      },
+      {
+        "id": "API-1",
+        "name": "zone canary",
+        "change": "Expose geometry_provenance on a bounded, reviewed zone-collection canary only.",
+        "gate": "Every canary label matches its queue cohort; proof_state remains no-v2-proof; existing response fields are byte-for-byte semantically unchanged."
+      },
+      {
+        "id": "API-2",
+        "name": "lot status exposure",
+        "change": "Expose or document zoning_proof_status as the four-value derived lot status without a per-cohort impact split.",
+        "gate": "Lot partition remains 0 / 1164678 / 1111378 / 1153807; assignment_method and zone_code distributions do not change."
+      },
+      {
+        "id": "API-3",
+        "name": "verified promotion canary",
+        "change": "For a separately authorized successor item only, emit proof_state v2-validated and geometry-verified only after the v2-proof-validated state.",
+        "gate": "Exact v2 proof, served-object linkage, API regression suite, release approval, and a reversible rollout plan all pass."
+      }
+    ],
+    "rollback": "Remove the additive geometry_provenance field or revert it to the prior non-verified label. Never roll back by altering zone geometry, lot assignments, source snapshots, or historical evidence records."
+  },
+  "queue_update_protocol": {
+    "required_transition_record": [
+      "queue item id",
+      "from state",
+      "to state",
+      "decision timestamp",
+      "owner and independent reviewer",
+      "cited local evidence paths and hashes",
+      "acceptance-gate result",
+      "explicit statement that no retrospective refetch was used"
+    ],
+    "reconciliation_before_update": [
+      "six cohort collection count is 871",
+      "six cohort feature count is 95551",
+      "recoverable partition is 6 + 509 = 515",
+      "quarantine partition is 21 + 191 + 32 + 112 = 356",
+      "lot baseline remains unchanged unless an independently authorized lot audit says otherwise"
+    ]
+  }
+}

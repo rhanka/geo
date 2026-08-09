@@ -9,15 +9,30 @@
 import { s3Client, BUCKET } from "./lib/s3.js";
 import { ListObjectsV2Command } from "@aws-sdk/client-s3";
 
-// 30 focus immo : 7 déjà servies historiquement + 23 demandées (#74). sainte-catherine = acquisition à part.
-const FOCUS_SERVED_BASELINE = [
-  "longueuil", "rosemere", "westmount", "hampstead", "cote-saint-luc", "dorval", "chambly",
+// AUTORITÉ = agent immo (radar-immobilier), mesure zone↔grille live via API OGC (h2a loop-mrf5dl5b, 2026-07-10).
+// L'ancienne liste curée geo (banlieues MTL: longueuil/westmount/brossard/…) est SUPPRIMÉE — désalignée de la
+// perception immo (recouvrement quasi nul). Ici = les villes qu'immo priorise (cohérence zone↔grille cassée),
+// par tier. Full 30/31 en attente de la liste complète d'immo (demandée sur le thread focus30).
+// LISTE COMPLÈTE des 30 (immo, 2026-07-10, mesure zone↔grille sur l'OGC servi), par état.
+export const FOCUS_IMMO_OK_LAYER = [ // couche zone↔grille OK ; reste = re-fold + parse au niveau lot
+  "saint-amable", "saint-raymond", "mont-saint-hilaire", "saint-stanislas-de-kostka",
+  "cowansville", "chelsea", "la-sarre", "saint-gilbert", "neuville",
 ];
-const FOCUS_REQUESTED_23 = [
-  "saint-lambert", "mont-royal", "montreal-ouest", "brossard", "sainte-catherine", "la-prairie",
-  "delson", "candiac", "montreal-est", "lile-dorval", "saint-constant", "saint-bruno-de-montarville",
-  "carignan", "dollard-des-ormeaux", "pointe-claire", "saint-philippe", "saint-mathieu",
-  "chateauguay", "sainte-julie", "saint-basile-le-grand", "varennes", "kirkland", "boucherville",
+export const FOCUS_IMMO_WINS = [ // corrigées cette session (canon + serving + vision), servies OK
+  "mont-tremblant", "saint-frederic", "champlain", "rosemere", "plaisance", "coaticook",
+];
+export const FOCUS_IMMO_WRONG_SOURCE = [ // 0% malgré grille : mauvaise source / millésime disjoint (swap couche)
+  "saint-mathieu-de-beloeil", "hemmingford--les-jardins-de-napierville--2", "saint-charles-borromee", "sutton",
+];
+export const FOCUS_IMMO_PARTIAL = [ // couverture partielle à remonter
+  "sainte-catherine", "rimouski", "saint-come-liniere", "levis", "saint-raphael", "sainte-cecile-de-milton", "preissac",
+];
+export const FOCUS_IMMO_GRILLE_ABSENTE = ["petite-riviere-saint-francois", "notre-dame-de-lourdes--lerable"];
+export const FOCUS_IMMO_ZONAGE_ABSENT = ["alma", "saint-boniface"];
+/** Les 30 villes focus AUTORITAIRE immo (liste complète, alignée à l'identique sur son snapshot). */
+export const FOCUS_30_SLUGS: readonly string[] = [
+  ...FOCUS_IMMO_OK_LAYER, ...FOCUS_IMMO_WINS, ...FOCUS_IMMO_WRONG_SOURCE,
+  ...FOCUS_IMMO_PARTIAL, ...FOCUS_IMMO_GRILLE_ABSENTE, ...FOCUS_IMMO_ZONAGE_ABSENT,
 ];
 
 async function servedSlugs(): Promise<Set<string>> {
@@ -40,14 +55,16 @@ async function servedSlugs(): Promise<Set<string>> {
 
 async function main(): Promise<void> {
   const have = await servedSlugs();
-  const all = [...FOCUS_SERVED_BASELINE, ...FOCUS_REQUESTED_23];
+  const all = [...FOCUS_30_SLUGS];
   const served = all.filter((s) => have.has(s));
   const missing = all.filter((s) => !have.has(s));
-  console.log(`FOCUS-30 zonage servi : ${served.length}/${all.length}`);
-  console.log(`  baseline 7 servies : ${FOCUS_SERVED_BASELINE.filter((s) => have.has(s)).length}/7`);
-  console.log(`  lot-23 #74 servies : ${FOCUS_REQUESTED_23.filter((s) => have.has(s)).length}/23`);
+  console.log(`FOCUS-IMMO zonage servi : ${served.length}/${all.length}`);
+  console.log(`  ok-layer=${FOCUS_IMMO_OK_LAYER.length} wins=${FOCUS_IMMO_WINS.length} wrong-source=${FOCUS_IMMO_WRONG_SOURCE.length} partial=${FOCUS_IMMO_PARTIAL.length} grille-absente=${FOCUS_IMMO_GRILLE_ABSENTE.length} zonage-absent=${FOCUS_IMMO_ZONAGE_ABSENT.length} (total ${FOCUS_30_SLUGS.length}, autorité immo)`);
   console.log(`SERVIES : ${served.sort().join(", ")}`);
   console.log(`MANQUANTES : ${missing.sort().join(", ")}`);
 }
 
-main().catch((e) => { console.error(e instanceof Error ? e.message : String(e)); process.exit(1); });
+// Exécution directe seulement (l'import de FOCUS_30_SLUGS ne doit pas lancer le scan S3).
+if (import.meta.url === `file://${process.argv[1]}`) {
+  main().catch((e) => { console.error(e instanceof Error ? e.message : String(e)); process.exit(1); });
+}
