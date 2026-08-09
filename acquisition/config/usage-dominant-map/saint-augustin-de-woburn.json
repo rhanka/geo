@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "A": "agricole",
+    "AFT": "agricole",
+    "I": "industriel",
+    "REC": "environnemental",
+    "CONS": "environnemental",
+    "IL": null,
+    "M": null,
+    "P": null,
+    "RU": null
+  },
+  "source": "https://cdn.gestionweblex.ca/files/TfVuO1nLpy",
+  "note": "Municipalité de Saint-Augustin de Woburn (MRC du Granit), règlement de zonage no 279-2010 (adoption 1 novembre 2010, en vigueur 11 février 2011). Table VERBATIM à l'art. 5.1 « RÉPARTITION DU TERRITOIRE MUNICIPAL EN ZONES », colonnes « ZONE | VOCATION DOMINANTE », introduite par: « Chaque zone comporte un numéro d'identification auquel sont attachées une ou plusieurs lettres suffixes indiquant la vocation dominante ». Contenu: « A Agricole | Af Agroforestière | Cons Conservation | I Industrielle | M Mixte | P Publique | R Résidentielle | Rec Récréative | Ru Rurale | Vill Villégiature ». C'est le moule de la MRC du Granit (même art. 5.1 et même colonne « VOCATION DOMINANTE » que stornoway 2010-452, lac-drolet 491, sainte-cecile-de-whitton 2009-08, saint-robert-bellarmin 2009-08, saint-ludger 2006-90, saint-romain 2012-257 et courcelles 22-423), mais la table lue est bien celle de Saint-Augustin de Woburn. Propriétaire attesté par le CORPS (jamais pdfinfo): page de garde « MUNICIPALITÉ DE SAINT-AUGUSTIN DE WOBURN / RÈGLEMENT DE ZONAGE / RÈGLEMENT N° 279-2010 »; fiche « RÈGLEMENT DE ZONAGE DE LA MUNICIPALITÉ DE SAINT-AUGUSTIN DE WOBURN »; pied de page récurrent sur CHAQUE page « RÈGLEMENT DE ZONAGE – SAINT-AUGUSTIN DE WOBURN »; grille = Annexe 1 du règl. 279-2010. ⛔ IL = « ÎLOT » (géométrie), PAS « Industriel » — null anti-fall-through OBLIGATOIRE, prouvé par DEUX verrous (même standard que stornoway): (1) « Îlot » est ABSENT de la table 5.1 (privé du mot « dominante »); (2) la grille (Annexe 1, feuillet 2/6) porte l'en-tête « … A-1 A-2 A-3 îlot 1 Îlot 2 Îlot 3 » = EXACTEMENT les 3 polygones IL-1/2/3 du SIG, en colonnes SÉPARÉES de la zone « I-1 » (feuillet 6/6 « … P-1 P-2 I-1 » = la vocation Industrielle). NUANCE: le corps de Woburn ne porte PAS la définition-lexique « Îlot : superficie… » (ses 3 occurrences « îlot » visent un « îlot des pompes » et des îlots d'entreposage); la preuve IL->null repose donc sur les 2 verrous restants (colonnes de grille « Îlot 1/2/3 » + absence de la table 5.1). Sans cette clé, IL-1/2/3 tomberaient sur « I » -> industriel EN SILENCE. VILL sans objet: aucun polygone VILL servi par le SIG. Null explicites: M « Mixte » est dual; P « Publique » est public; RU « Rurale » ne nomme aucune des cinq catégories. REC « Récréative » -> environnemental (ligne Conservation/Récréative/Faunique du contrat) et Cons « Conservation » -> environnemental. R -> residentiel; A -> agricole; I -> industriel (grille I-1). AFT -> agricole: le corps écrit « Af », la grille sert « Aft1-N » = la forme exacte du SIG; repli inoffensif vers « A » -> agricole par longest-prefix. Recouvrement: les préfixes servis (AFT R RU M A CONS IL REC P I) sont TOUS sourcés verbatim par la table 5.1 (ou la grille pour Îlot); aucun code étranger introduit."
+}

@@ -1,0 +1,693 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:32:50.489Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 186,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 57,
+    "Regulation": 6,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 69,
+    "edges": 3,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "cookshire-eaton",
+      "storage_key": "raw/pv-index/cas/06517fdd417b1343c18fef9d04855c68309162d4a8d1f2887e79dc8fe87b02c7.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4486629",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:91",
+      "quote": "      (lot 4 486 629)."
+    },
+    {
+      "municipality_slug": "cookshire-eaton",
+      "storage_key": "raw/pv-index/cas/06517fdd417b1343c18fef9d04855c68309162d4a8d1f2887e79dc8fe87b02c7.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5851789",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1368",
+      "quote": "   l’acquisition de l’immeuble situé au 225, rue Pope (lot 5 851 789) – Avis"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 27,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 2078,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043204Z",
+  "documents": [
+    {
+      "slug": "cookshire-eaton",
+      "municipality_name": "Cookshire-Eaton",
+      "url": "https://cookshire-eaton.qc.ca/wp-content/uploads/2026/02/2026-01-12-PV-Seance.pdf",
+      "storage_key": "raw/pv-index/cas/06517fdd417b1343c18fef9d04855c68309162d4a8d1f2887e79dc8fe87b02c7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 57,
+        "Regulation": 6,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Cookshire-Eaton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "Session ordinaire du conseil sous la présidence de madame la mairesse"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "Daphné Raymond tenue le 12 janvier 2026 à 19 h 30 au 220, rue Principale"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-09-0409",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "         services (résolution 2025-09-0409)"
+            }
+          },
+          {
+            "label": "2026-01-0571",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:187",
+              "quote": "Résolution 2026-01-0571"
+            }
+          },
+          {
+            "label": "2026-01-0572",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:202",
+              "quote": "Résolution 2026-01-0572"
+            }
+          },
+          {
+            "label": "2026-01-0573",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:216",
+              "quote": "Résolution 2026-01-0573"
+            }
+          },
+          {
+            "label": "2026-01-0574",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:243",
+              "quote": "Résolution 2026-01-0574"
+            }
+          },
+          {
+            "label": "2026-01-0575",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:265",
+              "quote": "Résolution 2026-01-0575"
+            }
+          },
+          {
+            "label": "2026-01-0576",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:306",
+              "quote": "Résolution 2026-01-0576"
+            }
+          },
+          {
+            "label": "2026-01-0577",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:334",
+              "quote": "Résolution 2026-01-0577"
+            }
+          },
+          {
+            "label": "2026-01-0578",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:356",
+              "quote": "Résolution 2026-01-0578"
+            }
+          },
+          {
+            "label": "2026-01-0579",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:374",
+              "quote": "Résolution 2026-01-0579"
+            }
+          },
+          {
+            "label": "2026-01-0580",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:389",
+              "quote": "Résolution 2026-01-0580"
+            }
+          },
+          {
+            "label": "2026-01-0581",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:408",
+              "quote": "Résolution 2026-01-0581"
+            }
+          },
+          {
+            "label": "2026-01-0582",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:421",
+              "quote": "Résolution 2026-01-0582"
+            }
+          },
+          {
+            "label": "2026-01-0583",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:436",
+              "quote": "Résolution 2026-01-0583"
+            }
+          },
+          {
+            "label": "2026-01-0584",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:459",
+              "quote": "Résolution 2026-01-0584"
+            }
+          },
+          {
+            "label": "2026-01-0585",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:501",
+              "quote": "\fRésolution 2026-01-0585"
+            }
+          },
+          {
+            "label": "2026-01-0586",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:523",
+              "quote": "Résolution 2026-01-0586"
+            }
+          },
+          {
+            "label": "2026-01-0587",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:537",
+              "quote": "Résolution 2026-01-0587"
+            }
+          },
+          {
+            "label": "2026-01-0588",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:560",
+              "quote": "Résolution 2026-01-0588"
+            }
+          },
+          {
+            "label": "2025-12-0558",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:567",
+              "quote": "2025 selon la résolution 2025-12-0558, comme suit :"
+            }
+          },
+          {
+            "label": "2026-01-0589",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:578",
+              "quote": "Résolution 2026-01-0589"
+            }
+          },
+          {
+            "label": "2026-01-0590",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:606",
+              "quote": "Résolution 2026-01-0590"
+            }
+          },
+          {
+            "label": "2025-09-0429",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:609",
+              "quote": "résolution 2025-09-0429 pour le financement d’un véhicule de déneigement;"
+            }
+          },
+          {
+            "label": "2026-01-0591",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:630",
+              "quote": "Résolution 2026-01-0591"
+            }
+          },
+          {
+            "label": "2025-12-0569",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:632",
+              "quote": "CONSIDÉRANT la résolution numéro 2025-12-0569-B, adopté le"
+            }
+          },
+          {
+            "label": "2025-05-7916",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:668",
+              "quote": "résolution numéro 2025-05-7916-A soit modifiée au nom de Construction"
+            }
+          },
+          {
+            "label": "2026-01-0592",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:675",
+              "quote": "Résolution 2026-01-0592"
+            }
+          },
+          {
+            "label": "2017-05-6004",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:681",
+              "quote": "engagement selon les résolutions numéros 2017-05-6004, 2017-07-6091 et"
+            }
+          },
+          {
+            "label": "2026-01-0593",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:715",
+              "quote": "Résolution 2026-01-0593"
+            }
+          },
+          {
+            "label": "2026-01-0594",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:763",
+              "quote": "Résolution 2026-01-0594"
+            }
+          },
+          {
+            "label": "2026-01-0595",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:811",
+              "quote": "Résolution 2026-01-0595"
+            }
+          },
+          {
+            "label": "2026-01-0596",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:857",
+              "quote": "Résolution 2026-01-0596"
+            }
+          },
+          {
+            "label": "2026-01-0597",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:910",
+              "quote": "Résolution 2026-01-0597"
+            }
+          },
+          {
+            "label": "2026-01-0598",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:941",
+              "quote": "\fRésolution 2026-01-0598"
+            }
+          },
+          {
+            "label": "2026-01-0599",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:958",
+              "quote": "Résolution 2026-01-0599"
+            }
+          },
+          {
+            "label": "2026-01-0600",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:970",
+              "quote": "Résolution 2026-01-0600"
+            }
+          },
+          {
+            "label": "2026-01-0601",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:994",
+              "quote": "Résolution 2026-01-0601"
+            }
+          },
+          {
+            "label": "2026-01-0602",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1022",
+              "quote": "Résolution 2026-01-0602"
+            }
+          },
+          {
+            "label": "2026-01-0603",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1055",
+              "quote": "Résolution 2026-01-0603"
+            }
+          },
+          {
+            "label": "2026-01-0604",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1107",
+              "quote": "Résolution 2026-01-0604"
+            }
+          },
+          {
+            "label": "2026-01-0605",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1151",
+              "quote": "Résolution 2026-01-0605"
+            }
+          },
+          {
+            "label": "2026-01-0606",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1181",
+              "quote": "Résolution 2026-01-0606"
+            }
+          },
+          {
+            "label": "2026-01-0607",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1212",
+              "quote": "Résolution 2026-01-0607"
+            }
+          },
+          {
+            "label": "2026-01-0608",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1234",
+              "quote": "Résolution 2026-01-0608"
+            }
+          },
+          {
+            "label": "2026-01-0609",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1251",
+              "quote": "Résolution 2026-01-0609"
+            }
+          },
+          {
+            "label": "2026-01-0610",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1272",
+              "quote": "Résolution 2026-01-0610"
+            }
+          },
+          {
+            "label": "2026-01-0611",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1290",
+              "quote": "Résolution 2026-01-0611"
+            }
+          },
+          {
+            "label": "2026-01-0612",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1340",
+              "quote": "Résolution 2026-01-0612"
+            }
+          },
+          {
+            "label": "2026-01-0613",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1355",
+              "quote": "Résolution 2026-01-0613"
+            }
+          },
+          {
+            "label": "2026-01-0614",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1371",
+              "quote": "Résolution 2026-01-0614"
+            }
+          },
+          {
+            "label": "2026-01-0615",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1387",
+              "quote": "Résolution 2026-01-0615"
+            }
+          },
+          {
+            "label": "2026-01-0616",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1403",
+              "quote": "Résolution 2026-01-0616"
+            }
+          },
+          {
+            "label": "2026-01-0617",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1415",
+              "quote": "Résolution 2026-01-0617"
+            }
+          },
+          {
+            "label": "2026-01-0618",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1426",
+              "quote": "Résolution 2026-01-0618"
+            }
+          },
+          {
+            "label": "2026-01-0619",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1439",
+              "quote": "Résolution 2026-01-0619"
+            }
+          },
+          {
+            "label": "2026-01-0620",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1453",
+              "quote": "Résolution 2026-01-0620"
+            }
+          },
+          {
+            "label": "2026-01-0621",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1483",
+              "quote": "Résolution 2026-01-0621"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "391-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:154",
+              "quote": "   1) Règlement numéro 391-2026 concernant l’imposition des taxes"
+            }
+          },
+          {
+            "label": "393-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:159",
+              "quote": "   2) Règlement numéro 393-2026 décrétant une dépense et un emprunt"
+            }
+          },
+          {
+            "label": "382-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1406",
+              "quote": "Jean-Marc Dickenson et résolu d’adopter le Règlement numéro 382-2025"
+            }
+          },
+          {
+            "label": "389-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:167",
+              "quote": "   2) Règlement numéro 389-2025 concernant le code d’éthique et de"
+            }
+          },
+          {
+            "label": "390-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:169",
+              "quote": "   3) Règlement numéro 390-2025 concernant le code d’éthique et de"
+            }
+          },
+          {
+            "label": "379-2025",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:707",
+              "quote": "Dépôt du procès-verbal de correction du Règlement numéro 379-2025"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4486629",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:91",
+              "quote": "      (lot 4 486 629)."
+            }
+          },
+          {
+            "label": "5851789",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1368",
+              "quote": "   l’acquisition de l’immeuble situé au 225, rue Pope (lot 5 851 789) – Avis"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043204Z/cookshire-eaton/dc8fe87b02c7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043204Z/cookshire-eaton/dc8fe87b02c7.pdf/.graphify/.graphify_extract.json — 69 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 69,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cookshire-eaton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

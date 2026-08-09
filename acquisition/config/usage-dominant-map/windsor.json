@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "Rd": "residentiel",
+    "Rp": "residentiel",
+    "C": "commercial",
+    "Cp": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "Af": "agricole",
+    "Rec": "environnemental",
+    "P": null
+  },
+  "source": "https://www.villedewindsor.qc.ca/wp-content/uploads/2025/11/MJ-41_Mai-2024-Zonage.pdf",
+  "note": "Règlement de zonage no 106-2005 de la Ville de Windsor, version administrative M.J. 41 (Mai 2024) — concorde avec reglement_numero=106-2005 servi. Ce règlement n'a PAS de table « Abréviation / Fonction dominante »; la nomenclature est établie par les LIAISONS VERBATIM du corps et par les EN-TÊTES de famille des grilles (« GROUPES, CLASSES ET SOUS-CLASSES D'USAGES — ZONES : <famille> »), pas par le contenu de la matrice des usages permis. Liaisons du corps: « Dans les zones résidentielles commençant par la lettre « R » » (art. plantation, Règl. 305-2013) -> R = residentiel; « Dans les zones commerciales commençant par la lettre « C » » -> C = commercial; « Dans les zones industrielles commençant par la lettre « I » » -> I = industriel; « Dans les zones publiques « P » sauf pour les parcs et » -> P = PUBLIQUE donc null explicite (aucune dominante parmi les cinq); « Les zones agricoles A » (art. 84.1 TIAM) -> A = agricole; « Dans toutes les zones agro-forestières « Af » » -> Af = agricole (famille agro-forestière). En-têtes de grille (chacun surmonte les colonnes de codes cités): « ZONES : Résidentielles différées » surmonte Rd-1..Rd-14 et le MÊME bloc Rd est aussi titré « ZONES : Résidentielles » -> Rd = residentiel (« différées » qualifie le phasage de développement, pas la vocation, que le règlement nomme lui-même « Résidentielles »); « ZONES : Résidentielles prioritaires » surmonte Rp-1..Rp-8 -> Rp = residentiel; « ZONES : Commerciales, commerciales prioritaires et environnement » surmonte Cp-1, Cp-2, Env-1, Env-2 -> Cp = commercial (commerciales prioritaires); « ZONES : Récréatives » surmonte Rec-1..Rec-5 -> Rec = environnemental (règle Conservation/Récréative/Faunique). Les nulls explicites et les préfixes longs sont ANTI-FALL-THROUGH: le match est longest-prefix, donc Rd/Rp/Rec doivent être déclarés pour ne pas retomber sur « R », et Cp pour ne pas retomber sur « C ». Préfixes cités par le règlement mais ABSENTS du SIG (non mappés, gate): Env, Cd, Id, Ip. Le code aberrant « no.106-2005 » (1 polygone, numéro de règlement fuité dans le champ zone_code du SIG) ne préfixe aucune entrée du map et rend null."
+}

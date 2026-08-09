@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "Af": "agricole",
+    "Ap": "agricole",
+    "Fp": "agricole",
+    "Ca": "commercial",
+    "Ct": "commercial",
+    "Cv": "commercial",
+    "I": "industriel",
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Fc": null,
+    "Fr": null,
+    "Pa": null,
+    "Rc": null,
+    "Ru": null,
+    "UP": null,
+    "Va": null,
+    "Vb": null
+  },
+  "source": "https://nominingue.ca/wp-content/uploads/2021/11/reglement-zonage-2012-362-cod-administrative-rev-10-11-2021.pdf",
+  "note": "Municipalité de Nominingue, règlement de zonage numéro 2012-362 (codification administrative rév. 10-11-2021), art. 2.4 « Identification des zones »: « Chacune des zones est identifiée par sa vocation dominante et est identifiée par une ou deux lettres suivies d'un trait, puis de deux ou trois chiffres et sont regroupées sous les appellations suivantes ». Tableau 1 « Zones de la municipalité » (colonnes NOM / TYPE), verbatim: « Af | Agricole forestière » et « Ap | Agricole prioritaire » -> agricole ; « Fp | Forestière de production » -> agricole ; « Ca | Commerciale artérielle », « Ct | Commerciale touristique » et « Cv | Commerciale villageoise » -> commercial (« artérielle »/« touristique »/« villageoise » ne sont aucune des cinq: qualificatifs) ; « I | Industrielle » -> industriel ; « Ra | Résidentielle de faible densité » et « Rb | Résidentielle de moyenne densité » -> residentiel. Null explicite: « Fc | Forestière de conservation » et « Fr | Forestière et récréative » sont duales (Forestière -> agricole + Conservation/Récréative -> environnemental = 2 catégories DIFFÉRENTES) ; « Rc | Résidentielle, commerciale d'hébergement et communautaire » est duale (residentiel + commercial) ; « Ru | Rurale » n'est aucune des cinq et la table (colonne TYPE seule) ne lui assigne aucun usage d'Habitation ; « Up | Utilité publique » est publique ; « Pa | Paysagère » n'est aucune des cinq (ni Conservation, ni Récréative, ni Faunique) ; « Va | Villégiature privée de faible densité » et « Vb | Villégiature privée et commerciale » ont pour substantif « Villégiature », qui n'est aucune des cinq — ce n'est PAS « Résidentielle de villégiature » (précédents committés: lac-beauport HV et baie-comeau V -> null, contre portneuf Rv et sfx-brompton Rv -> residentiel) ; Vb n'est pas forcé à commercial car Vb = Va + commerce: si Va ne fonde aucune dominante, y ajouter du commerce ne rend pas la zone dominante commerciale. La 2e lettre est ici une VOCATION DISTINCTE, pas une sous-classe muette (Fc != Fp != Fr) -> mapping code par code, jamais par famille. Recouvrement table<->SIG = 17/18 préfixes servis. Préfixe OMIS: « Nc » (1 polygone, Nc-1) -> omis et NON null, car ZÉRO occurrence dans les trois millésimes du corps (le Tableau 1 porte « Cc | Communautaire de conservation », jamais « Nc ») ; seule l'annexe A / grille des usages 2020 sert Nc-1, et assimiler Nc à Cc serait une inférence. Aucun fall-through: ni « N » ni « Nc » n'est déclaré. « V | Villégiature » et « Cc | Communautaire de conservation » figurent au Tableau 1 mais ne sont pas servis, donc non mappés. Millésime tranché sur 3 documents: le projet 2020-452 porte un Tableau 1 identique mais reste étiqueté « Projet de règlement », et la codification du 2012-362 lui est POSTÉRIEURE (nov. 2021 > nov. 2020) -> le 2012-362 est en vigueur ; la légende est de toute façon stable sur les 3 millésimes. Couverture non-null structurellement basse (25/106): Va (32) et Ru (20) sont à eux seuls 49% du territoire et tombent hors des cinq catégories du contrat — c'est un plafond du contrat sur une muni de villégiature, PAS un défaut d'extraction. La matrice des usages permis n'est pas utilisée."
+}

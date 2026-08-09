@@ -46,16 +46,45 @@ import { join, dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
-import { s3Client, putBytes, exists } from "./lib/s3.js";
-import { websiteForSlug } from "../../packages/geo-sources-americas/src/ca-qc/municipalities/municipal-directory.js";
+import {
+  capturedFetch,
+  capturedText,
+  type CaptureFetchLike,
+  type CaptureHttpResponse,
+  type CaptureManifestLine,
+  type CaptureRequestInit,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
+import { copyObject, exists, getBytes, s3Client } from "./lib/s3.js";
+import { reapplyServedZonageEnrichment } from "./lib/reapply-zonage-enrichment.js";
+import {
+  attachGeometryProof,
+  carryForwardServedZoneProperties,
+  type GeometrySourceProof,
+  proofFromCaptureEntry,
+  putServedZoneAdditive,
+  putServedZoneGeojson,
+} from "./lib/zonage-proof.js";
+import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
+// Réutilise le validateur de codes-zone value-based (agnostique du NOM de champ)
+// déjà éprouvé côté WFS : signature code (CODE_PATTERN_RE), ratio non-null, rejet
+// séquentiel/OBJECTID/champ technique. Sert de GATE quand un --zone-field explicite
+// bypasse l'auto-picker (l'opérateur choisit le champ ; les VALEURS sont validées).
+import { zoneCodeStats, type ZoneCodeStats } from "./zones-wfs-run.js";
 
 // ── Constantes ────────────────────────────────────────────────────────────────
 const HERE = dirname(fileURLToPath(import.meta.url));
 const MUNIS_PATH = resolve(HERE, "../../packages/qc-sources/src/geo/municipalities.qc.json");
+const COVERAGE_MATRIX_PATH = resolve(HERE, "../../work/coverage/coverage-matrix.json");
+// Répertoire MAMH: slug → mamhCode (code géographique officiel). Crosswalk
+// AUTORITATIF pour les agrégats discriminés par un code muni numérique
+// (ex. Zonage_MRC_Témiscouata_vue.CODE_MUN). Jamais deviné : source MAMH.
+const MUNI_DIRECTORY_PATH = resolve(HERE, "../../packages/qc-sources/src/geo/qc-municipal-directory.json");
 const S3_PREFIX = "normalized/ca-qc-zonage/";
 const REAL_UA =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36";
-const HTTP_UA = "sentropic-geo/0.1";
+const HTTP_UA = CAPTURE_USER_AGENT;
 const HTTP_TIMEOUT_MS = 8_000;
 const MAX_FEATURES = 6_000;
 
@@ -96,10 +125,16 @@ const MUNI_ATTR_CANDIDATES = [
   "MUNICIPALITY", "municipality", "VILLE", "Ville", "nom_ville", "MUS_NM_MUN",
 ];
 
+// Crosswalk MAMH chargé une fois (single-process) : code géographique → slug, +
+// l'ensemble des slugs canoniques du registre. Peuplé par loadMuniCrosswalk()
+// avant tout traitement. Sert la résolution du discriminant muni des agrégats.
+let MUNI_CODE_TO_SLUG = new Map<string, string>();
+let MUNI_SLUG_SET = new Set<string>();
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 interface MuniEntry { slug: string; name: string; mrc: string | null; lat: number; lon: number }
 interface GeoFeature { type: "Feature"; geometry: { type: string; coordinates: unknown } | null; properties: Record<string, unknown> }
-interface GeoFC { type: "FeatureCollection"; features: GeoFeature[] }
+interface GeoFC { type: "FeatureCollection"; features: GeoFeature[]; exceededTransferLimit?: boolean }
 
 type Platform = "arcgis" | "goazimut" | "jmap" | "igo" | "wfs" | "carto" | "none";
 
@@ -122,18 +157,44 @@ interface SlugResult {
   zoneCodeField?: string;
   featureCount?: number;
   distanceKm?: number;
+  servedBefore?: ServedAudit[];
+  servedAfter?: ServedAudit[];
   deposited: boolean;
   status: "deposited" | "no-zonage-layer" | "matrice-only" | "no-viewer" | "spatial-fail" | "platform-not-arcgis" | "no-site" | "error";
   detail: string;
 }
 
+interface ServedAudit {
+  key: string;
+  features: number;
+  propertyKeys: string[];
+  populatedProperties: number;
+  zoneSourceUrls: string[];
+  zoneSourceLevels: string[];
+}
+
+interface CapturedFeatures {
+  features: GeoFeature[];
+  entry: CaptureManifestLine;
+  paginated: boolean;
+}
+
+/** A deposited v2 source must be a manifest entry, never a reconstructed body. */
+export function proofFromGonetCapture(entry: CaptureManifestLine) {
+  return proofFromCaptureEntry(entry, { type: "geonet", method: "natif", reliability: "directe" });
+}
+
+let CAPTURE: CaptureRun | null = null;
+
 // ── Args ──────────────────────────────────────────────────────────────────────
 interface GonetSeed { slug: string; code: string }
-interface Args { slugs: string[]; deposit: boolean; maxCarto: number; navMs: number; spatialKm: number; services: string[]; orgs: string[]; gonetSeeds: GonetSeed[]; outFile?: string }
+interface Args { slugs: string[]; deposit: boolean; maxCarto: number; navMs: number; spatialKm: number; services: string[]; orgs: string[]; gonetSeeds: GonetSeed[]; gonetMrcs: string[]; zoneField?: string; muniField?: string; outFile?: string }
 function parseArgs(argv: string[]): Args {
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
   const has = (k: string) => argv.includes(`--${k}`);
   const csv = (k: string): string[] => (get(k) ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  const zoneField = get("zone-field")?.trim();
+  const muniField = get("muni-field")?.trim();
   return {
     slugs: csv("slugs"),
     deposit: has("deposit") && !has("no-deposit"),
@@ -144,9 +205,19 @@ function parseArgs(argv: string[]): Args {
     // ArcGIS hosted-org id (--org) or explicit FeatureServer URL (--service).
     services: csv("service"),
     orgs: csv("org"),
+    // Field-picker overrides (--service mode): quand fournis, bypassent l'auto
+    // field-picker qui se trompe sur les agrégats MRC portant un champ décoy
+    // (affectation TYPE_ZONE, préfixe catégorie ZONE_). L'opérateur nomme le champ
+    // code-zone RÉEL (ex. ZONE=C-1, Sect=R-20) et le discriminant muni (CODE_MUN
+    // code MAMH, MUN nom). Les VALEURS restent validées (anti-invention).
+    ...(zoneField ? { zoneField } : {}),
+    ...(muniField ? { muniField } : {}),
     // GoNet-seeded mode (discover-once-deposit-many): skip the site crawl and go
     // straight to the GOnet6 viewer for a known municode. Format: slug=municode.
     gonetSeeds: csv("gonet").map((pair) => { const [slug, code] = pair.split("="); return { slug: (slug ?? "").trim(), code: (code ?? "").trim() }; }).filter((s) => s.slug && /^\d{4,5}$/.test(s.code)),
+    // GoNet MRC mode: derive slug=municode seeds from the committed MAMH directory
+    // and the read-only coverage matrix. Only zones!=done slugs are targeted.
+    gonetMrcs: csv("gonet-mrc"),
     ...(get("out") ? { outFile: get("out") } : {}),
   };
 }
@@ -174,14 +245,29 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 }
 
-async function fetchJson<T = unknown>(url: string, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+async function capturedArcgisJson<T = unknown>(
+  url: string,
+  slugs: string[] = [],
+  timeoutMs = HTTP_TIMEOUT_MS,
+): Promise<{ value: T; entry: CaptureManifestLine } | null> {
+  if (!CAPTURE) throw new Error("zones-obscura fetchJson called without an open capture run");
   try {
-    const r = await fetch(url, { signal: ctrl.signal, headers: { "user-agent": HTTP_UA, accept: "application/json" } });
-    if (!r.ok) return null;
-    return JSON.parse(await r.text()) as T;
-  } catch { return null; } finally { clearTimeout(t); }
+    const captured = await capturedFetch(url, {
+      headers: { "user-agent": HTTP_UA, accept: "application/json" },
+    }, {
+      run: CAPTURE,
+      lane: "zones",
+      source: "zones-obscura-arcgis",
+      slugs,
+      timeoutMs,
+    });
+    if (!captured.ok) return null;
+    return { value: JSON.parse(capturedText(captured)) as T, entry: captured.line };
+  } catch { return null; }
+}
+
+async function fetchJson<T = unknown>(url: string, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
+  return (await capturedArcgisJson<T>(url, [], timeoutMs))?.value ?? null;
 }
 
 // ── CDP minimal (Chromium headless via remote-debugging) ──────────────────────
@@ -326,6 +412,66 @@ class Browser {
     } catch { return null; }
   }
 
+  /**
+   * Adapt the browser's authenticated GoNet session to the capture chokepoint.
+   * The response body crosses CDP as base64, so the Uint8Array handed to
+   * `capturedFetch` is exactly the body read by `Response.arrayBuffer()` — never
+   * a JSON re-serialization of parsed features.
+   */
+  sessionFetch(sid: string): CaptureFetchLike {
+    return async (url: string, init?: CaptureRequestInit): Promise<CaptureHttpResponse> => {
+      if (init?.body instanceof Uint8Array) {
+        throw new Error("GoNet session fetch does not support binary request bodies");
+      }
+      const headers = Object.fromEntries(
+        Object.entries(init?.headers ?? {}).filter(([name]) => name.toLowerCase() !== "user-agent"),
+      );
+      const request = {
+        url,
+        method: init?.method ?? "GET",
+        headers,
+        ...(typeof init?.body === "string" ? { body: init.body } : {}),
+      };
+      const expr = `(async()=>{
+        const toBase64=(bytes)=>{let out="";for(let i=0;i<bytes.length;i+=32768){out+=String.fromCharCode(...bytes.subarray(i,i+32768));}return btoa(out);};
+        try {
+          const req=${JSON.stringify(request)};
+          const r=await fetch(req.url,{method:req.method,headers:req.headers,body:req.body,redirect:"manual",credentials:"include"});
+          const headers={};r.headers.forEach((value,key)=>{headers[key]=value;});
+          const body=toBase64(new Uint8Array(await r.arrayBuffer()));
+          return JSON.stringify({status:r.status,url:r.url,headers,body});
+        } catch (e) { return JSON.stringify({error:String((e&&e.message)||e)}); }
+      })()`;
+      const text = await this.evalAsync(sid, expr);
+      if (!text) throw new Error("GoNet session fetch did not return a response");
+      let payload: { status?: unknown; url?: unknown; headers?: unknown; body?: unknown; error?: unknown };
+      try { payload = JSON.parse(text) as typeof payload; }
+      catch { throw new Error("GoNet session fetch returned invalid CDP JSON"); }
+      if (payload.error) throw new Error(`GoNet session fetch: ${String(payload.error)}`);
+      if (typeof payload.status !== "number" || typeof payload.body !== "string") {
+        throw new Error("GoNet session fetch returned an incomplete response");
+      }
+      const values = new Map<string, string>();
+      if (payload.headers && typeof payload.headers === "object") {
+        for (const [name, value] of Object.entries(payload.headers as Record<string, unknown>)) {
+          if (typeof value === "string") values.set(name.toLowerCase(), value);
+        }
+      }
+      const bytes = new Uint8Array(Buffer.from(payload.body, "base64"));
+      return {
+        status: payload.status,
+        ok: payload.status >= 200 && payload.status < 300,
+        ...(typeof payload.url === "string" ? { url: payload.url } : {}),
+        headers: { get: (name: string): string | null => values.get(name.toLowerCase()) ?? null },
+        arrayBuffer: async (): Promise<ArrayBuffer> => {
+          const copy = new Uint8Array(bytes.byteLength);
+          copy.set(bytes);
+          return copy.buffer;
+        },
+      };
+    };
+  }
+
   async closeSession(targetId: string): Promise<void> {
     try { await this.send("Target.closeTarget", { targetId }); } catch { /* ignore */ }
   }
@@ -446,26 +592,122 @@ function pickMuniField(fields: FieldInfo[]): string | null {
   return null;
 }
 
-interface LayerProbe { layerUrl: string; zoneField: string; muniField: string | null; geometryType: string; extent: ExtentInfo | null; count: number }
+// ── Overrides de champs (--zone-field / --muni-field, mode --service) ─────────
+/** Normalise un code muni brut (trim + retire un suffixe décimal ArcGIS). */
+export function normMuniCode(v: unknown): string {
+  return String(v).trim().replace(/\.0+$/, "");
+}
+/** Un discriminant muni "code" est purement numérique (ex CODE_MUN=13005). */
+export function isNumericMuniValue(raw: string): boolean {
+  return /^\d+(\.0+)?$/.test(raw.trim());
+}
+/**
+ * Résout une valeur brute de discriminant muni en slug canonique, en réutilisant
+ * la logique de disaggregate-zonage.ts :
+ *   - NUMÉRIQUE → crosswalk MAMH (codeToSlug) ; jamais deviné, null si absent.
+ *   - NOM → slug du NOM COMPLET s'il existe au registre (distingue "Canton de X"
+ *     de "Ville de X", qui s'effondreraient tous deux en "x" après strip-préfixe),
+ *     sinon slug du nom sans préfixe administratif seulement s'il existe au
+ *     registre; sans match registre, null.
+ */
+export function resolveMuniValueToSlug(
+  raw: string, codeToSlug: Map<string, string>, slugSet: Set<string>,
+): string | null {
+  const t = raw.trim();
+  if (t === "") return null;
+  if (isNumericMuniValue(t)) return codeToSlug.get(normMuniCode(t)) ?? null;
+  const full = toSlug(t);
+  if (slugSet.has(full)) return full;
+  const stripped = toSlug(stripAdminPrefix(t));
+  return slugSet.has(stripped) ? stripped : null;
+}
+/**
+ * Variante cible-aware pour les agrégats où le backend sert seulement le nom
+ * municipal court, alors que le registre local désambiguïse le slug par MRC
+ * (`saint-sebastien--le-granit`, etc.). Le fallback ne s'applique que si la
+ * valeur brute égale le nom officiel de la cible après normalisation; le gate
+ * spatial valide ensuite que les features retournées sont bien sur la cible.
+ */
+export function resolveMuniValueToTargetSlug(
+  raw: string, target: MuniEntry | undefined, codeToSlug: Map<string, string>, slugSet: Set<string>,
+): string | null {
+  const resolved = resolveMuniValueToSlug(raw, codeToSlug, slugSet);
+  if (resolved) return resolved;
+  if (!target) return null;
+  const rawName = toSlug(stripAdminPrefix(raw));
+  const targetName = toSlug(stripAdminPrefix(target.name));
+  return rawName && rawName === targetName ? target.slug : null;
+}
+/**
+ * Clause WHERE ArcGIS pour un discriminant muni. Un code numérique se compare
+ * NON-QUOTÉ sur un champ numérique (ex. CODE_MUN entier de Témis), mais un champ
+ * de type STRING portant ce même code numérique (ex. Antoine-Labelle `code`='79088',
+ * esriFieldTypeString) EXIGE des quotes — sinon ArcGIS renvoie HTTP 400 et 0 feature.
+ * `fieldIsString` (issu du type esri du champ) force donc le quotage même pour un
+ * code numérique. Un nom est toujours quoté.
+ */
+export function muniWhereClause(field: string, rawValue: string, fieldIsString = false): string {
+  const numeric = isNumericMuniValue(rawValue);
+  if (numeric && !fieldIsString) return `${field}=${normMuniCode(rawValue)}`;
+  const v = numeric ? normMuniCode(rawValue) : rawValue;
+  return `${field}='${v.replace(/'/g, "''")}'`;
+}
+/**
+ * GATE anti-invention pour un --zone-field EXPLICITE (bypass de l'auto-picker).
+ * Value-based (agnostique du NOM du champ, puisque l'opérateur l'a choisi) : le
+ * champ ne doit pas être technique (OBJECTID/shape/matricule/code_mun…), les
+ * VALEURS doivent être de vrais codes-zone — ≥50% non-null, ≥3 codes distincts,
+ * ≥50% à signature code (lettre(s)+chiffre, ex C-1/R-20/EAA-3), ≤24 char, et PAS
+ * une suite d'entiers séquentiels. Rejette ainsi une affectation (TYPE_ZONE,
+ * "Habitation"), un préfixe catégorie nu (ZONE_ = R/C/I/P), ou un id technique.
+ */
+export function validateExplicitZoneField(
+  features: Array<{ properties: Record<string, unknown> }>, field: string,
+): { ok: boolean; reason: string; stats: ZoneCodeStats } {
+  const stats = zoneCodeStats(features as never, field);
+  if (stats.total === 0) return { ok: false, reason: "0 feature", stats };
+  if (stats.fieldExcluded) return { ok: false, reason: `champ zone interdit (technique): ${field}`, stats };
+  if (stats.nonNull / stats.total < 0.5) return { ok: false, reason: `zone_code null >50% (${stats.nonNull}/${stats.total})`, stats };
+  if (stats.distinct < 3) return { ok: false, reason: `<3 codes distincts (${stats.distinct})`, stats };
+  if (stats.codeLikeRatio < 0.5) return { ok: false, reason: `<50% codes lettrés+numérotés — affectation/décoy suspecté (codeLike=${(stats.codeLikeRatio * 100).toFixed(0)}%, sample=${JSON.stringify(stats.sample.slice(0, 5))})`, stats };
+  if (stats.maxLen > 24) return { ok: false, reason: `code trop long (maxLen=${stats.maxLen})`, stats };
+  if (stats.sequentialIdLike) return { ok: false, reason: "valeurs entières séquentielles (id technique probable)", stats };
+  return { ok: true, reason: "ok", stats };
+}
+
+interface LayerProbe { layerUrl: string; zoneField: string; muniField: string | null; muniFieldType: string | null; geometryType: string; extent: ExtentInfo | null; count: number }
 interface ExtentInfo { xmin: number; ymin: number; xmax: number; ymax: number; wkid: number }
 
+/** Match a field name on a layer (exact first, then case-insensitive). null if absent. */
+function resolveFieldName(fields: FieldInfo[], want: string): string | null {
+  const exact = fields.find((f) => f.name === want);
+  if (exact) return exact.name;
+  const ci = fields.find((f) => f.name.toLowerCase() === want.toLowerCase());
+  return ci?.name ?? null;
+}
+
 /** Resolve a service URL into its candidate zonage sub-layer (polygon + zone field). */
-async function probeServiceForZonage(serviceUrl: string): Promise<LayerProbe | null> {
+async function probeServiceForZonage(serviceUrl: string, override?: { zoneField?: string; muniField?: string }): Promise<LayerProbe | null> {
   const base = serviceUrl.replace(/\/\d+$/, "");
   const directLayer = /\/\d+$/.test(serviceUrl) ? serviceUrl : null;
   const layerUrls: string[] = [];
+  const addLayerUrl = (url: string): void => { if (!layerUrls.includes(url)) layerUrls.push(url); };
   if (directLayer) layerUrls.push(directLayer);
   else {
-    const info = await fetchJson<{ layers?: Array<{ id: number; name: string; geometryType?: string }> }>(`${base}?f=json`);
+    const info = await fetchJson<{ layers?: GoNetLayer[] }>(`${base}?f=json`);
     const layers = info?.layers ?? [];
-    if (layers.length === 0) layerUrls.push(`${base}/0`);
+    if (layers.length === 0) addLayerUrl(`${base}/0`);
     else {
+      // Public GoNet MapServers can expose "Zonage municipal" as a GROUP layer
+      // with polygon children named generically. Reuse the GoNet selector so
+      // --service can bypass the viewer/proxy when the direct endpoint is live.
+      for (const l of gonetZonageCandidates(layers).slice(0, 12)) addLayerUrl(`${base}/${l.id}`);
       // Prefer a layer whose name screams zonage; else any polygon layer.
       const ranked = [...layers].sort((a, b) => Number(ZONAGE_TITLE_PATTERNS.some((p) => p.test(b.name))) - Number(ZONAGE_TITLE_PATTERNS.some((p) => p.test(a.name))));
       for (const l of ranked.slice(0, 6)) {
         if (AFFECTATION_TITLE_PATTERNS.some((p) => p.test(l.name)) && !ZONAGE_TITLE_PATTERNS.some((p) => p.test(l.name))) continue;
         if (l.geometryType && !/Polygon/i.test(l.geometryType)) continue;
-        layerUrls.push(`${base}/${l.id}`);
+        addLayerUrl(`${base}/${l.id}`);
       }
     }
   }
@@ -473,12 +715,18 @@ async function probeServiceForZonage(serviceUrl: string): Promise<LayerProbe | n
     const li = await fetchJson<{ fields?: FieldInfo[]; geometryType?: string; extent?: { xmin: number; ymin: number; xmax: number; ymax: number; spatialReference?: { wkid?: number; latestWkid?: number } } }>(`${layerUrl}?f=json`);
     if (!li || !li.fields) continue;
     if (li.geometryType && !/Polygon/i.test(li.geometryType)) continue;
-    const zoneField = pickZoneField(li.fields);
+    // Zone field: explicit override (must exist on this layer, else skip it) OR
+    // auto-picker. The override bypasses the auto-picker that mis-selects a decoy
+    // (affectation TYPE_ZONE / category prefix ZONE_) on aggregate MRC layers.
+    const zoneField = override?.zoneField ? resolveFieldName(li.fields, override.zoneField) : pickZoneField(li.fields);
     if (!zoneField) continue;
+    // Muni discriminant: explicit override OR auto-picker (null if absent).
+    const muniField = override?.muniField ? resolveFieldName(li.fields, override.muniField) : pickMuniField(li.fields);
+    const muniFieldType = muniField ? (li.fields.find((f) => f.name === muniField)?.type ?? null) : null;
     const cnt = await fetchJson<{ count?: number }>(`${layerUrl}/query?where=1%3D1&returnCountOnly=true&f=json`);
     const ext = li.extent;
     const extent: ExtentInfo | null = ext ? { xmin: ext.xmin, ymin: ext.ymin, xmax: ext.xmax, ymax: ext.ymax, wkid: ext.spatialReference?.latestWkid ?? ext.spatialReference?.wkid ?? 4326 } : null;
-    return { layerUrl, zoneField, muniField: pickMuniField(li.fields), geometryType: li.geometryType ?? "", extent, count: cnt?.count ?? 0 };
+    return { layerUrl, zoneField, muniField, muniFieldType, geometryType: li.geometryType ?? "", extent, count: cnt?.count ?? 0 };
   }
   return null;
 }
@@ -507,20 +755,22 @@ function extentDiagKm(e: ExtentInfo): number | null {
 }
 
 // ── Téléchargement + normalisation + dépôt ────────────────────────────────────
-async function fetchFeatures(layerUrl: string, outFields: string, where: string): Promise<GeoFeature[]> {
-  const features: GeoFeature[] = [];
-  let offset = 0;
-  const batch = 1000;
-  while (features.length < MAX_FEATURES) {
-    const url = `${layerUrl}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(outFields)}&outSR=4326&geometryPrecision=6&resultOffset=${offset}&resultRecordCount=${batch}&f=geojson`;
-    const data = await fetchJson<GeoFC>(url, 20_000);
-    if (!data || !Array.isArray(data.features) || data.features.length === 0) break;
-    features.push(...data.features);
-    offset += data.features.length;
-    if (data.features.length < batch) break;
-    await sleep(120);
-  }
-  return features;
+async function fetchFeatures(
+  layerUrl: string,
+  outFields: string,
+  where: string,
+  expectedCount: number,
+  slug: string,
+): Promise<CapturedFeatures | null> {
+  const url = `${layerUrl}/query?where=${encodeURIComponent(where)}&outFields=${encodeURIComponent(outFields)}` +
+    `&outSR=4326&geometryPrecision=6&resultRecordCount=${MAX_FEATURES}&f=geojson`;
+  const captured = await capturedArcgisJson<GeoFC>(url, [slug], 20_000);
+  if (!captured || !Array.isArray(captured.value.features)) return null;
+  return {
+    features: captured.value.features,
+    entry: captured.entry,
+    paginated: captured.value.exceededTransferLimit === true || captured.value.features.length !== expectedCount,
+  };
 }
 
 function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string, confidence = "obscura-zone-vector"): GeoFeature[] {
@@ -529,6 +779,139 @@ function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string
     const zone = raw !== null && raw !== undefined && String(raw).trim() !== "" ? String(raw).trim() : null;
     return { type: "Feature", geometry: f.geometry, properties: { zone_code: zone, kind: null, affectation: null, num_zone: null, source: serviceUrl, confidence } };
   });
+}
+
+function canonicalZoneCode(value: unknown): string {
+  return String(value ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "");
+}
+
+function auditServed(key: string, features: GeoFeature[]): ServedAudit {
+  const propertyKeys = new Set<string>();
+  const zoneSourceUrls = new Set<string>();
+  const zoneSourceLevels = new Set<string>();
+  // Count populated logical-zone properties, not raw polygon parts: a multipolygon
+  // split cannot fake enrichment growth or hide a loss.
+  const byZone = new Map<string, Record<string, unknown>>();
+  for (const feature of features) {
+    const props = feature.properties ?? {};
+    for (const property of Object.keys(props)) propertyKeys.add(property);
+    if (typeof props["zone_source_url"] === "string") zoneSourceUrls.add(props["zone_source_url"]);
+    if (typeof props["zone_source_level"] === "string") zoneSourceLevels.add(props["zone_source_level"]);
+    const zone = canonicalZoneCode(props["zone_code"]);
+    if (zone) byZone.set(zone, { ...(byZone.get(zone) ?? {}), ...props });
+  }
+  let populatedProperties = 0;
+  for (const props of byZone.values()) {
+    for (const [keyName, value] of Object.entries(props)) {
+      if (keyName !== "proof" && value !== null && value !== undefined && value !== "") populatedProperties++;
+    }
+  }
+  return {
+    key,
+    features: features.length,
+    propertyKeys: [...propertyKeys].sort(),
+    populatedProperties,
+    zoneSourceUrls: [...zoneSourceUrls].sort(),
+    zoneSourceLevels: [...zoneSourceLevels].sort(),
+  };
+}
+
+async function readServedAudit(s3: S3Client, key: string): Promise<{ audit: ServedAudit; features: GeoFeature[] } | null> {
+  if (!(await exists(s3, key))) return null;
+  const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { features?: GeoFeature[] };
+  if (!Array.isArray(fc.features)) throw new Error(`served zone object ${key} is not a FeatureCollection`);
+  return { audit: auditServed(key, fc.features), features: fc.features };
+}
+
+function auditLine(label: "AVANT" | "APRÈS", audit: ServedAudit): void {
+  console.error(
+    `[obscura] ${label} ${audit.key}: features=${audit.features} propriétés=${audit.populatedProperties}` +
+    ` keys=[${audit.propertyKeys.join(",")}] provenance_urls=[${audit.zoneSourceUrls.join(",") || "null"}]` +
+    ` provenance_levels=[${audit.zoneSourceLevels.join(",") || "null"}]`,
+  );
+}
+
+class PropertyRegressionError extends Error {
+  constructor(message: string) { super(message); this.name = "PropertyRegressionError"; }
+}
+
+/**
+ * Safe geometry replacement shared by the ArcGIS and GoNet paths in this runner.
+ * It refuses an identity mismatch, keeps served properties by canonical zone code,
+ * replays the committed folds, then records a before/after served audit.  The v2
+ * proof is already bound to one captured response when this function is called.
+ */
+async function depositCapturedZones(
+  s3: S3Client,
+  slug: string,
+  norm: GeoFeature[],
+  proof: GeometrySourceProof,
+): Promise<{ servedBefore: ServedAudit[]; servedAfter: ServedAudit[] }> {
+  const flatKey = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
+  const nestedKey = `${S3_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
+  const present = (await Promise.all([readServedAudit(s3, flatKey), readServedAudit(s3, nestedKey)])).filter(
+    (value): value is { audit: ServedAudit; features: GeoFeature[] } => value !== null,
+  );
+  const servedBefore = present.map((value) => value.audit);
+  for (const audit of servedBefore) auditLine("AVANT", audit);
+
+  const servedCodes = new Set(present.flatMap(({ features }) => features.map((f) => canonicalZoneCode(f.properties?.["zone_code"])).filter(Boolean)));
+  const incomingCodes = new Set(norm.map((f) => canonicalZoneCode(f.properties?.["zone_code"])).filter(Boolean));
+  const uncovered = [...servedCodes].filter((code) => !incomingCodes.has(code));
+  if (uncovered.length > 0) {
+    throw new Error(`identity gate: ${uncovered.length} code(s) servi(s) absent(s) de la couche amont (${uncovered.sort().join(",")}); aucun dépôt`);
+  }
+  const maxServedFeatures = Math.max(0, ...present.map(({ features }) => features.length));
+  if (norm.length < maxServedFeatures) {
+    throw new Error(`coverage gate: ${norm.length} features amont < ${maxServedFeatures} features servies; aucun dépôt`);
+  }
+
+  const targets = present.length > 0
+    ? present.map(({ audit, features }) => ({ key: audit.key, current: features }))
+    : [{ key: flatKey, current: [] as GeoFeature[] }];
+  const stamp = new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
+  for (const { key, current } of targets) {
+    if (current.length > 0) {
+      const backup = `${S3_PREFIX}_replaced/qc-zonage-${slug}__${key === flatKey ? "flat" : "nested"}.${stamp}.geojson`;
+      await copyObject(s3, key, backup);
+      console.error(`[obscura] BACKUP ${key} -> s3://${backup}`);
+    }
+    const features = norm.map((feature) => ({ ...feature, properties: { ...(feature.properties ?? {}) } }));
+    const carried = carryForwardServedZoneProperties(features, current, canonicalZoneCode);
+    const fc = attachGeometryProof({ type: "FeatureCollection" as const, features }, proof);
+    console.error(`[obscura] PROPRIÉTÉS reportées ${key}: zones appariées=${carried.matched}/${features.length} non-appariées=${carried.unmatched}`);
+    await putServedZoneGeojson(s3, key, fc);
+  }
+
+  // A geometry replacement resets enrichment values. Re-run the committed folds
+  // in the same pass, then stamp the exact live v2 source last.
+  await reapplyServedZonageEnrichment(slug);
+  for (const { key } of targets) {
+    const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { type: "FeatureCollection"; features: GeoFeature[] };
+    for (const feature of fc.features) {
+      feature.properties = {
+        ...(feature.properties ?? {}),
+        zone_source_url: proof.url,
+        zone_source_level: "documented",
+      };
+    }
+    await putServedZoneAdditive(s3, key, fc, { allowedProps: ["zone_source_url", "zone_source_level"] });
+  }
+
+  const servedAfter = (await Promise.all(targets.map(({ key }) => readServedAudit(s3, key)))).map((value) => {
+    if (value === null) throw new Error(`readback missing after served deposit: ${slug}`);
+    return value.audit;
+  });
+  for (const after of servedAfter) {
+    auditLine("APRÈS", after);
+    const before = servedBefore.find((entry) => entry.key === after.key);
+    if (before && after.populatedProperties < before.populatedProperties) {
+      throw new PropertyRegressionError(
+        `property regression on ${after.key}: ${before.populatedProperties} -> ${after.populatedProperties}; stop before another city`,
+      );
+    }
+  }
+  return { servedBefore, servedAfter };
 }
 
 // ── GoNet / GoAzimut (PG Solutions GOnet6) ────────────────────────────────────
@@ -595,7 +978,11 @@ function pickGonetZoneField(fields: FieldInfo[]): string | null {
     !/^shape|shape_|^objectid|^producteur$|^matricule$|^nommuni$|^nom_?mrc$/i.test(f.name));
   for (const f of usable) if (ZONE_CODE_FIELD_CODELIKE.some((p) => p.test(f.name))) return f.name; // prefer a code field over a usage label
   for (const f of usable) if (ZONE_CODE_FIELD_PATTERNS.some((p) => p.test(f.name))) return f.name; // zonage/no_zone/…
-  for (const f of usable) if (/^code(_?zone)?$/i.test(f.name) || /zone/i.test(f.name)) return f.name; // ex. `Code`
+  // `Numéro_de_Zonage` (GOnet6 layer #144) : "Zonage" ne CONTIENT pas la sous-chaîne
+  // "zone" (z-o-n-a-g-e), donc /zone/i échouait et le picker retombait sur le premier
+  // champ usable (souvent vide, ex. `Numéro_de_réglement`) → faux "null>50%". On
+  // reconnaît explicitement "zonage" en sous-chaîne (le VRAI champ code-zone GOnet).
+  for (const f of usable) if (/^code(_?zone)?$/i.test(f.name) || /zonage|zone/i.test(f.name)) return f.name; // ex. `Code`, `Numéro_de_Zonage`
   return usable[0]?.name ?? null; // layer already confirmed "Zonage municipal"
 }
 
@@ -615,40 +1002,56 @@ function gonetMapServerBase(requests: string[]): string | null {
   for (const u of requests) { const m = u.match(/proxy\.jsp\?(https?:\/\/[^?\s"'<>]*?\/MapServer)/i); if (m) return m[1]; }
   return null;
 }
-/** Build a CDP-evaluable async fetch (self-aborting after 25s) returning response body text. */
-function fetchTextExpr(url: string): string {
-  return `(async()=>{const c=new AbortController();const t=setTimeout(()=>c.abort(),25000);try{const r=await fetch(${JSON.stringify(url)},{signal:c.signal});return await r.text();}catch(e){return "__ERR__"+((e&&e.message)||e);}finally{clearTimeout(t);}})()`;
-}
-function parseJsonOrNull<T = Record<string, unknown>>(txt: string | null): T | null {
-  if (!txt || txt.startsWith("__ERR__")) return null;
-  try { return JSON.parse(txt) as T; } catch { return null; }
+/** Every authenticated GoNet request still crosses the shared capture chokepoint. */
+async function capturedGonetJson<T>(
+  browser: Browser,
+  sid: string,
+  url: string,
+  run: CaptureRun,
+  slug: string,
+): Promise<{ value: T; entry: CaptureManifestLine } | null> {
+  const captured = await capturedFetch(url, {
+    headers: { accept: "application/json,application/geo+json" },
+  }, {
+    run,
+    lane: "zones",
+    source: "zones-gonet",
+    slugs: [slug],
+    fetchImpl: browser.sessionFetch(sid),
+    timeoutMs: 35_000,
+  });
+  if (!captured.ok) return null;
+  try {
+    return { value: JSON.parse(capturedText(captured)) as T, entry: captured.line };
+  } catch {
+    return null;
+  }
 }
 
-/** Download every feature of a GoNet MapServer layer via the in-session proxy (OID keyset paging). */
-async function gonetFetchFeatures(
-  browser: Browser, sid: string, proxy: string, mapBase: string, id: number, zoneField: string, oidField: string,
-): Promise<GeoFeature[]> {
-  const features: GeoFeature[] = [];
-  let lastOid = -1;
-  const batch = 1000;
-  while (features.length < MAX_FEATURES) {
-    const where = encodeURIComponent(`${oidField}>${lastOid}`);
-    const of = encodeURIComponent(`${zoneField},${oidField}`);
-    const url = `${proxy}${mapBase}/${id}/query?where=${where}&outFields=${of}&orderByFields=${encodeURIComponent(oidField)}` +
-      `&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=${batch}&f=geojson`;
-    const fc = parseJsonOrNull<GeoFC & { features?: Array<GeoFeature & { id?: number }> }>(await browser.evalAsync(sid, fetchTextExpr(url)));
-    if (!fc || !Array.isArray(fc.features) || fc.features.length === 0) break;
-    features.push(...fc.features);
-    let maxOid = lastOid;
-    for (const f of fc.features) {
-      const oid = Number((f as { id?: number }).id ?? (f.properties?.[oidField] as number | undefined));
-      if (Number.isFinite(oid) && oid > maxOid) maxOid = oid;
-    }
-    if (maxOid <= lastOid || fc.features.length < batch) break; // last page (or no OID progress)
-    lastOid = maxOid;
-    await sleep(120);
-  }
-  return features;
+/**
+ * A v2 proof has one real response URL and one body hash.  Combining several
+ * ArcGIS pages produces no such source response, so pagination is a hard reject.
+ */
+async function gonetFetchUnpaginated(
+  browser: Browser,
+  sid: string,
+  proxy: string,
+  mapBase: string,
+  id: number,
+  zoneField: string,
+  expectedCount: number,
+  run: CaptureRun,
+  slug: string,
+): Promise<CapturedFeatures | null> {
+  const url = `${proxy}${mapBase}/${id}/query?where=1%3D1&outFields=${encodeURIComponent(zoneField)}` +
+    `&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=${MAX_FEATURES}&f=geojson`;
+  const captured = await capturedGonetJson<GeoFC>(browser, sid, url, run, slug);
+  if (!captured || !Array.isArray(captured.value.features)) return null;
+  return {
+    features: captured.value.features,
+    entry: captured.entry,
+    paginated: captured.value.exceededTransferLimit === true || captured.value.features.length !== expectedCount,
+  };
 }
 
 /**
@@ -657,16 +1060,21 @@ async function gonetFetchFeatures(
  */
 async function processGonetZonage(
   slug: string, muni: MuniEntry | undefined, viewerUrl: string,
-  browser: Browser, s3: S3Client | null, args: Args, base: SlugResult,
+  browser: Browser, run: CaptureRun, s3: S3Client | null, args: Args, base: SlugResult,
 ): Promise<SlugResult> {
-  const session = await browser.openSession(viewerUrl, args.navMs + 8_000);
+  // The GOnet6 viewer is a heavy JS map: the in-session MapServer proxy request
+  // (the only signal that the muni IS on goazimut) is not fired until the map
+  // finishes booting — empirically ~40s, well past the 12s default nav window.
+  // Floor the session render at 40s so a too-short --nav-ms cannot turn a real
+  // goazimut muni into a false "aucune requête proxy" (session/recaptcha?) miss.
+  const session = await browser.openSession(viewerUrl, Math.max(args.navMs, 40_000) + 8_000);
   try {
     const mapBase = gonetMapServerBase(session.requests);
     if (!mapBase) return { ...base, status: "no-zonage-layer", detail: `gonet: aucune requête proxy MapServer captée (session/recaptcha?) @${viewerUrl}` };
     const proxy = gonetProxyBase(session.requests);
 
-    const info = parseJsonOrNull<{ layers?: GoNetLayer[] }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/?f=json`)));
-    const layers = info?.layers ?? [];
+    const info = await capturedGonetJson<{ layers?: GoNetLayer[] }>(browser, session.sid, `${proxy}${mapBase}/?f=json`, run, slug);
+    const layers = info?.value.layers ?? [];
     if (layers.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: MapServer sans couches lisibles (${mapBase})` };
     if (process.env["GONET_DUMP_LAYERS"]) {
       console.error(`[gonet-dump ${slug}] ${layers.length} couches @ ${mapBase}`);
@@ -679,22 +1087,33 @@ async function processGonetZonage(
     // the most features (scale variants are duplicated; one may be empty).
     let best: { id: number; name: string; zoneField: string; oidField: string; count: number } | null = null;
     for (const c of candidates.slice(0, 12)) {
-      const li = parseJsonOrNull<{ fields?: FieldInfo[] }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/${c.id}?f=json`)));
-      const fields = li?.fields ?? [];
+      const li = await capturedGonetJson<{ fields?: FieldInfo[] }>(browser, session.sid, `${proxy}${mapBase}/${c.id}?f=json`, run, slug);
+      const fields = li?.value.fields ?? [];
       const zoneField = pickGonetZoneField(fields);
       if (!zoneField) continue;
       const oidField = fields.find((f) => /OID/i.test(f.type))?.name ?? "OBJECTID";
-      const cnt = parseJsonOrNull<{ count?: number }>(await browser.evalAsync(session.sid, fetchTextExpr(`${proxy}${mapBase}/${c.id}/query?where=1%3D1&returnCountOnly=true&f=json`)));
-      const count = cnt?.count ?? 0;
+      const cnt = await capturedGonetJson<{ count?: number }>(browser, session.sid, `${proxy}${mapBase}/${c.id}/query?where=1%3D1&returnCountOnly=true&f=json`, run, slug);
+      const count = cnt?.value.count ?? 0;
       if (count <= 0) continue;
       if (!best || count > best.count) best = { id: c.id, name: stripGonetPrefix(c.name), zoneField, oidField, count };
     }
     if (!best) return { ...base, status: "no-zonage-layer", detail: `gonet: couche(s) zonage sans champ zone_code exploitable` };
 
     const layerUrl = `${mapBase}/${best.id}`;
-    const raw = await gonetFetchFeatures(browser, session.sid, proxy, mapBase, best.id, best.zoneField, best.oidField);
-    if (raw.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
+    const received = await gonetFetchUnpaginated(browser, session.sid, proxy, mapBase, best.id, best.zoneField, best.count, run, slug);
+    if (!received || received.features.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
+    if (received.paginated) {
+      return { ...base, status: "no-zonage-layer", detail: `gonet: réponse PAGINÉE/refusée (${received.features.length}/${best.count} features; preuve v2 à URL unique impossible)` };
+    }
+    const raw = received.features;
     const norm = normalize(raw, best.zoneField, layerUrl, "obscura-gonet-vector");
+
+    // Anti-invention (mission gate) : le champ zone auto-pické GOnet doit porter de
+    // VRAIS codes — ≥3 distincts, ≥50% code-like (incl. QC chiffre-d'abord "25-H"),
+    // non-null ≥50%, ni affectation ni id séquentiel. Rejette un label mal-pické
+    // (ex. `Affectations`="PU-H") ou un champ technique. Value-based, comme --service.
+    const verdict = validateExplicitZoneField(raw, best.zoneField);
+    if (!verdict.ok) return { ...base, status: "no-zonage-layer", detail: `gonet couche ${best.name} champ '${best.zoneField}': ${verdict.reason} — rejet anti-invention` };
 
     // Spatial gate (projection-free): the WGS84 features' bbox centre must sit near
     // the registry centroid — catches a wrong-muni MapServer or off-QC data.
@@ -720,10 +1139,8 @@ async function processGonetZonage(
     if (distanceKm !== undefined) base.distanceKm = distanceKm;
 
     if (args.deposit && s3) {
-      const key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
-      const fc: GeoFC = { type: "FeatureCollection", features: norm };
-      await putBytes(s3, key, JSON.stringify(fc), "application/geo+json");
-      return { ...base, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${best.zoneField}) via GoNet ${layerUrl}` };
+      const deposited = await depositCapturedZones(s3, slug, norm, proofFromGonetCapture(received.entry));
+      return { ...base, ...deposited, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${best.zoneField}) via GoNet ${layerUrl}` };
     }
     return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (champ ${best.zoneField}) via GoNet ${layerUrl}` };
   } finally {
@@ -791,7 +1208,7 @@ async function processCity(slug: string, muni: MuniEntry | undefined, browser: B
     const viewer = gonetViewerUrl(lead.goazimut);
     dbg(`gonet viewer=${viewer ?? "n/a"}`);
     if (viewer) {
-      const g = await processGonetZonage(slug, muni, viewer, browser, s3, args, base);
+      const g = await processGonetZonage(slug, muni, viewer, browser, CAPTURE!, s3, args, base);
       if (g.deposited || g.status === "deposited") return g;
       if (!platforms.includes("arcgis")) return g; // gonet-only → classement gonet terminal
       base.detail = g.detail; // garde la note gonet si l'ArcGIS échoue aussi
@@ -839,7 +1256,7 @@ async function depositFromServices(
   s3: S3Client | null, args: Args, base: SlugResult,
 ): Promise<SlugResult | null> {
   for (const svc of services) {
-    const probe = await probeServiceForZonage(svc);
+    const probe = await probeServiceForZonage(svc, { ...(args.zoneField ? { zoneField: args.zoneField } : {}), ...(args.muniField ? { muniField: args.muniField } : {}) });
     if (!probe) continue;
 
     // Build where-clause. Aggregate detection is projection-independent: a layer
@@ -849,26 +1266,52 @@ async function depositFromServices(
     let where = "1=1";
     let isAggregate = false;
     if (probe.muniField && muni) {
-      const sample = await fetchJson<{ features?: Array<{ attributes: Record<string, unknown> }> }>(`${probe.layerUrl}/query?where=1%3D1&outFields=${encodeURIComponent(probe.muniField)}&returnDistinctValues=true&resultRecordCount=600&f=json`);
+      // returnGeometry=false + orderByFields force un DISTINCT global (GROUP BY) :
+      // sans eux, le serveur calcule le distinct sur un SCAN limité à maxRecordCount
+      // et OMET les munis dont les features arrivent tard dans la table (ex. Témis
+      // CODE_MUN 13100 → 13 distinct au lieu de 19, saint-athanase perdu).
+      const sample = await fetchJson<{ features?: Array<{ attributes: Record<string, unknown> }> }>(`${probe.layerUrl}/query?where=1%3D1&outFields=${encodeURIComponent(probe.muniField)}&returnDistinctValues=true&returnGeometry=false&orderByFields=${encodeURIComponent(probe.muniField)}&resultRecordCount=2000&f=json`);
       const distinct = new Map<string, string>(); // canonicalSlug → raw value
       for (const ft of sample?.features ?? []) {
         const v = ft.attributes?.[probe.muniField];
         if (v == null || String(v).trim() === "") continue;
-        distinct.set(toSlug(stripAdminPrefix(String(v))), String(v));
+        // Override → registry-aware resolver (numeric MAMH code OR name, keeps
+        // "Canton de X" ≠ "Ville de X"). Auto → historic strip-prefix (unchanged).
+        const canon = args.muniField
+          ? resolveMuniValueToTargetSlug(String(v), muni, MUNI_CODE_TO_SLUG, MUNI_SLUG_SET)
+          : toSlug(stripAdminPrefix(String(v)));
+        if (canon) distinct.set(canon, String(v));
       }
+      if (process.env["OBSCURA_DEBUG"]) console.error(`   · ${slug} muniField=${probe.muniField} distinct=${distinct.size} has(${slug})=${distinct.has(slug)} keys=${[...distinct.keys()].slice(0, 30).join(",")}`);
       if (distinct.size >= 2) {
         isAggregate = true;
         const matched = distinct.get(slug);
         if (!matched) continue; // muni not present in this MRC layer → skip
-        where = `${probe.muniField}='${matched.replace(/'/g, "''")}'`;
+        where = muniWhereClause(probe.muniField, matched, /string/i.test(probe.muniFieldType ?? ""));
       } else if (distinct.size === 1 && !distinct.has(slug)) {
         continue; // mono-muni layer for a DIFFERENT muni → skip
       }
     }
 
     const outFields = probe.muniField ? `${probe.zoneField},${probe.muniField}` : probe.zoneField;
-    const raw = await fetchFeatures(probe.layerUrl, outFields, where);
-    if (raw.length === 0) continue;
+    const targetCount = await capturedArcgisJson<{ count?: number }>(
+      `${probe.layerUrl}/query?where=${encodeURIComponent(where)}&returnCountOnly=true&f=json`,
+      [slug],
+    );
+    const expectedCount = targetCount?.value.count ?? 0;
+    if (expectedCount <= 0) continue;
+    const received = await fetchFeatures(probe.layerUrl, outFields, where, expectedCount, slug);
+    if (!received || received.features.length === 0) continue;
+    if (received.paginated) {
+      base.detail = `réponse PAGINÉE/refusée ${probe.layerUrl} (${received.features.length}/${expectedCount} features; preuve v2 à URL unique impossible)`;
+      continue;
+    }
+    const raw = received.features;
+    // Anti-invention: validate the VALUES are real zone codes, even when the field
+    // was auto-picked. This rejects affectation labels, letter-only categories,
+    // numeric-only zone ids, and technical/sequential ids before any deposit.
+    const verdict = validateExplicitZoneField(raw, probe.zoneField);
+    if (!verdict.ok) { base.detail = `couche ${probe.layerUrl} champ '${probe.zoneField}': ${verdict.reason} — rejet anti-invention`; continue; }
     const norm = normalize(raw, probe.zoneField, probe.layerUrl);
 
     // Spatial gate on the RETURNED WGS84 features (outSR=4326) — projection-free
@@ -896,12 +1339,15 @@ async function depositFromServices(
     if (distanceKm !== undefined) base.distanceKm = distanceKm;
 
     if (args.deposit && s3) {
-      const key = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
-      const fc: GeoFC = { type: "FeatureCollection", features: norm };
-      await putBytes(s3, key, JSON.stringify(fc), "application/geo+json");
-      return { ...base, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code) via ${probe.layerUrl}${isAggregate ? " [MRC filtré]" : ""}` };
+      const deposited = await depositCapturedZones(
+        s3,
+        slug,
+        norm,
+        proofFromCaptureEntry(received.entry, { type: "arcgis", method: "natif", reliability: "directe" }),
+      );
+      return { ...base, ...deposited, deposited: true, status: "deposited", detail: `${norm.length} zones (${nonNull} avec zone_code, champ ${probe.zoneField}) via ${probe.layerUrl}${isAggregate ? " [MRC filtré]" : ""}` };
     }
-    return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones via ${probe.layerUrl}` };
+    return { ...base, status: "deposited", deposited: false, detail: `PROBE OK (non déposé): ${norm.length} zones (champ ${probe.zoneField}) via ${probe.layerUrl}` };
   }
   return null;
 }
@@ -924,34 +1370,100 @@ async function processCityFromSeed(
   return { ...base, status: "no-zonage-layer", detail: `seed: aucune couche zonage valide pour ${slug}` };
 }
 
+// ── Chargement du crosswalk MAMH (code → slug) + registre de slugs ────────────
+/**
+ * Peuple MUNI_CODE_TO_SLUG (mamhCode → slug canonique, source = répertoire MAMH
+ * du repo, jamais deviné) et MUNI_SLUG_SET (tous les slugs du registre). Ne retient
+ * que les codes dont le slug existe au registre (lat/lon dispo pour le gate spatial).
+ */
+function loadMuniCrosswalk(munis: MuniEntry[]): void {
+  const slugSet = new Set<string>();
+  for (const m of munis) if (m.slug) slugSet.add(m.slug);
+  const codeToSlug = new Map<string, string>();
+  try {
+    const dir = JSON.parse(readFileSync(MUNI_DIRECTORY_PATH, "utf8")) as { entries?: Record<string, { slug?: string; mamhCode?: string }> };
+    for (const e of Object.values(dir.entries ?? {})) {
+      const slug = e.slug ? toSlug(e.slug) : null;
+      if (e.mamhCode && slug && slugSet.has(slug)) codeToSlug.set(String(e.mamhCode).trim(), slug);
+    }
+  } catch (err) {
+    console.error(`[obscura] AVERTISSEMENT: répertoire MAMH illisible (${(err as Error).message}) — crosswalk code→slug désactivé`);
+  }
+  MUNI_SLUG_SET = slugSet;
+  MUNI_CODE_TO_SLUG = codeToSlug;
+  console.error(`[obscura] crosswalk MAMH: ${codeToSlug.size} codes → slug | registre: ${slugSet.size} slugs`);
+}
+
+function gonetSeedsFromMrcs(munis: MuniEntry[], mrcs: string[]): GonetSeed[] {
+  if (mrcs.length === 0) return [];
+  const wanted = new Set(mrcs.map((m) => m.trim()).filter(Boolean));
+  const matrix = JSON.parse(readFileSync(COVERAGE_MATRIX_PATH, "utf8")) as {
+    cities?: Record<string, Record<string, { status?: string }>>;
+  };
+  const codeBySlug = new Map([...MUNI_CODE_TO_SLUG.entries()].map(([code, slug]) => [slug, code]));
+  const seeds: GonetSeed[] = [];
+  for (const muni of munis) {
+    if (!muni.mrc || !wanted.has(muni.mrc)) continue;
+    const zonesStatus = matrix.cities?.[muni.slug]?.["zones"]?.status ?? "";
+    if (zonesStatus === "done") continue;
+    const code = codeBySlug.get(muni.slug);
+    if (code && /^\d{4,5}$/.test(code)) seeds.push({ slug: muni.slug, code });
+  }
+  return seeds;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  if (args.slugs.length === 0 && args.gonetSeeds.length === 0) { console.error("usage: --slugs a,b,c [--deposit] [--max-carto N] [--nav-ms MS]  |  --gonet slug=municode,..."); process.exit(2); }
-
-  const chrome = resolveChrome();
-  if (!chrome) { console.error("[obscura] AUCUN binaire Chromium — abandon"); process.exit(1); }
-  console.error(`[obscura] chromium=${chrome} slugs=${args.slugs.length} gonetSeeds=${args.gonetSeeds.length} deposit=${args.deposit}`);
 
   const munis = JSON.parse(readFileSync(MUNIS_PATH, "utf8")) as MuniEntry[];
   const bySlug = new Map(munis.map((m) => [m.slug, m]));
-  const s3 = args.deposit ? s3Client() : null;
+  loadMuniCrosswalk(munis);
+  const mrcSeeds = gonetSeedsFromMrcs(munis, args.gonetMrcs);
+  args.gonetSeeds.push(...mrcSeeds.filter((seed) => !args.gonetSeeds.some((s) => s.slug === seed.slug)));
+  if (args.slugs.length === 0 && args.gonetSeeds.length === 0) { console.error("usage: --slugs a,b,c [--deposit] [--max-carto N] [--nav-ms MS] [--service URL --zone-field F --muni-field F]  |  --gonet slug=municode,... | --gonet-mrc \"MRC name\""); process.exit(2); }
+  const captureS3 = s3Client();
+  const s3 = args.deposit ? captureS3 : null;
   const seeded = args.services.length > 0 || args.orgs.length > 0;
+
+  // Chromium n'est requis que pour le crawl de site / GoNet. Le mode --service/--org
+  // (org-seeded, HTTP pur) et le mode --gonet ont des besoins distincts ; on ne
+  // réclame un binaire Chromium que si un crawl/headless est réellement nécessaire.
+  const needsChrome = args.gonetSeeds.length > 0 || !seeded;
+  const chrome = needsChrome ? resolveChrome() : null;
+  if (needsChrome && !chrome) { console.error("[obscura] AUCUN binaire Chromium — abandon"); process.exit(1); }
+  const captureRun = openCaptureRun({
+    lane: "zones",
+    s3: captureS3,
+    userAgent: needsChrome ? REAL_UA : HTTP_UA,
+    viaObscura: needsChrome,
+    // A SOCKS endpoint proves a browser proxy, not its implementation.  A Tor
+    // operator can state `GEO_CAPTURE_EGRESS=tor:zones` explicitly.
+    egress: process.env["GEO_CAPTURE_EGRESS"] ?? (process.env["CHROME_PROXY"] ? "proxy:chrome" : "direct"),
+  });
+  CAPTURE = captureRun;
+  let captureExit = 1;
+  try {
+  console.error(`[obscura] chromium=${chrome ?? "n/a (mode --service HTTP)"} slugs=${args.slugs.length} gonetSeeds=${args.gonetSeeds.length} gonetMrcs=${args.gonetMrcs.length} deposit=${args.deposit} zoneField=${args.zoneField ?? "auto"} muniField=${args.muniField ?? "auto"}`);
+  console.error(`[obscura] capture run=${captureRun.runId} manifest=s3://${captureRun.keys.manifest}`);
 
   const results: SlugResult[] = [];
   // GoNet-seeded mode: needs Chromium (the GOnet6 zonage MapServer is reachable
   // only via the viewer's in-session proxy) but skips the municipal-site crawl.
   if (args.gonetSeeds.length > 0) {
     console.error(`[obscura] GONET-SEEDED mode pairs=${args.gonetSeeds.map((s) => `${s.slug}=${s.code}`).join(",")}`);
-    const browser = await Browser.launch(chrome);
+    const browser = await Browser.launch(chrome!); // needsChrome garanti non-null ici
     try {
       for (let i = 0; i < args.gonetSeeds.length; i++) {
         const { slug, code } = args.gonetSeeds[i]!;
         const viewer = `https://www.goazimut.com/GOnet6/?m=${code}&pl=1`;
         const seedBase: SlugResult = { slug, site: websiteForSlug(slug) ?? null, platforms: ["goazimut"], viewerUrls: [viewer], deposited: false, status: "no-zonage-layer", detail: "" };
         let r: SlugResult;
-        try { r = await processGonetZonage(slug, bySlug.get(slug), viewer, browser, s3, args, seedBase); }
-        catch (e) { r = { ...seedBase, status: "error", detail: e instanceof Error ? e.message : String(e) }; }
+        try { r = await processGonetZonage(slug, bySlug.get(slug), viewer, browser, CAPTURE!, s3, args, seedBase); }
+        catch (e) {
+          if (e instanceof PropertyRegressionError) throw e;
+          r = { ...seedBase, status: "error", detail: e instanceof Error ? e.message : String(e) };
+        }
         results.push(r);
         console.error(`[${i + 1}/${args.gonetSeeds.length}] ${r.status.padEnd(18)} ${slug} (m=${code}) :: ${r.detail}`);
       }
@@ -964,18 +1476,24 @@ async function main(): Promise<void> {
       const slug = args.slugs[i]!;
       let r: SlugResult;
       try { r = await processCityFromSeed(slug, bySlug.get(slug), args.services, args.orgs, s3, args); }
-      catch (e) { r = { slug, site: websiteForSlug(slug) ?? null, platforms: ["arcgis"], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) }; }
+      catch (e) {
+        if (e instanceof PropertyRegressionError) throw e;
+        r = { slug, site: websiteForSlug(slug) ?? null, platforms: ["arcgis"], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) };
+      }
       results.push(r);
       console.error(`[${i + 1}/${args.slugs.length}] ${r.status.padEnd(18)} ${slug} :: ${r.detail}`);
     }
   } else {
-    const browser = await Browser.launch(chrome);
+    const browser = await Browser.launch(chrome!); // needsChrome garanti non-null ici
     try {
       for (let i = 0; i < args.slugs.length; i++) {
         const slug = args.slugs[i]!;
         let r: SlugResult;
         try { r = await processCity(slug, bySlug.get(slug), browser, s3, args); }
-        catch (e) { r = { slug, site: websiteForSlug(slug) ?? null, platforms: [], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) }; }
+        catch (e) {
+          if (e instanceof PropertyRegressionError) throw e;
+          r = { slug, site: websiteForSlug(slug) ?? null, platforms: [], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) };
+        }
         results.push(r);
         console.error(`[${i + 1}/${args.slugs.length}] ${r.status.padEnd(18)} ${slug} :: platforms=[${r.platforms.join(",")}] ${r.detail}`);
       }
@@ -994,6 +1512,15 @@ async function main(): Promise<void> {
   console.error(`\n=== STATUS ${JSON.stringify(byStatus)}`);
   console.error(`déposés=${deposited.length} [${deposited.join(",")}]`);
   console.error(`rapport → ${out}`);
+  captureExit = 0;
+  } finally {
+    CAPTURE = null;
+    try { await captureRun.finish(captureExit); }
+    catch (e) { console.error(`[obscura] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+  }
 }
 
-main().catch((e: unknown) => { console.error(e); process.exit(1); });
+// Run only as CLI entrypoint (keeps pure helpers importable for tests).
+if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
+  main().catch((e: unknown) => { console.error(e); process.exit(1); });
+}

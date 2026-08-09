@@ -24,6 +24,13 @@
  *   npx tsx src/grille-discovery-run.ts --download --route-guess --delay-ms 2000
  *
  * Flags:
+ *   --grille-urls F  CURATED-SEED mode (doc-center/CMS bypass): ingest a hand-
+ *                    curated list of grille-PDF URLs from file F (JSON
+ *                    [{slug,url}] or plain "slug<ws|,>url" lines), skipping the
+ *                    crawl. Each URL is still HTTP-confirmed + classified +
+ *                    route-probed; pair with --download to fetch the PDFs. This
+ *                    reaches grilles the crawler cannot (opaque /file-NNNN doc
+ *                    centres, JS-rendered SaaS portals).
  *   --limit N        only the first N munis from ALL_PV_CITIES (default: all)
  *   --slugs a,b,c    restrict to these slugs (overrides --limit)
  *   --out PATH       manifest path (default work/zonage-norms/discovered.json)
@@ -49,7 +56,7 @@
  * permissive (logged). Pass --no-robots only for local fixture replays.
  */
 import { spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -61,6 +68,7 @@ import {
   RobotsCache,
   candidatePagesForCity,
   discoverGrillesForCity,
+  parseGrilleUrlSeed,
   type GrilleCandidate,
   type PvFetchLike,
 } from "../../packages/qc-sources/src/sources/grille-discovery.js";
@@ -88,6 +96,8 @@ const WORK_DIR = join(REPO, "work", "zonage-norms");
 interface Args {
   limit?: number;
   slugs?: string[];
+  /** Curated grille-URL seed file (doc-center / CMS bypass); skips the crawl. */
+  grilleUrls?: string;
   out: string;
   download: boolean;
   routeGuess: boolean;
@@ -111,9 +121,11 @@ function parseArgs(argv: string[]): Args {
   // --2hop is sugar for --max-hops 2; an explicit --max-hops wins if both given.
   const maxHopsRaw = get("max-hops");
   const maxHops = maxHopsRaw !== undefined ? Number(maxHopsRaw) : has("2hop") ? 2 : 1;
+  const grilleUrls = get("grille-urls");
   return {
     ...(limitRaw ? { limit: Number(limitRaw) } : {}),
     ...(slugsRaw ? { slugs: slugsRaw.split(",").map((s) => s.trim()).filter(Boolean) } : {}),
+    ...(grilleUrls ? { grilleUrls } : {}),
     out: get("out") ?? join(WORK_DIR, "discovered.json"),
     download: has("download"),
     routeGuess: has("route-guess"),
@@ -387,9 +399,89 @@ function selectCities(args: Args): { slug: string; pvIndexUrl: string }[] {
   return entries;
 }
 
+/**
+ * SEED MODE — ingest a CURATED list of grille-PDF URLs directly, bypassing the
+ * crawler. This is the doc-center / CMS escape hatch: Québec municipal document
+ * centres serve grilles behind opaque `/file-NNNN` / `/documents/<id>` endpoints
+ * with no classifiable anchor (and JS-portals expose no static link), so the
+ * crawler never reaches them — but a human can curate the URLs. Each is still
+ * HTTP-confirmed + content-classified + route-probed EXACTLY like a crawled
+ * candidate (anti-invention: a 404/non-PDF is dropped), then written to the SAME
+ * manifest shape the normes batch consumes.
+ */
+async function runGrilleUrlSeed(args: Args, fetchImpl: typeof fetch): Promise<void> {
+  const seed = parseGrilleUrlSeed(readFileSync(args.grilleUrls!, "utf8"));
+  console.error(
+    `[grille-discovery] SEED mode: ${seed.length} curated grille URL(s) from ${args.grilleUrls}` +
+      (args.download ? " (+download)" : ""),
+  );
+  const munis: ManifestMuni[] = [];
+  let confirmed = 0;
+  for (const { slug, url } of seed) {
+    console.error(`=== ${slug} (seed) ===`);
+    let conf: ConfirmResult;
+    try {
+      conf = await confirmPdf(fetchImpl, url, args.timeoutMs, args.download);
+    } catch (e) {
+      console.error(`  [skip] ${url} — ${e instanceof PvSourceFetchError ? e.message : String(e)}`);
+      continue;
+    }
+    if (!conf.ok) {
+      console.error(`  [skip] HTTP ${conf.status} ${url}`);
+      continue;
+    }
+    confirmed++;
+    const cand: GrilleCandidate = {
+      slug,
+      sourceUrl: url,
+      pdfUrl: url,
+      titre: "(curated seed)",
+      scoreClassif: 0,
+      matched: [],
+    };
+    const muni = buildMuni(cand);
+    if (args.download && conf.bytes) {
+      const pages = pagesFromBytes(conf.bytes);
+      const cls = classifyGrillePdf(pages ?? []);
+      const probe = decideRouteFromPages(pages, url);
+      muni.classifKind = cls.kind;
+      applyRoute(muni, probe, cls);
+      const dir = join(WORK_DIR, slug);
+      if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
+      const pdfPath = join(dir, "grille.pdf");
+      writeFileSync(pdfPath, conf.bytes);
+      const n = pdfPageCount(pdfPath);
+      if (n) muni.pages = n;
+      console.error(`  [200] kind=${cls.kind} route=${muni.route} → ${pdfPath}`);
+    } else {
+      console.error(`  [200] ${url} (no --download; route left auto)`);
+    }
+    munis.push(muni);
+  }
+  const outDir = dirname(args.out);
+  if (!existsSync(outDir)) mkdirSync(outDir, { recursive: true });
+  const payload = {
+    _note:
+      "Curated grille manifest from a --grille-urls seed (doc-center/CMS bypass). Every " +
+      "sourceUrl was confirmed HTTP 200 + PDF. route is a heuristic guess; zonage-norms-run.ts " +
+      "re-decides native|multizone|vision precisely. Same shape as munis.json.",
+    _generatedAt: new Date().toISOString(),
+    munis,
+  };
+  writeFileSync(args.out, JSON.stringify(payload, null, 2) + "\n", "utf8");
+  console.error(
+    `=== FIN SEED: munis=${munis.length}/${seed.length} confirmed=${confirmed} → ${args.out} ===`,
+  );
+}
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const fetchImpl = globalThis.fetch;
+  // Curated-seed mode (doc-center / CMS bypass) short-circuits the crawl entirely.
+  if (args.grilleUrls) {
+    await runGrilleUrlSeed(args, fetchImpl);
+    return;
+  }
   const cities = selectCities(args);
   // One shared robots cache for the whole run (robots.txt fetched once/domain).
   const robots = args.robots
