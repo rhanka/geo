@@ -1,0 +1,155 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:22:38.039Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 7,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Resolution": 1,
+    "Regulation": 3
+  },
+  "graphify": {
+    "nodes": 6,
+    "edges": 1,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 45,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 637,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042224Z",
+  "documents": [
+    {
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "url": "https://www.municipalite-albertville.ca/images/Upload/Files/avis/2023-12-04.pdf",
+      "storage_key": "raw/pv-index/cas/0090043e475c3bf0106df2bc10d5718a7502b1a1fe723270d7ffe177a00165bb.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Albertville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "219-09-2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:659",
+              "quote": "renseignements personnels (ci-après la « Politique ») par la résolution numéro 219-09-2023 de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-12",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "8.      Adoption du règlement 2023-12 concernant la rémunération et l’allocation des élus"
+            }
+          },
+          {
+            "label": "2022-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:282",
+              "quote": "municipaux modifiant le règlement 2022-02;"
+            }
+          },
+          {
+            "label": "2015-02",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:518",
+              "quote": "l’adoption du règlement no 2015-02 concernant la création d’une réserve financière en"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042224Z/albertville/e177a00165bb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042224Z/albertville/e177a00165bb.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "albertville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

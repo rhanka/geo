@@ -1,0 +1,83 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:29:45.741Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 118,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 0,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 0,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {},
+  "graphify": {
+    "nodes": 0,
+    "edges": 0,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 509,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042941Z",
+  "documents": [
+    {
+      "slug": "calixa-lavallee",
+      "municipality_name": "Calixa-Lavallée",
+      "url": "https://calixa-lavallee.ca/wp-content/uploads/2026/04/2026-04-07_ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/0d19b710f1962e725355b2d7dd9373e87941919a58cf4ab3df418d21b209db58.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042941Z/calixa-lavallee/8d21b209db58.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042941Z/calixa-lavallee/8d21b209db58.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

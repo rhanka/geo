@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "V": "residentiel",
+    "A": "agricole",
+    "AF": "agricole",
+    "F": "agricole",
+    "R": "environnemental",
+    "M": null
+  },
+  "source": "work/zonage-norms/saint-nazaire-de-dorchester/grille.pdf (Règlement de zonage — corps local, 146 p.)",
+  "note": "ARTICLE 15 « Division du territoire en zones », p.9, verbatim: « La vocation de la zone est définie par la dominance de la zone. […] les lettres majuscules suivantes correspondent à la dominance de la zone respective : Identification | Dominance de la zone — H Habitation ; V Villégiature ; A Agricole ; M Mixte (habitation et/ou commerce) ; AF Agricole ou forestier ; R Récréation et tourisme ; F Forestier ». Mapping: H « Habitation » et V « Villégiature » -> residentiel ; A « Agricole », AF « Agricole ou forestier » et F « Forestier » -> agricole ; R « Récréation et tourisme » -> environnemental (⚠ R = RÉCRÉATION, pas résidentielle). Null explicite: M « Mixte (habitation et/ou commerce) » est une dominance DUALE. Codes SIG servis numéro-en-tête (« 164-V », « 121-Af », « 140-Ha ») reversés par canonZoneCodeServe et mappés à la lettre par longest-prefix (Ha->H, Af->AF). La grille des usages et normes (matrice) n'est PAS utilisée."
+}

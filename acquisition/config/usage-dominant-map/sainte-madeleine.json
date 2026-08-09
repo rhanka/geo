@@ -1,0 +1,22 @@
+{
+  "prefix_map": {
+    "1": "residentiel",
+    "201": "environnemental",
+    "202": null,
+    "203": "commercial",
+    "204": "commercial",
+    "205": "commercial",
+    "206": "commercial",
+    "207": "commercial",
+    "208": "commercial",
+    "3": null,
+    "5": "agricole",
+    "501": null,
+    "A": "agricole",
+    "P-104": "residentiel",
+    "P-109": "residentiel",
+    "P-301": null
+  },
+  "source": "normalized/ca-qc-zonage/qc-zonage-sainte-madeleine/qc-zonage-sainte-madeleine.geojson (attribut `Affectation` du SIG municipal servi)",
+  "note": "Sainte-Madeleine (MRC Les Maskoutains). La catégorie N'est PAS devinée à partir du code: chaque feature du zonage SERVI porte un attribut `Affectation` VERBATIM qui EST la fonction dominante de la zone (même gisement que honfleur/saint-malo/saint-marcel-de-richelieu, où l'attribut SIG tient lieu de table « Abréviation / Fonction dominante »). Aucun PDF de règlement n'a été utilisé. Valeurs relevées VERBATIM par code servi (`_ud-code-vocation-dump.ts`, 39 codes): 101,102,103,105,106,107,108,110,111,112,113,114 (PAE),115,116,117 -> « résidentiel » (15/15 codes de la famille 1xx, aucune autre valeur) => préfixe « 1 » -> residentiel; 302,303,304,305,306 -> « public » (5/5 de la famille 3xx) => préfixe « 3 » -> null explicite (publique); 502,503,504,505,508,512 -> « agricole »/« Agricole » => préfixe « 5 » -> agricole, SAUF 501 -> « agricole mixte » qui est DUALE => clé « 501 » -> null explicite (bloque le fallthrough vers « 5 » par longest-prefix); 201 -> « récréative » -> environnemental; 203,204,205,206 (code servi « 206-P PIIA »),207,208 -> « commerciale » -> commercial; 202 porte DEUX valeurs distinctes sur ses features (« commerciale » ET « Commerciale - Résidentielle ») donc affectation DUALE -> null explicite; A-307 -> « Agricole » -> agricole; P-104 et P-109 -> « résidentiel » -> residentiel; P-301 -> « public » -> null explicite. Aucun code servi n'est laissé sans clé. La matrice des usages permis des grilles n'est PAS utilisée. Note: la nomenclature numérique (1xx résidentiel / 2xx commercial / 3xx public / 5xx agricole) est partagée avec les municipalités voisines de la même MRC (sainte-marie-madeleine, saint-barnabe-sud); le mapping ci-dessus est néanmoins établi UNIQUEMENT sur l'attribut `Affectation` lu sur la collection servie de CE slug, code par code."
+}
