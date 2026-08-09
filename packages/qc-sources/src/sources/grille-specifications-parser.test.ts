@@ -104,6 +104,31 @@ describe("normalizeUnit — QC unit normaliser", () => {
     expect(r.absent).toBe(false);
     expect(r.raw).toBe("voir art. 73");
   });
+
+  // ── IMPERIAL ECHO (fiche-par-zone family: Saint-Justin "GRILLE DE
+  // SPECIFICATION", one zone per page, metric + imperial in parentheses).
+  // The trailing "pi"/"pi²" used to trip the prose guard, so a measured cell
+  // was refused: 3 real marges published as null on every zone of the muni.
+  it("reads the METRIC value when the cell echoes it in imperial", () => {
+    expect(normalizeUnit("9,2 m (30,1 pi)")).toMatchObject({
+      value: 9.2,
+      unit: "m",
+      absent: false,
+    });
+    expect(normalizeUnit("2,0 m (6,6 pi)")).toMatchObject({ value: 2, unit: "m" });
+    expect(normalizeUnit("55,7 m² (600,0 pi²)")).toMatchObject({
+      value: 55.7,
+      unit: "m2",
+    });
+    expect(normalizeUnit("7,6 m  (24,9 pi)")).toMatchObject({ value: 7.6, unit: "m" });
+  });
+
+  it("still refuses a cell whose parenthetical is PROSE, not an imperial echo", () => {
+    // The imperial strip must not become a hole in the anti-invention guard.
+    expect(normalizeUnit("2,0 m (voir art. 5)").value).toBeNull();
+    expect(normalizeUnit("2,0 m (selon la pente)").value).toBeNull();
+    expect(normalizeUnit("article 28.4").value).toBeNull();
+  });
 });
 
 // ───────────────────────────────────────────────────────────────────────────

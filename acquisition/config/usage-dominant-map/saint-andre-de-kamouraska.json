@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "M": null,
+    "P": null,
+    "A": "agricole",
+    "AF": "agricole",
+    "ID": null,
+    "CO": "environnemental",
+    "PI": "environnemental",
+    "I": "industriel"
+  },
+  "source": "Règlement de zonage numéro 251, Municipalité de Saint-André-de-Kamouraska — corpus local work/zonage-norms/saint-andre-de-kamouraska/grille.pdf, texte natif; art. 1.3 « Le présent règlement s'applique à l'ensemble du territoire de la municipalité de Saint-André-de-Kamouraska ».",
+  "note": "Art. 3.2 « CODIFICATION DES ZONES » (légende verbatim, « Lettres d'appellation et dominante correspondante »): « R Résidentielle; M Mixte; P Publique et institutionnelle; A Agricole; AF Agroforestière; ID Îlot déstructuré; Co Conservation; Pi Protection intégrale ». L'art. 3.2 précise « Les chiffres qui précèdent les lettres établissent l'ordre numérique des zones » -> le code SIG est numéro-EN-TÊTE (ex 13R, 9AF, 8ID), réversé par canonZoneCodeServe en R-13/AF-9/ID-8, d'où un map à la lettre. R « Résidentielle » -> residentiel (confirmé art. 12.18 « ZONE À DOMINANTE R – RÉSIDENTIELLE »); A « Agricole » et AF « Agroforestière » -> agricole (famille agricole/agroforestière, cf. art. 12.21 « ZONE À DOMINANTE A – AGRICOLE ET AF - AGROFORESTIÈRE »); Co « Conservation » et Pi « Protection intégrale » -> environnemental (conservation/protection du milieu naturel, cf. groupe d'usages Co « Conservation » art. 4.10 « CO1 – Espace de conservation du milieu naturel »); I « Industrielle » -> industriel (art. 12.20 « ZONE À DOMINANTE I – INDUSTRIELLE »; le code 19I servi). Null explicite: M « Mixte » est une dominante DUALE; P « Publique et institutionnelle » est publique; ID « Îlot déstructuré » n'énonce aucune des cinq dominantes (l'art. 3.2 le liste sans catégorie d'usage principal, enclave résidentielle en zone agricole à caractère dual). Longest-prefix: PI « Protection intégrale » bat P « Publique »; AF bat A. La matrice des usages permis des grilles n'est pas utilisée; la classification des usages de l'art. 4.2 (où « R = Récréation ») N'EST PAS la nomenclature de zone (art. 3.2), qui fait foi."
+}

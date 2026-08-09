@@ -1,0 +1,1634 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T11:51:41.446Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 1560,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/0d68b745bb95bf2fa2c678316cfcb5b3482cc6c595a4ea64c29aea0ec36d83f4.pdf",
+      "raw/pv-index/cas/16cc5cffaf42d10843b29014032872e9cfc9bc7f9c940bca9df80b8176081e84.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 15,
+    "failed_pvs": 3,
+    "outcomes": {
+      "INDEXED": 15,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 3
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 15,
+    "Document": 15,
+    "Regulation": 38,
+    "LotCadastre": 3,
+    "CouncilSession": 7,
+    "MeetingDate": 7,
+    "Resolution": 14,
+    "Zone": 1
+  },
+  "graphify": {
+    "nodes": 100,
+    "edges": 33,
+    "failures": 3
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 3,
+    "documents_with_zone": 1,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "berthierville",
+      "storage_key": "raw/pv-index/cas/8ccefc87b280cbeadd92dc7cbf9e293c8e619989cb8b373a4e0c08d628670809.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6291872",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:35",
+      "quote": "   7.1 Immeuble situé sur le lot 6 291 872 rue du Domaine-Bellevue / Demande d’usage conditionnel"
+    },
+    {
+      "municipality_slug": "berthierville",
+      "storage_key": "raw/pv-index/cas/a5ae6fe2cf04b2c970b52dcc90aa4c72679b393c42e6d5a27d1da26206726ac8.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3452341",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:16",
+      "quote": "   3.1 Immeuble situé sur le lot 3 452 341 / Renonciation du droit de préemption"
+    },
+    {
+      "municipality_slug": "berthierville",
+      "storage_key": "raw/pv-index/cas/f757a11604044d7cd87e6ab29e27825e5131258cf47946dc4a316475d76c06ad.pdf",
+      "entity_type": "Zone",
+      "value": "1-R-34",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:880",
+      "quote": "                          CONSIDÉRANT que le terrain visé, actuellement vacant, est situé dans la zone 1-R-34 au"
+    },
+    {
+      "municipality_slug": "berthierville",
+      "storage_key": "raw/pv-index/cas/f757a11604044d7cd87e6ab29e27825e5131258cf47946dc4a316475d76c06ad.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6291872",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:90",
+      "quote": "                                               A        Immeuble situé sur le lot 6 291 872 rue du Domaine-Bellevue /"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 175,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 2320,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z",
+  "documents": [
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/ordre-du-jour/2026/20260407_seance_ordre_jour_avril.pdf",
+      "storage_key": "raw/pv-index/cas/8ccefc87b280cbeadd92dc7cbf9e293c8e619989cb8b373a4e0c08d628670809.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "993",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "   9.1 Règlement numéro 993 relatif au Code d’éthique et de déontologie des élus municipaux de la Ville de"
+            }
+          },
+          {
+            "label": "994",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "   9.2 Règlement numéro 994 relatif au Code d’éthique et de déontologie des employés de la Ville de Berthierville"
+            }
+          },
+          {
+            "label": "992",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "    10.1 Règlement numéro 992 sur l’occupation et l’entretien des bâtiments"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6291872",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "   7.1 Immeuble situé sur le lot 6 291 872 rue du Domaine-Bellevue / Demande d’usage conditionnel"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/08d628670809.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/08d628670809.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/ordre-du-jour/2026/20260504_seance-_oj_mai.pdf",
+      "storage_key": "raw/pv-index/cas/9406df544ce2efbeff8eda23371626106d2d79d79519a9907f7849eab34ce42b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                      VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "748-230",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "    10.1 Règlement numéro 748-230 modifiant le règlement de zonage 748 et ses amendements afin de modifier"
+            }
+          },
+          {
+            "label": "993",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "    11.2 Règlement numéro 993 relatif au code d’éthique et de déontologie des élus municipaux"
+            }
+          },
+          {
+            "label": "994",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "    11.3 Règlement numéro 994 relatif au code d’éthique et de déontologie des employés municipaux"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/49eab34ce42b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/49eab34ce42b.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/ordre-du-jour/2026/20260316_seance_extra_oj.pdf",
+      "storage_key": "raw/pv-index/cas/a5ae6fe2cf04b2c970b52dcc90aa4c72679b393c42e6d5a27d1da26206726ac8.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               VILLE DE BERTHIERVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "991",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "   3.5 Règlement numéro 991 / Annulation de la résolution d’adoption"
+            }
+          },
+          {
+            "label": "993",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "   4.1 Règlement numéro 993 décrétant des travaux de réfection des infrastructures d’égouts"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3452341",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "   3.1 Immeuble situé sur le lot 3 452 341 / Renonciation du droit de préemption"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/a26206726ac8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/a26206726ac8.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260504_seance_ordinaire_pv_mai.pdf",
+      "storage_key": "raw/pv-index/cas/b90efe126ced51598763d288115a6d33e28aa622794bc6cacd28052519e36d95.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 7,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                         Procès-verbal du Conseil de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                         Procès-verbal du Conseil de la"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                     PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Berthierville tenue le 4 mai 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                     PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Berthierville tenue le 4 mai 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2019-06-165",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:827",
+              "quote": "                                   Gouvernement du Québec, notamment par l'adoption des résolutions 2019-06-165,"
+            }
+          },
+          {
+            "label": "2025-04-078",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:887",
+              "quote": "                   sens par la résolution numéro 2025-04-078, et que ce dossier a fait l'objet de discussions"
+            }
+          },
+          {
+            "label": "2023-08-233",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:933",
+              "quote": "                        CONSIDÉRANT la résolution numéro 2023-08-233 octroyant à la firme SODEM le contrat"
+            }
+          },
+          {
+            "label": "2025-04-101",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:945",
+              "quote": "                        CONSIDÉRANT qu'en vertu de la résolution numéro 2025-04-101, ledit contrat a été"
+            }
+          },
+          {
+            "label": "2026-03-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1418",
+              "quote": "                          par la résolution 2026-03-02 stipule que la grille de tarification est adoptée distinctement par"
+            }
+          },
+          {
+            "label": "2026-03-061",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1533",
+              "quote": "                   la résolution numéro 2026-03-061;"
+            }
+          },
+          {
+            "label": "2025-09-193",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1834",
+              "quote": "                              CONSIDÉRANT la résolution numéro 2025-09-193 confirmant l'embauche au poste de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "748-230",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1636",
+              "quote": "                          D'adopter le premier projet de règlement numéro 748-230 modifiant le règlement de zonage"
+            }
+          },
+          {
+            "label": "993",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1699",
+              "quote": "                   D'adopter le règlement numéro 993 relatif au Code d'éthique et de déontologie des élus"
+            }
+          },
+          {
+            "label": "994",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1763",
+              "quote": "                              D'adopter le règlement numéro 994 édictant le Code d'éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "748",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1593",
+              "quote": "                          ATTENDU le         règlement numéro 748 et ses amendements adoptés par la Ville de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/052519e36d95.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/052519e36d95.pdf/.graphify/.graphify_extract.json — 15 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260525_seance_extraordinaire_pv_mai.pdf",
+      "storage_key": "raw/pv-index/cas/d853c00b583a1a34e75acbd5792fe59d9ead88aa32ddaf1cf78c90578e4691eb.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                           Procès-verbal du Conseil de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                           Procès-verbal du Conseil de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "995",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "                                       6.1  Règlement numéro 995 concernant la tarification des activités de loisirs"
+            }
+          },
+          {
+            "label": "951",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:184",
+              "quote": "                   CONSIDÉRANT qu'en vertu du règlement numéro 951 sur le Comité consultatif d'urbanisme,"
+            }
+          },
+          {
+            "label": "996",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:228",
+              "quote": "                                  Monsieur Frenière dépose le projet de règlement numéro 996."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/90578e4691eb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/90578e4691eb.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260202_seance_ordinaire_fevrier.pdf",
+      "storage_key": "raw/pv-index/cas/d9ffe0bf0480862275cdf05dc69b4689a516117df230446bcf73fc317a0779b6.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/fc317a0779b6.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/fc317a0779b6.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "url": "https://www.ville.berthierville.qc.ca/storage/app/media/ville/vie-democratique/proces-verbaux/2026/20260407_seance_ordinaire_avril.pdf",
+      "storage_key": "raw/pv-index/cas/f757a11604044d7cd87e6ab29e27825e5131258cf47946dc4a316475d76c06ad.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 7,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Berthierville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                                Procès-verbal du Conseil de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                                Procès-verbal du Conseil de la"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "a                             PROCES-VERBAL de la séance ordinaire du conseil de la Ville de Berthierville tenue le 7 avril 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "a                             PROCES-VERBAL de la séance ordinaire du conseil de la Ville de Berthierville tenue le 7 avril 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-06-171",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:373",
+              "quote": "                   CONSIDÉRANT la résolution numéro 2024-06-171 autorisant la conclusion d’une entente"
+            }
+          },
+          {
+            "label": "2021-05-118",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:468",
+              "quote": "    3                           De remplacer la version adoptée le 3 mai 2021 par la résolution numéro 2021-05-118"
+            }
+          },
+          {
+            "label": "2019-01-008",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:486",
+              "quote": "                                régissant l'alcool et les drogues en milieu de travail par la résolution numéro 2019-01-008:"
+            }
+          },
+          {
+            "label": "2019-01-009",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:538",
+              "quote": "                   De remplacer la version adoptée le 14 janvier 2019 par la résolution numéro 2019-01-009"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "993",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "                                               9.1      Règlement numéro 993 relatif au Code d'éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "994",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1121",
+              "quote": "                                Madame Lebrun dépose le projet de règlement numéro 994."
+            }
+          },
+          {
+            "label": "992",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1201",
+              "quote": "                   D'adopter le règlement numéro 992 sur l'occupation et l'entretien des bâtiments."
+            }
+          },
+          {
+            "label": "921",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:779",
+              "quote": "                   CONSIDÉRANT le règlement 921 concernant le raccordement des entrées d'eau et d'égout"
+            }
+          },
+          {
+            "label": "983",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:788",
+              "quote": "                   CONSIDÉRANT qu'en vertu du règlement numéro 983 sur la gestion contractuelle, quatre"
+            }
+          },
+          {
+            "label": "967",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:886",
+              "quote": "                          CONSIDÉRANT qu'en vertu de l'article 5 du règlement numéro 967 sur les usages"
+            }
+          },
+          {
+            "label": "764-7",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:966",
+              "quote": "                   CONSIDÉRANT le règlement 764-7 relatif à l'exemption de l'obligation d'obtenir un certificat"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "1-R-34",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:880",
+              "quote": "                          CONSIDÉRANT que le terrain visé, actuellement vacant, est situé dans la zone 1-R-34 au"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6291872",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "                                               A        Immeuble situé sur le lot 6 291 872 rue du Domaine-Bellevue /"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/6475d76c06ad.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/berthierville/6475d76c06ad.pdf/.graphify/.graphify_extract.json — 17 nodes, 6 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 17,
+        "edges": 6
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "berthierville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2023/06/PV-mars-2023-.pdf",
+      "storage_key": "raw/pv-index/cas/2f1ffed899ece6881bd288b6c2755ca98c5ef1e075624cd12174cd5e065d1719.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béthanie",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire tenue le lundi 13 mars 2023 à la salle du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire tenue le lundi 13 mars 2023 à la salle du Conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 mars 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire tenue le lundi 13 mars 2023 à la salle du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 mars 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Le 13 mars 2023"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "292-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:389",
+              "quote": "                                    RÈGLEMENT NUMÉRO 292-23"
+            }
+          },
+          {
+            "label": "249-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:738",
+              "quote": "              Le présent règlement abroge le Règlement numéro 249-18 sur la démolition d’immeubles de"
+            }
+          },
+          {
+            "label": "293-23",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:763",
+              "quote": "              ultérieure sera déposé pour adoption le règlement 293-23 modifiant le règlement de zonage"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/cd5e065d1719.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/cd5e065d1719.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bethanie",
+          "roxton",
+          "roxton-falls"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2024/07/PV-10-juin-2024-.pdf",
+      "storage_key": "raw/pv-index/cas/332a21bff17b1449357dec5b516374d399f546c9fad5f0b4fd003518e6c084b3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béthanie",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             PROCÈS-VERBAL de la séance ordinaire tenue le lundi 08 juillet 2024 à la salle du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             PROCÈS-VERBAL de la séance ordinaire tenue le lundi 08 juillet 2024 à la salle du Conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 08 juillet 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             PROCÈS-VERBAL de la séance ordinaire tenue le lundi 08 juillet 2024 à la salle du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "08 juillet 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Le 08 juillet 2024"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "060-05-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:919",
+              "quote": "                 Renée Coulombe, avec la résolution numéro 060-05-24, pour procéder à un appel d’offres sur"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "299-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:302",
+              "quote": "            7.4. AVIS DE MOTION – RÈGLEMENT NO 299-24 REMPLAÇANT LE"
+            }
+          },
+          {
+            "label": "218-13",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:303",
+              "quote": "            RÈGLEMENT NO 218-13 ET SES AMENDEMENTS RÉGISSANT LES RÈGLES DE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/3518e6c084b3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/3518e6c084b3.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale",
+          "bethanie",
+          "roxton",
+          "roxton-falls"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2023/11/PV-10-octobre-2023-.pdf",
+      "storage_key": "raw/pv-index/cas/39cc247e651323c081390b458fedf95254f950795e78b4545702d1c39ae89301.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béthanie",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "            PROCÈS-VERBAL de la séance ordinaire tenue le mardi 10 octobre 2023 à la salle du"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "            PROCÈS-VERBAL de la séance ordinaire tenue le mardi 10 octobre 2023 à la salle du"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "146-09-23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:137",
+              "quote": "                      contre la résolution 146-09-23 adoptée au conseil municipal de septembre 2023."
+            }
+          },
+          {
+            "label": "148-09-23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:647",
+              "quote": "                  ATTENDU QUE la municipalité de Béthanie a adopté la résolution 148-09-23 concernant"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "294-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:381",
+              "quote": "            7.5. RÈGLEMENT NO 294-23 MODIFIANT LE RÈGLEMENT NO 188-09"
+            }
+          },
+          {
+            "label": "188-09",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:381",
+              "quote": "            7.5. RÈGLEMENT NO 294-23 MODIFIANT LE RÈGLEMENT NO 188-09"
+            }
+          },
+          {
+            "label": "234-16",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:445",
+              "quote": "            QUE l’adoption du règlement no 294-23 abroge le règlement no 234-16;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/d1c39ae89301.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/d1c39ae89301.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bethanie",
+          "roxton",
+          "roxton-falls"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2026/06/Proces-verbal-08-juin.pdf",
+      "storage_key": "raw/pv-index/cas/3b45dff22dd319130f72a7492d0c1e946754804d404ee5a2f1e885e2ba0064de.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/85e2ba0064de.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/85e2ba0064de.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2024/03/PV-12-fevrier-2024-.pdf",
+      "storage_key": "raw/pv-index/cas/3df42757801a6267dd4ef8d27a809a18cb72efcae61919ea21ff984fa7b01b56.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béthanie",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             PROCÈS-VERBAL de la séance ordinaire tenue le lundi 12 février 2024 à la salle du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             PROCÈS-VERBAL de la séance ordinaire tenue le lundi 12 février 2024 à la salle du Conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 février 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             PROCÈS-VERBAL de la séance ordinaire tenue le lundi 12 février 2024 à la salle du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 février 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Le 12 février 2024"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/984fa7b01b56.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/984fa7b01b56.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bethanie",
+          "roxton",
+          "roxton-falls"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2023/06/PV-20-fevrier-2023-extraordinairepdf.pdf",
+      "storage_key": "raw/pv-index/cas/4021dcadd89e100642fad9881e53596e25752501ba727a385550a9cb2595d401.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béthanie",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire tenue le lundi 20 février 2023 à la salle du"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire tenue le lundi 20 février 2023 à la salle du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/a9cb2595d401.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/a9cb2595d401.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bethanie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2023/06/PV-janvier-2023-.pdf",
+      "storage_key": "raw/pv-index/cas/57bf59725323f8985f038033061b1eca9d2c5f5943bc85eca31f5b1f0646f64b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béthanie",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire tenue le lundi 9 janvier 2023 à la salle du Conseil"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire tenue le lundi 9 janvier 2023 à la salle du Conseil"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire tenue le lundi 9 janvier 2023 à la salle du Conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Le 9 janvier 2023"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "287-23",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:249",
+              "quote": "               7.5. Adoption du règlement numéro 287-23 sur la taxation et la tarification pour 2023, et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/5b1f0646f64b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/5b1f0646f64b.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bethanie",
+          "granby",
+          "roxton",
+          "roxton-falls",
+          "waterloo"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2023/12/PV-13-novembre-2023-.pdf",
+      "storage_key": "raw/pv-index/cas/58e9ece218df32d337e37faa2d2f15d9793b1f2c16f40711318de3dc7d0115a9.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béthanie",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "            PROCÈS-VERBAL de la séance ordinaire tenue le lundi 13 novembre 2023 à la salle du"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "            PROCÈS-VERBAL de la séance ordinaire tenue le lundi 13 novembre 2023 à la salle du"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "296-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:273",
+              "quote": "             7.4. AVIS DE MOTION POUR LE RÈGLEMENT NUMÉRO 296-23 SUR LA"
+            }
+          },
+          {
+            "label": "295-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:342",
+              "quote": "                 8.2. AVIS DE MOTION POUR LE RÈGLEMENT NUMÉRO 295-23 SUR LA"
+            }
+          },
+          {
+            "label": "92-06",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:576",
+              "quote": "            ATTENDU QUE la MRC d’Acton a adopté, le 8 juillet 1992, le règlement no 92-06c"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/e3dc7d0115a9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/e3dc7d0115a9.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bethanie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2026/04/Proces-verbal-du-13-avril.pdf",
+      "storage_key": "raw/pv-index/cas/5bcedc4aceace5a0358ed21e7ade9a7e86fadac5683b01e4db6c91702b5977e3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/91702b5977e3.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/91702b5977e3.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2024/05/PV-8avril-2024-.pdf",
+      "storage_key": "raw/pv-index/cas/5f3ceec2389b22b0a108a06ebef638bfd453990a36ef37e6fe06e821d82febca.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béthanie",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             PROCÈS-VERBAL de la séance ordinaire tenue le lundi 08 avril 2024 à la salle du Conseil de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             PROCÈS-VERBAL de la séance ordinaire tenue le lundi 08 avril 2024 à la salle du Conseil de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 08 avril 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             PROCÈS-VERBAL de la séance ordinaire tenue le lundi 08 avril 2024 à la salle du Conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "08 avril 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Le 08 avril 2024"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "297-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:251",
+              "quote": "            7.4. AVIS DE MOTION – RÈGLEMENT NO 297-24 SUR LA GESTION"
+            }
+          },
+          {
+            "label": "298-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:815",
+              "quote": "7.5. AVIS DE MOTION – RÈGLEMENT NO 298-24 REMPLAÇANT LE"
+            }
+          },
+          {
+            "label": "168-07",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:816",
+              "quote": "RÈGLEMENT NO 168-07 DÉCRÉTANT LES RÈGLES DE CONTRÔLE ET DE SUIVI"
+            }
+          },
+          {
+            "label": "141.1-04",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:848",
+              "quote": "                       abrogeant le règlement No 141.1-04, déléguant au secrétaire-trésorier le pouvoir"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/e821d82febca.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/e821d82febca.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale",
+          "bethanie",
+          "roxton",
+          "roxton-falls"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bethanie",
+      "municipality_name": "Béthanie",
+      "url": "https://municipalitedebethanie.ca/wp-content/uploads/2024/02/PV-8-janvier-2024-.pdf",
+      "storage_key": "raw/pv-index/cas/6935b4a2cb88be426e57f5a36f0f0087c470f8f5258c30489adcb86535a9ff7e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béthanie",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "            PROCÈS-VERBAL de la séance ordinaire tenue le lundi 8 janvier 2024 à la salle du"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "            PROCÈS-VERBAL de la séance ordinaire tenue le lundi 8 janvier 2024 à la salle du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/b86535a9ff7e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T114849Z/bethanie/b86535a9ff7e.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bethanie",
+          "granby",
+          "roxton",
+          "roxton-falls"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

@@ -1,0 +1,662 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:51:05.492Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5480,
+    "limit": 20,
+    "requested": 4,
+    "selected": 4,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 4,
+  "indexing": {
+    "indexed_pvs": 4,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 4,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 4,
+    "Document": 4,
+    "CouncilSession": 3,
+    "MeetingDate": 3,
+    "Regulation": 22,
+    "LotCadastre": 5,
+    "Resolution": 2
+  },
+  "graphify": {
+    "nodes": 43,
+    "edges": 10,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 5,
+    "documents_with_zone": 0,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/9ab51db5df16ac0e71307d0eae23dd9135eb6bfcab670c662f7d633ef39cb36b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5044941",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:93",
+      "quote": "               Lot 5 044 941 – Autorisation – Approbation"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/9ab51db5df16ac0e71307d0eae23dd9135eb6bfcab670c662f7d633ef39cb36b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5044153",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:99",
+      "quote": "               Lot 5 044 153 – Autorisation – Approbation"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/aede939850d583234f60b9f98072e419cee84c9d60c11a9ea67f576dd97599c5.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5044801",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:114",
+      "quote": "                 522, rue Saint-Jean-Baptiste – Lot 5 044 801 – Autorisation – Approbation"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/aede939850d583234f60b9f98072e419cee84c9d60c11a9ea67f576dd97599c5.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5663263",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:117",
+      "quote": "                 Louis-Fréchette – Lot 5 663 263 – Demande numéro 2026-0001 – Autorisation –"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/aede939850d583234f60b9f98072e419cee84c9d60c11a9ea67f576dd97599c5.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6603056",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:739",
+      "quote": "de la Loi sur l’expropriation (RLRQ, c. E-24) a pris possession le 5 janvier 2024 du lot 6 603 056"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 235,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 6120,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185023Z",
+  "documents": [
+    {
+      "slug": "nicolet",
+      "municipality_name": "Nicolet",
+      "url": "https://nicolet.ca/upload/seances-du-conseil/odj_2026-02-16_public.pdf",
+      "storage_key": "raw/pv-index/cas/93224e4d68bfbaddb4be3da9e39b58f640f371bb687d0e309957c7cd58d74e53.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Nicolet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 FÉVRIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               SÉANCE EXTRAORDINAIRE DU CONSEIL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 FÉVRIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                               MUNICIPAL DU 16 FÉVRIER 2026, 16 H 30"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "531-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "3.      Règlement numéro 531-2026 sur les usages conditionnels de la Ville de Nicolet– Avis de"
+            }
+          },
+          {
+            "label": "367-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "son Règlement numéro 367-2018 relatif aux modalités de publication des avis publics de la Ville de Nicolet"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185023Z/nicolet/c7cd58d74e53.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185023Z/nicolet/c7cd58d74e53.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "nicolet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "nicolet",
+      "municipality_name": "Nicolet",
+      "url": "https://nicolet.ca/upload/seances-du-conseil/odj_2026-01-19_public.pdf",
+      "storage_key": "raw/pv-index/cas/9ab51db5df16ac0e71307d0eae23dd9135eb6bfcab670c662f7d633ef39cb36b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 7,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Nicolet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "               de 3 000 500 $ pour la réalisation des travaux de réaménagement des terrains"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "               de 3 000 500 $ pour la réalisation des travaux de réaménagement des terrains"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3     Procès-verbal – Séance ordinaire du conseil du 15 décembre 2025 – Dépôt – Adoption –"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3     Procès-verbal – Séance ordinaire du conseil du 15 décembre 2025 – Dépôt – Adoption –"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "523-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "      4.1      Règlement numéro 523-2025 décrétant une dépense de 3 000 500 $ et un emprunt"
+            }
+          },
+          {
+            "label": "524-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "      4.2      Règlement numéro 524-2025 décrétant une dépense de 4 694 000 $ et un emprunt"
+            }
+          },
+          {
+            "label": "529-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "      15.1     Règlement numéro 529-2025 relatif à l’adoption d’un code d’éthique et de déontologie"
+            }
+          },
+          {
+            "label": "530-2026",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:149",
+              "quote": "      15.2     Règlement numéro 530-2026 relatif aux ententes pour la réalisation de travaux"
+            }
+          },
+          {
+            "label": "449-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:750",
+              "quote": "8.1    Le présent règlement remplace le Règlement numéro 449-2022 relatif à l’adoption d’un"
+            }
+          },
+          {
+            "label": "367-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:809",
+              "quote": "à son Règlement numéro 367-2018 relatif aux modalités de publication des avis publics"
+            }
+          },
+          {
+            "label": "458",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1168",
+              "quote": "Le présent règlement remplace à toute fin que de droit le Règlement numéro 458 2022"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5044941",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:93",
+              "quote": "               Lot 5 044 941 – Autorisation – Approbation"
+            }
+          },
+          {
+            "label": "5044153",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:99",
+              "quote": "               Lot 5 044 153 – Autorisation – Approbation"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185023Z/nicolet/633ef39cb36b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185023Z/nicolet/633ef39cb36b.pdf/.graphify/.graphify_extract.json — 13 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "nicolet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "nicolet",
+      "municipality_name": "Nicolet",
+      "url": "https://nicolet.ca/upload/seances-du-conseil/odj_2026-03-09_public.pdf",
+      "storage_key": "raw/pv-index/cas/aede939850d583234f60b9f98072e419cee84c9d60c11a9ea67f576dd97599c5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 6,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Nicolet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "     5.2       Rapport concernant les contrats conclus et les dépenses effectuées par les"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "     5.2       Rapport concernant les contrats conclus et les dépenses effectuées par les"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3    Procès-verbal – Séance ordinaire du conseil du 9 février 2026 – Séance extraordinaire du"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3    Procès-verbal – Séance ordinaire du conseil du 9 février 2026 – Séance extraordinaire du"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "54-03-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "               Résolutions numéros 54-03-2026, 26-03-46, 037-02-2026 et 2026-02-0035 – Dépôt."
+            }
+          },
+          {
+            "label": "38-02-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:240",
+              "quote": "par le biais de l’adoption des résolutions numéros 38-02-2026 et ___-__-2026;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "469-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "     5.3       Règlement numéro 469-2023 relatif à la gestion contractuelle de la Ville de Nicolet –"
+            }
+          },
+          {
+            "label": "530-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "               concernent le Règlement numéro 530-2026 relatif aux ententes pour la réalisation de"
+            }
+          },
+          {
+            "label": "531-2026",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:164",
+              "quote": "     15.1      Règlement numéro 531-2026 sur les usages conditionnels de la Ville de Nicolet –"
+            }
+          },
+          {
+            "label": "532-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:167",
+              "quote": "     15.2      Règlement numéro 532-2026 décrétant une dépense de 950 000 $ et un emprunt de"
+            }
+          },
+          {
+            "label": "367-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:250",
+              "quote": "son Règlement numéro 367-2018 relatif aux modalités de publication des avis publics de la Ville de Nicolet"
+            }
+          },
+          {
+            "label": "452-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:748",
+              "quote": "Règlement numéro 452-2022 créant une réserve financière pour l’adaptation aux changements"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5044801",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "                 522, rue Saint-Jean-Baptiste – Lot 5 044 801 – Autorisation – Approbation"
+            }
+          },
+          {
+            "label": "5663263",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:117",
+              "quote": "                 Louis-Fréchette – Lot 5 663 263 – Demande numéro 2026-0001 – Autorisation –"
+            }
+          },
+          {
+            "label": "6603056",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:739",
+              "quote": "de la Loi sur l’expropriation (RLRQ, c. E-24) a pris possession le 5 janvier 2024 du lot 6 603 056"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185023Z/nicolet/576dd97599c5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185023Z/nicolet/576dd97599c5.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lefebvre",
+          "nicolet",
+          "sainte-christine",
+          "sainte-helene-de-bagot"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "notre-dame-de-la-merci",
+      "municipality_name": "Notre-Dame-de-la-Merci",
+      "url": "https://www.mun-ndm.ca/storage/app/media/2026%20et%20plus/Notre%20municipalit%C3%A9/Vie%20d%C3%A9mocratique/S%C3%A9ances%20du%20conseil/Ordre%20du%20jour/01-301%20ODJ%20PUBLIC%202026-04-13.pdf",
+      "storage_key": "raw/pv-index/cas/c99e9bb01c735f3ceeb1a5d6d125bf70826edd143162383e5acf4779e21a8889.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Notre-Dame-de-la-Merci",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     MUNICIPALITÉ NOTRE-DAME-DE-LA-MERCI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                     MUNICIPALITÉ NOTRE-DAME-DE-LA-MERCI"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "181-6",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "      8.1     Adoption du règlement 181-6 ayant pour effet de modifier le règlement 181 relatif au contrôle du Lac"
+            }
+          },
+          {
+            "label": "181",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "      8.1     Adoption du règlement 181-6 ayant pour effet de modifier le règlement 181 relatif au contrôle du Lac"
+            }
+          },
+          {
+            "label": "209-3",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "      8.2     Adoption du règlement 209-3 ayant pour effet de modifier le règlement 209 sur la régie interne des"
+            }
+          },
+          {
+            "label": "209",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "      8.2     Adoption du règlement 209-3 ayant pour effet de modifier le règlement 209 sur la régie interne des"
+            }
+          },
+          {
+            "label": "234",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "      8.3     Adoption du règlement 234 visant à remplacer le règlement 188 édictant le code d’éthique et de"
+            }
+          },
+          {
+            "label": "188",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "      8.3     Adoption du règlement 234 visant à remplacer le règlement 188 édictant le code d’éthique et de"
+            }
+          },
+          {
+            "label": "235",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "      8.4     Adoption du règlement 235 relatif à l’exercice de préemption sur un immeuble"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185023Z/notre-dame-de-la-merci/4779e21a8889.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185023Z/notre-dame-de-la-merci/4779e21a8889.pdf/.graphify/.graphify_extract.json — 9 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "notre-dame-de-la-merci",
+          "saint-donat--la-mitis",
+          "saint-donat--matawinie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
