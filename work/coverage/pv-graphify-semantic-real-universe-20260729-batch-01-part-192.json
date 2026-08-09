@@ -1,0 +1,183 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:33:14.253Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 191,
+    "limit": 1,
+    "requested": 1,
+    "selected": 1,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Regulation": 2,
+    "Zone": 1
+  },
+  "graphify": {
+    "nodes": 7,
+    "edges": 6,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 0,
+    "documents_with_zone": 1,
+    "documents_with_lot": 0
+  },
+  "match_details": [
+    {
+      "municipality_slug": "albanel",
+      "storage_key": "raw/pv-index/cas/3108e4d7faaf370c8dee5c52ea7dc5c4128e7f39b25803d05e89f59c89a60c5d.pdf",
+      "entity_type": "Zone",
+      "value": "C11",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:67",
+      "quote": "                   zone C11"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 107,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1531,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043239Z",
+  "documents": [
+    {
+      "slug": "albanel",
+      "municipality_name": "Albanel",
+      "url": "https://albanel.ca/images/uploads/25-2024-05-06-pvbl.pdf",
+      "storage_key": "raw/pv-index/cas/3108e4d7faaf370c8dee5c52ea7dc5c4128e7f39b25803d05e89f59c89a60c5d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Albanel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "M.R.C. DE MARIA-CHAPDELAINE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "M.R.C. DE MARIA-CHAPDELAINE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 MAI 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal d'Albanel,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 MAI 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                 PROCÈS-VERBAL DU 6 MAI 2024"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "20-260",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "     7.1 Modification du Règlement no 20-260"
+            }
+          },
+          {
+            "label": "24-294",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "             10.2 Adoption du Règlement no 24-294 modifiant le Règlement"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "C11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "                   zone C11"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043239Z/albanel/f59c89a60c5d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043239Z/albanel/f59c89a60c5d.pdf/.graphify/.graphify_extract.json — 7 nodes, 6 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 6
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "albanel",
+          "peribonka"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
