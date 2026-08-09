@@ -1,98 +1,110 @@
-# Sonde cause des lots sans code_zone
+# Dry-run re-fold 167 — col-12/13
 
-Lecture S3 seule; classification par centroide shoelace et point-in-polygon du zonage effectivement servi (nested avant flat, layout conserve par ville).
+Lecture S3 seule ; aucun dépôt ni capture. Les 90 candidats restants excluent les 16 entrées du progrès et 7 exclusions préexistantes.
 
-| Slug | Layout lots / zonage | Etat | Lots traites / total | Sans code | Dans zone servie | Hors toutes zones | Sans geometrie | % foldable |
-| --- | --- | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| dorval | flat / nested | complete | 6245 / 6245 | 71 | 0 | 71 | 0 | 0% |
-| farnham | flat / flat | complete | 4950 / 4950 | 0 | 0 | 0 | 0 | unknown |
-| franklin | flat / flat | complete | 1371 / 1371 | 1 | 0 | 1 | 0 | 0% |
-| hampstead | flat / nested | complete | 1866 / 1866 | 5 | 1 | 4 | 0 | 20% |
-| havelock | nested / flat | complete | 566 / 566 | 0 | 0 | 0 | 0 | unknown |
-| hemmingford--les-jardins-de-napierville | flat / flat | complete | 492 / 492 | 472 | 1 | 471 | 0 | 0.21% |
-| hemmingford--les-jardins-de-napierville--2 | flat / flat | complete | 1618 / 1618 | 1047 | 1 | 1046 | 0 | 0.1% |
-| howick | flat / flat | complete | 394 / 394 | 0 | 0 | 0 | 0 | unknown |
-| hudson | flat / flat | complete | 3331 / 3331 | 22 | 0 | 22 | 0 | 0% |
-| joliette | flat / flat | complete | 7253 / 7253 | 60 | 4 | 56 | 0 | 6.67% |
-| kirkland | flat / flat | complete | 6878 / 6878 | 380 | 5 | 375 | 0 | 1.32% |
-| la-prairie | flat / flat | complete | 9468 / 9468 | 69 | 9 | 60 | 0 | 13.04% |
-| la-presentation | flat / nested | complete | 1758 / 1758 | 14 | 3 | 11 | 0 | 21.43% |
-| lacolle | flat / flat | complete | 1812 / 1812 | 30 | 0 | 30 | 0 | 0% |
-| lassomption | flat / flat | complete | 9390 / 9390 | 1 | 0 | 1 | 0 | 0% |
-| lavaltrie | flat / flat | complete | 7190 / 7190 | 7 | 2 | 5 | 0 | 28.57% |
-| lepiphanie | flat / flat | complete | 4493 / 4493 | 11 | 0 | 11 | 0 | 0% |
-| les-coteaux | flat / flat | complete | 2486 / 2486 | 0 | 0 | 0 | 0 | unknown |
-| longueuil | flat / nested | complete | 67010 / 67010 | 35 | 0 | 35 | 0 | 0% |
-| mirabel | flat / flat | complete | 7746 / 7746 | 0 | 0 | 0 | 0 | unknown |
-| mont-royal | flat / flat | complete | 5795 / 5795 | 84 | 1 | 83 | 0 | 1.19% |
-| mont-saint-hilaire | flat / nested | complete | 8547 / 8547 | 0 | 0 | 0 | 0 | unknown |
-| montreal-ouest | flat / flat | complete | 1601 / 1601 | 0 | 0 | 0 | 0 | unknown |
-| notre-dame-de-stanbridge | flat / flat | complete | 564 / 564 | 55 | 0 | 55 | 0 | 0% |
-| oka | flat / flat | complete | 1913 / 1913 | 3 | 0 | 3 | 0 | 0% |
-| ormstown | nested / flat | complete | 2421 / 2421 | 0 | 0 | 0 | 0 | unknown |
-| otterburn-park | flat / nested | complete | 3947 / 3947 | 18 | 1 | 17 | 0 | 5.56% |
-| pointe-claire | flat / flat | complete | 10815 / 10815 | 0 | 0 | 0 | 0 | unknown |
-| prevost | flat / flat | complete | 7393 / 7393 | 1040 | 6 | 1034 | 0 | 0.58% |
-| repentigny | flat / flat | complete | 28902 / 28902 | 104 | 1 | 103 | 0 | 0.96% |
-| rosemere | flat / flat | complete | 5767 / 5767 | 1521 | 32 | 1489 | 0 | 2.1% |
-| rougemont | flat / flat | complete | 1740 / 1740 | 8 | 0 | 8 | 0 | 0% |
-| saint-alexandre | flat / flat | complete | 1485 / 1485 | 77 | 0 | 77 | 0 | 0% |
-| saint-alexis | flat / flat | complete | 1060 / 1060 | 32 | 1 | 31 | 0 | 3.13% |
-| saint-amable | flat / flat | complete | 5213 / 5213 | 1059 | 130 | 929 | 0 | 12.28% |
-| saint-barnabe-sud | flat / nested | complete | 681 / 681 | 680 | 0 | 680 | 0 | 0% |
-| saint-basile-le-grand | flat / flat | complete | 10312 / 10312 | 14 | 0 | 14 | 0 | 0% |
-| saint-bernard-de-lacolle | flat / flat | complete | 1136 / 1136 | 955 | 0 | 955 | 0 | 0% |
-| saint-bernard-de-michaudville | flat / nested | complete | 644 / 644 | 2 | 0 | 2 | 0 | 0% |
-| saint-bruno-de-montarville | flat / flat | complete | 10261 / 10261 | 138 | 8 | 130 | 0 | 5.8% |
-| saint-calixte | flat / flat | complete | 6937 / 6937 | 961 | 5 | 956 | 0 | 0.52% |
-| saint-charles-sur-richelieu | flat / nested | complete | 1370 / 1370 | 3 | 0 | 3 | 0 | 0% |
-| saint-chrysostome | flat / flat | complete | 1740 / 1740 | 4 | 0 | 4 | 0 | 0% |
-| saint-clet | flat / flat | complete | 1058 / 1058 | 112 | 0 | 112 | 0 | 0% |
-| saint-colomban | flat / flat | complete | 10729 / 10729 | 0 | 0 | 0 | 0 | unknown |
-| saint-constant | flat / flat | complete | 11622 / 11622 | 7 | 1 | 6 | 0 | 14.29% |
-| saint-damase--les-maskoutains | flat / flat | complete | 1708 / 1708 | 2 | 0 | 2 | 0 | 0% |
-| saint-denis-sur-richelieu | flat / nested | complete | 1630 / 1630 | 1 | 0 | 1 | 0 | 0% |
-| saint-dominique | flat / flat | complete | 1544 / 1544 | 2 | 0 | 2 | 0 | 0% |
-| saint-esprit | flat / flat | complete | 1505 / 1505 | 156 | 1 | 155 | 0 | 0.64% |
-| saint-etienne-de-beauharnois | flat / flat | complete | 694 / 694 | 29 | 0 | 29 | 0 | 0% |
-| saint-eustache | flat / flat | complete | 16036 / 16036 | 12 | 3 | 9 | 0 | 25% |
-| saint-hippolyte | flat / flat | complete | 9846 / 9846 | 4757 | 0 | 4757 | 0 | 0% |
-| saint-hyacinthe | flat / flat | complete | 19379 / 19379 | 0 | 0 | 0 | 0 | unknown |
-| saint-jacques | flat / flat | complete | 2481 / 2481 | 285 | 1 | 284 | 0 | 0.35% |
-| saint-jean-baptiste | flat / nested | complete | 1757 / 1757 | 5 | 1 | 4 | 0 | 20% |
-| saint-jerome | flat / flat | complete | 28123 / 28123 | 86 | 2 | 84 | 0 | 2.33% |
-| saint-jude | flat / nested | complete | 1156 / 1156 | 3 | 1 | 2 | 0 | 33.33% |
-| saint-lambert | flat / flat | complete | 5472 / 5472 | 21 | 2 | 19 | 0 | 9.52% |
-| saint-lazare | flat / flat | complete | 10140 / 10140 | 1160 | 8 | 1152 | 0 | 0.69% |
-| saint-liguori | flat / flat | complete | 1618 / 1618 | 8 | 0 | 8 | 0 | 0% |
-| saint-lin-laurentides | flat / nested | complete | 10935 / 10935 | 6735 | 1 | 6734 | 0 | 0.01% |
-| saint-mathias-sur-richelieu | flat / nested | complete | 2349 / 2349 | 9 | 1 | 8 | 0 | 11.11% |
-| saint-mathieu | flat / flat | complete | 1444 / 1444 | 2 | 0 | 2 | 0 | 0% |
-| saint-mathieu-de-beloeil | flat / flat | complete | 1764 / 1764 | 6 | 0 | 6 | 0 | 0% |
-| saint-ours | nested / flat | complete | 1293 / 1293 | 0 | 0 | 0 | 0 | unknown |
-| saint-paul | flat / flat | complete | 3635 / 3635 | 2 | 0 | 2 | 0 | 0% |
-| saint-philippe | flat / flat | complete | 5202 / 5202 | 133 | 0 | 133 | 0 | 0% |
-| saint-pie | flat / flat | complete | 3277 / 3277 | 3 | 1 | 2 | 0 | 33.33% |
-| saint-pierre | flat / flat | complete | 21322 / 21322 | 21054 | 4 | 21050 | 0 | 0.02% |
-| saint-roch-ouest | flat / flat | complete | 311 / 311 | 51 | 2 | 49 | 0 | 3.92% |
-| saint-stanislas-de-kostka | flat / flat | complete | 1827 / 1827 | 205 | 2 | 203 | 0 | 0.98% |
-| saint-sulpice | flat / nested | complete | 1910 / 1910 | 2 | 0 | 2 | 0 | 0% |
-| sainte-anne-de-bellevue | flat / unknown | unknown | 0 / unknown | 0 | 0 | 0 | 0 | unknown |
+Col-12 mesure les centroïdes de lots sans `code_zone` dans le zonage réellement servi. Col-13 est prudent : `M=F` donne `0`, `M>F` donne le minimum prouvé `M−F`, et une divergence `M<F` reste `null`.
 
-- sainte-anne-de-bellevue: qc-zonage non servi
-| sainte-anne-de-sabrevois | flat / flat | complete | 1651 / 1651 | 2 | 1 | 1 | 0 | 50% |
-| sainte-brigide-diberville | flat / flat | complete | 1104 / 1104 | 125 | 3 | 122 | 0 | 2.4% |
-| sainte-catherine | flat / flat | complete | 5754 / 5754 | 8 | 3 | 5 | 0 | 37.5% |
-| sainte-clotilde | flat / flat | complete | 1711 / 1711 | 6 | 0 | 6 | 0 | 0% |
-| sainte-julie | flat / flat | complete | 10772 / 10772 | 1625 | 23 | 1602 | 0 | 1.42% |
-| sainte-julienne | flat / flat | complete | 8247 / 8247 | 1 | 0 | 1 | 0 | 0% |
-| sainte-madeleine | flat / nested | complete | 947 / 947 | 1 | 0 | 1 | 0 | 0% |
-| sainte-marie-madeleine | flat / nested | complete | 1612 / 1612 | 6 | 0 | 6 | 0 | 0% |
-| sainte-marie-salome | flat / flat | complete | 1106 / 1106 | 42 | 2 | 40 | 0 | 4.76% |
-| sainte-sophie | flat / flat | complete | 10338 / 10338 | 44 | 0 | 44 | 0 | 0% |
-| salaberry-de-valleyfield | flat / nested | complete | 15510 / 15510 | 0 | 0 | 0 | 0 | unknown |
-| tres-saint-sacrement | flat / flat | complete | 1007 / 1007 | 1 | 0 | 1 | 0 | 0% |
-| varennes | flat / flat | complete | 8287 / 8287 | 0 | 0 | 0 | 0 | unknown |
-| vaudreuil-dorion | flat / flat | complete | 14135 / 14135 | 9 | 0 | 9 | 0 | 0% |
-| vercheres | flat / flat | complete | 2856 / 2856 | 1 | 0 | 1 | 0 | 0% |
-| westmount | flat / nested | complete | 5040 / 5040 | 27 | 0 | 27 | 0 | 0% |
+## Verdict
+
+- REAL-GAIN : **37** — col-12 **+274**, col-13 **+419** (minimum prouvé).
+- AT-CEILING : **1**.
+- COVERAGE-BOUND : **52** — résidus connus **350911** ; total strict = `null` car `sainte-anne-de-bellevue` est non mesurable.
+
+## DEPOSIT-WORTHY
+
+| Municipalité | Col-12 | Col-13 | Gain minimal |
+| --- | ---: | ---: | ---: |
+| saint-jerome | 2 | 419 | 421 |
+| saint-amable | 130 | 0 | 130 |
+| rosemere | 32 | null | 32 |
+| sainte-julie | 23 | 0 | 23 |
+| la-prairie | 9 | null | 9 |
+| saint-bruno-de-montarville | 8 | 0 | 8 |
+| saint-lazare | 8 | 0 | 8 |
+| prevost | 6 | 0 | 6 |
+| kirkland | 5 | null | 5 |
+| saint-calixte | 5 | 0 | 5 |
+| joliette | 4 | 0 | 4 |
+| saint-pierre | 4 | 0 | 4 |
+| la-presentation | 3 | 0 | 3 |
+| saint-eustache | 3 | 0 | 3 |
+| sainte-brigide-diberville | 3 | 0 | 3 |
+| sainte-catherine | 3 | null | 3 |
+| lavaltrie | 2 | null | 2 |
+| saint-lambert | 2 | 0 | 2 |
+| saint-roch-ouest | 2 | 0 | 2 |
+| saint-stanislas-de-kostka | 2 | 0 | 2 |
+| sainte-marie-salome | 2 | 0 | 2 |
+| hampstead | 1 | 0 | 1 |
+| hemmingford--les-jardins-de-napierville | 1 | 0 | 1 |
+| hemmingford--les-jardins-de-napierville--2 | 1 | 0 | 1 |
+| mont-royal | 1 | 0 | 1 |
+| otterburn-park | 1 | 0 | 1 |
+| repentigny | 1 | 0 | 1 |
+| saint-alexis | 1 | 0 | 1 |
+| saint-constant | 1 | 0 | 1 |
+| saint-esprit | 1 | 0 | 1 |
+| saint-jacques | 1 | null | 1 |
+| saint-jean-baptiste | 1 | 0 | 1 |
+| saint-jude | 1 | null | 1 |
+| saint-lin-laurentides | 1 | 0 | 1 |
+| saint-mathias-sur-richelieu | 1 | null | 1 |
+| saint-pie | 1 | null | 1 |
+| sainte-anne-de-sabrevois | 1 | 0 | 1 |
+
+## COVERAGE-BOUND — escalade zones / normes
+
+| Municipalité | Résidu col-12 | Résidu col-13 | Cause |
+| --- | ---: | ---: | --- |
+| dorval | 71 | 136 | coverage zones |
+| farnham | 0 | 4950 | coverage normes |
+| franklin | 1 | 12 | coverage zones |
+| havelock | 0 | 554 | coverage normes |
+| howick | 0 | 29 | coverage normes |
+| hudson | 22 | 2987 | coverage zones |
+| lacolle | 30 | 78 | coverage zones |
+| lassomption | 1 | 1064 | coverage zones |
+| lepiphanie | 11 | 4493 | coverage zones |
+| les-coteaux | 0 | 1145 | coverage normes |
+| longueuil | 35 | 34531 | coverage zones |
+| mirabel | 0 | 7409 | coverage normes |
+| montreal-ouest | 0 | 1601 | coverage normes |
+| notre-dame-de-stanbridge | 55 | 55 | coverage zones |
+| oka | 3 | 34 | coverage zones |
+| ormstown | 0 | 2359 | coverage normes |
+| pointe-claire | 0 | 3884 | coverage normes |
+| rougemont | 8 | 8 | coverage zones |
+| saint-alexandre | 77 | 1347 | coverage zones |
+| saint-barnabe-sud | 680 | 681 | coverage zones |
+| saint-basile-le-grand | 14 | 8339 | coverage zones |
+| saint-bernard-de-lacolle | 955 | 1136 | coverage zones |
+| saint-bernard-de-michaudville | 2 | 10 | coverage zones |
+| saint-charles-sur-richelieu | 3 | 395 | coverage zones |
+| saint-chrysostome | 4 | 1740 | coverage zones |
+| saint-clet | 112 | 674 | coverage zones |
+| saint-colomban | 0 | 10729 | coverage normes |
+| saint-damase--les-maskoutains | 2 | 1708 | coverage zones |
+| saint-denis-sur-richelieu | 1 | 17 | coverage zones |
+| saint-dominique | 2 | 91 | coverage zones |
+| saint-etienne-de-beauharnois | 29 | 60 | coverage zones |
+| saint-hippolyte | 4757 | 9308 | coverage zones |
+| saint-hyacinthe | 0 | 13727 | coverage normes |
+| saint-liguori | 8 | 1409 | coverage zones |
+| saint-mathieu | 2 | 2 | coverage zones |
+| saint-mathieu-de-beloeil | 6 | 48 | coverage zones |
+| saint-ours | 0 | 1285 | coverage normes |
+| saint-paul | 2 | 3576 | coverage zones |
+| saint-philippe | 133 | 226 | coverage zones |
+| saint-sulpice | 2 | 1121 | coverage zones |
+| sainte-anne-de-bellevue | null | null | mesure incomplète ou millésimes divergents — ne pas inférer |
+| sainte-clotilde | 6 | 944 | coverage zones |
+| sainte-julienne | 1 | 8247 | coverage zones |
+| sainte-madeleine | 1 | 947 | coverage zones |
+| sainte-marie-madeleine | 6 | 6 | coverage zones |
+| sainte-sophie | 44 | 8276 | coverage zones |
+| salaberry-de-valleyfield | 0 | 324 | coverage normes |
+| tres-saint-sacrement | 1 | 981 | coverage zones |
+| varennes | 0 | 1752 | coverage normes |
+| vaudreuil-dorion | 9 | 72 | coverage zones |
+| vercheres | 1 | 2856 | coverage zones |
+| westmount | 27 | 5016 | coverage zones |
