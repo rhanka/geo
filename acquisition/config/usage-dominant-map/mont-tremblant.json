@@ -1,0 +1,61 @@
+{
+  "slug": "mont-tremblant",
+  "reglement": "(2008)-102 concernant le zonage",
+  "source": "https://vdmt.ca/citoyens/urbanisme/reglements-durbanisme (chapitres 3/5/11 + Annexe B « DOMINANCE D'USAGE ») — dominances verbatim consolidees dans work/zonage-taxonomy/mont-tremblant.json",
+  "snapshot": "2026-07-13",
+  "_doc": [
+    "MISSION D immo (#369 filtre residentiel). Mappe le PREFIXE de zone_code servi -> une des 5 categories",
+    "d'usage dominant {residentiel, commercial, industriel, agricole, environnemental} (ou null si ambigu/mixte/public).",
+    "ANTI-INVENTION: chaque prefixe reprend la DOMINANCE D'USAGE verbatim du reglement (2008)-102 — la source",
+    "primaire est work/zonage-taxonomy/mont-tremblant.json (legende feuillets Annexe B + chapitre 3). Les 3 prefixes",
+    "que la taxonomie laissait 'a sourcer' (FA/TF/VF) sont ici RESOLUS par citation verbatim du reglement:",
+    "  - FA = « Faunique (FA) » : reglement (2008)-102, chapitre 5 (art. ~sect. projets integres) + chapitre 11",
+    "        (« Dans une zone Faunique (FA), la densite maximale est de 0,5 »). Zone naturelle/faune, tres faible",
+    "        densite, protection du couvert forestier -> environnemental.",
+    "  - TF = « Touristique faunique (TF) » : reglement (2008)-102, chapitre 5 -> tourisme/hebergement = commercial.",
+    "  - VF = « villegiature faunique (VF) » : reglement (2008)-102, chapitre 5 -> villegiature = residentiel.",
+    "Le champ 'usages' de la grille est la legende COMPLETE non-discriminante (chaque zone liste tous les H/C/I/A/P)",
+    "-> NON utilise. La categorie vient de la DOMINANCE de la nomenclature, pas des usages permis."
+  ],
+  "categorie_par_dominance": {
+    "residentiel": "Residentielle (RA/RF/RM: faible/forte/moyenne densite), Villegiature (V), Villegiature faunique (VF), Villegiature rurale (VR)",
+    "commercial": "Commerciale (CA), Commerciale lourde (CL), Touristique (TO/TM/TF/TV: tourisme/hebergement)",
+    "industriel": "Industrielle (IN), Extraction (EX: carriere/sabliere/graviere, classe I-4 ch3)",
+    "agricole": "Agricole (AG), Agroforestiere (AF)",
+    "environnemental": "Conservation (CO), Conservation forestiere (CF), Recreative (RE: recreation extensive), Faunique (FA)"
+  },
+  "prefix_map": {
+    "RA": "residentiel",
+    "RF": "residentiel",
+    "RM": "residentiel",
+    "V": "residentiel",
+    "VF": "residentiel",
+    "VR": "residentiel",
+    "CA": "commercial",
+    "CL": "commercial",
+    "TO": "commercial",
+    "TM": "commercial",
+    "TF": "commercial",
+    "TV": "commercial",
+    "IN": "industriel",
+    "EX": "industriel",
+    "AG": "agricole",
+    "AF": "agricole",
+    "CO": "environnemental",
+    "CF": "environnemental",
+    "RE": "environnemental",
+    "FA": "environnemental",
+    "CV": null,
+    "VA": null,
+    "PI": null,
+    "RC": null,
+    "RT": null
+  },
+  "null_prefixes_note": {
+    "CV": "Centre-ville — noyau urbain MIXTE (residentiel + commercial), aucune dominante unique -> null.",
+    "VA": "Villageoise — noyau villageois MIXTE; descripteur de forme d'etablissement, pas d'usage dominant unique -> null. (null EXPLICITE: bloque le fallthrough vers 'V'=Villegiature=residentiel via le longest-prefix.)",
+    "PI": "Publique et institutionnelle — hors des 5 categories d'usage privees -> null.",
+    "RC": "Residentielle et commerciale — designation explicitement DUALE, pas de dominante unique -> null.",
+    "RT": "Hors des 24 dominances Affectation en vigueur (taxonomie: 'reclasse ?', RT-713/-713-1 non sourcable) -> null. (null EXPLICITE.)"
+  }
+}

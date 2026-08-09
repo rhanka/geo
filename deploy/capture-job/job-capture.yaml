@@ -1,0 +1,92 @@
+# Lot de contrôle PV: 200 URL `pv_probable`, snapshot b32de19169bc907c.
+# Ce Job Indexed ne crée qu'UN pod à la fois (parallelism: 1). Les quatre
+# shards sont donc une mesure de capacité avant toute montée de concurrence.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-capture-pv-control-20260728-b32de19169bc907c
+  namespace: geo
+  labels:
+    app: geo-capture
+    lane: pv
+    geo.sentropic.io/capture-control: pv-probable-20260728-b32de19169bc907c
+spec:
+  completionMode: Indexed
+  completions: 4
+  parallelism: 1
+  # Un 404 est un résultat du manifeste; un problème de pod doit arrêter le
+  # lot, jamais relancer des GET ambigus derrière le dos de l'opérateur.
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 604800
+  template:
+    metadata:
+      labels:
+        app: geo-capture
+        lane: pv
+        geo.sentropic.io/capture-control: pv-probable-20260728-b32de19169bc907c
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: geo-registry-pull
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: capture
+          image: rg.fr-par.scw.cloud/sentropic-geo/geo-capture:pv-probable-20260728-b32de19169bc907c-v2
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: LANE
+              value: "pv"
+            - name: WORKLIST
+              value: "registry/capture-worklists/pv-control-20260728-b32de19169bc907c.json"
+            - name: RUN_STAMP
+              value: "control-20260728-b32de19169bc907c"
+            - name: SHARD
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['batch.kubernetes.io/job-completion-index']
+            - name: SHARDS
+              value: "4"
+            - name: DELAY_MS
+              value: "2000"
+            - name: EGRESS
+              value: "direct"
+            - name: MAX_BYTES
+              value: "104857600"
+            - name: DRY_RUN
+              value: "0"
+            - name: GEO_CAPTURE_EXECUTION
+              value: "cluster"
+            - name: NODE_OPTIONS
+              value: "--dns-result-order=ipv4first"
+            - name: AWS_MAX_ATTEMPTS
+              value: "10"
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials
+          resources:
+            requests:
+              cpu: 60m
+              memory: 120Mi
+            limits:
+              cpu: 150m
+              memory: 176Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: scratch
+              mountPath: /scratch
+      volumes:
+        - name: scratch
+          emptyDir:
+            sizeLimit: 4Gi

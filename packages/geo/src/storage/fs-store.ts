@@ -5,10 +5,11 @@
  */
 
 import type { Dirent } from "node:fs";
+import { createReadStream } from "node:fs";
 import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join, relative, sep } from "node:path";
 
-import type { PutOptions, Store } from "./store.js";
+import type { ByteStream, PutOptions, Store } from "./store.js";
 
 /** A {@link Store} rooted at a local directory. */
 export class FsStore implements Store {
@@ -39,6 +40,17 @@ export class FsStore implements Store {
     }
   }
 
+  async getStream(key: string): Promise<ByteStream | undefined> {
+    const path = this.pathFor(key);
+    try {
+      await stat(path);
+    } catch (err) {
+      if (isErrno(err, "ENOENT")) return undefined;
+      throw err;
+    }
+    return readStream(path);
+  }
+
   async has(key: string): Promise<boolean> {
     try {
       await stat(this.pathFor(key));
@@ -58,6 +70,13 @@ export class FsStore implements Store {
 
   async delete(key: string): Promise<void> {
     await rm(this.pathFor(key), { force: true });
+  }
+}
+
+/** Open a file only when its consumer starts pulling chunks. */
+async function* readStream(path: string): ByteStream {
+  for await (const chunk of createReadStream(path)) {
+    yield chunk instanceof Uint8Array ? chunk : new Uint8Array(chunk as ArrayBufferLike);
   }
 }
 

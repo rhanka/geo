@@ -1,0 +1,348 @@
+{
+  "contract": "pv-lecture-visuelle-territorial-v2/v1",
+  "generated_at": "2026-07-30T01:20:18Z",
+  "integrity_preflight": "work/coverage/pv-lecture-visuelle-territorial-v2-20260730T011629Z-preflight.json",
+  "scope": {
+    "target_cas_keys": 29,
+    "resolved_unambiguously": 28,
+    "selection_inventory": "work/coverage/pv-territorial-20260729t231834z/pv-capture-octets-classification-20260729t231834z-lot-0001.json through lot-0006.json",
+    "unresolved_targets": [
+      {
+        "given_abbreviation": "5c42ed1778c7260f75267c6b0786a6bdd612e5a60cc5b99efbf62fa29ecab1",
+        "outcome": "MISSING",
+        "reason": "The supplied 62-character prefix had no match in the territorial-v2 classifications; no full CAS key was guessed or read."
+      }
+    ]
+  },
+  "method": {
+    "reading": "Direct visual reading by GPT-5.6-terra. No OCR, text layer, or third-party reading service was used to make extraction decisions.",
+    "sha256_guard": "Each selected object was streamed from CAS while hashing. Reading proceeded only when the streamed SHA-256 equalled the 64-character filename hash.",
+    "rendering": "Only page 1 was rendered, one PDF at a time, after the SHA-256 guard passed.",
+    "conservative_rules": [
+      "Owner is the owner printed in the document, never the storage key or source slug.",
+      "A municipal scope is emitted only when the printed owner resolves exactly.",
+      "Meeting dates are verbatim visual readings from the document.",
+      "A non-PV is not indexed; no legal effect is inferred from consultation, project, notice, or administrative material."
+    ]
+  },
+  "guard": {
+    "attempted": 28,
+    "sha_passed": 28,
+    "cas_sha_mismatch": 0,
+    "get_failed": 0,
+    "visually_unreadable": 0
+  },
+  "provenance": {
+    "marker": "VISUAL_READING",
+    "marked_on_every_indexed_entity": true
+  },
+  "indexing": {
+    "indexed_documents": 25,
+    "owner_not_confirmed": 1,
+    "contamination_owner_mismatch": 1,
+    "document_lisible_non_pv": 1,
+    "visually_unreadable": 0
+  },
+  "municipal_impact": {
+    "denominator": 1106,
+    "coverage_before": 615,
+    "coverage_before_derivation": "408 after territorial-v1 visual reading plus 207 municipalities automatically indexed by the territorial-v2 campaign conversion summary.",
+    "zero_to_at_least_one_pv": 25,
+    "zero_to_at_least_one_pv_slugs": [
+      "sainte-genevieve-de-berthier",
+      "saint-robert",
+      "saint-michel-de-bellechasse",
+      "saint-hugues",
+      "sainte-justine",
+      "sainte-emelie-de-lenergie",
+      "saint-godefroi",
+      "saint-louis-de-blandford",
+      "saint-edmond-de-grantham",
+      "saint-joseph-de-sorel",
+      "saint-jean-de-matha",
+      "saint-felix-dotis",
+      "saint-sixte",
+      "saint-georges-de-windsor",
+      "saint-malachie",
+      "saint-tite",
+      "saint-edouard-de-lotbiniere",
+      "saint-ubalde",
+      "saint-paul-de-montminy",
+      "sainte-cecile-de-milton",
+      "saint-gervais",
+      "sainte-helene-de-bagot",
+      "saint-roch-de-lachigan",
+      "sainte-famille-de-lile-dorleans",
+      "sainte-helene-de-mancebourg"
+    ],
+    "coverage_after": 640
+  },
+  "contaminations": [
+    {
+      "storage_key": "raw/pv-index/cas/6e02331ed6e36e60732781225f4da5fbc9fa74b0e98d4df7cab989dea6dc8ac1.pdf",
+      "source_scope_slug": "saint-pierre",
+      "printed_owner": "Municipalité de Saint-Pierre-de-l’Île-d’Orléans",
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "citation": {
+        "page": 1,
+        "quote": "Procès-verbal du Conseil de la Municipalité de Saint-Pierre-de-l’Île-d’Orléans"
+      }
+    }
+  ],
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/0a69d072b10d3faa88b96bde76b81159a03c68da26897b6e4ee12ab373ca06a1.pdf",
+      "slug": "sainte-genevieve-de-berthier",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Sainte-Geneviève-de-Berthier",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "13 janvier 2026", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 13 janvier 2026"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1b2be48854757cd5ee7d1361afc8c2b1305378b7629ed75d39338ba411d02f5c.pdf",
+      "slug": "saint-robert",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Robert",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "12 août 2024", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 12 août 2024"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/21a7e2cb1b98e0697d548db9749cd8b31bb2dfedc7357b72057d3a3bb9fbe2b7.pdf",
+      "slug": "saint-michel-de-bellechasse",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Saint-Michel-de-Bellechasse",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "9 mai 2022", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 9 mai 2022"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/25a5a87891dbf5d02fc7cb4629cef0f73227f88e93bad00ff79f95586d319d82.pdf",
+      "slug": "saint-pascal",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Ville de Saint-Pascal",
+      "document_type": "Avis de convocation — séance extraordinaire",
+      "outcome": "DOCUMENT_LISIBLE_NON_PV",
+      "entities": []
+    },
+    {
+      "storage_key": "raw/pv-index/cas/263d84f38fb86bd4a70334a36a4699799ac7e66f82dce42945a7648609123061.pdf",
+      "slug": "saint-hugues",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Hugues",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "13 janvier 2026", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Séance ordinaire du 13 janvier 2026"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/349837e9ddaaaa104f1b6835323c78ea3c02b01e1572754d6d61419ee63042b7.pdf",
+      "slug": "sainte-justine",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Sainte-Justine",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "2 février 2017", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 2 février 2017"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/37609e7b07c9daf499ff2fa72c977cb236f485746dbe99dd2083d77a77f2f251.pdf",
+      "slug": "sainte-emelie-de-lenergie",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Sainte-Émélie-de-l’Énergie",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "7 janvier 2026", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 7 janvier 2026"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3d59cade47ff6b300bab4b955344c9d1648391dc6c6b1f7e5f8dcc4d539c70ac.pdf",
+      "slug": "saint-celestin--nicolet-yamaska",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Village de Saint-Célestin",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "reason": "The gazetteer has two exact Saint-Célestin entries in Nicolet-Yamaska and does not encode the printed Village type; the printed owner cannot be mapped to one scope with certainty.",
+      "entities": []
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3fd4d4b8e39c93daab0a499834e1a10fa8331627786504f0f1de92d41ac4a15a.pdf",
+      "slug": "saint-godefroi",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité du Canton de Saint-Godefroi",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "18 juin 2020", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 18 juin 2020"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4c2450729eb6354713d53ea275893efa7ceb9efef2bafee03f3cf8847102fcc6.pdf",
+      "slug": "saint-louis-de-blandford",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Louis-de-Blandford",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "5 septembre 2023", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 5 septembre 2023"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/618a31b83f3b8d8b7f2d270f2c86b068a88caa9f01346c2b0394166e1421a8d2.pdf",
+      "slug": "saint-edmond-de-grantham",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Edmond-de-Grantham",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "3 février 2026", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 3 février 2026"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/6e02331ed6e36e60732781225f4da5fbc9fa74b0e98d4df7cab989dea6dc8ac1.pdf",
+      "slug": "saint-pierre",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Pierre-de-l’Île-d’Orléans",
+      "document_type": "Procès-verbal de conseil",
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "reason": "The printed owner is distinct from source scope Saint-Pierre; it is excluded rather than attributed approximately.",
+      "entities": []
+    },
+    {
+      "storage_key": "raw/pv-index/cas/719bab8ad24c908ba5773a35b5d24c0823524a939f66c4fc7c9548f3ef46aecb.pdf",
+      "slug": "saint-joseph-de-sorel",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Ville de Saint-Joseph-de-Sorel",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "20 avril 2026", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 20 avril 2026"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/71bdca47d14aa4345a67d4206113214f1f8f9c87502557d65fdd0161c0e5276d.pdf",
+      "slug": "saint-jean-de-matha",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Jean-de-Matha",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "14 janvier 2026", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 14 janvier 2026"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/8c924cccf3d5fb2a865fe122b661e84692924da22ff65b4ee53b9ae01ec47207.pdf",
+      "slug": "saint-felix-dotis",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Félix-d’Otis",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "10 janvier 2022", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 10 janvier 2022"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/9472469330f1f4403f1fe891ef7caaf8e03bc070497b4dafef5dddf75c6d9616.pdf",
+      "slug": "saint-sixte",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Sixte",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "11 mai 2026", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 11 mai 2026"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a451790d34daf1470e50b67011ad17bf455b2be6ba8e08eab93b81376d82beed.pdf",
+      "slug": "saint-georges-de-windsor",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Georges-de-Windsor",
+      "document_type": "Procès-verbal de séance extraordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "5 octobre 2020", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance extraordinaire du 5 octobre 2020"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a9c097b291b98863abc13fe9f55223b11c468ccc6b9e6df53ce2df297ae30599.pdf",
+      "slug": "saint-malachie",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Paroisse de Saint-Malachie",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "5 juin 2023", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 5 juin 2023"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/af33883c1c4c97ed11dea2cba333dc8c0a8156aa895220e789f78ae870419fce.pdf",
+      "slug": "saint-tite",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Ville de Saint-Tite",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "18 décembre 2024", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 18 décembre 2024"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b2f1e4329332e7c33fb0d2b39cc304a48a4728350c1ee51a66b7b5cd10f50301.pdf",
+      "slug": "saint-edouard-de-lotbiniere",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Édouard-de-Lotbinière",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "16 décembre 2024", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 16 décembre 2024"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c0709b3987bdb03eac705437414f38188ddf769cfeab9ffd6143c3c31ea0967b.pdf",
+      "slug": "saint-ubalde",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Ubalde",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "15 février 2021", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 15 février 2021"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/cc47fbd82813f9c9ec22fda9e8756608312bb144a35675ea906460d4dd734f4f.pdf",
+      "slug": "saint-paul-de-montminy",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Paul-de-Montminy",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "7 février 2022", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 7 février 2022"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/cd00d92acbff6b82b836834d2d924724b04ae43c8a90b6b11bb29c0541cd5f99.pdf",
+      "slug": "sainte-cecile-de-milton",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Sainte-Cécile-de-Milton",
+      "document_type": "Procès-verbal de séance de consultation publique",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "23 mai 2019", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Séance de consultation publique — Procès-verbal, 23 mai 2019"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e43ac047ac0190b5ef2b3bbeebc2fc3155c3165d4948c5874f1147a69c7b70b7.pdf",
+      "slug": "saint-gervais",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Gervais",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "4 mai 2021", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 4 mai 2021"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e6904d6df88cbe9a5356c033e96933474fc60c12f98ddeaf36ed76e50952c129.pdf",
+      "slug": "sainte-helene-de-bagot",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Sainte-Hélène-de-Bagot",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "14 janvier 2025", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 14 janvier 2025"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f1b831a4192675639c880901ec5d3efb30ad4da3befca187905a145480fa9615.pdf",
+      "slug": "saint-roch-de-lachigan",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Saint-Roch-de-l’Achigan",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "10 mars 2025", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 10 mars 2025"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f1fb57063d56b7ea2875139f50a0259563dbe06533b09eb8d29091a540d45ff3.pdf",
+      "slug": "sainte-famille-de-lile-dorleans",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Sainte-Famille-de-l’Île-d’Orléans",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "18 octobre 2022", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 18 octobre 2022"}}]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f73e5e816c80eda60ba1f0f99c25505d03854c36ffd81ba50c24a890cf46ee23.pdf",
+      "slug": "sainte-helene-de-mancebourg",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Sainte-Hélène-de-Mancebourg",
+      "document_type": "Procès-verbal de séance ordinaire",
+      "outcome": "INDEXED",
+      "entities": [{"type": "Date", "value": "7 avril 2026", "date_role": "meeting", "provenance": "VISUAL_READING", "citation": {"page": 1, "quote": "Procès-verbal de la séance ordinaire du 7 avril 2026"}}]
+    }
+  ]
+}

@@ -1,0 +1,661 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T19:30:48.348Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 6220,
+    "limit": 20,
+    "requested": 20,
+    "selected": 6,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/fa1f5daa1d769870ecffad891af1cc4d6cf0514271a323ff6eacb21883d2270d.pdf",
+      "raw/pv-index/cas/fa43ffc198611c0fd0d01dbcc8ac56c7222c9ce664704daeea32296955b49e3a.pdf",
+      "raw/pv-index/cas/fa487493a6ac0258575f40d53d1a57a2dd7b0e3c7af6ab38ac4aaf990f20df55.pdf",
+      "raw/pv-index/cas/fa4d2e3b0612329a8187d4a0a0869d8281fb0c79a8c7f0665799a71e19b4096d.pdf",
+      "raw/pv-index/cas/fa57a9b0b037dd66389742501c94ee85a1f5dda7161468e0b73aef6b226cf473.pdf",
+      "raw/pv-index/cas/fa6927270d3240cce58c2b65f529d2ab9543f3aac0efcafe2421bad26bc65ef0.pdf",
+      "raw/pv-index/cas/fa713928aa2e2138fd4ec98152ac5695ef79f29687a3abc293524dc498dcb228.pdf",
+      "raw/pv-index/cas/fa785581272e9cc247f9e1745fa8b655b24354de17ae06f300049d52ef0a3f0d.pdf",
+      "raw/pv-index/cas/fa795bd71bbc46eb489fbceef23a77d50d71be72d85f41d0c9047e3ce96c303a.pdf",
+      "raw/pv-index/cas/fa7c6bac58649e370d5e8b82b0b225ea4293ac6b2a64647c675e47811846e6a8.pdf",
+      "raw/pv-index/cas/fa8b358dc0ae2a63d830b9019e5b37012975c09107a24eddd07d7cd6ffc4366d.pdf",
+      "raw/pv-index/cas/fa90dac0a40017fe6189ebca3bcb5c47acbebd9d275ec991860bad843f4edbbf.pdf",
+      "raw/pv-index/cas/fa9d3c0a6e8dcbe2426edec21fa0a27e397ca921305f73e19be623a344328a7b.pdf",
+      "raw/pv-index/cas/fac5a0ef97ba86bb882adcad4e06dbf5a5695f31335ce5fd050db3ff4a73cffd.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 6,
+  "indexing": {
+    "indexed_pvs": 4,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 4,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 4,
+    "Document": 4,
+    "Resolution": 4,
+    "Regulation": 24,
+    "LotCadastre": 2,
+    "Zone": 1
+  },
+  "graphify": {
+    "nodes": 39,
+    "edges": 5,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 2,
+    "documents_with_zone": 1,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "beaulac-garthby",
+      "storage_key": "raw/pv-index/cas/fa2d37dec73ebbbcdc5aaaddc51357046df8af8e321129e451d93dac3ccccf0b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5847001",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:102",
+      "quote": "6.2   Intérêt pour acquérir le lot 5 847 001 appartenant au MTQ"
+    },
+    {
+      "municipality_slug": "beaulac-garthby",
+      "storage_key": "raw/pv-index/cas/fa2d37dec73ebbbcdc5aaaddc51357046df8af8e321129e451d93dac3ccccf0b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5848725",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:106",
+      "quote": "6.4   Offre de service pour l’arpentage du lot 5 848 725 (terrain de la croix)"
+    },
+    {
+      "municipality_slug": "acton-vale",
+      "storage_key": "raw/pv-index/cas/fa9bb836e7cecb8171c16ac2394ebcafccc68d1b02fc6847bbc5268a99098b2b.pdf",
+      "entity_type": "Zone",
+      "value": "521",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:56",
+      "quote": "          dominance agricole numéro 521 à même une partie de la zone numéro"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 6,
+      "zone_code_count": 453,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 6,
+      "served_municipalities": 5,
+      "total_lot_numbers": 12381,
+      "missing": [
+        "beloeil"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z",
+  "documents": [
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20230414143644-proces-verbal-du-5-decembre-2022pdf.pdf",
+      "storage_key": "raw/pv-index/cas/fa2d37dec73ebbbcdc5aaaddc51357046df8af8e321129e451d93dac3ccccf0b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 2,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "22-10-7688",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1221",
+              "quote": "                   QUE la présente résolution abroge la résolution No 22-10-7688"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "251-2022",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "3.1   Avis de motion, dépôt et présentation du projet de règlement 251-2022 portant"
+            }
+          },
+          {
+            "label": "252-2022",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "3.2   Avis de motion du projet de règlement 252-2022 portant sur les usages"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5847001",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:102",
+              "quote": "6.2   Intérêt pour acquérir le lot 5 847 001 appartenant au MTQ"
+            }
+          },
+          {
+            "label": "5848725",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:106",
+              "quote": "6.4   Offre de service pour l’arpentage du lot 5 848 725 (terrain de la croix)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/beaulac-garthby/3dac3ccccf0b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/beaulac-garthby/3dac3ccccf0b.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby",
+          "disraeli--les-appalaches",
+          "disraeli--les-appalaches--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beloeil",
+      "municipality_name": "Beloeil",
+      "url": "https://beloeil.ca/wp-content/uploads/2026/04/conseil_20260427_pv.pdf",
+      "storage_key": "raw/pv-index/cas/fa558f4de07d1d51f28ddbd6d1866a0608dfa7479f9b58b5e8e6efd582cb58ca.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 16
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beloeil",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-03-143",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:140",
+              "quote": "        Le conseil tient une assemblée publique de consultation sur la résolution 2026-03-143."
+            }
+          },
+          {
+            "label": "2026-03-144",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:273",
+              "quote": "        Le conseil tient une assemblée publique de consultation sur la résolution 2026-03-144."
+            }
+          },
+          {
+            "label": "2026/04/56",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1325",
+              "quote": "       CONSIDÉRANT que le Comité consultatif d'urbanisme, par sa résolution 2026/04/56, s'est"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1643",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:199",
+              "quote": "        1. D'accorder, conformément au Règlement 1643‐00‐2010 relatif aux projets particuliers de"
+            }
+          },
+          {
+            "label": "1766-00-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:388",
+              "quote": "       CONSIDÉRANT que cette demande est assujettie au Règlement 1766-00-2019 relatif aux"
+            }
+          },
+          {
+            "label": "1646-00-2011",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:573",
+              "quote": "        CONSIDÉRANT que cette demande est assujettie au Règlement 1646-00-2011 relatif aux usages"
+            }
+          },
+          {
+            "label": "1813-00-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:723",
+              "quote": "       CONSIDÉRANT que le projet en titre est assujetti au Règlement 1813-00-2025 sur les plans"
+            }
+          },
+          {
+            "label": "1692-00-2014",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:882",
+              "quote": "         CONSIDÉRANT que le projet en titre est assujetti au Règlement 1692-00-2014 concernant la"
+            }
+          },
+          {
+            "label": "1792",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:917",
+              "quote": "Règlement 1792‐00‐2022 relatif à la citation des immeubles patrimoniaux;"
+            }
+          },
+          {
+            "label": "1667-130-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1114",
+              "quote": "30. AVIS DE MOTION DU PROJET DE RÈGLEMENT 1667-130-2026 MODIFIANT LE RÈGLEMENT 1667-00-"
+            }
+          },
+          {
+            "label": "1667-00-2011",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1118",
+              "quote": "modifier le Règlement 1667-00-2011 afin de permettre le groupe d’usage « commerce de divertissement"
+            }
+          },
+          {
+            "label": "1667-126-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1160",
+              "quote": "32. ADOPTION DU RÈGLEMENT 1667-126-2026 MODIFIANT LE RÈGLEMENT DE ZONAGE 1667-00-2011"
+            }
+          },
+          {
+            "label": "1667-127-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1189",
+              "quote": "33. ADOPTION DU RÈGLEMENT 1667-127-2026 MODIFIANT LE RÈGLEMENT DE ZONAGE 1667-00-2011"
+            }
+          },
+          {
+            "label": "1667-128-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1219",
+              "quote": "34. ADOPTION DU RÈGLEMENT 1667-128-2026 MODIFIANT LE RÈGLEMENT DE ZONAGE 1667-00-2011"
+            }
+          },
+          {
+            "label": "1653-17-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1250",
+              "quote": "35. AVIS DE MOTION ET DÉPÔT DU PROJET DE RÈGLEMENT 1653-17-2026 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "1653-00-2011",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1255",
+              "quote": "modifier le Règlement 1653-00-2011 afin de modifier les pénalités pour les infractions sera déposé, pour"
+            }
+          },
+          {
+            "label": "1819-00-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1273",
+              "quote": "36. ADOPTION DU RÈGLEMENT 1819-00-2026 CONCERNANT L’ÉTHIQUE ET LA DÉONTOLOGIE DES"
+            }
+          },
+          {
+            "label": "1820-00-2026",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1296",
+              "quote": "37. AVIS DE MOTION ET DÉPÔT DU PROJET DE RÈGLEMENT 1820-00-2026 ABROGEANT DIVERS"
+            }
+          },
+          {
+            "label": "1643-00-2010",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1322",
+              "quote": "         CONSIDÉRANT que le projet en titre est assujetti au Règlement 1643-00-2010 relatif aux projets"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/beloeil/efd582cb58ca.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/beloeil/efd582cb58ca.pdf/.graphify/.graphify_extract.json — 21 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 21,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beloeil",
+          "saint-jean-baptiste"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "becancour",
+      "municipality_name": "Bécancour",
+      "url": "https://becancour.net/app/uploads/2026/06/odj-2026-06-15.pdf",
+      "storage_key": "raw/pv-index/cas/fa5e55e7812c66bde85cc9a7093b1a9ac0663ed37fc8ae89239f537e2a2ff619.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bécancour",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "     Pour en savoir plus, vous pouvez consulter le règlement n° 1780 relatif à la régie interne du conseil municipal de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "     Pour en savoir plus, vous pouvez consulter le règlement n° 1780 relatif à la régie interne du conseil municipal de la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1875",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "     2.1    Règlement numéro 1875 intitulé : « Règlement modifiant le règlement numéro 1549 relatif"
+            }
+          },
+          {
+            "label": "1549",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "     2.1    Règlement numéro 1875 intitulé : « Règlement modifiant le règlement numéro 1549 relatif"
+            }
+          },
+          {
+            "label": "1876",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "     3.1    Règlement numéro 1876 intitulé : « Règlement modifiant le règlement numéro 1838 sur la"
+            }
+          },
+          {
+            "label": "1838",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "     3.1    Règlement numéro 1876 intitulé : « Règlement modifiant le règlement numéro 1838 sur la"
+            }
+          },
+          {
+            "label": "1780",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "     Pour en savoir plus, vous pouvez consulter le règlement n° 1780 relatif à la régie interne du conseil municipal de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/becancour/537e2a2ff619.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/becancour/537e2a2ff619.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "becancour"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "url": "https://baie-trinite.quebec/s/PV-du-13-mai-2020-signe.pdf",
+      "storage_key": "raw/pv-index/cas/fa6718439c2b80c926c524b497dc368ba1ee87ddc2cdecf30d7dd675be14500e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/baie-trinite/d675be14500e.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/baie-trinite/d675be14500e.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bonaventure",
+      "municipality_name": "Bonaventure",
+      "url": "https://villebonaventure.ca/wp-content/uploads/2025/07/21-07-2025-Ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/fa8f87731400ef247ad3083edf8d0ccf42eb87a279b604264e3df29a03079ab5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/bonaventure/f29a03079ab5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/bonaventure/f29a03079ab5.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2022/04/oj20220307.pdf",
+      "storage_key": "raw/pv-index/cas/fa9bb836e7cecb8171c16ac2394ebcafccc68d1b02fc6847bbc5268a99098b2b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "003-2022",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "   10.1   Adoption du second projet du règlement 003-2022 modifiant le"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "521",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "          dominance agricole numéro 521 à même une partie de la zone numéro"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/acton-vale/268a99098b2b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T193011Z/acton-vale/268a99098b2b.pdf/.graphify/.graphify_extract.json — 4 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

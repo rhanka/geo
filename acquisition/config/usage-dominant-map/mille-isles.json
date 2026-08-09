@@ -1,0 +1,11 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "Vi": "residentiel",
+    "Rt": "environnemental",
+    "Ru": null,
+    "HV": null
+  },
+  "source": "work/zonage-norms/mille-isles/grille.pdf — Règlement de zonage nº RU.02.2011, Municipalité de Mille-Isles (corpus local; reglement_url=null au registre reglement-provenance)",
+  "note": "Règlement de zonage nº RU.02.2011, art. 2.1.2 « Identification des zones » (p.20): « Chacune des zones montrées sur le plan de zonage est identifiée à ce plan par une lettre d'appellation indiquant la vocation principale de la zone aux fins de compréhension seulement, selon le tableau suivant : [Lettre d'appellation / Vocation principale] Hv : Hameau-villageois ; H : Résidentielle ; Vi : Villégiature ; Rt : Récréotouristique ; Ru : Rurale ». Préfixes RÉELLEMENT servis (S3 fold --list-prefixes, clés plate + sous-dossier): H (24 pol.), Ru (23), Vi (11), Rt (7), HV (1). Mapping VERBATIM sur ce tableau: H « Résidentielle » -> residentiel ; Vi « Villégiature » -> residentiel (habitation de villégiature) ; Rt « Récréotouristique » -> environnemental (récréative/récréotouristique). NULL explicite: Ru « Rurale » = descripteur de milieu (n'énonce aucune des cinq catégories dominantes; zone rurale mixte résidentiel-agricole-forestier, pas de dominante unique, cf. précédent maria « PV Périvillageoise » -> null) ; HV/Hv « Hameau-villageois » = noyau villageois mixte -> null. La matrice des usages permis des grilles n'est pas utilisée. Le fold matche le PLUS LONG préfixe: « HV » (len 2) l'emporte sur « H » (len 1) pour HV-1."
+}

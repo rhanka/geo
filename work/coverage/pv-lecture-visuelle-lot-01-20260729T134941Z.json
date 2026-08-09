@@ -1,0 +1,305 @@
+{
+  "contract": "pv-lecture-visuelle-lot/v1",
+  "generated_at": "2026-07-29T13:49:41Z",
+  "source_triage": "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json",
+  "integrity_preflight": "work/coverage/pv-lecture-visuelle-lot-01-preflight-20260729T134636Z.json",
+  "scope": {
+    "selection": "les 20 premières entrées ordonnées de triage.sample.documents",
+    "requested_documents": 20,
+    "sha256_passed": 20,
+    "cas_sha_mismatch": 0,
+    "visually_unreadable": 0
+  },
+  "method": {
+    "reading": "lecture visuelle directe par GPT-5.6-terra; aucun OCR ni service tiers",
+    "sha256_guard": "chaque PDF a été téléchargé, haché SHA-256 en flux puis comparé à son nom CAS avant rendu",
+    "memory": "aucun PDF n'a été chargé intégralement en mémoire",
+    "conservative_rules": [
+      "propriétaire confirmé uniquement depuis le nom imprimé",
+      "dates seulement verbatim; les dates contradictoires ou contextuelles ne deviennent pas une date d'acte",
+      "aucun lot ni code de zone n'est émis depuis ce lot",
+      "projet, avis de motion, second projet et avis référendaire ne portent aucun effet légal"
+    ]
+  },
+  "provenance": {
+    "marker": "VISUAL_READING",
+    "marked_on_every_indexed_entity": true,
+    "consumer_note": "Les citations ci-dessous proviennent de lecture visuelle d'un scan et doivent être pondérées distinctement du texte natif."
+  },
+  "indexing": {
+    "indexed_documents": 19,
+    "owner_not_confirmed": 1,
+    "visually_unreadable": 0,
+    "outcomes": {
+      "INDEXED": 19,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CAS_SHA_MISMATCH": 0,
+      "VISUALLY_UNREADABLE": 0
+    }
+  },
+  "municipal_impact": {
+    "baseline_without_another_indexed_document": 16,
+    "now_with_at_least_one_indexed_document": 9,
+    "recovered_slugs": [
+      "aguanish",
+      "ascot-corner",
+      "baie-comeau",
+      "baie-des-sables",
+      "baie-johan-beetz",
+      "baie-sainte-catherine",
+      "bury",
+      "charlemagne",
+      "clermont--abitibi-ouest"
+    ]
+  },
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/080a27bab62f2769a8835eee23e2b7416e4c19df9ff311de021111a86a926858.pdf",
+      "slug": "albertville",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Albertville",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "MUNICIPALITÉ D’ALBERTVILLE" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Resolution", "value": "86-05-2026", "legal_quality": "ADOPTEE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "le conseil municipal a adopté la résolution 86-05-2026 visant à modifier le calendrier" } },
+        { "type": "Date", "value": "4 mai 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "DONNÉ À ALBERTVILLE, CE 4 MAI 2026" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4d88da062fdf6dc535d97f76f7542c364f4e9cb296796402e3ee343c59325270.pdf",
+      "slug": "aguanish",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Aguanish",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Municipalité d'Aguanish" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Regulation", "value": "003-12-2024", "legal_quality": "ADOPTE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Que le règlement portant le numéro 003-12-2024 soit adopté" } },
+        { "type": "Date", "value": "4 novembre 2024", "date_role": "avis_de_motion_reference", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "un avis de motion du présent règlement a été donné à la séance du 4 novembre 2024" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/15b174f5e0214c24905dd0775f417ecf47a5667730e2fe209a851a360f0f904a.pdf",
+      "slug": "ascot-corner",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Ascot Corner",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Procès-verbal du Conseil de la Municipalité d'Ascot Corner" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "4 mai 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "SÉANCE ORDINAIRE DU 4 MAI 2026 À 19:30" } },
+        { "type": "Regulation", "value": "PPCMOI 2026-04-0001", "legal_quality": "PREMIER_PROJET", "legal_effect": "NONE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Premier projet de résolution pour une demande de PPCMOI 2026-04-0001" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2b260c900691c0cccea0935d2359bddb958eb170db92eae053464419546646ff.pdf",
+      "slug": "baie-sainte-catherine",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Baie-Sainte-Catherine",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "MUNICIPALITÉ DE BAIE-SAINTE-CATHERINE" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "1er juin 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Baie-Sainte-Catherine, le 1er juin 2026" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/5fe96fcfb2dece46ef0a57ef1b0de5446a2195edb06a8b6fa927e53dc5056eb4.pdf",
+      "slug": "baie-sainte-catherine",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Baie-Sainte-Catherine",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "MUNICIPALITÉ DE BAIE-SAINTE-CATHERINE" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "date_status": "NOT_EMITTED_CONTRADICTORY_PRINT",
+      "entities": []
+    },
+    {
+      "storage_key": "raw/pv-index/cas/108d8b71b5d473b759c1589ef118fcfd0536a4e5f068a9e59548e01f8d3140d1.pdf",
+      "slug": "bury",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Bury",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Procès-verbal du conseil de la Municipalité de Bury" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "30 mars 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "SÉANCE EXTRAORDINAIRE ... tenue le lundi 30 mars 2026" } },
+        { "type": "Regulation", "value": "445-2026", "legal_quality": "ADOPTE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "le règlement numéro 445-2026 ... est adopté" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/5e301d95942492c364c3b120d6764fbebb98f5d53c72f2ab4406779015f3a1c9.pdf",
+      "slug": "bury",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Bury",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Procès-verbal du conseil de la Municipalité de Bury" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "26 janvier 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "SÉANCE EXTRAORDINAIRE ... tenue le lundi 26 janvier 2026" } },
+        { "type": "Regulation", "value": "401-2026", "legal_quality": "AVIS_DE_MOTION", "legal_effect": "NONE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Avis de motion règlement 401-2026 ... sera déposé ... pour adoption à une séance future" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/01577eeeacf113e2ff2c3a9b674e37a63c961385431bf767c0f6c1618cc05669.pdf",
+      "slug": "charlemagne",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Ville de Charlemagne",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Séance ordinaire du Conseil de ville" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "21 janvier 2025", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Séance ordinaire du Conseil de ville tenue le 21 janvier 2025" } },
+        { "type": "Regulation", "value": "12-384-24-22", "legal_quality": "ADOPTE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Adoption du règlement numéro 12-384-24-22 amendant le règlement de zonage numéro 05-384-15" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/19a7e2b369beed9e462f65f0572218e9135238757cf2a3f7ee804c88a6e73f5f.pdf",
+      "slug": "clermont--abitibi-ouest",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité du Canton Clermont",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "MUNICIPALITÉ DU CANTON CLERMONT" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "10 mars 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Procès-verbal de la séance ordinaire du conseil municipal, mardi le 10 mars 2026" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1016312daa0d7fe5e349cf968bfd65bc93b4373c10f8cb2a502e2e2cdcbc77e1.pdf",
+      "slug": "albertville",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité Régionale de Comté de La Matapédia",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Municipalité Régionale de Comté de La Matapédia" } },
+      "owner_status": "OWNER_NOT_CONFIRMED",
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "entities": []
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1fc20a14c5fc1ab74e3d54f61077d65974e416033d37ec1f37f82ebe98344637.pdf",
+      "slug": "albertville",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Albertville",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "MUNICIPALITÉ D’ALBERTVILLE" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Regulation", "value": "2024-04", "legal_quality": "SECOND_PROJET", "legal_effect": "NONE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "le conseil municipal a adopté le second projet de règlement no 2024-04" } },
+        { "type": "Date", "value": "20 novembre 2024", "date_role": "referendum_request_deadline", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "être reçue au bureau de la municipalité au plus tard le 20 novembre 2024" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1fdb0d57e3804daefa96e0e27cfa34843292dd9e30e836ebf62a5e5d9e7f3f78.pdf",
+      "slug": "albertville",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Albertville",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "MUNICIPALITÉ D’ALBERTVILLE" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Regulation", "value": "2025-04", "legal_quality": "ENTREE_EN_VIGUEUR", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "le règlement numéro 2025-04 est entré en vigueur" } },
+        { "type": "Date", "value": "14 août 2025", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Donné à Albertville, ce 14 août 2025" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/216ba358843b15755a7684d135b983e57bcbac3c1bf93fed289174343b92e942.pdf",
+      "slug": "albertville",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Albertville",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Municipalité d’Albertville" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "12 septembre 2025", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "DONNÉ À ALBERTVILLE, CE 12 SEPTEMBRE 2025" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/146e92391093c8a94d5369365f9dab3db9fcb62ae3391c3b713c72b3749eb373.pdf",
+      "slug": "ascot-corner",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Ascot Corner",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Procès-verbal du Conseil de la Municipalité d'Ascot Corner" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "2 février 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "SÉANCE ORDINAIRE DU 2 FÉVRIER 2026 À 19:30" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1982cb1ac68310f0b1e780870ab4600115dfcd91ede5872f6e361568a804abc3.pdf",
+      "slug": "ascot-corner",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Ascot Corner",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Procès-verbal du Conseil de la Municipalité d'Ascot Corner" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "7 avril 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "SÉANCE ORDINAIRE DU 7 AVRIL 2026 À 19:30" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3892c1154799e60221377735882deb75d1ae182e4b961964c01c413d8d26b41a.pdf",
+      "slug": "ascot-corner",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Ascot Corner",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Procès-verbal du Conseil de la Municipalité d'Ascot Corner" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "5 janvier 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "SÉANCE ORDINAIRE DU 5 JANVIER 2026 À 19:30" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/5a8822fd1f1c36e34fffb3b5eede67142d1c69ae37009b849169a61a8d878740.pdf",
+      "slug": "ascot-corner",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité d'Ascot Corner",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Procès-verbal du Conseil de la Municipalité d'Ascot Corner" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "2 mars 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "SÉANCE ORDINAIRE DU 2 MARS 2026 À 19:30" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3f41dd128a4e440ca17091b982d25f7f2c9c9f6f4add18bf6e42bbe9c6774e09.pdf",
+      "slug": "baie-comeau",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Ville de Baie-Comeau",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Ville de Baie-Comeau" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "16 septembre 2024", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "séance ordinaire ... tenue le lundi 16 septembre 2024" } },
+        { "type": "Resolution", "value": "2024-309", "legal_quality": "ADOPTEE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Rés. 2024-309 ... D'adopter l'ordre du jour ... ADOPTÉE À L'UNANIMITÉ" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/901dec5248bed1e1dfbb57145552909c5dd2e66c6d1a988b9296a1a753d4d35c.pdf",
+      "slug": "baie-des-sables",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Baie-des-Sables",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "PROCÈS-VERBAUX DE LA MUNICIPALITÉ DE BAIE-DES-SABLES" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "5 mai 2025", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "séance ordinaire du conseil municipal ... le lundi 5 mai 2025" } },
+        { "type": "Resolution", "value": "2025-076", "legal_quality": "ADOPTEE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "2025-076 ... résolu à l'unanimité d'adopter l'ordre du jour ... Adoptée" } }
+      ]
+    },
+    {
+      "storage_key": "raw/pv-index/cas/0fbf17867f967f440e39ff41833e21b03d458c347f97c5d910cc0d83db9fac99.pdf",
+      "slug": "baie-johan-beetz",
+      "sha256_guard": "SHA_PASSED",
+      "printed_owner": "Municipalité de Baie-Johan-Beetz",
+      "owner_evidence": { "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "MUNICIPALITÉ DE BAIE-JOHAN-BEETZ" } },
+      "owner_status": "CONFIRMED",
+      "outcome": "INDEXED",
+      "entities": [
+        { "type": "Date", "value": "5 mai 2026", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "séance ordinaire ... convoquée le 5e jour du mois de mai deux mille vingt-six" } },
+        { "type": "Regulation", "value": "2026-06-09-01", "legal_quality": "PROJET", "legal_effect": "NONE", "provenance": "VISUAL_READING", "citation": { "page": 1, "quote": "Avis de motion concernant le projet de Règlement 2026-06-09-01" } }
+      ]
+    }
+  ]
+}

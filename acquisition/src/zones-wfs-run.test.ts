@@ -7,6 +7,7 @@ import {
   normalizeWfsFeatures,
   parsePairs,
   positionsOf,
+  validateWfsZoneCodes,
   type GeoFeature,
   type WfsConfig,
 } from "./zones-wfs-run.js";
@@ -55,6 +56,118 @@ describe("zones-wfs-run helpers", () => {
     expect(norm.map((f) => f.properties.zone_code)).toEqual(["155 Ha", null, null]);
     expect(norm[0]!.properties.confidence).toBe("obscura-wfs-geoserver");
     expect(norm[0]!.properties.source).toBe("src#layer");
+  });
+
+  it("accepts an explicit WFS regulatory zone field with three distinct real codes", () => {
+    const raw: GeoFeature[] = ["AFV-1", "PUm-3", "REC-19"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { etiquette_1: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "etiquette_1");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.stats.distinct).toBe(3);
+    expect(verdict.stats.sample).toEqual(["AFV-1", "PUm-3", "REC-19"]);
+  });
+
+  it("rejects OBJECTID even when values are present and distinct", () => {
+    const raw: GeoFeature[] = [101, 205, 309].map((id) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { OBJECTID: id },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "OBJECTID");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.reason).toContain("champ zone interdit");
+  });
+
+  it("rejects fewer than three distinct zone codes", () => {
+    const raw: GeoFeature[] = ["H-1", "H-1", "P-2"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { CODE_ZONE: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "CODE_ZONE");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.reason).toContain("<3 codes distincts");
+  });
+
+  it("rejects sequential integer identifiers even under a zone-like field name", () => {
+    const raw: GeoFeature[] = [1, 2, 3, 4, 5].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { NO_ZONE: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "NO_ZONE");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.reason).toContain("séquentielles");
+  });
+
+  it("accepts numeric-first QC codes (<n°zone>-<usage>) under a generic real zone field", () => {
+    // Format QC chiffre-d'abord (100-A, 101 C, 205-B) : la signature CODE_PATTERN_RE
+    // doit reconnaître le code même sous un champ réglementaire générique ("Zone",
+    // non explicite) qui exige codeLikeRatio ≥ 0.5. Régression : lettre-en-tête only.
+    const raw: GeoFeature[] = ["100-A", "101 C", "205-B"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.stats.codeLikeRatio).toBe(1);
+    expect(verdict.stats.distinct).toBe(3);
+  });
+
+  it("accepts roman-numeral zone codes (A-II, CAM-VII, VIL-XIII) under a generic real zone field", () => {
+    // Grille à indices romains (L'Ascension / MRC Antoine-Labelle) : préfixe usage +
+    // séparateur + chiffre romain. CODE_PATTERN_RE doit les reconnaître comme codes réels.
+    const raw: GeoFeature[] = ["A-II", "CAM-VII", "VIL-XIII", "CON-I", "REC-I"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.stats.codeLikeRatio).toBe(1);
+  });
+
+  it("accepts Ville-de-Québec collée <n°zone><usage> codes (21703Mc, 53091Hb) under a generic real zone field", () => {
+    // Convention Ville de Québec : n° de zone (4-5 chiffres) COLLÉ à une classe d'usage
+    // (1-3 lettres), sans séparateur — ex 21703Mc / 53091Hb / 22230Pa. CODE_PATTERN_RE
+    // doit les reconnaître (ancrage fin + suffixe-lettres), l'entier nu 21703 restant rejeté.
+    const raw: GeoFeature[] = ["21703Mc", "53091Hb", "22230Pa", "22301Rb", "22304Mb"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(true);
+    expect(verdict.stats.codeLikeRatio).toBe(1);
+    expect(verdict.stats.distinct).toBe(5);
+  });
+
+  it("still rejects bare integers / addresses lacking a separator+letter signature", () => {
+    // Le séparateur OBLIGATOIRE de l'alternance chiffre-d'abord protège contre les
+    // entiers nus (id techniques) : "100"/"200"/"300" ne matchent pas CODE_PATTERN_RE.
+    const raw: GeoFeature[] = ["100", "200", "300"].map((code) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: code },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.stats.codeLikeRatio).toBe(0);
+  });
+
+  it("rejects generic Zone fields that contain usage labels instead of zone codes", () => {
+    const raw: GeoFeature[] = ["Rurale", "Urbaine", "Industrielle"].map((label) => ({
+      type: "Feature",
+      geometry: { type: "Polygon", coordinates: [] },
+      properties: { Zone: label },
+    }));
+    const verdict = validateWfsZoneCodes(raw, "Zone");
+    expect(verdict.ok).toBe(false);
+    expect(verdict.reason).toContain("champ générique");
   });
 
   it("walks every position of a nested MultiPolygon and finds the bbox centre", () => {

@@ -1,0 +1,167 @@
+{
+  "contract": "pv-portails-js-levier/v1",
+  "generated_at": "2026-07-30T02:16:59Z",
+  "mode": "measurement-and-proposal-only",
+  "scope": {
+    "reference_municipalities": 1106,
+    "municipal_pv_covered": 640,
+    "virgin_without_candidate": 222,
+    "survey_path": "work/coverage/pv-decouverte-municipalites-vierges-20260730T010135Z-enquete.json",
+    "survey_sample_size": 30,
+    "survey_partition": {
+      "a_site_pv_pdf": 5,
+      "b_portal_js_antibot": 18,
+      "c_mrc_pv": 0,
+      "d_no_site_identifiable": 6,
+      "e_site_no_pv": 1,
+      "f_autre": 0,
+      "closed": true
+    },
+    "new_capture": false,
+    "campaign_started": false,
+    "raw_writes": 0,
+    "capture_run_writes": 0,
+    "normalized_writes": 0
+  },
+  "existing_capabilities": [
+    {
+      "family": "GoNet / GoAzimut adjacent municipal pages",
+      "source": "acquisition/src/pv-gonet-run.ts:1-13,36-41",
+      "capacity": "Detects GoNet/GoAzimut markers then extracts PV document links from robots-allowed municipal HTML; it does not render a portal DOM."
+    },
+    {
+      "family": "VPlus / Modellium",
+      "source": "acquisition/src/pv-vplus-run.ts:1-28,43-55,154-184",
+      "capacity": "Reads the public VPlus API route tree and page details, then retains only real PV-labelled vplus-documents PDFs; no Chromium."
+    },
+    {
+      "family": "Wix blog / CDN",
+      "source": "acquisition/src/pv-wix-run.ts:1-29,169-215",
+      "capacity": "Uses the server-rendered RSS feed and embedded Wix JSON to emit real CDN PDF pairs for the shared DOM deposit gate."
+    },
+    {
+      "family": "WordPress media API",
+      "source": "acquisition/src/pv-wp-media-run.ts:1-8,187-190",
+      "capacity": "Queries /wp-json/wp/v2/media and accepts only live PV-labelled document media."
+    },
+    {
+      "family": "Live host / static CMS / sitemap",
+      "source": "acquisition/src/pv-livehost-run.ts:1-30,99-119,195-218",
+      "capacity": "Follows the living host, canonical PV paths and sitemaps, then uses the shared structural parser for static WordPress, Drupal, Joomla and plain HTML pages."
+    },
+    {
+      "family": "Passive rendered DOM — PV obscura",
+      "source": "acquisition/src/pv-obscura-run.ts:1-26,298-389,457-549,560-579",
+      "capacity": "Launches one Chromium CDP browser, obtains document.documentElement.outerHTML after JavaScript, follows rendered PV navigation and canonical paths, then applies the existing PV quality gate."
+    },
+    {
+      "family": "Interactive rendered DOM handoff",
+      "source": "acquisition/src/pv-dom-deposit.ts:1-18,68-102,233-245",
+      "capacity": "Accepts a DOM or anchor pairs already obtained after Playwright interaction (accordion, year selector, shadow DOM or ASP postback), reuses the obscura parser, and live-checks the resulting real links."
+    },
+    {
+      "family": "Reusable lower-level CDP browser",
+      "source": "acquisition/src/zones-obscura-run.ts:273-367,374-413",
+      "capacity": "The zones lane already has a CDP browser that returns rendered DOM and observed network requests, and can keep an authenticated session for an in-page fetch."
+    },
+    {
+      "family": "Render-mode router",
+      "source": "packages/qc-sources/src/sources/proces-verbaux-parser.ts:300-325,508-545",
+      "capacity": "Recognises gestionweblex and ASP.NET runtime-injected indexes and routes them to a browser rather than treating an empty static parse as absence."
+    }
+  ],
+  "capture_compliance_gap": {
+    "finding": "The existing PV speciality runners are discovery/index-manifest tools, not a deployable captured CDP source today. Several use direct source fetches; the current capture job is explicitly direct HTTP only.",
+    "evidence": [
+      "deploy/capture-job/Dockerfile:3-6",
+      "deploy/capture-job/run-capture-job.sh:29-66",
+      "acquisition/src/pv-vplus-run.ts:138-149",
+      "acquisition/src/pv-livehost-run.ts:123-150",
+      "acquisition/src/pv-wp-media-run.ts:157-184",
+      "acquisition/src/pv-dom-deposit.ts:104-134"
+    ],
+    "consequence": "No existing runner may be launched unchanged for a new probe under the current capturedFetch-only rule; this is a deployment/provenance integration gap, not evidence that a new editor adapter is needed."
+  },
+  "portal_sample": {
+    "count": 18,
+    "homepage_http_200_html": 18,
+    "diagnoses": {
+      "html_pv_portal": 17,
+      "portal_js_suspect": 1
+    },
+    "classification_rule": "The survey stored status, URL, size and SHA-256 evidence, but not the DOM body. Publisher-specific markers therefore cannot be reconstructed for eleven cases without a new captured probe, which this report does not perform.",
+    "targets": [
+      { "slug": "saint-charles-de-bellechasse", "name": "Saint-Charles-de-Bellechasse", "family": "unclassified municipal portal", "evidence": "https://www.saint-charles.ca/proces-verbaux/" },
+      { "slug": "gaspe", "name": "Gaspé", "family": "WordPress host confirmed", "evidence": "same-host /wp-content/ URL in acquisition/config/usage-dominant-map/gaspe.json:15" },
+      { "slug": "sainte-monique--lac-saint-jean-est", "name": "Sainte-Monique", "family": "calendar portal, editor not retained", "evidence": "details-evenements?id_calendar=1" },
+      { "slug": "maskinonge", "name": "Maskinongé", "family": "Joomla-like URL shape, not body-confirmed", "evidence": "index.php/calendrier/detailevenement" },
+      { "slug": "saint-clet", "name": "Saint-Clet", "family": "Drupal host confirmed", "evidence": "same-host /sites/default/files/ URL in acquisition/config/usage-dominant-map/saint-clet.json:11" },
+      { "slug": "sainte-jeanne-darc--maria-chapdelaine", "name": "Sainte-Jeanne-d'Arc", "family": "unclassified municipal portal", "evidence": "/blog/page-accueil/calendrier-des-seances-2025" },
+      { "slug": "saint-adelphe", "name": "Saint-Adelphe", "family": "unclassified municipal portal", "evidence": "/accueil/municipalite/conseil-municipal-2021-2025/" },
+      { "slug": "saint-sulpice", "name": "Saint-Sulpice", "family": "script-heavy portal, editor not retained", "evidence": "portal_js_suspect; no followed PV link" },
+      { "slug": "saint-eloi", "name": "Saint-Éloi", "family": "unclassified municipal portal", "evidence": "/procs-verbal-2016" },
+      { "slug": "saint-joseph-des-erables", "name": "Saint-Joseph-des-Érables", "family": "Joomla-like URL shape, not body-confirmed", "evidence": "index.php/features-*/conseil-municipal" },
+      { "slug": "thurso", "name": "Thurso", "family": "WordPress host confirmed", "evidence": "same-host /wp-content/ URL in acquisition/config/usage-dominant-map/thurso.json:9" },
+      { "slug": "cap-sante", "name": "Cap-Santé", "family": "unclassified municipal portal", "evidence": "/conseil-municipal" },
+      { "slug": "blanc-sablon", "name": "Blanc-Sablon", "family": "document portal, editor not retained", "evidence": "/affaires-municipales/proces-verbaux" },
+      { "slug": "lisle-verte", "name": "L'Isle-Verte", "family": "unclassified municipal portal", "evidence": "/pv/ and /seances/" },
+      { "slug": "sainte-louise", "name": "Sainte-Louise", "family": "document portal, editor not retained", "evidence": "/fichiersUpload/fichiers/" },
+      { "slug": "murdochville", "name": "Murdochville", "family": "WordPress host confirmed", "evidence": "same-host /wp-content/ URL in acquisition/config/usage-dominant-map/murdochville.json:10" },
+      { "slug": "rigaud", "name": "Rigaud", "family": "unclassified municipal portal", "evidence": "/seances-du-conseil" },
+      { "slug": "notre-dame-du-mont-carmel", "name": "Notre-Dame-du-Mont-Carmel", "family": "Wix event-route signature, not body-confirmed", "evidence": "/event-details/seance-du-conseil-10" }
+    ]
+  },
+  "existing_adapter_confrontation": {
+    "denominator": 18,
+    "confirmed_specific_host_family_matches": {
+      "wordpress": 3,
+      "drupal": 1,
+      "total": 4,
+      "note": "This proves a matching existing route, not that its API or page will yield a PV; no such runner was launched."
+    },
+    "conditional_url_shape_matches": {
+      "joomla_like": 2,
+      "wix_event_route": 1,
+      "total": 3,
+      "note": "These route signatures are insufficient to assert the publisher without retained DOM bytes."
+    },
+    "unclassified_editor_count": 11,
+    "eligible_for_existing_passive_cdp_renderer": 18,
+    "requires_new_editor_adapter_before_first_captured_cdp_test": 0,
+    "confirmed_successes_of_an_existing_adapter_in_this_sample": 0,
+    "interpretation": "All 18 are valid inputs to the existing generic PV CDP renderer because each returned HTML 200; 17 also exposed a PV-designating page. This is eligibility, not a claimed extraction success. A per-editor adapter is premature until a captured rendered-DOM result classifies the eleven unknown publishers and any interaction/WAF failure."
+  },
+  "lever_extrapolation": {
+    "sample_size": 30,
+    "population_without_candidate": 222,
+    "portal_only_b": {
+      "formula": "18 / 30 * 222",
+      "expected_municipalities": 133.2,
+      "meaning": "Additional municipalities in the b portal/JS/anti-bot partition if that sample proportion held."
+    },
+    "a_b_c_potentially_reachable": {
+      "formula": "23 / 30 * 222",
+      "expected_municipalities": 170.2,
+      "meaning": "Total a+b+c potential; it includes the 37.0 expected a cases already reachable as direct PDFs, so it is not the incremental portal-only lever."
+    },
+    "not_a_measurement_of_222": true,
+    "could_be_false_if": [
+      "the random n=30 does not represent MRC, municipality size, hosts or publishers of the 222",
+      "the unclassified portal distribution differs from the sample",
+      "WAF or interactive-session requirements dominate after real rendering",
+      "a rendered portal lists no retrievable PV despite its navigation page"
+    ]
+  },
+  "proposal": {
+    "smallest_increment": "Do not build an editor-specific adapter first. Capitalise the existing PV CDP renderer as a captured source in a separate obscura image/worklist variant: browser navigation and every discovered document request must cross capturedFetch, then use the already-existing parser and DOM handoff for interaction-only cases.",
+    "why": "One generic renderer accepts all 18 current HTML-200 cases; eleven have no retained publisher fingerprint, so a family-first adapter choice would be speculative.",
+    "known_operating_cost": {
+      "chromium_and_tor_absent_from_current_direct_http_image": true,
+      "current_image_evidence": "deploy/capture-job/Dockerfile:3-6",
+      "obscura_memory_limit": "at least 1Gi",
+      "obscura_parallelism_at_current_quota": "one pod at a time",
+      "evidence": "docs/spec/SPEC_CAPTURE_ON_CLUSTER.md:463-473"
+    },
+    "implementation_cost_not_asserted": "No line-count or duration estimate is claimed: the repo contains the rendering and parsing logic, but not a capture-compliant PV CDP deployment path."
+  }
+}

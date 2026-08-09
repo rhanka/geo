@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "P": null,
+    "CP": null
+  },
+  "source": "https://www.saint-christophe-darthabaska.ca/fichiersUpload/fichiers/20230526102724-reglement-003-3013-zonage-amendements-102-2023-et-ant.pdf",
+  "note": "Règlement de zonage 003-3013 (amendements 102-2023 et ant.), article 3.2 « IDENTIFICATION DES ZONES »: « Chacune des zones montrées au plan de zonage et à la grille des usages et des normes est identifiée à ce plan par une lettre d'appellation indiquant l'affectation principale de la zone [...] selon le tableau suivant : Affectation principale / Lettre d'appellation ». Table verbatim (p.8): Habitation -> H; Commercial -> C; Industriel -> I; Communautaire -> P; Agricole -> A; Agroforestière -> AF; Agrorésidentielle -> AR; Villégiature -> V. Mappés (affectation dominante VERBATIM): H « Habitation » -> résidentiel; C « Commercial » -> commercial; I « Industriel » -> industriel; A « Agricole » -> agricole. Null explicite: P « Communautaire » est une affectation publique/institutionnelle sans dominante parmi les cinq catégories. Préfixes servis SANS correspondance VERBATIM dans le tableau de désignation: RR, VIL, CP, REC n'y figurent pas (le règlement désigne « Villégiature » par la lettre V et « Agrorésidentielle » par AR, et ne définit ni CP ni REC); leur nomenclature SIG n'est pas celle de cet article, on ne force donc aucune correspondance de lettres. CP est déclaré explicitement null UNIQUEMENT pour bloquer le match longest-prefix vers C « Commercial » (sinon CP-1 serait servi commercial à tort); RR/VIL/REC ne collisionnent avec aucun préfixe mappé et retombent honnêtement à null (non servis). La matrice des usages permis (chapitre 4, groupes H/C/I/A) n'est pas utilisée."
+}

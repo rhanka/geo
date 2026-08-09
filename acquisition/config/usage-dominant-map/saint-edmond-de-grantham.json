@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "P": null,
+    "A": "agricole",
+    "ID": null,
+    "AF": null,
+    "AFp": null,
+    "Ap": null,
+    "RU": null
+  },
+  "source": "https://www.st-edmond-de-grantham.qc.ca/file-11384",
+  "note": "Règlement de zonage, MUNICIPALITÉ DE SAINT-EDMOND-DE-GRANTHAM (n° SIG 355-2021, millésime 2021). Art. 3.2 « IDENTIFICATION DES ZONES »: « Chacune des zones montrées au plan de zonage et à la grille des usages et des normes est identifiée à ce plan par une lettre d'appellation indiquant l'affectation principale de la zone aux fins de compréhension seulement, selon le tableau suivant : » puis la table « Affectation principale / Lettre d'appellation »: Habitation = H; Commerce = C; Industrie = I; Communautaire = P; Agricole = A; Ilot déstructuré = ID. Mapping: H -> residentiel; C -> commercial; I -> industriel; A -> agricole. Null explicite: P « Communautaire » est une affectation publique; ID « Ilot déstructuré » est une enclave résidentielle en milieu agricole, donc duale. AF, AFp, Ap et RU sont présents au SIG mais N'APPARAISSENT PAS dans la table du règlement -> null explicite (aucune dominante inventée; ces null bloquent aussi le repli longest-prefix vers « A »). La grille des usages et des normes (matrice) n'est pas utilisée."
+}

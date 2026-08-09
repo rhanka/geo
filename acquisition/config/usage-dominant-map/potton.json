@@ -1,0 +1,22 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AFI": "agricole",
+    "AFII": "agricole",
+    "RF": "agricole",
+    "I": "industriel",
+    "EXT": "industriel",
+    "RES": "residentiel",
+    "RV": "residentiel",
+    "RT": "residentiel",
+    "REC": "environnemental",
+    "RU": null,
+    "U": null,
+    "P": null,
+    "OH": null,
+    "IM": null,
+    "ISM": null
+  },
+  "source": "https://potton.ca/download/362/annexes-zonage-1-a-10/23677/plan-de-zonage-annexe-1-feuillet-1-de-2-mise-a-jour-12-octobre-2024.pdf",
+  "note": "Règlement de zonage #2001-291 et ses amendements, MUNICIPALITÉ DU CANTON DE POTTON (version mise à jour février 2025). La légende est la légende TEXTUELLE du plan de zonage A1 (annexe 1), rendue intégrante par l'art. 4 verbatim: « Le plan de zonage, portant le numéro A1 feuillets 1/2 et 2/2 (…) fait partie intégrante du présent règlement à toute fin que de droits et est joint au présent règlement comme annexe 1. » Le plan porte « Canton de Potton / Règlement de zonage # 2001-291 / Réalisation : MRC de Memphrémagog / Juillet 2024 ». Bloc « Légende » > « Zonage », verbatim: « Agricole (A) ; Agro-forestière type 1 (AFI) ; Agro-forestière type 2 (AFII) ; Îlot sans morcellement (annexe 8) (ISM) ; Îlot avec morcellement (annexe 8) (IM) ; Urbaine (U) ; Industrielle (I) ; Résidentielle (RES) ; Résidentielle-villégiature (RV) ; Résidentielle-touristique (RT) ; Owl's Head (OH) ; Récréotouristique (REC) ; Rurale (RU) ; Rurale forestière (RF) ; Publique (P) ; Extraction (EXT) ». Les 16 entrées = exactement les 16 préfixes du SIG. Corroboré par 3 liaisons verbatim du corps: art. 66 « Dans les zones agricoles A, agro-forestières de type 1 AFI et de type 2 AFII, rurales-forestières RF, rurales RU et extraction EXT »; art. 72.1 « les zones résidentielles-villégiature « RV », résidentielles-touristique « RT » et récréotouristiques « Rec » »; art. 75 « les zones agricoles A et agro-forestières (…), îlots avec morcellement IM et îlots sans morcellement ISM ». RF « Rurale forestière » -> agricole (« forestière » est la seule des cinq nommée, « rurale » est qualificatif); RV « Résidentielle-villégiature » et RT « Résidentielle-touristique » -> residentiel (seule « Résidentielle » est une des cinq, ≠ « Villégiature » SEULE qui serait null); REC « Récréotouristique » -> environnemental (« récréo » est la seule des cinq nommée); EXT « Extraction » -> industriel. Null explicite: RU « Rurale » SEULE; U « Urbaine »; P « Publique »; OH « Owl's Head » est un TOPONYME (la station de ski, art. 76.1 « DISPOSITIONS PARTICULIÈRES AUX ZONES OH ») et non une vocation — 14 pol.; IM « Îlot avec morcellement » et ISM « Îlot sans morcellement » ne nomment aucune dominance. ⚠ ANTI-FALL-THROUGH RÉEL: « IM-1 » et « ISM-2 » commencent par « I » (industriel) — les deux sont déclarés null explicitement, sinon 23 polygones seraient servis industriel À TORT. La matrice des usages permis n'est pas utilisée. ⚠ ACCÈS: potton.ca renvoie 403 à curl (même avec UA+Referer) sur tous les /download/ — récupérable via WebFetch uniquement."
+}

@@ -1,0 +1,2871 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:36:43.534Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 600,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "Regulation": 122,
+    "CouncilSession": 15,
+    "MeetingDate": 15,
+    "Zone": 3,
+    "Resolution": 20,
+    "LotCadastre": 8
+  },
+  "graphify": {
+    "nodes": 219,
+    "edges": 52,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 3,
+    "lot_entities": 8,
+    "documents_with_zone": 3,
+    "documents_with_lot": 5
+  },
+  "match_details": [
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/428a91b65da5c1a4c8ec5dad29c8117f1a3b59249880954da235f60840176d5f.pdf",
+      "entity_type": "Zone",
+      "value": "140 R",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:692",
+      "quote": "                règlement prévoit que dans la zone 140 R, seuls les usages unifamiliaux isolés, unifamiliaux"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/49da3d8c573658892e2f005edd4a11ade9ac1ea0a9cd99b3ada826c69308e850.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3210544",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:114",
+      "quote": "                            4.2.1      Vente du lot 3 210 544 - 67-71, place La Salle"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/4c1a2c4d7d0d5fba99f7f36d3c622fdde1539b6494e2ba96ffa82c84fa44792c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6154902",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:78",
+      "quote": "                                       lots 6 154 902 et 6 348 916 sur le territoire de la Ville de"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/4c1a2c4d7d0d5fba99f7f36d3c622fdde1539b6494e2ba96ffa82c84fa44792c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6473460",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:600",
+      "quote": "                      5.1   Dérogation mineure - Lot 6 473 460 (rue Leonard-E.-Schlemm)"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/528ec855c8c625e912dc92673a771b70fee031303807a3228620b29de7028885.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3210850",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:769",
+      "quote": "                garage isolé appartenant au 11, avenue Hébert et situé sur le lot 3 210 850. Le garage isolé"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/5e346ae6bc696647d3a914526b1346c654543c98bfcb7cb750525ecdd0295fe9.pdf",
+      "entity_type": "Zone",
+      "value": "203 I",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1120",
+      "quote": "aménagements industriels contraignants pour la zone 203 I afin qu'ils s'harmonisent avec le"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/5e346ae6bc696647d3a914526b1346c654543c98bfcb7cb750525ecdd0295fe9.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3746140",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:185",
+      "quote": "                    pour l'alimentation de borne de recharge de véhicule électrique située sur le lot 3 746 140,"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/5e346ae6bc696647d3a914526b1346c654543c98bfcb7cb750525ecdd0295fe9.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3212854",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:672",
+      "quote": "                            4.3.14     Bail - partie du lot 3 212 854 - 67-71, place La Salle"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/5e346ae6bc696647d3a914526b1346c654543c98bfcb7cb750525ecdd0295fe9.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3212770",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:691",
+      "quote": "                            4.3.15     Bail - partie du lot 3 212 770 - Hôtel, avenue Talon - escaliers arrière"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/64460b4ee435082399d8b059c87e4e131eaeba1a36e6b026eb0084382f2e9954.pdf",
+      "entity_type": "Zone",
+      "value": "203 I",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:865",
+      "quote": "           conditionnels afin d'assujettir la zone 203 I à la procédure d'usages conditionnels;"
+    },
+    {
+      "municipality_slug": "baie-comeau",
+      "storage_key": "raw/pv-index/cas/64460b4ee435082399d8b059c87e4e131eaeba1a36e6b026eb0084382f2e9954.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5794497",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:414",
+      "quote": "           d'une tour de télécommunication autoportante de 60 mètres sur le lot 5 794 497, cadastre du"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 237,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 2443,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z",
+  "documents": [
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2024/09/2024-09-16-Seance-ordinaire-resol.-309-a-337.pdf",
+      "storage_key": "raw/pv-index/cas/3f41dd128a4e440ca17091b982d25f7f2c9c9f6f4add18bf6e42bbe9c6774e09.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/bbe9c6774e09.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/bbe9c6774e09.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2024/12/2024-12-11-Seance-extraordinaire-resol.-480-a-486.pdf",
+      "storage_key": "raw/pv-index/cas/4190a076ee5900c3cbbdb873057612f7e61f25dac8c57c3a50c3cbc7279117e4.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-1122",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "                     4.    ADOPTION DU RÈGLEMENT 2024-1122 CONCERNANT LA TAXATION DE"
+            }
+          },
+          {
+            "label": "2024-1123",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "                5.   ADOPTION DU RÈGLEMENT 2024-1123 MODIFIANT LE RÈGLEMENT 2011-798"
+            }
+          },
+          {
+            "label": "2011-798",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "                5.   ADOPTION DU RÈGLEMENT 2024-1123 MODIFIANT LE RÈGLEMENT 2011-798"
+            }
+          },
+          {
+            "label": "2024-1124",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:106",
+              "quote": "                6.   ADOPTION DU RÈGLEMENT 2024-1124 MODIFIANT LE RÈGLEMENT 2015-880"
+            }
+          },
+          {
+            "label": "2015-880",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:106",
+              "quote": "                6.   ADOPTION DU RÈGLEMENT 2024-1124 MODIFIANT LE RÈGLEMENT 2015-880"
+            }
+          },
+          {
+            "label": "2024-1125",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "                7.   ADOPTION DU RÈGLEMENT 2024-1125 MODIFIANT LE RÈGLEMENT 2006-706"
+            }
+          },
+          {
+            "label": "2006-706",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "                7.   ADOPTION DU RÈGLEMENT 2024-1125 MODIFIANT LE RÈGLEMENT 2006-706"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/cbc7279117e4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/cbc7279117e4.pdf/.graphify/.graphify_extract.json — 9 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2022/06/2022-03-21-Seance-ordinaire-resol.-78-a-115.pdf",
+      "storage_key": "raw/pv-index/cas/428a91b65da5c1a4c8ec5dad29c8117f1a3b59249880954da235f60840176d5f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 8,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 mars 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "                     17 h 45, a été remise à chaque membre du conseil au moins 24 heures avant cette séance,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 mars 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance extraordinaire du 7 mars 2022, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:377",
+              "quote": "               - précisent que le présent processus contractuel est assujetti au Règlement numéro 26 sur"
+            }
+          },
+          {
+            "label": "2003-644",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:686",
+              "quote": "                     •    les dérogations aux dispositions du Règlement 2003-644 concernant le zonage"
+            }
+          },
+          {
+            "label": "2012-823",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:717",
+              "quote": "      7.1   Projet de règlement modifiant le Règlement 2012-823 concernant le code"
+            }
+          },
+          {
+            "label": "2022-1044",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:733",
+              "quote": "      7.2   Projet de règlement modifiant le Règlement 2022-1044 concernant le code"
+            }
+          },
+          {
+            "label": "2022-1045",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:855",
+              "quote": "                D'adopter le Règlement 2022-1045 - Réfection avenue Laval - Emprunt de 7 240 100 $."
+            }
+          },
+          {
+            "label": "2022-1046",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:886",
+              "quote": "                D'adopter le Règlement 2022-1046 - Travaux d'immobilisation 2022 - Réfection de bâtiments"
+            }
+          },
+          {
+            "label": "2022-1047",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:916",
+              "quote": "                D'adopter le Règlement 2022-1047 modifiant le Règlement 2011-798 concernant la"
+            }
+          },
+          {
+            "label": "2011-798",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:893",
+              "quote": "                     9.3   Règlement 2022-1047 modifiant le Règlement 2011-798 concernant la"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "140 R",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:692",
+              "quote": "                règlement prévoit que dans la zone 140 R, seuls les usages unifamiliaux isolés, unifamiliaux"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/f60840176d5f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/f60840176d5f.pdf/.graphify/.graphify_extract.json — 13 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2022/09/2022-09-19-Seance-ordinaire-resol.-351-a-379.pdf",
+      "storage_key": "raw/pv-index/cas/442b02e39930607f3d58acfc026095187d3a2b84bac8ebf9d460b011210b0692.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 9
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 29 août 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "                     a été remise à chaque membre du conseil au moins 24 heures avant cette séance, la greffière"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "29 août 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance ordinaire du 29 août 2022, à 20 h,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2021-1032",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:620",
+              "quote": "                     7.1   Projet de règlement modifiant le Règlement 2021-1032 concernant le réseau"
+            }
+          },
+          {
+            "label": "2018-959",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:631",
+              "quote": "                     7.2   Projet de règlement modifiant le Règlement 2018-959 concernant le"
+            }
+          },
+          {
+            "label": "2022-1059",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:717",
+              "quote": "                D'adopter le Règlement 2022-1059 modifiant le Règlement 97-497 concernant la circulation"
+            }
+          },
+          {
+            "label": "97-497",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:699",
+              "quote": "                      9.1   Règlement 2022-1059 modifiant le Règlement 97-497 concernant la"
+            }
+          },
+          {
+            "label": "2022-1060",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:741",
+              "quote": "                D'adopter le Règlement 2022-1060 modifiant le Règlement 2021-1022 concernant les"
+            }
+          },
+          {
+            "label": "2021-1022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:724",
+              "quote": "                      9.2   Règlement 2022-1060 modifiant le Règlement 2021-1022 concernant les"
+            }
+          },
+          {
+            "label": "2022-1061",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:775",
+              "quote": "                D'adopter le Règlement 2022-1061 modifiant le Règlement 2021-1038 afin d'augmenter la"
+            }
+          },
+          {
+            "label": "2021-1038",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:754",
+              "quote": "                      9.3   Règlement 2022-1061 modifiant le Règlement 2021-1038 afin d'augmenter la"
+            }
+          },
+          {
+            "label": "2022-1062",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:804",
+              "quote": "                D'adopter le Règlement 2022-1062            pour    le    réaménagement      de    la   caserne"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/b011210b0692.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/b011210b0692.pdf/.graphify/.graphify_extract.json — 13 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2022/09/2022-08-29-Seance-ordinaire-resol.-303-a-350.pdf",
+      "storage_key": "raw/pv-index/cas/4821b742a37ed3badd97796b45c5b56e1db347e248749aa063df4be9264494db.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 8
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "                                                             7773"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "                                                             7773"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 25 juillet 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "                     17 h 30, a été remise à chaque membre du conseil au moins 24 heures avant cette séance,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "25 juillet 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance extraordinaire du 25 juillet 2022, à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-249",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "                            4.1.1      Remplacement de la résolution 2022-249 - Entente Maison de la"
+            }
+          },
+          {
+            "label": "2022-278",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:175",
+              "quote": "                            4.1.6      Remplacement de la résolution 2022-278 - Transport en commun et"
+            }
+          },
+          {
+            "label": "2022-210",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:764",
+              "quote": "                la séance ordinaire du 16 mai 2022, la résolution 2022-210 ainsi que le Règlement 2022-1052"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2019-990",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "                Les frais sont remboursés conformément au Règlement 2019-990 concernant les frais de"
+            }
+          },
+          {
+            "label": "2021-1031",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:189",
+              "quote": "                            4.1.7      Rapport annuel 2021 - Application du Règlement 2021-1031 sur la"
+            }
+          },
+          {
+            "label": "2022-1052",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:764",
+              "quote": "                la séance ordinaire du 16 mai 2022, la résolution 2022-210 ainsi que le Règlement 2022-1052"
+            }
+          },
+          {
+            "label": "2015-880",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:766",
+              "quote": "                dans le numéro du Règlement 2015-880."
+            }
+          },
+          {
+            "label": "2022-1058",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:772",
+              "quote": "                            des personnes habiles à voter concernant le Règlement 2022-1058 pour la"
+            }
+          },
+          {
+            "label": "97-497",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:794",
+              "quote": "                      7.1   Projet de règlement modifiant le Règlement 97-497 concernant la circulation"
+            }
+          },
+          {
+            "label": "2021-1022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:806",
+              "quote": "                      7.2   Projet de règlement modifiant le Règlement 2021-1022 concernant les"
+            }
+          },
+          {
+            "label": "2021-1038",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:818",
+              "quote": "                      7.3   Projet de règlement modifiant le Règlement 2021-1038 afin d'augmenter la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/4be9264494db.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/4be9264494db.pdf/.graphify/.graphify_extract.json — 15 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2022/06/2022-02-21-Seance-ordinaire-resol.-35-a-68.pdf",
+      "storage_key": "raw/pv-index/cas/489a3aaa6baedf5644c1ea1d055669859a6fd8e1a8ef058087624286b5634bc5.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "                     disponible en direct ainsi que le lendemain sur le site Internet de la Ville au"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "                     disponible en direct ainsi que le lendemain sur le site Internet de la Ville au"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 janvier 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "                     20 h, a été remise à chaque membre du conseil au moins 24 heures avant cette séance, la"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 janvier 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance ordinaire du 17 janvier 2022, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2022-1043",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:517",
+              "quote": "                           des personnes habiles à voter - Règlement 2022-1043"
+            }
+          },
+          {
+            "label": "2019-969",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:521",
+              "quote": "               voter concernant le Règlement 2022-1043 modifiant le Règlement 2019-969 afin d’augmenter"
+            }
+          },
+          {
+            "label": "2011-798",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:540",
+              "quote": "                     8.1   Projet de règlement modifiant le Règlement 2011-798 concernant la"
+            }
+          },
+          {
+            "label": "2022-1044",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:658",
+              "quote": "               D'adopter le Règlement 2022-1044 remplaçant le Règlement 2018-934 - Code d'éthique et"
+            }
+          },
+          {
+            "label": "2018-934",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:637",
+              "quote": "               Attendu que la Municipalité a adopté le Règlement 2018-934 concernant le code d’éthique"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/4286b5634bc5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/4286b5634bc5.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2023/06/2023-06-19-Seance-ordinaire-resol.-192-a-233.pdf",
+      "storage_key": "raw/pv-index/cas/49da3d8c573658892e2f005edd4a11ade9ac1ea0a9cd99b3ada826c69308e850.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 19,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "                                                               7911"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "                                                               7911"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 juin 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "                     17 h, a été remise à chaque membre du conseil au moins 24 heures avant cette séance, la"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 juin 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance extraordinaire du 12 juin 2023, à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-140",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:181",
+              "quote": "                            4.3.2      Remplacement de la résolution 2023-140 - Déplacement de"
+            }
+          },
+          {
+            "label": "2023-141",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:195",
+              "quote": "                            4.3.3      Remplacement de la résolution 2023-141 - Modification de la limite"
+            }
+          },
+          {
+            "label": "2019-404",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:219",
+              "quote": "                            4.3.4      Remplacement de la résolution 2019-404 - Représentants de la Ville"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2021-1031",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "                            4.1.2      Rapport annuel 2022 - Application du Règlement 2021-1031 sur la"
+            }
+          },
+          {
+            "label": "2006-706",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:284",
+              "quote": "                d'urbanisme et à délivrer les permis découlant du Règlement 2006-706 concernant le"
+            }
+          },
+          {
+            "label": "2013-836",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:465",
+              "quote": "                Règlement 2013-836 concernant les travaux relatifs au réseau électrique, aux parcs et"
+            }
+          },
+          {
+            "label": "2013-837",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:466",
+              "quote": "                espaces verts pour 27 186 $, du Règlement 2013-837 concernant la mise à niveau de"
+            }
+          },
+          {
+            "label": "2015-877",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:467",
+              "quote": "                diverses infrastructures municipales pour 42 436 $, du Règlement 2015-877 concernant la"
+            }
+          },
+          {
+            "label": "2018-938",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:470",
+              "quote": "                lecture d'antennes radio pour véhicules pour 3 796 $ et du Règlement 2018-938 concernant"
+            }
+          },
+          {
+            "label": "26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:504",
+              "quote": "                -   précise que le présent processus contractuel est assujetti au Règlement numéro 26 sur"
+            }
+          },
+          {
+            "label": "97-497",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:811",
+              "quote": "                      7.1   Projet de règlement modifiant le Règlement 97-497 concernant la circulation"
+            }
+          },
+          {
+            "label": "2013-832",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:829",
+              "quote": "        7.2   Projet de règlement modifiant le Règlement 2013-832 sur la régie interne et"
+            }
+          },
+          {
+            "label": "2003-644",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:847",
+              "quote": "-   Le Règlement 2003-644 concernant le zonage est modifié afin :"
+            }
+          },
+          {
+            "label": "2003-645",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:860",
+              "quote": "-   Le Règlement 2003-645 concernant le lotissement est modifié afin de s'arrimer au cadre"
+            }
+          },
+          {
+            "label": "2003-646",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:863",
+              "quote": "-   Le Règlement 2003-646 concernant la construction est modifié afin de modifier les types"
+            }
+          },
+          {
+            "label": "2015-880",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:866",
+              "quote": "-   Le Règlement 2015-880 sur les permis et certificats est modifié :"
+            }
+          },
+          {
+            "label": "2003-659",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:873",
+              "quote": "-   Le Règlement 2003-659 sur les plans d'implantation et d'intégration architecturale est"
+            }
+          },
+          {
+            "label": "2006-698",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:877",
+              "quote": "-   Le Règlement 2006-698 relatif aux usages conditionnels est modifié afin d'évaluer la"
+            }
+          },
+          {
+            "label": "2023-1084",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:953",
+              "quote": "                D'adopter le Règlement 2023-1084 modifiant le Règlement 97-519 concernant la prévention"
+            }
+          },
+          {
+            "label": "97-519",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:940",
+              "quote": "                     9.1   Règlement 2023-1084 modifiant le Règlement 97-519 concernant la"
+            }
+          },
+          {
+            "label": "2023-1085",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:979",
+              "quote": "                D'adopter le Règlement 2023-1085 modifiant le Règlement 2022-1058 pour la création d'une"
+            }
+          },
+          {
+            "label": "2022-1058",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:965",
+              "quote": "                      9.2   Règlement 2023-1085 modifiant le Règlement 2022-1058 pour la création"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3210544",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "                            4.2.1      Vente du lot 3 210 544 - 67-71, place La Salle"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/26c69308e850.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/26c69308e850.pdf/.graphify/.graphify_extract.json — 27 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 27,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2022/06/2022-01-17-Seance-ordinaire-resol.-1-a-28.pdf",
+      "storage_key": "raw/pv-index/cas/4ac44abb8560c4182570fd6f6a56315327de5061f16ef7e6c6d7ac7aaf30c932.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-312",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:185",
+              "quote": "                          4.2.3      Modification résolution 2021-312 - Nominations au sein du Club de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2018-934",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:491",
+              "quote": "                     7.1   Projet de règlement remplaçant le Règlement 2018-934 - Code d'éthique et"
+            }
+          },
+          {
+            "label": "2022-1043",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:542",
+              "quote": "                D'adopter le Règlement 2022-1043 modifiant le Règlement 2019-969 afin d'augmenter la"
+            }
+          },
+          {
+            "label": "2019-969",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:515",
+              "quote": "                     9.1   Règlement 2022-1043 modifiant le Règlement 2019-969 afin d'augmenter la"
+            }
+          },
+          {
+            "label": "2020-1008",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:522",
+              "quote": "               Considérant que le Règlement 2020-1008 modifiant le Règlement 2019-969 afin"
+            }
+          },
+          {
+            "label": "2021-1037",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:526",
+              "quote": "               Considérant que le 30 août 2021, le Règlement 2021-1037 modifiant le Règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/ac7aaf30c932.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/ac7aaf30c932.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau",
+          "godbout",
+          "pointe-lebel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2023/11/2023-11-20-Seance-ordinaire-resol.-380-a-413.pdf",
+      "storage_key": "raw/pv-index/cas/4c1a2c4d7d0d5fba99f7f36d3c622fdde1539b6494e2ba96ffa82c84fa44792c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 6,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "                                                               7981"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "                                                               7981"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2022-1058",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:300",
+              "quote": "                                       plein air et à l’environnement – Règlement 2022-1058"
+            }
+          },
+          {
+            "label": "2021-1041",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:665",
+              "quote": "                      7.1   Projet de règlement modifiant le Règlement 2021-1041 afin d'augmenter la"
+            }
+          },
+          {
+            "label": "2023-1094",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:714",
+              "quote": "                D'adopter le Règlement 2023-1094 modifiant le Règlement 2013-832 sur la régie interne et"
+            }
+          },
+          {
+            "label": "2013-832",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:700",
+              "quote": "                      9.1   Règlement 2023-1094 modifiant le Règlement 2013-832 sur la régie interne"
+            }
+          },
+          {
+            "label": "2023-1095",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:746",
+              "quote": "                D'adopter le Règlement 2023-1095 modifiant le Règlement 2003-644 concernant le zonage."
+            }
+          },
+          {
+            "label": "2003-644",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:723",
+              "quote": "                      9.2   Règlement 2023-1095 modifiant le Règlement 2003-644 concernant le"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6154902",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "                                       lots 6 154 902 et 6 348 916 sur le territoire de la Ville de"
+            }
+          },
+          {
+            "label": "6473460",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:600",
+              "quote": "                      5.1   Dérogation mineure - Lot 6 473 460 (rue Leonard-E.-Schlemm)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/2c84fa44792c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/2c84fa44792c.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2022/11/2022-11-09-Seance-extraordinaire-resol.-422-a-425.pdf",
+      "storage_key": "raw/pv-index/cas/4df99e814bdbf776e7c21c77fad71e22221c5978373ee684335f70eb1e7384d2.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 24 octobre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "                     à 17 h 30, a été remise à chaque membre du conseil au moins 24 heures avant cette séance,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "24 octobre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance extraordinaire du 24 octobre 2022,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/70eb1e7384d2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/70eb1e7384d2.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2022/10/2022-10-24-Seance-extraordinaire-resol.-416-a-421.pdf",
+      "storage_key": "raw/pv-index/cas/4f400279dd8e0c58dd21d2979dce444ec3676fc26429149ee36d17f69ee9160e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 octobre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "                     20 h, a été remise à chaque membre du conseil au moins 24 heures avant cette séance, la"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 octobre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance ordinaire du 17 octobre 2022, à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/17f69ee9160e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/17f69ee9160e.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2026/02/Avis-de-convocation-Seance-ordinaire-du-16-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/5287144c0997d4f25ef1c9075e416c913a5e19a994250ae8a29a149ac2cc73ef.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/149ac2cc73ef.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/149ac2cc73ef.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2023/05/2023-05-15-Seance-ordinaire-resol.-130-a-175.pdf",
+      "storage_key": "raw/pv-index/cas/528ec855c8c625e912dc92673a771b70fee031303807a3228620b29de7028885.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 5,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "                                                              7889"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "                                                              7889"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "                     18 h, a été remise à chaque membre du conseil au moins 24 heures avant cette séance, la"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance extraordinaire du 1er mai 2023, à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-111",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:84",
+              "quote": "                            4.1.1      Remplacement de la résolution 2023-111 -                Appel    d'offres"
+            }
+          },
+          {
+            "label": "2023-89",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:442",
+              "quote": "                            4.3.7      Remplacement de la résolution 2023-89 - Dérogation mineure -"
+            }
+          },
+          {
+            "label": "2023-126",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:543",
+              "quote": "                           4.3.11      Abrogation de la résolution 2023-126"
+            }
+          },
+          {
+            "label": "2022-465",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:702",
+              "quote": "                             4.3.20    Abrogation de la résolution 2022-465 - Appui au projet de Plan"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "97-519",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:853",
+              "quote": "                      7.1   Projet de règlement modifiant le Règlement 97-519 concernant la prévention"
+            }
+          },
+          {
+            "label": "2022-1058",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:863",
+              "quote": "                      7.2   Projet de règlement modifiant le Règlement 2022-1058 pour la création d'une"
+            }
+          },
+          {
+            "label": "2023-1081",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:949",
+              "quote": "                D'adopter le Règlement 2023-1081 relatif à la citation de l'église anglicane Saint-Andrew et"
+            }
+          },
+          {
+            "label": "2023-1082",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:975",
+              "quote": "                D'adopter le Règlement 2023-1082 modifiant le Règlement 2011-798 concernant la"
+            }
+          },
+          {
+            "label": "2011-798",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:961",
+              "quote": "                      9.2   Règlement 2023-1082 modifiant le Règlement 2011-798 concernant la"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3210850",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:769",
+              "quote": "                garage isolé appartenant au 11, avenue Hébert et situé sur le lot 3 210 850. Le garage isolé"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/b29de7028885.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/b29de7028885.pdf/.graphify/.graphify_extract.json — 14 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2026/05/2026-05-11-Seance-ordinaire-resol.-207-a-238.pdf",
+      "storage_key": "raw/pv-index/cas/53bef63511b89c06f508bb18a38bacc73816bea82a89b8c3b6aa77af327412f0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "           PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "           PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "           a été remise à chaque membre du conseil au moins 24 heures avant cette séance, la greffière"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "2026-208   Considérant qu'une copie du procès-verbal de la séance ordinaire du 20 avril 2026, à 19 h 30,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2012-817",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:288",
+              "quote": "           La somme requise est disponible au Règlement 2012-817 - Réseau cyclable - Emprunt de"
+            }
+          },
+          {
+            "label": "2023-1089",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:555",
+              "quote": "                 8.1. Projet de règlement modifiant le Règlement 2023-1089 établissant un"
+            }
+          },
+          {
+            "label": "2026-1163",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:602",
+              "quote": "             D'adopter le Règlement 2026-1163 concernant l'aménagement d'une intersection - boulevard"
+            }
+          },
+          {
+            "label": "2026-1164",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:622",
+              "quote": "           D'adopter le Règlement 2026-1164 modifiant le Règlement 96-486 concernant les"
+            }
+          },
+          {
+            "label": "96-486",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:608",
+              "quote": "                 10.2. Règlement 2026-1164          modifiant   le   Règlement    96-486    concernant     les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/77af327412f0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/77af327412f0.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2025/05/2025-04-28-Seance-extraordinaire-resol.-174-a-177.pdf",
+      "storage_key": "raw/pv-index/cas/53fa9cd27462add28d4a9824a62980f02c4d460fd6ef1bcd7a40f8f9d456f1dc.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "                     19 h 30, a été remise à chaque membre du conseil au moins 24 heures avant cette séance,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance ordinaire du 14 avril 2025, à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/f8f9d456f1dc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/f8f9d456f1dc.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2025/10/2025-09-29-Seance-ordinaire-resol.-337-a-386.pdf",
+      "storage_key": "raw/pv-index/cas/5e346ae6bc696647d3a914526b1346c654543c98bfcb7cb750525ecdd0295fe9.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 3,
+        "Zone": 1,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "                     19 h 30, a été remise à chaque membre du conseil au moins 24 heures avant cette séance,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance ordinaire du 8 septembre 2025, à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-76",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:474",
+              "quote": "                numéro GC2025-57 et d'accepter l'adoption de la résolution 2025-76 de la Régie de gestion"
+            }
+          },
+          {
+            "label": "2024-446",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:493",
+              "quote": "                adopté le 9 décembre 2024 par la résolution 2024-446 afin de déplacer la séance ordinaire"
+            }
+          },
+          {
+            "label": "2021-403",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:553",
+              "quote": "                            4.3.6      Modification de la résolution 2021-403 – Nominations – Comités,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-02",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:463",
+              "quote": "                Considérant que le projet de Règlement 25-02 a été présenté et déposé aux membres du"
+            }
+          },
+          {
+            "label": "2021-1022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:541",
+              "quote": "                       chiens provincial et le Règlement 2021-1022 concernant les animaux de la Ville de"
+            }
+          },
+          {
+            "label": "2003-644",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:726",
+              "quote": "                Règlement 2003-644 concernant le zonage :"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "203 I",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1120",
+              "quote": "aménagements industriels contraignants pour la zone 203 I afin qu'ils s'harmonisent avec le"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3746140",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:185",
+              "quote": "                    pour l'alimentation de borne de recharge de véhicule électrique située sur le lot 3 746 140,"
+            }
+          },
+          {
+            "label": "3212854",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:672",
+              "quote": "                            4.3.14     Bail - partie du lot 3 212 854 - 67-71, place La Salle"
+            }
+          },
+          {
+            "label": "3212770",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:691",
+              "quote": "                            4.3.15     Bail - partie du lot 3 212 770 - Hôtel, avenue Talon - escaliers arrière"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/5ecdd0295fe9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/5ecdd0295fe9.pdf/.graphify/.graphify_extract.json — 14 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2024/12/2024-11-25-Seance-extraordinaire-resol.-427-a-432.pdf",
+      "storage_key": "raw/pv-index/cas/600f73e391d79aa292e122e4817fb06b0cc1b3129d98be7a70dac2de67fdd77a.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 novembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "                     19 h 30, a été remise à chaque membre du conseil au moins 24 heures avant cette séance,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 novembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance ordinaire du 18 novembre 2024, à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-1113",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:88",
+              "quote": "                Règlement 2024-1113 concernant le Programme Rénovation Québec, programmation"
+            }
+          },
+          {
+            "label": "2024-1120",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:108",
+              "quote": "                7.    ADOPTION DU RÈGLEMENT 2024-1120 CONCERNANT L'AMÉNAGEMENT DE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/c2de67fdd77a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/c2de67fdd77a.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2026/04/2026-04-20-Seance-ordinaire-resol.-163-a-206.pdf",
+      "storage_key": "raw/pv-index/cas/64460b4ee435082399d8b059c87e4e131eaeba1a36e6b026eb0084382f2e9954.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 23,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "           PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "           PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "           16 h 45, a été remise à chaque membre du conseil au moins 24 heures avant cette séance, la"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "2026-164   Considérant qu'une copie du procès-verbal de la séance extraordinaire du 13 avril 2026, à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-418",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:445",
+              "quote": "                     5.3.13. Remplacement de la résolution 2025-418 - Demande selon le Plan"
+            }
+          },
+          {
+            "label": "2026-79",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:623",
+              "quote": "           séance ordinaire du 16 février 2026 ainsi que la résolution 2026-79."
+            }
+          },
+          {
+            "label": "2025-272",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:634",
+              "quote": "           séance ordinaire du 7 juillet 2025 ainsi que la résolution 2025-272."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "96-483",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:400",
+              "quote": "           mai, jusqu'à la mi-juin, l'article 10 du Règlement 96-483 concernant les nuisances et"
+            }
+          },
+          {
+            "label": "2012-810",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:540",
+              "quote": "           est disponible et sera puisée au Règlement 2012-810 - Développement au sud du"
+            }
+          },
+          {
+            "label": "2006-706",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:599",
+              "quote": "           d'urbanisme et à délivrer les permis découlant du Règlement 2006-706 concernant le"
+            }
+          },
+          {
+            "label": "2026-1155",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:640",
+              "quote": "                   personnes habiles à voter concernant le Règlement 2026-1155 concernant la"
+            }
+          },
+          {
+            "label": "2026-1156",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:662",
+              "quote": "                   personnes habiles à voter concernant le Règlement 2026-1156 - Travaux"
+            }
+          },
+          {
+            "label": "96-486",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:697",
+              "quote": "                8.2. Projet de règlement            modifiant   le   Règlement   96-486   concernant     les"
+            }
+          },
+          {
+            "label": "2003-659",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:708",
+              "quote": "                8.3. Projet de règlement modifiant le Règlement 2003-659 sur les plans"
+            }
+          },
+          {
+            "label": "2026-1157",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:783",
+              "quote": "           D'adopter le Règlement 2026-1157 modifiant le Règlement 93-367 créant un fonds de"
+            }
+          },
+          {
+            "label": "93-367",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:763",
+              "quote": "               10.2. Règlement 2026-1157 modifiant le Règlement 93-367 créant un fonds de"
+            }
+          },
+          {
+            "label": "2026-1158",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:808",
+              "quote": "           D'adopter le Règlement 2026-1158 établissant les tarifs d'électricité et les conditions de leur"
+            }
+          },
+          {
+            "label": "2025-1131",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:798",
+              "quote": "           Considérant qu'il y a lieu de remplacer le Règlement 2025-1131 établissant les tarifs"
+            }
+          },
+          {
+            "label": "2026-1159",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:839",
+              "quote": "           D'adopter le Règlement 2026-1159 concernant la tarification des services dispensés par la Ville"
+            }
+          },
+          {
+            "label": "2011-798",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:829",
+              "quote": "           Considérant qu'il y a lieu de remplacer le Règlement 2011-798 concernant la tarification des"
+            }
+          },
+          {
+            "label": "2026-1160",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:857",
+              "quote": "           D'adopter le Règlement 2026-1160 modifiant le Règlement 2013-832 sur la régie interne et les"
+            }
+          },
+          {
+            "label": "2013-832",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:843",
+              "quote": "               10.5. Règlement 2026-1160 modifiant le Règlement 2013-832 sur la régie interne et les"
+            }
+          },
+          {
+            "label": "2026-1161",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:886",
+              "quote": "\f           D'adopter le Règlement 2026-1161 remplaçant le Règlement 2026-1147 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "2026-1147",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:861",
+              "quote": "               10.6. Règlement 2026-1161 remplaçant le Règlement 2026-1147                           modifiant"
+            }
+          },
+          {
+            "label": "2006-698",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:862",
+              "quote": "                     le Règlement 2006-698 concernant les usages conditionnels"
+            }
+          },
+          {
+            "label": "2026-1162",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:919",
+              "quote": "           D'adopter le Règlement 2026-1162 remplaçant le Règlement 2026-1148 concernant diverses"
+            }
+          },
+          {
+            "label": "2026-1148",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:891",
+              "quote": "               10.7. Règlement 2026-1162 remplaçant le Règlement 2026-1148 concernant diverses"
+            }
+          },
+          {
+            "label": "2003-644",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:894",
+              "quote": "2026-205   Considérant qu'il y a lieu de modifier le Règlement 2003-644 concernant le zonage;"
+            }
+          },
+          {
+            "label": "2015-880",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:896",
+              "quote": "           Considérant qu'il y a lieu de modifier le Règlement 2015-880 sur les permis et certificats;"
+            }
+          },
+          {
+            "label": "2024-1117",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:898",
+              "quote": "           Considérant qu'il y a lieu de modifier le Règlement 2024-1117 concernant l'occupation et"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "203 I",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:865",
+              "quote": "           conditionnels afin d'assujettir la zone 203 I à la procédure d'usages conditionnels;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5794497",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:414",
+              "quote": "           d'une tour de télécommunication autoportante de 60 mètres sur le lot 5 794 497, cadastre du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/84382f2e9954.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/84382f2e9954.pdf/.graphify/.graphify_extract.json — 32 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 32,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2022/12/2022-12-12-Seance-ordinaire-resol.-490-a-527.pdf",
+      "storage_key": "raw/pv-index/cas/64b866e7f274b1289ab9b0afd0834ee0740cd601929e5e431f5e50ebfb483ffb.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 9
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 novembre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "                     20 h, a été remise à chaque membre du conseil au moins 24 heures avant cette séance, la"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 novembre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance ordinaire du 21 novembre 2022, à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-196",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "                            4.1.3      Abrogation   de    la    résolution   2022-196 - Excédent               de"
+            }
+          },
+          {
+            "label": "2022-355",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:447",
+              "quote": "                            4.2.12     Abrogation de la résolution 2022-355 - Renouvellement du"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2003-644",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:586",
+              "quote": "                      7.2   Projet de règlement modifiant le Règlement 2003-644 concernant le zonage"
+            }
+          },
+          {
+            "label": "2022-1067",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:662",
+              "quote": "                D'adopter le Règlement 2022-1067 modifiant le Règlement 97-519 concernant la prévention"
+            }
+          },
+          {
+            "label": "97-519",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:648",
+              "quote": "                      9.1   Règlement 2022-1067 modifiant le Règlement 97-519 concernant la"
+            }
+          },
+          {
+            "label": "2022-1068",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:686",
+              "quote": "                D'adopter le Règlement 2022-1068 modifiant le Règlement 2011-798 concernant la"
+            }
+          },
+          {
+            "label": "2011-798",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:668",
+              "quote": "                      9.2   Règlement 2022-1068 modifiant le Règlement 2011-798 concernant la"
+            }
+          },
+          {
+            "label": "2022-1069",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:713",
+              "quote": "                D'adopter le Règlement 2022-1069 modifiant le Règlement 2021-1034 fixant la rémunération"
+            }
+          },
+          {
+            "label": "2021-1034",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:692",
+              "quote": "                      9.3   Règlement 2022-1069 modifiant le Règlement 2021-1034 fixant                        la"
+            }
+          },
+          {
+            "label": "2022-1070",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:745",
+              "quote": "                D'adopter le Règlement 2022-1070 - Plan directeur informatique, consolidation des systèmes"
+            }
+          },
+          {
+            "label": "2022-1071",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:775",
+              "quote": "                D'adopter le Règlement 2022-1071 - Travaux d'immobilisation 2023 - Emprunt de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/50ebfb483ffb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/50ebfb483ffb.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau",
+          "ragueneau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "baie-comeau",
+      "municipality_name": "Baie-Comeau",
+      "url": "https://www.ville.baie-comeau.qc.ca/wp-content/uploads/2025/06/2025-06-16-Seance-ordinaire-resol.-210-a-259.pdf",
+      "storage_key": "raw/pv-index/cas/685ba21faadf2f72a65e7bcb52173aee50181ce6cde062d5c9934d7745895824.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 8
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Baie-Comeau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "   ou annotation     PROCÈS-VERBAL DE LA SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "                     19 h 30, a été remise à chaque membre du conseil au moins 24 heures avant cette séance,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "                     Considérant qu'une copie du procès-verbal de la séance ordinaire du 12 mai 2025, à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-50",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:433",
+              "quote": "                l'adoption de la résolution 2025-50 de la Régie de gestion des matières résiduelles de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-01",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:422",
+              "quote": "                Considérant que le projet de Règlement 25-01 a été présenté et déposé aux membres du"
+            }
+          },
+          {
+            "label": "2023-1076",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:579",
+              "quote": "                La somme requise est disponible au Règlement 2023-1076 pour réfection de la chaussée -"
+            }
+          },
+          {
+            "label": "2003-644",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:667",
+              "quote": "                demande et d'autoriser les dérogations aux dispositions suivantes du Règlement 2003-644"
+            }
+          },
+          {
+            "label": "2025-1134",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:973",
+              "quote": "                           des personnes habiles à voter concernant le Règlement 2025-1134"
+            }
+          },
+          {
+            "label": "2007-738",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:995",
+              "quote": "                     7.1   Projet de règlement remplaçant le Règlement 2007-738 sur l'occupation du"
+            }
+          },
+          {
+            "label": "97-497",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1007",
+              "quote": "                     7.2   Projet de règlement modifiant le Règlement 97-497 concernant la circulation"
+            }
+          },
+          {
+            "label": "2025-1133",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1081",
+              "quote": "                D'adopter le Règlement 2025-1133 modifiant le Règlement 2003-644 concernant le zonage."
+            }
+          },
+          {
+            "label": "2025-1136",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1112",
+              "quote": "                D'adopter le Règlement 2025-1136 concernant le remplacement du système électrique de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/4d7745895824.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043328Z/baie-comeau/4d7745895824.pdf/.graphify/.graphify_extract.json — 13 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "baie-comeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

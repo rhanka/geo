@@ -1,0 +1,101 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:21:19.701Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 0,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 0,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {},
+  "graphify": {
+    "nodes": 0,
+    "edges": 0,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 0,
+      "with_collisions": [],
+      "entries": [
+        {
+          "municipality_slug": "aguanish",
+          "matching_mode": "normalized",
+          "zone_code_count": 0,
+          "collision_count": 0,
+          "collision_examples": [],
+          "codes": []
+        }
+      ]
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 0,
+      "missing": [],
+      "entries": [
+        {
+          "municipality_slug": "aguanish",
+          "lot_count": 0,
+          "served": true,
+          "lot_numbers": []
+        }
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042119Z",
+  "documents": [
+    {
+      "slug": "aguanish",
+      "municipality_name": "Aguanish",
+      "url": "https://www.aguanish.org/sites/aguanish.org/files/regie_interne_seances_du_conseil.pdf",
+      "storage_key": "raw/pv-index/cas/4d88da062fdf6dc535d97f76f7542c364f4e9cb296796402e3ee343c59325270.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042119Z/aguanish/343c59325270.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042119Z/aguanish/343c59325270.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

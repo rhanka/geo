@@ -1,0 +1,191 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:33:36.624Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 205,
+    "limit": 1,
+    "requested": 1,
+    "selected": 1,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Regulation": 3,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 8,
+    "edges": 3,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "albanel",
+      "storage_key": "raw/pv-index/cas/f0cccc8ff7c4794c140408acea1c53bfdd8d9c968fb8df32b55a866be76edf7d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5157247",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:43",
+      "quote": "     5.4 Autorisation d’achat du lot 5 157 247 du cadastre du"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 107,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1531,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043323Z",
+  "documents": [
+    {
+      "slug": "albanel",
+      "municipality_name": "Albanel",
+      "url": "https://albanel.ca/images/uploads/25-2023-10-02-pvbl.pdf",
+      "storage_key": "raw/pv-index/cas/f0cccc8ff7c4794c140408acea1c53bfdd8d9c968fb8df32b55a866be76edf7d.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Albanel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MRC DE MARIA-CHAPDELAINE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MRC DE MARIA-CHAPDELAINE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 OCTOBRE 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "Procès-verbal de la séance ordinaire du conseil municipal d'Albanel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 OCTOBRE 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "              PROCÈS-VERBAL DU 2 OCTOBRE 2023"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "23-286",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "     5.7 Adoption du Règlement no 23-286 modifiant le Règlement"
+            }
+          },
+          {
+            "label": "09-143",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:355",
+              "quote": "         CONSIDÉRANT QUE le Règlement numéro 09-143 ayant pour objet de"
+            }
+          },
+          {
+            "label": "16-205",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:360",
+              "quote": "         le règlement 16-205, adopté à la séance ordinaire du conseil de la"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5157247",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "     5.4 Autorisation d’achat du lot 5 157 247 du cadastre du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043323Z/albanel/866be76edf7d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043323Z/albanel/866be76edf7d.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "albanel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

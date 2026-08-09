@@ -1,0 +1,276 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:30:45.065Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 135,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Regulation": 7,
+    "LotCadastre": 4
+  },
+  "graphify": {
+    "nodes": 15,
+    "edges": 3,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 4,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "causapscal",
+      "storage_key": "raw/pv-index/cas/0d93492f645e2cf89768f06c6f677568dae72cd9b9a2543c2b23e2a1876d6f8b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4809973",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:338",
+      "quote": "                    terrain situé au 177, rue St-Luc (lot 4 809 973), par acte notarié du 1er février 2022, sous réserve"
+    },
+    {
+      "municipality_slug": "causapscal",
+      "storage_key": "raw/pv-index/cas/0d93492f645e2cf89768f06c6f677568dae72cd9b9a2543c2b23e2a1876d6f8b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4810537",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:413",
+      "quote": "                     ATTENDU le propriétaire du 9, rue des Pionniers (lot 4 810 537 du Cadastre du Québec), a"
+    },
+    {
+      "municipality_slug": "causapscal",
+      "storage_key": "raw/pv-index/cas/0d93492f645e2cf89768f06c6f677568dae72cd9b9a2543c2b23e2a1876d6f8b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6601670",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:435",
+      "quote": "                ATTENDU que le propriétaire du 100, rue Garon (lot 6 601 670 du Cadastre du Québec), a"
+    },
+    {
+      "municipality_slug": "causapscal",
+      "storage_key": "raw/pv-index/cas/0d93492f645e2cf89768f06c6f677568dae72cd9b9a2543c2b23e2a1876d6f8b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4809828",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:462",
+      "quote": "                 Ouest (lot 4 809 828 du Cadastre du Québec), a déposé une demande de dérogation mineure"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 159,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 2029,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043019Z",
+  "documents": [
+    {
+      "slug": "causapscal",
+      "municipality_name": "Causapscal",
+      "url": "https://www.causapscal.net/images/Upload/Files/proces-verbaux/2025/pv_08-11-2025.pdf",
+      "storage_key": "raw/pv-index/cas/0d93492f645e2cf89768f06c6f677568dae72cd9b9a2543c2b23e2a1876d6f8b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 7,
+        "LotCadastre": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Causapscal",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL, tenue"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL, tenue"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               PROCÈS-VERBAL DE LA SÉANCE RÉGULIÈRE DU CONSEIL DE LA VILLE DE CAUSAPSCAL, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "               le 11 août 2025 à 20h00, à l’Hôtel de Ville au 1, rue Saint-Jacques Nord, sont présents : Messieurs les"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "292-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "               9-     Adoption du règlement 292-25 Occupation/entretien bâtiment"
+            }
+          },
+          {
+            "label": "293-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "              10-     Adoption du règlement 293-25 Programme aide financière installation septique"
+            }
+          },
+          {
+            "label": "294-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "              11-     Adoption du règlement 294-25 Numérotation civique des bâtiments"
+            }
+          },
+          {
+            "label": "295-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "              12-     Adoption du règlement 295-25 Travaux de lotissements et développement municipale"
+            }
+          },
+          {
+            "label": "296-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "              13-     Adoption du règlement 296-25 délégation de pouvoirs"
+            }
+          },
+          {
+            "label": "297-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "              14-     Avis de motion pour le dépôt du règlement 297-25 sur les dispositions municipales applicables"
+            }
+          },
+          {
+            "label": "128-08",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:211",
+              "quote": "                     ATTENDU que le règlement 128-08 est abrogé et remplacé par le présent règlement ;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4809973",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:338",
+              "quote": "                    terrain situé au 177, rue St-Luc (lot 4 809 973), par acte notarié du 1er février 2022, sous réserve"
+            }
+          },
+          {
+            "label": "4810537",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:413",
+              "quote": "                     ATTENDU le propriétaire du 9, rue des Pionniers (lot 4 810 537 du Cadastre du Québec), a"
+            }
+          },
+          {
+            "label": "6601670",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:435",
+              "quote": "                ATTENDU que le propriétaire du 100, rue Garon (lot 6 601 670 du Cadastre du Québec), a"
+            }
+          },
+          {
+            "label": "4809828",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:462",
+              "quote": "                 Ouest (lot 4 809 828 du Cadastre du Québec), a déposé une demande de dérogation mineure"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043019Z/causapscal/e2a1876d6f8b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043019Z/causapscal/e2a1876d6f8b.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "causapscal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

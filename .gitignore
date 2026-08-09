@@ -1,21 +1,43 @@
-# dependencies
+# Dependencies
 node_modules/
 .npm/
 
-# build output
+# Build / compile artefacts
 dist/
 build/
 .svelte-kit/
 *.tsbuildinfo
 
+# Caches (pipeline geo + téléchargements statcan)
 # acquisition cache & large raw downloads (re-downloadable, never committed)
 .cache/
-data/raw/
-data/tmp/
 
-# normalized data lives on S3 object storage, not git (ADR-0012). Already-committed
-# datasets (QC / FR-admin) are migrated out; new data is never versioned.
-data/normalized/
+# Secrets / env — les creds vivent HORS repo
+# (_acquisition-shared/s3.env, sentropic/.env)
+*.env
+.env
+.env.*
+!.env.example
+.npmrc
+*.pem
+*.key
+*credentials*
+
+# Données lourdes générées / téléchargées (re-générables par le pipeline).
+# normalized data lives on S3 object storage, not git (ADR-0012); the datasets
+# already committed under data/normalized stay tracked (gitignore does not
+# untrack them), new raw/tmp payloads are never versioned.
+#
+# ANCRÉ À LA RACINE (`/data/…`, pas `data/…`) : une règle non ancrée matche TOUT
+# répertoire nommé `data` à n'importe quelle profondeur, donc `acquisition/data/`
+# et `apps/site/static/data/` — 16 fichiers pourtant SUIVIS sur `main`. Un fichier
+# déjà suivi n'est pas déréférencé par gitignore, mais tout AJOUT à côté devient
+# invisible en silence : c'est le piège que l'ancrage supprime.
+/data/raw/
+/data/tmp/
+/data/normalized/
+*.pdf
+work/**/run.log
 *.zip
 *.gpkg
 *.gdb/
@@ -23,16 +45,52 @@ data/normalized/
 *.shx
 *.dbf
 *.prj
+*.parquet
+*.pmtiles
+*.mbtiles
+*.fgb
 
-# h2a local bus (coordination, not source)
-.h2a/
-
-# env & secrets
-.env
-.env.*
-!.env.example
-
-# logs / os
-*.log
+# OS / logs
 .DS_Store
-coverage/
+*.log
+# root-only: `work/coverage/` IS versioned (pipeline outputs), so anchor this.
+/coverage/
+
+# Manifestes-filtres éphémères de découverte (discovered.json lui est commité)
+work/zonage-norms/discovered-*.json
+# Shards de découverte délégués (générés par la flotte mass-delegation, éphémères)
+work/zonage-norms/delegated-discovered-*.json
+
+# Aire de travail de la campagne mass-delegation (logs, état, scripts, statuts — scratch régénérable)
+work/delegation-mass/
+
+# Sorties de recalage et extraits cadastre : la SOURCE DE VÉRITÉ est S3.
+# Les couches `qc-zonage-<slug>.geojson` d'ici sont les objets SERVIS, et les
+# extraits cadastre sont re-téléchargeables — les committer duplique la
+# production dans le contrôle de version (38,8 + 11,0 Mio purgés le 2026-07-25,
+# cf. scripts/purge-data-history.sh). `work/gcp/` et `work/reads/` restent
+# versionnés à dessein : points de calage et lectures par vision sont du travail
+# distillé coûteux, sans source pérenne ailleurs.
+work/zones-recalage/
+work/cadastre/
+
+# Coverage: outputs intermédiaires (régénérables via coverage-cli)
+work/coverage/track-events/
+
+# Local agent/runtime state (not source)
+.claude/
+.codex/
+.remote/
+.playwright-mcp/
+
+# Legacy backup copied from the old geo-quebec workspace; kept on disk, not versioned
+work/legacy-geo-quebec/
+
+# OCR language data downloaded locally; re-fetchable / system dependency
+*.traineddata
+work/**/run.err
+work/**/run.out
+work/coverage/seed-run.log
+
+# h2a workspace-local scratch / presence (local bus, coordination, not source)
+.h2a/

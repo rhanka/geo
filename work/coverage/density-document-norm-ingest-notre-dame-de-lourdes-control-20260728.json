@@ -1,0 +1,80 @@
+{
+  "contract": "density-document-norm-ingest/v2",
+  "generatedAt": "2026-07-28T10:42:06.857Z",
+  "slug": "notre-dame-de-lourdes--joliette",
+  "deposited": true,
+  "reviewScope": {
+    "corroborationProfileIds": []
+  },
+  "documents": [
+    {
+      "id": "notre-dame-de-lourdes-joliette-02-2023-h16",
+      "disposition": "publishable",
+      "source": {
+        "url": "https://www.notredamedelourdes.ca/fichiersUpload/fichiers/20250312154803-02-2023-reglement-de-zonage-maj-2024-11-27.pdf",
+        "sha256": "sha256:9120ec22aea90b90b6d6f9316825adb3a4b3fca3f9ea64723a68e575ae14a9c7",
+        "storageKey": "raw/normes-density-sibling-document/cas/9120ec22aea90b90b6d6f9316825adb3a4b3fca3f9ea64723a68e575ae14a9c7.pdf",
+        "retrievedAt": "2026-07-28T10:29:54.525Z",
+        "transportHost": "www.notredamedelourdes.ca",
+        "owner": "Municipalité de Notre-Dame-de-Lourdes (MRC de Joliette)",
+        "ownerEvidence": "Page 2 native: « MRC DE JOLIETTE — MUNICIPALITÉ DE NOTRE-DAME-DE-LOURDES »",
+        "reglement": "Règlement de zonage 02-2023 — annexe C intégrée, grille H-16",
+        "legalDate": "2024-11-27",
+        "legalDateEvidence": "Page 2 native verbatim: « Dernière mise à jour le : 27 novembre 2024 »"
+      },
+      "parser": {
+        "family": "notre-dame-de-lourdes-joliette-02-2023-annexe-c-h16",
+        "documentAnchored": true,
+        "projectExcluded": false,
+        "extracted": 1,
+        "refusals": []
+      },
+      "crossValidation": {
+        "matchedNorms": 1,
+        "missingInSig": []
+      },
+      "norms": [
+        {
+          "zoneCode": "H-16",
+          "value": 2,
+          "unit": "cos-max",
+          "raw": "2 2 2 2",
+          "proof": "Coefficient d'emprise au sol maximal (%) 2 2 2 2",
+          "page": 212
+        }
+      ]
+    }
+  ],
+  "crossValidation": {
+    "sigKey": "normalized/ca-qc-zonage/qc-zonage-notre-dame-de-lourdes--joliette.geojson",
+    "sigCodes": 43,
+    "matchedNorms": 1,
+    "conflictingZones": []
+  },
+  "merge": {
+    "existingRows": 39,
+    "outputRows": 40,
+    "inserted": 1,
+    "enriched": 0,
+    "unchanged": 0
+  },
+  "norms": [
+    {
+      "zoneCode": "H-16",
+      "value": 2,
+      "unit": "cos-max",
+      "raw": "2 2 2 2",
+      "proof": "Coefficient d'emprise au sol maximal (%) 2 2 2 2",
+      "page": 212,
+      "sourceUrl": "https://www.notredamedelourdes.ca/fichiersUpload/fichiers/20250312154803-02-2023-reglement-de-zonage-maj-2024-11-27.pdf",
+      "sourceSha256": "sha256:9120ec22aea90b90b6d6f9316825adb3a4b3fca3f9ea64723a68e575ae14a9c7",
+      "sourceStorageKey": "raw/normes-density-sibling-document/cas/9120ec22aea90b90b6d6f9316825adb3a4b3fca3f9ea64723a68e575ae14a9c7.pdf",
+      "legalDate": "2024-11-27",
+      "legalDateEvidence": "Page 2 native verbatim: « Dernière mise à jour le : 27 novembre 2024 »"
+    }
+  ],
+  "output": {
+    "key": "registry/qc-zonage-norms/qc-zonage-norms-notre-dame-de-lourdes--joliette.parquet",
+    "backupKey": "registry/qc-zonage-norms/qc-zonage-norms-notre-dame-de-lourdes--joliette.parquet.pre-density-document-20260728"
+  }
+}

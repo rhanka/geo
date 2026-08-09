@@ -1,0 +1,875 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:35:43.724Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4680,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 5,
+    "failed_pvs": 15,
+    "outcomes": {
+      "INDEXED": 5,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 15
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 5,
+    "Document": 5,
+    "Regulation": 18,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 29,
+    "edges": 5,
+    "failures": 15
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "dollard-des-ormeaux",
+      "storage_key": "raw/pv-index/cas/440e3ef3aecb5b8e12ef4b40cdcf1a051389f3f09d26c7077c7713cecbcc2f38.pdf",
+      "entity_type": "LotCadastre",
+      "value": "1900102",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:29",
+      "quote": "        partie du lot 1 900 102 (SD2025-200-2774)"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 119,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 13633,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z",
+  "documents": [
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28153047/PV-2022-5.pdf?ver=1693251047000",
+      "storage_key": "raw/pv-index/cas/9ff406688448c602aff47cdc4085d92d2004e8ee6cfe015bc09c27fc042a4c06.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/27fc042a4c06.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/27fc042a4c06.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2024/09/11134440/PV-JUILLET_SIGNE.pdf?ver=1726076679000",
+      "storage_key": "raw/pv-index/cas/a6c093976d335937c2e3c7ad48afcd8f11c58ef7d0857e74261abe6c8a57f6e2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/be6c8a57f6e2.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/be6c8a57f6e2.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/12/05163013/pv-juin.pdf?ver=1701811812000",
+      "storage_key": "raw/pv-index/cas/a769538961f81ea395ae9ab9cd809822c54f3025012957f865bba784716aa1e3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/a784716aa1e3.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/a784716aa1e3.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2024/02/01112643/PV_NOV__SIGNE.pdf?ver=1706804802000",
+      "storage_key": "raw/pv-index/cas/b10e2faabee7d3294dbf6a2d7d18c0c28311a2418a8cfe2817f71eac7f91d34b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/1eac7f91d34b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/1eac7f91d34b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28153054/PV-2022-7.pdf?ver=1693251053000",
+      "storage_key": "raw/pv-index/cas/bac6cc2e3976c2acd91ae67d6baf72b4c91f4a94cdc579e4f0aa5dc774ab0b86.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/5dc774ab0b86.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/5dc774ab0b86.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28153027/PV-2022-1.pdf?ver=1693251026000",
+      "storage_key": "raw/pv-index/cas/bd14d211672efb0a16784e66a4a09f377182fc667f22c6f0843b16a22ef0c950.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/16a22ef0c950.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/16a22ef0c950.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28145245/PV-2021-11.pdf?ver=1693248765000",
+      "storage_key": "raw/pv-index/cas/c176a290611503390541ceddc9994da79eb79e577cf5c7bdeff7d2a968a1761b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/d2a968a1761b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/d2a968a1761b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2024/02/01112405/PV_DEC__SIGNE.pdf?ver=1706804644000",
+      "storage_key": "raw/pv-index/cas/c9b28dd074f606d55c3e4782b69c43f932478f7e97cccc1c78c4f52a5730df62.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/f52a5730df62.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/f52a5730df62.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2024/12/09161105/PV-OCTOBRE_SIGNE_2024.pdf?ver=1733778664000",
+      "storage_key": "raw/pv-index/cas/cc921ba67782c33ed4e9cfd11e354103e1e542d1b4b2f05e38861007c2f90f0e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/1007c2f90f0e.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/1007c2f90f0e.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28153031/PV-2022-2.pdf?ver=1693251031000",
+      "storage_key": "raw/pv-index/cas/cf9f567dc8fe777579088354ce200b50ea51f20b00c63bedd9bc9d71c81a5f75.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/9d71c81a5f75.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/9d71c81a5f75.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28145015/PV-2021-01-extra.pdf?ver=1693248614000",
+      "storage_key": "raw/pv-index/cas/d6010f92e5ae8de88733edf139255cd041f6f04a26e0b0eb7fbd2b9eed66cb26.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/2b9eed66cb26.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/2b9eed66cb26.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2025/03/26160623/2024-12-PV.pdf?ver=1743019582000",
+      "storage_key": "raw/pv-index/cas/d925e00c26bb34eca06774d7194b06a9c348dc4693aae9722b020991cd94dbf5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/0991cd94dbf5.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/0991cd94dbf5.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28153044/PV-2022-4.pdf?ver=1693251042000",
+      "storage_key": "raw/pv-index/cas/dfa8fddb75f979f5f3f7ec7dcc12792b9dad70586e8c6719952cc638e56a7957.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/c638e56a7957.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/c638e56a7957.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28145216/PV-2021-04.pdf?ver=1693248736000",
+      "storage_key": "raw/pv-index/cas/eeb897ec9d7f91b730329652ec64fbf9dfd6246e95c82f07d52162d76b825b19.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/62d76b825b19.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/62d76b825b19.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28145231/PV-2021-07.pdf?ver=1693248750000",
+      "storage_key": "raw/pv-index/cas/f92accdf25ed2a075ab445ac40f0580eaadd35f3069c7e4a67e6a94f94b97ed6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/a94f94b97ed6.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/deschaillons-sur-saint-laurent/a94f94b97ed6.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "municipality_name": "Dollard-Des Ormeaux",
+      "url": "https://ville.ddo.qc.ca/wp-content/uploads/2026/02/2026-02-10_Ordinaire_Ordre_du_jour.pdf",
+      "storage_key": "raw/pv-index/cas/1b5738c40ec38fe32b9daf6b905fdd623252ee78f42b1ccb849c7926e9d8c7ea.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dollard-Des Ormeaux",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R-2026-199-1",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "50.1    Avis de motion et dépôt du premier projet de Règlement R-2026-199-1 modifiant le"
+            }
+          },
+          {
+            "label": "R-2026-084-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "50.3    Avis de motion et dépôt du projet de Règlement R-2026-084-1 modifiant le"
+            }
+          },
+          {
+            "label": "R-2014-084",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "        Règlement R-2014-084 sur l’utilisation des égouts afin de préciser les dispositions"
+            }
+          },
+          {
+            "label": "R-2026-216",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "50.4    Adoption du règlement R-2026-216 sur les ententes pour travaux municipaux"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/7926e9d8c7ea.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/7926e9d8c7ea.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dollard-des-ormeaux"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "municipality_name": "Dollard-Des Ormeaux",
+      "url": "https://ville.ddo.qc.ca/wp-content/uploads/2026/01/2026-01-13_Ordre_du_jour.pdf",
+      "storage_key": "raw/pv-index/cas/440e3ef3aecb5b8e12ef4b40cdcf1a051389f3f09d26c7077c7713cecbcc2f38.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 7,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dollard-Des Ormeaux",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R-2026-216",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:65",
+              "quote": "50.1   Avis de motion et dépôt du projet de Règlement R-2026-216 sur les ententes pour"
+            }
+          },
+          {
+            "label": "R-2026-141-4",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "50.3   Adoption du Règlement R-2026-141-4 modifiant de nouveau le Règlement R-2019-"
+            }
+          },
+          {
+            "label": "R-2026-207",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "50.4   Adoption du Règlement R-2026-207 décrétant des dépenses en immobilisations et"
+            }
+          },
+          {
+            "label": "R-2026-208",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "50.5   Adoption du Règlement R-2026-208 décrétant des dépenses en immobilisations et"
+            }
+          },
+          {
+            "label": "R-2026-209",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "50.6   Adoption du Règlement R-2026-209 décrétant des dépenses en immobilisations et"
+            }
+          },
+          {
+            "label": "R-2026-210",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "50.7   Adoption du Règlement R-2026-210 décrétant des dépenses en immobilisations et"
+            }
+          },
+          {
+            "label": "R-2026-215",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "50.8   Adoption du Règlement R-2026-215 autorisant un emprunt de 12 M $ pour acquitter"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "1900102",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "        partie du lot 1 900 102 (SD2025-200-2774)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/13cecbcc2f38.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/13cecbcc2f38.pdf/.graphify/.graphify_extract.json — 10 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dollard-des-ormeaux"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "municipality_name": "Dollard-Des Ormeaux",
+      "url": "https://ville.ddo.qc.ca/wp-content/uploads/2026/01/2026-01-20_EXTRA_budget_taxes_2026_Ordre_du_jour.pdf",
+      "storage_key": "raw/pv-index/cas/46ca9d2b01162efaba6c5d99b1ca5578b2a0e4f6a31af5da2455eafd8971cefb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dollard-Des Ormeaux",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R-2026-214",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "50.1    Adoption du règlement R-2026-214 sur les taxes pour l’exercice financier 2026"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/eafd8971cefb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/eafd8971cefb.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dollard-des-ormeaux"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "municipality_name": "Dollard-Des Ormeaux",
+      "url": "https://ville.ddo.qc.ca/wp-content/uploads/2026/06/2026-06-16_EXTRA_19h_Ordre_du_jour.pdf",
+      "storage_key": "raw/pv-index/cas/533fb20992ca937080992719cf624bb1c3c83f18742d881a2e3adadbc592db5d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dollard-Des Ormeaux",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R-2026-211-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "50.1    Avis de motion et dépôt du projet de Règlement R-2026-211-1 modifiant le"
+            }
+          },
+          {
+            "label": "R-2025-211",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "        Règlement R-2025-211 sur les tarifs pour l'année 2026 (SD2026-300-2967)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/dadbc592db5d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/dadbc592db5d.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dollard-des-ormeaux"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "municipality_name": "Dollard-Des Ormeaux",
+      "url": "https://ville.ddo.qc.ca/wp-content/uploads/2026/05/2026-06-02_Ordinaire_Ordre_du_jour.pdf",
+      "storage_key": "raw/pv-index/cas/5c108beebee072a9f1e29111f038772129867001e7c7d979bf09588fe9f5a2f3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dollard-Des Ormeaux",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R-2026-213",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "50.1   Adoption du Règlement R-2026-213 concernant les parcs (SD2026-200-2955)"
+            }
+          },
+          {
+            "label": "R-2026-199-1",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "50.2   Adoption du Règlement R-2026-199-1 modifiant le Règlement de zonage R-2025-"
+            }
+          },
+          {
+            "label": "R-2026-221",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "50.3   Adoption du Règlement R-2026-221 décrétant des dépenses en immobilisations et"
+            }
+          },
+          {
+            "label": "R-2026-219",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "50.4   Adoption du Règlement R-2026-219 abrogeant les règlements 252 et 95-842 (SD2026-"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/588fe9f5a2f3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/588fe9f5a2f3.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dollard-des-ormeaux"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

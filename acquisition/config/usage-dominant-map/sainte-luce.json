@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "VLG": "residentiel",
+    "HBF": "residentiel",
+    "HMD": "residentiel",
+    "RCT": "environnemental",
+    "LSR": "environnemental",
+    "CMC": "commercial",
+    "ILG": "industriel",
+    "MTF": null,
+    "IST": null
+  },
+  "source": "https://tcrsudestuairemoyen.org/wp-content/uploads/2018/11/P.-Gingras-compl%C3%A9ment-3.pdf",
+  "note": "Municipalité de Sainte-Luce (MRC de La Mitis). Le zone_code servi est de la forme « NUMÉRO (SIGLE) » (« 105 (HMM) », « 115 (RCT) ») — la vocation est en SUFFIXE. Le règlement de zonage de Sainte-Luce n'a PAS été trouvé en ligne; le document retenu est le PLAN DE GESTION CÔTIER DE LA MRC DE LA MITIS (P. Gingras, complément 3), qui satisfait le gate propriétaire parce qu'il NOMME Sainte-Luce: son tableau porte la colonne « Municipalité / Sainte-Luce » avec les zones « 141 (VLG) » et « 143 (VLG) », c'est-à-dire les codes servis eux-mêmes. Légende VERBATIM, section « Définitions des paramètres d'analyse » (p. 1): « Numéro de zone et affectation : Zone délimitée au plan de zonage de la municipalité locale. Affectation correspondant à la vocation dominante attribuée au plan d'urbanisme de la municipalité locale : VLG = de villégiature, HBF = d'habitation de faible densité, HMD = d'habitation de moyenne densité, RCT = récréative, LSR = de loisirs, CMC = commerciale, MTF = multifonctionnelle, IST = institutionnelle, ILG = industrielle légère. MRC et municipalités (plans de zonage municipaux) ». Mapping: HBF + HMD « d'habitation … » -> residentiel; VLG « de villégiature » -> residentiel; CMC -> commercial; ILG « industrielle légère » -> industriel; RCT « récréative » + LSR « de loisirs » -> environnemental. NULLS EXPLICITES: MTF « multifonctionnelle » (aucune dominante unique) et IST « institutionnelle » (public/institutionnel, hors des cinq catégories). SEULS les 9 sigles que CE document imprime sont mappés: les autres sigles servis par le SIG de Sainte-Luce restent hors du map (null d'ignorance assumé), car la table plus complète de l'art. 4.1 du règlement 2009-1210 est celle de la VILLE DE MONT-JOLI et ne nomme pas Sainte-Luce — la transposer serait une invention, même si le vocabulaire de la MRC est manifestement commun (le document ci-dessus l'écrit: « l'affectation … attribuée au plan d'urbanisme de la municipalité locale », source « MRC et municipalités »)."
+}

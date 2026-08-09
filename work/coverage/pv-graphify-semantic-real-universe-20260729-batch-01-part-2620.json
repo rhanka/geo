@@ -1,0 +1,2724 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T15:20:09.578Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 2620,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 9,
+    "failed_pvs": 11,
+    "outcomes": {
+      "INDEXED": 9,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 10
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 9,
+    "Document": 9,
+    "Resolution": 40,
+    "Regulation": 43,
+    "Zone": 5,
+    "LotCadastre": 61,
+    "CouncilSession": 1,
+    "MeetingDate": 1
+  },
+  "graphify": {
+    "nodes": 169,
+    "edges": 21,
+    "failures": 10
+  },
+  "matches": {
+    "zone_entities": 5,
+    "lot_entities": 61,
+    "documents_with_zone": 4,
+    "documents_with_lot": 8
+  },
+  "match_details": [
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/448b36695c1de1a64a488acae9c4ed1cc6730ae207def5f4575c72fecb3bd11f.pdf",
+      "entity_type": "Zone",
+      "value": "H-334",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:122",
+      "quote": "       accessoires et correctif zone H-334)"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/448b36695c1de1a64a488acae9c4ed1cc6730ae207def5f4575c72fecb3bd11f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2598627",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:76",
+      "quote": "10.1   Demande de PIIA 2023-069 – Lot 2 598 627 – 2121, rue"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/448b36695c1de1a64a488acae9c4ed1cc6730ae207def5f4575c72fecb3bd11f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6534242",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:85",
+      "quote": "10.4   Demande de PIIA 2023-118 – Lot 6 534 242 – 2582,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/448b36695c1de1a64a488acae9c4ed1cc6730ae207def5f4575c72fecb3bd11f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6508687",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:134",
+      "quote": "      (Lot 6 508 687)"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "Zone",
+      "value": "H-334",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:252",
+      "quote": "                   (Bâtiments accessoires et correctif zone H-334)"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "Zone",
+      "value": "H-464",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:261",
+      "quote": "                   et correctif zone H-464)"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3145069",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:135",
+      "quote": "9.1    Demande d'usage conditionnel 2023-064 – Lot 3 145 069"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6448088",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:138",
+      "quote": "9.2    Demande de PIIA 2023-061 – Lot 6 448 088 – 2047-2049,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2598027",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:142",
+      "quote": "9.3    Demande de PIIA 2023-069 – Lot 2 598 027 – 2121, rue"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6499776",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:151",
+      "quote": "9.5    Demande de PIIA 2023-085 – Lot 6 499 776 – 2285-2287,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6499777",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:155",
+      "quote": "9.6    Demande de PIIA 2023-086 – Lot 6 499 777 – 2289-2291,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6527435",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:159",
+      "quote": "9.7    Demande de PIIA 2023-087 – Lot 6 527 435 – 2293-2295,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6444880",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:163",
+      "quote": "9.8    Demande de PIIA 2023-088 – Lot 6 444 880 – 2297-2299,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6442011",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:170",
+      "quote": "9.10   Demande de PIIA 2023-111 – Lot 6 442 011 – 2063-2065,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5295041",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:173",
+      "quote": "9.11   Demande de PIIA 2023-113 – Lot 5 295 041 – 1929, rue"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2599675",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:502",
+      "quote": "            2 599 723, des lots 2 599 675 et 2 599 706 du cadastre du Québec,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2599688",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:562",
+      "quote": "            d'expropriation des lots 2 599 688 et 2 599 705 du cadastre du"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/49691fb9863111b3a1733a67673d2deddb83b07b19d0336cd3fdb6d3e0685a5a.pdf",
+      "entity_type": "Zone",
+      "value": "A-472",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:876",
+      "quote": "            la Ville intitulé Règlement de zonage dans la zone A-472;"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/49691fb9863111b3a1733a67673d2deddb83b07b19d0336cd3fdb6d3e0685a5a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2601609",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:83",
+      "quote": "      9.1   Demande de PIIA 2025-010 (retour) - Lot 2 601 609"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/49691fb9863111b3a1733a67673d2deddb83b07b19d0336cd3fdb6d3e0685a5a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6619964",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:87",
+      "quote": "            agricole - Lot 6 619 964, 2156-2174, chemin"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/49691fb9863111b3a1733a67673d2deddb83b07b19d0336cd3fdb6d3e0685a5a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6371273",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:893",
+      "quote": "            propriétaire des lots 6 371 273 et 6 619 964 du cadastre du"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4a600683b97706097b40638128a2a1657286967caa6f4b99c6f4d18418d719cd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2600833",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:98",
+      "quote": "\f9.2    Demande de PIIA 2023-059 – Lot 2 600 833 – 2694,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4a600683b97706097b40638128a2a1657286967caa6f4b99c6f4d18418d719cd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6578059",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:101",
+      "quote": "9.3    Demande de PIIA 2023-066 – Lot 6 578 059 – 2114, rue"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4a600683b97706097b40638128a2a1657286967caa6f4b99c6f4d18418d719cd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6578058",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:104",
+      "quote": "9.4    Demande de PIIA 2023-067 – Lot 6 578 058 – 2110, rue"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4a600683b97706097b40638128a2a1657286967caa6f4b99c6f4d18418d719cd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6580269",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:107",
+      "quote": "9.5    Demande de PIIA 2023-072 – Lot 6 580 269 – 2964-2966,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4a600683b97706097b40638128a2a1657286967caa6f4b99c6f4d18418d719cd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6537196",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:111",
+      "quote": "9.6    Demande de PIIA 2023-074 – Lot 6 537 196 – 1836, rue"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4a600683b97706097b40638128a2a1657286967caa6f4b99c6f4d18418d719cd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6504192",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:120",
+      "quote": "9.9    Demande de PIIA 2023-079 – Lot 6 504 192 – 1912, rue"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "Zone",
+      "value": "C-238",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1061",
+      "quote": "et de zonage de la zone C-238 du règlement de zonage numéro"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2597819",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:30",
+      "quote": "      pour non-paiement de taxes 2022 – Lots 2 597 819 et"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2598938",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:33",
+      "quote": "      pour non-paiement de taxes 2022 – Lot 2 598 938"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6540501",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:39",
+      "quote": "      quittance – Lot 6 540 501"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6345185",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:66",
+      "quote": "10.1   Demande de PIIA 2023-128 – Lot 6 345 185 – 2372-2374,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2597453",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:69",
+      "quote": "10.2   Demande de PIIA 2024-027 – Lot 2 597 453 – 2923,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2600761",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:73",
+      "quote": "10.3   Demande de PIIA 2024-015 – Lot 2 600 761 – 1447, rue"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6216059",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:633",
+      "quote": "            Étienne-Provost se terminant en cul-de-sac (lot 6 216 059 et lot"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5895311",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:663",
+      "quote": "                    des lots 5 895 311 et 6 216 058;"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6086177",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1047",
+      "quote": "de la maison St-Hubert située sur le lot 6 086 177 et le lot"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5830042",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1106",
+      "quote": "        sur les lots 5 830 042 à 5 830 047 (maison contiguë 6"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5830034",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1107",
+      "quote": "        unités), sur les lots 5 830 034 à 5 830 041 (maison contiguë"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5830020",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1108",
+      "quote": "        8 unités), sur les lots 5 830 020 à 5 830 031 (2 bâtiments,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5830033",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1119",
+      "quote": "        3 bâtiments de 8 logements chacun), sur le lot 5 830 033"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5830048",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1120",
+      "quote": "        (parc), sur les lots 5 830 048 et 5 830 049 (rue), sur une"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5830017",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1122",
+      "quote": "        6 612 346 (partie du mur anti-bruit) et sur le lot 5 830 017"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6517780",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1548",
+      "quote": "      boulevard (lots 6 517 780 et 6 517 779), et ce au total pour"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/565945c3c2b7574e647336800d3a73c2b714626a3bfa7e61384cb8f5649bd102.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2601609",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:75",
+      "quote": "      9.2   Demande de PIIA 2025-010 - Lot 2 601 609 - 5204,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/565945c3c2b7574e647336800d3a73c2b714626a3bfa7e61384cb8f5649bd102.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3015165",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:85",
+      "quote": "      9.5   Demande de PIIA 2025-057 - Lot 3 015 165 - 3130-"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/565945c3c2b7574e647336800d3a73c2b714626a3bfa7e61384cb8f5649bd102.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3015166",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:89",
+      "quote": "      9.6   Demande de PIIA 2025-056 - Lot 3 015 166 - 3126-"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/565945c3c2b7574e647336800d3a73c2b714626a3bfa7e61384cb8f5649bd102.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6448088",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:784",
+      "quote": "            studio au 2047-2049, rue Gertrude, sur le lot 6 448 088;"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/565945c3c2b7574e647336800d3a73c2b714626a3bfa7e61384cb8f5649bd102.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6448087",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:812",
+      "quote": "            2043-2045, rue Gertrude, sur le lot 6 448 087;"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/565945c3c2b7574e647336800d3a73c2b714626a3bfa7e61384cb8f5649bd102.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6527435",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:854",
+      "quote": "            2295, rue Gertrude, sur le lot 6 527 435;"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/565945c3c2b7574e647336800d3a73c2b714626a3bfa7e61384cb8f5649bd102.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6444880",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:883",
+      "quote": "            2299, rue Gertrude, sur le lot 6 444 880;"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/565945c3c2b7574e647336800d3a73c2b714626a3bfa7e61384cb8f5649bd102.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6345185",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:908",
+      "quote": "            étages au 2372-2374, rue Henriette, sur le lot 6 345 185;"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2597703",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:91",
+      "quote": "     9.6   Demande de PIIA 2025-095 - Lot 2 597 703 - 2348,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2601475",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:97",
+      "quote": "\f     9.7    Demande de PIIA 2025-104 - Lot 2 601 475 - 3450,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6553492",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:100",
+      "quote": "     9.8    Demande de PIIA 2025-108 - Lot 6 553 492 - 2329-"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2599173",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:104",
+      "quote": "     9.9    Demande de PIIA 2025-109 - Lot 2 599 173 - 3440,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6562525",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:109",
+      "quote": "     9.11   Demande de PIIA 2025-114 - Lot 6 562 525 - 2555"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4945774",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:111",
+      "quote": "     9.12   Demande de PIIA 2025-118 - Lot 4 945 774 - 2118,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2600021",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:114",
+      "quote": "     9.13   Demande de PIIA 2025-120 - Lot 2 600 021 - 1909,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6634623",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:639",
+      "quote": "           résidence située au 2004-2006, rue Gertrude, sur le lot 6 634 623,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6617856",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:681",
+      "quote": "           sur la résidence du 2290-2292, rue Gertrude, sur le lot 6 617 856,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6617857",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:702",
+      "quote": "           au 2294-2296, rue Gertrude, sur le lot 6 617 857, telle que figurant"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6476878",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:725",
+      "quote": "           lot 6 476 878, telle que figurant sur les plans et documents"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/58e79ebaca1076fa1b68cba7bb67713daf2c7fb611612b6ad10dabe17159df56.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2601082",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:56",
+      "quote": "     9.4 Demande de PIIA 2025-001 - Lot 2 601 082 - 1870,"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/58e79ebaca1076fa1b68cba7bb67713daf2c7fb611612b6ad10dabe17159df56.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6570960",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:73",
+      "quote": "     destination du propriétaire - Lots 6 570 960 et 6 570 961 -"
+    },
+    {
+      "municipality_slug": "carignan",
+      "storage_key": "raw/pv-index/cas/58e79ebaca1076fa1b68cba7bb67713daf2c7fb611612b6ad10dabe17159df56.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6448089",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:437",
+      "quote": "           2055, rue Gertrude, sur le lot 6 448 089;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 142,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 6654,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z",
+  "documents": [
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2020/09/2020-04-011.pdf",
+      "storage_key": "raw/pv-index/cas/3eebb8d388098f603969a7c817948ae27a0f6ba00a6f95ed2b054fde3ed2f40f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/4fde3ed2f40f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/4fde3ed2f40f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2025/01/2024-12-11_Proces-verbal-SE.pdf",
+      "storage_key": "raw/pv-index/cas/4059e8356476989ae9b3af035b54b4804944163062d6212d887340f1168a3655.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Carignan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            SÉANCE EXTRAORDINAIRE DES MEMBRES DU CONSEIL DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "            SÉANCE EXTRAORDINAIRE DES MEMBRES DU CONSEIL DE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/40f1168a3655.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/40f1168a3655.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "carignan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2022/03/2022-02-02.pdf",
+      "storage_key": "raw/pv-index/cas/415b4acea1024d8c341e303cf5c5903dd9ee238563b7a02a9f90af3d193408cc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/af3d193408cc.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/af3d193408cc.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2020/09/2020-01-15.pdf",
+      "storage_key": "raw/pv-index/cas/434701b2b64278e4c5ef5665436d8d7868f6be261d52eb1d52ccbac53374b9f5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/bac53374b9f5.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/bac53374b9f5.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2024/03/2024-02-07-Proces-verbal.pdf",
+      "storage_key": "raw/pv-index/cas/448b36695c1de1a64a488acae9c4ed1cc6730ae207def5f4575c72fecb3bd11f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4,
+        "Regulation": 10,
+        "Zone": 1,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Carignan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "22-08-297",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:185",
+              "quote": "            CONSIDÉRANT        les   résolutions   22-08-297,   23-02-068        et"
+            }
+          },
+          {
+            "label": "23-12-559",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:191",
+              "quote": "            résolution 23-12-559;"
+            }
+          },
+          {
+            "label": "23-07-329",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:440",
+              "quote": "            CONSIDÉRANT la résolution 23-07-329 confirmant l'adhésion de"
+            }
+          },
+          {
+            "label": "23-03-109",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:689",
+              "quote": "            CONSIDÉRANT la résolution numéro 23-03-109 relativement à la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "543",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "      1ER PROJET DE RÈGLEMENT NUMÉRO 543 (2022)-2"
+            }
+          },
+          {
+            "label": "554",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:103",
+              "quote": "14.1   Avis de motion – Projet de règlement numéro 554"
+            }
+          },
+          {
+            "label": "558",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:107",
+              "quote": "14.2   Avis de motion – Projet de règlement numéro 558 (2024)"
+            }
+          },
+          {
+            "label": "482",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "14.3   Avis de motion – Projet de règlement numéro 482 (2024)"
+            }
+          },
+          {
+            "label": "483-34",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "14.6   Adoption – Règlement numéro 483-34-U modifiant le"
+            }
+          },
+          {
+            "label": "496",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "14.7   Adoption – Règlement numéro 496 (2024) modifiant et"
+            }
+          },
+          {
+            "label": "506",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:126",
+              "quote": "14.8   Adoption – Règlement numéro 506 (2024) concernant la"
+            }
+          },
+          {
+            "label": "511",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:129",
+              "quote": "14.9   Adoption – Règlement numéro 511 (2024) décrétant les"
+            }
+          },
+          {
+            "label": "547",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "14.10 Adoption – Règlement numéro 547 (2024) relatif à"
+            }
+          },
+          {
+            "label": "559",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:135",
+              "quote": "14.11 Adoption – Règlement numéro 559 (2024) établissant un"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "H-334",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "       accessoires et correctif zone H-334)"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2598627",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "10.1   Demande de PIIA 2023-069 – Lot 2 598 627 – 2121, rue"
+            }
+          },
+          {
+            "label": "6534242",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "10.4   Demande de PIIA 2023-118 – Lot 6 534 242 – 2582,"
+            }
+          },
+          {
+            "label": "6508687",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:134",
+              "quote": "      (Lot 6 508 687)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/72fecb3bd11f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/72fecb3bd11f.pdf/.graphify/.graphify_extract.json — 20 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 20,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "carignan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2024/01/2023-12-06.pdf",
+      "storage_key": "raw/pv-index/cas/487ae5e11b4ead4a3aa2b2aab68f9a3e40d3fe46c2f8863143a2ac939c444698.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 12,
+        "Regulation": 8,
+        "Zone": 2,
+        "LotCadastre": 11
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Carignan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "21-03-88",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:445",
+              "quote": "            CONSIDÉRANT la résolution 21-03-88 décrétant l'acquisition par"
+            }
+          },
+          {
+            "label": "21-04-140",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:500",
+              "quote": "            CONSIDÉRANT la résolution 21-04-140 décrétant l'acquisition par"
+            }
+          },
+          {
+            "label": "22-08-296",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:762",
+              "quote": "            CONSIDÉRANT les résolutions numéro 22-08-296 et 23-11-507;"
+            }
+          },
+          {
+            "label": "22-08-297",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:794",
+              "quote": "            CONSIDÉRANT les résolutions 22-08-297 et 23-02-068;"
+            }
+          },
+          {
+            "label": "23-06-280",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:884",
+              "quote": "            Conformément à la résolution numéro 23-06-280 concernant la"
+            }
+          },
+          {
+            "label": "23-06-276",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1085",
+              "quote": "            CONSIDÉRANT les résolutions 23-06-276 et 23-09-417;"
+            }
+          },
+          {
+            "label": "23-10-452",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1161",
+              "quote": "            CONSIDÉRANT la résolution 23-10-452 autorisant le financement"
+            }
+          },
+          {
+            "label": "21-01-16",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1208",
+              "quote": "            CONSIDÉRANT les résolutions numéros 21-01-16 et 22-01-12"
+            }
+          },
+          {
+            "label": "23-03-115",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1688",
+              "quote": "            CONSIDÉRANT la résolution 23-03-115 octroyant le contrat"
+            }
+          },
+          {
+            "label": "23-02-089",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2145",
+              "quote": "            CONSIDÉRANT la résolution numéro 23-02-089;"
+            }
+          },
+          {
+            "label": "20-06-229",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2785",
+              "quote": "            CONSIDÉRANT la résolution 20-06-229 datée du 3 juin 2020"
+            }
+          },
+          {
+            "label": "23-04-167",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2795",
+              "quote": "            résolution 23-04-167;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "310",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:235",
+              "quote": "13.1   Avis de motion – Projet de règlement numéro 310 (2024)"
+            }
+          },
+          {
+            "label": "508",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:239",
+              "quote": "13.2   Avis de motion – Projet de règlement numéro 508 (2024)"
+            }
+          },
+          {
+            "label": "510",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:246",
+              "quote": "\f            13.3   Avis de motion – Projet de règlement numéro 510 (2024)"
+            }
+          },
+          {
+            "label": "483-34",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:253",
+              "quote": "            13.5   Adoption – 1er projet de règlement numéro 483-34-U"
+            }
+          },
+          {
+            "label": "483-32",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:256",
+              "quote": "            13.6   Adoption – Règlement numéro 483-32-U modifiant le"
+            }
+          },
+          {
+            "label": "483-33",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:259",
+              "quote": "            13.7   Adoption – Règlement numéro 483-33-U modifiant le"
+            }
+          },
+          {
+            "label": "26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1369",
+              "quote": "          au «Règlement numéro 26 sur la gestion contractuelle de"
+            }
+          },
+          {
+            "label": "518",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2143",
+              "quote": "            règlement numéro 518 (2023) relatif à la démolition d'immeubles;"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "H-334",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:252",
+              "quote": "                   (Bâtiments accessoires et correctif zone H-334)"
+            }
+          },
+          {
+            "label": "H-464",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:261",
+              "quote": "                   et correctif zone H-464)"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3145069",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:135",
+              "quote": "9.1    Demande d'usage conditionnel 2023-064 – Lot 3 145 069"
+            }
+          },
+          {
+            "label": "6448088",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:138",
+              "quote": "9.2    Demande de PIIA 2023-061 – Lot 6 448 088 – 2047-2049,"
+            }
+          },
+          {
+            "label": "2598027",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:142",
+              "quote": "9.3    Demande de PIIA 2023-069 – Lot 2 598 027 – 2121, rue"
+            }
+          },
+          {
+            "label": "6499776",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:151",
+              "quote": "9.5    Demande de PIIA 2023-085 – Lot 6 499 776 – 2285-2287,"
+            }
+          },
+          {
+            "label": "6499777",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:155",
+              "quote": "9.6    Demande de PIIA 2023-086 – Lot 6 499 777 – 2289-2291,"
+            }
+          },
+          {
+            "label": "6527435",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:159",
+              "quote": "9.7    Demande de PIIA 2023-087 – Lot 6 527 435 – 2293-2295,"
+            }
+          },
+          {
+            "label": "6444880",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "9.8    Demande de PIIA 2023-088 – Lot 6 444 880 – 2297-2299,"
+            }
+          },
+          {
+            "label": "6442011",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:170",
+              "quote": "9.10   Demande de PIIA 2023-111 – Lot 6 442 011 – 2063-2065,"
+            }
+          },
+          {
+            "label": "5295041",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:173",
+              "quote": "9.11   Demande de PIIA 2023-113 – Lot 5 295 041 – 1929, rue"
+            }
+          },
+          {
+            "label": "2599675",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:502",
+              "quote": "            2 599 723, des lots 2 599 675 et 2 599 706 du cadastre du Québec,"
+            }
+          },
+          {
+            "label": "2599688",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:562",
+              "quote": "            d'expropriation des lots 2 599 688 et 2 599 705 du cadastre du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/ac939c444698.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/ac939c444698.pdf/.graphify/.graphify_extract.json — 35 nodes, 6 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 35,
+        "edges": 6
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "carignan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2025/12/Proces-verbal_2025-11-19.pdf",
+      "storage_key": "raw/pv-index/cas/49691fb9863111b3a1733a67673d2deddb83b07b19d0336cd3fdb6d3e0685a5a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 7,
+        "Regulation": 5,
+        "Zone": 1,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Carignan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "25-04-94",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:436",
+              "quote": "              CONSIDÉRANT la résolution 25-04-94;"
+            }
+          },
+          {
+            "label": "23-06-280",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:473",
+              "quote": "Conformément à la résolution numéro 23-06-280 concernant la"
+            }
+          },
+          {
+            "label": "23-03-115",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:726",
+              "quote": "            CONSIDÉRANT la résolution 23-03-115 octroyant le contrat"
+            }
+          },
+          {
+            "label": "23-10-452",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:781",
+              "quote": "            CONSIDÉRANT la résolution 23-10-452 octroyant le contrat des"
+            }
+          },
+          {
+            "label": "23-10-487",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:809",
+              "quote": "\f            CONSIDÉRANT la résolution no 23-10-487 octroyant le contrat"
+            }
+          },
+          {
+            "label": "18-04-114",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:837",
+              "quote": "            CONSIDÉRANT la résolution 18-04-114;"
+            }
+          },
+          {
+            "label": "18-02-49",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1102",
+              "quote": "            CONSIDÉRANT la résolution numéro 18-02-49 visant la création"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "508",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "      13.1   Avis de motion - Projet de règlement numéro 508"
+            }
+          },
+          {
+            "label": "567",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:126",
+              "quote": "      13.2   Avis de motion - Projet de règlement numéro 567"
+            }
+          },
+          {
+            "label": "483",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:875",
+              "quote": "            constituerait un usage dérogatoire du règlement numéro 483-U de"
+            }
+          },
+          {
+            "label": "522",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1013",
+              "quote": "\f            du règlement numéro 522 (2019) concernant la constitution d'un"
+            }
+          },
+          {
+            "label": "518",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1131",
+              "quote": "            règlement numéro 518 (2024) relatif à la démolition d'immeubles;"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "A-472",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:876",
+              "quote": "            la Ville intitulé Règlement de zonage dans la zone A-472;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2601609",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "      9.1   Demande de PIIA 2025-010 (retour) - Lot 2 601 609"
+            }
+          },
+          {
+            "label": "6619964",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:87",
+              "quote": "            agricole - Lot 6 619 964, 2156-2174, chemin"
+            }
+          },
+          {
+            "label": "6371273",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:893",
+              "quote": "            propriétaire des lots 6 371 273 et 6 619 964 du cadastre du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/b6d3e0685a5a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/b6d3e0685a5a.pdf/.graphify/.graphify_extract.json — 18 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 18,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "carignan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2023/10/2023-08-02.pdf",
+      "storage_key": "raw/pv-index/cas/4a600683b97706097b40638128a2a1657286967caa6f4b99c6f4d18418d719cd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 5,
+        "Regulation": 5,
+        "LotCadastre": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Carignan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "23-06-280",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:266",
+              "quote": "            Conformément à la résolution numéro 23-06-280 concernant la"
+            }
+          },
+          {
+            "label": "23-07-321",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:400",
+              "quote": "            CONSIDÉRANT la résolution 23-07-321;"
+            }
+          },
+          {
+            "label": "23-07-323",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:520",
+              "quote": "            CONSIDÉRANT la résolution numéro 23-07-323 octroyant le"
+            }
+          },
+          {
+            "label": "23-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:543",
+              "quote": "            QUE la présente résolution modifie la résolution numéro 23-07-"
+            }
+          },
+          {
+            "label": "21-04-153",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:555",
+              "quote": "            CONSIDÉRANT la résolution numéro 21-04-153 octroyant le"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "542",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": "    PROJET DE RÈGLEMENT NO 542 (2022)-2 MODIFIANT LE"
+            }
+          },
+          {
+            "label": "508",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "            13.1   Avis de motion – Projet de règlement no 508 (2023)-3"
+            }
+          },
+          {
+            "label": "554",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:156",
+              "quote": "            13.2   Avis de motion – Projet de règlement no 554 (2023) relatif"
+            }
+          },
+          {
+            "label": "483-30",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "            13.4   Avis de motion – 1er projet de règlement no 483-30-U"
+            }
+          },
+          {
+            "label": "435",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:169",
+              "quote": "            13.6   Adoption – Règlement no 435 (2023)-1 remplaçant le"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2600833",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "\f9.2    Demande de PIIA 2023-059 – Lot 2 600 833 – 2694,"
+            }
+          },
+          {
+            "label": "6578059",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "9.3    Demande de PIIA 2023-066 – Lot 6 578 059 – 2114, rue"
+            }
+          },
+          {
+            "label": "6578058",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "9.4    Demande de PIIA 2023-067 – Lot 6 578 058 – 2110, rue"
+            }
+          },
+          {
+            "label": "6580269",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:107",
+              "quote": "9.5    Demande de PIIA 2023-072 – Lot 6 580 269 – 2964-2966,"
+            }
+          },
+          {
+            "label": "6537196",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:111",
+              "quote": "9.6    Demande de PIIA 2023-074 – Lot 6 537 196 – 1836, rue"
+            }
+          },
+          {
+            "label": "6504192",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "9.9    Demande de PIIA 2023-079 – Lot 6 504 192 – 1912, rue"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/d18418d719cd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/d18418d719cd.pdf/.graphify/.graphify_extract.json — 18 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 18,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "carignan",
+          "montreal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2020/09/2018-11-27-pve.pdf",
+      "storage_key": "raw/pv-index/cas/4a74c3afb812c16bd26cfb57083c0c48588bf3e83698f333a197867dabb9e9c1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/867dabb9e9c1.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/867dabb9e9c1.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2024/05/2024-04-03_Proces-verbal.pdf",
+      "storage_key": "raw/pv-index/cas/4d6fecf6adafa2a2a9a68e6168e4a7d0c99b26690f9685deb2408013215aae73.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 6,
+        "Regulation": 2,
+        "Zone": 1,
+        "LotCadastre": 16
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Carignan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "23-10-444",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:263",
+              "quote": "            CONSIDÉRANT la résolution 23-10-444;"
+            }
+          },
+          {
+            "label": "22-08-310",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:439",
+              "quote": "            CONSIDÉRANT la résolution 22-08-310 octroyant le contrat pour"
+            }
+          },
+          {
+            "label": "23-10-487",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:469",
+              "quote": "            CONSIDÉRANT la résolution 23-10-487 octroyant le contrat pour"
+            }
+          },
+          {
+            "label": "18-03-101",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:637",
+              "quote": "            municipal le 7 mars 2018 par sa résolution 18-03-101;"
+            }
+          },
+          {
+            "label": "21-03-121",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:875",
+              "quote": "            CONSIDÉRANT les résolutions 21-03-121 et 21-07-299;"
+            }
+          },
+          {
+            "label": "22-03-72",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:948",
+              "quote": "            CONSIDÉRANT         les   résolutions   22-03-72,   22-04-118      et"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "479",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "            14.1   Avis de motion – Projet de règlement numéro 479 (2024)"
+            }
+          },
+          {
+            "label": "521",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1544",
+              "quote": "             Règlement 521 (2020) établissant le paiement d'une"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "C-238",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1061",
+              "quote": "et de zonage de la zone C-238 du règlement de zonage numéro"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2597819",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "      pour non-paiement de taxes 2022 – Lots 2 597 819 et"
+            }
+          },
+          {
+            "label": "2598938",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "      pour non-paiement de taxes 2022 – Lot 2 598 938"
+            }
+          },
+          {
+            "label": "6540501",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "      quittance – Lot 6 540 501"
+            }
+          },
+          {
+            "label": "6345185",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "10.1   Demande de PIIA 2023-128 – Lot 6 345 185 – 2372-2374,"
+            }
+          },
+          {
+            "label": "2597453",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "10.2   Demande de PIIA 2024-027 – Lot 2 597 453 – 2923,"
+            }
+          },
+          {
+            "label": "2600761",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "10.3   Demande de PIIA 2024-015 – Lot 2 600 761 – 1447, rue"
+            }
+          },
+          {
+            "label": "6216059",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:633",
+              "quote": "            Étienne-Provost se terminant en cul-de-sac (lot 6 216 059 et lot"
+            }
+          },
+          {
+            "label": "5895311",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:663",
+              "quote": "                    des lots 5 895 311 et 6 216 058;"
+            }
+          },
+          {
+            "label": "6086177",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1047",
+              "quote": "de la maison St-Hubert située sur le lot 6 086 177 et le lot"
+            }
+          },
+          {
+            "label": "5830042",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1106",
+              "quote": "        sur les lots 5 830 042 à 5 830 047 (maison contiguë 6"
+            }
+          },
+          {
+            "label": "5830034",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1107",
+              "quote": "        unités), sur les lots 5 830 034 à 5 830 041 (maison contiguë"
+            }
+          },
+          {
+            "label": "5830020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1108",
+              "quote": "        8 unités), sur les lots 5 830 020 à 5 830 031 (2 bâtiments,"
+            }
+          },
+          {
+            "label": "5830033",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1119",
+              "quote": "        3 bâtiments de 8 logements chacun), sur le lot 5 830 033"
+            }
+          },
+          {
+            "label": "5830048",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1120",
+              "quote": "        (parc), sur les lots 5 830 048 et 5 830 049 (rue), sur une"
+            }
+          },
+          {
+            "label": "5830017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1122",
+              "quote": "        6 612 346 (partie du mur anti-bruit) et sur le lot 5 830 017"
+            }
+          },
+          {
+            "label": "6517780",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1548",
+              "quote": "      boulevard (lots 6 517 780 et 6 517 779), et ce au total pour"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/8013215aae73.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/8013215aae73.pdf/.graphify/.graphify_extract.json — 27 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 27,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "carignan",
+          "chambly"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2020/09/2018-09-05-rev.pdf",
+      "storage_key": "raw/pv-index/cas/4f65f9d21d7d8b486b2f5ce289113c58d0cbb342c3876e80dfe5fdbc50d13f02.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/fdbc50d13f02.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/fdbc50d13f02.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2020/09/2019-04-03.pdf",
+      "storage_key": "raw/pv-index/cas/4fd229cefa7f20a61f364c73d32e5c1abf25a56c64712287f1bc0b292cf6ac2f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/0b292cf6ac2f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/0b292cf6ac2f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2022/11/2022-08-03.pdf",
+      "storage_key": "raw/pv-index/cas/502ffde6c05ad96576b597678596ca53bb8c5d455a5f67e7c1b2464647d3980d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/464647d3980d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/464647d3980d.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2026/03/Proces-verbal_2025-07-02_SO.pdf",
+      "storage_key": "raw/pv-index/cas/565945c3c2b7574e647336800d3a73c2b714626a3bfa7e61384cb8f5649bd102.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 5,
+        "LotCadastre": 8
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Carignan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "24-11-370",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:319",
+              "quote": "            CONSIDÉRANT la résolution 24-11-370 autorisant la signature"
+            }
+          },
+          {
+            "label": "25-03-90",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:323",
+              "quote": "            CONSIDÉRANT les résolutions 25-03-90, 25-04-95, 25-05-123"
+            }
+          },
+          {
+            "label": "23-06-280",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:352",
+              "quote": "            Conformément à la résolution numéro 23-06-280 concernant la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "483-39",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "    1ER PROJET DE RÈGLEMENT NUMÉRO 483-39-U"
+            }
+          },
+          {
+            "label": "558",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:148",
+              "quote": "      13.2    Avis de motion - Projet de règlement numéro 558"
+            }
+          },
+          {
+            "label": "543",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:156",
+              "quote": "      13.4    Adoption - Premier projet de règlement numéro 543"
+            }
+          },
+          {
+            "label": "84",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:160",
+              "quote": "      13.5    Adoption - Règlement numéro 84 (2025) afin"
+            }
+          },
+          {
+            "label": "512",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:165",
+              "quote": "      13.6    Adoption - Règlement numéro 512 (2025)-1"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2601609",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "      9.2   Demande de PIIA 2025-010 - Lot 2 601 609 - 5204,"
+            }
+          },
+          {
+            "label": "3015165",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "      9.5   Demande de PIIA 2025-057 - Lot 3 015 165 - 3130-"
+            }
+          },
+          {
+            "label": "3015166",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:89",
+              "quote": "      9.6   Demande de PIIA 2025-056 - Lot 3 015 166 - 3126-"
+            }
+          },
+          {
+            "label": "6448088",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:784",
+              "quote": "            studio au 2047-2049, rue Gertrude, sur le lot 6 448 088;"
+            }
+          },
+          {
+            "label": "6448087",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:812",
+              "quote": "            2043-2045, rue Gertrude, sur le lot 6 448 087;"
+            }
+          },
+          {
+            "label": "6527435",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:854",
+              "quote": "            2295, rue Gertrude, sur le lot 6 527 435;"
+            }
+          },
+          {
+            "label": "6444880",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:883",
+              "quote": "            2299, rue Gertrude, sur le lot 6 444 880;"
+            }
+          },
+          {
+            "label": "6345185",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:908",
+              "quote": "            étages au 2372-2374, rue Henriette, sur le lot 6 345 185;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/b8f5649bd102.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/b8f5649bd102.pdf/.graphify/.graphify_extract.json — 18 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 18,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "carignan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2026/03/Proces-verbal_4_fevrier_2026.pdf",
+      "storage_key": "raw/pv-index/cas/56e08fb1b201e6f2edb9a70984f2a3f0dd75baee355a2c733da04a68bb018447.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 7,
+        "LotCadastre": 11
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Carignan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "25-12-380",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "                 Résolution 25-12-380"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "483-41",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "      1ER PROJET DE RÈGLEMENT NUMÉRO 483-41-U"
+            }
+          },
+          {
+            "label": "483-40",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:144",
+              "quote": "\f                 13.2   Adoption - Règlement numéro 483-40-U modifiant le"
+            }
+          },
+          {
+            "label": "495",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:147",
+              "quote": "                 13.3   Adoption - Règlement 495 (2026) concernant le"
+            }
+          },
+          {
+            "label": "428",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:493",
+              "quote": "           règlements suivants: 193 900 $ - règlement 428, 11 900 $ -"
+            }
+          },
+          {
+            "label": "465",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:494",
+              "quote": "           règlement 465, 454 800 $ - règlement 523, 407 900 $- règlement"
+            }
+          },
+          {
+            "label": "523",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:494",
+              "quote": "           règlement 465, 454 800 $ - règlement 523, 407 900 $- règlement"
+            }
+          },
+          {
+            "label": "536",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:495",
+              "quote": "           527 et 636 948 $ - règlement 536."
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2597703",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:91",
+              "quote": "     9.6   Demande de PIIA 2025-095 - Lot 2 597 703 - 2348,"
+            }
+          },
+          {
+            "label": "2601475",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:97",
+              "quote": "\f     9.7    Demande de PIIA 2025-104 - Lot 2 601 475 - 3450,"
+            }
+          },
+          {
+            "label": "6553492",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "     9.8    Demande de PIIA 2025-108 - Lot 6 553 492 - 2329-"
+            }
+          },
+          {
+            "label": "2599173",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "     9.9    Demande de PIIA 2025-109 - Lot 2 599 173 - 3440,"
+            }
+          },
+          {
+            "label": "6562525",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:109",
+              "quote": "     9.11   Demande de PIIA 2025-114 - Lot 6 562 525 - 2555"
+            }
+          },
+          {
+            "label": "4945774",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:111",
+              "quote": "     9.12   Demande de PIIA 2025-118 - Lot 4 945 774 - 2118,"
+            }
+          },
+          {
+            "label": "2600021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "     9.13   Demande de PIIA 2025-120 - Lot 2 600 021 - 1909,"
+            }
+          },
+          {
+            "label": "6634623",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:639",
+              "quote": "           résidence située au 2004-2006, rue Gertrude, sur le lot 6 634 623,"
+            }
+          },
+          {
+            "label": "6617856",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:681",
+              "quote": "           sur la résidence du 2290-2292, rue Gertrude, sur le lot 6 617 856,"
+            }
+          },
+          {
+            "label": "6617857",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:702",
+              "quote": "           au 2294-2296, rue Gertrude, sur le lot 6 617 857, telle que figurant"
+            }
+          },
+          {
+            "label": "6476878",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:725",
+              "quote": "           lot 6 476 878, telle que figurant sur les plans et documents"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/4a68bb018447.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/4a68bb018447.pdf/.graphify/.graphify_extract.json — 21 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 21,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "carignan",
+          "chambly"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2025/04/Proces-verbal_2025-03-05.pdf",
+      "storage_key": "raw/pv-index/cas/58e79ebaca1076fa1b68cba7bb67713daf2c7fb611612b6ad10dabe17159df56.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 1,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Carignan",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "SÉANCE ORDINAIRE DES MEMBRES DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "2555, CHEMIN BELLEVUE, LE 5 MARS 2025, À 19 H 30."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "23-06-280",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:242",
+              "quote": "           Conformément à la résolution numéro 23-06-280 concernant la"
+            }
+          },
+          {
+            "label": "24-11-370",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:901",
+              "quote": "           CONSIDÉRANT la résolution 24-11-370 autorisant la signature"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "542",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "                  13.1 Avis de motion - Projet de règlement numéro 542"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2601082",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "     9.4 Demande de PIIA 2025-001 - Lot 2 601 082 - 1870,"
+            }
+          },
+          {
+            "label": "6570960",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "     destination du propriétaire - Lots 6 570 960 et 6 570 961 -"
+            }
+          },
+          {
+            "label": "6448089",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:437",
+              "quote": "           2055, rue Gertrude, sur le lot 6 448 089;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/abe17159df56.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/abe17159df56.pdf/.graphify/.graphify_extract.json — 10 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "carignan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2022/06/2022-04-06.pdf",
+      "storage_key": "raw/pv-index/cas/622bd844f8d0576b10ca5bf01579d9107bd6aae5852e6f0fce51efc6b219998d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/efc6b219998d.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/efc6b219998d.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2021/02/2021-01-13.pdf",
+      "storage_key": "raw/pv-index/cas/68a22bbada834bf143f443f9887998fe37ab4023e77d1056d7f6a6d7ae4916a0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/a6d7ae4916a0.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/a6d7ae4916a0.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2021/06/2021-05-05.pdf",
+      "storage_key": "raw/pv-index/cas/69e15aaf6a3c9d923b6987286a25a04832614e291e022f5f898fd1457bdd32d3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/d1457bdd32d3.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/d1457bdd32d3.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "url": "https://carignan-22793.kxcdn.com/wp-content/uploads/2023/05/2023-04-05.pdf",
+      "storage_key": "raw/pv-index/cas/6b22696ab0b99d040a09e13bc0b9b69bd9b5a206b5e7629c85deefa5675f0ef8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/efa5675f0ef8.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T151749Z/carignan/efa5675f0ef8.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
