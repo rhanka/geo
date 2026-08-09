@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { validateExtraction } from "@sentropic/graphify";
 
-import { analyzeZoneGazetteerMatchMode, classifyRegulationLegalQuality, extractPvSemantic, printedMunicipalityOwners } from "./pv-graphify-semantic.js";
+import { analyzeZoneGazetteerMatchMode, classifyRegulationLegalQuality, extractPvSemantic, printedMunicipalityOwners, validateExtraction } from "./pv-graphify-semantic.js";
 
 const municipalities = [
   { slug: "albertville", name: "Albertville" },
