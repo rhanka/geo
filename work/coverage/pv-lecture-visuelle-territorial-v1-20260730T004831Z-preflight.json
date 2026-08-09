@@ -1,0 +1,404 @@
+{
+  "contract": "pv-lecture-visuelle-preflight/v1",
+  "generated_at": "2026-07-30T00:48:46.289Z",
+  "read_only": true,
+  "source_triage": "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json",
+  "selection": {
+    "description": "les 34 clés CAS du reliquat territorial v1, résolues par préfixe et suffixe depuis les six classifications de la vague 20260729t222149z",
+    "prior_lot_reports": [],
+    "source_inventory": "work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0001.json, work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0002.json, work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0003.json, work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0004.json, work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0005.json, work/coverage/pv-capture-octets-classification-20260729t222149z-lot-0006.json",
+    "candidate_cas_keys": 265,
+    "prior_lot_collisions_avoided": 0,
+    "remaining_after_dedupe": 33,
+    "unresolved_targets": [
+      {
+        "prefix": "9e098919",
+        "suffix": "b4ee",
+        "status": "MISMATCH",
+        "matching_keys": [
+          "raw/pv-index/cas/9e098919648bdd5c9a821b78197528176a38729e77a1ed0c8a2f0a7ec42b4ee3.pdf"
+        ]
+      }
+    ]
+  },
+  "guard": {
+    "before_visual_reading": true,
+    "transport": "S3 GetObject",
+    "hash": "sha256 streamé; aucune mise en mémoire intégrale du PDF",
+    "mismatch_stop_threshold": 3,
+    "stopped_for_integrity_incident": false
+  },
+  "summary": {
+    "requested": 34,
+    "attempted": 33,
+    "sha_passed": 33,
+    "cas_sha_mismatch": 0,
+    "get_failed": 0
+  },
+  "local_visual_workspace": "/home/antoinefa/src/geo/work/graphify/pv-lecture-visuelle-territorial-v1-20260730T004831Z-preflight",
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/020e9d0e1cfe74a46db635132f736a11280c58552ecc6b106af59d8e8e414173.pdf",
+      "slug": "les-bergeronnes",
+      "municipality_name": "Les Bergeronnes",
+      "expected_sha256": "020e9d0e1cfe74a46db635132f736a11280c58552ecc6b106af59d8e8e414173",
+      "calculated_sha256": "020e9d0e1cfe74a46db635132f736a11280c58552ecc6b106af59d8e8e414173",
+      "streamed_bytes": 1260727,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/07a2c09c39760710fc41e6a8aac887fbb2e8aed91249f121406dc7577062c191.pdf",
+      "slug": "rawdon",
+      "municipality_name": "Rawdon",
+      "expected_sha256": "07a2c09c39760710fc41e6a8aac887fbb2e8aed91249f121406dc7577062c191",
+      "calculated_sha256": "07a2c09c39760710fc41e6a8aac887fbb2e8aed91249f121406dc7577062c191",
+      "streamed_bytes": 1376381,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1bb6c50a2f95e4eed31e087454c187b0127f63f558d153463d8ce043d89b39e1.pdf",
+      "slug": "roquemaure",
+      "municipality_name": "Roquemaure",
+      "expected_sha256": "1bb6c50a2f95e4eed31e087454c187b0127f63f558d153463d8ce043d89b39e1",
+      "calculated_sha256": "1bb6c50a2f95e4eed31e087454c187b0127f63f558d153463d8ce043d89b39e1",
+      "streamed_bytes": 23714,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1c7b0b221c3c33c7df1f79dba27bc84466a7b1089c03b7a581993b29e725a388.pdf",
+      "slug": "hemmingford--les-jardins-de-napierville--2",
+      "municipality_name": "Hemmingford",
+      "expected_sha256": "1c7b0b221c3c33c7df1f79dba27bc84466a7b1089c03b7a581993b29e725a388",
+      "calculated_sha256": "1c7b0b221c3c33c7df1f79dba27bc84466a7b1089c03b7a581993b29e725a388",
+      "streamed_bytes": 588354,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2168ba03bf0b1e599ace763167313732ac9293513d5e9435bb507b3506d19df8.pdf",
+      "slug": "namur",
+      "municipality_name": "Namur",
+      "expected_sha256": "2168ba03bf0b1e599ace763167313732ac9293513d5e9435bb507b3506d19df8",
+      "calculated_sha256": "2168ba03bf0b1e599ace763167313732ac9293513d5e9435bb507b3506d19df8",
+      "streamed_bytes": 260329,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/29d2ee15258b9295df0f7e4721564c12ef96c3f36200f2af51cd61422818fb30.pdf",
+      "slug": "packington",
+      "municipality_name": "Packington",
+      "expected_sha256": "29d2ee15258b9295df0f7e4721564c12ef96c3f36200f2af51cd61422818fb30",
+      "calculated_sha256": "29d2ee15258b9295df0f7e4721564c12ef96c3f36200f2af51cd61422818fb30",
+      "streamed_bytes": 5503063,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2b3510fded0da87e248d145586cf304730a832fa7fb1eefd470a6431a9730c9a.pdf",
+      "slug": "saint-andre-avellin",
+      "municipality_name": "Saint-André-Avellin",
+      "expected_sha256": "2b3510fded0da87e248d145586cf304730a832fa7fb1eefd470a6431a9730c9a",
+      "calculated_sha256": "2b3510fded0da87e248d145586cf304730a832fa7fb1eefd470a6431a9730c9a",
+      "streamed_bytes": 3332212,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2d29f473045407df5c2add9b6a0deae02fedc8d606e9273653ed0d2015ff8e10.pdf",
+      "slug": "pointe-lebel",
+      "municipality_name": "Pointe-Lebel",
+      "expected_sha256": "2d29f473045407df5c2add9b6a0deae02fedc8d606e9273653ed0d2015ff8e10",
+      "calculated_sha256": "2d29f473045407df5c2add9b6a0deae02fedc8d606e9273653ed0d2015ff8e10",
+      "streamed_bytes": 132471,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3062d8453a35e8040120c1a61960302d27ac9812305d161391ea7de34be0a2fd.pdf",
+      "slug": "rapide-danseur",
+      "municipality_name": "Rapide-Danseur",
+      "expected_sha256": "3062d8453a35e8040120c1a61960302d27ac9812305d161391ea7de34be0a2fd",
+      "calculated_sha256": "3062d8453a35e8040120c1a61960302d27ac9812305d161391ea7de34be0a2fd",
+      "streamed_bytes": 535401,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/332c4fff7aff700982ba97b7872a8177e49ad8ad2df0fe16910163c4c6400bca.pdf",
+      "slug": "saint-antoine-de-tilly",
+      "municipality_name": "Saint-Antoine-de-Tilly",
+      "expected_sha256": "332c4fff7aff700982ba97b7872a8177e49ad8ad2df0fe16910163c4c6400bca",
+      "calculated_sha256": "332c4fff7aff700982ba97b7872a8177e49ad8ad2df0fe16910163c4c6400bca",
+      "streamed_bytes": 761199,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/397a02b0f2d8f8be598e8832c0cb69500d9c707b338f471ff9b7e20a75e5e792.pdf",
+      "slug": "lac-des-aigles",
+      "municipality_name": "Lac-des-Aigles",
+      "expected_sha256": "397a02b0f2d8f8be598e8832c0cb69500d9c707b338f471ff9b7e20a75e5e792",
+      "calculated_sha256": "397a02b0f2d8f8be598e8832c0cb69500d9c707b338f471ff9b7e20a75e5e792",
+      "streamed_bytes": 13209389,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/42559b4e95ab4519b7174eb0a49e2f0071ddb75f57979fd6cf55253e0a0f79f0.pdf",
+      "slug": "noyan",
+      "municipality_name": "Noyan",
+      "expected_sha256": "42559b4e95ab4519b7174eb0a49e2f0071ddb75f57979fd6cf55253e0a0f79f0",
+      "calculated_sha256": "42559b4e95ab4519b7174eb0a49e2f0071ddb75f57979fd6cf55253e0a0f79f0",
+      "streamed_bytes": 278866,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4bef4cb8b358c3349465e62ddf69b443086651ff380012b1342b21388c6d5e7d.pdf",
+      "slug": "dupuy",
+      "municipality_name": "Dupuy",
+      "expected_sha256": "4bef4cb8b358c3349465e62ddf69b443086651ff380012b1342b21388c6d5e7d",
+      "calculated_sha256": "4bef4cb8b358c3349465e62ddf69b443086651ff380012b1342b21388c6d5e7d",
+      "streamed_bytes": 3165248,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/75180933630f02ba828d1beb6fc7277664378ceedab5d7b18ed67bb101c42b1d.pdf",
+      "slug": "napierville",
+      "municipality_name": "Napierville",
+      "expected_sha256": "75180933630f02ba828d1beb6fc7277664378ceedab5d7b18ed67bb101c42b1d",
+      "calculated_sha256": "75180933630f02ba828d1beb6fc7277664378ceedab5d7b18ed67bb101c42b1d",
+      "streamed_bytes": 8793752,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/785eb6f4bb3a6b5803867b3fdc8a8abc13f36d06c29937818bea5f27be6abda6.pdf",
+      "slug": "saint-augustin--le-golfe-du-saint-laurent",
+      "municipality_name": "Saint-Augustin",
+      "expected_sha256": "785eb6f4bb3a6b5803867b3fdc8a8abc13f36d06c29937818bea5f27be6abda6",
+      "calculated_sha256": "785eb6f4bb3a6b5803867b3fdc8a8abc13f36d06c29937818bea5f27be6abda6",
+      "streamed_bytes": 2687049,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/948447cbf200ee3e12abd3a0ad25c6e31715265d99245b731ccdc9f3620251a9.pdf",
+      "slug": "lorrainville",
+      "municipality_name": "Lorrainville",
+      "expected_sha256": "948447cbf200ee3e12abd3a0ad25c6e31715265d99245b731ccdc9f3620251a9",
+      "calculated_sha256": "948447cbf200ee3e12abd3a0ad25c6e31715265d99245b731ccdc9f3620251a9",
+      "streamed_bytes": 446050,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/94ed636dc68d1c0a102f442b6702f67e8bc5f14bd663dd2ce79a5feaeb926bd9.pdf",
+      "slug": "lac-des-plages",
+      "municipality_name": "Lac-des-Plages",
+      "expected_sha256": "94ed636dc68d1c0a102f442b6702f67e8bc5f14bd663dd2ce79a5feaeb926bd9",
+      "calculated_sha256": "94ed636dc68d1c0a102f442b6702f67e8bc5f14bd663dd2ce79a5feaeb926bd9",
+      "streamed_bytes": 6554259,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/9612c3dcd60268efe579ce084fe4781acc5d233fe38a32c96ef2497c7181532a.pdf",
+      "slug": "repentigny",
+      "municipality_name": "Repentigny",
+      "expected_sha256": "9612c3dcd60268efe579ce084fe4781acc5d233fe38a32c96ef2497c7181532a",
+      "calculated_sha256": "9612c3dcd60268efe579ce084fe4781acc5d233fe38a32c96ef2497c7181532a",
+      "streamed_bytes": 671317,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/9b4ac4f923598967c6e1772ef9136b3104527bc8401e56d437aff27f7ab01e12.pdf",
+      "slug": "ragueneau",
+      "municipality_name": "Ragueneau",
+      "expected_sha256": "9b4ac4f923598967c6e1772ef9136b3104527bc8401e56d437aff27f7ab01e12",
+      "calculated_sha256": "9b4ac4f923598967c6e1772ef9136b3104527bc8401e56d437aff27f7ab01e12",
+      "streamed_bytes": 3382246,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ab20f02abfa5bee418bac1892046e7b7027e0674eeeb13974613fcba40b0ad72.pdf",
+      "slug": "saint-aime-du-lac-des-iles",
+      "municipality_name": "Saint-Aimé-du-Lac-des-Îles",
+      "expected_sha256": "ab20f02abfa5bee418bac1892046e7b7027e0674eeeb13974613fcba40b0ad72",
+      "calculated_sha256": "ab20f02abfa5bee418bac1892046e7b7027e0674eeeb13974613fcba40b0ad72",
+      "streamed_bytes": 1161801,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b578c705a4ebb639125493e9406dcda93932795ed753b09774fc94fe1639df58.pdf",
+      "slug": "milan",
+      "municipality_name": "Milan",
+      "expected_sha256": "b578c705a4ebb639125493e9406dcda93932795ed753b09774fc94fe1639df58",
+      "calculated_sha256": "b578c705a4ebb639125493e9406dcda93932795ed753b09774fc94fe1639df58",
+      "streamed_bytes": 293658,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/cf9b58f817e71c1e1872c844bcc6686ef67fdd4661ad19d677623143335ecb6e.pdf",
+      "slug": "saint-bernard-de-lacolle",
+      "municipality_name": "Saint-Bernard-de-Lacolle",
+      "expected_sha256": "cf9b58f817e71c1e1872c844bcc6686ef67fdd4661ad19d677623143335ecb6e",
+      "calculated_sha256": "cf9b58f817e71c1e1872c844bcc6686ef67fdd4661ad19d677623143335ecb6e",
+      "streamed_bytes": 1102303,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/d376f4ed24b751e2e177e3618c6b7662b9b1f2a9a39954b0aa04b9b7584ec6c0.pdf",
+      "slug": "pointe-aux-outardes",
+      "municipality_name": "Pointe-aux-Outardes",
+      "expected_sha256": "d376f4ed24b751e2e177e3618c6b7662b9b1f2a9a39954b0aa04b9b7584ec6c0",
+      "calculated_sha256": "d376f4ed24b751e2e177e3618c6b7662b9b1f2a9a39954b0aa04b9b7584ec6c0",
+      "streamed_bytes": 1166950,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/d6b5cd56abaefa1123bd2b743a99fdd861d7cc68f10263f37d61810c4681b42a.pdf",
+      "slug": "pincourt",
+      "municipality_name": "Pincourt",
+      "expected_sha256": "d6b5cd56abaefa1123bd2b743a99fdd861d7cc68f10263f37d61810c4681b42a",
+      "calculated_sha256": "d6b5cd56abaefa1123bd2b743a99fdd861d7cc68f10263f37d61810c4681b42a",
+      "streamed_bytes": 6215224,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/d94ea5dba142f1b40af8cb6de03f0900d7ff2953b53a49e3e1fb6b7aa5f7bc51.pdf",
+      "slug": "mulgrave-et-derry",
+      "municipality_name": "Mulgrave-et-Derry",
+      "expected_sha256": "d94ea5dba142f1b40af8cb6de03f0900d7ff2953b53a49e3e1fb6b7aa5f7bc51",
+      "calculated_sha256": "d94ea5dba142f1b40af8cb6de03f0900d7ff2953b53a49e3e1fb6b7aa5f7bc51",
+      "streamed_bytes": 251145,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/dcb277af61f02c638480236efef67056f0b469c19f28d10a2ebb58f5c33c351a.pdf",
+      "slug": "notre-dame-des-pins",
+      "municipality_name": "Notre-Dame-des-Pins",
+      "expected_sha256": "dcb277af61f02c638480236efef67056f0b469c19f28d10a2ebb58f5c33c351a",
+      "calculated_sha256": "dcb277af61f02c638480236efef67056f0b469c19f28d10a2ebb58f5c33c351a",
+      "streamed_bytes": 4100756,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e01997701f3646b6880f58c49c597cf450ad9130dece3d8c8a029a434b939232.pdf",
+      "slug": "grandes-piles",
+      "municipality_name": "Grandes-Piles",
+      "expected_sha256": "e01997701f3646b6880f58c49c597cf450ad9130dece3d8c8a029a434b939232",
+      "calculated_sha256": "e01997701f3646b6880f58c49c597cf450ad9130dece3d8c8a029a434b939232",
+      "streamed_bytes": 1389209,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ec9ef5ee07cebc72d53ed88da03339cb0be1f494e102c5381b441d43e09734a1.pdf",
+      "slug": "franklin",
+      "municipality_name": "Franklin",
+      "expected_sha256": "ec9ef5ee07cebc72d53ed88da03339cb0be1f494e102c5381b441d43e09734a1",
+      "calculated_sha256": "ec9ef5ee07cebc72d53ed88da03339cb0be1f494e102c5381b441d43e09734a1",
+      "streamed_bytes": 5100272,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ed2a4de8496606f329e84b80c535e0b7d066279c95041f703028c8d8c2470151.pdf",
+      "slug": "la-tuque",
+      "municipality_name": "La Tuque",
+      "expected_sha256": "ed2a4de8496606f329e84b80c535e0b7d066279c95041f703028c8d8c2470151",
+      "calculated_sha256": "ed2a4de8496606f329e84b80c535e0b7d066279c95041f703028c8d8c2470151",
+      "streamed_bytes": 1809008,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f15b3a4647d4f2ba21fa30ec38da48945c33921dcd53848bfd7a2db012ed5fb9.pdf",
+      "slug": "lile-danticosti",
+      "municipality_name": "L'Île-d'Anticosti",
+      "expected_sha256": "f15b3a4647d4f2ba21fa30ec38da48945c33921dcd53848bfd7a2db012ed5fb9",
+      "calculated_sha256": "f15b3a4647d4f2ba21fa30ec38da48945c33921dcd53848bfd7a2db012ed5fb9",
+      "streamed_bytes": 317438,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f5199086db1548adb3868458465466c1f553c5c607cde685929e5bc748866ca8.pdf",
+      "slug": "notre-dame-auxiliatrice-de-buckland",
+      "municipality_name": "Notre-Dame-Auxiliatrice-de-Buckland",
+      "expected_sha256": "f5199086db1548adb3868458465466c1f553c5c607cde685929e5bc748866ca8",
+      "calculated_sha256": "f5199086db1548adb3868458465466c1f553c5c607cde685929e5bc748866ca8",
+      "streamed_bytes": 2753765,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f8591bac96d9ba6431b106200a7df6484312d7c12697ed36579b6646b2c80a53.pdf",
+      "slug": "les-escoumins",
+      "municipality_name": "Les Escoumins",
+      "expected_sha256": "f8591bac96d9ba6431b106200a7df6484312d7c12697ed36579b6646b2c80a53",
+      "calculated_sha256": "f8591bac96d9ba6431b106200a7df6484312d7c12697ed36579b6646b2c80a53",
+      "streamed_bytes": 50764,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ff49faec7b317a6c339d5ab0021a0120694536a5c83c608ce1f9f29cb14a9acc.pdf",
+      "slug": "perce",
+      "municipality_name": "Percé",
+      "expected_sha256": "ff49faec7b317a6c339d5ab0021a0120694536a5c83c608ce1f9f29cb14a9acc",
+      "calculated_sha256": "ff49faec7b317a6c339d5ab0021a0120694536a5c83c608ce1f9f29cb14a9acc",
+      "streamed_bytes": 1321436,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,115 @@
+id: pv-graphify-acquisition-proposed
+title: PV graphify pilot (proposed profile)
+description: >
+  Ontology derived from sampled Quebec municipal council minutes. No new entity is
+  introduced by invention; each type/relation below is grounded in verbatim corpus
+  excerpts.
+version: 1
+
+node_types:
+  Document:
+    title: Document
+    status_policy:
+      status: optional
+  Municipality:
+    title: Municipality
+    # Evidence:
+    # "Procès-verbal de la séance ordinaire du conseil du Village d’Abercorn" — Abercorn_019.txt:4
+  CouncilSession:
+    title: CouncilSession
+    # Evidence:
+    # "PROCÈS VÉRBAL DU CONSEIL DE LA MUNICIPALITÉ D’AUCLAIR, LE 5 JUIN 2023 À LIEU UNE SÉANCE RÉGULIÈRE DU CONSEIL DE LA MUNICIPALITÉ D’AUCLAIR" — Auclair_015.txt:1-4
+  ElectedPerson:
+    title: ElectedPerson
+    # Evidence:
+    # "Les conseillères Émilie Belzile...les conseillers... sous la présidence de monsieur le maire Bruno Bonesso" — Auclair_015.txt:7-9
+  Resolution:
+    title: Resolution
+    # Evidence:
+    # "Résolutions numéros 304.12.2025 à 320.12.2025 inclusivement" — Amherst_005.txt:43-44
+  Regulation:
+    title: Regulation
+    # Evidence:
+    # "ADOPTION DU RÈGLEMENT 606-25 MODIFIANT LE RÈGLEMENT 599-25" — Amherst_005.txt:294-295
+  Amount:
+    title: Amount
+    # Evidence:
+    # "au montant total de 548 169,65 $" — Amherst_005.txt:160
+  MeetingDate:
+    title: MeetingDate
+    # Evidence:
+    # "tenue le 12 janvier 2026, à 19 h, à la salle du Conseil" — Abercorn_019.txt:5
+  Address:
+    title: Address
+    # Evidence:
+    # "à la salle du Conseil, au 10, rue des Églises Ouest" — Abercorn_019.txt:5
+  LotCadastre:
+    title: LotCadastre
+    # Evidence:
+    # "sur le lot 5247514" — Albertville_003.txt:74
+  Zone:
+    title: Zone
+    # Evidence:
+    # "des zones M3 et ZS.2.-1" — Adstock_020.txt:46
+
+relation_types:
+  document_refers_municipality:
+    source: Document
+    target: Municipality
+    requires_evidence: true
+    # Evidence:
+    # "Procès-verbal de la séance ordinaire du conseil du Village d’Abercorn" — Abercorn_019.txt:4
+  document_describes_council_session:
+    source: Document
+    target: CouncilSession
+    requires_evidence: true
+    # Evidence:
+    # "Procès-verbal de la séance ordinaire du conseil..." — Abercorn_019.txt:4
+  session_held_on:
+    source: CouncilSession
+    target: MeetingDate
+    requires_evidence: true
+    # Evidence:
+    # "tenue le 12 janvier 2026" — Abercorn_019.txt:5
+  session_held_at:
+    source: CouncilSession
+    target: Address
+    requires_evidence: true
+    # Evidence:
+    # "à la salle du Conseil, au 10, rue des Églises Ouest" — Abercorn_019.txt:5
+  session_has_participant:
+    source: CouncilSession
+    target: ElectedPerson
+    requires_evidence: true
+    # Evidence:
+    # "Mesdames les conseillères Annik Alder... monsieur le maire Jean-Simoneau" — Abercorn_019.txt:7-10
+  session_adopts_resolution:
+    source: CouncilSession
+    target: Resolution
+    requires_evidence: true
+    # Evidence:
+    # "Résolutions numéros 304.12.2025 à 320.12.2025..." — Amherst_005.txt:43-45
+  resolution_mentions_regulation:
+    source: Resolution
+    target: Regulation
+    requires_evidence: true
+    # Evidence:
+    # "ADOPTION DU RÈGLEMENT 606-25 MODIFIANT LE RÈGLEMENT 599-25" — Amherst_005.txt:294-295
+  resolution_has_amount:
+    source: Resolution
+    target: Amount
+    requires_evidence: true
+    # Evidence:
+    # "montant total de 548 169,65 $" — Amherst_005.txt:160
+  resolution_refers_lot:
+    source: Resolution
+    target: LotCadastre
+    requires_evidence: true
+    # Evidence:
+    # "au lot 4 961 685" — Amherst_004.txt:143
+  document_refers_zone:
+    source: Document
+    target: Zone
+    requires_evidence: true
+    # Evidence:
+    # "des zones M3 et ZS.2.-1" — Adstock_020.txt:46

@@ -1,0 +1,1559 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:25:34.372Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4920,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 15,
+    "failed_pvs": 5,
+    "outcomes": {
+      "INDEXED": 15,
+      "OWNER_NOT_CONFIRMED": 4,
+      "CONTAMINATION_OWNER_MISMATCH": 1,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": [
+      {
+        "storage_key": "raw/pv-index/cas/0d934db56d89e714479e08fecf217223c90616a0d65dd588d82a6182c2142cfe.pdf",
+        "manifest_scope_slug": "hatley",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      }
+    ]
+  },
+  "entity_counts": {
+    "Municipality": 15,
+    "Document": 15,
+    "LotCadastre": 4,
+    "Regulation": 32,
+    "CouncilSession": 9,
+    "MeetingDate": 9
+  },
+  "graphify": {
+    "nodes": 84,
+    "edges": 33,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 4,
+    "documents_with_zone": 0,
+    "documents_with_lot": 4
+  },
+  "match_details": [
+    {
+      "municipality_slug": "ham-sud",
+      "storage_key": "raw/pv-index/cas/cef686ad8f9310331604336fa2c159596eb36be827621959d405f568e204bea6.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6431188",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:38",
+      "quote": "       8.2 Habitation durable – demande d’admissibilité et octroi subvention 5 étoiles, lot 6 431 188"
+    },
+    {
+      "municipality_slug": "hatley",
+      "storage_key": "raw/pv-index/cas/558c3dd4ad79bb9c69b4466e874652a40c338f2358736043eac523eb4e135965.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4666122",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:44",
+      "quote": "           8.2 141 rue Main (lot 4 666 122) – PIIA-1 2025-03-0004"
+    },
+    {
+      "municipality_slug": "havelock",
+      "storage_key": "raw/pv-index/cas/481a4d843979f509322a93eb31ed861ada14833b2fd0a33957725e0e690a6462.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5621322",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:49",
+      "quote": "   a) Demande d’évaluation environnementale du lot 5 621 322."
+    },
+    {
+      "municipality_slug": "havelock",
+      "storage_key": "raw/pv-index/cas/7d348ea3486f29b0654bc9d714c1cb3f6bb528242f070d072c6d2d86e24a39bd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5620559",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:51",
+      "quote": "   b) CPTAQ – Recommandation de la demande d’autorisation d’aliénation d’une partie du lot 5 620 559;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 89,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 2252,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z",
+  "documents": [
+    {
+      "slug": "ham-sud",
+      "municipality_name": "Ham-Sud",
+      "url": "https://ham-sud.ca/ham-sud/wp-content/uploads/2026/02/01-Ordre-du-jour-Seance-ordinaire-2026-03-02-CITOYEN.pdf",
+      "storage_key": "raw/pv-index/cas/cef686ad8f9310331604336fa2c159596eb36be827621959d405f568e204bea6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ham-Sud",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6431188",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "       8.2 Habitation durable – demande d’admissibilité et octroi subvention 5 étoiles, lot 6 431 188"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/ham-sud/f568e204bea6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/ham-sud/f568e204bea6.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ham-sud"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ham-sud",
+      "municipality_name": "Ham-Sud",
+      "url": "https://ham-sud.ca/ham-sud/wp-content/uploads/2026/01/01-Ordre-du-jour-Seance-ordinaire-2026-01-12-CITOYEN.pdf",
+      "storage_key": "raw/pv-index/cas/f9807d2c017709c640c30f92f326af050fc542952a28a4821fc8d3eab09d3594.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 9
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ham-Sud",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-15",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "        4.1 Règlement 2025-15 fixant les taux des taxes et des tarifs pour l’exercice financier 2025 et"
+            }
+          },
+          {
+            "label": "2025-07",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "        4.2 Avis de motion, dépôt et adoption du premier projet de Règlement 2025-07 relatif"
+            }
+          },
+          {
+            "label": "2025-08",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "        4.3 Avis de motion, dépôt et adoption du premier projet de Règlement 2025-08 relatif"
+            }
+          },
+          {
+            "label": "2025-09",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "        4.4 Avis de motion, dépôt et adoption du premier projet de Règlement 2025-09 relatif"
+            }
+          },
+          {
+            "label": "2025-10",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "        4.5 Avis de motion, dépôt et adoption du premier projet de Règlement 2025-10 relatif"
+            }
+          },
+          {
+            "label": "2025-11",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "        4.6 Avis de motion, dépôt et adoption du premier projet de Règlement 2025-11 relatif"
+            }
+          },
+          {
+            "label": "2025-12",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "        4.7 Avis de motion, dépôt et adoption du premier projet de Règlement 2025-12 relatif"
+            }
+          },
+          {
+            "label": "2025-13",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "        4.8 Avis de motion, dépôt et adoption du premier projet de Règlement 2025-13 relatif"
+            }
+          },
+          {
+            "label": "2025-14",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "        4.9 Avis de motion, dépôt et adoption du premier projet de Règlement 2025-14 relatif"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/ham-sud/d3eab09d3594.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/ham-sud/d3eab09d3594.pdf/.graphify/.graphify_extract.json — 11 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ham-sud"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "hatley",
+      "municipality_name": "Hatley",
+      "url": "https://www.municipalitehatley.com/wp-content/uploads/2026/03/1-Ordre-du-jour-assemblee-reguliere-du-2-mars-2026.pdf",
+      "storage_key": "raw/pv-index/cas/0d934db56d89e714479e08fecf217223c90616a0d65dd588d82a6182c2142cfe.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/6182c2142cfe.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/6182c2142cfe.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "hatley",
+      "municipality_name": "Hatley",
+      "url": "https://www.municipalitehatley.com/wp-content/uploads/2026/02/1-Ordre-du-jour-assemblee-reguliere-du-2-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/1ba60d49d80fe95ed57c01dfac6110f0374ddd40791bdf9eb23d16dfb10b9d8d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/16dfb10b9d8d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/16dfb10b9d8d.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "hatley",
+      "municipality_name": "Hatley",
+      "url": "https://www.municipalitehatley.com/wp-content/uploads/2026/06/1-Ordre-du-jour-assemblee-reguliere-du-1er-juin-2026-1.pdf",
+      "storage_key": "raw/pv-index/cas/3b111776ad2d852fe6c81da86ab9d20469603749c4d0446bd9fedac07d2e77a0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/dac07d2e77a0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/dac07d2e77a0.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "hatley",
+      "municipality_name": "Hatley",
+      "url": "https://www.municipalitehatley.com/wp-content/uploads/2026/04/1-Ordre-du-jour-assemblee-reguliere-du-7-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/558c3dd4ad79bb9c69b4466e874652a40c338f2358736043eac523eb4e135965.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Hatley",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "           9.1 Renouvellement de l’entente concernant l’accès à l’écocentre de la municipalité"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "           9.1 Renouvellement de l’entente concernant l’accès à l’écocentre de la municipalité"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2001-007",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "           5.2 Nomination des préposés à l’application du Règlement numéro 2001-007"
+            }
+          },
+          {
+            "label": "2075",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "           5.3 Adoption du règlement numéro 2075 établissant un Code d’éthique et de"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4666122",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "           8.2 141 rue Main (lot 4 666 122) – PIIA-1 2025-03-0004"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/23eb4e135965.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/23eb4e135965.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff",
+          "hatley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "hatley",
+      "municipality_name": "Hatley",
+      "url": "https://www.municipalitehatley.com/wp-content/uploads/2026/01/1-Ordre-du-jour-assemblee-reguliere-du-10-janvier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/cd1a2f8ae9e6174507ff104ac7773bd4499bdee43f732314174df642aa0c00cb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/f642aa0c00cb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/f642aa0c00cb.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "hatley",
+      "municipality_name": "Hatley",
+      "url": "https://www.municipalitehatley.com/wp-content/uploads/2026/05/1-Ordre-du-jour-assemblee-reguliere-du-4-mai-2026.pdf",
+      "storage_key": "raw/pv-index/cas/fb585730ba138bf84d6888902683f898f009655e55865228655b131be54f386e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/131be54f386e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/hatley/131be54f386e.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2026/01/000-Ordre-du-jour-2.pdf",
+      "storage_key": "raw/pv-index/cas/0fdc1052b85104429309ddb2ba22dbcca38a0797f475bd250485cc6ab747e60f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 FÉVRIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "                         SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 FÉVRIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "                             LUNDI LE 2 FÉVRIER 2026 À 19H30"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/cc6ab747e60f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/cc6ab747e60f.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "havelock",
+          "hemmingford--les-jardins-de-napierville",
+          "hemmingford--les-jardins-de-napierville--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2026/05/000-Ordre-du-jour-1.pdf",
+      "storage_key": "raw/pv-index/cas/1b03f229f95502cbc909e2d0983525019a1b8c09032fcfb92203234b44a03f87.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 8
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 MAI 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                                 SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 MAI 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                                       LUNDI LE 4 MAI 2026 À 19H30"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "324-3",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "   d) Adoption du règlement 324-3 modifiant le règlement sur les permis et certificats en vue d’ajouter"
+            }
+          },
+          {
+            "label": "345-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "       certaines attributions au fonctionnaire désigné et de se conformer au règlement 345-2024 de la MRC du"
+            }
+          },
+          {
+            "label": "341",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "   e) Adoption du règlement 341 sur les Plans d’implantation et d’intégration architecturale;"
+            }
+          },
+          {
+            "label": "324-4",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "   f) Adoption du règlement 324-4 modifiant le règlement sur les permis et certificats en vue de s’harmoniser"
+            }
+          },
+          {
+            "label": "251-18",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "   g) Adoption du règlement 251-18 modifiant le règlement de zonage 251 en vue d’établir les conditions"
+            }
+          },
+          {
+            "label": "340",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "   h) Adoption du règlement 340 sur l’occupation et l’entretien des bâtiments;"
+            }
+          },
+          {
+            "label": "251-20",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "   i) Adoption du règlement 251-20 modifiant le règlement de zonage 251 en vue d’y ajouter certaines"
+            }
+          },
+          {
+            "label": "251-19",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "   j) Adoption du 2e projet de règlement 251-19 modifiant le règlement de zonage en vue de modifier certaines"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/234b44a03f87.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/234b44a03f87.pdf/.graphify/.graphify_extract.json — 12 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "franklin",
+          "havelock",
+          "hemmingford--les-jardins-de-napierville",
+          "hemmingford--les-jardins-de-napierville--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2025/12/Avis-public-Seance-extraordinaire-2.pdf",
+      "storage_key": "raw/pv-index/cas/2ea30e15e02468d38261578ff01a2e8583b1d9c0c5cf1641243f5292a8ee066d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Municipalité du Canton de Havelock"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/5292a8ee066d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/5292a8ee066d.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "havelock"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2025/09/000-Ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/47386c8993dea074d0c539184a5e329a6b3c391e1458c64d38a88596e33c8839.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1ER OCTOBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "                             SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1ER OCTOBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "                              MERCREDI LE 1ER OCTOBRE 2025 À 19H30"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/8596e33c8839.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/8596e33c8839.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "franklin",
+          "havelock",
+          "hemmingford--les-jardins-de-napierville",
+          "hemmingford--les-jardins-de-napierville--2",
+          "saint-chrysostome"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2026/06/000-Ordre-du-jour-1.pdf",
+      "storage_key": "raw/pv-index/cas/481a4d843979f509322a93eb31ed861ada14833b2fd0a33957725e0e690a6462.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                          SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                               LUNDI LE 1er JUIN 2026 À 19H30"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5621322",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "   a) Demande d’évaluation environnementale du lot 5 621 322."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/5e0e690a6462.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/5e0e690a6462.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "havelock",
+          "hemmingford--les-jardins-de-napierville",
+          "hemmingford--les-jardins-de-napierville--2",
+          "ormstown"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2026/02/000-Ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/6d89ec85273b049036910a99c9fe637a8b8c88452ce7be1a51bb6cec5ae7ab58.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 MARS 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "                         SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 MARS 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "                              LUNDI LE 2 MARS 2026 À 19H30"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/6cec5ae7ab58.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/6cec5ae7ab58.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "havelock",
+          "hemmingford--les-jardins-de-napierville",
+          "hemmingford--les-jardins-de-napierville--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2025/12/Avis-public-Seance-extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/7115aed44f25bbfe616952709a4a9d734aac7c41f70e43325a38d2a6896cde7e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Municipalité du Canton de Havelock"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/d2a6896cde7e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/d2a6896cde7e.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "havelock"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2026/04/000-Ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/7d348ea3486f29b0654bc9d714c1cb3f6bb528242f070d072c6d2d86e24a39bd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 9,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "                       SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "                            MARDI LE 7 AVRIL 2026 À 19H30"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "250-3",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "   c) Avis de motion en regard au règlement 250-3 modifiant le règlement d’urbanisme 250 en vue de se"
+            }
+          },
+          {
+            "label": "251-21",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "   e) Avis de motion en regard au règlement 251-21 modifiant le règlement de zonage 251 en vue de se"
+            }
+          },
+          {
+            "label": "324-3",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "   g) Avis de motion en regard au règlement 324-3 modifiant le règlement sur les permis et certificats en vue"
+            }
+          },
+          {
+            "label": "345-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "       d’ajouter certaines attributions au fonctionnaire désigné et de se conformer au règlement 345-2024 de la"
+            }
+          },
+          {
+            "label": "341",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "   i)  Avis de motion en regard au règlement 341 sur les Plans d’implantation et d’intégration architecturale;"
+            }
+          },
+          {
+            "label": "324-4",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "    k)  Avis de motion en regard au règlement 324-4 modifiant le règlement sur les permis et certificats en vue"
+            }
+          },
+          {
+            "label": "251-18",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "    m) Avis de motion en regard au règlement 251-18 modifiant le règlement de zonage 251 en vue d’établir les"
+            }
+          },
+          {
+            "label": "340",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:81",
+              "quote": "    o) Avis de motion en regard au règlement 340 sur l’occupation et l’entretien des bâtiments (résolution);"
+            }
+          },
+          {
+            "label": "251-20",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "    q) Avis de motion en regard au règlement 251-20 modifiant le règlement de zonage 251 en vue d’y ajouter"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5620559",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "   b) CPTAQ – Recommandation de la demande d’autorisation d’aliénation d’une partie du lot 5 620 559;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/2d86e24a39bd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/2d86e24a39bd.pdf/.graphify/.graphify_extract.json — 14 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "havelock",
+          "hemmingford--les-jardins-de-napierville",
+          "hemmingford--les-jardins-de-napierville--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2025/07/2.-Ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/83dfafce5f95db016d31d0d4d01ec89b18ba41cddf56ba2b184c730270530d7b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "       Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "     a) Adoption du procès-verbal de la séance ordinaire du Conseil tenue le 12 mai 2025."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "     a) Adoption du procès-verbal de la séance ordinaire du Conseil tenue le 12 mai 2025."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/730270530d7b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/730270530d7b.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "havelock",
+          "hemmingford--les-jardins-de-napierville",
+          "hemmingford--les-jardins-de-napierville--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2025/12/Avis-public-Seance-extraordinaire-1.pdf",
+      "storage_key": "raw/pv-index/cas/a150c295494518d8afed8d9af049684ed5d1561dd8fe8c3e306c2f77a1b1afec.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "324-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": " 6. Avis de motion et dépôt du projet de règlement 324-1 en regard aux Permis et Certificats"
+            }
+          },
+          {
+            "label": "256-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": " 7. Avis de motion et dépôt du projet de règlement 256-1 en regard à la tarification des permis,"
+            }
+          },
+          {
+            "label": "251-18",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": " 8. Avis de motion et dépôt du projet de règlement 251-18 en regard au Zonage en vue d’établir"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/2f77a1b1afec.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/2f77a1b1afec.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "havelock"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2025/11/000-Ordre-du-jour-1.pdf",
+      "storage_key": "raw/pv-index/cas/cbb652be0f208e606bb7e6cad26e78e40d136de9d751ecb50f839d1ff8db4c76.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "     Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "     Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er DÉCEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                   SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er DÉCEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                      LUNDI LE 1er DÉCEMBRE 2025 À 19H30"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/9d1ff8db4c76.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/9d1ff8db4c76.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "franklin",
+          "havelock",
+          "hemmingford--les-jardins-de-napierville",
+          "hemmingford--les-jardins-de-napierville--2",
+          "saint-chrysostome"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "havelock",
+      "municipality_name": "Havelock",
+      "url": "https://mun-havelock.ca/wp-content/uploads/2026/01/000-Ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/e4d938bfd4e700b3c4871d721b4aecb03b73b1cfaab46806c12cd17736d69c6f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Havelock",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "      Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "      Municipalité du Canton de Havelock"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                      SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "                          LUNDI LE 12 JANVIER 2026 À 19H30"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "339",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "   d) Avis de motion et dépôt du projet de règlement 339 édictant le Code d’éthique et de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/d17736d69c6f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T182510Z/havelock/d17736d69c6f.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "havelock",
+          "hemmingford--les-jardins-de-napierville",
+          "hemmingford--les-jardins-de-napierville--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

@@ -1,0 +1,256 @@
+{
+  "contract": "pv-lecture-visuelle-preflight/v1",
+  "generated_at": "2026-07-29T15:45:17.914Z",
+  "read_only": true,
+  "source_triage": "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json",
+  "selection": {
+    "description": "les 20 clés CAS suivantes parmi les 186 échecs, ordonnées par premier offset de sélection puis clé CAS, après exclusion de tous les lots antérieurs",
+    "prior_lot_reports": [
+      "work/coverage/pv-lecture-visuelle-lot-01-20260729T134941Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-02-20260729T144959Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-03-20260729T151721Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-04-20260729T152221Z.json"
+    ],
+    "source_inventory": "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json (clés, slugs et offsets seulement; pages/taille ignorées)",
+    "candidate_cas_keys": 186,
+    "prior_lot_collisions_avoided": 80,
+    "remaining_after_dedupe": 106
+  },
+  "guard": {
+    "before_visual_reading": true,
+    "transport": "S3 GetObject",
+    "hash": "sha256 streamé; aucune mise en mémoire intégrale du PDF",
+    "mismatch_stop_threshold": 3,
+    "stopped_for_integrity_incident": false
+  },
+  "summary": {
+    "requested": 20,
+    "attempted": 20,
+    "sha_passed": 20,
+    "cas_sha_mismatch": 0,
+    "get_failed": 0
+  },
+  "local_visual_workspace": "/home/antoinefa/src/geo/work/graphify/pv-lecture-visuelle-lot-05-preflight-20260729T154507Z",
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/6c2a2c2b0483026b3f88ea65e8fe7a36f5db7c7d22ba850918ce3ccfdea53a7c.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "6c2a2c2b0483026b3f88ea65e8fe7a36f5db7c7d22ba850918ce3ccfdea53a7c",
+      "calculated_sha256": "6c2a2c2b0483026b3f88ea65e8fe7a36f5db7c7d22ba850918ce3ccfdea53a7c",
+      "streamed_bytes": 2629791,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/73e3496f686843f5b050c11c1f813abf1e6aa7ad42a1e69a80c2b768b4953b4c.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "73e3496f686843f5b050c11c1f813abf1e6aa7ad42a1e69a80c2b768b4953b4c",
+      "calculated_sha256": "73e3496f686843f5b050c11c1f813abf1e6aa7ad42a1e69a80c2b768b4953b4c",
+      "streamed_bytes": 200756,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/789dbb27bd0fe719918029150247f698efea229298590c7a8e1b6b0549f1d3e7.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "789dbb27bd0fe719918029150247f698efea229298590c7a8e1b6b0549f1d3e7",
+      "calculated_sha256": "789dbb27bd0fe719918029150247f698efea229298590c7a8e1b6b0549f1d3e7",
+      "streamed_bytes": 411729,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/94bceed47202fe79976feb55aa27ca9498c4de1471b50d5fbaf49a3c7412b0dd.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "94bceed47202fe79976feb55aa27ca9498c4de1471b50d5fbaf49a3c7412b0dd",
+      "calculated_sha256": "94bceed47202fe79976feb55aa27ca9498c4de1471b50d5fbaf49a3c7412b0dd",
+      "streamed_bytes": 100455,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/995fde203e900a7df4a84beb291d4d96576218ef77b773e1d3aee54df9fd4ec9.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "995fde203e900a7df4a84beb291d4d96576218ef77b773e1d3aee54df9fd4ec9",
+      "calculated_sha256": "995fde203e900a7df4a84beb291d4d96576218ef77b773e1d3aee54df9fd4ec9",
+      "streamed_bytes": 72193,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/b454239b23f71d5720806e3b0155bc41b2836ed0767e79bafe013b26abfd2525.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "b454239b23f71d5720806e3b0155bc41b2836ed0767e79bafe013b26abfd2525",
+      "calculated_sha256": "b454239b23f71d5720806e3b0155bc41b2836ed0767e79bafe013b26abfd2525",
+      "streamed_bytes": 3655547,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c5a836e46df3dbf4020c171c6d5a51146236ef4487d0640a87f08946ec09bb87.pdf",
+      "slug": "baie-sainte-catherine",
+      "municipality_name": "Baie-Sainte-Catherine",
+      "expected_sha256": "c5a836e46df3dbf4020c171c6d5a51146236ef4487d0640a87f08946ec09bb87",
+      "calculated_sha256": "c5a836e46df3dbf4020c171c6d5a51146236ef4487d0640a87f08946ec09bb87",
+      "streamed_bytes": 618432,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c932456f2a81b73198659dab65fabfed49b3c43c846dfb6f52935925fd44a5cf.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "c932456f2a81b73198659dab65fabfed49b3c43c846dfb6f52935925fd44a5cf",
+      "calculated_sha256": "c932456f2a81b73198659dab65fabfed49b3c43c846dfb6f52935925fd44a5cf",
+      "streamed_bytes": 52586,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e30ae7bb82b2dc305b9bd994e263588d6ed6db4d5b5b3accd0c02611dfbd3795.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "e30ae7bb82b2dc305b9bd994e263588d6ed6db4d5b5b3accd0c02611dfbd3795",
+      "calculated_sha256": "e30ae7bb82b2dc305b9bd994e263588d6ed6db4d5b5b3accd0c02611dfbd3795",
+      "streamed_bytes": 411518,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e4581f0dd11ada19a6d89cde83699ca670bbcc41ff10598da407fcdd442039ab.pdf",
+      "slug": "baie-sainte-catherine",
+      "municipality_name": "Baie-Sainte-Catherine",
+      "expected_sha256": "e4581f0dd11ada19a6d89cde83699ca670bbcc41ff10598da407fcdd442039ab",
+      "calculated_sha256": "e4581f0dd11ada19a6d89cde83699ca670bbcc41ff10598da407fcdd442039ab",
+      "streamed_bytes": 602870,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e9949d90deceda40983c2d304555b353cbd7abba56c486ebf9959d62623a5258.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "e9949d90deceda40983c2d304555b353cbd7abba56c486ebf9959d62623a5258",
+      "calculated_sha256": "e9949d90deceda40983c2d304555b353cbd7abba56c486ebf9959d62623a5258",
+      "streamed_bytes": 501676,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/eba2e6ff2fdb2cc2808b5fd8c478835f05819d86a12a63d572567ba382a272e3.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "eba2e6ff2fdb2cc2808b5fd8c478835f05819d86a12a63d572567ba382a272e3",
+      "calculated_sha256": "eba2e6ff2fdb2cc2808b5fd8c478835f05819d86a12a63d572567ba382a272e3",
+      "streamed_bytes": 3362058,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/04fdc2c1cbd3645ad8cfb19bb55279817ece3122ad99ca946d809726d8c2ddfd.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "04fdc2c1cbd3645ad8cfb19bb55279817ece3122ad99ca946d809726d8c2ddfd",
+      "calculated_sha256": "04fdc2c1cbd3645ad8cfb19bb55279817ece3122ad99ca946d809726d8c2ddfd",
+      "streamed_bytes": 1834745,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/0e5b85866b573e4945b46e8453a3e043c1ad656a7d5493f1de5ce03771e64880.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "0e5b85866b573e4945b46e8453a3e043c1ad656a7d5493f1de5ce03771e64880",
+      "calculated_sha256": "0e5b85866b573e4945b46e8453a3e043c1ad656a7d5493f1de5ce03771e64880",
+      "streamed_bytes": 4247612,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/10a0d5254ce8dfac2ce9098fe540f7ccbd31f82f00020af94da8b7c6642da53f.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "10a0d5254ce8dfac2ce9098fe540f7ccbd31f82f00020af94da8b7c6642da53f",
+      "calculated_sha256": "10a0d5254ce8dfac2ce9098fe540f7ccbd31f82f00020af94da8b7c6642da53f",
+      "streamed_bytes": 3420856,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/17f8afbd9014d25a5aa71f69d05653c5f38df47bf856af171b496e8d3b7a11d1.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "17f8afbd9014d25a5aa71f69d05653c5f38df47bf856af171b496e8d3b7a11d1",
+      "calculated_sha256": "17f8afbd9014d25a5aa71f69d05653c5f38df47bf856af171b496e8d3b7a11d1",
+      "streamed_bytes": 3015949,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/19057f3ac44f4a4f2430d43271b26fde4a534a38b79bfa0c0b037bef8e68a855.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "19057f3ac44f4a4f2430d43271b26fde4a534a38b79bfa0c0b037bef8e68a855",
+      "calculated_sha256": "19057f3ac44f4a4f2430d43271b26fde4a534a38b79bfa0c0b037bef8e68a855",
+      "streamed_bytes": 2921085,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1bcaa08ae67814e61e7bcecd4cdd5e653252588eccadf3b1dfa78754134ff03f.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "1bcaa08ae67814e61e7bcecd4cdd5e653252588eccadf3b1dfa78754134ff03f",
+      "calculated_sha256": "1bcaa08ae67814e61e7bcecd4cdd5e653252588eccadf3b1dfa78754134ff03f",
+      "streamed_bytes": 4680487,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1f787dbaf0408067f7f53c3485aa104b3e83ea701faca1b2c89b2f9b363c3438.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "1f787dbaf0408067f7f53c3485aa104b3e83ea701faca1b2c89b2f9b363c3438",
+      "calculated_sha256": "1f787dbaf0408067f7f53c3485aa104b3e83ea701faca1b2c89b2f9b363c3438",
+      "streamed_bytes": 1838121,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/22ea1238f9b79dc1831c1fe1b733b2b6bfd4ad5498bddeba19f67ac292682ee4.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "22ea1238f9b79dc1831c1fe1b733b2b6bfd4ad5498bddeba19f67ac292682ee4",
+      "calculated_sha256": "22ea1238f9b79dc1831c1fe1b733b2b6bfd4ad5498bddeba19f67ac292682ee4",
+      "streamed_bytes": 3721089,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    }
+  ]
+}

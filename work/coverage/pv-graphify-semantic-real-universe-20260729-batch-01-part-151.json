@@ -1,0 +1,188 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:31:10.564Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 150,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Resolution": 2,
+    "LotCadastre": 3
+  },
+  "graphify": {
+    "nodes": 7,
+    "edges": 1,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 3,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/02b60419ffa0742d50e49ba69ac528bc11e603365a1e0e3095ce4110d6eba795.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6602820",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:124",
+      "quote": "          Grandes-Seigneuries visant la rétrocession du lot 6 602 820 cédé par la Ville en vertu"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/02b60419ffa0742d50e49ba69ac528bc11e603365a1e0e3095ce4110d6eba795.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5672635",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:141",
+      "quote": "          métropolitain, pour l’acquisition du lot 5 672 635 situé dans le Corridor Vert"
+    },
+    {
+      "municipality_slug": "chateauguay",
+      "storage_key": "raw/pv-index/cas/02b60419ffa0742d50e49ba69ac528bc11e603365a1e0e3095ce4110d6eba795.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5142163",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:264",
+      "quote": "          stationnement situé au 155, rue Notre-Dame Nord, connu comme étant le lot 5 142 163"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 133,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 18765,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043054Z",
+  "documents": [
+    {
+      "slug": "chateauguay",
+      "municipality_name": "Châteauguay",
+      "url": "https://ville.chateauguay.qc.ca/wp-content/uploads/2026/03/V5_2026-03-16_ODJ.pdf",
+      "storage_key": "raw/pv-index/cas/02b60419ffa0742d50e49ba69ac528bc11e603365a1e0e3095ce4110d6eba795.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Châteauguay",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                  DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-01-45",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:106",
+              "quote": "    5.8. Modification de la résolution 2026-01-45 concernant l'embauche au poste de contremaître"
+            }
+          },
+          {
+            "label": "2026-01-077",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:229",
+              "quote": "           son territoire et annulation de la résolution 2026-01-077"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6602820",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:124",
+              "quote": "          Grandes-Seigneuries visant la rétrocession du lot 6 602 820 cédé par la Ville en vertu"
+            }
+          },
+          {
+            "label": "5672635",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:141",
+              "quote": "          métropolitain, pour l’acquisition du lot 5 672 635 situé dans le Corridor Vert"
+            }
+          },
+          {
+            "label": "5142163",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:264",
+              "quote": "          stationnement situé au 155, rue Notre-Dame Nord, connu comme étant le lot 5 142 163"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043054Z/chateauguay/4110d6eba795.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043054Z/chateauguay/4110d6eba795.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chateauguay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

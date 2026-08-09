@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "AD": "agricole",
+    "F": "agricole",
+    "REC": "environnemental",
+    "P": null,
+    "CH": null,
+    "AF": null,
+    "IC": null
+  },
+  "source": "https://apps.gestionweblex.ca/doc-list/handlers/document.ashx?documentid=e19b556e-10ad-4ce6-a2a6-1c465044eb2b",
+  "note": "Municipalité de Saint-Narcisse-de-Beaurivage (MRC de Lotbinière), « RÈGLEMENT DE ZONAGE » numéro 006-90 (page titre : « Municipalité de Saint-Narcisse-de-Beaurivage / RÈGLEMENT DE ZONAGE / Numéro 006-90 » ; pied de page « MUNICIPALITÉ DE SAINT-NARCISSE-DE-BEAURIVAGE » sur toutes les pages ⇒ gate propriétaire franchi), refonte incluant les amendements 002-91 à 228-2025. CHAPITRE III « LE PLAN DE ZONAGE », art. 3.2 « CODIFICATION DES ZONES » (p. 44), verbatim : « Chaque zone porte un numéro d'identification auquel est attaché un suffixe indiquant le ou les groupe(s) dominant(s) tel qu'il appert au tableau reproduit ci-après. LETTRES | GROUPE USAGE — H Habitation ; C Commercial et service ; P Public et institutionnel ; I Industriel ; REC Récréation ; A Agricole ; AD Agricole déstructuré ; F Forestier ; CH Commercial, service et Habitation ». Mapping : H « Habitation » -> residentiel ; C « Commercial et service » -> commercial ; I « Industriel » -> industriel ; A « Agricole » et F « Forestier » -> agricole ; AD « Agricole déstructuré » -> agricole (le libellé nomme « Agricole » et AUCUNE définition du règlement ne le contredit — convention de la lane : muet ⇒ le libellé tient) ; REC « Récréation » -> environnemental (le contrat range Conservation/Récréative/Faunique dans ce bucket). Null EXPLICITE : P « Public et institutionnel » (vocation PUBLIQUE) ; CH « Commercial, service et Habitation » (DUALE, deux catégories différentes). Null ANTI-FALL-THROUGH : AF (1 pol., `22-AF`) et IC (1 pol., `21-IC`) sont ABSENTS de la table 3.2 ; sans ce null explicite, le longest-prefix les rabattrait en SILENCE sur `A` (agricole) et `I` (industriel), ce qui serait une affirmation non sourcée. ⛔ Piège écarté : le règlement porte ailleurs un tableau de CLASSES D'USAGES avec « Ic : Industrie extractive » et parle d'« affectation agroforestière » — ce ne sont PAS des lettres de zone (la lettre de ZONE n'est pas la lettre du GROUPE D'USAGES). ⛔ L'`reglement_url` servie (`…documentid=b5702eff-…`) est FAUSSE : elle sert un procès-verbal du 4 juillet 2023 + le règlement 202-2023 sur la démolition d'immeubles. Le catalogue WebLex de la muni s'énumère à $0 par `https://apps.gestionweblex.ca/doc-list/assets/list.ashx?listid=d0221fa1-8ebc-441e-a549-71c8cb608ee6&culture=fr-CA` (le `listid` est en clair dans le HTML de `https://www.saintnarcissedebeaurivage.ca/pages/reglements-municipaux`). La grille des usages et des normes n'a PAS été utilisée. Consulté le 2026-07-19."
+}

@@ -1,0 +1,121 @@
+{
+  "contract": "served-zonage-proof-url-restamp-plan/v3",
+  "complete": true,
+  "run_prefix": "zones-20260728T115049Z",
+  "generated_at": "2026-07-28T12:03:10.338Z",
+  "source": "capture-manifest-lines-classified-octets",
+  "classification_report": {
+    "path": "work/coverage/capture-octets-classification-20260728T115610Z.json",
+    "sha256": "sha256:0cc9b249122125b18fcaefb806a0977817661a0bdb03e7990df592dcb683fa80"
+  },
+  "selected_layout": "nested_when_present_else_flat",
+  "collections": {
+    "capture_slugs": 6,
+    "ready": 2,
+    "refused": 4,
+    "distinct_manifest_lines": 2,
+    "excluded_capture_lines": 4
+  },
+  "ready": [
+    {
+      "slug": "lassomption",
+      "key": "normalized/ca-qc-zonage/qc-zonage-lassomption.geojson",
+      "attestations": [
+        {
+          "artifactUri": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-lassomption.geojson",
+          "replacementUrl": "https://services9.arcgis.com/hcaJWZHFtN5aFHXa/arcgis/rest/services/URB_MAJZonageJuillet2021/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+          "manifest_key": "capture/_runs/zones-20260728T115049Z-3-61ccb64c-bcf5-4b87-be66-b4b67f414da0/manifest.jsonl",
+          "line_index": 3,
+          "storage_key": "raw/zones-v1-proof-url/cas/efbbf015e86a0d0b2e1f8da31df3f6f642d70f1a82fa42e6d3c779b63dc15b6e.json",
+          "url": "https://services9.arcgis.com/hcaJWZHFtN5aFHXa/arcgis/rest/services/URB_MAJZonageJuillet2021/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+          "retrieved_at": "2026-07-28T11:51:11.625Z",
+          "sha256": "sha256:efbbf015e86a0d0b2e1f8da31df3f6f642d70f1a82fa42e6d3c779b63dc15b6e"
+        }
+      ]
+    },
+    {
+      "slug": "laval",
+      "key": "normalized/ca-qc-zonage/qc-zonage-laval.geojson",
+      "attestations": [
+        {
+          "artifactUri": "s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-laval.geojson",
+          "replacementUrl": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+          "manifest_key": "capture/_runs/zones-20260728T115049Z-4-14e7aa86-fefe-4cb5-aedc-73efa0b035ca/manifest.jsonl",
+          "line_index": 3,
+          "storage_key": "raw/zones-v1-proof-url/cas/1ed9579ed1d17e1321d2683dc8f7e614c71f5b031edc22ecd217ac04818b9fd6.bin",
+          "url": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+          "retrieved_at": "2026-07-28T11:51:20.592Z",
+          "sha256": "sha256:1ed9579ed1d17e1321d2683dc8f7e614c71f5b031edc22ecd217ac04818b9fd6"
+        }
+      ]
+    }
+  ],
+  "refused": [
+    {
+      "slug": "inverness",
+      "key": "normalized/ca-qc-zonage/qc-zonage-inverness.geojson",
+      "reason": "capture-octets-not-geometry:AUTRE:pdf-bytes"
+    },
+    {
+      "slug": "labrecque",
+      "key": "normalized/ca-qc-zonage/qc-zonage-labrecque.geojson",
+      "reason": "capture-octets-not-geometry:AUTRE:pdf-bytes"
+    },
+    {
+      "slug": "lac-sergent",
+      "key": "normalized/ca-qc-zonage/qc-zonage-lac-sergent.geojson",
+      "reason": "capture-octets-not-geometry:AUTRE:pdf-bytes"
+    },
+    {
+      "slug": "matapedia",
+      "key": "normalized/ca-qc-zonage/qc-zonage-matapedia.geojson",
+      "reason": "manifest-url-not-found-for-served-envelope"
+    }
+  ],
+  "excluded_capture_lines": [
+    {
+      "manifest_key": "capture/_runs/zones-20260728T115049Z-0-766347cd-e320-463e-a315-66499f2534c1/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/df98e746b1dadb886cfa53bcdb181ccd3a50b69d44722e74ddfb632953984f99.pdf",
+      "url": "https://www.invernessquebec.ca/fichiersUpload/fichiers/20240327103425-plan-zonage-1-de-3.pdf",
+      "slugs": [
+        "inverness"
+      ],
+      "classification": "AUTRE",
+      "detail": "pdf-bytes"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T115049Z-0-766347cd-e320-463e-a315-66499f2534c1/manifest.jsonl",
+      "line_index": 3,
+      "storage_key": "raw/zones-v1-proof-url/cas/f82ff2f152ef6e89ede59754f7ab335f9557ac2b15538618770be9169abd608e.pdf",
+      "url": "https://villelacsergent.com/assets/pdf/Reglement_314-14_Plan-Zonage-VF.pdf",
+      "slugs": [
+        "lac-sergent"
+      ],
+      "classification": "AUTRE",
+      "detail": "pdf-bytes"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T115049Z-3-61ccb64c-bcf5-4b87-be66-b4b67f414da0/manifest.jsonl",
+      "line_index": 5,
+      "storage_key": "raw/zones-v1-proof-url/cas/774e3ec49190e10bf7096634d034095dad1f4e12a366a9b64053d9625bf11683.html",
+      "url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06045_Publique/MapServer/14/query?where=1%3D1&outFields=*&f=geojson",
+      "slugs": [
+        "matapedia"
+      ],
+      "classification": "PAGE HTML",
+      "detail": "html-document"
+    },
+    {
+      "manifest_key": "capture/_runs/zones-20260728T115049Z-9-b1eadd78-1d0e-4a98-9aeb-d961aaa8701b/manifest.jsonl",
+      "line_index": 1,
+      "storage_key": "raw/zones-v1-proof-url/cas/4aa3ffa3b0f4fbcb8dcc9d9b13ac8bbdfbb9d2af1731374a20b6c5d81f2d0e38.pdf",
+      "url": "https://ville.labrecque.qc.ca/wp-content/uploads/2025/02/zonage_labrecque_Territoire-sans-ortho.pdf",
+      "slugs": [
+        "labrecque"
+      ],
+      "classification": "AUTRE",
+      "detail": "pdf-bytes"
+    }
+  ]
+}

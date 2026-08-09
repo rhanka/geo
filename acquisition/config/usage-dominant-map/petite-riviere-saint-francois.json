@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "F": "agricole",
+    "FL": null,
+    "E": "industriel",
+    "RX": "environnemental",
+    "RC": null,
+    "P": null,
+    "U": null,
+    "UM": null,
+    "VR": null
+  },
+  "source": "https://www.petiteriviere.com/wp-content/uploads/2020/12/RE%CC%80GLEMENT-603-RELATIF-AU-ZONAGE.pdf",
+  "note": "Règlement de zonage no 603 de la Municipalité de Petite-Rivière-Saint-François, art. 1.2.3 « SUBDIVISION DU TERRITOIRE EN ZONES », p.3: « Chaque zone comporte une identification de base formée par une lettre ou une combinaison de lettres. L'identification de base correspond au caractère général de la zone. » CAVEAT DE SOURCE SIGNALÉ: ce règlement ne contient AUCUNE table consolidée « Abréviation / Fonction dominante » — l'art. 1.2.3 énonce le principe sans tableau. Les expansions ci-dessous sont donc relevées VERBATIM dans les EN-TÊTES du règlement lui-même (§11.2.14.1 à 11.2.14.7 et en-têtes de grilles du chapitre 5), qui nomment chaque code: « 11.2.14.1 Zones Habitation (H) et Villégiature de réserve (V) », « 11.2.14.2 Zone Urbaine (U) », « 11.2.14.3 Zone Urbaine Massif (UM) », « 11.2.14.5 Zone Publique (P) », « 11.2.14.6 Zones Forestière (F) et Récréative extensive (RX) », « 11.2.14.7 Zone Forestière (F3) », « c) Zones villégiatures de réserve « VR » », « d) Zones récréatives-extensives « RX » », « e) Zones récréotouristique « RC » », « f) Zones fluviales « FL » », « g) Zones urbaines « U » », « h) Zones extraction « E » ». Mappé: H « Habitation » -> residentiel; F « Forestière » -> agricole (couvre F-3/F-15…, incl. la « Zone Forestière (F3) »); E « Extraction » -> industriel; RX « Récréative extensive » -> environnemental (SIG: Rx-*, match case-insensible). Null explicite: P « Publique » est public; U « Urbaine » et UM « Urbaine Massif » nomment un MILIEU (contexte urbain), pas une des cinq fonctions — sans dominante unique (même doctrine que RU/FU dans saint-raymond.json); VR « Villégiature de réserve » est une zone EN RÉSERVE (le libellé porte « de réserve »), le règlement n'y énonce pas de dominante en vigueur; RC « Récréotouristique » nomme DEUX fonctions relevant de deux catégories distinctes (récréative -> environnemental, touristique -> commercial), aucune ne domine dans le texte; FL « Fluviale » nomme un milieu (fluvial), pas une des cinq fonctions. FL et UM sont mappés EXPLICITEMENT car le match est longest-prefix: sans eux, FL-1 hériterait de « F » -> agricole et UM-* de « U ». Les 10 préfixes mappés sont EXACTEMENT les 10 présents au SIG servi (127 polygones, 0 sans code). Les grilles des usages et des constructions autorisés du chapitre 5 (matrice des usages permis) ne sont PAS utilisées. Source consultée le 2026-07-17."
+}

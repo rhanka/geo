@@ -71,6 +71,7 @@ import {
 import { basename, dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
+import type { S3Client } from "@aws-sdk/client-s3";
 import type {
   Feature,
   FeatureCollection,
@@ -86,7 +87,9 @@ import {
 } from "@turf/turf";
 import proj4 from "proj4";
 
-import { s3Client, putBytes, BUCKET } from "./lib/s3.js";
+import { s3Client, BUCKET } from "./lib/s3.js";
+import { workspaceTmp } from "./lib/workspace-tmp.js";
+import { attachGeometryProof, proofFromFetched, putServedZoneGeojson, type ServedZoneGeoJson } from "./lib/zonage-proof.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = resolve(HERE, "..", "..");
@@ -95,6 +98,27 @@ const MUNI_REGISTRY = resolve(
   "packages/qc-sources/src/geo/municipalities.qc.json",
 );
 const S3_PREFIX = "normalized/ca-qc-zonage/";
+
+/** Deposit a recomposed geometry only with the bytes of its real source GeoPDF. */
+export async function depositRecomposedServedZoneGeojson(
+  s3: S3Client,
+  key: string,
+  served: ServedZoneGeoJson,
+  pdfUrl: string,
+  pdfBytes: Buffer,
+  retrievedAt = new Date().toISOString(),
+): Promise<void> {
+  const proof = proofFromFetched({
+    url: pdfUrl,
+    type: "pdf-zonage",
+    method: "georeference",
+    reliability: "georeferencee",
+    bytes: pdfBytes,
+    retrievedAt,
+  });
+  attachGeometryProof(served, proof, { url: pdfUrl, level: "documented" });
+  await putServedZoneGeojson(s3, key, served);
+}
 
 // ---------------------------------------------------------------------------
 // Types
@@ -1274,10 +1298,10 @@ async function main(): Promise<void> {
   );
 
   // ── ÉTAPE 0 : résolution du PDF (URL → fichier local temporaire) ────────
-  const tmpDir = `/tmp/geo-recompose-${slug}-${Date.now()}`;
-  mkdirSync(tmpDir, { recursive: true });
+  const tmpDir = workspaceTmp(`geo-recompose-${slug}-${Date.now()}`);
 
   let pdfPath: string;
+  let pdfRetrievedAt: string | undefined;
   const isUrl = pdfArg.startsWith("https://") || pdfArg.startsWith("http://");
   if (isUrl) {
     pdfPath = join(tmpDir, "plan.pdf");
@@ -1289,6 +1313,7 @@ async function main(): Promise<void> {
       console.error(`[recompose] ERREUR: curl a échoué (status=${curlResult.status})`);
       process.exit(1);
     }
+    pdfRetrievedAt = new Date().toISOString();
   } else {
     pdfPath = resolve(pdfArg);
     if (!existsSync(pdfPath)) {
@@ -1573,7 +1598,20 @@ async function main(): Promise<void> {
   } else {
     console.error(`[recompose] Publication S3 → s3://${BUCKET}/${s3Key}`);
     const s3 = s3Client();
-    await putBytes(s3, s3Key, JSON.stringify(outGj), "application/geo+json");
+    if (!isUrl || !pdfRetrievedAt) {
+      throw new Error(
+        "recompose served deposit refused: a local --pdf path has no real HTTP(S) acquisition URL or recorded retrieval timestamp; " +
+          "provide a captured source URL so the sha256 is computed from the received PDF bytes, or use --dry-run",
+      );
+    }
+    await depositRecomposedServedZoneGeojson(
+      s3,
+      s3Key,
+      outGj as ServedZoneGeoJson,
+      pdfArg,
+      readFileSync(pdfPath),
+      pdfRetrievedAt,
+    );
     console.error(`[recompose] PUBLIÉ ✓ | ${polyCount} features | ${uniqueCodes.size} codes uniques`);
   }
 

@@ -1,0 +1,95 @@
+{
+  "contract": "pv-capture-ordre-du-jour-campaign-report/v1",
+  "generated_at": "2026-07-30T00:24:34.308Z",
+  "scope": {
+    "lane": "pv",
+    "source": "pv-index",
+    "lots": 5,
+    "attempts": 105
+  },
+  "lots": [
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0001.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0001-",
+      "attempts": 25,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 1,
+        "PDF_SANS_COUCHE_TEXTE": 3,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 19,
+        "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 2
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0002.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0002-",
+      "attempts": 25,
+      "counts": {
+        "DOCUMENT_LISIBLE_NON_PV": 1,
+        "HTTP_404": 1,
+        "HTTP_AUTRE": 2,
+        "PAGE_HTML": 2,
+        "PDF_SANS_COUCHE_TEXTE": 2,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 17
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0003.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0003-",
+      "attempts": 25,
+      "counts": {
+        "AUTRE": 1,
+        "HTTP_403": 2,
+        "HTTP_AUTRE": 1,
+        "PAGE_HTML": 1,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 20
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0004.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0004-",
+      "attempts": 25,
+      "counts": {
+        "HTTP_AUTRE": 1,
+        "PAGE_HTML": 1,
+        "PDF_SANS_COUCHE_TEXTE": 1,
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 22
+      }
+    },
+    {
+      "report": "work/coverage/pv-capture-octets-classification-20260730t001459z-lot-0005.json",
+      "run_prefix": "capture/_runs/pv-geo-capture-pv-pv-territorial-20260730t001459z-0005-",
+      "attempts": 5,
+      "counts": {
+        "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 5
+      }
+    }
+  ],
+  "aggregate": {
+    "counts": {
+      "AUTRE": 1,
+      "DOCUMENT_LISIBLE_NON_PV": 2,
+      "HTTP_403": 2,
+      "HTTP_404": 1,
+      "HTTP_AUTRE": 4,
+      "PAGE_HTML": 4,
+      "PDF_SANS_COUCHE_TEXTE": 6,
+      "PV_LISIBLE_PROPRIETAIRE_CONFIRME": 83,
+      "PV_LISIBLE_PROPRIETAIRE_NON_CONFIRME": 2
+    },
+    "confirmed": 83,
+    "http_404": 1,
+    "http_403": 2,
+    "denominator": 102,
+    "stop_rate_percent": 81.37,
+    "expected_confirmation_percent": 76.7,
+    "unique_cas_keys": 98,
+    "new_cas_keys": 98
+  },
+  "dead_hosts": [
+    {
+      "host": "www.municipalitesayabec.com",
+      "http_404": 1,
+      "status": "hote_mort"
+    }
+  ]
+}

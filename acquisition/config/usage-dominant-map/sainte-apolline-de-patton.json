@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "RdM": "residentiel",
+    "CbM": "commercial",
+    "Ac": "agricole",
+    "Fc": "agricole",
+    "V": null,
+    "ScM": null,
+    "ScMP": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&CQL_FILTER=id_municipalite='18025'",
+  "note": "Vocation VERBATIM portée par l'attribut SIG `etiquette_2` de la couche geocentralis evb:siadmin_pzon_99_s, filtrée sur id_municipalite='18025' (Sainte-Apolline-de-Patton) — couche JUMELLE de evb:zonage_municipal qui sert les 53 polygones de ce slug (evb:zonage_municipal a `description` et `hyperlien_grille_specification` à null). `etiquette_1` = code complet, `etiquette_3` = préfixe alphabétique servi, `etiquette_2` = vocation. Table (etiquette_3 -> etiquette_2, VERBATIM) : RdM = « Unifamiliale à multifamiliale (max: 2 étages) » -> residentiel ; CbM = « Commerce local et régional (sans nuisance) » -> commercial ; Ac = « Agriculture à nuisance » -> agricole ; Fc = « Forêt » -> agricole (famille agricole/forestière). Null explicite et SERVI : V = « Villégiature et espace récréatif » est DUALE (villégiature ET espace récréatif, aucun usage principal unique énoncé) ; ScM et ScMP = « Équipement ou espace public » est PUBLIQUE. Aucune vocation n'est déduite de la lettre : réfutation mesurée sur la muni voisine saint-paul-de-montminy où le préfixe `ReM` porte « Commerce régional de grande superficie (à nuisance) » malgré le R — seul `etiquette_2` est lu. Gate propriétaire (la nomenclature Lettre(s).numéro est PARTAGÉE dans la MRC de Montmagny, donc exigé) : le filtre id_municipalite='18025' est le gate, et la correspondance avec la collection servie est EXACTE, préfixe par préfixe — SIG 18025 : 53 lignes = Fc 28, RdM 9, V 6, CbM 4, Ac 3, ScM 2, ScMP 1 ; collection servie qc-zonage-sainte-apolline-de-patton : 53 polygones = Fc 28, RdM 9, V 6, CbM 4, Ac 3, ScM 2, ScMP 1 (sansCode=0). Couverture : 7/7 préfixes servis, 53/53 polygones."
+}

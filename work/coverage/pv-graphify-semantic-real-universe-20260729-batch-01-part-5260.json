@@ -1,0 +1,1109 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:53:05.106Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5260,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 9,
+    "failed_pvs": 11,
+    "outcomes": {
+      "INDEXED": 9,
+      "OWNER_NOT_CONFIRMED": 10,
+      "CONTAMINATION_OWNER_MISMATCH": 1,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": [
+      {
+        "storage_key": "raw/pv-index/cas/14af3331c6e1cbe01e9f4ab4b755a5737ae8f0731934988553b6ccbc1294023e.pdf",
+        "manifest_scope_slug": "mcmasterville",
+        "printed_owner_slugs": [
+          "beloeil"
+        ]
+      }
+    ]
+  },
+  "entity_counts": {
+    "Municipality": 9,
+    "Document": 9,
+    "CouncilSession": 5,
+    "MeetingDate": 5,
+    "Regulation": 19,
+    "Resolution": 1
+  },
+  "graphify": {
+    "nodes": 48,
+    "edges": 19,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 0,
+      "total_lot_numbers": 0,
+      "missing": [
+        "mcmasterville"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z",
+  "documents": [
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/07/ordre-du-jour-10-juillet-2025.pdf",
+      "storage_key": "raw/pv-index/cas/0c933fbb008d3179c31c83447021da83b72b308a7706cee0b1a651ef584eadfc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "municipal est convoquée pour être tenue à la salle du Conseil de l’hôtel de ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "municipal est convoquée pour être tenue à la salle du Conseil de l’hôtel de ville de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/51ef584eadfc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/51ef584eadfc.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/05/odj-seance-5-mai-2025-internet.pdf",
+      "storage_key": "raw/pv-index/cas/12253c27b152d959b7c289d6a9d4891282f8dd14355d5485d6a62377962f090b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/2377962f090b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/2377962f090b.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/11/odj-seance-1er-decembre-2025-internet.pdf",
+      "storage_key": "raw/pv-index/cas/14af3331c6e1cbe01e9f4ab4b755a5737ae8f0731934988553b6ccbc1294023e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/ccbc1294023e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/ccbc1294023e.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "beloeil"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/01/odj-seance-13-janvier-2025-vf.pdf",
+      "storage_key": "raw/pv-index/cas/16d4e963467637e085f1ced000bc0159f76d4aba4e8bb184637c3ad83ea86dcb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/3ad83ea86dcb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/3ad83ea86dcb.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/01/odj-extra-21-janvier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/1771e069451dd40c9d863e0026bbcd5b73ed2a76960e589aad166bb52fb52fd9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/6bb52fb52fd9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/6bb52fb52fd9.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/01/odj-seance-fevrier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/1ad38db5ff80606f42c7716465ea3ac80e32d5acac715490cd64e2ce68d79491.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/e2ce68d79491.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/e2ce68d79491.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/12/avis-de-convocation-8-decembre-2025-budget-internet.pdf",
+      "storage_key": "raw/pv-index/cas/1e463b7a99224b369502a771c592b18ecafddc5f701eeef14ad3dcd7d97c2051.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Séance extraordinaire"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          Séance extraordinaire"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/dcd7d97c2051.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/dcd7d97c2051.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2026/01/odj-seance-2-fevrier-2026-internet.pdf",
+      "storage_key": "raw/pv-index/cas/26f0d3e45b216abf04e565e240d5eca1ceef53eddbf31a96ba03e405cf1ec8ba.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/e405cf1ec8ba.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/e405cf1ec8ba.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/08/odj-4-aout.pdf",
+      "storage_key": "raw/pv-index/cas/63e4143fc42f87e918c492051f7f4d1b9d631183c9b4721f61385f1affe40e5c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/5f1affe40e5c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/5f1affe40e5c.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/05/odj-seance-2-juin-2025-internet.pdf",
+      "storage_key": "raw/pv-index/cas/6ec454476d0004a048077e1ef8ec384bef525491d73f7fa1a1f2dd9a865f928c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/dd9a865f928c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/dd9a865f928c.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/10/odj-seance-2-octobre-2025-internet.pdf",
+      "storage_key": "raw/pv-index/cas/6f44f58318920df2d63edf3e98ae5694faa48f5d70e338d7af2aa1b810802777.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "     3.1      Adoption du calendrier des séances ordinaires du conseil municipal"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "     3.1      Adoption du calendrier des séances ordinaires du conseil municipal"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 OCTOBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "           SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DU 2 OCTOBRE 2025"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 OCTOBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "           SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL DU 2 OCTOBRE 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "402-27-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "     5.1      Avis de motion – Règlement numéro 402-27-2025 amendant le"
+            }
+          },
+          {
+            "label": "402-00-2013",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "              règlement numéro 402-00-2013 sur la tarification des services"
+            }
+          },
+          {
+            "label": "382-36-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "\f      5.2     Avis de motion – Règlement 382-36-2025 modifiant le règlement de"
+            }
+          },
+          {
+            "label": "402-26-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "      6.2     Adoption – Règlement numéro 402-26-2025 amendant le règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/a1b810802777.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/a1b810802777.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beloeil",
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2026/03/odj-seance-du-16-mars-2026-internet.pdf",
+      "storage_key": "raw/pv-index/cas/717950f6fde80d96e13110f26257f44b042c198daa3e058468b906271c3785dd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "           dépenses liées à la tenue des élections municipales partielles et/ou"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "           dépenses liées à la tenue des élections municipales partielles et/ou"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "      1.3    Approbation du procès-verbal de la séance du conseil municipal tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "             le 2 février 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2019-114",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "     7.2   Autorisation – Abrogation des résolutions 2019-114 et 2021-77 –"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "452-00-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "     5.1   Avis de motion – Règlement numéro 452-00-2026 relatif à l'occupation et"
+            }
+          },
+          {
+            "label": "431-01-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "     5.2   Avis de motion – Règlement numéro 431-01-2026 amendant le"
+            }
+          },
+          {
+            "label": "431-00-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "           règlement numéro 431-00-2022 afin d’augmenter le montant maximal"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/06271c3785dd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/06271c3785dd.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/09/odj-seance-8-septembre-2025-internet.pdf",
+      "storage_key": "raw/pv-index/cas/86d0840e861714e0977b08f972ec00d9f7faf123655a24e95ef2896287ffab0f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:103",
+              "quote": "              épandage d'abrasifs et de fondants sur l'ensemble du réseau routier de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:103",
+              "quote": "              épandage d'abrasifs et de fondants sur l'ensemble du réseau routier de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "      1.3    Approbation du procès-verbal de la séance du conseil municipal tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "             le 4 août 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "402-26-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "       5.1    Avis de motion – Règlement numéro 402-26-2025 amendant le"
+            }
+          },
+          {
+            "label": "402-00-2013",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "              règlement numéro 402-00-2013 sur la tarification de la location de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/896287ffab0f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/896287ffab0f.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2026/06/od-15-juin-2026-internet.pdf",
+      "storage_key": "raw/pv-index/cas/90d5246b7f0f9f6f75553a82c8967afae870607d4d08db017ff3c652d1dc0dd8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/c652d1dc0dd8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/c652d1dc0dd8.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/12/avis-de-convocation-8-decembre-2025-hors-budget-internet.pdf",
+      "storage_key": "raw/pv-index/cas/90da50ff24f35f97e5397606476a2b976548eb15ff92e290a5b697dd2b7ba147.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "300-38-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "      5.1    Avis de motion – Règlement numéro 300-38-2025 fixant les taux des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/97dd2b7ba147.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/97dd2b7ba147.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2026/01/odj-seance-19-janvier-2026-internet.pdf",
+      "storage_key": "raw/pv-index/cas/9e9d85bbb367d13f9f73cc131f4a3a0cf8384189d1b603694c95df05c6aed247.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "       6.2    Adoption – Règlement 382-37-2025 modifiant le règlement de zonage"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "       6.2    Adoption – Règlement 382-37-2025 modifiant le règlement de zonage"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "AVIS vous est donné par la présente, qu'une séance ordinaire du conseil de cette ville est"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "convoquée pour être tenue au lieu ordinaire des séances dudit conseil, le 19 janvier 2026,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "451-00-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "              des personnes habiles à voter – Règlement numéro 451-00-2025 décrétant"
+            }
+          },
+          {
+            "label": "434-00-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "              par le règlement 434-00-2022 sur le droit de préemption"
+            }
+          },
+          {
+            "label": "450-00-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "       5.1    Avis de motion – Règlement 450-00-2026 abrogeant le règlement numéro"
+            }
+          },
+          {
+            "label": "300-38.1-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "\f       5.2    Avis de motion – Règlement numéro 300-38.1-2026 amendant le règlement"
+            }
+          },
+          {
+            "label": "382-37-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:67",
+              "quote": "       6.2    Adoption – Règlement 382-37-2025 modifiant le règlement de zonage"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/df05c6aed247.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/df05c6aed247.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/03/odj-seance-17-mars-2025-internet.pdf",
+      "storage_key": "raw/pv-index/cas/a1e644856b9e452b7d50e98b42800e6af6ca4a9e4bed71fa00f3a7ab247f3b95.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/a7ab247f3b95.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/a7ab247f3b95.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/11/odj-seance-17-novembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/ab1dad9ed83391da5e5551000abea26dc4029c10c351eab918c32e71c47f406c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:81",
+              "quote": "     5.1    Avis de motion – Règlement 382-37-2025 modifiant le règlement de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:81",
+              "quote": "     5.1    Avis de motion – Règlement 382-37-2025 modifiant le règlement de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "      1.3    Approbation du procès-verbal de la séance du conseil municipal tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "             le 2 octobre 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "382-37-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:81",
+              "quote": "     5.1    Avis de motion – Règlement 382-37-2025 modifiant le règlement de"
+            }
+          },
+          {
+            "label": "382-36-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "     6.2    Adoption – Règlement numéro 382-36-2025 modifiant le règlement de"
+            }
+          },
+          {
+            "label": "402-27-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:102",
+              "quote": "     6.3    Adoption – Règlement numéro 402-27-2025 amendant le règlement"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/2e71c47f406c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/2e71c47f406c.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/06/internet-odj-16-juin-2025.pdf",
+      "storage_key": "raw/pv-index/cas/b15109d2226942625f56a37f8b6d93aae712acf688804f8aeefcefb3014bcd46.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "municipal est convoquée pour être tenue à la salle du Conseil de l’hôtel de ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "municipal est convoquée pour être tenue à la salle du Conseil de l’hôtel de ville de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "449-00-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "       6.1     Autorisation – Modification – Règlement numéro 449-00-2025 autorisant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/efb3014bcd46.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/efb3014bcd46.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2026/06/ordre-du-jour-1-juin-2026-internetvf.pdf",
+      "storage_key": "raw/pv-index/cas/b4b80618f17e258765af92330497b80e8c6f88576283aa632c9af54e6a43c124.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/f54e6a43c124.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185240Z/mcmasterville/f54e6a43c124.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

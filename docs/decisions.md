@@ -442,6 +442,42 @@ backlog. En attendant, on sert les lots **par sous-ensembles** de shards.
 (−2,63 Go). 40 shards + 40 meta sur S3. Le runner reste résumable (`_checkpoint.json` conservé) et
 extensible province (40 → 1104 villes) sans changer le modèle de service.
 
+## ADR-0022 — Refonte des WP : 10 « couche/require » → 7 par artefact, QA et provenance intégrées, premier niveau **gelé** · accepted · 2026-07-30
+
+**Contexte.** Le découpage track mesurait le *require* (`pv/scraper-configured · <ville>`) et non la
+donnée servie ; 26 des 48 WP étaient des `voie:*` (leviers d'acquisition), d'où 27 WP fantômes. Le
+compteur et la réalité vivaient dans des WP différents : « couche: pv » affichait 96 % (1 065/1 106)
+quand la couverture réelle du graphe était 640/1 106, connue seulement après un script écrit exprès.
+
+**Décision.** Sept WP par **artefact servi**, chacun possédant sa donnée, sa preuve et son compteur
+(cf. `docs/spec/SPEC_WORKPACKAGES.md`) : **wp1** cadastre · **wp2** zones · **wp3** reglements ·
+**wp4** pv · **wp5** jointures · **wp6** archi (règles et contrats **uniquement, pas de code/build**) ·
+**wp7** socle (BUILD du socle — GeometryKernel, geo-lib, kernel de capture — + API OGC + npm + pmtiles).
+Rôles propriétaires (RACI gravés dans track) : lot, zones, reglement, pv, jointures, archi, socle ;
+transverses : conductor, qa.
+**Pas de WP « QA »** : la QA est une obligation de structure de chaque WP (partition fermée à états
+nommés — un refus est un état — + un script de mesure committé). **Le premier niveau est GELÉ : aucun
+WP racine ne sera créé sans l'accord explicite du propriétaire** (règle inscrite dans `AGENTS.md`/`CLAUDE.md`).
+
+**Mise en œuvre.** Migration track append-only, `validate` OK : 41 sous-arbres reparentés, 8 conteneurs
+annulés, 26 `voie:*` démotées. Piège désamorcé (`immo-lots-enrichment` portait 5 feuilles-villes en
+enfant direct → reparentées avant annulation). 4 items inter-workspace (`geo`/`geo-lib`) **convergés
+vers `ws:5ce6`** par recréation fidèle (titre+body+état+scope+enfants préservés, nouvel ULID) puis
+annulation de l'original — track n'ayant ni move-workspace ni renommage. Fusion 4a (ADR-C) : deux items
+« 4a » réconciliés en un seul dans wp3.
+
+## ADR-0023 — **geo possède l'acquisition des PV** (révoque le volet PV d'ADR-0013) · accepted · 2026-07-30
+
+**Contexte.** ADR-0013 (2026-06-13) disait « restent immo : PV/avis/règlements » ; `SPEC_QC_ZONING_EVENTS_V2.md:26`
+disait « owner decision — geo owns ALL acquisition ». Contradiction sans ADR de révocation, périmètre
+de wp4 contestable. immo a par ailleurs vérifié dans son code que sa phase B **ne dépend pas** de nos PV.
+
+**Décision (propriétaire).** **geo possède l'acquisition, l'indexation et le service des événements de
+PV** (wp4) ; immo reste **consommateur** du graphe (jamais écrivain de son graphe, SPEC events v2). Ceci
+**révoque explicitement le volet « PV/avis/règlements » d'ADR-0013** ; le reste d'ADR-0013 (ontologie,
+scoring, app, priorisation villes) demeure chez immo. Conforme à la réalité mesurée : 5 492 PV indexés,
+couverture 640/1 106.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor

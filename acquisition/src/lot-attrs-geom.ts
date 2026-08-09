@@ -59,6 +59,10 @@ export interface LotAttrs {
   perimetre_m: number | null;
   frontage_m: number | null;
   profondeur_m: number | null;
+  /** Centroïde WGS84 (lon,lat) — calculé pour le choix de projection, exposé ici
+   *  pour réutilisation (géocodage inverse RTA/FSA sans recalcul). null si indéterminé. */
+  centroid_lon: number | null;
+  centroid_lat: number | null;
   _epsg_used: number | null;
   _geom_type: string | null;
 }
@@ -219,12 +223,20 @@ function orientedBboxSides(geom: Geometry): [number | null, number | null] {
   }
 }
 
-const nullAttrs = (noLot: unknown, geomType: string | null, epsg: number | null): LotAttrs => ({
+const nullAttrs = (
+  noLot: unknown,
+  geomType: string | null,
+  epsg: number | null,
+  lon: number | null = null,
+  lat: number | null = null,
+): LotAttrs => ({
   no_lot: noLot,
   superficie_m2: null,
   perimetre_m: null,
   frontage_m: null,
   profondeur_m: null,
+  centroid_lon: lon,
+  centroid_lat: lat,
   _epsg_used: epsg,
   _geom_type: geomType,
 });
@@ -241,9 +253,11 @@ export function computeLotAttrs(feature: GeoJSONFeature): LotAttrs {
   const geom = geomRaw as Polygon | MultiPolygon;
 
   let lon: number;
+  let lat: number;
   try {
     const c = centroid({ type: "Feature", properties: {}, geometry: geom } as never);
     lon = c.geometry.coordinates[0]!;
+    lat = c.geometry.coordinates[1]!;
   } catch {
     return nullAttrs(noLot, geomRaw.type, null);
   }
@@ -253,7 +267,7 @@ export function computeLotAttrs(feature: GeoJSONFeature): LotAttrs {
   try {
     projected = reproject(geom, epsg);
   } catch {
-    return nullAttrs(noLot, geomRaw.type, epsg);
+    return nullAttrs(noLot, geomRaw.type, epsg, lon, lat);
   }
 
   const areaM = planarArea(projected);
@@ -265,6 +279,8 @@ export function computeLotAttrs(feature: GeoJSONFeature): LotAttrs {
     perimetre_m: lenM > 0 ? Math.round(lenM * 100) / 100 : null,
     frontage_m: frontage,
     profondeur_m: profondeur,
+    centroid_lon: lon,
+    centroid_lat: lat,
     _epsg_used: epsg,
     _geom_type: geomRaw.type,
   };

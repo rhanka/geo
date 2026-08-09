@@ -15,8 +15,8 @@ import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import { websiteForSlug } from "../../packages/geo-sources-americas/src/ca-qc/municipalities/municipal-directory.js";
-import { parsePvIndex, type PvIndexItemT } from "../../packages/qc-sources/src/sources/proces-verbaux-parser.js";
+import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
+import { parsePvIndex, pvHeadingContextUrls, type PvIndexItemT } from "../../packages/qc-sources/src/sources/proces-verbaux-parser.js";
 import { PV_USER_AGENT, type PvFetchLike } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
 import { RobotsCache } from "../../packages/qc-sources/src/sources/robots-txt.js";
 
@@ -393,17 +393,32 @@ export function extractPvNavigationLinks(html: string, baseUrl: string): string[
 /**
  * A PV document href, aligned with `parsePvIndex`'s `looksLikeDocumentHref`: a
  * direct file (.pdf/.doc(x)/.odt) OR a CMS download endpoint (`?download=`,
- * `/telecharger/`, `/download/…`). The previous predicate accepted ONLY
- * file-extension URLs and silently dropped every download-endpoint PV — e.g.
- * `municipalityshigawake.com/download/220/proces-verbaux/<id>/pv-reunion-…` —
- * which made whole download-CMS municipalities (shigawake: 41 real PVs) look
- * empty even though the static HTML listed them all.
+ * `/telecharger/`, `/download/…`, `/download_file/…`). The previous predicate
+ * accepted ONLY file-extension URLs and silently dropped every download-endpoint
+ * PV — e.g. `municipalityshigawake.com/download/220/proces-verbaux/<id>/pv-…`
+ * (shigawake: 41 real PVs) and Concrete5's `/download_file/view/<id>/<pkg>`
+ * (papineauville: dozens of « Procès-verbal » links) — which made whole
+ * download-CMS municipalities look empty even though the static HTML listed
+ * them all. The keyword/date PV gate + live HEAD verify still apply downstream.
  */
 function looksLikeDocumentUrl(url: string): boolean {
   return (
     /\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(url) ||
     /[?&](?:download|telechargement|getfile|fichier|file|attachment)=/i.test(url) ||
-    /\/(?:download|telecharger|getfile|fichier)[/?]/i.test(url)
+    /\/(?:download(?:_file)?|telecharger|getfile|fichier)[/?]/i.test(url) ||
+    // Extension-less document handlers that stream a real PDF/DOC via a script,
+    // grounded on real QC municipal CMS (cpage `fichier.php?id=`, gestionweblex
+    // `document.ashx?documentid=`, ASP.NET `FileHandler.aspx?path=`, Joomla
+    // docman `task=document.download` / SEF `/…/file`). Recogniser widening only:
+    // the PV keyword/date gate below + live HEAD verify still decide the deposit,
+    // so a non-PV handler link is never fabricated. Kept in lock-step with
+    // `proces-verbaux-parser.ts`'s `looksLikeDocumentHref`.
+    /\/fichier(?:as)?\.php\b/i.test(url) ||
+    /\/(?:document|file)[a-z0-9_-]*\.ashx\b/i.test(url) ||
+    /\/filehandler\.(?:aspx|ashx)\b/i.test(url) ||
+    /[?&](?:documentid|iddocument|docid)=/i.test(url) ||
+    /[?&]task=document\.download\b/i.test(url) ||
+    /\/file(?:[?#]|$)/i.test(url)
   );
 }
 
@@ -440,7 +455,7 @@ function indexIsPvContext(indexUrl?: string): boolean {
 
 export function pvEntriesFromHtml(html: string, baseUrl: string): PvManifestEntry[] {
   const items = parsePvIndex(html, baseUrl);
-  return pvEntriesFromItems(items, baseUrl);
+  return pvEntriesFromItems(items, baseUrl, pvHeadingContextUrls(html, baseUrl));
 }
 
 /**
@@ -448,19 +463,25 @@ export function pvEntriesFromHtml(html: string, baseUrl: string): PvManifestEntr
  *
  * GARDE-FOU QUALITÉ — a document link is kept ONLY when it is PV-identified:
  *   (a) the link itself names a procès-verbal / séance (PV_DOC_RE on title+url), OR
- *   (b) the INDEX page is unambiguously a PV/séance page (`indexIsPvContext`,
- *       which excludes the homepage) AND the link carries a séance DATE.
- * Ordres-du-jour are always dropped. This recovers date-only-labelled PVs on a
- * genuine /proces-verbaux/ page (riviere-heva) while still rejecting generic
- * homepage PDFs (east-farnham 168.pdf, horaire_*.pdf — no PV keyword, homepage
- * is not PV-context).
+ *   (b) the link carries a séance DATE AND a PV/séance context is established,
+ *       EITHER by the INDEX page URL (`indexIsPvContext`, which excludes the
+ *       homepage) OR by a « Procès-verbaux » / « Séances du conseil » heading
+ *       that heads the link in the DOM (`domPvContextUrls`, from
+ *       `pvHeadingContextUrls`). The DOM-heading path recovers date-only PVs on
+ *       pages whose URL carries no PV keyword (albanel `/documents`, saint-félix
+ *       `/pv2024`) while ordre-du-jour headings disqualify their section.
+ * Ordres-du-jour are always dropped (label-level ODJ_RE). This recovers
+ * date-only-labelled PVs on a genuine /proces-verbaux/ page (riviere-heva) while
+ * still rejecting generic homepage PDFs (east-farnham 168.pdf, horaire_*.pdf).
  *
- * `indexUrl` is optional: when omitted (e.g. unit tests passing raw items) only
- * rule (a) applies, preserving the original strict behaviour.
+ * `indexUrl` and `domPvContextUrls` are optional: when both are omitted (e.g.
+ * unit tests passing raw items) only rule (a) applies, preserving the original
+ * strict behaviour.
  */
 export function pvEntriesFromItems(
   items: readonly PvIndexItemT[],
   indexUrl?: string,
+  domPvContextUrls?: ReadonlySet<string>,
 ): PvManifestEntry[] {
   const seen = new Set<string>();
   const entries: PvManifestEntry[] = [];
@@ -470,7 +491,9 @@ export function pvEntriesFromItems(
     const hay = `${item.title} ${item.url}`;
     if (ODJ_RE.test(hay)) continue;
     const keyword = PV_DOC_RE.test(hay);
-    if (!keyword && !(pvContext && PV_DATE_RE.test(hay))) continue;
+    const dateContext =
+      (pvContext || domPvContextUrls?.has(item.url) === true) && PV_DATE_RE.test(hay);
+    if (!keyword && !dateContext) continue;
     if (seen.has(item.url)) continue;
     seen.add(item.url);
     entries.push({

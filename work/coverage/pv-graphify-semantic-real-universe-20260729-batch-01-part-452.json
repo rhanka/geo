@@ -1,0 +1,1510 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T05:01:14.247Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 451,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/05837ac813128cefae6cadbc34abd6333a9ab332b558d929ff4789b3c2539ab2.pdf",
+      "raw/pv-index/cas/0d655c457384854ad9e1863c391718b9b157b1d1593b64810013645d0a8c1b2f.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "CouncilSession": 13,
+    "MeetingDate": 13,
+    "Regulation": 18,
+    "Resolution": 2,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 83,
+    "edges": 45,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "authier-nord",
+      "storage_key": "raw/pv-index/cas/571d91b6cff5c1a78713a3c2cc1c48f9616092cf88d0ef111ba75fc33735a7de.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4465917",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:237",
+      "quote": "              gravière sur le lot 4 465 917, du Rang 9, Royal Roussillon à Authier-Nord ;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 27,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 587,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z",
+  "documents": [
+    {
+      "slug": "authier",
+      "municipality_name": "Authier",
+      "url": "https://authier.ao.ca/documents/pages/ca-04-03-2025.pdf",
+      "storage_key": "raw/pv-index/cas/fc848c8b8bf795a1fcdef8619fb73bf40cbb98cdd2020579c34b743d4314808f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                 MRC d’Abitibi-Ouest"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                 MRC d’Abitibi-Ouest"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier/743d4314808f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier/743d4314808f.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "macamic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-1er-octobre-2024-adopte1.pdf",
+      "storage_key": "raw/pv-index/cas/0f83d93b00df9e63ef586da05485f6816a04f1077261ee977785a3af950445be.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil municipal d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             tenue à la salle multiservice, au 418-B, rue Principale, le 1er octobre 2024 à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/a3af950445be.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/a3af950445be.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "chazel",
+          "la-sarre"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-14-novembre-2024-adopte.pdf",
+      "storage_key": "raw/pv-index/cas/121ee4f50eef1d95782a85ecfe2c23b41ef65be66a1de22284d76bec8317cc21.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Municipalité d’Authier-Nord"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/6bec8317cc21.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/6bec8317cc21.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/02-proces-verbal_10_mars_2026_adopter.pdf",
+      "storage_key": "raw/pv-index/cas/17a4b8816d28c934d7db24eff9a30d147360834aa99e39106af24828e4dd1635.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                Procès-verbal de la séance ordinaire du conseil municipal d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                tenue à la salle multi-usagers, au 452, rue Principale, le 10 mars 2026 à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "                 6. Adoption du règlement 2026-01 relatif à l’occupation et à l’entretien des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/4828e4dd1635.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/4828e4dd1635.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "macamic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-12-avril-2023.pdf",
+      "storage_key": "raw/pv-index/cas/1b5b497b791b928df02d7a1533dc1e2853807d0043c43511f00addfcd18bec0b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 avril 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil de la municipalité d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 avril 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             tenue à la salle multiservice, au 418-B, rue Principale, le 12 avril 2023 à 19h30."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-06-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:141",
+              "quote": "             a adopté la résolution 2021-06-08 quant à l’utilisation du vote par correspondance ;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-01",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "             et résolu d’adopter le Règlement 2023-01 régissant la démolition d’immeubles. Ce"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/ddfcd18bec0b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/ddfcd18bec0b.pdf/.graphify/.graphify_extract.json — 6 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "chazel",
+          "poularies",
+          "taschereau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-7-septembre-2022.pdf",
+      "storage_key": "raw/pv-index/cas/25a584c40bee7a99d7cfbf03eb48fcd5d8f3bc1169e9c819ace840c34796854e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 septembre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil de la Municipalité d’Authier-Nord, tenue à la"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 septembre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             salle multiservices, au 418-B, rue Principale, le 7 septembre 2022 à 19h30."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2022-05",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "             5.3   Adoption du Règlement 2022-05 concernant les animaux."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/40c34796854e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/40c34796854e.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal_9_decembre_2025_adopte.pdf",
+      "storage_key": "raw/pv-index/cas/2e6e18edc5e17b5d6dc8264c20f642695d3b33ef0df40a1cd8f319ce4c6263bb.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                Procès-verbal de la séance ordinaire du conseil municipal d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                tenue à la salle multi-usagers, au 452, rue Principale, le 9 décembre 2025 à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-04",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "                 11. Avis de motion et dépôt du règlement 2025-04 relatif au traitement des élus"
+            }
+          },
+          {
+            "label": "2025-05",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "                 12. Avis de motion et dépôt du règlement 2025-05 relatif à la taxation"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/19ce4c6263bb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/19ce4c6263bb.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/pverbal-du-19-05-20221.pdf",
+      "storage_key": "raw/pv-index/cas/37e5c96cc716939ebb0ba768f61c6c0fba23d72896d8bf9b99f1a395f7743a38.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2022-04",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "             5.3 Avis de motion et présentation du projet de règlement 2022-04 modifiant le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/a395f7743a38.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/a395f7743a38.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-16-janvier-2024.pdf",
+      "storage_key": "raw/pv-index/cas/48c7e90639394c71f820f7a28a21b213311e2657ff600bbd4ddc0acecb7082bc.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-12-35",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "             décembre 2023 avec la modification apportée à la résolution 2023-12-35"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-02",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "2024-01-06   ADOPTION DU RÈGLEMENT 2023-02 MODIFIANT LE RÈGLEMENT 2016-05"
+            }
+          },
+          {
+            "label": "2016-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "2024-01-06   ADOPTION DU RÈGLEMENT 2023-02 MODIFIANT LE RÈGLEMENT 2016-05"
+            }
+          },
+          {
+            "label": "2023-03",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "2024-01-07   ADOPTION DU RÈGLEMENT 2023-03 DÉTERMINANT LE TAUX DE LA TAXE"
+            }
+          },
+          {
+            "label": "2023-04",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:214",
+              "quote": "2024-01-08   ADOPTION DU RÈGLEMENT 2023-04 RELATIF AU TRAITEMENT DES ÉLUS ET"
+            }
+          },
+          {
+            "label": "2022-06",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:240",
+              "quote": "             Le présent règlement remplace le règlement numéro 2022-06."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/0acecb7082bc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/0acecb7082bc.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "la-sarre"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-14-09-2023.pdf",
+      "storage_key": "raw/pv-index/cas/4ca0402dc560308e0118878bd7d398f3d3d321c90750ae810442d929d18c2baf.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 septembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "              Procès-verbal de la séance extraordinaire du conseil de la municipalité d’Authier-"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 septembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "              Nord, tenue à la salle multiservice, au 418-B, rue Principale, le 14 septembre 2023 à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/d929d18c2baf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/d929d18c2baf.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/02-proces-verbal_11_janvier_2026_a_adopter.pdf",
+      "storage_key": "raw/pv-index/cas/540748caf1a25ed9b4f4ae4bfbc02de4915298f7a13e8bd0c06fd6bbf548186e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                Procès-verbal de la séance ordinaire du conseil municipal d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                tenue à la salle multi-usagers, au 452, rue Principale, le 13 janvier 2026 à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-04",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "                 9. Adoption du règlement 2025-04 relatif au traitement des élus"
+            }
+          },
+          {
+            "label": "2025-05",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "                 10. Adoption du règlement 2025-05 relatif à la taxation"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/d6bbf548186e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/d6bbf548186e.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "macamic"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal_du_08_juillet_2025_adopte.pdf",
+      "storage_key": "raw/pv-index/cas/545911764826dbe7fc429e7ea6fc93603706591dde30cd7251e3006751388474.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/006751388474.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/006751388474.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-30-novembre-2023.pdf",
+      "storage_key": "raw/pv-index/cas/5664a0bbf9afba2b1746b4a20d236604767e3ff178fbb6c491bed662bd63a4e3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 30 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "              Procès-verbal de la séance extraordinaire du conseil de la municipalité d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "30 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "              tenue au bureau municipal, au 452, rue Principale, le 30 novembre 2023 à 19h00."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/d662bd63a4e3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/d662bd63a4e3.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-8-juin-2022.pdf",
+      "storage_key": "raw/pv-index/cas/571d91b6cff5c1a78713a3c2cc1c48f9616092cf88d0ef111ba75fc33735a7de.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 juin 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil de la Municipalité d’Authier-Nord, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 juin 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             à la salle multiservices, au 418-B, rue Principale, le 8 juin 2022 à 19h30."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2022-04",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "             7.3 Adoption du Règlement 2022-04 modifiant le Code d’éthique et de déontologie"
+            }
+          },
+          {
+            "label": "2022-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "             Le règlement 2022-03 intitulé, « Code d’éthique et de déontologie des employés de la"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4465917",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:237",
+              "quote": "              gravière sur le lot 4 465 917, du Rang 9, Royal Roussillon à Authier-Nord ;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/5fc33735a7de.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/5fc33735a7de.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "macamic",
+          "taschereau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-13-07-2022.pdf",
+      "storage_key": "raw/pv-index/cas/5a1d9040570893aa2600222fa43aaaeaac4d16ee7d0657d9c2b769efa73084e7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 juillet 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil de la Municipalité d’Authier-Nord, tenue à la"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 juillet 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             salle multiservices, au 418-B, rue Principale, le 13 juillet 2022 à 19h30."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "01-2022",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:74",
+              "quote": "\f              Adoption du Règlement 01-2022 modifiant le schéma d’aménagement et de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/69efa73084e7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/69efa73084e7.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "taschereau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-5-decembre-2023.pdf",
+      "storage_key": "raw/pv-index/cas/5af0c689bb9c4ed6cd5ebdff0f3fc4d34ebb9479b2c38dbeb262de422e725544.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil de la municipalité d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             tenue à la salle multiservice, au 418-B, rue Principale, le 5 décembre 2023 à 19h30."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/de422e725544.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/de422e725544.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "chazel",
+          "la-sarre",
+          "poularies"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/pverbal-du-5-octobre-2022.pdf",
+      "storage_key": "raw/pv-index/cas/5d7e9e77236de5ed383d947788f6d72bc747147306507c9a23fc213711445f8b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 octobre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil de la Municipalité d’Authier-Nord, tenue à la"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 octobre 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             salle multiservices, au 418-B, rue Principale, le 5 octobre 2022 à 19h30."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/213711445f8b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/213711445f8b.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal_02_octobre_2025_adopte.pdf",
+      "storage_key": "raw/pv-index/cas/5f0ff42410218c8280b9f973a7ce8dabc2644eddb8c44f2d5cc4ee2eade19a24.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "                Procès-verbal de la séance ordinaire du conseil municipal d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "                tenue à la salle multi-usagers, au 452, rue Principale, le 2 octobre 2025 à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-03",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "2025-10-02/05   7. ADOPTION RÈGLEMENT 2025-03 MODIFIANT LE RÈGLEMENT À LA"
+            }
+          },
+          {
+            "label": "86-10",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "                            le règlement numéro 86-10 déléguant certains pouvoirs"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/ee2eade19a24.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T045958Z/authier-nord/ee2eade19a24.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "chazel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

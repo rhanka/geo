@@ -1,0 +1,758 @@
+{
+  "contract": "immo-zone-canon-test-vector/v1",
+  "function": "canonicalizeZoneCodeForJoin",
+  "source": "packages/geo/src/zonage/lotZoneJoin.ts:121",
+  "count": 150,
+  "cases": [
+    {
+      "input": "RÉSERV 5",
+      "expected": "RÉSERV5",
+      "why": "accent; prefix; whitespace"
+    },
+    {
+      "input": "EXT-1",
+      "expected": "EXT-1",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "48 Ad",
+      "expected": "AD-48",
+      "why": "case; duplicate; digit-first; whitespace"
+    },
+    {
+      "input": "AG-30",
+      "expected": "AG-30",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "M-01",
+      "expected": "M-1",
+      "why": "dash; prefix; duplicate; leading-zero"
+    },
+    {
+      "input": "50 (MTF)",
+      "expected": "50",
+      "why": "duplicate; parenthetical-annotation; digit-first; whitespace"
+    },
+    {
+      "input": "174-E",
+      "expected": "E-174",
+      "why": "dash; digit-first"
+    },
+    {
+      "input": "H02-76",
+      "expected": "H-2-76",
+      "why": "dash; prefix; duplicate; leading-zero; multi-segment"
+    },
+    {
+      "input": "CONS-a 134",
+      "expected": "CONS-A134",
+      "why": "case; dash; prefix; whitespace"
+    },
+    {
+      "input": "1076",
+      "expected": "1076",
+      "why": "digit-first; numeric-only"
+    },
+    {
+      "input": "R",
+      "expected": "R",
+      "why": "prefix; duplicate; letters-only"
+    },
+    {
+      "input": "RF-2-O3",
+      "expected": "RF-2-O3",
+      "why": "dash; prefix; multi-segment"
+    },
+    {
+      "input": null,
+      "expected": "",
+      "why": "null-or-empty"
+    },
+    {
+      "input": "Va-18",
+      "expected": "VA-18",
+      "why": "case; dash; prefix; duplicate"
+    },
+    {
+      "input": "DM-516",
+      "expected": "DM-516",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "AF-9",
+      "expected": "AF-9",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "R-157",
+      "expected": "R-157",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "53-AF",
+      "expected": "AF-53",
+      "why": "dash; digit-first"
+    },
+    {
+      "input": "T4.4-4145",
+      "expected": "T-4.4-4145",
+      "why": "dash; prefix; multi-segment"
+    },
+    {
+      "input": "18M",
+      "expected": "M-18",
+      "why": "digit-first"
+    },
+    {
+      "input": "C1-01",
+      "expected": "C-1-01",
+      "why": "dash; prefix; multi-segment"
+    },
+    {
+      "input": "AF-3",
+      "expected": "AF-3",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "RFE-1",
+      "expected": "RFE-1",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "GM-360",
+      "expected": "GM-360",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "19-V",
+      "expected": "V-19",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "Ag-19-050",
+      "expected": "AG-19-050",
+      "why": "case; dash; prefix; multi-segment"
+    },
+    {
+      "input": "CO-2",
+      "expected": "CO-2",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "46-ID",
+      "expected": "ID-46",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "3059-R",
+      "expected": "R-3059",
+      "why": "dash; digit-first"
+    },
+    {
+      "input": "H-136",
+      "expected": "H-136",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "114-M",
+      "expected": "M-114",
+      "why": "dash; digit-first"
+    },
+    {
+      "input": "20-F",
+      "expected": "F-20",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "Ca5",
+      "expected": "CA-5",
+      "why": "case; prefix; duplicate"
+    },
+    {
+      "input": "Rb - 105",
+      "expected": "RB-105",
+      "why": "case; dash; prefix; whitespace"
+    },
+    {
+      "input": "P-629",
+      "expected": "P-629",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "R-3 259",
+      "expected": "R-3259",
+      "why": "dash; prefix; whitespace; multi-segment"
+    },
+    {
+      "input": "124-AF",
+      "expected": "AF-124",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "R-76",
+      "expected": "R-76",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "A-8",
+      "expected": "A-8",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "P1-13-01",
+      "expected": "P-1-13-01",
+      "why": "dash; prefix; multi-segment"
+    },
+    {
+      "input": "Hc-722",
+      "expected": "HC-722",
+      "why": "case; dash; prefix"
+    },
+    {
+      "input": "RU-40",
+      "expected": "RU-40",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "HU-252",
+      "expected": "HU-252",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "A-5",
+      "expected": "A-5",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "P-1",
+      "expected": "P-1",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "AD 2",
+      "expected": "AD-2",
+      "why": "prefix; duplicate; whitespace"
+    },
+    {
+      "input": "AR-22",
+      "expected": "AR-22",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "Aa7",
+      "expected": "AA-7",
+      "why": "case; prefix; duplicate"
+    },
+    {
+      "input": " ",
+      "expected": "",
+      "why": "duplicate; whitespace"
+    },
+    {
+      "input": "CO-144",
+      "expected": "CO-144",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "R-4",
+      "expected": "R-4",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "3-P-23",
+      "expected": "3-P-23",
+      "why": "dash; digit-first; multi-segment"
+    },
+    {
+      "input": "H-414",
+      "expected": "H-414",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "M-110",
+      "expected": "M-110",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "Pl-511",
+      "expected": "PL-511",
+      "why": "case; dash; prefix"
+    },
+    {
+      "input": "H-486",
+      "expected": "H-486",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "IDR-31",
+      "expected": "IDR-31",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "NA-16",
+      "expected": "NA-16",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "54",
+      "expected": "54",
+      "why": "digit-first; numeric-only"
+    },
+    {
+      "input": "10-R",
+      "expected": "R-10",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "VM.4",
+      "expected": "VM.4",
+      "why": "prefix; duplicate"
+    },
+    {
+      "input": "Pa.7",
+      "expected": "PA.7",
+      "why": "case; prefix; duplicate"
+    },
+    {
+      "input": "32-Ch",
+      "expected": "CH-32",
+      "why": "case; dash; digit-first"
+    },
+    {
+      "input": "FOR 4",
+      "expected": "FOR-4",
+      "why": "prefix; duplicate; whitespace"
+    },
+    {
+      "input": "R-101",
+      "expected": "R-101",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "HMF-329",
+      "expected": "HMF-329",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "R-9",
+      "expected": "R-9",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "105 (HMM)",
+      "expected": "105",
+      "why": "parenthetical-annotation; digit-first; whitespace"
+    },
+    {
+      "input": "ID-4",
+      "expected": "ID-4",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "M-4",
+      "expected": "M-4",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "C-328",
+      "expected": "C-328",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "A5",
+      "expected": "A-5",
+      "why": "prefix; duplicate"
+    },
+    {
+      "input": "I-4",
+      "expected": "I-4",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "Pa-1",
+      "expected": "PA-1",
+      "why": "case; dash; prefix; duplicate"
+    },
+    {
+      "input": "HB-129",
+      "expected": "HB-129",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "ID 10",
+      "expected": "ID-10",
+      "why": "prefix; whitespace"
+    },
+    {
+      "input": "RU-01",
+      "expected": "RU-1",
+      "why": "dash; prefix; duplicate; leading-zero"
+    },
+    {
+      "input": "Va-47",
+      "expected": "VA-47",
+      "why": "case; dash; prefix"
+    },
+    {
+      "input": "H1-27",
+      "expected": "H-1-27",
+      "why": "dash; prefix; duplicate; multi-segment"
+    },
+    {
+      "input": "213-R",
+      "expected": "R-213",
+      "why": "dash; digit-first"
+    },
+    {
+      "input": "7A",
+      "expected": "A-7",
+      "why": "duplicate; digit-first"
+    },
+    {
+      "input": "CVB-1",
+      "expected": "CVB-1",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "34 (AGC)",
+      "expected": "34",
+      "why": "parenthetical-annotation; digit-first; whitespace"
+    },
+    {
+      "input": "189-Ha",
+      "expected": "HA-189",
+      "why": "case; dash; digit-first"
+    },
+    {
+      "input": "FB-3",
+      "expected": "FB-3",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "81-I",
+      "expected": "I-81",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "I-1",
+      "expected": "I-1",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "47 Ha",
+      "expected": "HA-47",
+      "why": "case; duplicate; digit-first; whitespace"
+    },
+    {
+      "input": "4 Af",
+      "expected": "AF-4",
+      "why": "case; duplicate; digit-first; whitespace"
+    },
+    {
+      "input": "AC-3",
+      "expected": "AC-3",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "REC-1",
+      "expected": "REC-1",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "H-302",
+      "expected": "H-302",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "26P",
+      "expected": "P-26",
+      "why": "duplicate; digit-first"
+    },
+    {
+      "input": "R-22",
+      "expected": "R-22",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "3-V",
+      "expected": "V-3",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "Ac.4",
+      "expected": "AC.4",
+      "why": "case; prefix; duplicate"
+    },
+    {
+      "input": "109-M",
+      "expected": "M-109",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "229 R",
+      "expected": "R-229",
+      "why": "duplicate; digit-first; whitespace"
+    },
+    {
+      "input": "RA-1",
+      "expected": "RA-1",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "Ra-7",
+      "expected": "RA-7",
+      "why": "case; dash; prefix; duplicate"
+    },
+    {
+      "input": "H1-27",
+      "expected": "H-1-27",
+      "why": "dash; prefix; duplicate; multi-segment"
+    },
+    {
+      "input": "ZAD-604",
+      "expected": "ZAD-604",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "C1-11",
+      "expected": "C-1-11",
+      "why": "dash; prefix; duplicate; multi-segment"
+    },
+    {
+      "input": "501",
+      "expected": "501",
+      "why": "duplicate; digit-first; numeric-only"
+    },
+    {
+      "input": "H-019",
+      "expected": "H-19",
+      "why": "dash; prefix; duplicate; leading-zero"
+    },
+    {
+      "input": "H-305",
+      "expected": "H-305",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "A-148",
+      "expected": "A-148",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "R-3",
+      "expected": "R-3",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "Rb13",
+      "expected": "RB-13",
+      "why": "case; prefix; duplicate"
+    },
+    {
+      "input": "V-81",
+      "expected": "V-81",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "EAB-4",
+      "expected": "EAB-4",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "24-H",
+      "expected": "H-24",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "16-F",
+      "expected": "F-16",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "R-9",
+      "expected": "R-9",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "Commerciale",
+      "expected": "COMMERCIALE",
+      "why": "case; prefix; duplicate; letters-only"
+    },
+    {
+      "input": "EAA-3",
+      "expected": "EAA-3",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "Rc-3",
+      "expected": "RC-3",
+      "why": "case; dash; prefix; duplicate"
+    },
+    {
+      "input": "H-509",
+      "expected": "H-509",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "M-2",
+      "expected": "M-2",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "M-02",
+      "expected": "M-2",
+      "why": "dash; prefix; duplicate; leading-zero"
+    },
+    {
+      "input": "48 (ILG)",
+      "expected": "48",
+      "why": "parenthetical-annotation; digit-first; whitespace"
+    },
+    {
+      "input": "CAM-05",
+      "expected": "CAM-5",
+      "why": "dash; prefix; duplicate; leading-zero"
+    },
+    {
+      "input": "AG-1",
+      "expected": "AG-1",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "H2152",
+      "expected": "H-2152",
+      "why": "prefix"
+    },
+    {
+      "input": "H01-49",
+      "expected": "H-1-49",
+      "why": "dash; prefix; duplicate; leading-zero; multi-segment"
+    },
+    {
+      "input": "RES-3214",
+      "expected": "RES-3214",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "EXT-1",
+      "expected": "EXT-1",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "RUR-1",
+      "expected": "RUR-1",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "C-3",
+      "expected": "C-3",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "111",
+      "expected": "111",
+      "why": "duplicate; digit-first; numeric-only"
+    },
+    {
+      "input": "AF-135",
+      "expected": "AF-135",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "115 Cc",
+      "expected": "CC-115",
+      "why": "case; digit-first; whitespace"
+    },
+    {
+      "input": "RF-01",
+      "expected": "RF-1",
+      "why": "dash; prefix; leading-zero"
+    },
+    {
+      "input": "Ib-1",
+      "expected": "IB-1",
+      "why": "case; dash; prefix; duplicate"
+    },
+    {
+      "input": "15 Ad",
+      "expected": "AD-15",
+      "why": "case; duplicate; digit-first; whitespace"
+    },
+    {
+      "input": "CbMP - 16",
+      "expected": "CBMP-16",
+      "why": "case; dash; prefix; whitespace"
+    },
+    {
+      "input": "117-R",
+      "expected": "R-117",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "H-01",
+      "expected": "H-1",
+      "why": "dash; prefix; duplicate; leading-zero"
+    },
+    {
+      "input": "30 Av",
+      "expected": "AV-30",
+      "why": "case; duplicate; digit-first; whitespace"
+    },
+    {
+      "input": "A-20",
+      "expected": "A-20",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "15-A",
+      "expected": "A-15",
+      "why": "dash; duplicate; digit-first"
+    },
+    {
+      "input": "Ma 2",
+      "expected": "MA-2",
+      "why": "case; prefix; duplicate; whitespace"
+    },
+    {
+      "input": "C-249",
+      "expected": "C-249",
+      "why": "dash; prefix"
+    },
+    {
+      "input": "T1.1 - 003",
+      "expected": "T-1.1-003",
+      "why": "dash; prefix; whitespace; multi-segment"
+    },
+    {
+      "input": "Mx215",
+      "expected": "MX-215",
+      "why": "case; prefix"
+    },
+    {
+      "input": "501",
+      "expected": "501",
+      "why": "duplicate; digit-first; numeric-only"
+    },
+    {
+      "input": "A22",
+      "expected": "A-22",
+      "why": "prefix; duplicate"
+    },
+    {
+      "input": "3111-REC",
+      "expected": "REC-3111",
+      "why": "dash; digit-first"
+    },
+    {
+      "input": "ID-8",
+      "expected": "ID-8",
+      "why": "dash; prefix; duplicate"
+    },
+    {
+      "input": "RA3",
+      "expected": "RA-3",
+      "why": "prefix; duplicate"
+    }
+  ]
+}

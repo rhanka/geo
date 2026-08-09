@@ -1,0 +1,20 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "Af": "agricole",
+    "C": "commercial",
+    "Cons": "environnemental",
+    "Fo": "agricole",
+    "I": "industriel",
+    "M": null,
+    "P": null,
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rc": "residentiel",
+    "ReF": null,
+    "Rec": "environnemental",
+    "Rv": "residentiel"
+  },
+  "source": "https://saintubalde.com/media/R%C3%A8glement-de-zonage.pdf",
+  "note": "Règlement de zonage 217 de la Municipalité de Saint-Ubalde (MRC de Portneuf), chapitre 3, art. 3.2 « CODIFICATION DES ZONES », p.3-1, table « Types de zone / Vocations dominantes » relevée VERBATIM. Résidentielle: Ra « Résidentielle de faible densité (unifamiliale isolée) », Ra/a « Résidentielle de faible densité en milieu agricole », Rb « Résidentielle de moyenne densité (unifamiliale et bifamiliale) », Rc « Résidentielle de haute densité », Rv « Résidentielle de villégiature » -> residentiel (« Ra » couvre les codes servis Ra/a-* par longest-prefix, même dominante). Commerciale: C « Commerciale » -> commercial. Industrielle: I « Industrielle » -> industriel. Agricole, forestière ou forestière et récréative: A « Agricole dynamique », Af « Agroforestière » (codes servis Af/a « secteur de 5 ha et plus », Af/b « secteur de 10 ha et plus », Af/c « sans résidence permanente »), Fo « Forestière » -> agricole. Publique, récréative ou conservation: Rec « Récréative », Cons « Conservation » -> environnemental. Null explicite: M « Résidentielle et commerciale » est DUALE par le libellé même du règlement; P « Publique-institutionnelle » est public. JUGEMENT SIGNALÉ: ReF « Forestière et récréative » -> null — le libellé nomme DEUX fonctions relevant de DEUX catégories servies distinctes (« Forestière » -> agricole, « récréative » -> environnemental), aucune ne domine dans le texte (même traitement que riviere-a-pierre.json et saint-alban.json). Ici le titre de famille lui-même énumère « forestière et récréative » comme un membre DISTINCT de « agricole » et de « forestière », ce qui confirme que le regroupement n'est pas un énoncé de dominance. ReF et Rec sont deux préfixes disjoints (ReF-* ne préfixe pas Rec-* et inversement), aucun fallthrough. Les 14 préfixes mappés sont exactement les 14 présents au SIG servi (122 polygones, 0 sans code). La matrice des usages permis des grilles n'est pas utilisée."
+}
