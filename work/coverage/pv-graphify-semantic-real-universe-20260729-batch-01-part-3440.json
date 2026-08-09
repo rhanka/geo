@@ -1,0 +1,2200 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T16:36:16.807Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 3440,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/00b20c0cd72dc863ffa7c2733406107486c873a4103984f2cf95f708f9c9ea87.pdf",
+      "raw/pv-index/cas/00bd1c0e087e3ba12759fc6302d865a5ea6b968a1df8702515b7f7fe05c9c881.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "CouncilSession": 13,
+    "MeetingDate": 13,
+    "Resolution": 26,
+    "Regulation": 37,
+    "LotCadastre": 17,
+    "Zone": 1
+  },
+  "graphify": {
+    "nodes": 143,
+    "edges": 48,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 17,
+    "documents_with_zone": 1,
+    "documents_with_lot": 5
+  },
+  "match_details": [
+    {
+      "municipality_slug": "cheneville",
+      "storage_key": "raw/pv-index/cas/92202a132552dec6c7d698bb2c92f49060db2d16673fc9052501e4cfb1bbcc0f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5697514",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:303",
+      "quote": "    lot 5 697 514 soit prise en compte étant donné les faits relatés ci-haut et qu’il"
+    },
+    {
+      "municipality_slug": "cheneville",
+      "storage_key": "raw/pv-index/cas/92202a132552dec6c7d698bb2c92f49060db2d16673fc9052501e4cfb1bbcc0f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6652741",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:568",
+      "quote": "ATTENDU QUE           le lot 6652741, adjacent au parc Chéné, bénéficie d’une"
+    },
+    {
+      "municipality_slug": "cheneville",
+      "storage_key": "raw/pv-index/cas/f8624e0508a6d978875e8f7bbb92ad4fca5192d23a0d1752878f25e4580a341d.pdf",
+      "entity_type": "Zone",
+      "value": "16-H",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:369",
+      "quote": "        dans la zone 16-H est de trois (3) par lot;"
+    },
+    {
+      "municipality_slug": "cheneville",
+      "storage_key": "raw/pv-index/cas/f8624e0508a6d978875e8f7bbb92ad4fca5192d23a0d1752878f25e4580a341d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5697520",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:149",
+      "quote": "                      de la zone 21V correspondant aux lots 5 697 520, 5 698"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/123e3a4bce78df95acb763224cdeb05c021a64ad2be75f2b070ef11f3658b369.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3902278",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:104",
+      "quote": "             39. Demande de dérogation mineure - 200, rue Edmond - Lot 3 902 278"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/123e3a4bce78df95acb763224cdeb05c021a64ad2be75f2b070ef11f3658b369.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5183139",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:106",
+      "quote": "             40. Demande de dérogation mineure - 245, rue Albert - Lot 5 183 139 (district"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/123e3a4bce78df95acb763224cdeb05c021a64ad2be75f2b070ef11f3658b369.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6442944",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:110",
+      "quote": "                 Domaine-des-Chutes - Lot 6 442 944 (district 6)"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/123e3a4bce78df95acb763224cdeb05c021a64ad2be75f2b070ef11f3658b369.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5110665",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:112",
+      "quote": "                 Clermoustier - Lot 5 110 665 (district 4)"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/123e3a4bce78df95acb763224cdeb05c021a64ad2be75f2b070ef11f3658b369.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3902279",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1005",
+      "quote": "                                              bâtiment principal (vers le lot 3 902 279);"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/123e3a4bce78df95acb763224cdeb05c021a64ad2be75f2b070ef11f3658b369.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5184225",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1044",
+      "quote": "                   le lot 5 184 225) de sept virgule vingt (7,20) mètres plutôt que sept virgule"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/1721a78ce7a79055f79883c9eb902351f1d5912e4058759d40a6c040a36c4f3b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4935303",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:38",
+      "quote": "             9. Abrogation de la résolution 2021-318 - Lot 4 935 303 (vente de gré à gré)"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/1721a78ce7a79055f79883c9eb902351f1d5912e4058759d40a6c040a36c4f3b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4748254",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:57",
+      "quote": "             19. Mandat Novallier, notaires - Portion de l’avenue Saint-Émile (lot 4 748 254)"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/1721a78ce7a79055f79883c9eb902351f1d5912e4058759d40a6c040a36c4f3b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6446812",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:96",
+      "quote": "             34. Demande de P.I.I.A. - Secteur de pente forte - Lot 6 446 812 - Montée des"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/1721a78ce7a79055f79883c9eb902351f1d5912e4058759d40a6c040a36c4f3b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4747782",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:98",
+      "quote": "             35. Demande de P.I.I.A. - Secteur de pente forte - Lot 4 747 782 - Rue des"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/1721a78ce7a79055f79883c9eb902351f1d5912e4058759d40a6c040a36c4f3b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6439322",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:443",
+      "quote": "                   CONSIDÉRANT QUE           le lot 6 439 322 est adjacent à l’avenue Saint-"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/18585e86c2700e31083ff2ba6fbad82fe72239e9ad212ce86015fad4be483f2a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3900771",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:33",
+      "quote": "             10. Acquisition des immeubles - Lots 3 900 771 et 3 900 637 - Construction de"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/18585e86c2700e31083ff2ba6fbad82fe72239e9ad212ce86015fad4be483f2a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6557029",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:119",
+      "quote": "             46. Demande de dérogation mineure - Avenue du Rucher - Lot 6 557 029 -"
+    },
+    {
+      "municipality_slug": "chertsey",
+      "storage_key": "raw/pv-index/cas/18585e86c2700e31083ff2ba6fbad82fe72239e9ad212ce86015fad4be483f2a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4935021",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:131",
+      "quote": "                 3094, chemin des Monts - Lot 4 935 021 - District 5 (REPORTÉ)"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 40,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 9631,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z",
+  "documents": [
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_490a386683c841158444d762b842f4de.pdf",
+      "storage_key": "raw/pv-index/cas/8ec4f45dac0b361398a3e554e4abcb403e3b2a1a0df2f93251cee7500e7b894b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 juillet 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 2 juillet 2024, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 juillet 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 2 juillet 2024, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2019-04-094",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:295",
+              "quote": "ATTENDU              la résolution numéro 2019-04-094, adoptée lors de la"
+            }
+          },
+          {
+            "label": "2019-06-133",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:308",
+              "quote": "ATTENDU              la résolution numéro 2019-06-133, adoptée lors de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/e7500e7b894b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/e7500e7b894b.pdf/.graphify/.graphify_extract.json — 6 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "plaisance"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_ef0bcd980cf145caaafea98df2e1283a.pdf",
+      "storage_key": "raw/pv-index/cas/92202a132552dec6c7d698bb2c92f49060db2d16673fc9052501e4cfb1bbcc0f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 2,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 4 août 2025, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 4 août 2025, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-084",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:630",
+              "quote": "                      résolution 2025-04-084;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-130",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:440",
+              "quote": "                     règlement numéro 2025-130, modifiant le règlement de"
+            }
+          },
+          {
+            "label": "2025-030",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:463",
+              "quote": "que, lors d’une séance ultérieure, il y aura adoption du règlement 2025-030"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5697514",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:303",
+              "quote": "    lot 5 697 514 soit prise en compte étant donné les faits relatés ci-haut et qu’il"
+            }
+          },
+          {
+            "label": "6652741",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:568",
+              "quote": "ATTENDU QUE           le lot 6652741, adjacent au parc Chéné, bénéficie d’une"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/e4cfb1bbcc0f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/e4cfb1bbcc0f.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "plaisance",
+          "ripon"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_ef4b4bcf6f2244e691c01e15d8b75308.pdf",
+      "storage_key": "raw/pv-index/cas/9fe0ea341fb4e8168f1a27bf55caab5f3381992992ba84d116aba5abb96bba92.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 7 octobre 2024, à 19h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 7 octobre 2024, à 19h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-120",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:392",
+              "quote": "    L’article 3 du règlement 2024-120 soit remplacé par le suivant :"
+            }
+          },
+          {
+            "label": "008-83",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:407",
+              "quote": "MRC de Papineau (règlement no 008-83) établissant cette condition d’émission"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/a5abb96bba92.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/a5abb96bba92.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_13f2e934aafd481e86aa4c0b7558c816.pdf",
+      "storage_key": "raw/pv-index/cas/b7cbda09ccc5b3dc68bf295f3b185dcff03fa27c883e1d23236207010acf70de.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 16 janvier 2023, à 19 h 00 à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 16 janvier 2023, à 19 h 00 à la salle du conseil de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-02-045",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:266",
+              "quote": "ATTENDU QUE           par sa résolution numéro 2022-02-045, la Municipalité a,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/07010acf70de.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/07010acf70de.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_5050a1d06a714de3b5d69bce2caaf5bd.pdf",
+      "storage_key": "raw/pv-index/cas/c75fdc366b673b621bf97cae894d48d0a3be56ce69557e41499e3ef64917a675.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 6 novembre 2023, à 19 h 00 à la salle du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 novembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 6 novembre 2023, à 19 h 00 à la salle du conseil"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-10-231",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "ATTENDU              la résolution 2023-10-231 qui octroie le mandat à"
+            }
+          },
+          {
+            "label": "2023-10-210",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:191",
+              "quote": "ATTENDU              la résolution 2023-10-210 qui octroie le mandat à"
+            }
+          },
+          {
+            "label": "2023-08-162",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:334",
+              "quote": "ATTENDU QUE           la résolution 2023-08-162 qui autorise l’affichage du poste"
+            }
+          },
+          {
+            "label": "2023-08-165",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:383",
+              "quote": "ATTENDU                la résolution 2023-08-165 qui autorise l’achat de mobilier"
+            }
+          },
+          {
+            "label": "2023-05-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:440",
+              "quote": "ATTENDU QUE          la résolution 2023-05-11 qui autorise l’achat de fontaines à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/3ef64917a675.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/3ef64917a675.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "lac-simon",
+          "ripon"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_3c70536865bc48c6ad691ff38615961a.pdf",
+      "storage_key": "raw/pv-index/cas/c81d66ad832c9a4c895a35e5056fd4284afa5db695038e0fbf32d6f64eafd184.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 août 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 5 août 2024, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 août 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 5 août 2024, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-08-165",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:130",
+              "quote": "ATTENDU                    la résolution 2023-08-165 qui autorise les services"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/d6f64eafd184.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/d6f64eafd184.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_ac147cad25c64578835f4c362de89531.pdf",
+      "storage_key": "raw/pv-index/cas/cc02d57f8127d173b32c2f59f689cbf1e05e49d8e79b2538e2ca9c7f0082aa24.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                 MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 15 août 2023, à 10h30 à la salle du conseil de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 août 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Cette séance extraordinaire, tenue le 15 août 2023, à 10h30 à la salle du conseil de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/9c7f0082aa24.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/9c7f0082aa24.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_bf298594732e4536a3c7620301beba08.pdf",
+      "storage_key": "raw/pv-index/cas/e05f1f86d9ec128b294c284f9706968b8a2d4e7b9a5606ee798c8e40488417c3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 3 juillet 2023, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 juillet 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "Cette séance ordinaire, tenue le 3 juillet 2023, à 19 h, à la salle du conseil de l’hôtel"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-10-217",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:473",
+              "quote": "ATTENDU               la résolution 2022-10-217 qui autorise l’achat et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/8e40488417c3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/8e40488417c3.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "montpellier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/dcb271_3f0727b83b064abb948266cc2bfbc2c7.pdf",
+      "storage_key": "raw/pv-index/cas/e0d96730f8a5c218984332d8e90446877ecbcaa85522cf7070b7eaf4e75d8e59.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "\f                                           Séance régulière du conseil du 12 janvier 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "\f                                           Séance régulière du conseil du 12 janvier 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-12-308",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:450",
+              "quote": "ATTENDU                  les résolutions 2024-12-308 et 2024-12-309 qui octroient le"
+            }
+          },
+          {
+            "label": "2022-02-045",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:571",
+              "quote": "ATTENDU QUE           par sa résolution numéro 2022-02-045, la Municipalité a,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-135",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:404",
+              "quote": "que, lors d’une séance ultérieure, le règlement 2026-135 relatif au traitement des"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/eaf4e75d8e59.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/eaf4e75d8e59.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "cheneville",
+      "municipality_name": "Chénéville",
+      "url": "https://www.ville-cheneville.com/_files/ugd/06611e_e45c4b6332aa4784a52c56449c31d8b3.pdf",
+      "storage_key": "raw/pv-index/cas/f8624e0508a6d978875e8f7bbb92ad4fca5192d23a0d1752878f25e4580a341d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chénéville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "          MUNICIPALITÉ DE CHÉNÉVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "\f                                               Séance régulière du conseil du 2 février 2026"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "\f                                               Séance régulière du conseil du 2 février 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-135",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:575",
+              "quote": "      Le conseil de la municipalité de Chénéville adopte le règlement 2026-135"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "16-H",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:369",
+              "quote": "        dans la zone 16-H est de trois (3) par lot;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5697520",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:149",
+              "quote": "                      de la zone 21V correspondant aux lots 5 697 520, 5 698"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/25e4580a341d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/cheneville/25e4580a341d.pdf/.graphify/.graphify_extract.json — 7 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cheneville",
+          "montpellier"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chertsey",
+      "municipality_name": "Chertsey",
+      "url": "https://chertsey.ca/storage/app/media/municipalite/vie_democratique/proces-verbaux/2023/P.-V.%20-%20Extraordinaire%20-%202%20mai%202023.pdf",
+      "storage_key": "raw/pv-index/cas/034974e22a235a0a8aa47bb8d895d7cd78fb4f3af182ee1958bec768429fb2ef.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chertsey",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "             L'avis de convocation de cette séance a dûment été signifié aux membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "             le 1er mai 2023, conformément aux dispositions de l'article 46 de la Loi sur la sécurité"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/c768429fb2ef.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/c768429fb2ef.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chertsey"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chertsey",
+      "municipality_name": "Chertsey",
+      "url": "https://chertsey.ca/storage/app/media/municipalite/vie_democratique/proces-verbaux/2023/PV_Extraordinaire-3%20novembre-2023.pdf",
+      "storage_key": "raw/pv-index/cas/065a1cd812c1b8010746638fc1f7a042ed49b38fa930923d2a36a0cdbf10cb78.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chertsey",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "                MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "675-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "                       Cette dépense est autorisée en vertu du règlement 675-2023."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/a0cdbf10cb78.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/a0cdbf10cb78.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chertsey"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chertsey",
+      "municipality_name": "Chertsey",
+      "url": "https://chertsey.ca/storage/app/media/municipalite/vie_democratique/proces-verbaux/2024/decembre/PV-amende-Seance-du-18-decembre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/0f719832efcef4cd644a3a978c78dd47dc7ab53648daa106a6e0385a1253aaff.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chertsey",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "727-2024",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:87",
+              "quote": "                  règlement 727-2024 intitulé « Règlement décrétant l’imposition des taxes"
+            }
+          },
+          {
+            "label": "728-2024",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:138",
+              "quote": "                  règlement 728-2024 intitulé « Règlement établissant une politique sur les"
+            }
+          },
+          {
+            "label": "506-2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "                  CONSIDÉRANT              le règlement 506-2017 établissant une politique"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/385a1253aaff.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/385a1253aaff.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chertsey"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chertsey",
+      "municipality_name": "Chertsey",
+      "url": "https://chertsey.ca/storage/app/media/municipalite/vie_democratique/proces-verbaux/2023/P.-V.%20-%20S%C3%A9ance%20du%2021%20ao%C3%BBt%202023.pdf",
+      "storage_key": "raw/pv-index/cas/123e3a4bce78df95acb763224cdeb05c021a64ad2be75f2b070ef11f3658b369.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 3,
+        "LotCadastre": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chertsey",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-330",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:888",
+              "quote": "                   CONSIDÉRANT                 la résolution 2022-330 adoptée à la séance"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "675-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": "             44. Règlement 675-2023 modifiant le règlement 658-2022 afin d’augmenter le"
+            }
+          },
+          {
+            "label": "658-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": "             44. Règlement 675-2023 modifiant le règlement 658-2022 afin d’augmenter le"
+            }
+          },
+          {
+            "label": "605-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1219",
+              "quote": "                   Conformément aux dispositions de l’article 5 du règlement 605-2021, le"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3902278",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:104",
+              "quote": "             39. Demande de dérogation mineure - 200, rue Edmond - Lot 3 902 278"
+            }
+          },
+          {
+            "label": "5183139",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:106",
+              "quote": "             40. Demande de dérogation mineure - 245, rue Albert - Lot 5 183 139 (district"
+            }
+          },
+          {
+            "label": "6442944",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "                 Domaine-des-Chutes - Lot 6 442 944 (district 6)"
+            }
+          },
+          {
+            "label": "5110665",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:112",
+              "quote": "                 Clermoustier - Lot 5 110 665 (district 4)"
+            }
+          },
+          {
+            "label": "3902279",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1005",
+              "quote": "                                              bâtiment principal (vers le lot 3 902 279);"
+            }
+          },
+          {
+            "label": "5184225",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1044",
+              "quote": "                   le lot 5 184 225) de sept virgule vingt (7,20) mètres plutôt que sept virgule"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/f11f3658b369.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/f11f3658b369.pdf/.graphify/.graphify_extract.json — 12 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chertsey",
+          "sainte-emelie-de-lenergie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chertsey",
+      "municipality_name": "Chertsey",
+      "url": "https://chertsey.ca/storage/app/media/municipalite/vie_democratique/proces-verbaux/2023/P.-V.%20-%20Extraordinaire%20-%201er%20mai%202023.pdf",
+      "storage_key": "raw/pv-index/cas/15b7e05c13bbdf1798a79db597fafc6e88ecd699f03fa9f2d536856ac5599804.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chertsey",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 28 avril 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "             L'avis de convocation de cette séance a dûment été signifié aux membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "28 avril 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "             le 28 avril 2023, conformément aux dispositions de l'article 46 de la Loi sur la"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-193",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "             2.    Amendement à la résolution 2023-193"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/856ac5599804.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/856ac5599804.pdf/.graphify/.graphify_extract.json — 5 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chertsey"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chertsey",
+      "municipality_name": "Chertsey",
+      "url": "https://chertsey.ca/storage/app/media/municipalite/vie_democratique/proces-verbaux/2023/PV-Extraordinaire-11-decembre-2023.pdf",
+      "storage_key": "raw/pv-index/cas/164c0a28dd0acdf173d99ea77438bbd7dcb823f772db136eb19ff6dfed3f6584.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chertsey",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "             L'avis de convocation de cette séance a dûment été signifié aux membres du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 décembre 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "             le 7 décembre 2023, conformément aux dispositions de l'article 153, 2e alinéa, du"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-516",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:91",
+              "quote": "                                             novembre 2023, par la résolution numéro 2023-516,"
+            }
+          },
+          {
+            "label": "2023-518",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "                                             novembre 2023, par la résolution numéro 2023-518,"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "684-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "             3.  Avis de motion - Règlement amendant l’article 3 du Règlement 684-2023"
+            }
+          },
+          {
+            "label": "686-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "             5. Avis de motion - Règlement amendant l’article 3 du Règlement 686-2023"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/f6dfed3f6584.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/f6dfed3f6584.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chertsey"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chertsey",
+      "municipality_name": "Chertsey",
+      "url": "https://chertsey.ca/storage/app/media/municipalite/vie_democratique/proces-verbaux/2022/P.-V.-%20S%C3%A9ance%20du%2019%20septembre%202022.pdf",
+      "storage_key": "raw/pv-index/cas/1721a78ce7a79055f79883c9eb902351f1d5912e4058759d40a6c040a36c4f3b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 7,
+        "Regulation": 15,
+        "LotCadastre": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chertsey",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-125",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "             8. Amendement à la résolution 2022-125 - Ajout d’un membre - Comité de"
+            }
+          },
+          {
+            "label": "2021-318",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "             9. Abrogation de la résolution 2021-318 - Lot 4 935 303 (vente de gré à gré)"
+            }
+          },
+          {
+            "label": "2022-191",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "                 et notifications de masse et abrogation de la résolution 2022-191"
+            }
+          },
+          {
+            "label": "2022-130",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "                 Résolution 2022-130 - Services professionnels - Étude comparative de"
+            }
+          },
+          {
+            "label": "2022-190",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:293",
+              "quote": "                   La présente résolution abroge la résolution numéro 2022-190 adoptée à"
+            }
+          },
+          {
+            "label": "2018-083",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1080",
+              "quote": "                                               termes de la résolution 2018-083;"
+            }
+          },
+          {
+            "label": "2010-079",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1530",
+              "quote": "                                             aux termes de la résolution numéro 2010-079;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "607-2021",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:108",
+              "quote": "             40. Avis de motion - Règlement remplaçant le règlement 607-2021 sur les"
+            }
+          },
+          {
+            "label": "302-2004",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:112",
+              "quote": "             42. Avis de motion - Règlement remplaçant le règlement 302-2004 sur les"
+            }
+          },
+          {
+            "label": "209-99",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "             46. Avis de motion - Règlement amendant le règlement 209-99 établissant les"
+            }
+          },
+          {
+            "label": "649-2022",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1476",
+              "quote": "                   et résolu unanimement que le conseil adopte le Règlement 649-2022"
+            }
+          },
+          {
+            "label": "650-2022",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1516",
+              "quote": "                   et résolu unanimement que le conseil adopte le Règlement 650-2022"
+            }
+          },
+          {
+            "label": "651-2022",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1557",
+              "quote": "                   et résolu unanimement que le conseil adopte le Règlement 651-2022"
+            }
+          },
+          {
+            "label": "401-2010",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:149",
+              "quote": "             56. Règlement 651-2022 abrogeant le règlement 401-2010 décrétant la"
+            }
+          },
+          {
+            "label": "652-2022",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1594",
+              "quote": "                   résolu unanimement que le conseil adopte le Règlement 652-2022"
+            }
+          },
+          {
+            "label": "653-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:154",
+              "quote": "             58. Règlement 653-2022 modifiant le Règlement 639-2022 décrétant une"
+            }
+          },
+          {
+            "label": "639-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:154",
+              "quote": "             58. Règlement 653-2022 modifiant le Règlement 639-2022 décrétant une"
+            }
+          },
+          {
+            "label": "554-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:446",
+              "quote": "                                             circulation et régie par le règlement 554-2019"
+            }
+          },
+          {
+            "label": "528-2018",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1077",
+              "quote": "                                               Règlement 528-2018 relatif à l’utilisation"
+            }
+          },
+          {
+            "label": "572-2019",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1082",
+              "quote": "                   CONSIDÉRANT QUE             le conseil a adopté le Règlement 572-2019 sur"
+            }
+          },
+          {
+            "label": "316-81",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1294",
+              "quote": "                                             roulement par son règlement numéro 316-81 et"
+            }
+          },
+          {
+            "label": "605-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1661",
+              "quote": "                   Conformément aux dispositions de l’article 5 du règlement 605-2021, le"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4935303",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "             9. Abrogation de la résolution 2021-318 - Lot 4 935 303 (vente de gré à gré)"
+            }
+          },
+          {
+            "label": "4748254",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "             19. Mandat Novallier, notaires - Portion de l’avenue Saint-Émile (lot 4 748 254)"
+            }
+          },
+          {
+            "label": "6446812",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "             34. Demande de P.I.I.A. - Secteur de pente forte - Lot 6 446 812 - Montée des"
+            }
+          },
+          {
+            "label": "4747782",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:98",
+              "quote": "             35. Demande de P.I.I.A. - Secteur de pente forte - Lot 4 747 782 - Rue des"
+            }
+          },
+          {
+            "label": "6439322",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:443",
+              "quote": "                   CONSIDÉRANT QUE           le lot 6 439 322 est adjacent à l’avenue Saint-"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/c040a36c4f3b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/c040a36c4f3b.pdf/.graphify/.graphify_extract.json — 29 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 29,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chertsey"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chertsey",
+      "municipality_name": "Chertsey",
+      "url": "https://chertsey.ca/storage/app/media/municipalite/vie_democratique/proces-verbaux/2024/PV-Seance-du-19-fevrier-2024.pdf",
+      "storage_key": "raw/pv-index/cas/18585e86c2700e31083ff2ba6fbad82fe72239e9ad212ce86015fad4be483f2a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 7,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chertsey",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "             MRC DE MATAWINIE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-311",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:310",
+              "quote": "                   CONSIDÉRANT                l’adoption de la résolution 2023-311 à la séance"
+            }
+          },
+          {
+            "label": "2024-023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1013",
+              "quote": "                   CONSIDÉRANT QUE           la résolution numéro 2024-023, adoptée à la"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "694-2024",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1534",
+              "quote": "                   mairesse, que le conseil adopte le règlement 694-2024 intitulé"
+            }
+          },
+          {
+            "label": "640-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:137",
+              "quote": "             53. Règlement 694-2024 amendant le règlement 640-2022 sur le traitement des"
+            }
+          },
+          {
+            "label": "183-99",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:140",
+              "quote": "                 distribution d’imprimés et remplaçant le règlement 183-99"
+            }
+          },
+          {
+            "label": "670-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:143",
+              "quote": "             56. Avis de motion - Règlement amendant le règlement 670-2023 établissant"
+            }
+          },
+          {
+            "label": "690-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:149",
+              "quote": "             58. Avis de motion - Règlement amendant l’article 11 du règlement 690-2023"
+            }
+          },
+          {
+            "label": "545-2019",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1517",
+              "quote": "                                              le règlement 545-2019;"
+            }
+          },
+          {
+            "label": "605-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1895",
+              "quote": "                   Conformément aux dispositions de l’article 5 du règlement 605-2021, le"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3900771",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "             10. Acquisition des immeubles - Lots 3 900 771 et 3 900 637 - Construction de"
+            }
+          },
+          {
+            "label": "6557029",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:119",
+              "quote": "             46. Demande de dérogation mineure - Avenue du Rucher - Lot 6 557 029 -"
+            }
+          },
+          {
+            "label": "4935021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "                 3094, chemin des Monts - Lot 4 935 021 - District 5 (REPORTÉ)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/fad4be483f2a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T163351Z/chertsey/fad4be483f2a.pdf/.graphify/.graphify_extract.json — 14 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chertsey"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

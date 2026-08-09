@@ -1,0 +1,1402 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:52:23.837Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5240,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 15,
+    "failed_pvs": 5,
+    "outcomes": {
+      "INDEXED": 15,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 5
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 15,
+    "Document": 15,
+    "CouncilSession": 14,
+    "MeetingDate": 14,
+    "Regulation": 10,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 70,
+    "edges": 43,
+    "failures": 5
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "low",
+      "storage_key": "raw/pv-index/cas/d9279e390b97cf2044c3a16fb180a4e0e1f301c9977eac672ecde70403791bee.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6153029",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:105",
+      "quote": "            de protection du territoire agricole du Québec (CPTAQ) – Lot 6 153 029 au"
+    },
+    {
+      "municipality_slug": "low",
+      "storage_key": "raw/pv-index/cas/f59486cb0876557e1d0a4f19176323500f058ccd1a9db8167d43132613200190.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6311574",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:41",
+      "quote": "       4.5   Pour autoriser l’acquisition des lots 6 311 574, 6 311 575 et 6 311 576 au Cadastre"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 78,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1262,
+      "missing": [
+        "mcmasterville"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z",
+  "documents": [
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260126141521-001-ordre-du-jour-le-28-janvier-2026-version-a-publier-b.pdf",
+      "storage_key": "raw/pv-index/cas/4f3b153e67f365a254e79ba5b68b648d1b2ac134618c3df40385086066904e66.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low    Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low    Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 28 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "ORDRE DU JOUR DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "28 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                  LE 28 JANVIER 2026, À 19 H"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/086066904e66.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/086066904e66.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250801152820-001-ordre-du-jour-version-a-publier-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/5f3dce969a5440843fc36b06bd6536b093c36b7e793134e265f700b3bb3819c5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 AOÛT 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "     ORDRE DU JOUR DE LA SÉANCE ORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 AOÛT 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                      LE 4 AOÛT 2025, À 19 H"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-004",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "             4.2.1 Pour adopter le règlement 2025-004 pour abroger le règlement numéro"
+            }
+          },
+          {
+            "label": "SQ 2021-005",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "       4.2   Règlement 2025-004 - Pour abroger le règlement numéro SQ 2021-005 (R.M."
+            }
+          },
+          {
+            "label": "2025-006",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "             4.3.1 Pour adopter le règlement 2025-006– Limite de vitesse sur certains"
+            }
+          },
+          {
+            "label": "05-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "             abroger et remplacer le règlement numéro 05-2021 concernant la limite de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/00b3bb3819c5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/00b3bb3819c5.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250829160232-agenda-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/69a6cfddaa63aafe054e61275f92b6b4ac88f19bdb8c4394f40f4f5298cc8bfd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/4f5298cc8bfd.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/4f5298cc8bfd.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260116153759-001-ordre-du-jour-version-a-publier-b.pdf",
+      "storage_key": "raw/pv-index/cas/6c7797505c669acde53e9047757784be9f8b9bc92fc5d87e8524d4fd53759965.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "     ORDRE DU JOUR DE LA SÉANCE ORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 JANVIER 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     LE 19 JANVIER 2026, À 19 H"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/d4fd53759965.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/d4fd53759965.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260501152357-001-ordre-du-jour-version-a-publier-f.pdf",
+      "storage_key": "raw/pv-index/cas/6e2989eb1768738ab1845f818640d002f779d6188527ffc37d0834ac0e186a23.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/34ac0e186a23.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/34ac0e186a23.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260402153659-001-ordre-du-jour-version-a-publier-b.pdf",
+      "storage_key": "raw/pv-index/cas/7a8455447c53d0c1c6ddd4f0a6d690bde56c021ced721ee54a937d92d32da966.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "     ORDRE DU JOUR DE LA SÉANCE ORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                      LE 7 AVRIL 2026, À 19 H"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/7d92d32da966.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/7d92d32da966.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "egan-sud",
+          "grand-remous",
+          "low",
+          "maniwaki",
+          "sainte-julienne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250530153602-001-ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/7bd6fbebce3182a7f2cafbf193ba46ad238ea56c464d209a138d283654f80e74.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/283654f80e74.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/283654f80e74.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250502144330-001-ordre-du-jour-version-a-publier-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/81e31057096d532d80f6d741458253ddbe45fad774a7b67a54264bab810e51db.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 MAI 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "     ORDRE DU JOUR DE LA SÉANCE ORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 MAI 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                       LE 5 MAI 2025, À 19 H"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/4bab810e51db.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/4bab810e51db.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250704161330-ordredujour-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/a0bf3d8e14bae858d3489ecba2e48251a2b81417dfb7d55ba0f90e7302576357.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/0e7302576357.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/0e7302576357.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260206115845-001-ordre-du-jour-11-fevrier-2026-web-b.pdf",
+      "storage_key": "raw/pv-index/cas/a5ccf487a3b5a615bfefc2f306f1db4421b582219dd2a1891784490086e1b81c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/490086e1b81c.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/490086e1b81c.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260529150035-001-ordre-du-jour-version-a-publier-b.pdf",
+      "storage_key": "raw/pv-index/cas/b21c1c71858aa415547d5751e2e54149f0e80054cf58da618dfcca3659d3e727.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low     Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low     Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1ER JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "     ORDRE DU JOUR DE LA SÉANCE ORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1ER JUIN 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                      LE 1ER JUIN 2026, À 19 H"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/ca3659d3e727.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/ca3659d3e727.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cayamant",
+          "lachute",
+          "low",
+          "remigny"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250325103603-ordre-du-jour-extra-du-24-mars-2025-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/b254dfbdc303f21c198c401d84d46097ba9b6adc50703a9eabd9c931e027ca19.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              Municipalité du Canton de Low      Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 24 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "ORDRE DU JOUR DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "24 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                   LE 24 MARS 2025, À 19 H"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/c931e027ca19.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/c931e027ca19.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20260227150019-ordre-du-jour-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/b2a7e72c7344adc50ca97f8d635fbe64e32eddde5314bd4093f9f43377d3af26.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "      2 février 2026 et le procès-verbal de la séance extraordinaire du Conseil municipal"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "      tenue le 11 février 2026"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/f43377d3af26.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/f43377d3af26.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250131152221-001-ordre-du-jour-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/d9279e390b97cf2044c3a16fb180a4e0e1f301c9977eac672ecde70403791bee.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                  Municipalité du Canton de Low            Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                  Municipalité du Canton de Low            Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 FÉVRIER 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "     ORDRE DU JOUR DE LA SÉANCE ORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 FÉVRIER 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                     LE 3 FÉVRIER 2025, À 19 H"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-001",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "       4.3      RÈGLEMENT NUMÉRO 2025-001 – Règlement pour fixer les taux de taxe"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6153029",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "            de protection du territoire agricole du Québec (CPTAQ) – Lot 6 153 029 au"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/e70403791bee.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/e70403791bee.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-sainte-marie",
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250110162005-001-ordre-du-jour-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/db7ad59edf8f577a85397808e89e9ef6f706258042a58ad70a24c81e11992c7c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": "3.    Pour accepter le procès-verbal de la séance ordinaire du Conseil municipal tenue le"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 décembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "      municipal tenues le 18 décembre 2024"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/c81e11992c7c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/c81e11992c7c.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250404133210-001-ordre-du-jour-version-a-publier-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/ec4221f20e583399922efe6ef2728babb6964aeb5fde5206beed4fbec69e90d2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 24 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "      3 mars 2025 et le procès-verbal de la séance extraordinaire du Conseil municipal"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "24 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "      tenue le 24 mars 2025"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/4fbec69e90d2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/4fbec69e90d2.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "denholm",
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250930155821-001-ordre-du-jour-version-a-publier-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/f59486cb0876557e1d0a4f19176323500f058ccd1a9db8167d43132613200190.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low         Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low         Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "      2 septembre 2025 et le procès-verbal de la séance extraordinaire du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 septembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "      municipal tenue le 19 septembre 2025"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6311574",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "       4.5   Pour autoriser l’acquisition des lots 6 311 574, 6 311 575 et 6 311 576 au Cadastre"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/132613200190.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/132613200190.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250228150947-001-ordre-du-jour-version-a-publier-web-f.pdf",
+      "storage_key": "raw/pv-index/cas/fbe1648aa92a0e5eac12d6e843bfe7227c38f21388b6d6652e63bdb5b034c518.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Municipalité du Canton de Low       Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "     ORDRE DU JOUR DE LA SÉANCE ORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 MARS 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                      LE 3 MARS 2025, À 19 H"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-002",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "       4.2     RÈGLEMENT NUMÉRO 2025-002 – Règlement déléguant à des fonctionnaires"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/bdb5b034c518.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/bdb5b034c518.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low",
+          "montcerf-lytton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "low",
+      "municipality_name": "Low",
+      "url": "https://www.lowquebec.ca/fichiersUpload/fichiers/20250922104923-001-ordre-du-jour-version-a-publier-b.pdf",
+      "storage_key": "raw/pv-index/cas/fd84cc899d638f898534b82c73f9459364739a0839b66c2fe52b7ead6ed55f79.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Low",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              Municipalité du Canton de Low        Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              Municipalité du Canton de Low        Tél. : 819 422-3528"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 SEPTEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "ORDRE DU JOUR DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 SEPTEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "                LE 19 SEPTEMBRE 2025, À 18 H"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/7ead6ed55f79.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/low/7ead6ed55f79.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "low"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "mcmasterville",
+      "municipality_name": "McMasterville",
+      "url": "https://www.mcmasterville.ca/wp-content/uploads/2025/12/ordre-du-jour-11-decembre-2025-internet.pdf",
+      "storage_key": "raw/pv-index/cas/000995cd889bff48ca6b8d92660831e89b322fcb8195fb8873cb6877d4524a74.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "McMasterville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           Séance extraordinaire"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           Séance extraordinaire"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "431-00-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "      4.2    Autorisation – Appropriation – Règlement numéro 431-00-2022"
+            }
+          },
+          {
+            "label": "300-38-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "      6.1    Adoption – Règlement numéro 300-38-2025 fixant les taux des"
+            }
+          },
+          {
+            "label": "451-00-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "      6.2    Adoption – Règlement numéro 451-00-2025 décrétant des dépenses en"
+            }
+          },
+          {
+            "label": "382-37-2025",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "      7.1    Adoption – Second projet de règlement 382-37-2025 modifiant le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/mcmasterville/6877d4524a74.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185204Z/mcmasterville/6877d4524a74.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mcmasterville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

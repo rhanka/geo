@@ -1,0 +1,1136 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:30:26.904Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5040,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 11,
+    "failed_pvs": 9,
+    "outcomes": {
+      "INDEXED": 11,
+      "OWNER_NOT_CONFIRMED": 9,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 11,
+    "Document": 11,
+    "Regulation": 13,
+    "CouncilSession": 4,
+    "MeetingDate": 4,
+    "Resolution": 4,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 49,
+    "edges": 19,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "la-peche",
+      "storage_key": "raw/pv-index/cas/4111f79b64a7ec9b1154e9f2dbed712b9621f1493fb6b05d9a9cd9cd3a9ff4d2.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3390587",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:43",
+      "quote": "     j.   Avis d’expropriation des lots 3 390 587, 2 756 059 et 2 685 839"
+    },
+    {
+      "municipality_slug": "la-peche",
+      "storage_key": "raw/pv-index/cas/4111f79b64a7ec9b1154e9f2dbed712b9621f1493fb6b05d9a9cd9cd3a9ff4d2.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2889735",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:73",
+      "quote": "           le lot 2 889 735, situé au 700, chemin des Érables, afin d’aménager une cuisine de"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 237,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 3268,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z",
+  "documents": [
+    {
+      "slug": "la-bostonnais",
+      "municipality_name": "La Bostonnais",
+      "url": "https://www.labostonnais.ca/upload/seances-du-conseil/2026-06-09-_ordre_du_jour_-_seance_ordinaire_.pdf",
+      "storage_key": "raw/pv-index/cas/ac388749e98ed0fa0f4464fbdc86d018b4764167461bccb0c3f5769b4eb94d34.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Bostonnais",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Municipalité de La Bostonnais"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "           Municipalité de La Bostonnais"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "4-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "  5.2. Adoption du règlement no 4-26 concernant la limite de vitesse"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-bostonnais/769b4eb94d34.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-bostonnais/769b4eb94d34.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-bostonnais"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-bostonnais",
+      "municipality_name": "La Bostonnais",
+      "url": "https://www.labostonnais.ca/upload/seances-du-conseil/2026-05-04-_ordre_du_jour_-_seance_extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/eb6b8ed20b2c2cd29a11e66eb9ebfc682592cb3b5622618e3338a537cc38ac79.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Bostonnais",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Municipalité de La Bostonnais"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Municipalité de La Bostonnais"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-bostonnais/a537cc38ac79.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-bostonnais/a537cc38ac79.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-bostonnais"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/11/Ordre-du-jour-18-novembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/156848600f52d0a26b5e6a1e8cd31b082279d2129a125215b87dc46089786651.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/c46089786651.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/c46089786651.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/09/Ordre-du-jour-9-septembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/1e04921604b6e902f614de2679c78700fc87c5a4309fc43bc041ddb9ce6a01b9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/ddb9ce6a01b9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/ddb9ce6a01b9.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/12/Ordre-du-jour-9-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/31a4589e36ca148095a6d02ffdd57de05235bfc79605c4a497dbd28f4d820f90.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Corne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "      d’habitation du Berceau de l’Abitibi."
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "      d’habitation du Berceau de l’Abitibi."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "302",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "7.    Adoption du règlement 302 déterminant les taux de taxes pour l’exercice financier 2026."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/d28f4d820f90.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/d28f4d820f90.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "amos",
+          "la-corne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/08/Ordre-du-jour-12-aout-2025.pdf",
+      "storage_key": "raw/pv-index/cas/320908c5dd9515b469bde5b2dc6d5fc88b071a55f58d620386980fee32c20f35.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/0fee32c20f35.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/0fee32c20f35.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/05/Ordre-du-jour-13-mai-2025.pdf",
+      "storage_key": "raw/pv-index/cas/4e723230c43f72a11fd049f483660b2bdedbd91f51d5848e9956cbd74e45a513.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/cbd74e45a513.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/cbd74e45a513.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/07/Ordre-du-jour-8-juillet-2025.pdf",
+      "storage_key": "raw/pv-index/cas/5139f2febcc39ce1ae24186f73ef85a4e5dd99f6cad0daaf79af1c7d2a9a13ca.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/1c7d2a9a13ca.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/1c7d2a9a13ca.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/02/Ordre-du-jour-11-fevrier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/5ebdbd534a5b7f5ffd4814b2c82cd58749b2d3ba53fbe75ca76119f445d71172.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Corne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "6.    Reconduction du mandat de membres du Comité consultatif d’urbanisme de la"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "6.    Reconduction du mandat de membres du Comité consultatif d’urbanisme de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/19f445d71172.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/19f445d71172.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-corne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/01/Ordre-du-jour-14-janvier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/5f12617939e74cdf54991bf02682213bc572ddf87870eda6e36ab8ccad623b9f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Corne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "   9.       Aide financière pour les comités et organismes lacornois."
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "   9.       Aide financière pour les comités et organismes lacornois."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/b8ccad623b9f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/b8ccad623b9f.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-corne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/12/Ordre-du-jour-extraordinaire-9-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/767c92283055343c34616eafa2efb430a87ba64cd3a7b8f15745de9660acaa2d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Corne",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": ""
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/de9660acaa2d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/de9660acaa2d.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-corne"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/04/Ordre-du-jour-du-8-avril-2025.pdf",
+      "storage_key": "raw/pv-index/cas/b520e623fa445e087b29bdf1229c04398dadbb830365ebee2654366f71646a69.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/366f71646a69.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/366f71646a69.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/06/Ordre-du-jour-10-juin-2025.pdf",
+      "storage_key": "raw/pv-index/cas/b7fb30e92c99331470186cfb212976dd0fd7215184eaf124f983f4615220a0e5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/f4615220a0e5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/f4615220a0e5.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/03/Ordre-du-jour-11-mars-2025.pdf",
+      "storage_key": "raw/pv-index/cas/d7fd41928215e7cdc787e9f5de53278edc2282ccb0288ff7cd3e6b40f15d58c3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/6b40f15d58c3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/6b40f15d58c3.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-corne",
+      "municipality_name": "La Corne",
+      "url": "https://lacorne.ca/wp-content/uploads/2025/09/Ordre-du-jour-2-octobre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/ee723a072f371e3ad8dc2c9fd55418e4adc4385b1c2463b7b064f0b1f51870db.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/f0b1f51870db.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-corne/f0b1f51870db.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-peche",
+      "municipality_name": "La Pêche",
+      "url": "https://www.villelapeche.qc.ca/wp-content/uploads/2026/01/000-20260202-CON-PR-OJ-1.pdf",
+      "storage_key": "raw/pv-index/cas/182cd47c18a83615e967c335fb32a4bca551d78c399d16da2b4ceac9237abc7f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Pêche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La Pêche qui se"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La Pêche qui se"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26-862",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "       a. Adoption du règlement numéro 26-862 qui abroge et remplace le règlement numéro 22-834"
+            }
+          },
+          {
+            "label": "22-834",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "       a. Adoption du règlement numéro 26-862 qui abroge et remplace le règlement numéro 22-834"
+            }
+          },
+          {
+            "label": "26-863",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "       b. Adoption du règlement numéro 26-863 concernant la dénomination toponymique sur le"
+            }
+          },
+          {
+            "label": "26-865",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "       c. Adoption du règlement numéro 26-865 pour fixer les taux de la taxe foncière et de tarification"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/eac9237abc7f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/eac9237abc7f.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-peche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-peche",
+      "municipality_name": "La Pêche",
+      "url": "https://www.villelapeche.qc.ca/wp-content/uploads/2024/01/000-20250303-CON-PR-OJ.pdf",
+      "storage_key": "raw/pv-index/cas/1e012bdf66a98054a86f785b2b4267b02dadb1cb3ec6408ff269da81c68332eb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Pêche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": " Pêche qui se tiendra le 3 mars 2025 à 19 h 30, à la salle du conseil de l’hôtel de ville de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "15-683",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "     c. Modification de l’annexe du Règlement numéro 15-683, Tarification applicable aux"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/da81c68332eb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/da81c68332eb.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-peche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-peche",
+      "municipality_name": "La Pêche",
+      "url": "https://www.villelapeche.qc.ca/wp-content/uploads/2026/01/002-20260126-CON-XTRA_19-h_30-OJ.pdf",
+      "storage_key": "raw/pv-index/cas/2262ae97c4be90529695b61df14a975b0c5d2910c831452bdd16d91f753d8d94.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Pêche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 26 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "Ordre du jour de la séance extraordinaire du conseil de la Municipalité de La Pêche qui"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "26 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "se tiendra le 26 janvier 2026 à 19 h 30, à la salle du conseil de l’hôtel de ville de la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/d91f753d8d94.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/d91f753d8d94.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-peche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-peche",
+      "municipality_name": "La Pêche",
+      "url": "https://www.villelapeche.qc.ca/wp-content/uploads/2025/03/000-20250407-CON-PR-OJ.pdf",
+      "storage_key": "raw/pv-index/cas/4111f79b64a7ec9b1154e9f2dbed712b9621f1493fb6b05d9a9cd9cd3a9ff4d2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Pêche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "Pêche qui se tiendra le 7 avril 2025 à 19 h 30, à la salle du conseil de l’hôtel de ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "22-226",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "           zone du 70 km/h, résolutions 22-226 et 22-236"
+            }
+          },
+          {
+            "label": "25-57",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "     d. Modification de la résolution numéro 25-57 – correction du poste budgétaire"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-860",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "     g. Avis de motion et dépôt du projet de règlement numéro 25-860 décrétant la"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3390587",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "     j.   Avis d’expropriation des lots 3 390 587, 2 756 059 et 2 685 839"
+            }
+          },
+          {
+            "label": "2889735",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "           le lot 2 889 735, situé au 700, chemin des Érables, afin d’aménager une cuisine de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/d9cd3a9ff4d2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/d9cd3a9ff4d2.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-peche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "la-peche",
+      "municipality_name": "La Pêche",
+      "url": "https://www.villelapeche.qc.ca/wp-content/uploads/2025/05/000-20250602-CON-PR-OJ.pdf",
+      "storage_key": "raw/pv-index/cas/63159dfd14e5f3bc853bb107fb44ad400e702baa1c84a95d11f63a28cddbdbe2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "La Pêche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La Pêche qui se tiendra"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La Pêche qui se tiendra"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 juin 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROJET de l’ordre du jour de la séance ordinaire du conseil de la Municipalité de La Pêche qui se tiendra"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 juin 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "le 2 juin 2025 à 19 h 30, à la salle du conseil de l’hôtel de ville de la Municipalité de La Pêche sise au 99,"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "25-112",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": "     a. Bonification de la résolution 25-112, Soutien financier aux organismes communautaires 2025,"
+            }
+          },
+          {
+            "label": "24-57",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:85",
+              "quote": "     h. Rescinder la résolution 24-57, RH : Nomination d’un « officier municipal désigné », Assistant-"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-860",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "      a. Avis de motion et dépôt du projet de règlement numéro 25-860 décrétant la fermeture et la"
+            }
+          },
+          {
+            "label": "113-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "      b. Avis de motion et dépôt du projet de règlement numéro 113-2025 relatif au zonage"
+            }
+          },
+          {
+            "label": "116-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "      d. Avis de motion et dépôt du projet de règlement numéro 116-2025 relatif aux conditions préalables à"
+            }
+          },
+          {
+            "label": "145.21-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "      f.   Avis de motion et dépôt du projet de règlement numéro 145.21-2025 relatif aux travaux municipaux"
+            }
+          },
+          {
+            "label": "145.31-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "      h. Avis de motion et dépôt du projet de règlement numéro 145.31-2025 relatif aux usages conditionnels"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/3a28cddbdbe2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183012Z/la-peche/3a28cddbdbe2.pdf/.graphify/.graphify_extract.json — 11 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "la-peche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

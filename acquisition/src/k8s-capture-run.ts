@@ -8,6 +8,7 @@
  */
 import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
+import { pathToFileURL } from "node:url";
 
 import {
   CAPTURE_LANES,
@@ -20,6 +21,7 @@ import { putBytesIfAbsent, s3Client } from "./lib/s3.js";
 interface Args {
   lane: CaptureLane;
   worklistPath: string;
+  kubeconfig: string;
   shards: number;
   concurrency: number;
   image: string;
@@ -27,11 +29,12 @@ interface Args {
   runStamp: string;
   delayMs: number;
   maxBytes: number;
+  memoryLimitMi: number;
   egress: string;
   dryRun: boolean;
 }
 
-const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:0.1.0";
+const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:0.1.1";
 
 function option(argv: string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
@@ -56,6 +59,8 @@ function lane(raw: string | undefined): CaptureLane {
 function parseArgs(argv: string[]): Args {
   const worklistPath = option(argv, "worklist");
   if (!worklistPath) throw new Error("--worklist <targets.json> est requis");
+  const kubeconfig = option(argv, "kubeconfig");
+  if (!kubeconfig) throw new Error("--kubeconfig <path> est requis");
   const shards = integer("shards", option(argv, "shards"), 1, 1);
   const concurrency = integer("concurrency", option(argv, "concurrency"), 1, 1);
   if (concurrency > shards) throw new Error("--concurrency ne peut pas dépasser --shards");
@@ -67,9 +72,11 @@ function parseArgs(argv: string[]): Args {
   if (!/^(direct|tor:[a-z0-9][a-z0-9-]*|proxy:[a-z0-9][a-z0-9-]*)$/.test(egress)) {
     throw new Error("--egress doit être direct | tor:<lane> | proxy:<id>");
   }
+  const memoryLimitMi = integer("memory-limit-mi", option(argv, "memory-limit-mi"), 176, 176);
   return {
     lane: lane(option(argv, "lane")),
     worklistPath,
+    kubeconfig,
     shards,
     concurrency,
     image: option(argv, "image") ?? DEFAULT_IMAGE,
@@ -77,6 +84,7 @@ function parseArgs(argv: string[]): Args {
     runStamp,
     delayMs: integer("delay-ms", option(argv, "delay-ms"), 2_000, 0),
     maxBytes: integer("max-bytes", option(argv, "max-bytes"), 104_857_600, 1),
+    memoryLimitMi,
     egress,
     dryRun: flag(argv, "dry-run"),
   };
@@ -119,6 +127,10 @@ spec:
       imagePullSecrets:
         - name: geo-registry-pull
       securityContext:
+        # The capture image declares USER 1000:1000. EmptyDir is
+        # mounted at /scratch for its redacted temporary log, so grant that
+        # group ownership before the non-root entrypoint starts.
+        fsGroup: 1000
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
@@ -162,11 +174,20 @@ spec:
                 name: geo-s3-credentials
           resources:
             requests:
-              cpu: 100m
-              memory: 192Mi
+              # Avec les services résidents, le quota laisse 395m de requêtes:
+              # six captures à 60m utilisent 360m.
+              cpu: 60m
+              # Le quota laisse 736Mi de requêtes mémoire après les services:
+              # six captures réservent 720Mi sans abaisser leur limite de 176Mi.
+              memory: 120Mi
             limits:
-              cpu: 500m
-              memory: 256Mi
+              # Le quota laisse 900m de limites CPU: six captures à 150m
+              # atteignent ce plafond sans empêcher leur création.
+              cpu: 150m
+              # 176 Mi est le réglage mesuré par défaut. Une couche qui dépasse
+              # ce pic est reprise seule avec --memory-limit-mi, jamais avec
+              # un troisième pod hors quota.
+              memory: ${args.memoryLimitMi}Mi
           securityContext:
             allowPrivilegeEscalation: false
             capabilities:
@@ -182,8 +203,61 @@ spec:
 `;
 }
 
-function apply(manifest: string): void {
-  const result = spawnSync("kubectl", ["apply", "-f", "-"], {
+export function kubectlApplyArgs(args: Pick<Args, "kubeconfig" | "namespace">): string[] {
+  return ["--kubeconfig", args.kubeconfig, "-n", args.namespace, "apply", "-f", "-"];
+}
+
+interface K8sTarget {
+  server: string;
+  cluster: string;
+  namespace: string;
+}
+
+/** Cible declaree dans le depot; c'est elle qui fait foi, pas le kubeconfig fourni. */
+export function k8sTarget(): K8sTarget {
+  const path = new URL("../config/k8s-target.json", import.meta.url);
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as Partial<K8sTarget>;
+  if (!parsed.server || !parsed.cluster || !parsed.namespace) {
+    throw new Error("acquisition/config/k8s-target.json incomplet: server, cluster et namespace sont requis");
+  }
+  return { server: parsed.server, cluster: parsed.cluster, namespace: parsed.namespace };
+}
+
+/**
+ * Refuse d'appliquer sur un cluster autre que celui declare.
+ *
+ * `--kubeconfig` etait deja obligatoire, mais rien ne verifiait QUEL cluster ce
+ * fichier designe. Le 2026-07-29, l'outillage a donc cree un CronJob de capture
+ * sur SCALEWAY — cadence toutes les 2 minutes, pods en Error — et c'est l'equipe k8s qui l'a vu
+ * depuis chez elle. Rien de notre cote ne pouvait le signaler: un apply reussi
+ * sur le mauvais cluster ressemble exactement a un apply reussi.
+ */
+export function assertDeclaredCluster(args: Pick<Args, "kubeconfig" | "namespace">): void {
+  const target = k8sTarget();
+  const view = spawnSync(
+    "kubectl",
+    ["--kubeconfig", args.kubeconfig, "config", "view", "--minify", "-o", "jsonpath={.clusters[0].cluster.server}"],
+    { encoding: "utf8" },
+  );
+  if (view.status !== 0) {
+    throw new Error(`kubectl config view a échoué sur ${args.kubeconfig}: ${(view.stderr || "statut inconnu").trim()}`);
+  }
+  const server = view.stdout.trim();
+  if (server !== target.server) {
+    throw new Error(
+      `cluster ${server || "(vide)"} ne correspond pas a la cible declaree ${target.server} ` +
+        `(acquisition/config/k8s-target.json). Une bascule de cluster se declare DANS LE DEPOT; ` +
+        `le kubeconfig ${args.kubeconfig} designe un autre cluster.`,
+    );
+  }
+  if (args.namespace !== target.namespace) {
+    throw new Error(`namespace ${args.namespace} ne correspond pas a la cible declaree ${target.namespace}`);
+  }
+}
+
+function apply(args: Args, manifest: string): void {
+  assertDeclaredCluster(args);
+  const result = spawnSync("kubectl", kubectlApplyArgs(args), {
     input: manifest,
     encoding: "utf8",
   });
@@ -210,13 +284,16 @@ async function main(): Promise<void> {
   // Ne jamais écraser une worklist portant le même identifiant : l'objet auquel
   // run.json fait référence reste le contrat exact soumis au cluster.
   await putBytesIfAbsent(s3Client(), key, `${JSON.stringify(targets, null, 2)}\n`, "application/json");
-  apply(manifest);
+  apply(args, manifest);
   process.stderr.write("[capture-orch] Job soumis; le contrôleur Kubernetes gère la concurrence. Aucun polling local.\n");
 }
 
-main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.stack ?? error.message : String(error));
-  process.exitCode = 1;
-});
+const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (invokedDirectly) {
+  main().catch((error: unknown) => {
+    console.error(error instanceof Error ? error.stack ?? error.message : String(error));
+    process.exitCode = 1;
+  });
+}
 
 export { jobManifest, parseArgs, worklistKey };

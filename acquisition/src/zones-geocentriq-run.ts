@@ -51,6 +51,9 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
+import { capturedFetch, capturedText, type CaptureRun } from "../../packages/qc-sources/src/capture/index.js";
+import { NODE_FETCH_DEFAULT_MAX_REDIRECTS } from "../../packages/qc-sources/src/capture/capturedFetch.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { s3Client, exists, copyObject, deleteObject } from "./lib/s3.js";
 import { attachGeometryProof, proofFromFetched, putServedZoneGeojson } from "./lib/zonage-proof.js";
 // Anti-invention value-based (agnostique du NOM de champ) — le MÊME gate que le
@@ -68,6 +71,7 @@ const HTTP_UA = "sentropic-geo/0.1";
 const HTTP_TIMEOUT_MS = 30_000;
 const MAX_FEATURES = 20_000;
 const PAGE = 1000;
+const CAPTURE_SOURCE = "zones-geocentriq";
 
 // Node GeoServer hébergeant les workspaces mono-muni `M<codeMAMH>_<Nom>` d'une MRC.
 // N'ajouter une MRC ici qu'après avoir CONSTATÉ son node dans le viewer réseau
@@ -149,17 +153,24 @@ function parseArgs(argv: string[]): Args {
 
 // ── HTTP ──────────────────────────────────────────────────────────────────────
 function sleep(ms: number): Promise<void> { return new Promise((r) => setTimeout(r, ms)); }
-async function fetchText(url: string, timeoutMs = HTTP_TIMEOUT_MS): Promise<string | null> {
-  const ctrl = new AbortController();
-  const t = setTimeout(() => ctrl.abort(), timeoutMs);
+async function fetchText(url: string, slugs: string[] = [], timeoutMs = HTTP_TIMEOUT_MS): Promise<string | null> {
   try {
-    const r = await fetch(url, { signal: ctrl.signal, headers: { "user-agent": HTTP_UA } });
+    if (!CAPTURE) throw new Error("capture run absent");
+    const r = await capturedFetch(url, { headers: { "user-agent": HTTP_UA } }, {
+      run: CAPTURE,
+      source: CAPTURE_SOURCE,
+      slugs,
+      attempt: 1,
+      timeoutMs,
+      maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+      version: "zones-geocentriq-run/1",
+    });
     if (!r.ok) return null;
-    return await r.text();
-  } catch { return null; } finally { clearTimeout(t); }
+    return capturedText(r);
+  } catch { return null; }
 }
-async function fetchJson<T = unknown>(url: string, timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
-  const txt = await fetchText(url, timeoutMs);
+async function fetchJson<T = unknown>(url: string, slugs: string[] = [], timeoutMs = HTTP_TIMEOUT_MS): Promise<T | null> {
+  const txt = await fetchText(url, slugs, timeoutMs);
   if (txt === null) return null;
   try { return JSON.parse(txt) as T; } catch { return null; }
 }
@@ -241,7 +252,7 @@ function pickZoneField(features: GeoFeature[], override?: string): string | null
 }
 
 // ── GetFeature paginé (GeoJSON WGS84 ; workspace déjà mono-muni) ──────────────
-async function fetchFeatures(node: string, layer: ZonageLayer): Promise<GeoFeature[]> {
+async function fetchFeatures(node: string, layer: ZonageLayer, slug: string): Promise<GeoFeature[]> {
   const features: GeoFeature[] = [];
   let startIndex = 0;
   while (features.length < MAX_FEATURES) {
@@ -251,7 +262,7 @@ async function fetchFeatures(node: string, layer: ZonageLayer): Promise<GeoFeatu
       srsName: "EPSG:4326", count: String(PAGE), startIndex: String(startIndex),
     });
     const url = `${node}/${layer.workspace}/ows?${params.toString()}`;
-    const fc = await fetchJson<GeoFC>(url);
+    const fc = await fetchJson<GeoFC>(url, [slug]);
     if (!fc || !Array.isArray(fc.features) || fc.features.length === 0) break;
     features.push(...fc.features);
     if (fc.features.length < PAGE) break;
@@ -302,7 +313,7 @@ async function processMuni(
   base.typeName = layer.typeName;
   base.layerUrl = layerUrl;
 
-  const raw = await fetchFeatures(node, layer);
+  const raw = await fetchFeatures(node, layer, slug);
   if (raw.length === 0) return { ...base, status: "layer-empty", detail: `couche '${layer.typeName}' téléchargée vide` };
 
   // Garde géométrique : le zonage servi/joint DOIT être polygonal. Un layer de
@@ -372,6 +383,8 @@ async function processMuni(
 }
 
 // ── Main ──────────────────────────────────────────────────────────────────────
+let CAPTURE: CaptureRun | null = null;
+
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const mrc = MRC_NODE[args.mrc];
@@ -382,6 +395,8 @@ async function main(): Promise<void> {
   const bySlug = new Map(munis.map((m) => [m.slug, m]));
   const mamhBySlug = loadMamhCodes();
   const slugByMamh = new Map([...mamhBySlug.entries()].map(([slug, code]) => [code, slug]));
+  const s3 = s3Client(); // requis par le run de capture, le check wasServed et le dépôt éventuel
+  CAPTURE = openCaptureRun({ lane: "zones", s3 });
   const layers = await loadZonageLayers(node);
 
   // Lot de munis : --slugs explicite, sinon toutes les munis du registre dont le
@@ -397,12 +412,17 @@ async function main(): Promise<void> {
         .sort();
     } else {
       slugs = [...layers.keys()].map((code) => slugByMamh.get(code)).filter((s): s is string => !!s).sort();
-      if (slugs.length === 0) { console.error(`[geocentriq] --geoserver sans MRC connue: aucun workspace M<code>_... relié au registre — préciser --slugs`); process.exit(2); }
+      if (slugs.length === 0) {
+        console.error(`[geocentriq] --geoserver sans MRC connue: aucun workspace M<code>_... relié au registre — préciser --slugs`);
+        process.exitCode = 2;
+        return;
+      }
     }
   }
 
-  const s3 = s3Client(); // requis même en probe (check wasServed / dépôt éventuel)
   console.error(`[geocentriq] mrc=${args.mrc} node=${node} zonageLayers=${layers.size} munis=${slugs.length} deposit=${args.deposit} zoneField=${args.zoneField ?? "auto→zone"}`);
+  console.error(`[geocentriq] capture run=${CAPTURE.runId} manifest=s3://${CAPTURE.keys.manifest}`);
+  CAPTURE.log(`[geocentriq] mrc=${args.mrc} node=${node} munis=${slugs.length} deposit=${args.deposit}`);
 
   const results: SlugResult[] = [];
   for (let i = 0; i < slugs.length; i++) {
@@ -425,4 +445,16 @@ async function main(): Promise<void> {
   console.error(`rapport → ${out}`);
 }
 
-main().catch((e: unknown) => { console.error(e instanceof Error ? e.message : e); process.exit(1); });
+async function closeCapture(exitCode: number): Promise<void> {
+  if (!CAPTURE) return;
+  try { await CAPTURE.finish(exitCode); }
+  catch (e) { console.error(`[geocentriq] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+}
+
+main()
+  .then(async () => { await closeCapture(typeof process.exitCode === "number" ? process.exitCode : 0); })
+  .catch(async (e: unknown) => {
+    console.error(e instanceof Error ? e.message : e);
+    await closeCapture(1);
+    process.exit(1);
+  });
