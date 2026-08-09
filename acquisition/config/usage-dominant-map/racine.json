@@ -1,0 +1,19 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "VR": "residentiel",
+    "ID": "residentiel",
+    "AG": "agricole",
+    "AF": "agricole",
+    "AFD": "agricole",
+    "RF": "environnemental",
+    "TE": "environnemental",
+    "I": "industriel",
+    "CR": null,
+    "IC": null,
+    "RP": null,
+    "RT": null
+  },
+  "source": "https://racine.ca/wp-content/uploads/2025/07/Reglement-zonage-Racine-maj-2021-04-1.pdf",
+  "note": "Règlement de zonage 123-12-2006 (mise à jour 2021-04), art. 1.8 « Répartition du territoire municipal en zones »: « les zones sont désignées dans ce règlement et sur le plan de zonage par des lettres et des chiffres. Les lettres réfèrent à la fonction prédominante de la zone. Le chiffre désigne la situation géographique de la zone. » Le règlement ne porte pas de table « Abréviation / Fonction dominante » unique; les liaisons lettre->fonction sont relevées VERBATIM dans le corps: art. 4.22 « les bâtiments accessoires utilisés à des fins agricoles dans les zones AF, AFD et AG et les bâtiments utilisés à des fins industrielles et commerciales dans les zones I-1, I-2 et I-3 » -> AF/AFD/AG = agricole, I = industriel (confirmé art. 4.63 « accessoirement à une industrie située dans la zone I-1 »); art. 4.115 « à plus de 50 mètres d'une zone résidentielle (R), d'une zone de villégiature résidentielle (VR), d'une zone commerciale résidentielle (CR) et d'un îlot déstructuré (ID) » -> R et VR = residentiel; art. 4.118 « Normes applicables aux zones récréo-forestières de type RF » -> environnemental (famille récréative); art. 4.119 « Les normes suivantes s'appliquent dans la zone territoire d'intérêt écologique telle qu'identifiée au plan de zonage numéro RA-Z-01 » -> TE = environnemental (zone unique, un seul polygone TE-1 au SIG). ID = residentiel sur la définition verbatim de la section 1.10: « Îlot déstructuré: Zone bénéficiant d'une autorisation pour la construction de résidence accordée par la Commission de protection du territoire agricole du Québec en vertu de la décision du 2 décembre 2009 et portant le numéro de dossier 360623. » Null explicite: CR « zone commerciale résidentielle » / « zones commerciales/résidentielles (CR) » (art. 4.166) est DUALE. IC, RP et RT sont mappés à null EXPLICITEMENT pour bloquer le fall-through du longest-prefix (sans eux, IC-1 tomberait sur « I » -> industriel, et RP-1/RT-1 sur « R » -> residentiel, à tort): aucune légende de ces trois codes n'a été trouvée dans le règlement; IC-1 et RT-1 n'apparaissent qu'en énumération d'enseignes aux côtés des commerces et industries (art. 4.64), ce qui ne fonde aucune dominante. P-3 n'est pas mappé (aucune légende trouvée; sert null par absence de match). Ces 4 codes = 4 polygones sur 62. La matrice des usages permis des grilles n'est pas utilisée. Préfixes SIG réellement présents (62 polygones, lus sur S3): ID(11), AF(10), VR(10), RF(8), AG(7), R(4), AFD(4), CR(2), RP(1), P(1), TE(1), RT(1), IC(1), I(1)."
+}

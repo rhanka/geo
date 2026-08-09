@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-07-07T02:38:56Z",
+  "task": "NORMES source-discovery feuillets",
+  "rules": {
+    "excluded_nogrid": true,
+    "deposit_gate": {
+      "overlap_nonzero": true,
+      "published_field_pct_nonzero": true,
+      "min_verbatim_zone_codes": 3
+    },
+    "coverage_matrix_manual_edit": false
+  },
+  "validated": [
+    {
+      "slug": "saint-pierre-les-becquets",
+      "source_url": "https://st-pierre-les-becquets.qc.ca/wp-content/uploads/2020/11/GRILLES-SPECIFICATIONS-ST-PIERRE-10-09-2020.pdf",
+      "local_pdf": "work/zonage-norms/saint-pierre-les-becquets/grille.pdf",
+      "staged_source_key": "sources/qc-zonage-grilles/saint-pierre-les-becquets.pdf",
+      "deposited_norms_key": "registry/qc-zonage-norms/qc-zonage-norms-saint-pierre-les-becquets.parquet",
+      "route": "zoneheader",
+      "method": "native-text/zoneheader",
+      "pages": 39,
+      "sig_zone_codes": 35,
+      "rows": 37,
+      "unique_zone_codes": 37,
+      "overlap": 35,
+      "published_field_pct": 49,
+      "verbatim_zone_code_examples": ["A-01", "A-02", "A-03"]
+    },
+    {
+      "slug": "saint-louis-de-blandford",
+      "source_url": "https://www.saint-louis-de-blandford.ca/wp-content/uploads/2026/04/391-2026-zonage-annexe-b-grilles-st-louis-blandford.pdf",
+      "local_pdf": "work/zonage-norms/saint-louis-de-blandford/grille.pdf",
+      "staged_source_key": "sources/qc-zonage-grilles/saint-louis-de-blandford.pdf",
+      "deposited_norms_key": "registry/qc-zonage-norms/qc-zonage-norms-saint-louis-de-blandford.parquet",
+      "route": "zoneheader",
+      "method": "native-text/zoneheader",
+      "pages": 43,
+      "sig_zone_codes": 56,
+      "rows": 41,
+      "unique_zone_codes": 41,
+      "overlap": 16,
+      "published_field_pct": 25.3,
+      "verbatim_zone_code_examples": ["R-01", "R-02", "R-03"]
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "source_url": "https://apps.gestionweblex.ca/handlers/getFile.ashx?filename=8a8d60f8-f79d-4823-8ba2-8177bff92ba1.pdf&version=latest",
+      "local_pdf": "work/zonage-norms/tres-saint-sacrement/grille.pdf",
+      "staged_source_key": "sources/qc-zonage-grilles/tres-saint-sacrement.pdf",
+      "deposited_norms_key": "registry/qc-zonage-norms/qc-zonage-norms-tres-saint-sacrement.parquet",
+      "route": "zoneheader",
+      "method": "native-text/zoneheader",
+      "pages": 22,
+      "sig_zone_codes": 33,
+      "rows": 22,
+      "unique_zone_codes": 22,
+      "overlap": 4,
+      "published_field_pct": 36.4,
+      "verbatim_zone_code_examples": ["H-01", "M-02", "A-20"]
+    }
+  ],
+  "rejected_or_not_deposited": [
+    {
+      "slug": "saint-cyrille-de-wendover",
+      "source_url": "https://stcyrille.qc.ca/wp-content/uploads/bsk-pdf-manager/2025/12/Reglement-437-Grilles-usagesNotes-2025-12-04-AMENDEE.pdf",
+      "reason": "official separate PDF found, but native dry-run extracted 0 zones and OCR key was unavailable; not staged or deposited"
+    },
+    {
+      "slug": "drummondville",
+      "source_url": "https://www.drummondville.ca/citoyens/reglements-municipaux/reglements-durbanisme/annexe-zonage/",
+      "reason": "official annexe page found, but it publishes one PDF per zone; not deposited as a multi-zone norms source under the >=3-code gate"
+    },
+    {
+      "slug": "saint-alphonse-de-granby",
+      "source_url": "https://st-alphonse.qc.ca/wp-content/uploads/2025/07/Reglement-372-2017-Codif-2025-04-14.pdf",
+      "reason": "crawler returned a codified zoning by-law, not a separate grille/feuillet PDF"
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "A": "agricole",
+    "AD": null,
+    "I": "industriel",
+    "C": "commercial",
+    "CONS": "environnemental",
+    "M": null,
+    "P": null
+  },
+  "source": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33115_Publique/MapServer/17",
+  "note": "Couche ArcGIS \"Zonage municipal\" (MRC330/33115_Publique/MapServer/17), champ `Dominante` (alias Dominante), interrogee par /query?where=1%3D1&outFields=*&returnGeometry=false&f=json : 27 entites, toutes nom_mun=\"Lotbiniere\", Numero_reglement=\"319-2023\", En_vigueur=2024-01-12. Le champ `cl_zonage` porte la MEME valeur que `Dominante` sur les 27 entites. Valeurs VERBATIM par prefixe du champ `Zonage`, TOUTES UNIFORMES : H (8) = \"Residentiel\" ; AD (7) = \"Agricole destructure\" ; A (3) = \"Agricole\" ; M (2) = \"Mixte\" ; P (2) = \"Public et institutionnel\" ; I (1) = \"Industriel\" ; CONS (1) = \"Conservation\" ; C (1) = \"Commercial\". Deux entites sans code Zonage (null) : l'une \"Indetermine\", l'autre \"Agricole\" -- non mappables par prefixe. DECISIONS : AD=null (regle \"Agricole destructure / ilot destructure -> null sauf definition explicitement et AFFIRMATIVEMENT residentielle dans le reglement\" ; le reglement 319-2023 n'a pas ete lu, aucune definition affirmative en main -> null par defaut, 7 polygones a l'ecart) ; AD et CONS sont listes EXPLICITEMENT pour ne pas heriter de A et C par longest-prefix ; M=\"Mixte\"->null ; P=\"Public et institutionnel\"->null. Le champ `affectation` teste par _ud-affectation-dump est ABSENT de cette couche (l'outil est aveugle a `Dominante`)."
+}

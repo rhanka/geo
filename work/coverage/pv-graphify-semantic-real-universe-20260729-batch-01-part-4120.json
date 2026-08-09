@@ -1,0 +1,2416 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T17:38:32.462Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4120,
+    "limit": 20,
+    "requested": 20,
+    "selected": 16,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/0b180b5869741c7dce331ae939dc387a2b2eb1d6886caff96bd9bd4f2fbf1a61.pdf",
+      "raw/pv-index/cas/1e77fd3c0e0f0ddb2b6c4e77ca58a2fd68261016c34cd075f0710cec83a07281.pdf",
+      "raw/pv-index/cas/00d4c712eb5bab154e192a5838550dbe34ffe936303c3ac76e17ac5dc35fc609.pdf",
+      "raw/pv-index/cas/0b8c2addf1870ba8cf0ded54293955be5b520be97889699852ae77001936f854.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 16,
+  "indexing": {
+    "indexed_pvs": 11,
+    "failed_pvs": 5,
+    "outcomes": {
+      "INDEXED": 11,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 5
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 11,
+    "Document": 11,
+    "CouncilSession": 7,
+    "MeetingDate": 7,
+    "Resolution": 143,
+    "LotCadastre": 10,
+    "Zone": 8
+  },
+  "graphify": {
+    "nodes": 197,
+    "edges": 36,
+    "failures": 5
+  },
+  "matches": {
+    "zone_entities": 8,
+    "lot_entities": 10,
+    "documents_with_zone": 2,
+    "documents_with_lot": 6
+  },
+  "match_details": [
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/327fd4a24730d494894eda036539ec57b8bd56dcf5a6781229eae1a00a925fc3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6681643",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:60",
+      "quote": "lots 6 681 643 et 6 681 644 au cadastre du Québec, étant les 26 et 28 rue Brassard,"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/4e45a4ae54af89ddd11f6e2de2744b88dc7407db542caed09245f531c46f7523.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6548050",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:33",
+      "quote": "     l’ajout du point 5.10 « Autorisation de procéder à l’acquisition du lot 6 548 050"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "entity_type": "Zone",
+      "value": "033-AF",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:803",
+      "quote": "   ➢ Agrandissement des zones 143-P à même les zones 033-Af et 145-Ha, la"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "entity_type": "Zone",
+      "value": "145-HA",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:803",
+      "quote": "   ➢ Agrandissement des zones 143-P à même les zones 033-Af et 145-Ha, la"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "entity_type": "Zone",
+      "value": "143-P",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:803",
+      "quote": "   ➢ Agrandissement des zones 143-P à même les zones 033-Af et 145-Ha, la"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "entity_type": "Zone",
+      "value": "032-AF",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:804",
+      "quote": "     zone 136-M à même la zone 032-Af et la zone 148-Ha à même la zone 032-"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "entity_type": "Zone",
+      "value": "148-HA",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:804",
+      "quote": "     zone 136-M à même la zone 032-Af et la zone 148-Ha à même la zone 032-"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "entity_type": "Zone",
+      "value": "136-M",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:804",
+      "quote": "     zone 136-M à même la zone 032-Af et la zone 148-Ha à même la zone 032-"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "entity_type": "Zone",
+      "value": "155-HB",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:808",
+      "quote": "     résidence jumelée dans la zone 155-Hb et autoriser le groupe d’usage H1 –"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3256264",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:61",
+      "quote": "     5.8 Promesse bilatérale de vente et d’achat d’une partie du lot 3 256 264"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3256605",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:77",
+      "quote": "     7.1    P.I.I.A. – 3 rue Desbiens (Lot 3 256 605 du cadastre du Québec)"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6e0b8c9fc029ed276e28e99aa4c25d947945de1634eb1c1c65eeb15964fe4177.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6723083",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:54",
+      "quote": "     5.4   Autorisation de signature – Cession du lot 6 723 083 au cadastre du"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6e0b8c9fc029ed276e28e99aa4c25d947945de1634eb1c1c65eeb15964fe4177.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3256832",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:62",
+      "quote": "     7.1   Demande de dérogation mineure – 33 rue du Parc-Daniel – Lot 3 256 832"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/6e0b8c9fc029ed276e28e99aa4c25d947945de1634eb1c1c65eeb15964fe4177.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3256597",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:64",
+      "quote": "     7.2   P.I.I.A. – 13 rue des Étangs – Lot 3 256 597 du cadastre du Québec"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/761164ba0f15cc4b401ee355437de016326d015c57f8a3b106ed92eb8431675c.pdf",
+      "entity_type": "Zone",
+      "value": "033-AF",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:735",
+      "quote": "groupe d'usages H - Habitation dans la zone 033-Af;"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/761164ba0f15cc4b401ee355437de016326d015c57f8a3b106ed92eb8431675c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6565453",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:62",
+      "quote": "      5.12 Correction à la résolution no. 13353-09-25 – Vente de terrain lot 6 565 453"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/761164ba0f15cc4b401ee355437de016326d015c57f8a3b106ed92eb8431675c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6565475",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:63",
+      "quote": "      5.13 Vente de terrain – Lot 6 565 475"
+    },
+    {
+      "municipality_slug": "clermont--charlevoix-est",
+      "storage_key": "raw/pv-index/cas/7cb54e084fd1b9cd0a96d9aff9b4cdbb6083b3c38395aab65e6fe79f9963e7c1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6548050",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:390",
+      "quote": "avis de détérioration concernant l’immeuble situé sur le lot 6 548 050 du cadastre de"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 137,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 2316,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z",
+  "documents": [
+    {
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "url": "https://clermont.ao.ca/documents/pages/proces_verbal_seance_ordinaire_3_fev_2026.pdf",
+      "storage_key": "raw/pv-index/cas/84762248b4f85a5c9a744b4f879c7e2581dc3e4a10fe0eb8311e245cb84d8ecb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/245cb84d8ecb.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/245cb84d8ecb.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "url": "https://clermont.ao.ca/documents/pages/proces_verbal_seance_extraordinaire_29_dec_25.pdf",
+      "storage_key": "raw/pv-index/cas/af99212cdabe4a824086f156d049a5b75e050813a5b92b58ba7cef2087189303.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/ef2087189303.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/ef2087189303.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "url": "https://clermont.ao.ca/documents/pages/seance-extraordinaire-28-aout-2023.pdf",
+      "storage_key": "raw/pv-index/cas/b51b708d1c334e0510942363bffa4c20280f2728fdddd0500ace363798509b3d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/363798509b3d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/363798509b3d.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "url": "https://clermont.ao.ca/documents/pages/proces_verbal_seance_extra_11_fev_2026.pdf",
+      "storage_key": "raw/pv-index/cas/c55d89fe5c444821aa83d84475427f203cb6757c287d413e232344005ffaa5fd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/44005ffaa5fd.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/44005ffaa5fd.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "url": "https://clermont.ao.ca/documents/pages/proces_verbal_3_dec_2025.pdf",
+      "storage_key": "raw/pv-index/cas/c7914a6c6dfdd1f52aabd0290018a7e64e8e3f554b5df7bb66a27f164e8b7e40.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/7f164e8b7e40.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/7f164e8b7e40.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "url": "https://clermont.ao.ca/documents/pages/proces_verbal_novembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/d7492c812ea2a8d36dfc7d3d2e0a0c059994742612548b3d4960023bbdceaf54.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/023bbdceaf54.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/023bbdceaf54.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "url": "https://clermont.ao.ca/documents/pages/seance-extra-du-12-janvier--2022.pdf",
+      "storage_key": "raw/pv-index/cas/ed2f22e5049e47d32cfea3bd4528565f970ab7f88d300ec0fb756502ec349761.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 janvier 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             Procès-verbal de la séance extraordinaire du conseil municipal en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 janvier 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             vidéo conférence mercredi le 12 janvier 2022 à laquelle étaient"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/6502ec349761.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--abitibi-ouest/6502ec349761.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "municipality_name": "Clermont",
+      "url": "https://www.ville.clermont.qc.ca/public_upload/images/proces-verbaux/PV%202026/PV%20SE%202026-04-20.pdf",
+      "storage_key": "raw/pv-index/cas/327fd4a24730d494894eda036539ec57b8bd56dcf5a6781229eae1a00a925fc3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance extraordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance extraordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13525-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "     RÉSOLUTION NO 13525-04-26"
+            }
+          },
+          {
+            "label": "13526-04-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "     RÉSOLUTION NO13526-04-20"
+            }
+          },
+          {
+            "label": "13527-04-20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:99",
+              "quote": "    RÉSOLUTION NO 13527-04-20"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6681643",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:60",
+              "quote": "lots 6 681 643 et 6 681 644 au cadastre du Québec, étant les 26 et 28 rue Brassard,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/e1a00a925fc3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/e1a00a925fc3.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "municipality_name": "Clermont",
+      "url": "https://www.ville.clermont.qc.ca/public_upload/images/proces-verbaux/PV%202026/PV%202026-05-11.pdf",
+      "storage_key": "raw/pv-index/cas/4e45a4ae54af89ddd11f6e2de2744b88dc7407db542caed09245f531c46f7523.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 26,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Clermont, tenue à l’hôtel de ville le 11 mai 2026 à 19 h."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13528-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "     RÉSOLUTION NO 13528-05-26"
+            }
+          },
+          {
+            "label": "13529-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "     RÉSOLUTION NO 13529-05-26"
+            }
+          },
+          {
+            "label": "13530-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "     RÉSOLUTION NO 13530-05-26"
+            }
+          },
+          {
+            "label": "13531-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:142",
+              "quote": "    RÉSOLUTION NO 13531-05-26"
+            }
+          },
+          {
+            "label": "13532-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:168",
+              "quote": "     RÉSOLUTION NO 13532-05-26"
+            }
+          },
+          {
+            "label": "13533-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:191",
+              "quote": "     RÉSOLUTION NO 13533-05-26"
+            }
+          },
+          {
+            "label": "13534-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:210",
+              "quote": "     RÉSOLUTION NO 13534-05-26"
+            }
+          },
+          {
+            "label": "13535-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:231",
+              "quote": "     RÉSOLUTION NO 13535-05-26"
+            }
+          },
+          {
+            "label": "13536-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:250",
+              "quote": "     RÉSOLUTION NO 13536-05-26"
+            }
+          },
+          {
+            "label": "13537-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:265",
+              "quote": "     RÉSOLUTION NO 13537-05-26"
+            }
+          },
+          {
+            "label": "13538-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:283",
+              "quote": "     RÉSOLUTION NO 13538-05-26"
+            }
+          },
+          {
+            "label": "13539-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:292",
+              "quote": "     RÉSOLUTION NO 13539-05-26"
+            }
+          },
+          {
+            "label": "13540-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:312",
+              "quote": "     RÉSOLUTION NO 13540-05-26"
+            }
+          },
+          {
+            "label": "13541-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:335",
+              "quote": "     RÉSOLUTION NO 13541-05-26"
+            }
+          },
+          {
+            "label": "13542-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:349",
+              "quote": "     RÉSOLUTION NO 13542-05-26"
+            }
+          },
+          {
+            "label": "11539-01-19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:360",
+              "quote": "(résolution no 11539-01-19), modifiée le 9 septembre 2024 (résolution 13067-09-24),"
+            }
+          },
+          {
+            "label": "13067-09-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:360",
+              "quote": "(résolution no 11539-01-19), modifiée le 9 septembre 2024 (résolution 13067-09-24),"
+            }
+          },
+          {
+            "label": "13543-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:372",
+              "quote": "     RÉSOLUTION NO 13543-05-26"
+            }
+          },
+          {
+            "label": "13544-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:414",
+              "quote": "     RÉSOLUTION NO 13544-05-26"
+            }
+          },
+          {
+            "label": "25-09-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:416",
+              "quote": "CONSIDÉRANT les résolutions numéros 25-09-22 et 26-04-19 de la MRC de"
+            }
+          },
+          {
+            "label": "13545-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:458",
+              "quote": "    RÉSOLUTION NO 13545-05-26"
+            }
+          },
+          {
+            "label": "13480-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:476",
+              "quote": "résolution n° 13480-02-26 afin de procéder à la publication au registre foncier d’un"
+            }
+          },
+          {
+            "label": "13546-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:534",
+              "quote": "     RÉSOLUTION NO 13546-05-26"
+            }
+          },
+          {
+            "label": "13547-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:647",
+              "quote": "     RÉSOLUTION NO 13547-05-26"
+            }
+          },
+          {
+            "label": "13548-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:707",
+              "quote": "     RÉSOLUTION NO 13548-05-26"
+            }
+          },
+          {
+            "label": "13549-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:747",
+              "quote": "    RÉSOLUTION NO 13549-05-26"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6548050",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "     l’ajout du point 5.10 « Autorisation de procéder à l’acquisition du lot 6 548 050"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/f531c46f7523.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/f531c46f7523.pdf/.graphify/.graphify_extract.json — 31 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 31,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "municipality_name": "Clermont",
+      "url": "https://www.ville.clermont.qc.ca/public_upload/images/proces-verbaux/PV%202026/PV%20SE%202025-12-15.pdf",
+      "storage_key": "raw/pv-index/cas/5de0c932090b692ecc6e569ff71d2bcb06555a7aa7f954498fb3f7d635d243e5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance extraordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance extraordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13443-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "     RÉSOLUTION NO 13443-12-25"
+            }
+          },
+          {
+            "label": "13224-03-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "     5.1 Correction à la résolution no 13224-03-25"
+            }
+          },
+          {
+            "label": "13444-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "     RÉSOLUTION NO13444-12-25"
+            }
+          },
+          {
+            "label": "13445-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:91",
+              "quote": "     RÉSOLUTION NO13445-12-25"
+            }
+          },
+          {
+            "label": "13446-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "     RÉSOLUTION NO13446-12-25"
+            }
+          },
+          {
+            "label": "13447-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "     RÉSOLUTION NO13447-12-25"
+            }
+          },
+          {
+            "label": "13448-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "    RÉSOLUTION NO 13448-12-25"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/f7d635d243e5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/f7d635d243e5.pdf/.graphify/.graphify_extract.json — 9 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "municipality_name": "Clermont",
+      "url": "https://www.ville.clermont.qc.ca/public_upload/images/proces-verbaux/PV%202025/PV%202025-11-10.pdf",
+      "storage_key": "raw/pv-index/cas/6233568188619d648f5f48e7ce727b71f28ae9a65adf64fab05ebe951bf9526d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 26,
+        "Zone": 7,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 novembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Clermont, tenue à l’hôtel de ville le 10 novembre 2025 à 20 h."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13389-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "     RÉSOLUTION NO 13389-11-25"
+            }
+          },
+          {
+            "label": "13390-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:121",
+              "quote": "     RÉSOLUTION NO 13390-11-25"
+            }
+          },
+          {
+            "label": "13391-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "     RÉSOLUTION NO 13391-11-25"
+            }
+          },
+          {
+            "label": "13392-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "     RÉSOLUTION NO 13392-11-25"
+            }
+          },
+          {
+            "label": "13393-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:179",
+              "quote": "     RÉSOLUTION NO 13393-11-25"
+            }
+          },
+          {
+            "label": "13394-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:207",
+              "quote": "        RÉSOLUTION NO 13394-11-25"
+            }
+          },
+          {
+            "label": "13395-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:217",
+              "quote": "        RÉSOLUTION NO 13395-11-25"
+            }
+          },
+          {
+            "label": "13396-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:275",
+              "quote": "        RÉSOLUTION NO 13396-11-25"
+            }
+          },
+          {
+            "label": "13397-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:329",
+              "quote": "     RÉSOLUTION NO 13397-11-25"
+            }
+          },
+          {
+            "label": "13398-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:355",
+              "quote": "     RÉSOLUTION NO 13398-11-25"
+            }
+          },
+          {
+            "label": "13399-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:390",
+              "quote": "     RÉSOLUTION NO 13399-11-25"
+            }
+          },
+          {
+            "label": "13400-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:401",
+              "quote": "     RÉSOLUTION NO 13400-11-25"
+            }
+          },
+          {
+            "label": "13401-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:422",
+              "quote": "     RÉSOLUTION NO 13401-11-25"
+            }
+          },
+          {
+            "label": "13402-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:448",
+              "quote": "     RÉSOLUTION NO 13402-11-25"
+            }
+          },
+          {
+            "label": "13403-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:484",
+              "quote": "    RÉSOLUTION NO 13403-11-25"
+            }
+          },
+          {
+            "label": "13404-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:519",
+              "quote": "     RÉSOLUTION NO 13404-11-25"
+            }
+          },
+          {
+            "label": "13405-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:545",
+              "quote": "     RÉSOLUTION NO 13405-11-25"
+            }
+          },
+          {
+            "label": "13406-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:597",
+              "quote": "     RÉSOLUTION NO 13406-11-25"
+            }
+          },
+          {
+            "label": "13407-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:625",
+              "quote": "     RÉSOLUTION NO 13407-11-25"
+            }
+          },
+          {
+            "label": "13408-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:653",
+              "quote": "     RÉSOLUTION NO 13408-11-25"
+            }
+          },
+          {
+            "label": "13409-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:683",
+              "quote": "     RÉSOLUTION NO 13409-11-25"
+            }
+          },
+          {
+            "label": "13410-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:711",
+              "quote": "     RÉSOLUTION NO 13410-11-25"
+            }
+          },
+          {
+            "label": "13411-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:744",
+              "quote": "     RÉSOLUTION NO 13411-11-25"
+            }
+          },
+          {
+            "label": "13412-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:813",
+              "quote": "      RÉSOLUTION NO 13412-11-25"
+            }
+          },
+          {
+            "label": "13413-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:860",
+              "quote": "     RÉSOLUTION NO 13413-11-25"
+            }
+          },
+          {
+            "label": "13414-11-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:899",
+              "quote": "    RÉSOLUTION NO 13414-11-25"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "033-AF",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:803",
+              "quote": "   ➢ Agrandissement des zones 143-P à même les zones 033-Af et 145-Ha, la"
+            }
+          },
+          {
+            "label": "145-HA",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:803",
+              "quote": "   ➢ Agrandissement des zones 143-P à même les zones 033-Af et 145-Ha, la"
+            }
+          },
+          {
+            "label": "143-P",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:803",
+              "quote": "   ➢ Agrandissement des zones 143-P à même les zones 033-Af et 145-Ha, la"
+            }
+          },
+          {
+            "label": "032-AF",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:804",
+              "quote": "     zone 136-M à même la zone 032-Af et la zone 148-Ha à même la zone 032-"
+            }
+          },
+          {
+            "label": "148-HA",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:804",
+              "quote": "     zone 136-M à même la zone 032-Af et la zone 148-Ha à même la zone 032-"
+            }
+          },
+          {
+            "label": "136-M",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:804",
+              "quote": "     zone 136-M à même la zone 032-Af et la zone 148-Ha à même la zone 032-"
+            }
+          },
+          {
+            "label": "155-HB",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:808",
+              "quote": "     résidence jumelée dans la zone 155-Hb et autoriser le groupe d’usage H1 –"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3256264",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "     5.8 Promesse bilatérale de vente et d’achat d’une partie du lot 3 256 264"
+            }
+          },
+          {
+            "label": "3256605",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "     7.1    P.I.I.A. – 3 rue Desbiens (Lot 3 256 605 du cadastre du Québec)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/be951bf9526d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/be951bf9526d.pdf/.graphify/.graphify_extract.json — 39 nodes, 11 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 39,
+        "edges": 11
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "municipality_name": "Clermont",
+      "url": "https://www.ville.clermont.qc.ca/public_upload/images/proces-verbaux/PV%202026/PV%202026-03-09.pdf",
+      "storage_key": "raw/pv-index/cas/6e0b8c9fc029ed276e28e99aa4c25d947945de1634eb1c1c65eeb15964fe4177.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 17,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Clermont, tenue à l’hôtel de ville le 9 mars 2026 à 19 h."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13484-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "     RÉSOLUTION NO 13484-03-26"
+            }
+          },
+          {
+            "label": "13485-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "     RÉSOLUTION NO 13485-03-26"
+            }
+          },
+          {
+            "label": "13486-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "     RÉSOLUTION NO 13486-03-26"
+            }
+          },
+          {
+            "label": "13487-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "     RÉSOLUTION NO 13487-03-26"
+            }
+          },
+          {
+            "label": "13488-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:183",
+              "quote": "     RÉSOLUTION NO 13488-03-26"
+            }
+          },
+          {
+            "label": "13489-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:200",
+              "quote": "     RÉSOLUTION NO 13489-03-26"
+            }
+          },
+          {
+            "label": "13490-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:210",
+              "quote": "     RÉSOLUTION NO 13490-03-26"
+            }
+          },
+          {
+            "label": "13491-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:223",
+              "quote": "     RÉSOLUTION NO 13491-03-26"
+            }
+          },
+          {
+            "label": "13378-10-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:225",
+              "quote": "CONSIDÉRANT QU’aux termes de la résolution 13378-10-25 adoptée lors de la"
+            }
+          },
+          {
+            "label": "13492-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:255",
+              "quote": "     RÉSOLUTION NO 13492-03-26"
+            }
+          },
+          {
+            "label": "13493-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:309",
+              "quote": "     RÉSOLUTION NO 13493-03-26"
+            }
+          },
+          {
+            "label": "13494-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:338",
+              "quote": "     RÉSOLUTION NO 13494-03-26"
+            }
+          },
+          {
+            "label": "13495-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:348",
+              "quote": "     RÉSOLUTION NO 13495-03-26"
+            }
+          },
+          {
+            "label": "13496-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:356",
+              "quote": "     RÉSOLUTION NO 13496-03-26"
+            }
+          },
+          {
+            "label": "13497-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:373",
+              "quote": "     RÉSOLUTION NO 13497-03-26"
+            }
+          },
+          {
+            "label": "13498-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:439",
+              "quote": "     RÉSOLUTION NO 13498-03-26"
+            }
+          },
+          {
+            "label": "13499-03-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:474",
+              "quote": "    RÉSOLUTION NO 13499-03-26"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6723083",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "     5.4   Autorisation de signature – Cession du lot 6 723 083 au cadastre du"
+            }
+          },
+          {
+            "label": "3256832",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "     7.1   Demande de dérogation mineure – 33 rue du Parc-Daniel – Lot 3 256 832"
+            }
+          },
+          {
+            "label": "3256597",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "     7.2   P.I.I.A. – 13 rue des Étangs – Lot 3 256 597 du cadastre du Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/b15964fe4177.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/b15964fe4177.pdf/.graphify/.graphify_extract.json — 24 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 24,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "municipality_name": "Clermont",
+      "url": "https://www.ville.clermont.qc.ca/public_upload/images/proces-verbaux/PV%202026/PV%202025-12-08.pdf",
+      "storage_key": "raw/pv-index/cas/761164ba0f15cc4b401ee355437de016326d015c57f8a3b106ed92eb8431675c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 25,
+        "Zone": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Clermont, tenue à l’hôtel de ville le 8 décembre 2025 à 20 h."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13415-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "      RÉSOLUTION NO 13415-12-25"
+            }
+          },
+          {
+            "label": "13416-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "     RÉSOLUTION NO 13416-12-25"
+            }
+          },
+          {
+            "label": "13417-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "     RÉSOLUTION NO 13417-12-25"
+            }
+          },
+          {
+            "label": "13418-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:151",
+              "quote": "     RÉSOLUTION NO 13418-12-25"
+            }
+          },
+          {
+            "label": "13419-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:167",
+              "quote": "     RÉSOLUTION NO 13419-12-25"
+            }
+          },
+          {
+            "label": "13420-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:185",
+              "quote": "     RÉSOLUTION NO 13420-12-25"
+            }
+          },
+          {
+            "label": "13421-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:222",
+              "quote": "     RÉSOLUTION NO 13421-12-25"
+            }
+          },
+          {
+            "label": "13422-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:238",
+              "quote": "     RÉSOLUTION NO 13422-12-25"
+            }
+          },
+          {
+            "label": "13423-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:257",
+              "quote": "     RÉSOLUTION NO 13423-12-25"
+            }
+          },
+          {
+            "label": "13424-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:288",
+              "quote": "     RÉSOLUTION NO 13424-12-25"
+            }
+          },
+          {
+            "label": "13425-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:338",
+              "quote": "        RÉSOLUTION NO 13425-12-25"
+            }
+          },
+          {
+            "label": "13426-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:373",
+              "quote": "        RÉSOLUTION NO 13426-12-25"
+            }
+          },
+          {
+            "label": "13427-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:420",
+              "quote": "       RÉSOLUTION NO 13427-12-25"
+            }
+          },
+          {
+            "label": "13428-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:438",
+              "quote": "       RÉSOLUTION NO 13428-12-25"
+            }
+          },
+          {
+            "label": "13429-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:448",
+              "quote": "       RÉSOLUTION NO 13429-12-25"
+            }
+          },
+          {
+            "label": "13430-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:464",
+              "quote": "       RÉSOLUTION NO 13430-12-25"
+            }
+          },
+          {
+            "label": "13431-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:483",
+              "quote": "    RÉSOLUTION NO 13431-12-25"
+            }
+          },
+          {
+            "label": "13432-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:517",
+              "quote": "    RÉSOLUTION NO 13432-12-25"
+            }
+          },
+          {
+            "label": "13433-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:552",
+              "quote": "    RÉSOLUTION NO 13433-12-25"
+            }
+          },
+          {
+            "label": "13434-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:590",
+              "quote": "     RÉSOLUTION NO 13434-12-25"
+            }
+          },
+          {
+            "label": "13435-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:628",
+              "quote": "     RÉSOLUTION NO 13435-12-25"
+            }
+          },
+          {
+            "label": "12901-01-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:638",
+              "quote": "CONSIDÉRANT QUE par sa résolution 12901-01-24, la Ville de Clermont a mandaté"
+            }
+          },
+          {
+            "label": "13436-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:717",
+              "quote": "      RÉSOLUTION NO 13436-12-25"
+            }
+          },
+          {
+            "label": "13437-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:819",
+              "quote": "     RÉSOLUTION NO 13437-12-25"
+            }
+          },
+          {
+            "label": "13438-12-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:856",
+              "quote": "    RÉSOLUTION NO 13438-12-25"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "033-AF",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:735",
+              "quote": "groupe d'usages H - Habitation dans la zone 033-Af;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6565453",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "      5.12 Correction à la résolution no. 13353-09-25 – Vente de terrain lot 6 565 453"
+            }
+          },
+          {
+            "label": "6565475",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "      5.13 Vente de terrain – Lot 6 565 475"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/92eb8431675c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/92eb8431675c.pdf/.graphify/.graphify_extract.json — 32 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 32,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "municipality_name": "Clermont",
+      "url": "https://www.ville.clermont.qc.ca/public_upload/images/proces-verbaux/PV%202026/PV%202026-02-09.pdf",
+      "storage_key": "raw/pv-index/cas/7cb54e084fd1b9cd0a96d9aff9b4cdbb6083b3c38395aab65e6fe79f9963e7c1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 15,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Clermont, tenue à l’hôtel de ville le 9 février 2026 à 19 h."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13470-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "     RÉSOLUTION NO 13470-02-26"
+            }
+          },
+          {
+            "label": "13471-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "     RÉSOLUTION NO 13471-02-26"
+            }
+          },
+          {
+            "label": "13472-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "     RÉSOLUTION NO 13472-02-26"
+            }
+          },
+          {
+            "label": "13473-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:155",
+              "quote": "     RÉSOLUTION NO 13473-02-26"
+            }
+          },
+          {
+            "label": "13474-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:191",
+              "quote": "     RÉSOLUTION NO 13474-02-26"
+            }
+          },
+          {
+            "label": "13475-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:212",
+              "quote": "     RÉSOLUTION NO 13475-02-26"
+            }
+          },
+          {
+            "label": "13476-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:230",
+              "quote": "     RÉSOLUTION NO 13476-02-26"
+            }
+          },
+          {
+            "label": "13477-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:259",
+              "quote": "     RÉSOLUTION NO 13477-02-26"
+            }
+          },
+          {
+            "label": "13478-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:294",
+              "quote": "     RÉSOLUTION NO 13478-02-26"
+            }
+          },
+          {
+            "label": "037-02-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:297",
+              "quote": "résolution 037-02-2026 demandant formellement au gouvernement du Québec de"
+            }
+          },
+          {
+            "label": "13479-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:354",
+              "quote": "     RÉSOLUTION NO 13479-02-26"
+            }
+          },
+          {
+            "label": "13480-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:375",
+              "quote": "     RÉSOLUTION NO 13480-02-26"
+            }
+          },
+          {
+            "label": "13481-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:401",
+              "quote": "     RÉSOLUTION NO 13481-02-26"
+            }
+          },
+          {
+            "label": "13482-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:494",
+              "quote": "     RÉSOLUTION NO 13482-02-26"
+            }
+          },
+          {
+            "label": "13483-02-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:529",
+              "quote": "    RÉSOLUTION NO 13483-02-26"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6548050",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:390",
+              "quote": "avis de détérioration concernant l’immeuble situé sur le lot 6 548 050 du cadastre de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/e79f9963e7c1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/e79f9963e7c1.pdf/.graphify/.graphify_extract.json — 20 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 20,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est",
+          "la-malbaie",
+          "sainte-christine"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "municipality_name": "Clermont",
+      "url": "https://www.ville.clermont.qc.ca/public_upload/images/proces-verbaux/PV%202026/PV%202026-04-13.pdf",
+      "storage_key": "raw/pv-index/cas/a2ba9ae266ac44a2b0a0511dd1e98cfc186a76518b6670778ebc53c30fecfc2a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 20
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "Clermont, tenue à l’hôtel de ville le 13 avril 2026 à 19 h."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13505-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "     RÉSOLUTION NO 13505-04-26"
+            }
+          },
+          {
+            "label": "13506-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "     RÉSOLUTION NO 13506-04-26"
+            }
+          },
+          {
+            "label": "13507-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:111",
+              "quote": "     RÉSOLUTION NO 13507-04-26"
+            }
+          },
+          {
+            "label": "13508-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "     RÉSOLUTION NO 13508-04-26"
+            }
+          },
+          {
+            "label": "13509-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:155",
+              "quote": "     RÉSOLUTION NO 13509-04-26"
+            }
+          },
+          {
+            "label": "13510-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:187",
+              "quote": "     RÉSOLUTION NO 13510-04-26"
+            }
+          },
+          {
+            "label": "13511-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:210",
+              "quote": "     RÉSOLUTION NO 13511-04-26"
+            }
+          },
+          {
+            "label": "13512-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:221",
+              "quote": "     RÉSOLUTION NO 13512-04-26"
+            }
+          },
+          {
+            "label": "13513-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:239",
+              "quote": "     RÉSOLUTION NO 13513-04-26"
+            }
+          },
+          {
+            "label": "13514-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:255",
+              "quote": "     RÉSOLUTION NO 13514-04-26"
+            }
+          },
+          {
+            "label": "13515-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:353",
+              "quote": "     RÉSOLUTION NO 13515-04-26"
+            }
+          },
+          {
+            "label": "13516-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:367",
+              "quote": "     RÉSOLUTION NO 13516-04-26"
+            }
+          },
+          {
+            "label": "13517-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:415",
+              "quote": "     RÉSOLUTION NO 13517-04-26"
+            }
+          },
+          {
+            "label": "13518-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:453",
+              "quote": "     RÉSOLUTION NO 13518-04-26"
+            }
+          },
+          {
+            "label": "13519-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:482",
+              "quote": "     RÉSOLUTION NO 13519-04-26"
+            }
+          },
+          {
+            "label": "13520-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:507",
+              "quote": "     RÉSOLUTION NO 13520-04-26"
+            }
+          },
+          {
+            "label": "13521-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:534",
+              "quote": "      RÉSOLUTION NO 13521-04-26"
+            }
+          },
+          {
+            "label": "13522-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:574",
+              "quote": "      RÉSOLUTION NO 13522-04-26"
+            }
+          },
+          {
+            "label": "13523-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:609",
+              "quote": "     RÉSOLUTION NO 13523-04-26"
+            }
+          },
+          {
+            "label": "13524-04-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:645",
+              "quote": "    RÉSOLUTION NO 13524-04-26"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/53c30fecfc2a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/53c30fecfc2a.pdf/.graphify/.graphify_extract.json — 24 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 24,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est",
+          "montreal",
+          "quebec"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "municipality_name": "Clermont",
+      "url": "https://www.ville.clermont.qc.ca/public_upload/images/proces-verbaux/PV%202026/PV%20SE%202026-05-25.pdf",
+      "storage_key": "raw/pv-index/cas/e22239ebf7329ace5a5731a43b9626addb0265eb0aa8e4d93a7281266ad4fe41.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance extraordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "PROCÈS-VERBAL de la séance extraordinaire du conseil municipal de la ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "13550-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "     RÉSOLUTION NO 13550-05-26"
+            }
+          },
+          {
+            "label": "13551-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:80",
+              "quote": "     RÉSOLUTION NO 13551-05-26"
+            }
+          },
+          {
+            "label": "13552-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "     RÉSOLUTION NO 13552-05-26"
+            }
+          },
+          {
+            "label": "13553-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:172",
+              "quote": "    RÉSOLUTION NO 13553-05-26"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/81266ad4fe41.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173736Z/clermont--charlevoix-est/81266ad4fe41.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

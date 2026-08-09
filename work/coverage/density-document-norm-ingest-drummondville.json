@@ -1,0 +1,98 @@
+{
+  "contract": "density-document-norm-ingest/v2",
+  "generatedAt": "2026-07-28T07:39:29.062Z",
+  "slug": "drummondville",
+  "deposited": true,
+  "documents": [
+    {
+      "id": "drummondville-4300-chapitre-13",
+      "disposition": "publishable",
+      "source": {
+        "url": "https://www.drummondville.ca/wp-content/uploads/2026/07/4300-ZONAGE-Chap-13_Dispositions-particulieres.pdf",
+        "sha256": "sha256:96a530117f3a69249bbddb7fc41d3bea24a4873111ac385b6a1be255586e9324",
+        "storageKey": "raw/normes-density-sibling-document/cas/96a530117f3a69249bbddb7fc41d3bea24a4873111ac385b6a1be255586e9324.pdf",
+        "retrievedAt": "2026-07-28T05:46:13.356Z",
+        "transportHost": "www.drummondville.ca",
+        "owner": "Ville de Drummondville",
+        "ownerEvidence": "Ancre native « Ville de Drummondville — Règlement de zonage No 4300 »",
+        "reglement": "Règlement de zonage 4300 — chapitre 13, version administrative",
+        "legalDate": "2026-05-21",
+        "legalDateEvidence": "En-tête verbatim: « modifications ... jusqu'au 21 mai 2026 inclusivement »"
+      },
+      "parser": {
+        "family": "drummondville-4300-chapitre-13",
+        "documentAnchored": true,
+        "projectExcluded": false,
+        "extracted": 2,
+        "refusals": []
+      },
+      "crossValidation": {
+        "matchedNorms": 2,
+        "missingInSig": []
+      },
+      "norms": [
+        {
+          "zoneCode": "H-475",
+          "value": 105,
+          "unit": "logements/terrain",
+          "raw": "105",
+          "proof": "Le nombre de logements par terrain maximal est établi à 105",
+          "page": 77
+        },
+        {
+          "zoneCode": "H-750",
+          "value": 8,
+          "unit": "logements/batiment",
+          "raw": "8",
+          "proof": "c) nombre de logements/bâtiment maximal : 8",
+          "page": 91
+        }
+      ]
+    }
+  ],
+  "crossValidation": {
+    "sigKey": "normalized/ca-qc-zonage/qc-zonage-drummondville.geojson",
+    "sigCodes": 1222,
+    "matchedNorms": 2,
+    "conflictingZones": []
+  },
+  "merge": {
+    "existingRows": 18,
+    "outputRows": 18,
+    "inserted": 0,
+    "enriched": 0,
+    "unchanged": 2
+  },
+  "norms": [
+    {
+      "zoneCode": "H-475",
+      "value": 105,
+      "unit": "logements/terrain",
+      "raw": "105",
+      "proof": "Le nombre de logements par terrain maximal est établi à 105",
+      "page": 77,
+      "sourceUrl": "https://www.drummondville.ca/wp-content/uploads/2026/07/4300-ZONAGE-Chap-13_Dispositions-particulieres.pdf",
+      "sourceSha256": "sha256:96a530117f3a69249bbddb7fc41d3bea24a4873111ac385b6a1be255586e9324",
+      "sourceStorageKey": "raw/normes-density-sibling-document/cas/96a530117f3a69249bbddb7fc41d3bea24a4873111ac385b6a1be255586e9324.pdf",
+      "legalDate": "2026-05-21",
+      "legalDateEvidence": "En-tête verbatim: « modifications ... jusqu'au 21 mai 2026 inclusivement »"
+    },
+    {
+      "zoneCode": "H-750",
+      "value": 8,
+      "unit": "logements/batiment",
+      "raw": "8",
+      "proof": "c) nombre de logements/bâtiment maximal : 8",
+      "page": 91,
+      "sourceUrl": "https://www.drummondville.ca/wp-content/uploads/2026/07/4300-ZONAGE-Chap-13_Dispositions-particulieres.pdf",
+      "sourceSha256": "sha256:96a530117f3a69249bbddb7fc41d3bea24a4873111ac385b6a1be255586e9324",
+      "sourceStorageKey": "raw/normes-density-sibling-document/cas/96a530117f3a69249bbddb7fc41d3bea24a4873111ac385b6a1be255586e9324.pdf",
+      "legalDate": "2026-05-21",
+      "legalDateEvidence": "En-tête verbatim: « modifications ... jusqu'au 21 mai 2026 inclusivement »"
+    }
+  ],
+  "output": {
+    "key": "registry/qc-zonage-norms/qc-zonage-norms-drummondville.parquet",
+    "backupKey": "registry/qc-zonage-norms/qc-zonage-norms-drummondville.parquet.pre-density-document-20260728"
+  }
+}

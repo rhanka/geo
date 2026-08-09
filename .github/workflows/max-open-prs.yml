@@ -1,0 +1,33 @@
+name: max-open-prs
+
+# Grave la règle du principe fondateur (CLAUDE.md — CONVERGENCE origin/main) :
+# jamais plus de 2 PR non-dependabot ouvertes vers `main`. Échoue sinon.
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, ready_for_review]
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+
+permissions:
+  pull-requests: read
+  contents: read
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Count open non-dependabot PRs targeting main
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          COUNT=$(gh pr list --state open --base main --limit 200 \
+            --json author \
+            --jq '[.[] | select((.author.login | test("dependabot"; "i")) | not)] | length')
+          echo "PR non-dependabot ouvertes vers main : $COUNT (max autorisé : 2)"
+          if [ "$COUNT" -gt 2 ]; then
+            echo "::error::$COUNT PR ouvertes vers main > 2. Merge ou ferme avant d'en ouvrir une nouvelle (CLAUDE.md — convergence continue origin/main, 0 divergence)."
+            exit 1
+          fi
