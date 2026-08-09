@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "REC": "environnemental",
+    "CONS": "environnemental",
+    "P": null,
+    "U": null
+  },
+  "source": "https://dua3m7xvptjbw.cloudfront.net/documents/reglements/Reglement-150-codifie-150-51.pdf",
+  "note": "Règlement no 150 concernant le zonage (Ville de Salaberry-de-Valleyfield, codification 150-51), CHAPITRE I, section 1.3 « DISPOSITIONS INTERPRÉTATIVES RELATIVES AU DÉCOUPAGE EN ZONES », article 1.3.2 « Identification des zones »: « Chaque zone délimitée au plan de zonage est identifiée par une lettre d'appellation indiquant l'affectation principale de la zone, comme suit : » puis la table « Lettre d'appellation / Affectation principale »: « H Résidentielle », « C Commerciale », « I Industrielle », « P Communautaire », « U Utilité publique », « REC Récréative », « CONS Conservation », « A Agricole ». Cette table est la légende qui fait foi. H « Résidentielle » -> residentiel; C « Commerciale » -> commercial; I « Industrielle » -> industriel; A « Agricole » -> agricole; REC « Récréative » et CONS « Conservation » -> environnemental. Null explicite: P « Communautaire » et U « Utilité publique » sont communautaires/publics, hors des cinq catégories. Préfixes mappés = les 8 réellement présents dans le SIG, qui sont exactement les 8 de la légende (H 311, C 133, P 86, I 31, A 30, REC 23, U 14, CONS 16 = 645 polygones). Le SIG sert des variantes de CASSE (CONS et Cons, I et i) — le match du fold est insensible à la casse, elles retombent sur le même préfixe. Longest-prefix: CONS bat C (CONS-101 -> conservation, pas commerce), REC bat aucun autre. Le règlement illustre lui-même la lecture: « À titre d'exemple : H-101 — H : Affectation principale « Résidentielle » / 101 Ordre numérique de la zone ». Les grilles des usages et normes (matrice, section 1.4) ne sont pas utilisées."
+}

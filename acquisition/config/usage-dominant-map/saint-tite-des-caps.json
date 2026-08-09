@@ -1,0 +1,20 @@
+{
+  "prefix_map": {
+    "Ad": "agricole",
+    "Af": "agricole",
+    "Av": "agricole",
+    "F": "agricole",
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "Cn": "environnemental",
+    "Ai": null,
+    "Ch": null,
+    "Fr": null,
+    "P": null,
+    "V": null,
+    "Va": null
+  },
+  "source": "https://sainttitedescaps.com/wp-content/uploads/2026/07/reglement-de-zonage-497-2017-15-07-2026.pdf",
+  "note": "Municipalité de Saint-Tite-des-Caps (MRC de La Côte-de-Beaupré), règlement de zonage no 497-2017. Table VERBATIM à l'art. 2.2 « CODIFICATION DES ZONES » (p.43): « Chaque zone porte un numéro d'identification auquel est attaché un suffixe indiquant la ou les vocations(s) dominantes(s), tel qu'il appert au tableau reproduit ci-après. — Tableau 1 : Typologie et vocation dominante des zones inscrites au plan de zonage », colonnes « LETTRES | VOCATION DOMINANTE »: « Ad Agricole dynamique | Af Agroforestier | Ai Îlot déstructuré | Av Agricole viable | C Commercial et services | Ch Commercial et services et Habitation | Cn Conservation | F Forestier | Fr Forestier récréation | H Habitation | I Industriel | P Public et institutionnel | V Villégiature | Va Villégiature à consolider (prioritaire) ». ⭐ FALSIFICATION POSITIVE: le Tableau 1 compte 14 entrées, le SIG sert 14 préfixes, et les DEUX ensembles sont IDENTIQUES (aucun orphelin d'aucun côté) => bonne muni, bon millésime. Propriétaire attesté par le CORPS: 129 occurrences de « Saint-Tite-des-Caps », pied de page « Municipalité de Saint-Tite-des-Caps — Règlement de zonage – No 497-2017 », art. 1.2 « Les dispositions du présent règlement s'appliquent à l'ensemble du territoire sous juridiction de la Municipalité de Saint-Tite-des-Caps ». Ad « Agricole dynamique », Av « Agricole viable » et Af « Agroforestier » -> agricole; F « Forestier » -> agricole (famille agricole/agroforestière/forestière du contrat). C « Commercial et services » -> commercial (« services » est hors-contrat et ne crée pas de dualité). Cn « Conservation » -> environnemental. NULL EXPLICITES: Ai « Îlot déstructuré » est un libellé NU (il ne nomme aucune des cinq catégories) et son article définisseur est NÉGATIF — « Entités ponctuelles de superficie restreinte, déstructurées par l'addition au fil du temps d'usages NON AGRICOLES et à l'intérieur desquelles subsistent de rares lots vacants enclavés de la zone agricole et IRRÉCUPÉRABLES POUR L'AGRICULTURE » — caractérisation par la négative qui ne nomme jamais la résidence => aucune dominante (motif ascot-corner/saint-felix, ≠ racine); Ch « Commercial et services et Habitation » nomme DEUX des cinq (commercial + residentiel) => duale; Fr « Forestier récréation » nomme DEUX des cinq (agricole + environnemental) => duale (motif « Récréoforestier » -> null, ≠ « Récréotouristique » -> environnemental); P « Public et institutionnel » est public; V « Villégiature » et Va « Villégiature à consolider (prioritaire) » ne nomment aucune des cinq, aucun alinéa ne les définissant exclusivement par l'habitation. ⛔ ANTI-FALL-THROUGH CRITIQUES: Ch et Cn DOIVENT être déclarés, sinon ils retombent sur « C » -> commercial (faux dans les deux cas); Fr DOIT être déclaré, sinon il retombe sur « F » -> agricole (faux); Va doit être déclaré (il retomberait sur V, ici même valeur). PIÈGES DE LETTRE LEVÉS PAR LE VERBATIM: « Ad » = « Agricole DYNAMIQUE » et non « déstructurée »; « Av » = « Agricole VIABLE » et non « villégiature »; « Va » = « Villégiature à consolider » et NON conservation (contrairement aux Îles-de-la-Madeleine, où Va = conservation). ⚠️ Le préfixe « V » est servi ici en null (« Villégiature » nue) alors qu'il est environnemental chez saint-fabien-de-panet (« Usages récréatifs (V) : de villégiature et activités récréatives »): les deux verbatims diffèrent, ce n'est pas une incohérence. Couverture 14/14 préfixes = 29/66 polygones couverts, 37 nulls verbatim."
+}

@@ -43,7 +43,8 @@ SELF="$(cd "$(dirname "$0")" && pwd)"
 ROOT="${ROOT:-$(cd "$SELF/../.." && pwd)}"
 ACQ="$ROOT/acquisition"
 OUTDIR="${OUTDIR:-$ROOT/work/delegation-mass/tor-fleet-out}"
-mkdir -p "$OUTDIR"
+WORKTMP="${GEO_TMPDIR:-$ROOT/.h2a/tmp}"
+mkdir -p "$OUTDIR" "$WORKTMP"
 
 export CHROME_BIN="${CHROME_BIN:-$(command -v chromium || command -v chromium-browser || echo /usr/bin/chromium)}"
 DEPFLAG="--no-deposit"; [ "$DEPOSIT" = "1" ] && DEPFLAG="--deposit"
@@ -75,16 +76,16 @@ ctrl_of()  { echo $((9051 + $1 * 2)); }
 
 # 1) Launch N tor daemons.
 for ((i=0; i<LANES; i++)); do
-  s=$(socks_of "$i"); c=$(ctrl_of "$i"); dd="/tmp/tor-lane-$i"
+  s=$(socks_of "$i"); c=$(ctrl_of "$i"); dd="$WORKTMP/tor-lane-$i"; torrc="$WORKTMP/torrc-$i"
   rm -rf "$dd"; mkdir -p "$dd"; chmod 700 "$dd"
-  cat > "/tmp/torrc-$i" <<EOF
+  cat > "$torrc" <<EOF
 SocksPort $s
 ControlPort $c
 DataDirectory $dd
 CookieAuthentication 0
 MaxCircuitDirtiness 10
 EOF
-  tor -f "/tmp/torrc-$i" > "$OUTDIR/tor-$i.log" 2>&1 &
+  tor -f "$torrc" > "$OUTDIR/tor-$i.log" 2>&1 &
 done
 
 # 2) Wait each tor bootstrap (exit IP via its own socks).

@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "AD": "agricole",
+    "AV": "agricole",
+    "CA": "commercial",
+    "CV": "commercial",
+    "DD": null,
+    "EV": "environnemental",
+    "FO": "agricole",
+    "IA": "industriel",
+    "IB": "industriel",
+    "ID": null,
+    "PC": null,
+    "RA": "residentiel",
+    "RB": "residentiel",
+    "RC": "environnemental",
+    "RU": "residentiel",
+    "VC": "residentiel",
+    "VD": "residentiel"
+  },
+  "source": "https://www.ville.lasarre.qc.ca/wp-content/uploads/2024/07/05-2024-ZONAGE-avec-tableaux_VA-min.pdf",
+  "note": "Règlement de zonage numéro 05-2024 de la Ville de La Sarre, CHAPITRE 2 « Division du territoire municipal en zones », art. 2.2 « APPELLATION DES ZONES », p.15: « la première séquence, composée d'une ou plusieurs lettres, sert à identifier le caractère général de la zone en relation avec les grandes fonctions urbaines (ex : RA : Résidentielle faible densité) ». La table « IDENTIFICATION DES ZONES » qui suit est relevée VERBATIM et couvre EXACTEMENT les 17 préfixes servis au SIG (1:1, aucun préfixe mappé hors SIG, aucun préfixe SIG non couvert): AD « Agricole dynamique » et AV « Agricole viable » -> agricole; FO « Forestière » -> agricole (famille de ressource rurale, même regroupement que champlain.json); CA « Commerce artériel » -> commercial; IA « Industrie à contrainte faible » et IB « Industrie à contrainte élevée » -> industriel; RA « Résidentielle faible densité » et RB « Résidentielle moyenne densité » -> residentiel; RU « Maison unimodulaire » -> residentiel (habitation, cf. saint-raymond.json RRm « maisons mobiles »); VC « Villégiature consolidation » et VD « Villégiature développement » -> residentiel (villégiature = habitation, cf. saint-raymond.json FV « forestières de villégiature »; le « développement » de VD qualifie la phase de la villégiature, PAS une réserve — la réserve a son propre préfixe DD dans la même table); RC « Récréo-conservation » et EV « Parc et espace vert » -> environnemental. Null explicite: DD « Développement différé » est une RÉSERVE (n'énonce pas de dominante parmi les cinq); PC « Publique et communautaire » est public; ID « Îlot déstructuré » ne nomme AUCUNE fonction dans la légende (construction de la LPTAA), aucune dominante ne peut en être déduite sans invention. JUGEMENT SIGNALÉ: CV « Commerce centre-ville » -> commercial et NON null — la légende nomme UNE fonction dominante (« Commerce »), elle ne dit ni « mixte » ni « et résidentielle »; le « centre-ville » y qualifie la localisation exactement comme « artériel » le fait pour CA. À distinguer de saint-raymond.json où le libellé verbatim est « centre-ville (mixtes) » -> null. La matrice des usages permis des grilles (annexe 4) n'est pas utilisée."
+}

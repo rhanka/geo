@@ -1,0 +1,1617 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T20:03:06.203Z",
+  "mode": "unverdict-cas-batch",
+  "unverdict_list": "work/coverage/pv-graphify-semantic-real-universe-20260729-unverdict-list-01.json",
+  "unverdict_selection": {
+    "offset": 140,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 337,
+  "eligible_documents": 337,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 14,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 16,
+    "failed_pvs": 4,
+    "outcomes": {
+      "INDEXED": 16,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1,
+      "UNKNOWN_NO_TERMINAL_PV_MANIFEST": 3,
+      "UNKNOWN_AMBIGUOUS_MANIFEST_SCOPE": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 16,
+    "Document": 16,
+    "LotCadastre": 5,
+    "Regulation": 38,
+    "Resolution": 10,
+    "CouncilSession": 3,
+    "MeetingDate": 3
+  },
+  "graphify": {
+    "nodes": 91,
+    "edges": 22,
+    "failures": 4
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 5,
+    "documents_with_zone": 0,
+    "documents_with_lot": 4
+  },
+  "match_details": [
+    {
+      "municipality_slug": "beaulac-garthby",
+      "storage_key": "raw/pv-index/cas/63e419b1dfde864dadb2e5907284a8e181ce4da593458c3b4eadcae7406ce447.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5846961",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:45",
+      "quote": "    DES LOTS 5 846 961 ET 5 864 960"
+    },
+    {
+      "municipality_slug": "acton-vale",
+      "storage_key": "raw/pv-index/cas/6610e239e45e756d9d1a50ba732a6790e9626cb3e8e1a6cb9d66f139d80759c4.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6194634",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:38",
+      "quote": "  5.9    Résolution pour autoriser la vente du lot 6 194 634 du cadastre du"
+    },
+    {
+      "municipality_slug": "beauharnois",
+      "storage_key": "raw/pv-index/cas/66855dfd43a80a28d141f14f882858a0d801f34708cf6244a490351bf2904f89.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3863871",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:130",
+      "quote": "            d'utilisation à des fins autre que l'agriculture, une partie du lot 3 863 871 du"
+    },
+    {
+      "municipality_slug": "beauharnois",
+      "storage_key": "raw/pv-index/cas/66855dfd43a80a28d141f14f882858a0d801f34708cf6244a490351bf2904f89.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6569937",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:148",
+      "quote": "            immeuble PPCMOI 2026-0005 - lot 6 569 937, 22e Avenue"
+    },
+    {
+      "municipality_slug": "begin",
+      "storage_key": "raw/pv-index/cas/67db9721e84d4d1b87b56796bc5a0590eb4091fdde4817ed6a9ae89db97c3eee.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5753728",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:292",
+      "quote": "              propriétaire du lot 5 753 728 situé sur le chemin de la Passe."
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 5,
+      "zone_code_count": 241,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 5,
+      "served_municipalities": 5,
+      "total_lot_numbers": 13063,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z",
+  "documents": [
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20230414142726-proces-verbal-de-la-seance-du-7-fevrier-2022pdf.pdf",
+      "storage_key": "raw/pv-index/cas/63e419b1dfde864dadb2e5907284a8e181ce4da593458c3b4eadcae7406ce447.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "MRC DES APPALACHES"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5846961",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "    DES LOTS 5 846 961 ET 5 864 960"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/cae7406ce447.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/cae7406ce447.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby",
+          "disraeli--les-appalaches",
+          "disraeli--les-appalaches--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20230414142732-proces-verbal-du-4-avrilpdf.pdf",
+      "storage_key": "raw/pv-index/cas/64384b352b624feabb6a27bc4ebd304e601ec8f0f0b3bed160c10597093c1de8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/0597093c1de8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/0597093c1de8.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2022/06/oj20220622-Assemblee-publique-de-consultation-1.pdf",
+      "storage_key": "raw/pv-index/cas/648a56116e066a6677940c54ed22870a1366119a9cee8d74fd48dd4dcd748c4a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "       • Projet de règlement numéro 007-2022 modifiant le règlement de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "       • Projet de règlement numéro 007-2022 modifiant le règlement de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "007-2022",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:12",
+              "quote": "       • Projet de règlement numéro 007-2022 modifiant le règlement de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/dd4dcd748c4a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/dd4dcd748c4a.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2024/04/PV-2023-12-11-3.pdf",
+      "storage_key": "raw/pv-index/cas/65c5e75413e5b91961eb8a343e942272fe577bb4a3bac73fdab0a3d045fa2a90.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 8
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-01-018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1178",
+              "quote": "                  Considérant que par sa résolution numéro 2022-01-018, la"
+            }
+          },
+          {
+            "label": "2022-09-212",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1382",
+              "quote": "2023-12-278        Considérant que par la résolution 2022-09-212 le conseil formait le"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "505",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "2023-12-260        Adoption du règlement numéro 505"
+            }
+          },
+          {
+            "label": "232",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:191",
+              "quote": "              ATTENDU que le règlement 232 bénéficie de mesures transitoires et"
+            }
+          },
+          {
+            "label": "506",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:234",
+              "quote": "     Avis de motion et dépôt du projet de règlement 506"
+            }
+          },
+          {
+            "label": "467",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:238",
+              "quote": "     règlement 467 relatif aux services d'hygiène du milieu et dépose le"
+            }
+          },
+          {
+            "label": "384",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:326",
+              "quote": "modifiant le règlement no 384."
+            }
+          },
+          {
+            "label": "507",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:348",
+              "quote": "      Avis de motion et dépôt du projet de règlement 507"
+            }
+          },
+          {
+            "label": "508",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:643",
+              "quote": "       Avis de motion et dépôt du projet de règlement 508"
+            }
+          },
+          {
+            "label": "503",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:647",
+              "quote": "       règlement 503 intitulé \"Règlement de taxation sur la dégradation du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/bearn/a3d045fa2a90.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/bearn/a3d045fa2a90.pdf/.graphify/.graphify_extract.json — 12 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn",
+          "ville-marie"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/oj20191202.pdf",
+      "storage_key": "raw/pv-index/cas/6610e239e45e756d9d1a50ba732a6790e9626cb3e8e1a6cb9d66f139d80759c4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "010-2019",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "  5.7    Résolution pour accepter le 2e projet de règlement numéro 010-2019."
+            }
+          },
+          {
+            "label": "011-2019",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "  5.11   Avis de motion et dépôt du projet de règlement – Règlement 011-2019."
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6194634",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "  5.9    Résolution pour autoriser la vente du lot 6 194 634 du cadastre du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/f139d80759c4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/f139d80759c4.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beauharnois",
+      "municipality_name": "Beauharnois",
+      "url": "https://ville.beauharnois.qc.ca/wp-content/uploads/ODJ_14042026-1.pdf",
+      "storage_key": "raw/pv-index/cas/66855dfd43a80a28d141f14f882858a0d801f34708cf6244a490351bf2904f89.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 3,
+        "Regulation": 8,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beauharnois",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Ville de Beauharnois"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                 Ville de Beauharnois"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-03-116",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "            apportée à la résolution 2026-03-116"
+            }
+          },
+          {
+            "label": "2026-03-109",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "     5.5.    Modification de la résolution 2026-03-109 - Adjudication de l’appel d’offres"
+            }
+          },
+          {
+            "label": "2025-11-474",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:127",
+              "quote": "    12.3. Modification de la résolution 2025-11-474 - Appui à la demande de madame"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-38",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "            personnes habiles à voter des 17 et 18 mars 2026 - Règlement 2025-38"
+            }
+          },
+          {
+            "label": "2026-06",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "            personnes habiles à voter du 18 mars 2026 - Règlement 2026-06 décrétant"
+            }
+          },
+          {
+            "label": "2026-07",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "     3.1.    Avis de motion et projet de règlement - Règlement 2026-07 concernant la"
+            }
+          },
+          {
+            "label": "2026-11",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "     3.2.    Avis de motion et projet de règlement - Règlement 2026-11 modifiant le"
+            }
+          },
+          {
+            "label": "2022-18",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "             Règlement 2022-18 sur le stationnement dans la Ville de Beauharnois"
+            }
+          },
+          {
+            "label": "2026-08",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "     4.1.  Adoption du Règlement 2026-08 décrétant une dépense de 965 000$ et un"
+            }
+          },
+          {
+            "label": "2026-09",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "     4.2.  Adoption du Règlement 2026-09 sur l'accès aux rampes de mise à l'eau sur le"
+            }
+          },
+          {
+            "label": "2026-10",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "     4.3.  Adoption du Règlement 2026-10 décrétant une dépense de 425 000$ et un"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3863871",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:130",
+              "quote": "            d'utilisation à des fins autre que l'agriculture, une partie du lot 3 863 871 du"
+            }
+          },
+          {
+            "label": "6569937",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:148",
+              "quote": "            immeuble PPCMOI 2026-0005 - lot 6 569 937, 22e Avenue"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beauharnois/351bf2904f89.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beauharnois/351bf2904f89.pdf/.graphify/.graphify_extract.json — 15 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beauharnois",
+          "sainte-martine"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "begin",
+      "municipality_name": "Bégin",
+      "url": "https://www.begin.ca/app/uploads/2024/12/PV-241104.pdf",
+      "storage_key": "raw/pv-index/cas/67526f822102f8f8614c469925314b640bd20cad240cb11b6be4bf405d54b91b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bégin",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              MRC DU FJORD-DU-SAGUENAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              MRC DU FJORD-DU-SAGUENAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 novembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil municipal de Bégin tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 novembre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "              le 4 novembre 2024 à 19h30, à la salle du conseil de l’édifice municipal."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "24-393",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "              11.1 Avis de motion du projet de règlement 24-393 concernant la régie interne"
+            }
+          },
+          {
+            "label": "24-394",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "              11.3 Avis de motion du projet de règlement 24-394 sur la gestion contractuelle"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/begin/bf405d54b91b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/begin/bf405d54b91b.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "begin"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2025/01/oj20251201.pdf",
+      "storage_key": "raw/pv-index/cas/67aa9aeaa759b09f295a6173846647ef268b73282701d039d8339ab0eef3a94e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                         VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "285-2015",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "         vertu du règlement 285-2015."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/9ab0eef3a94e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/9ab0eef3a94e.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "begin",
+      "municipality_name": "Bégin",
+      "url": "https://www.begin.ca/app/uploads/2024/12/PV-240805.pdf",
+      "storage_key": "raw/pv-index/cas/67db9721e84d4d1b87b56796bc5a0590eb4091fdde4817ed6a9ae89db97c3eee.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bégin",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              MRC DU FJORD-DU-SAGUENAY"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              MRC DU FJORD-DU-SAGUENAY"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 juillet 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:79",
+              "quote": "              Chaque membre du conseil ayant reçu dépôt du procès-verbal du 8 juillet"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 juillet 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "              3.1 Approbation des minutes de la séance ordinaire du 8 juillet 2024"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "24-392",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "              11.1 Adoption du second projet de règlement 24-392 modifiant le règlement"
+            }
+          },
+          {
+            "label": "23-362",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:396",
+              "quote": "              règlement 23-362 ;"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5753728",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:292",
+              "quote": "              propriétaire du lot 5 753 728 situé sur le chemin de la Passe."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/begin/e89db97c3eee.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/begin/e89db97c3eee.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "alma",
+          "begin",
+          "saguenay"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20230414142345-proces-verbal-de-la-seance-du-16-janvier-2023pdf.pdf",
+      "storage_key": "raw/pv-index/cas/68b089290def7bc8c9ddaf0a31d62a4c9ee2300a3769ffcdddf437e50479ae52.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "22-12-7725",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1733",
+              "quote": "                   ATTENDU QUE la soumission a été adoptée par la résolution 22-12-7725;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "254-2023",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:87",
+              "quote": "3.1    Avis de motion et dépôt du projet de règlement 254-2023 fixant le taux de"
+            }
+          },
+          {
+            "label": "251-2022",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "3.2    Adoption du règlement 251-2022 sur les limites de vitesse"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/37e50479ae52.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/37e50479ae52.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2025/07/pv-mun-2025-05-26-ajournement-de-mai-1.pdf",
+      "storage_key": "raw/pv-index/cas/69609f2705b7cf85d00df8dd856b26ba43e7fd4fcb1b313d52457296521887c0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 28 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "                 Considérant que le procès-verbal reflète les délibérations du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "28 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "                 connaissance du procès-verbal de l'ajournement du 28 avril 2025;"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-03-054",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:202",
+              "quote": "                   dans la résolution no 2025-03-054."
+            }
+          },
+          {
+            "label": "2025-04-069",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:414",
+              "quote": "                  conseil abroge la résolution 2025-04-069 et l'autorise à y participer."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "026-2024",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:194",
+              "quote": "2025-05-118        Considérant que la RISIT a adopté le règlement n°026-2024"
+            }
+          },
+          {
+            "label": "031-2025",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:230",
+              "quote": "                   CONSIDÉRANT QUE la RISIT a adopté le règlement n° 031-2025"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/bearn/7296521887c0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/bearn/7296521887c0.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "bearn",
+      "municipality_name": "Béarn",
+      "url": "https://www.bearn.ca/wp-content/uploads/2025/07/pv-2024-06-17.pdf",
+      "storage_key": "raw/pv-index/cas/6a6ca04868c684ab6b67dc372adfeba0d77d784b655e8db58f46f9c21a3eede5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Béarn",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "        Procès-verbal du conseil de la municipalité de Béarn"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "025-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:281",
+              "quote": "2024-06-142         Approbation du Règlement n°025-2024 – DÉCRÉTANT L'ACHAT"
+            }
+          },
+          {
+            "label": "513",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:324",
+              "quote": "                  Avis de motion et dépôt du projet de règlement 513"
+            }
+          },
+          {
+            "label": "509",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:371",
+              "quote": "ATTENDU que suite à l’adoption des règlement 509 et 512 il a été constaté"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/bearn/f9c21a3eede5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/bearn/f9c21a3eede5.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bearn"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/PROCES-VERBAL%20-%20Seance%20ordinaire%20du%208%20decembre%202025.pdf",
+      "storage_key": "raw/pv-index/cas/6a80a3323381cd94305d7318150015fd896d05f31900e797f18b38da7ff47e0e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "287-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "       7.1 -     Avis de motion du projet de Règlement 287-2025 modifiant le"
+            }
+          },
+          {
+            "label": "274-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1050",
+              "quote": "             d'évaluation contenus dans le Règlement numéro 274-2024 portant sur les"
+            }
+          },
+          {
+            "label": "179-2014",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1067",
+              "quote": "Ainsi que l’article 5.26.2 du règlement 179-2014"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/38da7ff47e0e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/38da7ff47e0e.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "municipality_name": "Beaulac-Garthby",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/beaulac-garthby/_publication/fichiers/20250313162438-proces-verbal-seance-ordinaire-du-10-fevrier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/6aa3f376b03274bbfa1e574e4db5c3eba4dd85bfdefc0750c32dfd9aa31f12be.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Beaulac-Garthby",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "             MRC DES APPALACHES"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "24-05-8151",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:383",
+              "quote": "             CONSIDÉRANT QUE la Résolution 24-05-8151 exprime le besoin et la nécessité"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/fd9aa31f12be.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beaulac-garthby/fd9aa31f12be.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "beaulac-garthby"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "beauharnois",
+      "municipality_name": "Beauharnois",
+      "url": "https://ville.beauharnois.qc.ca/wp-content/uploads/ProcesVerbal_Seance-ordinaire-9-decembre-2025-signe.pdf",
+      "storage_key": "raw/pv-index/cas/6ad72b3dd5f2d493c6580f45afd2631676fc1e9c41ec1c6b57a167fa914a8c0a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beauharnois/67fa914a8c0a.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/beauharnois/67fa914a8c0a.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2026/01/oj20260119-2.pdf",
+      "storage_key": "raw/pv-index/cas/6b056203abd269ea9d627c4157442f90da097d90728ee18ed44dd4f077b4bee5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-12-474",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "   5.5 - Résolution pour modifier la résolution 2023-12-474."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "003-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "      10.2 - Adoption du règlement 003-2025 pour fixer le montant que la Ville peut"
+            }
+          },
+          {
+            "label": "004-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "      10.3 - Avis de motion et présentation du règlement 004-2025 modifiant le règlement"
+            }
+          },
+          {
+            "label": "017-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:94",
+              "quote": "             de résolution adoptée en vertu du règlement numéro 017-2023 relatif au"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/d4f077b4bee5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/d4f077b4bee5.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/6b3696c608e745665dde08ac4689167ed5ef411e8748440ad9036e1bdf18060f.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "acton-vale",
+      "municipality_name": "Acton Vale",
+      "url": "https://ville.actonvale.qc.ca/wp-content/uploads/2021/11/oj20211101.pdf",
+      "storage_key": "raw/pv-index/cas/6b5c46f70bd1f92f7037ffb2b94fd760a812ccdfe517c56e01a982d869ec2f0b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Acton Vale",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               VILLE D’ACTON VALE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "017-2021",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "   10.4   Avis de motion – Règlement 017-2021."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/82d869ec2f0b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T200122Z/acton-vale/82d869ec2f0b.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "acton-vale",
+          "sainte-helene-de-bagot"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/6beaf3eed5692804145f284a5f1570456a722e264147a3919041147defc472cf.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": null,
+      "municipality_name": null,
+      "url": null,
+      "storage_key": "raw/pv-index/cas/6bf28a38e1e00d7a3bc29fd5e138d90e6c9a721c4417ae73acfe3367f9c86dc3.pdf",
+      "source_file": null,
+      "text_provenance": "UNAVAILABLE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 2,
+        "stdout": "",
+        "stderr": "Aucun manifeste PV terminal ne donne de scope municipal; lecture du PDF interdite.",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "UNKNOWN_NO_TERMINAL_PV_MANIFEST",
+      "owner_scope": {
+        "status": "UNAVAILABLE_NO_MUNICIPAL_SCOPE",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "Aucun manifeste PV terminal (observations: 0); aucun scope municipal n'est prouvé.",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

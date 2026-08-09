@@ -1,0 +1,529 @@
+/**
+ * LE CHOKEPOINT DE CAPTURE — point de passage UNIQUE de tout appel réseau sortant
+ * vers une source tierce (SPEC_CAPTURE_ON_CLUSTER.md §5.1, règle C-0).
+ *
+ * Pourquoi il existe : 73 fichiers de `acquisition/src` appellent `fetch()` nu, et
+ * PAS UNE ligne du dépôt n'enregistre `url` + `http_status` + `retrieved_at` +
+ * `sha256` par requête. C'est LA raison du KPI « preuve v2 exacte = 0/1106 » : la
+ * preuve n'est pas difficile à produire, elle est détruite au moment même où elle
+ * existe. Ce module la produit MÉCANIQUEMENT.
+ *
+ * Ce qu'il fait, dans l'ordre :
+ *   1. verdict robots.txt (via un `RobotsGate` injecté — `RobotsCache` en prod) ;
+ *   2. fetch, redirections suivies à la main pour tenir la chaîne des `Location` ;
+ *   3. mesure `retrieved_at`, `http_status`, `content_type`, taille ;
+ *   4. sha256 des octets REÇUS ;
+ *   5. dépôt content-addressed via `rawStorageKey` / `buildRawDocumentRecord`
+ *      (déjà écrits, typés, testés — ce module est l'écrivain qui leur manquait),
+ *      avec HEAD-skip idempotent ;
+ *   6. APPEND d'une ligne au `manifest.jsonl` du run — Y COMPRIS EN ÉCHEC.
+ *
+ * Il ne LANCE PAS sur un échec réseau ou HTTP : il RETOURNE un résultat portant la
+ * ligne de manifeste. Un échec est une donnée (il documente un gisement épuisé),
+ * pas un accident. `capturedFetchOrThrow` fournit la sémantique inverse pour les
+ * appelants qui ont déjà une boucle de retry.
+ */
+import { createHash, randomUUID } from "node:crypto";
+
+import {
+  buildRawDocumentRecord,
+  buildRawDocumentRecordFromDigest,
+  rawMetaKey,
+  type RawDocumentRecord,
+} from "../RawDocument.js";
+import type { CaptureRun } from "./capture-run.js";
+import {
+  assertCasKeyMatchesBytes,
+  assertCasKeyMatchesSha256,
+  assertCaptureWritableKey,
+  redactCaptureLog,
+  redactUrlForManifest,
+  CaptureManifestLineSchema,
+  type CaptureLane,
+  type CaptureManifestLine,
+  type CaptureMethod,
+  type CaptureRobotsVerdict,
+} from "./manifest.js";
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Ports (structurels — aucun couplage au runtime undici ni au SDK S3)
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface CaptureHttpHeaders {
+  get(name: string): string | null;
+}
+export interface CaptureHttpResponse {
+  readonly status: number;
+  readonly ok: boolean;
+  readonly url?: string;
+  readonly headers: CaptureHttpHeaders;
+  /** Corps Web Fetch, présent en production. Les doubles historiques peuvent l'omettre. */
+  readonly body?: ReadableStream<Uint8Array> | null;
+  arrayBuffer(): Promise<ArrayBuffer>;
+}
+export interface CaptureRequestInit {
+  method?: string;
+  headers?: Record<string, string>;
+  body?: string | Uint8Array;
+  redirect?: "follow" | "manual" | "error";
+  signal?: AbortSignal;
+}
+export type CaptureFetchLike = (
+  url: string,
+  init?: CaptureRequestInit,
+) => Promise<CaptureHttpResponse>;
+
+/** Ce que `capturedFetch` consomme de `RobotsCache` — rien de plus. */
+export interface RobotsGate {
+  isAllowed(url: string): Promise<boolean>;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Contexte d'appel
+// ─────────────────────────────────────────────────────────────────────────────
+
+export interface CapturedFetchContext {
+  /** Le run qui porte le manifeste. */
+  run: CaptureRun;
+  /** `<source>` de la clé CAS : identifiant de lane-source, JAMAIS un slug. */
+  source: string;
+  /** Municipalités concernées. Vide pour une sonde de découverte. */
+  slugs?: string[];
+  /** Défaut : la lane du run. */
+  lane?: CaptureLane;
+  /** 1-based. Chaque tentative d'une boucle de retry DOIT incrémenter. */
+  attempt?: number;
+  /** Titre exposé par la source, quand il existe (porté par le `.meta.json`). */
+  title?: string;
+  /** Date de publication exposée par la source, quand elle existe. */
+  publishedAt?: string;
+  /** Version de l'adaptateur/runner appelant (provenance du RawDocumentRecord). */
+  version?: string;
+  robots?: RobotsGate;
+  fetchImpl?: CaptureFetchLike;
+  /** `null` désactive le timeout du chokepoint pour préserver un appel historique sans délai. */
+  timeoutMs?: number | null;
+  /** Plafond par objet — garde-fou coût (SPEC §5.2, défaut 100 Mio). */
+  maxBytes?: number;
+  maxRedirects?: number;
+  /** `false` = journalise et hash, mais n'écrit AUCUN octet sous `raw/`. */
+  store?: boolean;
+  /**
+   * Conserve les octets pour l'appelant. `false` active le chemin spool → CAS
+   * pour les worklists, dont le runner n'analyse pas le corps téléchargé.
+   */
+  retainBody?: boolean;
+}
+
+export interface CapturedFetchResult {
+  /** La ligne de manifeste — TOUJOURS présente, succès comme échec. */
+  line: CaptureManifestLine;
+  /** `true` ssi des octets ont été reçus ET hashés. */
+  ok: boolean;
+  /** La réponse HTTP finale, `null` si aucune réponse (DNS/TLS/timeout/robots). */
+  response: CaptureHttpResponse | null;
+  /** Les octets reçus, ou `null` pour une capture réussie en streaming. */
+  bytes: Uint8Array | null;
+  /** Le `RawDocumentRecord` déposé (ou qui l'aurait été), `null` en échec. */
+  record: RawDocumentRecord | null;
+}
+
+export const DEFAULT_CAPTURE_TIMEOUT_MS = 30_000;
+export const DEFAULT_CAPTURE_MAX_BYTES = 104_857_600;
+const DEFAULT_MAX_REDIRECTS = 5;
+/** Limite de redirections de `fetch`/Undici, pour préserver un appel nu migré. */
+export const NODE_FETCH_DEFAULT_MAX_REDIRECTS = 20;
+const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
+
+/** Erreur normalisée, courte, sans secret (règle C-6). */
+function normalizeError(e: unknown): string {
+  if (e instanceof Error) {
+    const name = e.name === "AbortError" ? "timeout" : e.name;
+    return redactCaptureLog(`${name}: ${e.message}`).slice(0, 500);
+  }
+  return redactCaptureLog(String(e)).slice(0, 500);
+}
+
+class MaxBytesExceededError extends Error {
+  constructor(readonly bytes: number, readonly maxBytes: number) {
+    super(`max-bytes-exceeded: ${bytes} > ${maxBytes}`);
+    this.name = "MaxBytesExceededError";
+  }
+}
+
+/**
+ * Hache et borne les chunks au moment exact où ils quittent le flux HTTP. Le
+ * digest obtenu est donc celui des octets envoyés au spool S3, sans tableau de
+ * chunks ni `arrayBuffer()` proportionnel à la taille du document.
+ */
+class StreamDigest {
+  private readonly hash = createHash("sha256");
+  private complete = false;
+  bytes = 0;
+
+  constructor(private readonly maxBytes: number) {}
+
+  get isComplete(): boolean {
+    return this.complete;
+  }
+
+  async *chunks(body: ReadableStream<Uint8Array>): AsyncIterable<Uint8Array> {
+    const reader = body.getReader();
+    try {
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) {
+          this.complete = true;
+          return;
+        }
+        if (!(value instanceof Uint8Array)) throw new Error("capture body chunk is not Uint8Array");
+        this.bytes += value.byteLength;
+        if (this.bytes > this.maxBytes) throw new MaxBytesExceededError(this.bytes, this.maxBytes);
+        this.hash.update(value);
+        yield value;
+      }
+    } finally {
+      reader.releaseLock();
+    }
+  }
+
+  sha256(): string {
+    if (!this.complete) throw new Error("capture stream did not complete");
+    return this.hash.digest("hex");
+  }
+}
+
+async function consumeStream(body: ReadableStream<Uint8Array>, digest: StreamDigest): Promise<void> {
+  for await (const _chunk of digest.chunks(body)) {
+    // Le digest est mis à jour dans l'itérateur; aucun corps n'est retenu.
+  }
+}
+
+/**
+ * Le point de passage unique. Journalise une ligne de manifeste pour CHAQUE
+ * tentative, dépose les octets en content-addressed, et ne lance jamais sur un
+ * échec réseau/HTTP.
+ */
+export async function capturedFetch(
+  url: string,
+  init: CaptureRequestInit | undefined,
+  ctx: CapturedFetchContext,
+): Promise<CapturedFetchResult> {
+  const run = ctx.run;
+  const fetchImpl = ctx.fetchImpl ?? (globalThis.fetch as unknown as CaptureFetchLike);
+  const method = (init?.method ?? "GET").toUpperCase() as CaptureMethod;
+  const maxBytes = ctx.maxBytes ?? DEFAULT_CAPTURE_MAX_BYTES;
+  const maxRedirects = ctx.maxRedirects ?? DEFAULT_MAX_REDIRECTS;
+  const requestedAt = new Date().toISOString();
+  const redacted = redactUrlForManifest(url);
+
+  // Squelette de ligne : tout est `null` tant que rien n'est PROUVÉ.
+  const base = {
+    run_id: run.runId,
+    lane: ctx.lane ?? run.lane,
+    source: ctx.source,
+    slugs: ctx.slugs ?? [],
+    url: redacted.url,
+    method,
+    attempt: ctx.attempt ?? 1,
+    requested_at: requestedAt,
+    retrieved_at: null as string | null,
+    http_status: null as number | null,
+    redirect_chain: [] as string[],
+    final_url: null as string | null,
+    content_type: null as string | null,
+    bytes: null as number | null,
+    sha256: null as string | null,
+    storage_key: null as string | null,
+    dedup: null as boolean | null,
+    error: null as string | null,
+    user_agent: run.userAgent,
+    via_obscura: run.viaObscura,
+    egress: run.egress,
+    robots: "unknown" as CaptureRobotsVerdict,
+    redacted: redacted.redacted,
+  };
+
+  const emit = async (patch: Partial<typeof base>): Promise<CaptureManifestLine> => {
+    const line = CaptureManifestLineSchema.parse({ ...base, ...patch });
+    await run.append(line);
+    return line;
+  };
+
+  // ── 1. robots.txt ───────────────────────────────────────────────────────────
+  if (ctx.robots) {
+    let allowed = true;
+    try {
+      allowed = await ctx.robots.isAllowed(url);
+      base.robots = allowed ? "allowed" : "disallowed";
+    } catch {
+      // Permissif sur échec (comportement REP standard), mais verdict INCONNU :
+      // on ne prétend pas avoir lu un robots.txt qu'on n'a pas lu.
+      allowed = true;
+      base.robots = "unknown";
+    }
+    if (!allowed) {
+      run.log(`[capture] ROBOTS-DISALLOWED ${redacted.url}`);
+      const line = await emit({ error: "robots-disallowed" });
+      return { line, ok: false, response: null, bytes: null, record: null };
+    }
+  }
+
+  // ── 2. fetch + chaîne de redirections ───────────────────────────────────────
+  const controller = new AbortController();
+  const timeoutMs = ctx.timeoutMs === undefined ? DEFAULT_CAPTURE_TIMEOUT_MS : ctx.timeoutMs;
+  const timer = timeoutMs === null ? null : setTimeout(() => controller.abort(), timeoutMs);
+  const clearTimer = (): void => {
+    if (timer !== null) clearTimeout(timer);
+  };
+  const chain: string[] = [];
+  let response: CaptureHttpResponse | null = null;
+  let currentUrl = url;
+  let currentMethod: string = method;
+  let transportError: string | null = null;
+
+  try {
+    for (let hop = 0; ; hop++) {
+      const headers = { ...(init?.headers ?? {}) };
+      if (!Object.keys(headers).some((h) => h.toLowerCase() === "user-agent")) {
+        headers["user-agent"] = run.userAgent;
+      }
+      const hopInit: CaptureRequestInit = {
+        ...init,
+        method: currentMethod,
+        headers,
+        redirect: "manual",
+        signal: init?.signal ?? controller.signal,
+      };
+      const res = await fetchImpl(currentUrl, hopInit);
+      response = res;
+      if (!REDIRECT_STATUSES.has(res.status)) break;
+      const location = res.headers.get("location");
+      if (!location) break;
+      if (hop >= maxRedirects) throw new Error(`too many redirects (>${maxRedirects})`);
+      const next = new URL(location, currentUrl).toString();
+      chain.push(redactUrlForManifest(next).url);
+      // 303 (et 302 en pratique) rétrograde en GET ; 307/308 préservent la méthode.
+      if (res.status === 303 && currentMethod !== "HEAD") currentMethod = "GET";
+      currentUrl = next;
+    }
+  } catch (e) {
+    transportError = normalizeError(e);
+    response = null;
+  }
+
+  if (response === null) {
+    clearTimer();
+    const error = transportError ?? "no response";
+    run.log(`[capture] FAIL ${method} ${redacted.url} — ${error}`);
+    const line = await emit({ redirect_chain: chain, error });
+    return { line, ok: false, response: null, bytes: null, record: null };
+  }
+
+  const finalUrl = redactUrlForManifest(response.url ?? currentUrl).url;
+  const status = response.status;
+  const contentType = response.headers.get("content-type");
+
+  // ── 3. réponse non-2xx : pas d'octets, mais la ligne EXISTE ─────────────────
+  if (!response.ok) {
+    clearTimer();
+    run.log(`[capture] HTTP ${status} ${method} ${redacted.url}`);
+    const line = await emit({
+      http_status: status,
+      redirect_chain: chain,
+      final_url: finalUrl,
+      content_type: contentType,
+      error: `HTTP ${status}`,
+    });
+    return { line, ok: false, response, bytes: null, record: null };
+  }
+
+  // ── 4. octets reçus → sha256 ────────────────────────────────────────────────
+  // Le Job de worklist ne consomme pas le corps : il le pompe directement vers
+  // un spool S3, haché chunk par chunk. Les appelants qui doivent parser le
+  // contenu conservent volontairement le chemin `arrayBuffer()` historique.
+  const contentTypeForStorage = contentType ?? "application/octet-stream";
+  const streamToCas =
+    ctx.retainBody === false &&
+    response.body !== undefined &&
+    response.body !== null &&
+    (ctx.store === false || run.canStreamToCas());
+  let body: Uint8Array | null = null;
+  let bytesLen: number;
+  let streamedSha256: string | null = null;
+  let spoolKey: string | null = null;
+
+  try {
+    if (streamToCas) {
+      const digest = new StreamDigest(maxBytes);
+      if (ctx.store === false) {
+        await consumeStream(response.body!, digest);
+      } else {
+        // La clé est explicitement TEMPORAIRE et reste sous le préfixe de run :
+        // elle ne prétend jamais être du CAS avant que le digest soit connu.
+        spoolKey = `capture/_runs/${run.runId}/spool/${randomUUID()}.body`;
+        assertCaptureWritableKey(spoolKey);
+        await run.storePutStream(spoolKey, digest.chunks(response.body!), contentTypeForStorage);
+      }
+      if (!digest.isComplete) throw new Error("capture stream ended before its digest completed");
+      bytesLen = digest.bytes;
+      streamedSha256 = digest.sha256();
+    } else {
+      body = new Uint8Array(await response.arrayBuffer());
+      bytesLen = body.byteLength;
+      if (bytesLen > maxBytes) throw new MaxBytesExceededError(bytesLen, maxBytes);
+    }
+  } catch (e) {
+    clearTimer();
+    let error = e instanceof MaxBytesExceededError ? e.message : normalizeError(e);
+    if (spoolKey !== null) {
+      try {
+        await run.storeDeleteSpool(spoolKey);
+      } catch (cleanupError) {
+        error = `${error}; spool-cleanup: ${normalizeError(cleanupError)}`;
+      }
+    }
+    const bytes = e instanceof MaxBytesExceededError ? e.bytes : null;
+    run.log(`[capture] FAIL-BODY ${method} ${redacted.url} — ${error}`);
+    const line = await emit({
+      http_status: status,
+      retrieved_at: new Date().toISOString(),
+      redirect_chain: chain,
+      final_url: finalUrl,
+      content_type: contentType,
+      bytes,
+      error,
+    });
+    return { line, ok: false, response, bytes: null, record: null };
+  }
+  clearTimer();
+
+  const retrievedAt = new Date().toISOString();
+  const provenance = {
+    version: ctx.version ?? "capturedFetch/1",
+    userAgent: run.userAgent,
+    viaObscura: run.viaObscura,
+  };
+  // Le sidecar est durable lui aussi : il ne doit pas devenir le contournement
+  // de la rédaction du manifeste lorsqu'une URL signée a servi au transport.
+  const record = body !== null
+    ? buildRawDocumentRecord({
+        source: ctx.source,
+        sourceUrl: redacted.url,
+        ...(ctx.title !== undefined ? { title: ctx.title } : {}),
+        ...(ctx.publishedAt !== undefined ? { publishedAt: ctx.publishedAt } : {}),
+        body,
+        fetchedAt: retrievedAt,
+        contentType: contentTypeForStorage,
+        provenance,
+      })
+    : buildRawDocumentRecordFromDigest({
+        source: ctx.source,
+        sourceUrl: redacted.url,
+        ...(ctx.title !== undefined ? { title: ctx.title } : {}),
+        ...(ctx.publishedAt !== undefined ? { publishedAt: ctx.publishedAt } : {}),
+        sha256: streamedSha256!,
+        bytesLen,
+        fetchedAt: retrievedAt,
+        contentType: contentTypeForStorage,
+        provenance,
+      });
+
+  // ── 5. dépôt content-addressed (HEAD-skip idempotent) ───────────────────────
+  let dedup: boolean | null = null;
+  let storeError: string | null = null;
+  let stored = false;
+  if (ctx.store !== false) {
+    try {
+      assertCaptureWritableKey(record.storageKey);
+      if (body !== null) assertCasKeyMatchesBytes(record.storageKey, body);
+      else assertCasKeyMatchesSha256(record.storageKey, record.sha256);
+      dedup = await run.storeHead(record.storageKey);
+      if (!dedup) {
+        if (body !== null) await run.storePut(record.storageKey, body, record.contentType);
+        else if (spoolKey !== null) await run.storeCopy(spoolKey, record.storageKey);
+        else throw new Error("capture stream spool missing before CAS promotion");
+      }
+      // Le sidecar fait partie de l'objet de capture. Un pod peut mourir entre
+      // le PUT CAS et le PUT meta : une recapture dédupliquée doit alors réparer
+      // ce sibling absent, sinon la mesure v2 refuserait à juste titre le CAS.
+      const metaKey = rawMetaKey(record.storageKey);
+      const metaExists = await run.storeHead(metaKey);
+      if (!metaExists) {
+        await run.storePut(
+          metaKey,
+          `${JSON.stringify(record, null, 2)}\n`,
+          "application/json",
+        );
+      }
+      if (spoolKey !== null) {
+        await run.storeDeleteSpool(spoolKey);
+        spoolKey = null;
+      }
+      stored = true;
+    } catch (e) {
+      storeError = normalizeError(e);
+      dedup = null;
+    } finally {
+      if (spoolKey !== null) {
+        try {
+          await run.storeDeleteSpool(spoolKey);
+        } catch (cleanupError) {
+          storeError = `${storeError ?? "store failure"}; spool-cleanup: ${normalizeError(cleanupError)}`;
+        }
+      }
+    }
+  }
+
+  // ── 6. la ligne de manifeste ────────────────────────────────────────────────
+  const line = await emit({
+    http_status: status,
+    retrieved_at: retrievedAt,
+    redirect_chain: chain,
+    final_url: finalUrl,
+    content_type: contentType,
+    bytes: bytesLen,
+    sha256: `sha256:${record.sha256}`,
+    storage_key: stored ? record.storageKey : null,
+    dedup,
+    error: storeError,
+  });
+  run.log(
+    `[capture] OK ${status} ${method} ${redacted.url} ${bytesLen}B sha256:${record.sha256.slice(0, 12)}… ${
+      dedup === true ? "dedup" : dedup === false ? "stored" : "not-stored"
+    }`,
+  );
+  return { line, ok: true, response, bytes: body, record };
+}
+
+/** Erreur portant la ligne de manifeste DÉJÀ journalisée (rien n'est perdu). */
+export class CapturedFetchError extends Error {
+  readonly line: CaptureManifestLine;
+  constructor(line: CaptureManifestLine) {
+    super(
+      `capture ${line.run_id}: ${line.method} ${line.url} — ${line.error ?? `HTTP ${String(line.http_status)}`}`,
+    );
+    this.name = "CapturedFetchError";
+    this.line = line;
+  }
+}
+
+/**
+ * Variante « throw » pour les appelants qui ont déjà une boucle de retry : la ligne
+ * est journalisée AVANT que l'erreur ne soit lancée.
+ */
+export async function capturedFetchOrThrow(
+  url: string,
+  init: CaptureRequestInit | undefined,
+  ctx: CapturedFetchContext,
+): Promise<CapturedFetchResult & { bytes: Uint8Array }> {
+  const res = await capturedFetch(url, init, { ...ctx, retainBody: true });
+  if (!res.ok || res.bytes === null) throw new CapturedFetchError(res.line);
+  return { ...res, bytes: res.bytes };
+}
+
+/** Décode en UTF-8 les octets d'une capture réussie. */
+export function capturedText(res: CapturedFetchResult): string {
+  if (res.bytes === null) throw new CapturedFetchError(res.line);
+  return new TextDecoder("utf-8").decode(res.bytes);
+}

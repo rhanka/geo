@@ -1,0 +1,17 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "ID": "residentiel",
+    "R-2": "commercial",
+    "R-3": "residentiel",
+    "R-4": "residentiel",
+    "R-5": "commercial",
+    "RC": null,
+    "CU": null,
+    "TP": null,
+    "Hameau Kensington": "residentiel",
+    "Hameau Dewittville": null
+  },
+  "source": "https://godmanchester.ca/data/documents/357-Reglement-zonage-juin-2024.pdf",
+  "note": "Règlement de zonage 357 (juin 2024), section 2.2 « Fiches des usages et des normes permises dans les différentes zones »: chaque fiche déclare un champ « Vocation principale » VERBATIM — c'est la fonction dominante, distincte de la « Classe d'usages compatibles » (matrice des usages permis) qui n'est PAS utilisée. Relevés: A-1-x « Vocation principale / Sous-classe d'usage AGRICOLE 1 » et A-2-x « Sous-classe d'usage AGRICOLE 2 » -> agricole (confirmé art. 4.x « prohibés dans toutes les zones, sauf en zone agricole (A) »); ID-1 à ID-11 « ZONE ID-n (ÎLOT DÉSTRUCTURÉ À L'AGRICULTURE) / Vocation principale / Résidentielle de faible densité conformément à l'article 4.7 » -> residentiel (les 11 fiches vérifiées une à une: le nom de la zone dit « agriculture » mais la vocation déclarée est résidentielle — l'îlot déstructuré est un noyau bâti soustrait à l'agriculture); « HAMEAU DE KENSINGTON / Vocations principales (1) / Résidentielle de faible densité conformément à l'article 4.7 » -> residentiel (vocation unique). ATTENTION: le préfixe R ne signifie PAS résidentiel ici — les fiches titrent « ZONE RURALE R-n » et la vocation varie zone par zone, d'où un mapping par code: R-3 et R-4 « Vocation principale / Résidentielle de faible densité conformément à l'article 4.7 » -> residentiel; R-2 et R-5 « Vocation principale / Sous classe commerciale D » -> commercial. Null explicite: CU-1 « (CENTRE URBAIN) », CU-2 et CU-3 déclarent des « VocationS principaleS » MULTIPLES (CU-1/CU-2: Résidentielle + Commerciale et service + Institutionnelle; CU-3: Commerciale et service + Industrielle) -> duale, aucune dominante; « HAMEAU DE DEWITTVILLE / Vocations principales (1) / Résidentielle de faible densité + Institutionnelle (Sous-classe institutionnelle A) » -> duale (contrairement à Kensington qui n'en déclare qu'une); « ZONE TP-1 (TERRE PUBLIQUE) / Vocation principale / Classe d'usage utilités publiques » -> publique; « ZONE RURALE RC-1 / Vocation principale / Sous-classe institutionnel B » -> institutionnel, hors des cinq catégories servies. Les zones CON-1 à CON-5 (« ZONE CONSERVATION », vocation « Sous-classe institutionnel A ») NE SONT PAS mappées: absentes du SIG servi. Préfixes SIG réellement présents (36 polygones, lus sur S3): A(14), ID(11), R(4), CU(3), Hameau(2), TP(1), RC(1)."
+}

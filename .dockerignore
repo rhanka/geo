@@ -39,6 +39,18 @@ coverage
 *.log
 .DS_Store
 
+# Runtime scratch left by local tools. The capture image copies only committed
+# packages and acquisition source; sockets in these directories cannot be
+# archived into a Docker build context.
+.tmp
+.tmp-tsx
+.codex-tmp-geo-test
+.graphify
+.vite
+work
+acquisition/.tsx-tmp
+acquisition/work
+
 # Env & secrets
 .env
 .env.*

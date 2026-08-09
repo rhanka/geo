@@ -1,0 +1,28 @@
+{
+  "prefix_map": {
+    "Rb": "residentiel",
+    "RbM": "residentiel",
+    "RbMP": "residentiel",
+    "RbMX": "residentiel",
+    "RbP": "residentiel",
+    "RdMP": "residentiel",
+    "Rf": "residentiel",
+    "CbMP": "commercial",
+    "CcM": "commercial",
+    "Ib": "industriel",
+    "IbM": "industriel",
+    "Ic": "industriel",
+    "IcMX": "industriel",
+    "Ab": "agricole",
+    "AbM": "agricole",
+    "Ac": "agricole",
+    "Fc": "agricole",
+    "Fa": null,
+    "V": null,
+    "Sc": null,
+    "ScM": null,
+    "ScMP": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&CQL_FILTER=id_municipalite='18060'",
+  "note": "Vocation VERBATIM portée par l'attribut SIG `etiquette_2` de la couche geocentralis evb:siadmin_pzon_99_s, filtrée sur id_municipalite='18060' (Saint-François-de-la-Rivière-du-Sud) — couche JUMELLE de evb:zonage_municipal qui sert les 85 polygones de ce slug. `etiquette_1` = code complet, `etiquette_3` = préfixe alphabétique servi, `etiquette_2` = vocation. Table (etiquette_3 -> etiquette_2, VERBATIM) : Rb, RbM, RbMP, RbMX et RbP = « Unifamiliale isolée, jumelée, bifamiliale » ; RdMP = « Unifamiliale à multifamiliale (max: 2 étages) » ; Rf = « Multifamiliale (3 étages) » -> residentiel. CbMP = « Commerce local et régional (sans nuisance) » ; CcM = « Commerce régional de grande superficie (à nuisance) » -> commercial. Ib et IbM = « Industrie à nuisance limitée » ; Ic et IcMX = « Industrie à nuisance élevée » -> industriel. Ab et AbM = « Agriculture à nuisance limitée » ; Ac = « Agriculture à nuisance » (deux lignes du SIG écrivent la variante « Agriculture avec nuisance » — même famille) ; Fc = « Forêt » -> agricole. Null explicite et SERVI : Fa = « Forêt et conservation faunique avec restriction particulière » est DUALE ; V = « Villégiature et espace récréatif » est DUALE ; Sc, ScM et ScMP = « Équipement ou espace public » est PUBLIQUE. NON MAPPÉ VOLONTAIREMENT : le préfixe `Ta` (2 polygones, Ta.1 et Ta.2) porte etiquette_2 = « Parterre » — libellé qui ne s'énonce sur AUCUNE des 5 catégories servies et dont aucune forme longue n'existe (balayage de TOUT le serveur sur etiquette_3='Ta' : 4 lignes seulement, id 18055/18060/19117, toutes « Parterre » nu). Laissé HORS du prefix_map pour que le fold rende le null de non-match (honnête) plutôt qu'un null documenté abusif. Aucune vocation n'est déduite de la lettre (réfutation : `ReM` = commercial à Saint-Paul-de-Montminy mais résidentiel à Saint-Just-de-Bretenières). Gate propriétaire (nomenclature Lettre(s).numéro PARTAGÉE dans la MRC de Montmagny) : le filtre id_municipalite='18060' est le gate, et la correspondance avec la collection servie est EXACTE — SIG 18060 : 85 lignes ; collection servie qc-zonage-saint-francois-de-la-riviere-du-sud : 85 polygones, sansCode=0, même inventaire de codes et mêmes effectifs par préfixe (Rb 17, Ac 13, Ab 11, CbMP 6, Fa 4, AbM 3, CcM 3, Ib 3, V 3, IbM 3, Sc 2, Rf 2, RbM 2, Ta 2, RbP 2, ScM 2, IcMX 1, Fc 1, Ic 1, RbMX 1, ScMP 1, RbMP 1, RdMP 1). Couverture : 22/23 préfixes servis documentés, 83/85 polygones (les 2 Ta restent null de non-match)."
+}

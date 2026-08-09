@@ -187,13 +187,14 @@ describe("extractZonePageFromImage — pilot Saint-Stanislas-de-Kostka", () => {
 
       // hauteur_max: when the "hauteur en mètres" cell carries a value (A-3/A-4/
       // A-6 → "6") we publish that (=6 m); when it is empty (A-2/A-5) we fall back
-      // to the étages range "1/2" (first number → 1). Either way it is a faithful
-      // read of a real cell — never invented.
+      // to the étages range "1/2", whose MAX bound is 2 — publishing the range's
+      // first number (1) would serve the MINIMUM as a maximum. The verbatim cell
+      // stays in `raw`. Either way it is a faithful read of a real cell.
       if (page.passA.fields.hauteur_metres) {
         expect(zn.hauteur_max?.value).toBe(6);
         expect(zn.hauteur_max?.unit).toBe("m");
       } else {
-        expect(zn.hauteur_max?.value).toBe(1);
+        expect(zn.hauteur_max?.value).toBe(2);
         expect(zn.hauteur_max?.raw).toBe("1/2");
       }
 
@@ -224,8 +225,11 @@ describe("extractZonePageFromImage — pilot Saint-Stanislas-de-Kostka", () => {
       expectedZone: "A-2",
       vision: mockVision(page),
     });
-    // hauteur_max falls back to étages (value 1 from "1/2"), since métres empty.
+    // hauteur_max falls back to étages, publishing the range's MAX bound (2 of
+    // "1/2") while keeping the verbatim cell as raw. Never the min, never invented.
     expect(zn.hauteur_max?.raw).toBe("1/2");
+    expect(zn.hauteur_max?.value).toBe(2);
+    expect(zn.hauteur_max?.unit).toBe("etages");
   });
 
   it("METRIC — 0 fausse valeur servie: every published value matches a cell verbatim", async () => {
@@ -283,8 +287,8 @@ describe("extractZonePageFromImage — guards refuse, never invent", () => {
     });
     expect(zn.marges.avant_min?.value).toBeNull();
     expect(zn.marges.avant_min?.flag).toBe("unite-incoherente");
-    // hauteur_metres 120m refused → falls back to étages "1/2" (=1), which is fine.
-    expect(zn.hauteur_max?.value).toBe(1);
+    // hauteur_metres 120m refused → falls back to étages "1/2", MAX bound = 2.
+    expect(zn.hauteur_max?.value).toBe(2);
   });
 
   it("refuses when zone cannot be determined and no expectedZone is given", async () => {

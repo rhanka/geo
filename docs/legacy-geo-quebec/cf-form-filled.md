@@ -1,0 +1,1778 @@
+- generic [ref=e8]:
+  - generic [ref=e13]:
+    - complementary [ref=e15]:
+      - generic [ref=e17]:
+        - generic [ref=e19]:
+          - link [ref=e20] [cursor=pointer]:
+            - /url: /
+            - img [ref=e22]
+          - generic [ref=e1269]: Antoinefabien@free.fr's Account
+        - navigation [ref=e28]:
+          - generic [ref=e30]:
+            - generic:
+              - generic:
+                - generic:
+                  - button:
+                    - generic:
+                      - generic:
+                        - img
+                        - generic: Recherche rapide...
+                        - generic: Ctrl K
+                - list:
+                  - listitem:
+                    - link:
+                      - /url: /6d1ca0b3427563dedf81d909a0d13592/home
+                      - generic:
+                        - img
+                        - generic:
+                          - generic: Accueil du compte
+                  - listitem:
+                    - generic:
+                      - button:
+                        - generic:
+                          - img
+                          - generic:
+                            - generic: Historique
+                            - img
+                      - list:
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/security-center
+                            - generic:
+                              - generic: Informations sur la sécurité
+                              - generic:
+                                - generic: Sécurité des appli…
+                          - generic:
+                            - button:
+                              - generic:
+                                - img
+                                - img
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/rules/overview
+                            - generic:
+                              - generic: Vue d’ensemble
+                              - generic:
+                                - generic: sent-tech.ca
+                                - generic: /
+                                - generic: Règles
+                          - generic:
+                            - button:
+                              - generic:
+                                - img
+                                - img
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/domains/overview
+                            - generic:
+                              - generic: Vue d'ensemble
+                              - generic:
+                                - generic: Domaines
+                          - generic:
+                            - button:
+                              - generic:
+                                - img
+                                - img
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/domains/registrations
+                            - generic:
+                              - generic: Enregistrements
+                              - generic:
+                                - generic: Domaines
+                          - generic:
+                            - button:
+                              - generic:
+                                - img
+                                - img
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca
+                            - generic:
+                              - generic: sent-tech.ca
+                              - generic:
+                                - generic: Domaines
+                          - generic:
+                            - button:
+                              - generic:
+                                - img
+                                - img
+                  - listitem:
+                    - generic:
+                      - button:
+                        - generic:
+                          - img
+                          - generic:
+                            - generic: Domaines
+                            - img
+                      - list:
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/domains/overview
+                            - generic:
+                              - generic: Vue d'ensemble
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/domains/registrations
+                            - generic:
+                              - generic: Enregistrements
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/domains/transfers
+                            - generic:
+                              - generic: Transferts
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Observe
+                    - list:
+                      - listitem:
+                        - generic:
+                          - button:
+                            - generic:
+                              - img
+                              - generic:
+                                - generic: Investigate
+                                - img
+                          - list:
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Log Explorer
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/log-explorer/log-search
+                                    - generic:
+                                      - generic: Recherche dans les journaux
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/trace
+                                - generic:
+                                  - generic: Trace
+                                  - generic:
+                                    - generic: Bêta
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/logs
+                                - generic:
+                                  - generic: Logpush
+                      - listitem:
+                        - generic:
+                          - button:
+                            - generic:
+                              - img
+                              - generic:
+                                - generic: Analytics
+                                - img
+                          - list:
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/dashboards
+                                - generic:
+                                  - generic: Tableaux de bord
+                                  - generic:
+                                    - generic: Nouveau
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/analytics
+                                - generic:
+                                  - generic: Analyse de compte
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/web-analytics
+                                - generic:
+                                  - generic: Web Analytics
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Build
+                    - list:
+                      - listitem:
+                        - generic:
+                          - button:
+                            - generic:
+                              - img
+                              - generic:
+                                - generic: Calcul
+                                - img
+                          - list:
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers-and-pages
+                                - generic:
+                                  - generic: Workers et Pages
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/observability
+                                - generic:
+                                  - generic: Observabilité
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers-for-platforms
+                                - generic:
+                                  - generic: Workers for Platforms
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/containers
+                                - generic:
+                                  - generic: Containers
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/durable-objects
+                                - generic:
+                                  - generic: Durable Objects
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/queues
+                                - generic:
+                                  - generic: Queues
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/workflows
+                                - generic:
+                                  - generic: Workflows
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/browser-run
+                                - generic:
+                                  - generic: Exécution du navigateur
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/vpc
+                                - generic:
+                                  - generic: VPC
+                                  - generic:
+                                    - generic: Bêta
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Service d’hébergement de courrier
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/email-service/sending
+                                    - generic:
+                                      - generic: Email Sending
+                                      - generic:
+                                        - generic: Bêta
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/email-service/routing
+                                    - generic:
+                                      - generic: Email Routing
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/plans
+                                - generic:
+                                  - generic: Offres Workers
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/flagship
+                                - generic:
+                                  - generic: Produit phare
+                                  - generic:
+                                    - generic: Bêta
+                      - listitem:
+                        - generic:
+                          - button:
+                            - generic:
+                              - img
+                              - generic:
+                                - generic: AI
+                                - img
+                          - list:
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/ai/models
+                                - generic:
+                                  - generic: Modèles
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/ai/workers-ai
+                                - generic:
+                                  - generic: Workers AI
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/ai/ai-gateway
+                                - generic:
+                                  - generic: AI Gateway
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/ai/vectorize
+                                - generic:
+                                  - generic: Vectorize
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/ai/ai-search
+                                - generic:
+                                  - generic: Recherche IA
+                                  - generic:
+                                    - generic: Bêta
+                      - listitem:
+                        - generic:
+                          - button:
+                            - generic:
+                              - img
+                              - generic:
+                                - generic: Stockage et bases de données
+                                - img
+                          - list:
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Stockage d'objets R2
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/r2/overview
+                                    - generic:
+                                      - generic: Vue d’ensemble
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/r2/slurper
+                                    - generic:
+                                      - generic: Migration des données
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/data-catalog
+                                - generic:
+                                  - generic: Catalogue de données R2
+                                  - generic:
+                                    - generic: Bêta
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/hyperdrive
+                                - generic:
+                                  - generic: Postgres et MySQL (Hyperdrive)
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/kv/namespaces
+                                - generic:
+                                  - generic: Workers KV
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/d1
+                                - generic:
+                                  - generic: Base de données SQLite D1
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/workers/analytics-engine
+                                - generic:
+                                  - generic: Analytics Engine
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Pipelines
+                                    - generic:
+                                      - generic: Bêta
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/pipelines/overview
+                                    - generic:
+                                      - generic: Pipelines
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/secrets-store
+                                - generic:
+                                  - generic: Secrets Store
+                                  - generic:
+                                    - generic: Nouveau
+                      - listitem:
+                        - generic:
+                          - button:
+                            - generic:
+                              - img
+                              - generic:
+                                - generic: Média
+                                - img
+                          - list:
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Stream
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/stream/plans
+                                    - generic:
+                                      - generic: Offres
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Images
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/images/transformations
+                                    - generic:
+                                      - generic: Transformations
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/images/hosted
+                                    - generic:
+                                      - generic: Images hébergées
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/images/plans
+                                    - generic:
+                                      - generic: Offres
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Realtime
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/realtime/kit
+                                    - generic:
+                                      - generic: Kit Realtime
+                                      - generic:
+                                        - generic: Bêta
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/realtime/turn
+                                    - generic:
+                                      - generic: Serveur TURN
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/realtime/sfu
+                                    - generic:
+                                      - generic: SFU serverless
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/realtime/moq
+                                    - generic:
+                                      - generic: Relais MoQ
+                                      - generic:
+                                        - generic: Bêta
+                  - generic:
+                    - generic:
+                      - generic:
+                        - generic: Protéger et connecter
+                    - list:
+                      - listitem:
+                        - generic:
+                          - button:
+                            - generic:
+                              - img
+                              - generic:
+                                - generic: Sécurité des applications
+                                - img
+                          - list:
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/security-center
+                                - generic:
+                                  - generic: Informations sur la sécurité
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/application-security/waf
+                                - generic:
+                                  - generic: WAF
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/application-security/investigate
+                                - generic:
+                                  - generic: Enquêter
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/security-center/inventory
+                                - generic:
+                                  - generic: Infrastructure
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/turnstile
+                                - generic:
+                                  - generic: Turnstile
+                      - listitem:
+                        - link:
+                          - /url: https://dash.cloudflare.com/6d1ca0b3427563dedf81d909a0d13592/one
+                          - generic:
+                            - img
+                            - generic:
+                              - generic: Zero Trust
+                      - listitem:
+                        - generic:
+                          - button:
+                            - generic:
+                              - img
+                              - generic:
+                                - generic: Réseaux
+                                - img
+                          - list:
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/magic-networks/overview
+                                - generic:
+                                  - generic: Vue d’ensemble
+                                  - generic:
+                                    - generic: Nouveau
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Insights
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/networking-insights/analytics/network-analytics/flow-analytics
+                                    - generic:
+                                      - generic: Flux du réseau
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/tunnels
+                                - generic:
+                                  - generic: Tunnels
+                                  - generic:
+                                    - generic: Nouveau
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/mesh
+                                - generic:
+                                  - generic: Maillage
+                                  - generic:
+                                    - generic: Bêta
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Adresses IP
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/ip-addresses/address-space
+                                    - generic:
+                                      - generic: Espace d'adresses
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/ip-addresses/proxy-ips
+                                    - generic:
+                                      - generic: Cartes d’adresses
+                      - listitem:
+                        - generic:
+                          - button:
+                            - generic:
+                              - img
+                              - generic:
+                                - generic: Livraison et performances
+                                - img
+                          - list:
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/bulk-redirects
+                                - generic:
+                                  - generic: Redirections en masse
+                            - listitem:
+                              - link:
+                                - /url: /6d1ca0b3427563dedf81d909a0d13592/load-balancing
+                                - generic:
+                                  - generic: Load Balancing
+                            - generic:
+                              - listitem:
+                                - button:
+                                  - generic:
+                                    - generic: Gestion des balises Web
+                                    - img
+                              - list:
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/tag-management/zaraz
+                                    - generic:
+                                      - generic: Configuration des balises
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/tag-management/consent
+                                    - generic:
+                                      - generic: Consentement
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/tag-management/history
+                                    - generic:
+                                      - generic: Historique
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/tag-management/monitoring
+                                    - generic:
+                                      - generic: Surveillance
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/tag-management/settings
+                                    - generic:
+                                      - generic: Paramètres
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/tag-management/plans
+                                    - generic:
+                                      - generic: Offres Zaraz
+                                - listitem:
+                                  - link:
+                                    - /url: /6d1ca0b3427563dedf81d909a0d13592/tag-management/google-tag-gateway
+                                    - generic:
+                                      - generic: Passerelle de balise Google
+                  - listitem:
+                    - generic:
+                      - button:
+                        - generic:
+                          - img
+                          - generic:
+                            - generic: Gérer le compte
+                            - img
+                      - list:
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/members
+                            - generic:
+                              - generic: Membres
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/billing
+                            - generic:
+                              - generic: Facturation
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/api-tokens
+                            - generic:
+                              - generic: Jetons d’API du compte
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/oauth-clients
+                            - generic:
+                              - generic: Clients OAuth
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/audit-log
+                            - generic:
+                              - generic: Journaux d’audit
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/notifications
+                            - generic:
+                              - generic: Notifications
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/shared-configurations
+                            - generic:
+                              - generic: Configuration partagée
+                              - generic:
+                                - generic: Alpha
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/blocked-content
+                            - generic:
+                              - generic: Contenu bloqué
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/abuse-reports
+                            - generic:
+                              - generic: Rapports de mauvaise utilisation
+                              - generic:
+                                - generic: Bêta
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/carbon
+                            - generic:
+                              - generic: Rapport sur l’impact carbone
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/configurations
+                            - generic:
+                              - generic: Configurations
+                        - listitem:
+                          - link:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/tags
+                            - generic:
+                              - generic: Étiquettes de ressources
+                              - generic:
+                                - generic: Bêta
+            - generic [ref=e32]:
+              - button [ref=e1270] [cursor=pointer]:
+                - generic [ref=e36]:
+                  - img [ref=e37]
+                  - generic [ref=e39]: Recherche rapide...
+                  - generic [ref=e40]: Ctrl K
+              - link [ref=e1271] [cursor=pointer]:
+                - /url: /6d1ca0b3427563dedf81d909a0d13592/domains/overview
+                - generic [ref=e43]:
+                  - img [ref=e44]
+                  - generic [ref=e46]: Back to Domains
+              - list [ref=e49]:
+                - listitem [ref=e50]:
+                  - link [ref=e1272] [cursor=pointer]:
+                    - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/
+                    - generic [ref=e52]:
+                      - img [ref=e1273]
+                      - generic [ref=e57]: Vue d’ensemble
+                - listitem [ref=e58]:
+                  - generic [ref=e59]:
+                    - button [ref=e1276] [cursor=pointer]:
+                      - generic [ref=e61]:
+                        - img [ref=e1277]
+                        - generic [ref=e65]:
+                          - generic [ref=e66]: Historique
+                          - img [ref=e67]
+                    - list [ref=e69]:
+                      - listitem [ref=e71]:
+                        - link [ref=e72] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/security-center
+                          - generic [ref=e73]:
+                            - generic [ref=e74]: Informations sur la sécurité
+                            - generic [ref=e76]: Sécurité des appli…
+                        - button [ref=e78] [cursor=pointer]:
+                          - generic [ref=e79]:
+                            - img [ref=e80]
+                            - img [ref=e85]
+                      - listitem [ref=e87]:
+                        - link [ref=e88] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/rules/overview
+                          - generic [ref=e89]:
+                            - generic [ref=e90]: Vue d’ensemble
+                            - generic [ref=e91]:
+                              - generic [ref=e92]: sent-tech.ca
+                              - generic [ref=e93]: /
+                              - generic [ref=e94]: Règles
+                        - button [ref=e96] [cursor=pointer]:
+                          - generic [ref=e97]:
+                            - img [ref=e98]
+                            - img [ref=e103]
+                      - listitem [ref=e105]:
+                        - link [ref=e106] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/domains/overview
+                          - generic [ref=e107]:
+                            - generic [ref=e108]: Vue d'ensemble
+                            - generic [ref=e110]: Domaines
+                        - button [ref=e112] [cursor=pointer]:
+                          - generic [ref=e113]:
+                            - img [ref=e114]
+                            - img [ref=e119]
+                      - listitem [ref=e121]:
+                        - link [ref=e122] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/domains/registrations
+                          - generic [ref=e123]:
+                            - generic [ref=e124]: Enregistrements
+                            - generic [ref=e126]: Domaines
+                        - button [ref=e128] [cursor=pointer]:
+                          - generic [ref=e129]:
+                            - img [ref=e130]
+                            - img [ref=e135]
+                      - listitem [ref=e137]:
+                        - link [ref=e138] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca
+                          - generic [ref=e139]:
+                            - generic [ref=e140]: sent-tech.ca
+                            - generic [ref=e142]: Domaines
+                        - button [ref=e144] [cursor=pointer]:
+                          - generic [ref=e145]:
+                            - img [ref=e146]
+                            - img [ref=e151]
+                - listitem [ref=e153]:
+                  - generic [ref=e154]:
+                    - button [ref=e1280] [cursor=pointer]:
+                      - generic [ref=e156]:
+                        - img [ref=e1281]
+                        - generic [ref=e160]:
+                          - generic [ref=e161]: AI Crawl Control
+                          - img [ref=e162]
+                    - list [ref=e164]:
+                      - listitem [ref=e166]:
+                        - link [ref=e167] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ai/overview
+                          - generic [ref=e169]: Vue d’ensemble
+                      - listitem [ref=e170]:
+                        - link [ref=e171] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ai/metrics
+                          - generic [ref=e173]: Mesures
+                      - listitem [ref=e174]:
+                        - link [ref=e175] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ai/security
+                          - generic [ref=e177]: Sécurité
+                      - listitem [ref=e178]:
+                        - link [ref=e179] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ai/optimization
+                          - generic [ref=e180]:
+                            - generic [ref=e181]: Optimisation
+                            - generic [ref=e183]: Nouveau
+                      - listitem [ref=e184]:
+                        - link [ref=e185] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ai/signals
+                          - generic [ref=e187]: Signaux
+                - listitem [ref=e188]:
+                  - generic [ref=e189]:
+                    - button [ref=e1284] [cursor=pointer]:
+                      - generic [ref=e191]:
+                        - img [ref=e1285]
+                        - generic [ref=e195]:
+                          - generic [ref=e196]: Investigate
+                          - img [ref=e197]
+                    - list [ref=e199]:
+                      - generic [ref=e201]:
+                        - listitem [ref=e202]:
+                          - button [ref=e203] [cursor=pointer]:
+                            - generic [ref=e204]:
+                              - generic [ref=e205]: Log Explorer
+                              - img [ref=e206]
+                        - list [ref=e208]:
+                          - listitem [ref=e210]:
+                            - link [ref=e211] [cursor=pointer]:
+                              - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/log-explorer/log-search
+                              - generic [ref=e213]: Recherche dans les journaux
+                      - listitem [ref=e214]:
+                        - link [ref=e215] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/rules/trace/search
+                          - generic [ref=e216]:
+                            - generic [ref=e217]: Trace
+                            - generic [ref=e219]: Bêta
+                      - listitem [ref=e220]:
+                        - link [ref=e221] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/analytics/logs
+                          - generic [ref=e223]: Logpush
+                - listitem [ref=e224]:
+                  - generic [ref=e225]:
+                    - button [ref=e1288] [cursor=pointer]:
+                      - generic [ref=e227]:
+                        - img [ref=e1289]
+                        - generic [ref=e231]:
+                          - generic [ref=e232]: Analytics
+                          - img [ref=e233]
+                    - list [ref=e235]:
+                      - listitem [ref=e237]:
+                        - link [ref=e238] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/dashboards
+                          - generic [ref=e239]:
+                            - generic [ref=e240]: Tableaux de bord
+                            - generic [ref=e242]: Nouveau
+                      - listitem [ref=e243]:
+                        - link [ref=e244] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/analytics/traffic
+                          - generic [ref=e246]: Trafic HTTP
+                      - listitem [ref=e247]:
+                        - link [ref=e248] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/analytics/web/overview
+                          - generic [ref=e250]: Web Analytics
+                      - listitem [ref=e251]:
+                        - link [ref=e252] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/analytics/performance
+                          - generic [ref=e254]: Performances
+                      - listitem [ref=e255]:
+                        - link [ref=e256] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/analytics/workers
+                          - generic [ref=e258]: Workers
+                - listitem [ref=e259]:
+                  - generic [ref=e260]:
+                    - button [expanded] [ref=e1292] [cursor=pointer]:
+                      - generic [ref=e262]:
+                        - img [ref=e1293]
+                        - generic [ref=e265]:
+                          - generic [ref=e266]: DNS
+                          - img [ref=e267]
+                    - region [ref=e1295]:
+                      - list [ref=e269]:
+                        - listitem [ref=e271]:
+                          - link [ref=e1297] [cursor=pointer]:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/dns/records
+                            - generic [ref=e274]: Enregistrements
+                        - listitem [ref=e275]:
+                          - link [ref=e1298] [cursor=pointer]:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/dns/analytics
+                            - generic [ref=e278]: Analytics
+                        - listitem [ref=e279]:
+                          - link [ref=e1299] [cursor=pointer]:
+                            - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/dns/settings
+                            - generic [ref=e282]: Paramètres
+                - listitem [ref=e283]:
+                  - generic [ref=e284]:
+                    - button [ref=e1300] [cursor=pointer]:
+                      - generic [ref=e286]:
+                        - img [ref=e1301]
+                        - generic [ref=e291]:
+                          - generic [ref=e292]: E-mail
+                          - img [ref=e293]
+                    - list [ref=e295]:
+                      - listitem [ref=e297]:
+                        - link [ref=e298] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/email/routing
+                          - generic [ref=e300]: Routage des e-mails
+                      - listitem [ref=e301]:
+                        - link [ref=e302] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/email/dmarc-management
+                          - generic [ref=e304]: Gestion DMARC
+                      - listitem [ref=e305]:
+                        - link [ref=e306] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/email/security
+                          - generic [ref=e308]: Sécurité des e-mails
+                - listitem [ref=e309]:
+                  - generic [ref=e310]:
+                    - button [ref=e1305] [cursor=pointer]:
+                      - generic [ref=e312]:
+                        - img [ref=e1306]
+                        - generic [ref=e316]:
+                          - generic [ref=e317]: SSL/TLS
+                          - img [ref=e318]
+                    - list [ref=e320]:
+                      - listitem [ref=e322]:
+                        - link [ref=e323] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ssl-tls
+                          - generic [ref=e325]: Vue d’ensemble
+                      - listitem [ref=e326]:
+                        - link [ref=e327] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ssl-tls/edge-certificates
+                          - generic [ref=e329]: Certificats de périphérie
+                      - listitem [ref=e330]:
+                        - link [ref=e331] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ssl-tls/client-certificates
+                          - generic [ref=e333]: Certificats client
+                      - listitem [ref=e334]:
+                        - link [ref=e335] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ssl-tls/origin
+                          - generic [ref=e337]: Serveur d’origine
+                      - listitem [ref=e338]:
+                        - link [ref=e339] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/ssl-tls/custom-hostnames
+                          - generic [ref=e341]: Noms d’hôte personnalisés
+                - listitem [ref=e342]:
+                  - generic [ref=e343]:
+                    - button [ref=e1309] [cursor=pointer]:
+                      - generic [ref=e345]:
+                        - img [ref=e1310]
+                        - generic [ref=e348]:
+                          - generic [ref=e349]: Sécurité
+                          - img [ref=e350]
+                    - list [ref=e352]:
+                      - listitem [ref=e354]:
+                        - link [ref=e355] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/security/overview
+                          - generic [ref=e357]: Présentation
+                      - listitem [ref=e358]:
+                        - link [ref=e359] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/security/analytics
+                          - generic [ref=e361]: Analytics
+                      - listitem [ref=e362]:
+                        - link [ref=e363] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/security/web-assets
+                          - generic [ref=e365]: Web Assets
+                      - listitem [ref=e366]:
+                        - link [ref=e367] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/security/security-rules
+                          - generic [ref=e369]: Règles de sécurité
+                      - listitem [ref=e370]:
+                        - link [ref=e371] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/security/settings
+                          - generic [ref=e373]: Paramètres
+                - listitem [ref=e374]:
+                  - link [ref=e1312] [cursor=pointer]:
+                    - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/access
+                    - generic [ref=e376]:
+                      - img [ref=e1313]
+                      - generic [ref=e381]: Access
+                - listitem [ref=e382]:
+                  - generic [ref=e383]:
+                    - button [ref=e1316] [cursor=pointer]:
+                      - generic [ref=e385]:
+                        - img [ref=e1317]
+                        - generic [ref=e388]:
+                          - generic [ref=e389]: Speed
+                          - img [ref=e390]
+                    - list [ref=e392]:
+                      - listitem [ref=e394]:
+                        - link [ref=e395] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/speed
+                          - generic [ref=e396]:
+                            - generic [ref=e397]: Observatory
+                            - generic [ref=e399]: Bêta
+                      - listitem [ref=e400]:
+                        - link [ref=e401] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/speed/origin-analytics
+                          - generic [ref=e402]:
+                            - generic [ref=e403]: Analytique d'origine
+                            - generic [ref=e405]: Bêta
+                      - listitem [ref=e406]:
+                        - link [ref=e407] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/speed/rum
+                          - generic [ref=e409]: Surveillance des utilisateurs réels
+                      - listitem [ref=e410]:
+                        - link [ref=e411] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/speed/test
+                          - generic [ref=e412]:
+                            - generic [ref=e413]: Surveillance synthétique
+                            - generic [ref=e415]: Bêta
+                      - listitem [ref=e416]:
+                        - link [ref=e417] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/speed/optimization
+                          - generic [ref=e419]: Paramètres
+                      - listitem [ref=e420]:
+                        - link [ref=e421] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/speed/smart-shield
+                          - generic [ref=e423]: Smart Shield
+                - listitem [ref=e424]:
+                  - generic [ref=e425]:
+                    - button [ref=e1319] [cursor=pointer]:
+                      - generic [ref=e427]:
+                        - img [ref=e1320]
+                        - generic [ref=e433]:
+                          - generic [ref=e434]: Caching
+                          - img [ref=e435]
+                    - list [ref=e437]:
+                      - listitem [ref=e439]:
+                        - link [ref=e440] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/caching
+                          - generic [ref=e442]: Vue d’ensemble
+                      - listitem [ref=e443]:
+                        - link [ref=e444] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/caching/configuration
+                          - generic [ref=e446]: Configuration
+                      - listitem [ref=e447]:
+                        - link [ref=e448] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/caching/cache-rules
+                          - generic [ref=e450]: Cache Rules
+                      - listitem [ref=e451]:
+                        - link [ref=e452] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/caching/tiered-cache
+                          - generic [ref=e454]: Mise en cache hiérarchisée
+                      - listitem [ref=e455]:
+                        - link [ref=e456] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/caching/cache-reserve
+                          - generic [ref=e458]: Cache reserve
+                - listitem [ref=e459]:
+                  - link [ref=e1325] [cursor=pointer]:
+                    - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/workers
+                    - generic [ref=e461]:
+                      - img [ref=e1326]
+                      - generic [ref=e467]: Routes Workers
+                - listitem [ref=e468]:
+                  - generic [ref=e469]:
+                    - button [ref=e1330] [cursor=pointer]:
+                      - generic [ref=e471]:
+                        - img [ref=e1331]
+                        - generic [ref=e475]:
+                          - generic [ref=e476]: Règles
+                          - img [ref=e477]
+                    - list [ref=e479]:
+                      - listitem [ref=e481]:
+                        - link [ref=e482] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/rules/overview
+                          - generic [ref=e484]: Vue d’ensemble
+                      - listitem [ref=e485]:
+                        - link [ref=e486] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/rules/snippets
+                          - generic [ref=e488]: Snippets
+                      - listitem [ref=e489]:
+                        - link [ref=e490] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/rules/cloud-connector
+                          - generic [ref=e491]:
+                            - generic [ref=e492]: Cloud Connector
+                            - generic [ref=e494]: Bêta
+                      - listitem [ref=e495]:
+                        - link [ref=e496] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/rules/page-rules
+                          - generic [ref=e498]: Page Rules
+                      - listitem [ref=e499]:
+                        - link [ref=e500] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/rules/settings
+                          - generic [ref=e502]: Paramètres
+                - listitem [ref=e503]:
+                  - link [ref=e1334] [cursor=pointer]:
+                    - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/error-pages
+                    - generic [ref=e505]:
+                      - img [ref=e1335]
+                      - generic [ref=e509]:
+                        - generic [ref=e510]: Pages d’erreur
+                        - generic [ref=e512]: Nouveau
+                - listitem [ref=e513]:
+                  - link [ref=e1338] [cursor=pointer]:
+                    - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/network
+                    - generic [ref=e515]:
+                      - img [ref=e1339]
+                      - generic [ref=e520]: Réseau
+                - listitem [ref=e521]:
+                  - generic [ref=e522]:
+                    - button [ref=e1342] [cursor=pointer]:
+                      - generic [ref=e524]:
+                        - img [ref=e1343]
+                        - generic [ref=e527]:
+                          - generic [ref=e528]: Trafic
+                          - img [ref=e529]
+                    - list [ref=e531]:
+                      - listitem [ref=e533]:
+                        - link [ref=e534] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/traffic
+                          - generic [ref=e536]: Routage intelligent Argo
+                      - listitem [ref=e537]:
+                        - link [ref=e538] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/traffic/load-balancing
+                          - generic [ref=e540]: Load Balancing
+                      - listitem [ref=e541]:
+                        - link [ref=e542] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/traffic/load-balancing-analytics
+                          - generic [ref=e544]: Load Balancing Analytics
+                      - listitem [ref=e545]:
+                        - link [ref=e546] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/traffic/health-checks
+                          - generic [ref=e548]: Health Checks
+                      - listitem [ref=e549]:
+                        - link [ref=e550] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/traffic/waiting-rooms
+                          - generic [ref=e552]: Waiting Room
+                - listitem [ref=e553]:
+                  - link [ref=e1345] [cursor=pointer]:
+                    - /url: /6d1ca0b3427563dedf81d909a0d13592/sent-tech.ca/web3
+                    - generic [ref=e555]:
+                      - img [ref=e1346]
+                      - generic [ref=e560]: Web3
+                - listitem [ref=e563]:
+                  - generic [ref=e564]:
+                    - button [ref=e1349] [cursor=pointer]:
+                      - generic [ref=e566]:
+                        - img [ref=e1350]
+                        - generic [ref=e570]:
+                          - generic [ref=e571]: Gérer le compte
+                          - img [ref=e572]
+                    - list [ref=e574]:
+                      - listitem [ref=e576]:
+                        - link [ref=e577] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/members
+                          - generic [ref=e579]: Membres
+                      - listitem [ref=e580]:
+                        - link [ref=e581] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/billing
+                          - generic [ref=e583]: Facturation
+                      - listitem [ref=e584]:
+                        - link [ref=e585] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/api-tokens
+                          - generic [ref=e587]: Jetons d’API du compte
+                      - listitem [ref=e588]:
+                        - link [ref=e589] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/audit-log
+                          - generic [ref=e591]: Journaux d’audit
+                      - listitem [ref=e592]:
+                        - link [ref=e593] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/notifications
+                          - generic [ref=e595]: Notifications
+                      - listitem [ref=e596]:
+                        - link [ref=e597] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/shared-configurations
+                          - generic [ref=e598]:
+                            - generic [ref=e599]: Configuration partagée
+                            - generic [ref=e601]: Alpha
+                      - listitem [ref=e602]:
+                        - link [ref=e603] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/blocked-content
+                          - generic [ref=e605]: Contenu bloqué
+                      - listitem [ref=e606]:
+                        - link [ref=e607] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/abuse-reports
+                          - generic [ref=e608]:
+                            - generic [ref=e609]: Rapports de mauvaise utilisation
+                            - generic [ref=e611]: Bêta
+                      - listitem [ref=e612]:
+                        - link [ref=e613] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/carbon
+                          - generic [ref=e615]: Rapport sur l’impact carbone
+                      - listitem [ref=e616]:
+                        - link [ref=e617] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/configurations
+                          - generic [ref=e619]: Configurations
+                      - listitem [ref=e620]:
+                        - link [ref=e621] [cursor=pointer]:
+                          - /url: /6d1ca0b3427563dedf81d909a0d13592/tags
+                          - generic [ref=e622]:
+                            - generic [ref=e623]: Étiquettes de ressources
+                            - generic [ref=e625]: Bêta
+        - button [expanded] [ref=e1353] [cursor=pointer]:
+          - img [ref=e631]
+    - generic [ref=e633]:
+      - banner [ref=e634]:
+        - generic [ref=e635]:
+          - button [ref=e1354] [cursor=pointer]:
+            - img [ref=e637]
+          - generic [ref=e640] [cursor=pointer]:
+            - generic [ref=e641]:
+              - paragraph [ref=e642]: sent-tech.ca
+              - button [ref=e1355]:
+                - generic [ref=e644]: free
+            - img [ref=e645]
+        - generic [ref=e647]:
+          - button [ref=e1356] [cursor=pointer]:
+            - img [ref=e649]
+            - generic [ref=e652]: Ask AI
+          - link [ref=e1357] [cursor=pointer]:
+            - /url: /?to=/:account/support
+            - img [ref=e654]
+            - generic [ref=e656]: Assistance
+          - button [ref=e1358] [cursor=pointer]:
+            - img [ref=e658]
+      - main [ref=e660]:
+        - generic [ref=e661]:
+          - generic [ref=e662]:
+            - heading [level=1] [ref=e1359]: Enregistrements DNS pour sent-tech.ca
+            - paragraph [ref=e664]: Gérez la façon dont Internet trouve votre contenu web, vérifie les services et dirige le trafic.
+          - generic [ref=e665]:
+            - generic [ref=e667]:
+              - text: "Configuration DNS:"
+              - generic [ref=e668]: Complète
+            - link [ref=e1360] [cursor=pointer]:
+              - /url: https://developers.cloudflare.com/dns/get-started/
+              - img [ref=e670]
+              - text: Documentation sur DNS
+        - link [ref=e1361] [cursor=pointer]:
+          - /url: https://forms.gle/j1XwkRuSdqw55Hfk8
+          - img [ref=e676]
+          - generic [ref=e678]: Partager vos commentaires
+        - generic [ref=e680]:
+          - generic [ref=e684]:
+            - generic [ref=e685]:
+              - tablist [ref=e688]:
+                - tab [selected] [ref=e1362] [cursor=pointer]:
+                  - generic [ref=e690]:
+                    - text: Recommandations
+                    - generic [ref=e1363]: "1"
+                - tab [ref=e1364] [cursor=pointer]: À propos de DNS
+                - tab [ref=e1365] [cursor=pointer]: Proxy vs. DNS uniquement
+                - tab [ref=e1366] [cursor=pointer]: TTL & caching
+              - button [ref=e1367] [cursor=pointer]:
+                - img [ref=e697]
+            - generic [ref=e1372]:
+              - generic [ref=e1373]: Votre adresse IP d’origine est partiellement exposée
+              - paragraph [ref=e1376]: Un enregistrement DNS‑only révèle une adresse IP qui est masquée par un enregistrement proxy. Proxyz tous les enregistrements partageant la même IP pour masquer complètement votre serveur.
+          - generic [ref=e707]:
+            - generic [ref=e708]:
+              - generic [ref=e709]:
+                - img [ref=e710]
+                - searchbox [ref=e1377]
+              - button [ref=e1378] [cursor=pointer]:
+                - generic [ref=e714]:
+                  - img [ref=e715]
+                  - text: Filtres
+              - button [ref=e1379] [cursor=pointer]:
+                - img [ref=e718]
+                - text: Options d'affichage
+            - generic [ref=e721]:
+              - button [ref=e1380] [cursor=pointer]:
+                - generic [ref=e723]:
+                  - img [ref=e724]
+                  - text: Importer
+              - button [ref=e1381] [cursor=pointer]:
+                - generic [ref=e727]:
+                  - img [ref=e728]
+                  - text: Exportation
+              - button [ref=e1382] [cursor=pointer]:
+                - img [ref=e731]
+                - text: Ajouter un enregistrement
+          - generic [ref=e733]:
+            - paragraph [ref=e737]: 35 enregistrements
+            - table [ref=e1383]:
+              - rowgroup [ref=e741]:
+                - row [ref=e1384]:
+                  - columnheader [ref=e1385]:
+                    - checkbox [ref=e1386] [cursor=pointer]
+                    - checkbox [ref=e745]
+                  - columnheader [ref=e746]:
+                    - img [ref=e1388]
+                  - columnheader [ref=e751]:
+                    - img [ref=e1391]
+                  - columnheader [ref=e1393]:
+                    - generic [ref=e757]:
+                      - generic [ref=e1394]:
+                        - generic [ref=e1395]: Nom
+                        - img [ref=e1397]
+                      - button [ref=e1399] [cursor=pointer]:
+                        - img [ref=e764]
+                    - button [ref=e1400]
+                  - columnheader [ref=e1401]:
+                    - generic [ref=e769]:
+                      - generic [ref=e1402]:
+                        - generic [ref=e1403]: Type
+                        - img [ref=e1405]
+                      - button [ref=e1407] [cursor=pointer]:
+                        - img [ref=e776]
+                  - columnheader [ref=e1408]:
+                    - generic [ref=e779]:
+                      - generic [ref=e1409]:
+                        - generic [ref=e1410]: Contenu
+                        - img [ref=e1412]
+                      - button [ref=e1414] [cursor=pointer]:
+                        - img [ref=e786]
+                    - button [ref=e1415]
+                  - columnheader [ref=e1416]:
+                    - generic [ref=e791]:
+                      - generic [ref=e1417]:
+                        - generic [ref=e1418]: État du proxy
+                        - img [ref=e1420]
+                      - button [ref=e1422] [cursor=pointer]:
+                        - img [ref=e798]
+                  - columnheader [ref=e1423]:
+                    - generic [ref=e801]:
+                      - generic [ref=e1424]:
+                        - generic [ref=e1425]: Durée TTL
+                        - img [ref=e1427]
+                      - button [ref=e1429] [cursor=pointer]:
+                        - img [ref=e808]
+                  - columnheader [ref=e1430]:
+                    - generic [ref=e1432]: Étiquettes
+                    - button [ref=e1433]
+                  - columnheader [ref=e1434]:
+                    - generic [ref=e1436]: Commentaire
+                    - button [ref=e1437]
+                  - columnheader [ref=e1438]:
+                    - generic [ref=e1440]: Détails
+                    - button [ref=e1441]
+                  - columnheader [ref=e828]
+              - rowgroup [ref=e1443]:
+                - row [ref=e1444]:
+                  - cell [ref=e1445]:
+                    - checkbox [ref=e1446] [cursor=pointer]
+                    - checkbox [ref=e1447]
+                  - cell [ref=e1448]:
+                    - button [ref=e1449] [cursor=pointer]:
+                      - img [ref=e1450]
+                  - cell [ref=e1452]
+                  - cell [ref=e1453]:
+                    - generic [ref=e1454]:
+                      - text: auth.onyxia
+                      - generic [ref=e1455]: .sent-tech.ca
+                  - cell [ref=e1456]:
+                    - generic [ref=e1458]: A
+                  - cell [ref=e1459]:
+                    - generic [ref=e1461]: 34.135.88.193
+                  - cell [ref=e1462]:
+                    - generic [ref=e1463]:
+                      - img [ref=e1464]
+                      - generic [ref=e1466]: DNS uniquement
+                  - cell [ref=e1467]:
+                    - generic [ref=e1468]: Automatique
+                  - cell [ref=e1469]:
+                    - generic [ref=e1470]: —
+                  - cell [ref=e1471]:
+                    - generic [ref=e1472]: —
+                  - cell [ref=e1473]:
+                    - generic [ref=e1474]: —
+                  - cell [ref=e1475]:
+                    - button [ref=e1477] [cursor=pointer]: Modifier
+                - row [ref=e1478]:
+                  - cell [ref=e1479]:
+                    - checkbox [ref=e1480] [cursor=pointer]
+                    - checkbox [ref=e1481]
+                  - cell [ref=e1482]:
+                    - button [ref=e1483] [cursor=pointer]:
+                      - img [ref=e1484]
+                  - cell [ref=e1486]
+                  - cell [ref=e1487]:
+                    - generic [ref=e1488]:
+                      - text: auth
+                      - generic [ref=e1489]: .sent-tech.ca
+                  - cell [ref=e1490]:
+                    - generic [ref=e1492]: A
+                  - cell [ref=e1493]:
+                    - generic [ref=e1495]: 51.159.11.157
+                  - cell [ref=e1496]:
+                    - generic [ref=e1497]:
+                      - img [ref=e1498]
+                      - generic [ref=e1500]: DNS uniquement
+                  - cell [ref=e1501]:
+                    - generic [ref=e1502]: Automatique
+                  - cell [ref=e1503]:
+                    - generic [ref=e1504]: —
+                  - cell [ref=e1505]:
+                    - generic [ref=e1506]: —
+                  - cell [ref=e1507]:
+                    - generic [ref=e1508]: —
+                  - cell [ref=e1509]:
+                    - button [ref=e1511] [cursor=pointer]: Modifier
+                - row [ref=e1512]:
+                  - cell [ref=e1513]:
+                    - checkbox [ref=e1514] [cursor=pointer]
+                    - checkbox [ref=e1515]
+                  - cell [ref=e1516]:
+                    - button [ref=e1517] [cursor=pointer]:
+                      - img [ref=e1518]
+                  - cell [ref=e1520]
+                  - cell [ref=e1521]:
+                    - generic [ref=e1522]:
+                      - text: h2a-mcp
+                      - generic [ref=e1523]: .sent-tech.ca
+                  - cell [ref=e1524]:
+                    - generic [ref=e1526]: A
+                  - cell [ref=e1527]:
+                    - generic [ref=e1529]: 51.159.11.157
+                  - cell [ref=e1530]:
+                    - generic [ref=e1531]:
+                      - img [ref=e1532]
+                      - generic [ref=e1534]: DNS uniquement
+                  - cell [ref=e1535]:
+                    - generic [ref=e1536]: 5 min
+                  - cell [ref=e1537]:
+                    - generic [ref=e1538]: —
+                  - cell [ref=e1539]:
+                    - generic [ref=e1540]: —
+                  - cell [ref=e1541]:
+                    - generic [ref=e1542]: —
+                  - cell [ref=e1543]:
+                    - button [ref=e1545] [cursor=pointer]: Modifier
+                - row [ref=e1546]:
+                  - cell [ref=e1547]:
+                    - checkbox [ref=e1548] [cursor=pointer]
+                    - checkbox [ref=e1549]
+                  - cell [ref=e1550]:
+                    - button [ref=e1551] [cursor=pointer]:
+                      - img [ref=e1552]
+                  - cell [ref=e1554]
+                  - cell [ref=e1555]:
+                    - generic [ref=e1556]:
+                      - text: immo
+                      - generic [ref=e1557]: .sent-tech.ca
+                  - cell [ref=e1558]:
+                    - generic [ref=e1560]: A
+                  - cell [ref=e1561]:
+                    - generic [ref=e1563]: 51.159.11.157
+                  - cell [ref=e1564]:
+                    - generic [ref=e1565]:
+                      - img [ref=e1566]
+                      - generic [ref=e1568]: DNS uniquement
+                  - cell [ref=e1569]:
+                    - generic [ref=e1570]: Automatique
+                  - cell [ref=e1571]:
+                    - generic [ref=e1572]: —
+                  - cell [ref=e1573]:
+                    - button [ref=e1574] [cursor=pointer]: radar-immobilier (immo.sent-tech.ca) -> Traefik LB
+                  - cell [ref=e1575]:
+                    - generic [ref=e1576]: —
+                  - cell [ref=e1577]:
+                    - button [ref=e1579] [cursor=pointer]: Modifier
+                - row [ref=e1580]:
+                  - cell [ref=e1581]:
+                    - checkbox [ref=e1582] [cursor=pointer]
+                    - checkbox [ref=e1583]
+                  - cell [ref=e1584]:
+                    - button [ref=e1585] [cursor=pointer]:
+                      - img [ref=e1586]
+                  - cell [ref=e1588]
+                  - cell [ref=e1589]:
+                    - generic [ref=e1590]:
+                      - text: mcp-wave
+                      - generic [ref=e1591]: .sent-tech.ca
+                  - cell [ref=e1592]:
+                    - generic [ref=e1594]: A
+                  - cell [ref=e1595]:
+                    - generic [ref=e1597]: 51.159.11.157
+                  - cell [ref=e1598]:
+                    - generic [ref=e1599]:
+                      - img [ref=e1600]
+                      - generic [ref=e1602]: DNS uniquement
+                  - cell [ref=e1603]:
+                    - generic [ref=e1604]: Automatique
+                  - cell [ref=e1605]:
+                    - generic [ref=e1606]: —
+                  - cell [ref=e1607]:
+                    - generic [ref=e1608]: —
+                  - cell [ref=e1609]:
+                    - generic [ref=e1610]: —
+                  - cell [ref=e1611]:
+                    - button [ref=e1613] [cursor=pointer]: Modifier
+                - row [ref=e1614]:
+                  - cell [ref=e1615]:
+                    - checkbox [ref=e1616] [cursor=pointer]
+                    - checkbox [ref=e1617]
+                  - cell [ref=e1618]:
+                    - button [ref=e1619] [cursor=pointer]:
+                      - img [ref=e1620]
+                  - cell [ref=e1622]
+                  - cell [ref=e1623]:
+                    - generic [ref=e1624]:
+                      - text: monitor
+                      - generic [ref=e1625]: .sent-tech.ca
+                  - cell [ref=e1626]:
+                    - generic [ref=e1628]: A
+                  - cell [ref=e1629]:
+                    - generic [ref=e1631]: 51.159.11.157
+                  - cell [ref=e1632]:
+                    - generic [ref=e1633]:
+                      - img [ref=e1634]
+                      - generic [ref=e1636]: DNS uniquement
+                  - cell [ref=e1637]:
+                    - generic [ref=e1638]: 2 min
+                  - cell [ref=e1639]:
+                    - generic [ref=e1640]: —
+                  - cell [ref=e1641]:
+                    - generic [ref=e1642]: —
+                  - cell [ref=e1643]:
+                    - generic [ref=e1644]: —
+                  - cell [ref=e1645]:
+                    - button [ref=e1647] [cursor=pointer]: Modifier
+                - row [ref=e1648]:
+                  - cell [ref=e1649]:
+                    - checkbox [ref=e1650] [cursor=pointer]
+                    - checkbox [ref=e1651]
+                  - cell [ref=e1652]:
+                    - button [ref=e1653] [cursor=pointer]:
+                      - img [ref=e1654]
+                  - cell [ref=e1656]
+                  - cell [ref=e1657]:
+                    - generic [ref=e1658]:
+                      - text: onyxia
+                      - generic [ref=e1659]: .sent-tech.ca
+                  - cell [ref=e1660]:
+                    - generic [ref=e1662]: A
+                  - cell [ref=e1663]:
+                    - generic [ref=e1665]: 34.135.88.193
+                  - cell [ref=e1666]:
+                    - generic [ref=e1667]:
+                      - img [ref=e1668]
+                      - generic [ref=e1670]: DNS uniquement
+                  - cell [ref=e1671]:
+                    - generic [ref=e1672]: Automatique
+                  - cell [ref=e1673]:
+                    - generic [ref=e1674]: —
+                  - cell [ref=e1675]:
+                    - generic [ref=e1676]: —
+                  - cell [ref=e1677]:
+                    - generic [ref=e1678]: —
+                  - cell [ref=e1679]:
+                    - button [ref=e1681] [cursor=pointer]: Modifier
+                - row [ref=e1682]:
+                  - cell [ref=e1683]:
+                    - checkbox [ref=e1684] [cursor=pointer]
+                    - checkbox [ref=e1685]
+                  - cell [ref=e1686]:
+                    - button [ref=e1687] [cursor=pointer]:
+                      - img [ref=e1688]
+                  - cell [ref=e1690]
+                  - cell [ref=e1691]:
+                    - generic [ref=e1692]:
+                      - text: polaris.onyxia
+                      - generic [ref=e1693]: .sent-tech.ca
+                  - cell [ref=e1694]:
+                    - generic [ref=e1696]: A
+                  - cell [ref=e1697]:
+                    - generic [ref=e1699]: 34.135.88.193
+                  - cell [ref=e1700]:
+                    - generic [ref=e1701]:
+                      - img [ref=e1702]
+                      - generic [ref=e1704]: DNS uniquement
+                  - cell [ref=e1705]:
+                    - generic [ref=e1706]: Automatique
+                  - cell [ref=e1707]:
+                    - generic [ref=e1708]: —
+                  - cell [ref=e1709]:
+                    - generic [ref=e1710]: —
+                  - cell [ref=e1711]:
+                    - generic [ref=e1712]: —
+                  - cell [ref=e1713]:
+                    - button [ref=e1715] [cursor=pointer]: Modifier
+                - row [ref=e1716]:
+                  - cell [ref=e1717]:
+                    - checkbox [ref=e1718] [cursor=pointer]
+                    - checkbox [ref=e1719]
+                  - cell [ref=e1720]:
+                    - button [ref=e1721] [cursor=pointer]:
+                      - img [ref=e1722]
+                  - cell [ref=e1724]
+                  - cell [ref=e1725]:
+                    - generic [ref=e1726]:
+                      - text: sentropic
+                      - generic [ref=e1727]: .sent-tech.ca
+                  - cell [ref=e1728]:
+                    - generic [ref=e1730]: A
+                  - cell [ref=e1731]:
+                    - generic [ref=e1733]: 51.159.11.157
+                  - cell [ref=e1734]:
+                    - generic [ref=e1735]:
+                      - img [ref=e1736]
+                      - generic [ref=e1738]: DNS uniquement
+                  - cell [ref=e1739]:
+                    - generic [ref=e1740]: 5 min
+                  - cell [ref=e1741]:
+                    - generic [ref=e1742]: —
+                  - cell [ref=e1743]:
+                    - generic [ref=e1744]: —
+                  - cell [ref=e1745]:
+                    - generic [ref=e1746]: —
+                  - cell [ref=e1747]:
+                    - button [ref=e1749] [cursor=pointer]: Modifier
+                - row [ref=e1750]:
+                  - cell [ref=e1751]:
+                    - checkbox [ref=e1752] [cursor=pointer]
+                    - checkbox [ref=e1753]
+                  - cell [ref=e1754]:
+                    - button [ref=e1755] [cursor=pointer]:
+                      - img [ref=e1756]
+                  - cell [ref=e1758]
+                  - cell [ref=e1759]:
+                    - generic [ref=e1760]: sent-tech.ca
+                  - cell [ref=e1761]:
+                    - generic [ref=e1763]: A
+                  - cell [ref=e1764]:
+                    - generic [ref=e1766]: 192.0.0.1
+                  - cell [ref=e1767]:
+                    - generic [ref=e1768]:
+                      - img [ref=e1769]
+                      - generic [ref=e1771]: Proxied
+                  - cell [ref=e1772]:
+                    - generic [ref=e1773]: Automatique
+                  - cell [ref=e1774]:
+                    - generic [ref=e1775]: —
+                  - cell [ref=e1776]:
+                    - generic [ref=e1777]: —
+                  - cell [ref=e1778]:
+                    - generic [ref=e1779]: —
+                  - cell [ref=e1780]:
+                    - button [ref=e1782] [cursor=pointer]: Modifier
+                - row [ref=e1783]:
+                  - cell [ref=e1784]:
+                    - checkbox [ref=e1785] [cursor=pointer]
+                    - checkbox [ref=e1786]
+                  - cell [ref=e1787]:
+                    - button [ref=e1788] [cursor=pointer]:
+                      - img [ref=e1789]
+                  - cell [ref=e1791]
+                  - cell [ref=e1792]:
+                    - generic [ref=e1793]:
+                      - text: "*.services.onyxia"
+                      - generic [ref=e1794]: .sent-tech.ca
+                  - cell [ref=e1795]:
+                    - generic [ref=e1797]: A
+                  - cell [ref=e1798]:
+                    - generic [ref=e1800]: 34.135.88.193
+                  - cell [ref=e1801]:
+                    - generic [ref=e1802]:
+                      - img [ref=e1803]
+                      - generic [ref=e1805]: DNS uniquement
+                  - cell [ref=e1806]:
+                    - generic [ref=e1807]: Automatique
+                  - cell [ref=e1808]:
+                    - generic [ref=e1809]: —
+                  - cell [ref=e1810]:
+                    - generic [ref=e1811]: —
+                  - cell [ref=e1812]:
+                    - generic [ref=e1813]: —
+                  - cell [ref=e1814]:
+                    - button [ref=e1816] [cursor=pointer]: Modifier
+            - generic [ref=e1819]:
+              - generic [ref=e1820]: Showing 1-25 of 35
+              - generic [ref=e1822]:
+                - generic [ref=e1823]: "Per page:"
+                - generic [ref=e1824]:
+                  - combobox [ref=e1825] [cursor=pointer]:
+                    - generic [ref=e1826]: "25"
+                    - img [ref=e1828]
+                  - textbox [ref=e1830]: "25"
+              - navigation [ref=e1832]:
+                - generic [ref=e1833]:
+                  - button [disabled] [ref=e1834]:
+                    - img [ref=e1836]
+                  - button [disabled] [ref=e1838]:
+                    - img [ref=e1840]
+                  - textbox [ref=e1842]: "1"
+                  - button [ref=e1843] [cursor=pointer]:
+                    - img [ref=e1845]
+                  - button [ref=e1847] [cursor=pointer]:
+                    - img [ref=e1849]
+      - contentinfo [ref=e1231]:
+        - list [ref=e1233]:
+          - listitem [ref=e1234]:
+            - link [ref=e1851] [cursor=pointer]:
+              - /url: https://support.cloudflare.com
+              - text: Assistance
+          - listitem [ref=e1236]:
+            - link [ref=e1852] [cursor=pointer]:
+              - /url: https://www.cloudflarestatus.com
+              - text: État du système
+          - listitem [ref=e1238]:
+            - link [ref=e1853] [cursor=pointer]:
+              - /url: https://www.cloudflare.com/careers/
+              - text: Carrières
+          - listitem [ref=e1240]:
+            - link [ref=e1854] [cursor=pointer]:
+              - /url: https://www.cloudflare.com/website-terms/
+              - text: Conditions d’utilisation
+          - listitem [ref=e1242]:
+            - link [ref=e1855] [cursor=pointer]:
+              - /url: https://www.cloudflare.com/disclosure/
+              - text: Signaler les problèmes de sécurité
+          - listitem [ref=e1244]:
+            - link [ref=e1856] [cursor=pointer]:
+              - /url: https://www.cloudflare.com/privacypolicy/
+              - text: Politique de confidentialité
+          - listitem [ref=e1246]:
+            - button [ref=e1857] [cursor=pointer]:
+              - img [ref=e1858]
+              - text: Préférences relatives aux cookies
+          - listitem [ref=e1249]:
+            - generic [ref=e1250]: © 2026 Cloudflare, Inc.
+  - generic:
+    - region "Notifications"
+  - generic [ref=e1874]:
+    - generic [ref=e1875]:
+      - heading [level=3] [ref=e1876]: Activer l’accès d’Agent Lee
+      - paragraph [ref=e1877]: Agent Lee a besoin d’un jeton API en lecture seule pour accéder à votre compte.
+      - button [ref=e1880] [cursor=pointer]:
+        - text: En savoir plus
+        - img [ref=e1881]
+    - button [ref=e1883] [cursor=pointer]: Créer le jeton
+  - dialog "Ajouter un enregistrement" [ref=e1887]:
+    - generic [ref=e1888]:
+      - generic [ref=e1889]:
+        - heading "Ajouter un enregistrement" [level=2] [ref=e1890]
+        - button "Close" [ref=e1891] [cursor=pointer]:
+          - img [ref=e1892]
+      - generic [ref=e1895]:
+        - generic [ref=e1896]:
+          - generic [ref=e1897]: api.geo.sent-tech.ca
+          - text: pointe vers
+          - generic [ref=e1898]: 51.159.11.157
+          - text: ", et son trafic est proxysé via Cloudflare."
+        - generic [ref=e1899]:
+          - generic [ref=e1901]:
+            - generic [ref=e1903]: Type
+            - generic [ref=e1905]:
+              - combobox "Type" [ref=e1906] [cursor=pointer]:
+                - generic [ref=e1907]: A
+                - img [ref=e1909]
+              - textbox [ref=e1911]: A
+          - generic [ref=e1914]:
+            - generic [ref=e1916]: Nom
+            - textbox "Nom" [ref=e1917]:
+              - /placeholder: Utiliser @ pour la racine
+              - text: api.geo
+          - generic [ref=e1920]:
+            - generic [ref=e1922]: Adresse IPv4
+            - textbox "Adresse IPv4" [active] [ref=e1923]: 51.159.11.157
+          - generic [ref=e1925]:
+            - generic [ref=e1926]: État du proxy
+            - generic [ref=e1929]:
+              - switch "État du proxy" [checked] [ref=e1930] [cursor=pointer]
+              - checkbox [checked] [ref=e1932]
+              - img [ref=e1933]
+              - generic [ref=e1935]: Proxied
+          - generic [ref=e1937]:
+            - generic [ref=e1939]: Durée TTL
+            - generic [ref=e1941]:
+              - combobox "Durée TTL" [disabled] [ref=e1942]:
+                - generic [ref=e1943]: Automatique
+                - img [ref=e1945]
+              - textbox [disabled] [ref=e1947]: "1"
+        - generic [ref=e1949]:
+          - button "Attributs d’enregistrement" [ref=e1950] [cursor=pointer]:
+            - img [ref=e1951]
+            - text: Attributs d’enregistrement
+          - link "Voir la documentation" [ref=e1953] [cursor=pointer]:
+            - /url: https://developers.cloudflare.com/dns/manage-dns-records/reference/record-attributes/
+            - img [ref=e1955]
+        - generic [ref=e1957]:
+          - button "Enregistrer" [ref=e1958] [cursor=pointer]
+          - button "Annuler" [ref=e1959] [cursor=pointer]

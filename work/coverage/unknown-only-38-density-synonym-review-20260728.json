@@ -1,0 +1,107 @@
+{
+  "snapshot": "2026-07-28",
+  "scope": "unknown-only-38 / source_reglement_identifie_sans_densite_numerique",
+  "method": "native text first; synonym audit; exact source/date/provenance; no conversion",
+  "served_density_polygons": {
+    "coaticook": { "numeric": 11, "polygons": 178, "unit": "logements/batiment" },
+    "grand-metis": { "numeric": 24, "polygons": 26, "unit": "logements/batiment" },
+    "metis-sur-mer": { "numeric": 65, "polygons": 67, "unit": "logements/batiment" },
+    "mont-tremblant": { "numeric": 218, "polygons": 628, "unit": "log/ha|logements/batiment", "status": "existing-fold-validated" },
+    "westmount": { "numeric": 5, "polygons": 159, "unit": "cos-max" }
+  },
+  "reviews": [
+    {
+      "slug": "auclair",
+      "classification": "a-numeric-but-no-verbatim-legal-date",
+      "owner": "Municipalité d'Auclair",
+      "source": "https://municipaliteauclair.ca/media/attachments/2021/03/22/grilles-de-zonage.xls",
+      "verbatim": "Dans les zones agroforestières et de réserve urbaine, les usages résidentiels doivent respecter une densité maximale de 2 logements par hectares.",
+      "constat": "Nombre trouvé, mais aucune date d'adoption ou d'entrée en vigueur verbatim dans le document lu : pas de pli."
+    },
+    {
+      "slug": "barnston-ouest",
+      "classification": "b",
+      "owner": "Municipalité de Barnston-Ouest",
+      "source": "https://www.mrcdecoaticook.qc.ca/municipalites/Urbanisme/Barnston-Ouest/BAO_Zonage_225.pdf",
+      "verbatim": "Coefficient d'occupation au sol : Rapport entre la superficie totale du plancher du rez-de-chaussée d'un bâtiment et la superficie du terrain sur lequel il est ou il sera érigé. Densité d'occupation : Le pourcentage correspondant à la superficie totale de plancher du bâtiment par rapport au terrain sur lequel il est construit. Synonyme du coefficient d’occupation du sol (COS).",
+      "constat": "Les tableaux de zones n'impriment aucune valeur numérique de COS/densité ni de nombre de logements; « Un maximum de 40 sites de camping ... par (1) hectare » est une norme de camping, pas une densité résidentielle."
+    },
+    {
+      "slug": "coaticook",
+      "classification": "a-folded",
+      "owner": "Ville de Coaticook",
+      "source": "https://www.coaticook.ca/fr/services/permis-et-reglements.php",
+      "verbatim": "a) Il doit y avoir un minimum de trois logements par bâtiment.",
+      "date_verbatim": "règl. 6-1-60 (2017), en vigueur 21 février 2018",
+      "constat": "11 polygones pliés; la valeur est conservée comme logements/batiment, sans calcul."
+    },
+    {
+      "slug": "deux-montagnes",
+      "classification": "b",
+      "owner": "Ville de Deux-Montagnes",
+      "source": "https://www.ville.deux-montagnes.qc.ca/storage/app/media/ville-de-deux-montagnes/administration-et-finances/reglements-municipaux/1733-zonage-annexe-b-grilles_adm_2026-06-04.pdf",
+      "verbatim": "La grille est organisée par colonnes d'usages (« Unifamiliale », « Bifamiliale », « Trifamiliale », « 4 à 8 logements », « 9 à 12 logements », « 13 à 16 logements », « de 16 logements ») et par rangées de normes (« CES max », « Verdissement », « Bâtiment »).",
+      "constat": "Les nombres de logements sont des classes d'usage, pas une norme de densité; aucune rangée numérique densité/logements par bâtiment/COS n'est imprimée. « CES » est l'emprise au sol, pas le COS."
+    },
+    {
+      "slug": "disraeli--les-appalaches",
+      "classification": "a-numeric-but-no-sig-bridge",
+      "owner": "Ville de Disraeli",
+      "source": "https://www.villededisraeli.ca/fichiersUpload/fichiers/20250407142337-annexe-iii-grilles-de-specifications-1-a-10.pdf",
+      "verbatim": "Indice d’occupation au sol (%) 40 (zones 1-R à 8-R) et 50 (zone 10-RC).",
+      "constat": "Nombre trouvé, mais les codes 1-R/10-RC ne recoupent pas les codes SIG servis; pas de pli zone-polygone vérifiable."
+    },
+    {
+      "slug": "grand-metis",
+      "classification": "a-folded",
+      "owner": "Municipalité de Grand-Métis",
+      "source": "https://municipalites-du-quebec.ca/grand-metis/docs/reglements/2/2011-0145_Règlement_de_zonage_9060__2019-04-11%5B1%5D.pdf",
+      "verbatim": "ANNEXE 2 — tableau « Nombre de logements maximum ».",
+      "date_verbatim": "RÈGLEMENT NUMÉRO 2011-0145 — VERSION REFONDUE — 11 AVRIL 2019",
+      "constat": "24 polygones pliés; les cellules vides des zones 5 et 27 ne sont pas transformées."
+    },
+    {
+      "slug": "metis-sur-mer",
+      "classification": "a-folded",
+      "owner": "Ville de Métis-sur-Mer",
+      "source": "https://www.ville.metis-sur-mer.qc.ca/sites/default/files/fichier/08-38_reglement_de_zonage_-_version_refondue_2020.pdf",
+      "verbatim": "ANNEXE 2 — tableau « Nombre de logements maximum ».",
+      "date_verbatim": "RÈGLEMENT DE ZONAGE NUMÉRO 08-38 — Version refondue — 16 juillet 2020",
+      "constat": "63 lignes de zones alimentent 65 polygones; les zones 19 et 30 sont laissées vides car la source les imprime sans nombre."
+    },
+    {
+      "slug": "mont-tremblant",
+      "classification": "a-folded-existing",
+      "owner": "Ville de Mont-Tremblant",
+      "source": "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/reglement-2008-102-annexe-a-zone-100.pdf",
+      "verbatim": "Valeurs de densité déjà déposées dans le rapport d'ingestion normatif daté.",
+      "constat": "218 polygones numériques relus sur l'objet servi; aucune réécriture nécessaire dans ce passage."
+    },
+    {
+      "slug": "saint-frederic",
+      "classification": "a-numeric-but-no-verbatim-legal-date",
+      "owner": "Municipalité de Saint-Frédéric",
+      "source": "https://www.st-frederic.com/wp-content/uploads/Grille-des-specifications_297-15_amende-5.pdf",
+      "verbatim": "(20) Une subdivision de lot pour des fins résidentielles doit respecter une densité d’occupation minimale équivalente à 36 logements/hectares.",
+      "constat": "Nombre trouvé, mais aucune date d'adoption ou d'entrée en vigueur verbatim dans le document lu : pas de pli."
+    },
+    {
+      "slug": "saint-raphael",
+      "classification": "a-numeric-but-conditional-scope",
+      "owner": "Municipalité de Saint-Raphaël",
+      "source": "https://www.saint-raphael.ca/fichiersUpload/fichiers/20251006101542-reglement-zonage-2022-228.pdf",
+      "verbatim": "g) Le coefficient d’occupation du sol de l’ensemble des bâtiments principaux doit être égal ou inférieur à 0,3 ;",
+      "date_verbatim": "Adopté à Saint-Raphaël, le 7 novembre 2022",
+      "constat": "La norme est dans ARTICLE 121, projet d'ensemble à l'intérieur du périmètre urbain; elle ne s'applique pas sans condition aux 97 polygones."
+    },
+    {
+      "slug": "westmount",
+      "classification": "a-folded-partial",
+      "owner": "Ville de Westmount / City of Westmount",
+      "source": "https://westmount.org/storage/app/media/travaux-et-urbanisme/amenagement-urbain/reglements-de-lamenagement-urbain/EN/reglement-1641-concordance-ppuzonagevfns-avec-annexes.pdf",
+      "verbatim": "ANNEXE II, rubrique « DENSITÉ / DENSITY », « RSP maximum / Maximum FAR ».",
+      "date_verbatim": "RÈGLEMENT 1641 — séance extraordinaire du Conseil municipal tenue le 18 septembre 2025",
+      "constat": "5 zones à portée générale pliées; C18-24-15 (« 12,0 ») reste hors pli car la valeur est conditionnelle aux structures jumelée/en rangée."
+    }
+  ]
+}

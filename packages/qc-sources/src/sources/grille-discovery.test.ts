@@ -6,10 +6,39 @@ import {
   discoverGrillesForCity,
   candidatePagesForCity,
   extractInternalSubpages,
+  parseGrilleUrlSeed,
   GRILLE_SCORE_THRESHOLD,
   RobotsCache,
   type PvFetchLike,
 } from "./grille-discovery.js";
+
+describe("parseGrilleUrlSeed (curated doc-center bypass)", () => {
+  it("parses a JSON array of {slug,url}", () => {
+    const s = parseGrilleUrlSeed(
+      '[{"slug":"nicolet","url":"https://x.qc.ca/file-2807"},{"slug":"varennes","url":"https://y.qc.ca/g.pdf"}]',
+    );
+    expect(s).toEqual([
+      { slug: "nicolet", url: "https://x.qc.ca/file-2807" },
+      { slug: "varennes", url: "https://y.qc.ca/g.pdf" },
+    ]);
+  });
+  it("parses a {munis:[…]} wrapper and tolerates sourceUrl/pdfUrl keys", () => {
+    const s = parseGrilleUrlSeed('{"munis":[{"slug":"a","sourceUrl":"https://a.ca/x.pdf"}]}');
+    expect(s).toEqual([{ slug: "a", url: "https://a.ca/x.pdf" }]);
+  });
+  it("parses a plain-text 'slug url' list, ignoring comments/blanks + dedup", () => {
+    const s = parseGrilleUrlSeed(
+      "# grilles\nnicolet https://x.qc.ca/file-2804\nvarennes, https://y.qc.ca/g.pdf\n\nnicolet https://x.qc.ca/file-2804\n",
+    );
+    expect(s).toEqual([
+      { slug: "nicolet", url: "https://x.qc.ca/file-2804" },
+      { slug: "varennes", url: "https://y.qc.ca/g.pdf" },
+    ]);
+  });
+  it("drops non-http urls and malformed lines (anti-invention: never a bad URL)", () => {
+    expect(parseGrilleUrlSeed("nicolet ftp://x/y\nbadline\n{ not json")).toEqual([]);
+  });
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // classifyGrilleLink — keyword scoring

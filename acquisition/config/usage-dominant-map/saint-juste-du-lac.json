@@ -1,0 +1,16 @@
+{
+  "prefix_map": {
+    "EAA": "agricole",
+    "EAB": "agricole",
+    "EAF": "agricole",
+    "EF": "agricole",
+    "I": "industriel",
+    "R": "residentiel",
+    "RC": "environnemental",
+    "M": null,
+    "P": null,
+    "V": null
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/saint-juste-du-lac/_publication/fichiers/Zonage_St-Juste_VA_Fvrier%202026(1).pdf",
+  "note": "Municipalité de Saint-Juste-du-Lac (MRC de Témiscouata), « Règlement de zonage numéro 2014-259 » (pied de page ; PDF version administrative datée « Février 2026 », 159 p., texte natif ; gate propriétaire franchi : p. 1 « Saint-Juste-du-Lac », p. 14 « … territoire de la municipalité de Saint-Juste-du-Lac », p. 18 « CONSEIL : Conseil municipal de Saint-Juste-du-Lac »). Chapitre 1, Section 3 « Zones », art. 1.15 « Identification des zones » (p. 16 interne / p. 29 du PDF), verbatim : « Chacune des zones est identifiée par un code unique, composé d'initiales suivies d'un chiffre. Les initiales qualifient la zone de la manière suivante : 1° EA : agricole (qui comprend EA/A et EA/B) ; 2° EAF : agroforestière ; 3° EF : forestière ; 4° I : industrielle ; 5° M : mixte ; 6° P : publique ; 7° R : résidentielle ; 8° RC : récréative ; 9° V : de villégiature. » Mapping : EAA et EAB -> agricole (l'alinéa 1° les rattache EXPLICITEMENT à « EA : agricole (qui comprend EA/A et EA/B) ») ; EAF « agroforestière » et EF « forestière » -> agricole ; I « industrielle » -> industriel ; R « résidentielle » -> residentiel ; RC « récréative » -> environnemental (ligne Conservation/Récréative/Faunique du contrat ; RC bat R au longest-prefix). Null EXPLICITE : M « mixte » (DUALE par déclaration) ; P « publique » (vocation PUBLIQUE) ; V « de villégiature » (villégiature SEULE — aucun alinéa de ce règlement ne la définit exclusivement par l'habitation ; précédents committés baie-comeau et lac-beauport). 10/10 préfixes servis couverts (EAF 7, EF 4, R 4, EAA 4, EAB 4, P 3, RC 3, M 2, V 2, I 1 = 34 pol.). ⛔ CONTAMINATION DU DOSSIER DE SLUG signalée : `work/zonage-norms/saint-juste-du-lac/grille.pdf` porte le « Règlement de zonage n° 15-2024 de la MUNICIPALITÉ DE SAINT-JOSEPH-DU-LAC » — mauvaise municipalité, ce fichier n'a PAS été utilisé. ⚠️ L'URL accentuée `…F%C3%A9vrier…` rend 403 ; seule la forme désaccentuée `…Fvrier…` (celle du `reglement_url` servi) rend le PDF. La matrice des usages permis des grilles n'a PAS été utilisée. Consulté le 2026-07-19."
+}

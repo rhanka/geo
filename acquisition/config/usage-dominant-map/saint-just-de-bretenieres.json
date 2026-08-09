@@ -1,0 +1,20 @@
+{
+  "prefix_map": {
+    "Rb": "residentiel",
+    "RbM": "residentiel",
+    "RcM": "residentiel",
+    "RrM": "residentiel",
+    "ReM": "residentiel",
+    "CbM": "commercial",
+    "CcM": "commercial",
+    "Ib": "industriel",
+    "Ic": "industriel",
+    "IcM": "industriel",
+    "Ac": "agricole",
+    "Fc": "agricole",
+    "Fa": null,
+    "ScM": null
+  },
+  "source": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&CQL_FILTER=id_municipalite='18005'",
+  "note": "Vocation VERBATIM portée par l'attribut SIG `etiquette_2` de la couche geocentralis evb:siadmin_pzon_99_s, filtrée sur id_municipalite='18005' (Saint-Just-de-Bretenières) — couche JUMELLE de evb:zonage_municipal qui sert les 44 polygones de ce slug. `etiquette_1` = code complet, `etiquette_3` = préfixe alphabétique servi, `etiquette_2` = vocation. Table (etiquette_3 -> etiquette_2, VERBATIM) : Rb et RbM = « Unifamiliale isolée, jumelée, bifamiliale » ; RcM = « Unifamiliale isolée, jumelée, bifamiliale, trifamiliale » ; RrM = « Maison mobile » ; ReM = « Bifamiliale à multifamiliale (2 à 3 étages) » -> residentiel. CbM = « Commerce local et régional (sans nuisance) » ; CcM = « Commerce régional de grande superficie (à nuisance) » -> commercial. Ib = « Industrie à nuisance limitée » ; Ic et IcM = « Industrie à nuisance élevée » -> industriel. Ac = « Agriculture à nuisance » ; Fc = « Forêt » -> agricole (famille agricole/forestière). Null explicite et SERVI : Fa = « Forêt et conservation faunique avec restriction particulière » est DUALE (forêt + conservation faunique) ; ScM = « Équipement ou espace public » est PUBLIQUE. ⛔ Réfutation propriétaire mesurée ICI : le préfixe `ReM` porte « Bifamiliale à multifamiliale (2 à 3 étages) » (résidentiel) à Saint-Just-de-Bretenières alors que le MÊME préfixe `ReM` porte « Commerce régional de grande superficie (à nuisance) » (commercial) à Saint-Paul-de-Montminy (id 18030) — la table N'EST PAS transposable d'une muni à l'autre, et la vocation ne se déduit JAMAIS de la lettre. Gate propriétaire : le filtre id_municipalite='18005' est le gate, et la correspondance avec la collection servie est EXACTE, préfixe par préfixe — SIG 18005 : 44 lignes = Fc 19, RcM 4, Rb 4, CbM 3, ScM 3, IcM 2, RbM 2, Ib 1, ReM 1, RrM 1, Ic 1, Fa 1, CcM 1, Ac 1 ; collection servie qc-zonage-saint-just-de-bretenieres : 44 polygones avec exactement la même distribution (sansCode=0). Couverture : 14/14 préfixes servis, 44/44 polygones."
+}

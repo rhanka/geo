@@ -1,0 +1,158 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:29:13.871Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 105,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 5,
+    "edges": 3,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "bristol",
+      "storage_key": "raw/pv-index/cas/03ed200df375cdb8b926d08b6857de6699ac5ba8cd3ef4308013988dfcc4a20c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5800283",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:163",
+      "quote": "       j) Lot 5 800 283 – Mise à jour sur les Nuisance"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 23,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 1468,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042903Z",
+  "documents": [
+    {
+      "slug": "bristol",
+      "municipality_name": "Bristol",
+      "url": "https://bristolmunicipality.ca/wp-content/uploads/2024/11/PROCES-VERBAUX-2025-12-1-FRANCAIS-2.pdf",
+      "storage_key": "raw/pv-index/cas/03ed200df375cdb8b926d08b6857de6699ac5ba8cd3ef4308013988dfcc4a20c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bristol",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              MRC DU PONTIAC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "              MRC DU PONTIAC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er DÉCEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:7",
+              "quote": "              PROCÈS-VERBAL DE LA SÉANCE EXTRAORDINAIRE DU CONSEIL DE LA"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er DÉCEMBRE 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:9",
+              "quote": "              MUNICIPAL), LE 1er DÉCEMBRE 2025, À 20 h, SOUS LA PRÉSIDENCE DE"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5800283",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "       j) Lot 5 800 283 – Mise à jour sur les Nuisance"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042903Z/bristol/988dfcc4a20c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042903Z/bristol/988dfcc4a20c.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bristol"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

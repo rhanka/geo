@@ -1,0 +1,205 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:30:12.200Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 111,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 1,
+    "LotCadastre": 3
+  },
+  "graphify": {
+    "nodes": 8,
+    "edges": 3,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 3,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "brossard",
+      "storage_key": "raw/pv-index/cas/0d1601279b5045f6e5a817378cfe4409e4bb5766117e5f17de26cce00519b651.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6255919",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:150",
+      "quote": "D'accorder la dérogation mineure demandée à l'égard du lot 6 255 919 situé sur la rue Cloutier,"
+    },
+    {
+      "municipality_slug": "brossard",
+      "storage_key": "raw/pv-index/cas/0d1601279b5045f6e5a817378cfe4409e4bb5766117e5f17de26cce00519b651.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2701475",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:327",
+      "quote": "lot 2 701 475, ayant pour objet l’abattage d’un arbre en cour avant, le tout, conditionnellement"
+    },
+    {
+      "municipality_slug": "brossard",
+      "storage_key": "raw/pv-index/cas/0d1601279b5045f6e5a817378cfe4409e4bb5766117e5f17de26cce00519b651.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2028642",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:380",
+      "quote": "5808, rue Aline, lots 2 028 642 et 2 028 643, ayant pour effet de permettre: :"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 306,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 24823,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042940Z",
+  "documents": [
+    {
+      "slug": "brossard",
+      "municipality_name": "Brossard",
+      "url": "https://brossard.ca/app/uploads/2026/01/20260120_Proces-verbal_ratifie.pdf",
+      "storage_key": "raw/pv-index/cas/0d1601279b5045f6e5a817378cfe4409e4bb5766117e5f17de26cce00519b651.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Brossard",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de l’assemblée ordinaire du conseil municipal de la Ville de Brossard, tenue"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de l’assemblée ordinaire du conseil municipal de la Ville de Brossard, tenue"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal de l’assemblée ordinaire du conseil municipal de la Ville de Brossard, tenue"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "sous la présidence du conseiller Patrick Langlois, le 20 janvier 2026 à 19 h 30 à la salle du"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "231205-613",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:410",
+              "quote": "Considérant que les mandats des membres citoyens désignés par la résolution 231205-613"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6255919",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:150",
+              "quote": "D'accorder la dérogation mineure demandée à l'égard du lot 6 255 919 situé sur la rue Cloutier,"
+            }
+          },
+          {
+            "label": "2701475",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:327",
+              "quote": "lot 2 701 475, ayant pour objet l’abattage d’un arbre en cour avant, le tout, conditionnellement"
+            }
+          },
+          {
+            "label": "2028642",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:380",
+              "quote": "5808, rue Aline, lots 2 028 642 et 2 028 643, ayant pour effet de permettre: :"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042940Z/brossard/cce00519b651.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042940Z/brossard/cce00519b651.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "brossard",
+          "longueuil"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

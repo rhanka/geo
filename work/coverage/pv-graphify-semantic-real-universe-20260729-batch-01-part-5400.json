@@ -1,0 +1,1042 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:47:32.950Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5400,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 14,
+    "failed_pvs": 6,
+    "outcomes": {
+      "INDEXED": 14,
+      "OWNER_NOT_CONFIRMED": 3,
+      "CONTAMINATION_OWNER_MISMATCH": 3,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": [
+      {
+        "storage_key": "raw/pv-index/cas/0d742344a2cb3a7d5894b97ce46f7b4524368ee200edc40ca0f0ae691358321c.pdf",
+        "manifest_scope_slug": "montcalm",
+        "printed_owner_slugs": [
+          "huberdeau"
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/7c187d1fd67bd1a548b496a1049cbf0ac851eedd0b597b0269c6fabc2e5fe759.pdf",
+        "manifest_scope_slug": "montcalm",
+        "printed_owner_slugs": [
+          "huberdeau"
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/85b328f9fcba808bc3ab6c4ca679204ef7614d27fc8ebae3f9399af1e6b314dc.pdf",
+        "manifest_scope_slug": "montcalm",
+        "printed_owner_slugs": [
+          "sainte-agathe-des-monts"
+        ]
+      }
+    ]
+  },
+  "entity_counts": {
+    "Municipality": 14,
+    "Document": 14,
+    "Regulation": 6,
+    "Resolution": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1
+  },
+  "graphify": {
+    "nodes": 37,
+    "edges": 16,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 4,
+      "zone_code_count": 653,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 4,
+      "served_municipalities": 3,
+      "total_lot_numbers": 13348,
+      "missing": [
+        "montcerf-lytton"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z",
+  "documents": [
+    {
+      "slug": "mont-tremblant",
+      "municipality_name": "Mont-Tremblant",
+      "url": "https://vdmt.ca/storage/app/media/informations-municipales/democratie-et-participation-citoyenne/seances-des-conseils/ODJ-2026/ODJ-seance-agglo-post-seance.pdf",
+      "storage_key": "raw/pv-index/cas/ff8d0d6b3e6fc3f823ca972907fd93ee2cb4436ada26140030b3ee5b19b85919.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Mont-Tremblant",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "      Pour l’exercice financier 2026, le taux de base est fixé à 0,102924 $ par 100 $ de la valeur portée"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "      Pour l’exercice financier 2026, le taux de base est fixé à 0,102924 $ par 100 $ de la valeur portée"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/mont-tremblant/ee5b19b85919.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/mont-tremblant/ee5b19b85919.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "mont-tremblant"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcalm",
+      "municipality_name": "Montcalm",
+      "url": "https://montcalm.ca/wp-content/uploads/2026/04/projet_ODJ_04_avril.pdf",
+      "storage_key": "raw/pv-index/cas/0d742344a2cb3a7d5894b97ce46f7b4524368ee200edc40ca0f0ae691358321c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/ae691358321c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/ae691358321c.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "huberdeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcalm",
+      "municipality_name": "Montcalm",
+      "url": "https://montcalm.ca/wp-content/uploads/2026/03/03_mars.pdf",
+      "storage_key": "raw/pv-index/cas/14fbf69c7867ecc372daf62d15ad2574f0179c5dcf4b7741fb26c2e271857614.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/c2e271857614.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/c2e271857614.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcalm",
+      "municipality_name": "Montcalm",
+      "url": "https://montcalm.ca/wp-content/uploads/2026/05/05_MAI.pdf",
+      "storage_key": "raw/pv-index/cas/7c187d1fd67bd1a548b496a1049cbf0ac851eedd0b597b0269c6fabc2e5fe759.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/fabc2e5fe759.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/fabc2e5fe759.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "huberdeau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcalm",
+      "municipality_name": "Montcalm",
+      "url": "https://montcalm.ca/wp-content/uploads/2026/01/01-2026.pdf",
+      "storage_key": "raw/pv-index/cas/84d7a526cf97dbfc396ca2fa89f6f17373e82a659b2f73194a73be3505bc68a1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montcalm",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "\f    6.10 MANDAT À LA FIRME PRÉVOST FORTIN D'AOUST, AVOCATS AFIN DE REPRÉSENTER LA"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "\f    6.10 MANDAT À LA FIRME PRÉVOST FORTIN D'AOUST, AVOCATS AFIN DE REPRÉSENTER LA"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "362-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "   5.1 ADOPTION DU RÈGLEMENT N° 362-2025 SUR LE TRAITEMENT DES ÉLUS MUNICIPAUX"
+            }
+          },
+          {
+            "label": "363-2026",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "   6.4 ADOPTION DU RÈGLEMENT N° 363-2026 DÉCRÉTANT LES TAUX VARIÉS DE TAXES FONCIÈRES ET LA"
+            }
+          },
+          {
+            "label": "251-1-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "    7.1 ADOPTION DU PROJET DE RÈGLEMENT N° 251-1-2025 AYANT POUR OBJET DE MODIFIER LES"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/be3505bc68a1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/be3505bc68a1.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montcalm"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcalm",
+      "municipality_name": "Montcalm",
+      "url": "https://montcalm.ca/wp-content/uploads/2026/02/ODJ_02_fevrier.pdf",
+      "storage_key": "raw/pv-index/cas/85b328f9fcba808bc3ab6c4ca679204ef7614d27fc8ebae3f9399af1e6b314dc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/9af1e6b314dc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/9af1e6b314dc.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "sainte-agathe-des-monts"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcalm",
+      "municipality_name": "Montcalm",
+      "url": "https://montcalm.ca/wp-content/uploads/2026/06/06-juin.pdf",
+      "storage_key": "raw/pv-index/cas/bba4ddc91714e3af72d4301fbc6a9c12dd375ab808c6d79c8cb8d31a9864f783.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/d31a9864f783.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/d31a9864f783.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcalm",
+      "municipality_name": "Montcalm",
+      "url": "https://montcalm.ca/wp-content/uploads/2025/12/12-2025_extra_final.pdf",
+      "storage_key": "raw/pv-index/cas/d02aa58aa4721fdcd9d056f9739cdf4485b1f301aa8361d711efa9d2b5965ab7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/a9d2b5965ab7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcalm/a9d2b5965ab7.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcerf-lytton",
+      "municipality_name": "Montcerf-Lytton",
+      "url": "https://www.montcerf-lytton.com/fichiersUpload/fichiers/20250109094422-odj-assemblee-ordinaire-13-janvier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/2ff73dceaa36f7f46c2e20ee88b1ac9db0c812453eb424623d1bd9cd04d8f317.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montcerf-Lytton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MRC DE LA VALLÉE-DE-LA-GATINEAU"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MRC DE LA VALLÉE-DE-LA-GATINEAU"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcerf-lytton/d9cd04d8f317.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcerf-lytton/d9cd04d8f317.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montcerf-lytton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcerf-lytton",
+      "municipality_name": "Montcerf-Lytton",
+      "url": "https://www.montcerf-lytton.com/fichiersUpload/fichiers/20250227100341-odj-assemblee-ordinaire-3-mars-2025.pdf",
+      "storage_key": "raw/pv-index/cas/99157803596130e9ec06a59d6305c75bb2d416b0e2466ac2544cf23763b0a648.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montcerf-Lytton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MRC DE LA VALLÉE-DE-LA-GATINEAU"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MRC DE LA VALLÉE-DE-LA-GATINEAU"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcerf-lytton/f23763b0a648.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcerf-lytton/f23763b0a648.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montcerf-lytton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montcerf-lytton",
+      "municipality_name": "Montcerf-Lytton",
+      "url": "https://www.montcerf-lytton.com/fichiersUpload/fichiers/20250210173815-odj-assemblee-ordinaire-10-fevrier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/ba0727da8591bd771259bf1031c23bdf63965ee70f6bd90f128817a8049484c9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montcerf-Lytton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MRC DE LA VALLÉE-DE-LA-GATINEAU"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "MRC DE LA VALLÉE-DE-LA-GATINEAU"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcerf-lytton/17a8049484c9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montcerf-lytton/17a8049484c9.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montcerf-lytton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20260226162342-ordre-du-jour-3-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/037d21421a78fd965ec596cbf8964aeb42c3cab0e8d0a91a244808dbe0dc2af7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "969-2025",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "4.   Adoption du règlement 969-2025 relatif à l’imposition des taux de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/08dbe0dc2af7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/08dbe0dc2af7.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250409165710-ordre-du-jour-11-avril-2025.pdf",
+      "storage_key": "raw/pv-index/cas/0c6fecc5a3561179fdf48df65a8742060c1521338c6cf5eae085265d825a0537.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/265d825a0537.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/265d825a0537.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20260217155638-ordre-du-jour-projet-17-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/2f36552aba62e5822525ea835df50d636431db0fb43ade58faf9acee8b1288d7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-12-237",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "       durable-Abrogation de la résolution numéro 2025-12-237"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/acee8b1288d7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/acee8b1288d7.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20251002132515-odj-seance-extraordinaire-2-octobre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/4065c2e0dbb3e700c325f653abc1ebbced11fcf1a92696555c91278a86c2c51a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/278a86c2c51a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/278a86c2c51a.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250502140844-odj-seance-extraordinaire-6-mai-2025.pdf",
+      "storage_key": "raw/pv-index/cas/48237468ed45829e62ab25e655b3a049ca6b8867610a23691e7ed7a216f658e9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/d7a216f658e9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/d7a216f658e9.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250909091834-ordre-du-jour-9-septembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/4dd28fbc03ae47f3f27fc04d1a5bd63a0ff623357e6aca4edb95157f9b0cab06.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/157f9b0cab06.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/157f9b0cab06.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20260420095430-pour-seance-ordre-du-jour-seance-ordinaire-21-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/5cb27b7ec3dec80bafa64da757a09ee9068fc43a68ea609734b071a04999e89c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROCÈS-VERBAL DU CONSEIL DE LA MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROCÈS-VERBAL DU CONSEIL DE LA MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "PROCÈS-VERBAL DU CONSEIL DE LA MUNICIPALITÉ DE MONTEBELLO"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 AVRIL 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "SÉANCE ORDINAIRE DU 21 AVRIL 2026 À 19 H"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "961-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:119",
+              "quote": "      2026 modifiant le règlement numéro 961-2023 relatif à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/71a04999e89c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/71a04999e89c.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20250811155127-ordre-du-jour-seance-extraordinaire12-aout-2025.pdf",
+      "storage_key": "raw/pv-index/cas/5f8c0613ea4c351b6dfdb0484310fc0a53c499fd9def6894af6d110f3409e67a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/110f3409e67a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/110f3409e67a.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montebello",
+      "municipality_name": "Montebello",
+      "url": "https://www.montebello.ca/fichiersUpload/fichiers/20260120085623-ordre-du-jour-seance-ordinaire-20-janvier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/64ebcb49dd336191b2bebc727994ce25da825019c5005f05df987ab878be1f97.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Montebello",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "Procès-verbal du Conseil de la Municipalité de Montebello"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "969-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:88",
+              "quote": " 13.3 Avis de motion et dépôt du projet de règlement numéro 969-2025 relatif à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/7ab878be1f97.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184713Z/montebello/7ab878be1f97.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "montebello"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

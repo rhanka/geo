@@ -1,0 +1,2559 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T17:19:29.031Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 3760,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 19,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 19,
+      "OWNER_NOT_CONFIRMED": 1,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 19,
+    "Document": 19,
+    "CouncilSession": 19,
+    "MeetingDate": 19,
+    "Regulation": 52,
+    "Resolution": 65,
+    "LotCadastre": 1
+  },
+  "graphify": {
+    "nodes": 194,
+    "edges": 59,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 1,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chibougamau",
+      "storage_key": "raw/pv-index/cas/5d78e09f742499b194994905e19bf330cf1d0edb1649e84beefe7c28a1b45351.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4511474",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:916",
+      "quote": "              MACHIN - LOT 4 511 474"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 40,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z",
+  "documents": [
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/Procs-verbal%20(2025-05-12%20(extraordinaire)).pdf",
+      "storage_key": "raw/pv-index/cas/5c83ea1d78582e943535289d708132d039fffa51efa3b9e99190aefee5fde058.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 12 mai 2025, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 mai 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 12 mai 2025, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "002-2025",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "               adopté lors d'une prochaine séance le règlement numéro 002-2025 ayant pour objet de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/aefee5fde058.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/aefee5fde058.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_structure/fichiers/pv-20160222.pdf",
+      "storage_key": "raw/pv-index/cas/5ce805ad37cfffd46afd6d3e929e4bd29dd15429336131202cd01676c20afb2d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 6,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 22 février 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 22 février 2016, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "22 février 2016",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 22 février 2016, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "069-2001-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:849",
+              "quote": "              comité paritaire en santé et sécurité au travail par la résolution numéro 069-2001-02;"
+            }
+          },
+          {
+            "label": "099-2013-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:973",
+              "quote": "              personnel étudiant par la résolution numéro 099-2013-03;"
+            }
+          },
+          {
+            "label": "148-2015-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1311",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 148-2015-04 autorisait un premier ajustement"
+            }
+          },
+          {
+            "label": "390-2015-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1315",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 390-2015-10 autorisait un deuxième"
+            }
+          },
+          {
+            "label": "474-2013-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1499",
+              "quote": "              QUE cette résolution abroge la résolution numéro 474-2013-12 adoptée par le conseil"
+            }
+          },
+          {
+            "label": "216-2015-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1552",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 216-2015-06 accordait le contrat de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "005-92",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:596",
+              "quote": "              CONSIDÉRANT QU'un plan d’urbanisme sous le règlement numéro 005-92 et que des"
+            }
+          },
+          {
+            "label": "005-2002-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:624",
+              "quote": "              Dossier administratif (GREFFE) Règlement 005-2002-24."
+            }
+          },
+          {
+            "label": "005-92-2",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:641",
+              "quote": "              Dossier administratif (GREFFE) Règlement 005-92-2."
+            }
+          },
+          {
+            "label": "001-2016",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:655",
+              "quote": "              Dossier administratif (GREFFE) Règlement 001-2016."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/1676c20afb2d.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/1676c20afb2d.pdf/.graphify/.graphify_extract.json — 14 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/Procs-verbal%20(2026-04-20%20(ordinaire)).pdf",
+      "storage_key": "raw/pv-index/cas/5d27e26944a62d76ca0a7af1fd1724a3fd6c32407fd6fd3ed35460d8d0a09a5a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 5,
+        "Regulation": 17
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la Ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 20 avril 2026, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 20 avril 2026, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "364-2025-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:154",
+              "quote": "107-2026-04   MODIFICATION DE LA RÉSOLUTION NUMÉRO 364-2025-12 - DEMANDE DE"
+            }
+          },
+          {
+            "label": "087-2026-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:496",
+              "quote": "              lors de la séance ordinaire du 16 mars 2026 par la résolution numéro 087-2026-03;"
+            }
+          },
+          {
+            "label": "086-2026-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:559",
+              "quote": "              lors de la séance ordinaire du 16 mars 2026 par la résolution numéro 086-2026-03;"
+            }
+          },
+          {
+            "label": "015-2011-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:950",
+              "quote": "              organismes par la résolution numéro 015-2011-01;"
+            }
+          },
+          {
+            "label": "059-2026-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2037",
+              "quote": "              urbanisme (résolution numéro 059-2026-02);"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "001-2022-02",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:488",
+              "quote": "112-2026-04   ADOPTION DU RÈGLEMENT NUMÉRO 001-2022-02 AYANT POUR OBJET DE"
+            }
+          },
+          {
+            "label": "001-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:489",
+              "quote": "              MODIFIER LE RÈGLEMENT NUMÉRO 001-2022, ET SES AMENDEMENTS"
+            }
+          },
+          {
+            "label": "001-2024-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:523",
+              "quote": "113-2026-04   ADOPTION DU RÈGLEMENT NUMÉRO 001-2024-01 AYANT POUR OBJET DE"
+            }
+          },
+          {
+            "label": "001-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:524",
+              "quote": "              MODIFIER LE RÈGLEMENT NUMÉRO 001-2024 AFIN D’AUGMENTER LA"
+            }
+          },
+          {
+            "label": "004-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:587",
+              "quote": "114-2026-04   AVIS DE MOTION ET DÉPÔT D'UN RÈGLEMENT NUMÉRO 004-2026 AYANT"
+            }
+          },
+          {
+            "label": "008-2024-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:629",
+              "quote": "\f116-2026-04   AVIS DE MOTION ET DÉPÔT D'UN RÈGLEMENT NUMÉRO 008-2024-01"
+            }
+          },
+          {
+            "label": "008-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:630",
+              "quote": "              AYANT POUR OBJET DE MODIFIER LE RÈGLEMENT NUMÉRO 008-2024"
+            }
+          },
+          {
+            "label": "009-2024-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:670",
+              "quote": "118-2026-04   AVIS DE MOTION ET DÉPÔT D'UN RÈGLEMENT NUMÉRO 009-2024-01"
+            }
+          },
+          {
+            "label": "009-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:671",
+              "quote": "              AYANT POUR OBJET DE MODIFIER LE RÈGLEMENT NUMÉRO 009-2024"
+            }
+          },
+          {
+            "label": "011-2024-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:740",
+              "quote": "120-2026-04   AVIS DE MOTION ET DÉPÔT D'UN RÈGLEMENT NUMÉRO 011-2024-01"
+            }
+          },
+          {
+            "label": "011-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:741",
+              "quote": "              AYANT POUR OBJET DE MODIFIER LE RÈGLEMENT NUMÉRO 011-2024"
+            }
+          },
+          {
+            "label": "012-2024-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:786",
+              "quote": "122-2026-04   AVIS DE MOTION ET DÉPÔT D'UN RÈGLEMENT NUMÉRO 012-2024-01"
+            }
+          },
+          {
+            "label": "012-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:787",
+              "quote": "              AYANT POUR OBJET DE MODIFIER LE RÈGLEMENT NUMÉRO 012-2024"
+            }
+          },
+          {
+            "label": "013-2024-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:833",
+              "quote": "124-2026-04   AVIS DE MOTION ET DÉPÔT D'UN RÈGLEMENT NUMÉRO 013-2024-01"
+            }
+          },
+          {
+            "label": "013-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:834",
+              "quote": "              AYANT POUR OBJET DE MODIFIER LE RÈGLEMENT 013-2024 AYANT POUR"
+            }
+          },
+          {
+            "label": "015-2024-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:884",
+              "quote": "\f126-2026-04   AVIS DE MOTION ET DÉPÔT D'UN RÈGLEMENT NUMÉRO 015-2024-01"
+            }
+          },
+          {
+            "label": "015-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:885",
+              "quote": "              AYANT POUR OBJET DE MODIFIER LE RÈGLEMENT NUMÉRO 015-2024"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/60d8d0a09a5a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/60d8d0a09a5a.pdf/.graphify/.graphify_extract.json — 26 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 26,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/PV%20conseil%202021-05-17.pdf",
+      "storage_key": "raw/pv-index/cas/5d78e09f742499b194994905e19bf330cf1d0edb1649e84beefe7c28a1b45351.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 6,
+        "Regulation": 5,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 mai 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 17 mai 2021, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 mai 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 17 mai 2021, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "153-2021-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:508",
+              "quote": "              numéro 30-0175, par la résolution numéro 153-2021-04;"
+            }
+          },
+          {
+            "label": "117-2021-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:551",
+              "quote": "              secrétaire à la Culture et aux communications, par la résolution numéro 117-2021-03;"
+            }
+          },
+          {
+            "label": "157-2021-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:602",
+              "quote": "              résolution numéro 157-2021-04 et que le poste de chef d'équipe aux collectes de matières"
+            }
+          },
+          {
+            "label": "312-2020-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:791",
+              "quote": "              CONSIDÉRANT QUE la résolution 312-2020-09 octroyait un mandat à la firme"
+            }
+          },
+          {
+            "label": "048-2017-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:795",
+              "quote": "              CONSIDÉRANT QUE la résolution 048-2017-01 octroyait un mandat pour la préparation"
+            }
+          },
+          {
+            "label": "422-2017-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:800",
+              "quote": "              CONSIDÉRANT QUE la résolution 422-2017-10 octroyait un mandat complémentaire à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "005-92",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:302",
+              "quote": "               CONSIDÉRANT QU'un plan d’urbanisme sous le règlement numéro 005-92 et que des"
+            }
+          },
+          {
+            "label": "005-2002-35",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:329",
+              "quote": "               Dossier administratif (GREFFE) numéro Règlement numéro 005-2002-35."
+            }
+          },
+          {
+            "label": "002-2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:976",
+              "quote": "              d’implantation et d’intégration architecturale du centre-ville (P.I.I.A. règlement 002-2017);"
+            }
+          },
+          {
+            "label": "001-2012",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1089",
+              "quote": "              d’implantation et d’intégration architecturale de l’entrée sud (P.I.I.A. règlement 001-2012);"
+            }
+          },
+          {
+            "label": "002-2002-33",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1419",
+              "quote": "              autoriser l'usage de parc (règlement 002-2002-33);"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4511474",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:916",
+              "quote": "              MACHIN - LOT 4 511 474"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/7c28a1b45351.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/7c28a1b45351.pdf/.graphify/.graphify_extract.json — 16 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 16,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/pv%205%20decembre%20-%20Extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/5f3d7cf380cdec42837bd0f5e262430852615e5199262dc321e651f5d5801bd3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 décembre 2018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 5 décembre 2018, à l’endroit habituel des sessions du conseil. La séance est ouverte"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 décembre 2018",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 5 décembre 2018, à l’endroit habituel des sessions du conseil. La séance est ouverte"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/51f5d5801bd3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/51f5d5801bd3.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/PV%20conseil%202021-11-15(1).pdf",
+      "storage_key": "raw/pv-index/cas/60ed87e620bfd6c646bc99aa5ebdd3d9140f4ab7820a1eb4fc2eb0d2456e8dfc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 8,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 novembre 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 15 novembre 2021, à l’endroit habituel des sessions du conseil. La séance est ouverte"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 novembre 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 15 novembre 2021, à l’endroit habituel des sessions du conseil. La séance est ouverte"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "303-2017-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:429",
+              "quote": "              résolution numéro 303-2017-07, le règlement 007-2017, Règlement ayant pour objet la"
+            }
+          },
+          {
+            "label": "313-2011-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:688",
+              "quote": "              résolution numéro 313-2011-08 une Politique en matière de culture, loisir, de plein-air et de"
+            }
+          },
+          {
+            "label": "186-2021-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:838",
+              "quote": "              CONSIDÉRANT QUE la résolution 186-2021-05 octroyait un mandat pour le contrôle"
+            }
+          },
+          {
+            "label": "259-2021-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:874",
+              "quote": "              CONSIDÉRANT QUE la résolution 259-2021-06 octroyait le contrat de remplacement des"
+            }
+          },
+          {
+            "label": "103-2021-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:965",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 103-2021-03 octroyait le contrat pour l'analyse"
+            }
+          },
+          {
+            "label": "187-2021-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:998",
+              "quote": "              CONSIDÉRANT QUE la résolution 187-2021-05 octroyait le contrat de réaménagement du"
+            }
+          },
+          {
+            "label": "163-2021-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1112",
+              "quote": "              CONSIDÉRANT QUE la résolution 163-2021-04 autorisait le Service technique à procéder"
+            }
+          },
+          {
+            "label": "393-2021-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1477",
+              "quote": "              CONSIDÉRANT QUE le conseil municipal a adopté la résolution 393-2021-10 qui"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "007-2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:424",
+              "quote": "407-2021-11   MODIFICATION DE L'ANNEXE \"A\" DU RÈGLEMENT 007-2017, RÈGLEMENT"
+            }
+          },
+          {
+            "label": "007-2019",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1023",
+              "quote": "              approuvée selon le règlement de délégation de pouvoir, règlement numéro 007-2019, en"
+            }
+          },
+          {
+            "label": "001-2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1471",
+              "quote": "\f              CONSIDÉRANT QU’un règlement numéro 001-2017 concernant un plan d’implantation et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/b0d2456e8dfc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/b0d2456e8dfc.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chapais",
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/2025-02-17.pdf",
+      "storage_key": "raw/pv-index/cas/6292e213cf6084ebe09c51bb29e746bac509c1c1b5779a769fe5beefd2e4f84a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/beefd2e4f84a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/beefd2e4f84a.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/2023-02-20%20(ordinaire).pdf",
+      "storage_key": "raw/pv-index/cas/64b9183fda1eeb6278d89e906b0f75ed7a536c02cbff7282c5c79c83a59daebc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 9,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 20 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 20 février 2023, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "20 février 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 20 février 2023, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "248-2021-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:292",
+              "quote": "              CONSIDÉRANT la résolution numéro 248-2021-06 autorisant le dépôt d’une demande de"
+            }
+          },
+          {
+            "label": "120-2021-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:880",
+              "quote": "              communautaire ainsi que de la résolution numéro 120-2021-03 ou toutes autres résolutions"
+            }
+          },
+          {
+            "label": "057-2022-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1015",
+              "quote": "              CONSIDÉRANT QUE la résolution 057-2022-02 autorisait une dépense de 30 000 $ avant"
+            }
+          },
+          {
+            "label": "031-2023-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1025",
+              "quote": "\f              CONSIDÉRANT QUE la résolution 031-2023-01 autorisait le Service technique à procéder"
+            }
+          },
+          {
+            "label": "491-2021-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1059",
+              "quote": "              CONSIDÉRANT QUE la résolution 491-2021-12 octroyait le contrat de construction d'un"
+            }
+          },
+          {
+            "label": "429-2022-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1213",
+              "quote": "               résolution numéro 429-2022-11 ;"
+            }
+          },
+          {
+            "label": "472-2022-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1223",
+              "quote": "              2022 par la résolution numéro 472-2022-12 ;"
+            }
+          },
+          {
+            "label": "471-2022-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1265",
+              "quote": "              a été adopté en séance ordinaire le 19 décembre 2022 par la résolution 471-2022-12 ;"
+            }
+          },
+          {
+            "label": "032-2023-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1270",
+              "quote": "              2023 par la résolution 032-2023-01 ;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "004-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:107",
+              "quote": "              conformité des dispositions du règlement numéro 004-2018 (frais de déplacement)"
+            }
+          },
+          {
+            "label": "002-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:390",
+              "quote": "              Dossier administratif (GREFFE) règlement numéro 002-2023."
+            }
+          },
+          {
+            "label": "001-2010",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:896",
+              "quote": "              CONSIDÉRANT QUE l’article 3 du règlement 001-2010 permet de fixer, par résolution, la"
+            }
+          },
+          {
+            "label": "004-2017",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1207",
+              "quote": "               CONSIDÉRANT QUE la Ville de Chibougamau a adopté le règlement 004-2017 sur les"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/9c83a59daebc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/9c83a59daebc.pdf/.graphify/.graphify_extract.json — 17 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 17,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_structure/fichiers/pv_20150519__extraordinaire_.pdf",
+      "storage_key": "raw/pv-index/cas/652792a4e5b8d13e23545605b2397ce4c6aae7a3aebec0437ab14d193fcf05d0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 mai 2015",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 19 mai 2015, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 mai 2015",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 19 mai 2015, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "382-2012-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "              commis de bureau par la résolution numéro 382-2012-09;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/4d193fcf05d0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/4d193fcf05d0.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/2023-01-30%20(extraordinaire).pdf",
+      "storage_key": "raw/pv-index/cas/65b8cc004f1fa5022d08df4d66d4966cf61d69e3b646cbd7a4a43e58ae3a0e11.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 30 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "30 janvier 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              Chibougamau, tenue le 30 janvier 2023, à l’endroit habituel des sessions du conseil. La"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "019-2023-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:145",
+              "quote": "              CONSIDÉRANT QUE la résolution 019-2023-01 autorisait le Service technique à procéder"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "001-2023",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:107",
+              "quote": "028-2023-01   ADOPTION DU RÈGLEMENT NUMÉRO 001-2023, RÈGLEMENT AYANT POUR"
+            }
+          },
+          {
+            "label": "004-2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:245",
+              "quote": "              le Règlement 004-2017 Projets particuliers de construction, de modification ou d’occupation"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/3e58ae3a0e11.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/3e58ae3a0e11.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/PV%20conseil%202021-05-10%20(extraordinaire)(1).pdf",
+      "storage_key": "raw/pv-index/cas/6692d1125b42c2967115046257f59865b40a5beeadd29a84e03c60e94769cbaa.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 10 mai 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              Chibougamau, tenue le 10 mai 2021, à l’endroit habituel des sessions du conseil. La séance"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "10 mai 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              Chibougamau, tenue le 10 mai 2021, à l’endroit habituel des sessions du conseil. La séance"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "001-2021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "              CONSIDÉRANT QU'il est nécessaire d'amender le règlement numéro 001-2021 de façon à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/60e94769cbaa.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/60e94769cbaa.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/Procs-verbal%202024-03-04%20(extraordinaire).pdf",
+      "storage_key": "raw/pv-index/cas/672d49558a4b4a1ad31433e1f0e263e6fdd91b9a7b8e5e6fe03c6796ea8fea74.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la Ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la Ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 mars 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 4 mars 2024, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 mars 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 4 mars 2024, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/6796ea8fea74.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/6796ea8fea74.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/pv%201er%20mai%20-%20Extraordinaire(2).pdf",
+      "storage_key": "raw/pv-index/cas/6a35a8dd76d1c9a61af0fdfa5c635d6e36db079f8be0b041fa6f2554a4710a1c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er mai 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 1er mai 2017, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er mai 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 1er mai 2017, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "116-2017-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 116-2017-03 autorisait le Service technique à"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/2554a4710a1c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/2554a4710a1c.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/Procs-verbal%20(2024-10-15%20(extraordinaire))(1).pdf",
+      "storage_key": "raw/pv-index/cas/6adc34c506d4d9377be6b5c652248485d04be93032cb67940545ee9f7ebedee1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 15 octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              Chibougamau, tenue le 15 octobre 2024, à l’endroit habituel des sessions du conseil. La séance"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "15 octobre 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              Chibougamau, tenue le 15 octobre 2024, à l’endroit habituel des sessions du conseil. La séance"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "035-2024-02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "               3e Rue, par la résolution numéro 035-2024-02 pour une somme de 980 000 $;"
+            }
+          },
+          {
+            "label": "264-2024-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "               inclusivement, par la résolution numéro 264-2024-07;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/ee9f7ebedee1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/ee9f7ebedee1.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_structure/fichiers/pv_20110718.pdf",
+      "storage_key": "raw/pv-index/cas/6bb4c77a2456bc256fe08fccfdbf970d43136df067dcee309f0a7c054968250b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL                de la séance ordinaire du Conseil de la VILLE DE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL                de la séance ordinaire du Conseil de la VILLE DE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 18 juillet 2011",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL                de la séance ordinaire du Conseil de la VILLE DE"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "18 juillet 2011",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              CHIBOUGAMAU, tenue le 18 juillet 2011, à l’endroit habituel des sessions du Conseil. La"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "219-2011-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:121",
+              "quote": "\f277-2011-07   MODIFICATION À LA RÉSOLUTION NUMÉRO 219-2011-06."
+            }
+          },
+          {
+            "label": "099-2011-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1031",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 099-2011-03 autorisait le directeur du Service"
+            }
+          },
+          {
+            "label": "243-2011-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1116",
+              "quote": "              responsable de l’informatique par la résolution numéro 243-2011-06;"
+            }
+          },
+          {
+            "label": "366-2010-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1232",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 366-2010-08 accordait le contrat de mise aux"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "001-2011",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:916",
+              "quote": "              Dossier administratif (GREFFE) règlement 001-2011."
+            }
+          },
+          {
+            "label": "011-2010",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:959",
+              "quote": "              Dossier administratif (GREFFE) Règlement numéro 011-2010."
+            }
+          },
+          {
+            "label": "002-2010-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1182",
+              "quote": "              POTABLE DE CHIBOUGAMAU – RÈGLEMENT NUMÉRO 002-2010-01."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/7c054968250b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/7c054968250b.pdf/.graphify/.graphify_extract.json — 11 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chapais",
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_structure/fichiers/pv_2013-01-28.pdf",
+      "storage_key": "raw/pv-index/cas/6cd45cab0f4232fed46ddc15dc0767ef45b14c6db77c08bb0f890007e829e4bf.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 9,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la VILLE DE CHIBOUGAMAU,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la VILLE DE CHIBOUGAMAU,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 28 janvier 2013",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 28 janvier 2013, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "28 janvier 2013",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 28 janvier 2013, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "426-2005-09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:227",
+              "quote": "              a été mandatée par la résolution numéro 426-2005-09 afin d’exécuter les plans et devis en"
+            }
+          },
+          {
+            "label": "461-2012-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:667",
+              "quote": "              novembre 2012 par la résolution numéro 461-2012-11;"
+            }
+          },
+          {
+            "label": "507-2012-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:670",
+              "quote": "              du 17 décembre 2012 par la résolution numéro 507-2012-12"
+            }
+          },
+          {
+            "label": "152-2012-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:704",
+              "quote": "              par la résolution 152-2012-04."
+            }
+          },
+          {
+            "label": "106-2012-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:779",
+              "quote": "              développement culturel par résolution 106-2012-03;"
+            }
+          },
+          {
+            "label": "467-2012-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:971",
+              "quote": "019-2013-01   MODIFICATION AUX RESOLUTIONS NUMEROS 467-2012-12, 468-2012-12 ET"
+            }
+          },
+          {
+            "label": "468-2012-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1004",
+              "quote": "              Ajout à la résolution numéro 468-2012-12 - Décréter la majoration de la grille salariale du"
+            }
+          },
+          {
+            "label": "469-2012-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1014",
+              "quote": "              Ajout à la résolution numéro 469-2012-12 - Décréter le salaire du personnel dirigeant de la"
+            }
+          },
+          {
+            "label": "366-2010-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1338",
+              "quote": "              CONSIDÉRANT QUE la résolution no 366-2010-08 accordait le contrat de mise aux"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "005",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:648",
+              "quote": "              CONSIDÉRANT QU’ un plan d’urbanisme sous le règlement numéro 005 92 et que des"
+            }
+          },
+          {
+            "label": "002-2010-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1371",
+              "quote": "              Le tout payable à même le règlement 002-2010-01."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/0007e829e4bf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/0007e829e4bf.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chapais",
+          "chibougamau",
+          "lebel-sur-quevillon",
+          "matagami"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_structure/fichiers/pv-20150824.pdf",
+      "storage_key": "raw/pv-index/cas/6e629e9ec4d314a3a36e503429ee8cca4fe075797109897e68860ce9b53e65ee.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 24 août 2015",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 24 août 2015, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "24 août 2015",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 24 août 2015, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "216-2015-06",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:784",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 216-2015-06 accordait le contrat de"
+            }
+          },
+          {
+            "label": "398-2014-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:999",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 398-2014-10 autorisait la firme"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "011-2002",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:457",
+              "quote": "              CONSIDÉRANT QUE le règlement 011-2002 prévoit des frais de déplacement et de"
+            }
+          },
+          {
+            "label": "004-2003",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:839",
+              "quote": "              règlement numéro 004-2003 concernant la politique d’achat de la municipalité;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/0ce9b53e65ee.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/0ce9b53e65ee.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/PV%2016%20decembre%20-%20Extraordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/6e91a705b00512b5bfa48cc23ea0a61150fd9f00124aa87befc8891a63c1517c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 16 décembre 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance extraordinaire du conseil de la ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "16 décembre 2019",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              Chibougamau, tenue le 16 décembre 2019, à l’endroit habituel des sessions du conseil. La"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/891a63c1517c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/891a63c1517c.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/PV%20conseil%202021-04-19(1).pdf",
+      "storage_key": "raw/pv-index/cas/7016c1c26df58c738deed1447b71352a92f8ac3bf95db97381d2c7af2e1458ae.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 5,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 avril 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 avril 2021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 19 avril 2021, via la plateforme Zoom. La séance est ouverte à 19 heures 30."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "122-2021-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:283",
+              "quote": "              la résolution numéro 122-2021-03;"
+            }
+          },
+          {
+            "label": "008-2018-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:287",
+              "quote": "              résolution numéro 008-2018-01;"
+            }
+          },
+          {
+            "label": "113-2021-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:440",
+              "quote": "              CONSIDÉRANT QUE la résolution 113-2021-03 permet à monsieur Jonathan Dylgat,"
+            }
+          },
+          {
+            "label": "303-2017-07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:558",
+              "quote": "              résolution numéro 303-2017-07 le règlement 007-2017, règlement ayant pour objet la"
+            }
+          },
+          {
+            "label": "100-2021-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1268",
+              "quote": "              CONSIDÉRANT QUE la résolution 100-2021-03 autorisait le Service technique à procéder"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "004-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "              02-110-00-311, selon les modalités mentionnées au règlement numéro 004-2018."
+            }
+          },
+          {
+            "label": "005-2002-35",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:548",
+              "quote": "              Dossier administratif (GREFFE) Règlement numéro 005-2002-35."
+            }
+          },
+          {
+            "label": "007-2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:553",
+              "quote": "145-2021-04   MODIFICATION DE L'ANNEXE A DU RÈGLEMENT 007-2017, RÈGLEMENT"
+            }
+          },
+          {
+            "label": "002-2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1536",
+              "quote": "              d’implantation et d’intégration architecturale du centre-ville (P.I.I.A. règlement 002-2017);"
+            }
+          },
+          {
+            "label": "006-2017",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1587",
+              "quote": "              règlement 006-2017 l’adoption d’un programme de revitalisation du centre-ville de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/c7af2e1458ae.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/c7af2e1458ae.pdf/.graphify/.graphify_extract.json — 14 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chibougamau",
+          "quebec"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "chibougamau",
+      "municipality_name": "Chibougamau",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/chibougamau/_publication/fichiers/pv%2024%20avril.pdf",
+      "storage_key": "raw/pv-index/cas/704229ba7ec7d800ab4663c3c08b0d231a25a59e95f2d74ff601243ba5d8d3bd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 6,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chibougamau",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "              PROCÈS-VERBAL de la séance ordinaire du conseil de la ville de Chibougamau,"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 24 avril 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 24 avril 2017, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "24 avril 2017",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "              tenue le 24 avril 2017, à l’endroit habituel des sessions du conseil. La séance est ouverte à"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "313-2011-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:467",
+              "quote": "              culture, de loisir, de plein-air et de sport en 2011, numéro de résolution numéro 313-2011-08;"
+            }
+          },
+          {
+            "label": "188-2014-05",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1205",
+              "quote": "              aux projets culturels de la Ville de Chibougamau » par résolution numéro 188-2014-05 au"
+            }
+          },
+          {
+            "label": "410-2016-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1328",
+              "quote": "              secrétaires auxiliaires par sa résolution numéro 410-2016-10 ;"
+            }
+          },
+          {
+            "label": "024-2017-01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1445",
+              "quote": "              CONSIDÉRANT QUE la résolution 024-2017-01 autorisait le Service de sécurité incendie"
+            }
+          },
+          {
+            "label": "445-2016-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1480",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 445-2016-11 autorisait le directeur du Service"
+            }
+          },
+          {
+            "label": "111-2017-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1522",
+              "quote": "              CONSIDÉRANT QUE la résolution numéro 111-2017-03 autorisait le Service technique à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "001-2017",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:936",
+              "quote": "144-2017-04   ADOPTION DU RÈGLEMENT NUMÉRO 001-2017, RÈGLEMENT AYANT POUR"
+            }
+          },
+          {
+            "label": "002-2017",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:955",
+              "quote": "145-2017-04   ADOPTION DU RÈGLEMENT NUMÉRO 002-2017, RÈGLEMENT AYANT POUR"
+            }
+          },
+          {
+            "label": "005-2002-26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1154",
+              "quote": "              Dossier administratif (GREFFE) Règlement 005-2002-26"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/243ba5d8d3bd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T171558Z/chibougamau/243ba5d8d3bd.pdf/.graphify/.graphify_extract.json — 13 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chapais",
+          "chibougamau"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

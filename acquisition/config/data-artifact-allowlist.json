@@ -1,0 +1,8 @@
+{
+  "_doc": "Registre des artefacts de données SUIVIS par git malgré la règle générale. Opposé par acquisition/src/lib/data-artifact-gate.test.ts. La règle : on purge une donnée dont la source de vérité est AILLEURS et DURABLE ; on garde une donnée qui EST la source — en particulier le fixture d'un test pérenne dont aucune source pérenne n'est identifiée pour le rejouer. Chaque exception DOIT dire pourquoi le dépôt en est la source ; une entrée sans raison fait échouer le gate.",
+  "files": {},
+  "prefixes": {
+    "data/normalized/ca-qc-sda/": "Limites administratives QC (régions, MRC, municipalités) suivies sur main de longue date et servant de référentiel de rattachement hors ligne. L'ADR-0012 prévoit leur migration vers le stockage objet ; tant qu'elle n'est pas faite, les retirer casserait les consommateurs qui les lisent par chemin. Exception TRANSITOIRE, à lever avec la migration.",
+    "data/normalized/fr-admin-express/": "Limites administratives FR (régions, départements) — même statut transitoire que le jeu QC ci-dessus : suivies sur main, migration ADR-0012 en attente."
+  }
+}

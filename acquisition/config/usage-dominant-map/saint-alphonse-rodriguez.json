@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "P1": "residentiel",
+    "P2": "residentiel",
+    "P3": "commercial",
+    "P4": "commercial",
+    "P5": null,
+    "P6": "industriel",
+    "P7": "agricole",
+    "P8": "environnemental"
+  },
+  "source": "work/zonage-norms/saint-alphonse-rodriguez/discovery-423-1990-dec2019.pdf (Règlement de zonage no. 423-1990, version administrative juillet 2010 — corps local)",
+  "note": "Article 2.6.4 « Interprétation de la numérotation des zones en fonction de l'usage dominant », p.11, verbatim: le code de zone est « composé d'un nombre spécifiant par les centaines la vocation dominante de la zone » — « les zones dont la numérotation commence par 100 correspondent à des zones dont la fonction dominante est résidentielle » ; « par 200 […] résidentielle, mais où l'usage du commerce restreint est autorisé » ; « par 300 […] commerciale, mais principalement axée sur la récréation, incluant les camps de vacances » ; « par 400 […] commerciale » ; « par 500 […] zones mixtes où la fonction dominante est commerciale, mais où certains usages industriels sont également autorisés » ; « par 600 […] industrielle » ; « par 700 […] agricole » ; « par 800 […] zones de conservation dont la fonction dominante est forestière » ; « par 900 […] publique et semi-publique ». Les codes SIG servis ont la forme « P<centaine>-<repérage> » (ex « P4-23 » = zone 423), donc le chiffre collé au P EST celui des centaines: P1/P2 -> residentiel ; P3/P4 « commerciale » -> commercial ; P6 « industrielle » -> industriel ; P7 « agricole » -> agricole ; P8 « zones de conservation dont la fonction dominante est forestière » -> environnemental (conservation+forestière, cf. précédent saint-raymond FF/FR). Null explicite: P5 « zones mixtes » (commerciale ET industrielle, DUALE). P9 (publique) non servi dans le SIG. La grille des spécifications (matrice des usages) n'est PAS utilisée."
+}

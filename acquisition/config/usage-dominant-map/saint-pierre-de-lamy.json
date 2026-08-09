@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "EAA": "agricole",
+    "EAB": "agricole",
+    "EAF": "agricole",
+    "EF": "agricole",
+    "I": "industriel",
+    "R": "residentiel",
+    "M": null,
+    "P": null,
+    "V": null
+  },
+  "source": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+  "note": "Municipalité de Saint-Pierre-de-Lamy (MRC de Témiscouata). La vocation est portée VERBATIM par la couche SIG qui sert ce zonage : le FeatureServer « Zonage_MRC_Témiscouata_vue » expose un champ `TYPE_ZONE` par entité, apparié au code `ZONE`, filtrable par `CODE_MUN` (13040 = Saint-Pierre-de-Lamy). Couples ZONE / TYPE_ZONE VERBATIM mesurés pour cette municipalité (requête `?where=CODE_MUN='13040'&outFields=ZONE,TYPE_ZONE&returnDistinctValues=true`) : EAA-1..4 « Agricole dynamique » ; EAB-1..3 « Agricole à dynamiser » ; EAF-1..6 « Agroforestier » ; EF-1..3 « Forestier » ; I-1 « Industriel » ; M-1,M-2 « Mixte » ; P-1..3 « Public » ; R-1..4 « Résidentiel » ; V-1,V-2 « Villégiature » ; RC-1,RC-2 « Récréative ». Les valeurs sont UNIFORMES par préfixe (aucun préfixe ne porte deux vocations différentes). Mapping : EAA « Agricole dynamique », EAB « Agricole à dynamiser », EAF « Agroforestier » et EF « Forestier » -> agricole ; R « Résidentiel » -> residentiel ; I « Industriel » -> industriel. Null EXPLICITE : M « Mixte » est plurivoque par son libellé ; P « Public » n'énonce aucune des cinq catégories ; V « Villégiature » -> null car la nomenclature elle-même la tient pour une catégorie DISTINCTE de « Résidentiel » ET de « Récréative », et aucun document lu ne la définit exclusivement par de l'habitation (précédent baie-comeau : « Villégiature » seule -> null, à la différence de baie-trinite où un article la définit par la résidence secondaire). EAA/EAB/EAF sont listés explicitement, mais aucun `E` seul n'existe, donc pas de repli à bloquer. Le préfixe RC « Récréative » figure dans la couche MRC mais n'est PAS servi par la collection qc-zonage-saint-pierre-de-lamy : il n'est pas mappé. La matrice des usages permis n'a pas été utilisée. Consulté le 2026-07-19."
+}

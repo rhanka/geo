@@ -1,0 +1,55 @@
+# tenant-quota — le quota du namespace `geo` sur OVH MKS.
+#
+# Il vivait uniquement dans le cluster (posé par `kubectl apply`, sans
+# ownerReferences : OVH ne le réconcilie pas, il est à nous). Un quota qui
+# n'existe pas dans le dépôt ne peut pas être rejoué sur un cluster neuf et
+# personne ne peut expliquer pourquoi la capture plafonne.
+#
+# CE QUE LE PLAFOND VALAIT AVANT, ET POURQUOI
+#
+# La capture plafonnait à 2 pods et je l'avais attribué à la capture. C'était
+# faux. Un pod de capture demande 120 Mi et limite à 176 Mi — c'est le plus
+# sobre du namespace. Le plafond venait de deux limites SUR-DÉCLARÉES :
+#
+#     geo-api    request 150 Mi   limite 2048 Mi     13,6× sa demande
+#     postgis    request 160 Mi   limite 1536 Mi      9,6× sa demande
+#                                 ─────────
+#                                 3584 Mi sur 4096 Mi de quota
+#
+# `ResourceQuota` compte les LIMITES, pas les demandes. Deux services qui
+# consomment 310 Mi réservaient 88 % du quota. Le 3ᵉ pod de capture était
+# refusé à 3936 + 176 > 4096.
+#
+# CINQ DIMENSIONS, PAS UNE
+#
+# Étendre `limits.memory` seul n'aurait rien donné : `pods: 6` aurait pris le
+# relais à 4 pods de capture, puis `requests.memory: 1Gi` à 5, puis
+# `limits.cpu` à 6. Toutes les dimensions sont relevées ensemble, dimensionnées
+# pour ~14 pods de capture concurrents :
+#
+#     limits.memory     1536 (services) + 14×176 = 4000 Mi   → 6Gi
+#     requests.memory    310 (services) + 14×120 = 1990 Mi   → 3Gi
+#     limits.cpu          600 (services) + 14×150 = 2700m    → 4000m
+#     requests.cpu         31 (services) + 14×60  =  871m    → 2000m
+#     pods                  2 (services) + 14     =   16     → 20
+#
+# Le cluster a DEUX nœuds à 6 049 608 Ki allouables (≈ 5,77 Gi) et 1840m de CPU
+# chacun. Les DEMANDES tiennent largement (3Gi sur 11,5Gi ; 2000m sur 3680m) —
+# ce sont elles qui sont ordonnancées. Les limites peuvent sur-souscrire.
+#
+# Effet attendu sur la cadence, à re-mesurer et non à supposer : la capture est
+# mesurée à ~100 collections / 17 min à 2 pods.
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: tenant-quota
+  namespace: geo
+spec:
+  hard:
+    limits.cpu: "4000m"
+    limits.memory: 6Gi
+    requests.cpu: "2000m"
+    requests.memory: 3Gi
+    pods: "20"
+    persistentvolumeclaims: "3"
+    secrets: "10"

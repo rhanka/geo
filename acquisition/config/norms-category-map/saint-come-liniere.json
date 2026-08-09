@@ -1,0 +1,117 @@
+{
+  "slug": "saint-come-liniere",
+  "reglement": "148-06 (consolidé 2021)",
+  "source_url": "https://www.stcomeliniere.com/medias/fichier/pages/reglements-municipaux/2-zonage-22septembre-2021-a-date-compresse.pdf",
+  "snapshot": "2026-07-12",
+  "methode": "native-text/categorie-map-chapitre6",
+  "_doc": [
+    "Carte des normes PAR CATÉGORIE de zone pour Saint-Côme-Linière (Beauce-Sartigan).",
+    "Le règlement de zonage 148-06 (consolidé 22 septembre 2021, 128 p., couche texte)",
+    "N'A PAS de grille des spécifications numérique par zone. Les normes d'implantation",
+    "sont définies PAR TYPE DE ZONE au Chapitre 6, et la matrice d'usages par zone (§3.2.10.x)",
+    "est une grille à cases cochées non lisible en couche texte. Cette carte propage sur chaque",
+    "code de zone individuel UNIQUEMENT les valeurs VERBATIM qui sont UNIFORMES sur toutes les",
+    "sous-lignes (types d'usage) de sa catégorie; tout champ non uniforme dans la catégorie = null",
+    "(pas de fabrication). Les surcharges par zone explicites du règlement sont honorées."
+  ],
+  "classification_basis": {
+    "section": "2.6.3 Type de zones",
+    "verbatim": "Agricole A | Agroforestière Ag | Résidentielle R | Commerciale C | Industrielle I | Institutionnelle et publique P | Forestière F | Villégiature V",
+    "note": "§2.6.1: le territoire est divisé en zones identifiées par un numéro et une lettre qui réfèrent aux usages et constructions permis."
+  },
+  "category_application_basis": "Chapitre 6 « NORMES D'IMPLANTATION » applique les normes par TYPE DE ZONE via des sections chapeau qui visent explicitement TOUTES les zones du type: §6.3 « DISPOSITIONS APPLICABLES AUX ZONES RÉSIDENTIELLES, DE VILLÉGIATURE ET AUX ÎLOTS DÉSTRUCTURÉS »; §6.5 « DISPOSITIONS APPLICABLES AUX ZONES COMMERCIALES »; §6.6 « DISPOSITIONS APPLICABLES AUX ZONES ET AU PARC INDUSTRIELS »; §6.7 « DISPOSITIONS APPLICABLES AUX ZONES PUBLIQUES ET INSTITUTIONNELLES »; §6.8 « DISPOSITIONS APPLICABLES AUX ZONES AGRICOLES, AGROFORESTIÈRES ET FORESTIÈRES ».",
+  "semantic_caveats": [
+    "La « Superficie minimale » des tables du Chapitre 6 vise le BÂTIMENT PRINCIPAL (implantation au sol), PAS la superficie minimale du TERRAIN → NON mappée à superficie_min (qui désigne le lot). null.",
+    "La superficie/frontage minimale du TERRAIN et la densité ne figurent PAS au règlement de zonage 148-06 (elles relèvent du règlement de lotissement, non acquis) → densite/frontage_min/superficie_min = null partout.",
+    "La hauteur maximale est exprimée en « nombre maximal d'étage » (pas en mètres); mappée à hauteur_max (unit=étage) UNIQUEMENT quand la valeur est uniforme dans la catégorie.",
+    "Les marges avant spéciales des Routes 173/275 (§6.1) sont des surcharges de LOCALISATION (par voie), pas des valeurs par zone → non propagées."
+  ],
+  "prefix_to_category": {
+    "R": "residentielle",
+    "RA": "residentielle",
+    "RB": "residentielle",
+    "V": "residentielle",
+    "C": "commerciale",
+    "CA": "commerciale",
+    "CB": "commerciale",
+    "I": "industrielle",
+    "P": "publique_institutionnelle",
+    "A": "agricole_forestiere",
+    "AG": "agricole_forestiere",
+    "F": "agricole_forestiere"
+  },
+  "categories": {
+    "residentielle": {
+      "section": "§6.3",
+      "header_verbatim": "DISPOSITIONS APPLICABLES AUX ZONES RÉSIDENTIELLES, DE VILLÉGIATURE ET AUX ÎLOTS DÉSTRUCTURÉS [Règ. 363-2021, le 16-06-2021]",
+      "table_subrows_verbatim": [
+        {"type_usage": "Unifamilial isolé", "avant": "7,6 m", "arriere": null, "laterales": null, "superficie_batiment_min": "53 m²", "etages_max": "2"},
+        {"type_usage": "Unifamilial jumelé", "avant": "7,6 m", "arriere": null, "laterales": null, "superficie_batiment_min": "50 m²", "etages_max": "2"},
+        {"type_usage": "Bifamilial (duplex)", "avant": "7,6 m", "arriere": null, "laterales": "2 m d'un côté et 2,5 m de l'autre", "superficie_batiment_min": "50 m²", "etages_max": "2"},
+        {"type_usage": "Unifamilial en rangée", "avant": "7,6 m", "arriere": "2 m", "laterales": "2 m d'un côté et 2,5 m de l'autre", "superficie_batiment_min": "50 m²", "etages_max": "2"},
+        {"type_usage": "Multifamilial", "avant": "7,6 m", "arriere": null, "laterales": null, "superficie_batiment_min": "50 m²", "etages_max": "2.5 (voir 3.2.1 d) ou 3.5 (voir 3.2.2 d)"}
+      ],
+      "uniform_norms": {
+        "marge_avant_min": {"value": 7.6, "raw": "7,6 m", "unit": "m", "confidence": 0.9, "basis": "§6.3: marge de recul avant minimale = 7,6 m pour tous les types résidentiels"}
+      },
+      "not_uniform_null": ["marge_arriere_min", "marge_laterale_min", "hauteur_max", "superficie_min", "densite", "frontage_min"]
+    },
+    "commerciale": {
+      "section": "§6.5",
+      "header_verbatim": "DISPOSITIONS APPLICABLES AUX ZONES COMMERCIALES",
+      "table_subrows_verbatim": [
+        {"type_usage": "Résidentiel", "avant": "6 m", "arriere": "2 m", "laterales": "2 m d'un côté et 2,5 m de l'autre", "superficie_batiment_min": "Réf. 6.3", "etages_max": "Réf. 6.3"},
+        {"type_usage": "Commerce", "avant": "6 m", "arriere": null, "laterales": "2 m de chaque côté", "superficie_batiment_min": "40 m²", "etages_max": "3"},
+        {"type_usage": "Station-Service", "avant": "12 m", "arriere": "10% de la profondeur du terrain", "laterales": "7 m de chaque côté", "superficie_batiment_min": "50 m²", "etages_max": "1"},
+        {"type_usage": "Poste à essence", "avant": "12 m", "arriere": null, "laterales": "9 m de chaque côté", "superficie_batiment_min": "15 m²", "etages_max": "1"}
+      ],
+      "uniform_norms": {},
+      "not_uniform_null": ["marge_avant_min", "marge_arriere_min", "marge_laterale_min", "hauteur_max", "superficie_min", "densite", "frontage_min"],
+      "note": "Aucune valeur uniforme sur toutes les sous-lignes (avant 6/6/12/12; étages Réf/3/1/1). Ligne de grille présente, normes = null (pas de fabrication)."
+    },
+    "industrielle": {
+      "section": "§6.6",
+      "header_verbatim": "DISPOSITIONS APPLICABLES AUX ZONES ET AU PARC INDUSTRIELS",
+      "table_subrows_verbatim": [
+        {"type_usage": "Terrains limitrophes", "avant": "12 m", "arriere": "12 m", "laterales": "12 m", "superficie_batiment_min": "40 m²", "etages_max": "3"},
+        {"type_usage": "Terrains intérieurs", "avant": "8 m", "arriere": "15% de la profondeur du terrain", "laterales": "6 m de chaque côté", "superficie_batiment_min": "40 m²", "etages_max": "3"}
+      ],
+      "uniform_norms": {
+        "hauteur_max": {"value": 3, "raw": "3 étages (nombre maximal d'étage)", "unit": "étage", "confidence": 0.9, "basis": "§6.6: nombre maximal d'étage = 3 pour les deux types de terrains industriels"}
+      },
+      "not_uniform_null": ["marge_avant_min", "marge_arriere_min", "marge_laterale_min", "superficie_min", "densite", "frontage_min"],
+      "note": "Superficie 40 m² = BÂTIMENT principal (non-lot) → superficie_min null."
+    },
+    "publique_institutionnelle": {
+      "section": "§6.7",
+      "header_verbatim": "DISPOSITIONS APPLICABLES AUX ZONES PUBLIQUES ET INSTITUTIONNELLES",
+      "table_subrows_verbatim": [
+        {"type_usage": "Public et Institutionnel", "avant": "8 m", "arriere": "15% de la profondeur du terrain", "laterales": "5 m de chaque côté", "superficie_batiment_min": "-", "etages_max": "3"}
+      ],
+      "uniform_norms": {
+        "marge_avant_min": {"value": 8, "raw": "8 m", "unit": "m", "confidence": 0.9, "basis": "§6.7: marge de recul avant minimale = 8 m"},
+        "marge_laterale_min": {"value": 5, "raw": "5 m de chaque côté", "unit": "m", "confidence": 0.9, "basis": "§6.7: marges latérales = 5 m de chaque côté"},
+        "marge_arriere_min": {"value": null, "raw": "15% de la profondeur du terrain", "unit": "%", "confidence": 0.9, "basis": "§6.7: marge arrière = 15% de la profondeur du terrain (proportion, pas de valeur absolue)"},
+        "hauteur_max": {"value": 3, "raw": "3 étages (nombre maximal d'étage)", "unit": "étage", "confidence": 0.9, "basis": "§6.7: nombre maximal d'étage = 3"}
+      },
+      "not_uniform_null": ["superficie_min", "densite", "frontage_min"],
+      "note": "Table à ligne unique → toutes les valeurs sont non ambiguës (verbatim). Superficie = '-' → null."
+    },
+    "agricole_forestiere": {
+      "section": "§6.8",
+      "header_verbatim": "DISPOSITIONS APPLICABLES AUX ZONES AGRICOLES, AGROFORESTIÈRES ET FORESTIÈRES [Règ. 224-2011][Règ. 347-2020]",
+      "table_subrows_verbatim": [
+        {"type_usage": "Résidentiel", "avant": "8 m", "arriere": "2 m", "laterales": "2 m d'un côté et 2,5 m de l'autre", "superficie_batiment_min": "50 m²", "etages_max": "2"},
+        {"type_usage": "Bâtiment agricole", "avant": "15 m", "arriere": "Selon les distances séparatrices établies ou 5 m si elles ne s'appliquent pas", "laterales": "Selon les distances séparatrices", "superficie_batiment_min": "-", "etages_max": "-"}
+      ],
+      "uniform_norms": {},
+      "not_uniform_null": ["marge_avant_min", "marge_arriere_min", "marge_laterale_min", "hauteur_max", "superficie_min", "densite", "frontage_min"],
+      "note": "Aucune valeur uniforme (avant résidentiel 8 m vs bâtiment agricole 15 m). Ligne de grille présente, normes = null (pas de fabrication)."
+    }
+  },
+  "surcharges_par_zone": {
+    "RB-38": {
+      "marge_avant_min": {"value": 5, "raw": "5 m", "unit": "m", "confidence": 0.95, "basis": "§6.3 note (4): « Dans la zone Rb-38, la marge de recul avant minimale est de 5 mètres. »"}
+    }
+  }
+}

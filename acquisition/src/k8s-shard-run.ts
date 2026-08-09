@@ -33,7 +33,7 @@
  *   --shards N        number of shards / Jobs (default 16)
  *   --mode M          discover | extract | all (default all)
  *   --limit N         only the first N slugs (after dedup), for proofs
- *   --slugs-file PATH slug list, 1/line (default /tmp/all_slugs.txt; falls back
+ *   --slugs-file PATH slug list, 1/line (default .h2a/tmp/all_slugs.txt; falls back
  *                     to ALL_PV_CITIES when the file is absent)
  *   --concurrency N   max Jobs running at once (default 2 — quota-bounded)
  *   --run-id ID       deterministic Job-name suffix (default: short timestamp)
@@ -50,6 +50,7 @@ import { spawnSync } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 
 import { ALL_PV_CITIES } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
+import { workspaceTmpFile } from "./lib/workspace-tmp.js";
 
 // ── args ───────────────────────────────────────────────────────────────────────
 interface Args {
@@ -92,7 +93,7 @@ function parseArgs(argv: string[]): Args {
     shards: Number(get("shards") ?? "16"),
     mode: modeRaw,
     ...(limitRaw !== undefined ? { limit: Number(limitRaw) } : {}),
-    slugsFile: get("slugs-file") ?? "/tmp/all_slugs.txt",
+    slugsFile: get("slugs-file") ?? workspaceTmpFile("all_slugs.txt"),
     concurrency: Number(get("concurrency") ?? "2"),
     runId: get("run-id") ?? shortTs,
     image: get("image") ?? DEFAULT_IMAGE,

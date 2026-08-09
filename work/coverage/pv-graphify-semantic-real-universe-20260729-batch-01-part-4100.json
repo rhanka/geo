@@ -1,0 +1,1739 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T17:37:18.806Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4100,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/7c8d5b6ae56b3ba23971e9f51f82d97c29ccb1360ab8760a99647986c3ae2a62.pdf",
+      "raw/pv-index/cas/15c4d442e900fcfb04cea4c1477432463eb17d532d05edfe769890e36941398e.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 17,
+    "failed_pvs": 1,
+    "outcomes": {
+      "INDEXED": 17,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 1
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 17,
+    "Document": 17,
+    "CouncilSession": 10,
+    "MeetingDate": 10,
+    "Regulation": 39,
+    "Resolution": 19
+  },
+  "graphify": {
+    "nodes": 112,
+    "edges": 37,
+    "failures": 1
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 29,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 1885,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z",
+  "documents": [
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250911133817-pv-seance-extaordinaire-12-aout-2025-site-web.pdf",
+      "storage_key": "raw/pv-index/cas/bea943f3026d6d69a454a612274f2b5fd7a7b617badab53e7b2b8a65587e1141.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "              « Le Conseil de la municipalité siège en séance extraordinaire de mardi le 12 août 2025, en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 août 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "              « Le Conseil de la municipalité siège en séance extraordinaire de mardi le 12 août 2025, en"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-677",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "              ADOPTION DU RÈGLEMENT 2025-677 décrétant une dépense de 13 953 000 $ et un"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/8a65587e1141.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/8a65587e1141.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260114164244-pv-seance-2-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/c78b5fbb18b21918173626fb74fe5af692b695fb3e59b33c44998da20ce3c1a2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                   MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                   MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 2 décembre 2025, en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 2 décembre 2025, en"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-111",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:739",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-04-111 à Artelia"
+            }
+          },
+          {
+            "label": "2025-04-110",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:769",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-04-110 à MPotvin pour les"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "428-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:177",
+              "quote": "              Que le conseil municipal de Clarenceville adopte le 3e projet soit le règlement 428-21"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/8da20ce3c1a2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/8da20ce3c1a2.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville",
+          "noyan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260202154424-odj-seance-3-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/d06914712c9f1b1e429bcd659d3e63f9cb675f0c11132e39b74caa910ac23e47.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                           MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                           MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-678",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "    7. Adoption du règlement 2026-678 relatif à l’imposition des taxes, compensations et tarifs pour l’exercice 2026"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/aa910ac23e47.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/aa910ac23e47.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250507103711-pv-seance-01042025.pdf",
+      "storage_key": "raw/pv-index/cas/d1fe56ac7534a3091de1dabba3d512f52cfc05d72425198b0a735fa57cf7b388.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 1er avril 2025, en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 1er avril 2025, en"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-06-169",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:207",
+              "quote": "2025-04-090   RÉSILIER RÉSOLUTIONS 2021-06-169 et 2021-06-169A / VOTE PAR"
+            }
+          },
+          {
+            "label": "2018-12-273",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:524",
+              "quote": "              CONSIDÉRANT la résolution 2018-12-273 du mandat accordé à Gbi pour la"
+            }
+          },
+          {
+            "label": "2024-09-209",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:624",
+              "quote": "              CONSIDÉRANT un mandat accordé à DWB Consultants (résolution 2024-09-209)"
+            }
+          },
+          {
+            "label": "2024-05-114",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:660",
+              "quote": "              CONSIDÉRANT qu'un mandat (résolution 2024-05-114) a été donné à l'entreprise"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-649-2",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:162",
+              "quote": "              ÉLECTION ET RÉFÉRENDUM MODIFIANT LE RÈGLEMENT 2024-649-2"
+            }
+          },
+          {
+            "label": "2025-649-3",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:171",
+              "quote": "              Que le conseil municipal de Clarenceville adopte le Règlement 2025-649-3 modifiant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/5fa57cf7b388.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/5fa57cf7b388.pdf/.graphify/.graphify_extract.json — 10 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260609092138-pv-21-avril-2026-extra.pdf",
+      "storage_key": "raw/pv-index/cas/d25f3ea66b8a20298c875a72d2732217319c11acea5e6be720195bc20b7af9bb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                      MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                      MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 21 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:70",
+              "quote": "               tel que livré aux membres du conseil, ainsi que l’avis de convocation de la présente séance, tel"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "21 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:69",
+              "quote": "2026-04-120    Et résolu unanimement d’adopter l’ordre du jour de la séance extraordinaire du 21 avril 2026,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/5bc20b7af9bb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/5bc20b7af9bb.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250908131926-odj-seance-9-septembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/d312e277de894b886b189ccb3c2635f1ccede4f5472c5fe89e67622932e0bfba.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/622932e0bfba.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/622932e0bfba.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250811115822-pv-seance-8-juillet-2025.pdf",
+      "storage_key": "raw/pv-index/cas/dc6ccd90740663299e2299460fe8e73554818f8f59705b95766df8b75625db40.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 8 juillet 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 8 juillet 2025, en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "8 juillet 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 8 juillet 2025, en"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-04-111",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:403",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-04-111 à Artelia Canada"
+            }
+          },
+          {
+            "label": "2025-03-063",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:488",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-03-063 aux Entreprises J."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "389-8",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "                     6. Adoption du règlement 389-8 : Sur la tarification diverse et les demandes"
+            }
+          },
+          {
+            "label": "389-7",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "              règlement 389-7 portant sur les tarifications diverses et les demandes de permis."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/f8b75625db40.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/f8b75625db40.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bedford--brome-missisquoi",
+          "bedford--brome-missisquoi--2",
+          "clarenceville",
+          "noyan"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20251202143404-odj-seance-2dec-2025.pdf",
+      "storage_key": "raw/pv-index/cas/e1eb8d379cef54803b985f93e676fe2cb9e8db1c87aa56f90df7dff3ec5ab688.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/dff3ec5ab688.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/dff3ec5ab688.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250506135402-pv-seance-extraordinaire-11032025.pdf",
+      "storage_key": "raw/pv-index/cas/e37b279dcfb0de66755fadb5de4d7abe15b5f771fbdfcf5efeb0a6bebb161eb4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "              « Le Conseil de la municipalité siège en séance extraordinaire de mardi le 11 mars 2025, en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 mars 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "              « Le Conseil de la municipalité siège en séance extraordinaire de mardi le 11 mars 2025, en"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "654-2",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "                     - Adoption du règlement 654-2 relatif à la gestion contractuelle"
+            }
+          },
+          {
+            "label": "654-1",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "                 règlement 654-1 relatif à la gestion contractuelle en ajoutant l’article 21.1 portant sur"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/a6bebb161eb4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/a6bebb161eb4.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250204132005-odj-seance-04022025.pdf",
+      "storage_key": "raw/pv-index/cas/e6b6c080915895deb3a946ddd7a71cb651b6f4b5930f42ffae08001f74ea9c6f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/001f74ea9c6f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/001f74ea9c6f.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville",
+          "saint-jean-sur-richelieu"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260609092010-pv-14-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/ee1dc1bc39bb069433144fed5aff84ac2bf971951212d0f614301b1e1a9f321e.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 11
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": " MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 14 avril 2026, en présentiel."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 14 avril 2026, en présentiel."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-02-048",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": "  12. Modification résolution 2026-02-048 : Programmation TECQ 2024-2028 – Version"
+            }
+          },
+          {
+            "label": "2025-03-054",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1219",
+              "quote": "              Modification des résolutions 2025-03-054 et 2025-06-156"
+            }
+          },
+          {
+            "label": "2026-03-071",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1293",
+              "quote": "              CONSIDÉRANT la nomination de madame Janick Létourneau (résolution 2026-03-071) à"
+            }
+          },
+          {
+            "label": "2026-04-103",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1431",
+              "quote": "              CONSIDÉRANT la nomination de monsieur Bernard Déraps (résolution 2026-04-103) à titre"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R2026-679",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "   6. Adoption du règlement R2026-679 Règlement sur les droits de mutations immobilières"
+            }
+          },
+          {
+            "label": "2026-659",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "   7. Adoption du règlement 2026-659: Code d’éthique et de déontologie révisé"
+            }
+          },
+          {
+            "label": "649-4",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "   8. Adoption du règlement 649-4 (2026): Rémunération payables lors des élections"
+            }
+          },
+          {
+            "label": "389-9",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "\f  11. a) Avis de motion du projet de règlement 389-9 (2026) Tarification compteur d’eau"
+            }
+          },
+          {
+            "label": "2026-681",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1873",
+              "quote": "Que le conseil municipal de Clarenceville adopte le projet de règlement 2026-681 relatif à la"
+            }
+          },
+          {
+            "label": "2026-679",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:148",
+              "quote": "              ADOPTION DU RÈGLEMENT N° 2026-679 CONCERNANT LES DROITS DE"
+            }
+          },
+          {
+            "label": "2022-659",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:352",
+              "quote": "       Code :                      Le Règlement numéro 2022-659 édictant le Code"
+            }
+          },
+          {
+            "label": "2024-649-3",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:792",
+              "quote": "              RÈGLEMENT 2024-649-3"
+            }
+          },
+          {
+            "label": "2026-649-4",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:821",
+              "quote": "              QUE : Le règlement numéro 2026-649-4 soit déposé :"
+            }
+          },
+          {
+            "label": "389-8",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1192",
+              "quote": "              règlement 389-8 portant sur les tarifications diverses et les demandes de permis – ajout de la"
+            }
+          },
+          {
+            "label": "654-1",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1319",
+              "quote": "              CONSIDÉRANT QUE du Règlement N°654-1 De Gestion Contractuelle est en vigueur"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/1b1e1a9f321e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/1b1e1a9f321e.pdf/.graphify/.graphify_extract.json — 19 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 19,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville",
+          "montreal",
+          "noyan",
+          "quebec",
+          "sainte-christine"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250707110939-odj-seance-8juillet-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f157c6dd40115358b10d70bb68f3b611b6200be1ce3482f4d16f0c34bee3b8d6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "389-8",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:18",
+              "quote": "     6. Adoption du règlement 389-8 : Sur les tarifications diverses et les demandes de permis"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/0c34bee3b8d6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/0c34bee3b8d6.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "bedford--brome-missisquoi",
+          "bedford--brome-missisquoi--2",
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260609092247-pv-5-mai-2026.pdf",
+      "storage_key": "raw/pv-index/cas/f3d0403b6d478777a31fce71def863c43908c85e63993be25c538dd7db925784.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 11
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "Le Conseil de la municipalité siège en séance ordinaire mardi le 5 mai 2026, en présentiel."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "Le Conseil de la municipalité siège en séance ordinaire mardi le 5 mai 2026, en présentiel."
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-428-22",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "6. Avis de motion du 1er projet de Règlement 2026-428-22 : Roulotte, VR et logement"
+            }
+          },
+          {
+            "label": "2026-431-03",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "    8. Avis de motion du projet de Règlement 2026-431-03 : Article 16, Augmentation du"
+            }
+          },
+          {
+            "label": "2026-389-9",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "    10. Adoption du Règlement 2026-389-9, Modifiant le Règlement 389-8 sur les"
+            }
+          },
+          {
+            "label": "389-8",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "    10. Adoption du Règlement 2026-389-9, Modifiant le Règlement 389-8 sur les"
+            }
+          },
+          {
+            "label": "2026-681",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "    11. Adoption du Règlement 2026-681 relatif à la dimension maximale des conduites"
+            }
+          },
+          {
+            "label": "428-22",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:172",
+              "quote": "\fPROJET DE RÈGLEMENT NUMÉRO 428-22 MODIFIANT LE RÈGLEMENT DE ZONAGE"
+            }
+          },
+          {
+            "label": "428",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:179",
+              "quote": "adoptait son règlement n° 428 intitulé « Règlement de zonage »;"
+            }
+          },
+          {
+            "label": "431",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:291",
+              "quote": "adoptait son règlement n° 431 intitulé « Règlement concernant les permis et certificats"
+            }
+          },
+          {
+            "label": "431-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:311",
+              "quote": "Le présent règlement s’intitule Règlement numéro 431-03 modifiant le règlement numéro"
+            }
+          },
+          {
+            "label": "389-9",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:388",
+              "quote": "              ATTENDU QUE le projet de règlement n°389-9 a fait l’objet d’une présentation lors de la"
+            }
+          },
+          {
+            "label": "654-1",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:935",
+              "quote": "              CONSIDÉRANT QUE du Règlement N°654-1 de Gestion Contractuelle est en vigueur"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/8dd7db925784.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/8dd7db925784.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville",
+          "saint-alexandre",
+          "saint-jean-sur-richelieu"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260305102924-pv-seance-3-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/f4b2cb7cd5c29c98e3bdf0686a68e50293df5e0497a35d329fca8b43e48696f9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 6,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 3 février 2026, en"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": " « Le Conseil de la municipalité siège en séance ordinaire mardi le 3 février 2026, en"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-07-183",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:562",
+              "quote": "              FAMILLE (référence résolution 2025-07-183) ;"
+            }
+          },
+          {
+            "label": "2025-12-319",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:567",
+              "quote": "              Municipalité (référence résolution 2025-12-319) sur ce comité ;"
+            }
+          },
+          {
+            "label": "2025-02-028",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:581",
+              "quote": "              CONSIDÉRANT que M. Marcel Fafard a été mandaté par la résolution 2025-02-028"
+            }
+          },
+          {
+            "label": "2025-03-054",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:642",
+              "quote": "              Modification des résolutions 2025-03-054 et 2025-06-156"
+            }
+          },
+          {
+            "label": "2023-08-180",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:748",
+              "quote": "              CONSIDÉRANT l’adoption de la résolution 2023-08-180 octroyant à la compagnie"
+            }
+          },
+          {
+            "label": "2025-04-110",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:812",
+              "quote": "              CONSIDÉRANT le mandat octroyé par la résolution 2025-04-110 à MPotvin pour les"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-678",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:320",
+              "quote": "              ADOPTION DU RÈGLEMENT 2026-678 RELATIF À L’IMPOSITION DES"
+            }
+          },
+          {
+            "label": "2022-666",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:759",
+              "quote": "              règlement 2022-666 article 15 : Afin de pourvoir au service de vidange des"
+            }
+          },
+          {
+            "label": "2024-674",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:761",
+              "quote": "              propriétaire, chaque année et selon le règlement 2024-674 (taux de taxation"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/8b43e48696f9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/8b43e48696f9.pdf/.graphify/.graphify_extract.json — 13 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville",
+          "saint-jean-sur-richelieu",
+          "venise-en-quebec"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20260303105440-odj-seance-3mars-2026.pdf",
+      "storage_key": "raw/pv-index/cas/f68b614a8aed6dcf37880aa627e8736d1da47101bd989ae7058c79341d5a9ac9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                    MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2025-12-319",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "    18. Modifier la résolution 2025-12-319 : nomination membres au comité divers – RIAEPHV"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R2026-679",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "       b) Adoption du projet de règlement R2026-679 Règlement sur les droits de mutations immobilières"
+            }
+          },
+          {
+            "label": "2026-659",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "    7.   a) Avis de motion du projet de règlement 2026-659: d’un nouveau code éthique et déontologie révisé"
+            }
+          },
+          {
+            "label": "649-3",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "    8. a) Avis de motion du projet de règlement 649-3 (2026) Rémunération payables lors des élections"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/79341d5a9ac9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/79341d5a9ac9.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clarenceville",
+      "municipality_name": "Clarenceville",
+      "url": "https://www.clarenceville.qc.ca/fichiersUpload/fichiers/20250506135310-odj-seance-extra-11-mars-2025.pdf",
+      "storage_key": "raw/pv-index/cas/f952cdc1bcba45437416bdb326ce22cfeee13ae330926cf00ba4e3f302e31946.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clarenceville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                     MUNICIPALITÉ DE CLARENCEVILLE"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "654-2",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "4. Adoption du règlement 654-2 modifiant le R654-1 : Relatif à la gestion"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/e3f302e31946.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clarenceville/e3f302e31946.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clarenceville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "url": "https://clermont.ao.ca/documents/pages/proces_verbal_seance_ordinaire_10_mars_2026.pdf",
+      "storage_key": "raw/pv-index/cas/19a7e2b369beed9e462f65f0572218e9135238757cf2a3f7ee804c88a6e73f5f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clermont--abitibi-ouest/4c88a6e73f5f.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clermont--abitibi-ouest/4c88a6e73f5f.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "municipality_name": "Clermont",
+      "url": "https://clermont.ao.ca/documents/pages/seance-extraordinaire-du-04-mai-20221.pdf",
+      "storage_key": "raw/pv-index/cas/83a07ff562287ce82c147b712716134cef878d047f96ea039b1ecdc9ff5ed9b1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Clermont",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": "             PROVINCE DE QUÉBEC"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 04 mai 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "             Procès-verbal de la séance extraordinaire du conseil municipal,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "04 mai 2022",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "             mercredi le 04 mai 2022 à laquelle étaient présents (es) messieurs,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clermont--abitibi-ouest/cdc9ff5ed9b1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T173549Z/clermont--abitibi-ouest/cdc9ff5ed9b1.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "clermont--abitibi-ouest",
+          "clermont--charlevoix-est"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

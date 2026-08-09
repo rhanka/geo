@@ -50,6 +50,11 @@
  *                         désactivé (défaut 10).
  *   --force               réécrire un manifest déjà présent en S3 (défaut : skip).
  *   --out FILE            chemin du rapport JSON.
+ *
+ * INGESTION d'un DOM DÉJÀ RENDU hors-process (capté par un navigateur externe qui a
+ * franchi le WAF, p.ex. la session Playwright MCP) : voir `pv-dom-deposit.ts`, qui
+ * RÉUTILISE `pvEntriesFromRenderedDom` (exporté ci-dessous) + le format manifest +
+ * une garde-fou HEAD-live, sans lancer de chromium ici (« 1 chromium à la fois »).
  */
 
 import { spawn, type ChildProcess } from "node:child_process";
@@ -60,7 +65,7 @@ import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 import { s3Client, putBytes, exists } from "./lib/s3.js";
-import { websiteForSlug } from "../../packages/geo-sources-americas/src/ca-qc/municipalities/municipal-directory.js";
+import { websiteForSlug } from "../../packages/geo-sources-americas/ca-qc/municipalities/municipal-directory.js";
 import {
   pvEntriesFromHtml,
   extractPvNavigationLinks,
@@ -84,7 +89,7 @@ const GWL_DOC_RE =
 const STD_DOC_RE =
   /\.(?:pdf|docx?|odt)(?:[?#].*)?$/i;
 const STD_DOWNLOAD_RE =
-  /[?&](?:download|telechargement|getfile|fichier|file|attachment)=|\/(?:download|telecharger|getfile|fichier)[/?]/i;
+  /[?&](?:download|telechargement|getfile|fichier|file|attachment)=|\/(?:download|telecharger|getfile|fichier)(?:[/?]|\.php\?)/i;
 const PV_KW_RE =
   /proc[èeé]s[-\s]?verb(?:al|aux)|\bpv\b|proces[-_]?verbal|s[ée]ances?|conseil municipal/i;
 const OBSCURA_ODJ_RE = /ordre[-\s]du[-\s]jour|\bodj\b|\bagenda\b/i;
@@ -194,7 +199,7 @@ function extractHowickCmsEntries(dom: string, baseUrl: string): PvManifestEntry[
  * then the « fichiers_documents » CMS family (id↔pdf re-association).
  * Merged + de-duplicated by URL.
  */
-function pvEntriesFromRenderedDom(dom: string, baseUrl: string): PvManifestEntry[] {
+export function pvEntriesFromRenderedDom(dom: string, baseUrl: string): PvManifestEntry[] {
   const out: PvManifestEntry[] = [];
   const seen = new Set<string>();
   for (const e of [
@@ -400,9 +405,9 @@ function withinWindow(entry: PvManifestEntry, windowDays: number): boolean {
 }
 
 // ── Manifest ──────────────────────────────────────────────────────────────────
-function manifestKey(slug: string): string { return `registry/qc-pv/${slug}/index.json`; }
+export function manifestKey(slug: string): string { return `registry/qc-pv/${slug}/index.json`; }
 
-interface PvObscuraManifest {
+export interface PvObscuraManifest {
   _note: string;
   _generatedAt: string;
   slug: string;
@@ -431,6 +436,8 @@ interface SlugResult {
   pvIndexUrl: string | null;
   status: Status;
   finalIndexUrl?: string;
+  /** First quality-gated PV URL rendered from the DOM; makes a probe auditable. */
+  pvUrl?: string;
   count: number;
   deposited: boolean;
   domLen?: number;
@@ -507,6 +514,7 @@ async function processCity(t: SlugTarget, browser: Browser, s3: S3Client | null,
   base.followed = followed;
   base.pathProbed = pathProbed;
   base.count = entries.length;
+  base.pvUrl = entries[0]?.url;
 
   // 4) Anti-invention : 0 PV réel rendu → SKIP justifié, aucun dépôt.
   if (entries.length === 0) {
@@ -596,4 +604,11 @@ async function main(): Promise<void> {
   console.error(`rapport → ${out}`);
 }
 
-main().catch((e: unknown) => { console.error(e); process.exit(1); });
+// N'exécute main() QUE si ce fichier est le point d'entrée (`tsx src/pv-obscura-run.ts`).
+// Importé par un autre script (ex. pv-dom-deposit.ts, qui réutilise pvEntriesFromRenderedDom
+// sur un DOM capté via playwright), main() ne doit PAS se déclencher.
+const invokedDirectly =
+  !!process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url);
+if (invokedDirectly) {
+  main().catch((e: unknown) => { console.error(e); process.exit(1); });
+}

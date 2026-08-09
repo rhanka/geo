@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: geo-postgis
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: postgis
+    app.kubernetes.io/part-of: geo
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: postgis
+  ports:
+    - name: postgresql
+      port: 5432
+      protocol: TCP
+      targetPort: postgresql

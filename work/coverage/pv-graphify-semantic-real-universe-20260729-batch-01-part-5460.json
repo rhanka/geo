@@ -1,0 +1,1965 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:50:09.634Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5460,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 12,
+    "failed_pvs": 8,
+    "outcomes": {
+      "INDEXED": 12,
+      "OWNER_NOT_CONFIRMED": 5,
+      "CONTAMINATION_OWNER_MISMATCH": 3,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": [
+      {
+        "storage_key": "raw/pv-index/cas/04693444c5f75969eadca07fdbcf38f06a36d58dbb79f041238b8f18cddbf384.pdf",
+        "manifest_scope_slug": "montreal-ouest",
+        "printed_owner_slugs": [
+          "montreal"
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/5ca9d17910ed20cc7213b112a3d8431c6dfc3a7c11c8c08600b2227e6823648a.pdf",
+        "manifest_scope_slug": "montreal-ouest",
+        "printed_owner_slugs": [
+          "cote-saint-luc"
+        ]
+      },
+      {
+        "storage_key": "raw/pv-index/cas/a756e027dd57a71f3b4107e74b17d0637a63452125896f9ecc4331ef3780653b.pdf",
+        "manifest_scope_slug": "montreal-ouest",
+        "printed_owner_slugs": [
+          "montreal"
+        ]
+      }
+    ]
+  },
+  "entity_counts": {
+    "Municipality": 12,
+    "Document": 12,
+    "CouncilSession": 11,
+    "MeetingDate": 11,
+    "Regulation": 40,
+    "Zone": 1,
+    "LotCadastre": 16,
+    "Resolution": 12
+  },
+  "graphify": {
+    "nodes": 115,
+    "edges": 35,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 1,
+    "lot_entities": 16,
+    "documents_with_zone": 1,
+    "documents_with_lot": 8
+  },
+  "match_details": [
+    {
+      "municipality_slug": "neuville",
+      "storage_key": "raw/pv-index/cas/64cddaab772ec28554f47cf7f8973d33400760587c7b90f98b291fcaf487c6ee.pdf",
+      "entity_type": "Zone",
+      "value": "PA-4",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:36",
+      "quote": "                d’autoriser les usages « autres » dans la zone Pa-4 et de modifier le feuillet des"
+    },
+    {
+      "municipality_slug": "neuville",
+      "storage_key": "raw/pv-index/cas/64cddaab772ec28554f47cf7f8973d33400760587c7b90f98b291fcaf487c6ee.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3507503",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:32",
+      "quote": "                du territoire agricole du Québec pour le lot 3 507 503, sis au 966 route 365"
+    },
+    {
+      "municipality_slug": "neuville",
+      "storage_key": "raw/pv-index/cas/64cddaab772ec28554f47cf7f8973d33400760587c7b90f98b291fcaf487c6ee.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3834527",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:33",
+      "quote": "        9.2.    Demande de dérogation mineure pour le lot 3 834 527, sis au 208 rue de"
+    },
+    {
+      "municipality_slug": "neuville",
+      "storage_key": "raw/pv-index/cas/a01522a0c53f8ad0e034ce3ae7196f41ff843cb941d2cb8b90271a9742ee8c44.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3832581",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:24",
+      "quote": "        9.1.     Demande de dérogation mineure du lot 3 832 581"
+    },
+    {
+      "municipality_slug": "neuville",
+      "storage_key": "raw/pv-index/cas/a01522a0c53f8ad0e034ce3ae7196f41ff843cb941d2cb8b90271a9742ee8c44.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3834694",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:25",
+      "quote": "        9.2.     Demande de dérogation mineure du lot 3 834 694"
+    },
+    {
+      "municipality_slug": "neuville",
+      "storage_key": "raw/pv-index/cas/b145b15ae8f77aa26a1db4343d31f0719578fd305c1630b92257dcbc50fb171a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3832283",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:20",
+      "quote": "        6.1.     Recours judiciaire concernant l’immeuble connu comme étant le lot 3 832 283,"
+    },
+    {
+      "municipality_slug": "neuville",
+      "storage_key": "raw/pv-index/cas/b145b15ae8f77aa26a1db4343d31f0719578fd305c1630b92257dcbc50fb171a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3831201",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:27",
+      "quote": "        9.1.     Demande d’appui à la CPTAQ pour le lot 3 831 201"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/400006d4de03a88dcac056fdb4a7435738f94117bf138e0576131bad815b46f1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5044801",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:126",
+      "quote": "               522, rue Saint-Jean-Baptiste – Lot 5 044 801 – Autorisation"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/400006d4de03a88dcac056fdb4a7435738f94117bf138e0576131bad815b46f1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5369998",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:129",
+      "quote": "               lots 5 369 998, 5 369 997, 6 645 677 – Ferme Roger Nourry S.E.N.C. – Appui"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/400006d4de03a88dcac056fdb4a7435738f94117bf138e0576131bad815b46f1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5043864",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:134",
+      "quote": "\f     11.3      Plan projet de morcellement – Version 2 – Développement Hervieux – Lot 5 043 864"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/400006d4de03a88dcac056fdb4a7435738f94117bf138e0576131bad815b46f1.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6447194",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:137",
+      "quote": "     11.4      Plan projet de morcellement – Version 2 – Domaine Saint-Joseph – Lot 6 447 194 –"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/4280bbe76b85c714b1d035486f270c37c8d0b2738699494318f1963570f4f17a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5045621",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:15",
+      "quote": "        Jeunes le Déclic – Lot 5 045 621 – Autorisation"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/5da5b7dfe2c7dd48761c0978d3c697ab7872cedc629141a76f6493ccc83356e7.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5046511",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:122",
+      "quote": "     10.1        Morcellement – Plan d’aménagement – Lots 5 046 511 et 5 262 809 – 505, rue"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/660ca0190141f588084fef6bfbff0b1d9913d6efca00a45292cdb81f48b2d703.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5044801",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:142",
+      "quote": "               522, rue Saint-Jean-Baptiste – Lot 5 044 801 – Autorisation – Approbation"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/660ca0190141f588084fef6bfbff0b1d9913d6efca00a45292cdb81f48b2d703.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6651446",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:144",
+      "quote": "    9.2        Demande de modification du règlement de zonage 772004 – Lots 6 651 446 et"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/660ca0190141f588084fef6bfbff0b1d9913d6efca00a45292cdb81f48b2d703.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6603056",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:828",
+      "quote": " Le conseil est autorisé à acquérir le terrain avec le numéro de lot 6 603 056 du cadastre du Québec,"
+    },
+    {
+      "municipality_slug": "nicolet",
+      "storage_key": "raw/pv-index/cas/8769c6d811e7679f8e662b9646972eba162a3b454b3f7d747555a1b6bc2f41fb.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5046270",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:17",
+      "quote": "               aux lots 5 046 270, 5 046 631, 5 046 632 et 5 046 640 – 22 Janvier 2026 – Dépôt"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 4,
+      "zone_code_count": 360,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 4,
+      "served_municipalities": 3,
+      "total_lot_numbers": 9209,
+      "missing": [
+        "napierville"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z",
+  "documents": [
+    {
+      "slug": "montreal-ouest",
+      "municipality_name": "Montréal-Ouest",
+      "url": "https://montreal-ouest.ca/wp-content/uploads/2026/02/2026-01-22-agenda-special.pdf",
+      "storage_key": "raw/pv-index/cas/04693444c5f75969eadca07fdbcf38f06a36d58dbb79f041238b8f18cddbf384.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/8f18cddbf384.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/8f18cddbf384.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "montreal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montreal-ouest",
+      "municipality_name": "Montréal-Ouest",
+      "url": "https://montreal-ouest.ca/wp-content/uploads/2026/04/OJ-2026-04-27-regular-EN.pdf",
+      "storage_key": "raw/pv-index/cas/24872e6bd1cb56e6aa8471c754d424af8017dc6ecb653e558b1fc66b0833d061.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/c66b0833d061.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/c66b0833d061.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montreal-ouest",
+      "municipality_name": "Montréal-Ouest",
+      "url": "https://montreal-ouest.ca/wp-content/uploads/2026/02/2026-02-23-agenda.pdf",
+      "storage_key": "raw/pv-index/cas/5ca9d17910ed20cc7213b112a3d8431c6dfc3a7c11c8c08600b2227e6823648a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/227e6823648a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/227e6823648a.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "cote-saint-luc"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montreal-ouest",
+      "municipality_name": "Montréal-Ouest",
+      "url": "https://montreal-ouest.ca/wp-content/uploads/2026/05/2026-05-25-agenda.pdf",
+      "storage_key": "raw/pv-index/cas/7b089e6ea210514a2a88129c2125abdf25f2cac62999fd8b8d40c0babf240054.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/c0babf240054.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/c0babf240054.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montreal-ouest",
+      "municipality_name": "Montréal-Ouest",
+      "url": "https://montreal-ouest.ca/wp-content/uploads/2026/01/2026-01-26-agenda.pdf",
+      "storage_key": "raw/pv-index/cas/8f269e9d6614336e9aca16b9b1dac7425659f211e89f165eceed7e7c7327ae86.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/7e7c7327ae86.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/7e7c7327ae86.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montreal-ouest",
+      "municipality_name": "Montréal-Ouest",
+      "url": "https://montreal-ouest.ca/wp-content/uploads/2026/02/2026-01-22-agenda-special-1.pdf",
+      "storage_key": "raw/pv-index/cas/a52cde03d7616cc4994e48a943c06bce93434a9db98e794a5025248b14acf4e9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/248b14acf4e9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/248b14acf4e9.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "montreal-ouest",
+      "municipality_name": "Montréal-Ouest",
+      "url": "https://montreal-ouest.ca/wp-content/uploads/2026/03/2026-03-30-agenda-4.pdf",
+      "storage_key": "raw/pv-index/cas/a756e027dd57a71f3b4107e74b17d0637a63452125896f9ecc4331ef3780653b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/31ef3780653b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/montreal-ouest/31ef3780653b.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "CONTAMINATION_OWNER_MISMATCH",
+      "owner_scope": {
+        "status": "CONTAMINATION_OWNER_MISMATCH",
+        "printed_owner_slugs": [
+          "montreal"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "napierville",
+      "municipality_name": "Napierville",
+      "url": "https://www.napierville.ca/fichiersUpload/fichiers/20260603104145-projet-odj-2026-06-04.pdf",
+      "storage_key": "raw/pv-index/cas/a7ce1f8c6e401b2581cd83938a1411c93ce99baf353b1af5fe6e5333f66a1f17.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/napierville/5333f66a1f17.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/napierville/5333f66a1f17.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "neuville",
+      "municipality_name": "Neuville",
+      "url": "https://www.ville.neuville.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour-et-proces-verbaux/ordres-du-jour/2026/02_Ordre%20du%20jour_4%20mai%202026.pdf",
+      "storage_key": "raw/pv-index/cas/1d0319e5f21b3daac055c4fb3cb5a8562c805c4d7d5c389290e1a730ed91eaf7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Neuville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "3.      Suivi de la dernière séance du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "        5.1.     Approbation du procès-verbal de la séance ordinaire du 13 avril 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "131",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "        12.1.    Adoption du règlement numéro 131 sur l’entretien et l’occupation des bâtiments"
+            }
+          },
+          {
+            "label": "117.8",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "        12.2.    Avis de motion et dépôt du Règlement 117.8 sur la tarification et la taxation pour"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/a730ed91eaf7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/a730ed91eaf7.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "neuville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "neuville",
+      "municipality_name": "Neuville",
+      "url": "https://www.ville.neuville.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour-et-proces-verbaux/ordres-du-jour/2026/00.%20Avis%20convocation_%20Extraordinaire_11%20mai%202026.pdf",
+      "storage_key": "raw/pv-index/cas/4c9e1c6513c919fbe388868420e9063d7e3ccb56fd08f58f7d9a6fc45d38edd6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Neuville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "Simon Sheehy pour être tenue à 18 h 30 à la salle Plamondon de l’hôtel de ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "Simon Sheehy pour être tenue à 18 h 30 à la salle Plamondon de l’hôtel de ville de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/6fc45d38edd6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/6fc45d38edd6.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "neuville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "neuville",
+      "municipality_name": "Neuville",
+      "url": "https://www.ville.neuville.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour-et-proces-verbaux/ordres-du-jour/2026/02_Ordre%20du%20jour_1er%20juin%202026_VF.pdf",
+      "storage_key": "raw/pv-index/cas/64cddaab772ec28554f47cf7f8973d33400760587c7b90f98b291fcaf487c6ee.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2,
+        "Zone": 1,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Neuville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "3.      Suivi de la dernière séance du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "        5.1.    Approbation du procès-verbal de la séance ordinaire du 4 mai 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "104.37",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "        9.4.    Adoption du projet de règlement 104.37, lancement d’une démarche de"
+            }
+          },
+          {
+            "label": "117.8",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "        12.1.    Adoption du Règlement 117.8 sur la taxation et la tarification 2026"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "PA-4",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "                d’autoriser les usages « autres » dans la zone Pa-4 et de modifier le feuillet des"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3507503",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "                du territoire agricole du Québec pour le lot 3 507 503, sis au 966 route 365"
+            }
+          },
+          {
+            "label": "3834527",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "        9.2.    Demande de dérogation mineure pour le lot 3 834 527, sis au 208 rue de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/1fcaf487c6ee.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/1fcaf487c6ee.pdf/.graphify/.graphify_extract.json — 9 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "neuville",
+          "pont-rouge"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "neuville",
+      "municipality_name": "Neuville",
+      "url": "https://www.ville.neuville.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour-et-proces-verbaux/ordres-du-jour/2026/02_Ordre-du-jour_2%20fevrier%202026.pdf",
+      "storage_key": "raw/pv-index/cas/9beb6db0adb3294370ead4d235522259e5a6556da78c65059c25c81311d9a323.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Neuville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 12 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "3.      Suivi de la dernière séance du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "12 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "        5.1.     Approbation du procès-verbal de la séance ordinaire du 12 janvier 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "114.3",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "        12.1.    Adoption du règlement 114.3 concernant la gestion contractuelle"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/c81311d9a323.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/c81311d9a323.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "neuville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "neuville",
+      "municipality_name": "Neuville",
+      "url": "https://www.ville.neuville.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour-et-proces-verbaux/ordres-du-jour/2026/02_Ordre%20du%20jour_13%20avril%202026_VF.pdf",
+      "storage_key": "raw/pv-index/cas/a01522a0c53f8ad0e034ce3ae7196f41ff843cb941d2cb8b90271a9742ee8c44.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 2,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Neuville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "3.      Suivi de la dernière séance du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "        5.1.     Approbation du procès-verbal de la séance ordinaire du 2 mars 2026"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "25-03-42",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "        12.3.   Mise à jour des signataires désignés à la résolution 25-03-42"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "97.4",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "        12.1.    Adoption du règlement 97.4 édictant le code d’éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "131",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "\f        12.2.   Adoption du projet de règlement 131 sur l’entretien et l’occupation de bâtiments"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3832581",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "        9.1.     Demande de dérogation mineure du lot 3 832 581"
+            }
+          },
+          {
+            "label": "3834694",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "        9.2.     Demande de dérogation mineure du lot 3 834 694"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/1a9742ee8c44.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/1a9742ee8c44.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "neuville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "neuville",
+      "municipality_name": "Neuville",
+      "url": "https://www.ville.neuville.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour-et-proces-verbaux/ordres-du-jour/2026/2_Ordre%20du%20jour_12%20janvier%202026.pdf",
+      "storage_key": "raw/pv-index/cas/b145b15ae8f77aa26a1db4343d31f0719578fd305c1630b92257dcbc50fb171a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Neuville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "3.      Suivi de la dernière séance du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er décembre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "        5.1.     Approbation du procès-verbal de la séance ordinaire du 1er décembre 2025"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "117.7",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "        12.1.    Adoption du projet de règlement 117.7 établissant la taxation et la tarification"
+            }
+          },
+          {
+            "label": "130",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "        12.2.    Adoption du projet de règlement 130 sur les droits de mutations immobilières"
+            }
+          },
+          {
+            "label": "114.3",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "        12.3.    Avis de motion et présentation du règlement 114.3 modifiant le règlement 104"
+            }
+          },
+          {
+            "label": "104",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "        12.3.    Avis de motion et présentation du règlement 114.3 modifiant le règlement 104"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3832283",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "        6.1.     Recours judiciaire concernant l’immeuble connu comme étant le lot 3 832 283,"
+            }
+          },
+          {
+            "label": "3831201",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "        9.1.     Demande d’appui à la CPTAQ pour le lot 3 831 201"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/dcbc50fb171a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/dcbc50fb171a.pdf/.graphify/.graphify_extract.json — 10 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "neuville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "neuville",
+      "municipality_name": "Neuville",
+      "url": "https://www.ville.neuville.qc.ca/storage/app/media/ma-ville/vie-democratique/ordres-du-jour-et-proces-verbaux/ordres-du-jour/2026/02.%20Ordre%20du%20jour_2%20mars%202026_VF.pdf",
+      "storage_key": "raw/pv-index/cas/bb18a463bf53b7872a41e540ddf6cc63c14f67d44c92a4eed2054996d98712db.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Neuville",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "L’enregistrement de la séance sera publié le lendemain de la tenue de celle-ci sur le site Internet"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:11",
+              "quote": "3.      Suivi de la dernière séance du conseil"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2 février 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "        5.1.     Approbation du procès-verbal de la séance ordinaire du 2 février 2026"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "97.4",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "        12.1.    Avis de motion visant à adopter le Règlement numéro 97.4 éditant le code"
+            }
+          },
+          {
+            "label": "131",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "        12.2.    Avis de motion visant à adopter le projet de Règlement numéro 131 sur"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/4996d98712db.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/neuville/4996d98712db.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "neuville"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "nicolet",
+      "municipality_name": "Nicolet",
+      "url": "https://nicolet.ca/upload/seances-du-conseil/seance_du_conseil/odj_2026-05-11_public.pdf",
+      "storage_key": "raw/pv-index/cas/400006d4de03a88dcac056fdb4a7435738f94117bf138e0576131bad815b46f1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 5,
+        "LotCadastre": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Nicolet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "     6.2       Rapport concernant les contrats conclus et les dépenses effectuées par les"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "     6.2       Rapport concernant les contrats conclus et les dépenses effectuées par les"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "4 Procès-verbaux – Séance ordinaire du conseil du 13 avril 2026 – Dépôt – Adoption -"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 avril 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:14",
+              "quote": "4 Procès-verbaux – Séance ordinaire du conseil du 13 avril 2026 – Dépôt – Adoption -"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "115-04-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "               programme emplois d’été Canada – Résolution 115-04-2026 – Dépôt"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "470-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "               conformément à l'article 48.1 du Règlement numéro 470-2023 relatif à la délégation"
+            }
+          },
+          {
+            "label": "533-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "     7.1       Règlement 533-2026 contrôle intérimaire – Secteurs de la rue Saint-Jean-Baptiste et"
+            }
+          },
+          {
+            "label": "535-2026",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:360",
+              "quote": "Premier projet de Règlement numéro 535-2026 modifiant le Règlement de zonage"
+            }
+          },
+          {
+            "label": "475-2023",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "     7.4       Règlement numéro 535-2026 modifiant le Règlement 475-2023 concernant les"
+            }
+          },
+          {
+            "label": "367-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:231",
+              "quote": "conformément à son Règlement numéro 367-2018 relatif aux modalités de publication des avis publics"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5044801",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:126",
+              "quote": "               522, rue Saint-Jean-Baptiste – Lot 5 044 801 – Autorisation"
+            }
+          },
+          {
+            "label": "5369998",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:129",
+              "quote": "               lots 5 369 998, 5 369 997, 6 645 677 – Ferme Roger Nourry S.E.N.C. – Appui"
+            }
+          },
+          {
+            "label": "5043864",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:134",
+              "quote": "\f     11.3      Plan projet de morcellement – Version 2 – Développement Hervieux – Lot 5 043 864"
+            }
+          },
+          {
+            "label": "6447194",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:137",
+              "quote": "     11.4      Plan projet de morcellement – Version 2 – Domaine Saint-Joseph – Lot 6 447 194 –"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/1bad815b46f1.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/1bad815b46f1.pdf/.graphify/.graphify_extract.json — 14 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 14,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "nicolet",
+          "sainte-helene-de-bagot"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "nicolet",
+      "municipality_name": "Nicolet",
+      "url": "https://nicolet.ca/upload/seances-du-conseil/seance_du_conseil/odj_2026-06-01_public.pdf",
+      "storage_key": "raw/pv-index/cas/4280bbe76b85c714b1d035486f270c37c8d0b2738699494318f1963570f4f17a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Nicolet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 1er juin 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "la séance ordinaire du conseil du 1er juin 2026;"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "1er juin 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": "la séance ordinaire du conseil du 1er juin 2026;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "534-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": "4.      Règlement numéro 534-2026 sur la gestion contractuelle de la Ville de Nicolet – Avis de"
+            }
+          },
+          {
+            "label": "469-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:622",
+              "quote": "     Le présent règlement remplace le règlement numéro 469-2023."
+            }
+          },
+          {
+            "label": "1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:639",
+              "quote": "Avis de motion et dépôt du projet de règlement          1er juin 2026 (Rubrique numéro 4)"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5045621",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "        Jeunes le Déclic – Lot 5 045 621 – Autorisation"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/963570f4f17a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/963570f4f17a.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "nicolet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "nicolet",
+      "municipality_name": "Nicolet",
+      "url": "https://nicolet.ca/upload/seances-du-conseil/seance_du_conseil/odj_2026-06-08_public.pdf",
+      "storage_key": "raw/pv-index/cas/5da5b7dfe2c7dd48761c0978d3c697ab7872cedc629141a76f6493ccc83356e7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 6,
+        "Regulation": 11,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Nicolet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "                 délégation de pouvoirs à certains fonctionnaires ainsi qu’au suivi et au contrôle"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:16",
+              "quote": "                 délégation de pouvoirs à certains fonctionnaires ainsi qu’au suivi et au contrôle"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 11 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3    Procès-verbal – Séance ordinaire du conseil du 11 mai 2026 – Séance extraordinaire du"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "11 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3    Procès-verbal – Séance ordinaire du conseil du 11 mai 2026 – Séance extraordinaire du"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "151-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "               moins contraignantes – Résolution 151-05-26 – Dépôt"
+            }
+          },
+          {
+            "label": "155-05-26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "               Environnement-Plage – Résolution 155-05-26 – Dépôt"
+            }
+          },
+          {
+            "label": "305-12-2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "                 Tousignant – Résolution numéro 305-12-2025 – Abrogation – Autorisation"
+            }
+          },
+          {
+            "label": "108-05-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:214",
+              "quote": "du 11 mai 2026 et du 8 juin 2026 et ce, par le biais de l’adoption des résolutions numéros 108-05-2026"
+            }
+          },
+          {
+            "label": "109-05-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1170",
+              "quote": "11 mai 2026 et ce, par le biais de l’adoption de la résolution numéro 109-05-2026;"
+            }
+          },
+          {
+            "label": "158-05-2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1292",
+              "quote": "8 mai 2023, le tout tel qu’il appert à la résolution 158-05-2023;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "536-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "     4.1         Règlement numéro 536-2026 modifiant le Règlement numéro 470-2023 relatif à la"
+            }
+          },
+          {
+            "label": "470-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "     4.1         Règlement numéro 536-2026 modifiant le Règlement numéro 470-2023 relatif à la"
+            }
+          },
+          {
+            "label": "534-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "     4.2         Règlement numéro 534-2026 sur la gestion contractuelle– Adoption"
+            }
+          },
+          {
+            "label": "535-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "     4.4         Règlement numéro 535-2026 modifiant le Règlement de zonage numéro 77-2004"
+            }
+          },
+          {
+            "label": "537-2026",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "     4.5         Règlement numéro 537-2026 modifiant le Règlement numéro 526-2025 établissant"
+            }
+          },
+          {
+            "label": "526-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "     4.5         Règlement numéro 537-2026 modifiant le Règlement numéro 526-2025 établissant"
+            }
+          },
+          {
+            "label": "470",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "               et villes (RLRQ, c. C-19) et l’article 14 du Règlement numéro 470 2023 relatif à la"
+            }
+          },
+          {
+            "label": "367-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:222",
+              "quote": "conformément à son Règlement numéro 367-2018 relatif aux modalités de publication des avis publics"
+            }
+          },
+          {
+            "label": "469-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:928",
+              "quote": "     Le présent règlement remplace le règlement numéro 469-2023."
+            }
+          },
+          {
+            "label": "1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:945",
+              "quote": "Avis de motion et dépôt du projet de règlement          1er juin 2026 (Rubrique numéro 4)"
+            }
+          },
+          {
+            "label": "526",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1528",
+              "quote": "Le Règlement numéro 526 2025 établissant la tarification des biens, services et activités"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5046511",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "     10.1        Morcellement – Plan d’aménagement – Lots 5 046 511 et 5 262 809 – 505, rue"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/93ccc83356e7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/93ccc83356e7.pdf/.graphify/.graphify_extract.json — 22 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 22,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "becancour",
+          "nicolet",
+          "saint-pie",
+          "saint-pie-de-guire"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "nicolet",
+      "municipality_name": "Nicolet",
+      "url": "https://nicolet.ca/upload/seances-du-conseil/odj_2026-04-13_public.pdf",
+      "storage_key": "raw/pv-index/cas/660ca0190141f588084fef6bfbff0b1d9913d6efca00a45292cdb81f48b2d703.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 5,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Nicolet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "     4.5       Autorité des marchés publics – Recommandations formulées au conseil municipal de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "     4.5       Autorité des marchés publics – Recommandations formulées au conseil municipal de"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3    Procès-verbal – Séance ordinaire du conseil du 9 mars 2026 – Dépôt – Adoption –"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "9 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3    Procès-verbal – Séance ordinaire du conseil du 9 mars 2026 – Dépôt – Adoption –"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-03-039",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:25",
+              "quote": "               préhospitaliers – Résolution numéro 2026-03-039 – Dépôt"
+            }
+          },
+          {
+            "label": "38-02-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:277",
+              "quote": "par le biais de l’adoption des résolutions numéros 38-02-2026 et 65-03-2026;"
+            }
+          },
+          {
+            "label": "65-03-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:753",
+              "quote": " Adoption du 2e projet de règlement                 9 mars 2026 (Résolution 65-03-2026)"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "531-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "               concerne le Règlement 531-2026 sur les usages conditionnels de la Ville de Nicolet -"
+            }
+          },
+          {
+            "label": "470-2023",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "               février 2026, conformément à l'article 48.1 du Règlement numéro 470-2023 relatif à"
+            }
+          },
+          {
+            "label": "532-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:206",
+              "quote": "\f     15.2      Règlement numéro 532-2026 décrétant une dépense de 950 000 $ et un emprunt de"
+            }
+          },
+          {
+            "label": "367-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:287",
+              "quote": "son Règlement numéro 367-2018 relatif aux modalités de publication des avis publics de la Ville de Nicolet"
+            }
+          },
+          {
+            "label": "452-2022",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:785",
+              "quote": "Règlement numéro 452-2022 créant une réserve financière pour l’adaptation aux changements"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5044801",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:142",
+              "quote": "               522, rue Saint-Jean-Baptiste – Lot 5 044 801 – Autorisation – Approbation"
+            }
+          },
+          {
+            "label": "6651446",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:144",
+              "quote": "    9.2        Demande de modification du règlement de zonage 772004 – Lots 6 651 446 et"
+            }
+          },
+          {
+            "label": "6603056",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:828",
+              "quote": " Le conseil est autorisé à acquérir le terrain avec le numéro de lot 6 603 056 du cadastre du Québec,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/b81f48b2d703.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/b81f48b2d703.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-des-plages",
+          "lingwick",
+          "nicolet",
+          "sainte-justine",
+          "sainte-justine-de-newton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "nicolet",
+      "municipality_name": "Nicolet",
+      "url": "https://nicolet.ca/upload/seances-du-conseil/odj_2026-02-09__public.pdf",
+      "storage_key": "raw/pv-index/cas/8769c6d811e7679f8e662b9646972eba162a3b454b3f7d747555a1b6bc2f41fb.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Nicolet",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "     5.2       Rapport concernant les contrats conclus et les dépenses effectuées par les"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "     5.2       Rapport concernant les contrats conclus et les dépenses effectuées par les"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 19 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3    Procès-verbal – Séance ordinaire du conseil du 19 janvier 2026 – Dépôt – Adoption –"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "19 janvier 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:10",
+              "quote": "3    Procès-verbal – Séance ordinaire du conseil du 19 janvier 2026 – Dépôt – Adoption –"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "19-01-2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:183",
+              "quote": "ordinaire 19 janvier 2026, par le biais de l’adoption de la résolution numéro 19-01-2026;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "530-2026",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "\f     15.1      Règlement numéro 530-2026 relatif aux ententes pour la réalisation de travaux"
+            }
+          },
+          {
+            "label": "367-2018",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:186",
+              "quote": "à son Règlement numéro 367-2018 relatif aux modalités de publication des avis publics"
+            }
+          },
+          {
+            "label": "458",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:536",
+              "quote": "Le présent règlement remplace à toute fin que de droit le Règlement numéro 458 2022"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5046270",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:17",
+              "quote": "               aux lots 5 046 270, 5 046 631, 5 046 632 et 5 046 640 – 22 Janvier 2026 – Dépôt"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/a1b6bc2f41fb.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184854Z/nicolet/a1b6bc2f41fb.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "nicolet"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
