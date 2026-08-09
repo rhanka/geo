@@ -1,0 +1,2738 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T05:07:22.514Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 511,
+    "limit": 20,
+    "requested": 20,
+    "selected": 18,
+    "skipped_indexed_cas_keys": [
+      "raw/pv-index/cas/0172ac1c99953336a4fb55d00f5f784955fdfd10b4d554f8853a7bf77786ed69.pdf",
+      "raw/pv-index/cas/0998e40b877e69d75675a58009bd91e9eed3e358d8b79d1fc40be4dccc584b25.pdf"
+    ],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 18,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "CouncilSession": 7,
+    "MeetingDate": 7,
+    "Regulation": 41,
+    "Resolution": 21,
+    "Zone": 20,
+    "LotCadastre": 36
+  },
+  "graphify": {
+    "nodes": 168,
+    "edges": 103,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 20,
+    "lot_entities": 36,
+    "documents_with_zone": 5,
+    "documents_with_lot": 12
+  },
+  "match_details": [
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/0cec19720340e75a1e186651f4b35ee6d36f45abf76ae3fa35d553ba91e8a4da.pdf",
+      "entity_type": "Zone",
+      "value": "RES-9",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:131",
+      "quote": "          5 667 817 et 5 667 818, rue Laurel, zone RES-9, PIIA-      1195, lots 5 667 817 and 5 667 818, rue Laurel,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/0cec19720340e75a1e186651f4b35ee6d36f45abf76ae3fa35d553ba91e8a4da.pdf",
+      "entity_type": "Zone",
+      "value": "RES-12",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:137",
+      "quote": "        Zone RES-12, Demande de dérogation mineure afin          Clough, Zone RES-12, Request for minor"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/0cec19720340e75a1e186651f4b35ee6d36f45abf76ae3fa35d553ba91e8a4da.pdf",
+      "entity_type": "Zone",
+      "value": "RES-11",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:153",
+      "quote": "         Zone RES-11, PIIA-1, Validation architecturale pour         Main, Zone RES-11, PIIA-1, Architectural"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/0cec19720340e75a1e186651f4b35ee6d36f45abf76ae3fa35d553ba91e8a4da.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5667817",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:131",
+      "quote": "          5 667 817 et 5 667 818, rue Laurel, zone RES-9, PIIA-      1195, lots 5 667 817 and 5 667 818, rue Laurel,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/0cec19720340e75a1e186651f4b35ee6d36f45abf76ae3fa35d553ba91e8a4da.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664682",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:136",
+      "quote": "16.1.2 Matricule 1804-82-6965, lot 4 664 682, 800 Clough, 16.1.2 Matricule 1804-82-6965, lot 4 664 682, 800"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/0cec19720340e75a1e186651f4b35ee6d36f45abf76ae3fa35d553ba91e8a4da.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4665037",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:152",
+      "quote": "16.1.5 Matricule 1904-23-6194, lot 4 665 037, 945 rue Main,   16.1.5 Matricule 1904-23-6194, lot 4 665 037, 945 rue"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/0dd1abfde30b0446fd6f51aace61d814c5d9ab6dd810f176a9f4db8dcd84005f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5284627",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:114",
+      "quote": "5636 et 1904-15-7333, lots 5 284 627, 5 284 628, 4 665 010     1904-15-5636, and 1904-15-7333, lots 5 284 627, 5 284 628,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/12dfd6a5a4dcf9d52f261b8419cff98c53049437bee5ed9d5e43df13ade056ba.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4665142",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:141",
+      "quote": "16.1.1     Matricule 1904-52-7624, lot 4 665 142, 1087 rue           16.1.1     Matricule 1904-52-7624, lot 4 665 142, 1087"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/12dfd6a5a4dcf9d52f261b8419cff98c53049437bee5ed9d5e43df13ade056ba.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664658",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:146",
+      "quote": "16.1.2     Matricule 1804-36-1553, lot 4 664 658, rue des            16.1.2     Matricule 1804-36-1553, lot 4 664 658, rue des"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/12dfd6a5a4dcf9d52f261b8419cff98c53049437bee5ed9d5e43df13ade056ba.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5177868",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:152",
+      "quote": "16.1.3     Matricule 1804-16-8123, lot 5 177 868, rue des            16.1.3     Matricule 1804-16-8123, lot 5 177 868, rue des"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/12dfd6a5a4dcf9d52f261b8419cff98c53049437bee5ed9d5e43df13ade056ba.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4666576",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:158",
+      "quote": "16.1.4     Matricule 1704-87-3975, lot 4 666 576, Rue des Haut-      16.1.4     Matricule 1704-87-3975, lot 4 666 576, Haut-"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/12dfd6a5a4dcf9d52f261b8419cff98c53049437bee5ed9d5e43df13ade056ba.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4666332",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1179",
+      "quote": "se situe en totalité sur des lots municipaux, soit le lot 4 666 332 located entirely on municipal lots, namely lot 4 666 332"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/12dfd6a5a4dcf9d52f261b8419cff98c53049437bee5ed9d5e43df13ade056ba.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4940390",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1180",
+      "quote": "et le lot 4 940 390;                                                and lot 4 940 390;"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2aae70b2182c144f1b5f4763c988c2c1096c0ef030e9dfafaf7dab842f826ccd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6359863",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:124",
+      "quote": "16.1.1 Matricule 1904-70-0305, lot 6 359 863, 1185 Main      16.1.1     Matricule 1904-70-0305, lot 6 359 863, 1185"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "Zone",
+      "value": "RES-11",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:145",
+      "quote": "           d’aménagement du terrain (clôture)                            841        Main,    Zone    RES-11,      PIIA-1,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "Zone",
+      "value": "RES-4",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:153",
+      "quote": "           Bay, Zone RES-4, PIIA-5, Validation architecturale pour 16.1.3 Matricule 1905-07-0429, lot 6 449 107, 3119 Round"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "Zone",
+      "value": "COM-4",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:158",
+      "quote": "           Zone COM-4, PIIA-1, Validation architecturale pour le 16.1.4 Matricule 1904-60-1349, lot 6 230 678, 1160 Main,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "Zone",
+      "value": "RES-2",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:163",
+      "quote": "           d’aménagement d’un terrain (agrandissement de la             Zone RES-2, PIIA-5, Architectural validation for"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "Zone",
+      "value": "RES-12",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:167",
+      "quote": "           Zone RES-12, PIIA-1, Validation architecturale pour 16.1.6 Matricule 1904-03-5405, lot 4 664 756, 829 Clough,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "Zone",
+      "value": "REC-5",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:194",
+      "quote": "«PIIA» pour la mise en place d’un PIIA sur       concept        de the development concept of zone Rec-5 - General notice"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "Zone",
+      "value": "RES-10",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1115",
+      "quote": "désinfection de la station de traitement des eaux usées de la states that \"in zones Com-2 to Com-5 and Res-10, Res-"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "Zone",
+      "value": "COM-2",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1115",
+      "quote": "désinfection de la station de traitement des eaux usées de la states that \"in zones Com-2 to Com-5 and Res-10, Res-"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "Zone",
+      "value": "COM-5",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1115",
+      "quote": "désinfection de la station de traitement des eaux usées de la states that \"in zones Com-2 to Com-5 and Res-10, Res-"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664716",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:143",
+      "quote": "16.1.1     Matricule 1804-95-8815, lot 4 664 716, 841 Main, Zone"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6449107",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:152",
+      "quote": "16.1.3     Matricule 1905-07-0429, lot 6 449 107, 3119 Round"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6230678",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:157",
+      "quote": "16.1.4     Matricule 1904-60-1349, lot 6 230 678, 1160 Main,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664642",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:161",
+      "quote": "16.1.5     Matricule 1804-08-1241, lot 4 664 642, 687 Main, Zone"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664756",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:166",
+      "quote": "16.1.6     Matricule 1904-03-5405, lot 4 664 756, 829 Clough,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6449105",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:171",
+      "quote": "                                                                    16.1.7 Registration number 1805-97-7796, lot 6 449 105,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664904",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:367",
+      "quote": "         pourtant tous les autres commerçants sont non conforme 13, located respectively on lots 4 664 904, 4 664 798 and"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d9ecc472e7518b689ce3f95711f8a01e42053266d539820fdb04f0243da2fbc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664937",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:128",
+      "quote": "16.1.1    Matricule 1903-66-8904, lot 4 664 937, 160 rue         16.1.1   Registration number 1903-66-8904, lot 4 664 937,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/2d9ecc472e7518b689ce3f95711f8a01e42053266d539820fdb04f0243da2fbc.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5284627",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:132",
+      "quote": "          5636 et 1904-15-7333, lots 5 284 627, 5 284 628, 4     16.1.2   Registration numbers 1904-14-2760, 1904-14-5192,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/32aee3e7484b65f8cdd7ce996f9c8a657984d49626e937897bb2b56fbd230717.pdf",
+      "entity_type": "Zone",
+      "value": "REC-5",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:134",
+      "quote": "       Ripple Cove, Zone REC-5, PIIA-5, demande de validation         chemin Ripple Cove, Zone REC-5, PIIA-5,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/32aee3e7484b65f8cdd7ce996f9c8a657984d49626e937897bb2b56fbd230717.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664930",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:123",
+      "quote": "16.1.1 Matricule 1904-51-9142, lot 4 664 930, 1114-1118 16.1.1        Matricule 1904-51-9142, lot 4 664 930, 1114-"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/32aee3e7484b65f8cdd7ce996f9c8a657984d49626e937897bb2b56fbd230717.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664871",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:128",
+      "quote": "16.1.2 Matricule 1904-21-4151, lot 4 664 871, 944 Sanborn, 16.1.2     Matricule 1904-21-4151, lot 4 664 871, 944"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/32aee3e7484b65f8cdd7ce996f9c8a657984d49626e937897bb2b56fbd230717.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6563446",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:133",
+      "quote": "16.1.3 Matricule 1805-72-3947, lot 6 563 446, 700 chemin 16.1.3       Matricule 1805-72-3947, lot 6 563 446, 700"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/3592dd242d0705ab8f50743187dbf309fff9290a0acba0aa67c434fa9b925c67.pdf",
+      "entity_type": "Zone",
+      "value": "COM-3",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:125",
+      "quote": "     Main, Zone COM-3, PIIA-1, Validation                            1105 Main, Zone COM-3, PIIA-1, Architectural"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/3592dd242d0705ab8f50743187dbf309fff9290a0acba0aa67c434fa9b925c67.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664931",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:124",
+      "quote": "16.1.1 Matricule 1904-51-9286, lot 4 664 931, 1099-1105       16.1.1 Matricule 1904-51-9286, lot 4 664 931, 1099-"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/366f73bc29a7dfad2d66692de0ce7e6e28d8487ce971e97d2f41b46a8f855b47.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5284627",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:103",
+      "quote": "           15-5636 et 1904-15-7333, lots 5 284 627, 5 284                    1904- 15-5636, and 1904-15-7333, lots 5 284 627, 5"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/39259300f7125e51b45744de0dd13d6613689c593b6657f0ac1f2f38e4155f1b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664941",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:163",
+      "quote": "16.1.1    Matricule 1903-66-9549, lots 4 664 941 et 4 664              16.1.1    Registration number 1903-66-9549, lots 4"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/39259300f7125e51b45744de0dd13d6613689c593b6657f0ac1f2f38e4155f1b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664755",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:172",
+      "quote": "16.1.2    Matricule 1904-12-4986, lot 4 664 755, 873 rue          16.1.2   Registration No. 1904-12-4986, lot 4 664 755,"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/39259300f7125e51b45744de0dd13d6613689c593b6657f0ac1f2f38e4155f1b.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664582",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:1473",
+      "quote": "conditions d’émission de permis de construction afin de construction of a new building on lot 4 664 582, which is"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "Zone",
+      "value": "RES-2",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:138",
+      "quote": "          Zone RES-2 PIIA-5, validation architecturale pour MAIN, Zone RES-2 PIIA-5, architectural approval for"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "Zone",
+      "value": "COM-3",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:142",
+      "quote": "          Zone COM-3 PIIA-1, validation architecturale pour MAIN, Zone COM-3 PIIA-1, architectural validation for"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "Zone",
+      "value": "RES-4",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:146",
+      "quote": "          RIPPLECOVE, Zone RES-4 PIIA-6 - Demande de RIPPLECOVE, Zone RES-4 PIIA-6 - Request to amend"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "Zone",
+      "value": "RES-13",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:150",
+      "quote": "          Zone RES-13 PIIA-6, validation architecturale afin SANBORN, Zone RES-13 PIIA-6, architectural"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "Zone",
+      "value": "RES-5",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:159",
+      "quote": "          NICOLAS, Zone RES-5, PIIA-6 & PIIA-8, demande de NICOLAS, Zone RES-5, PIIA-6 & PIIA-8, special"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "Zone",
+      "value": "REC-5",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:167",
+      "quote": "       Ripplecove, zone REC-5, PIIA-5, Demande de chemin Ripplecove, zone REC-5, PIIA-5, Request to"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664623",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:137",
+      "quote": "16.1.1    Matricule 1704-88-0863, lot 4 664 623, 661 MAIN, 16.1.1 Matricule 1704-88-0863, lot 4 664 623, 661"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4665142",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:141",
+      "quote": "16.1.2    Matricule 1904-52-7624, lot 4 665 142, 1087 MAIN, 16.1.2 Matricule 1904-52-7624, lot 4 665 142, 1087"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4664703",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:145",
+      "quote": "16.1.3    Matricule 1805-80-9068, lot 4 664 703, 469 16.1.3 Matricule 1805-80-9068, lot 4 664 703, 469"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6642538",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:149",
+      "quote": "16.1.4    Matricule à venir, lot 6 642 538, RUE SANBORN, 16.1.4 Future registration number, lot 6 642 538, RUE"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6553822",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:153",
+      "quote": "16.1.5    Matricule 1903-67-3114, lot 6 553 822, RUE 16.1.5 Matricule 1903-67-3114, lot 6 553 822, RUE"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5626156",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:158",
+      "quote": "16.1.6    Matricule1905-42-1482, lot 5 626 156, CHEMIN 16.1.6 Matricule 1905-42-1482, lot 5 626 156, CHEMIN"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6563446",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:166",
+      "quote": "        Matricule 1805 72 3947, lot 6 563 446, 700 chemin 16.1.7 Matricule 1805 72 3947, lot 6 563 446, 700"
+    },
+    {
+      "municipality_slug": "ayers-cliff",
+      "storage_key": "raw/pv-index/cas/39411ba056b5bc460b71fbef665e500b87c767d0ce831064cd5c1a2a592977a7.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6359863",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:111",
+      "quote": "16.1.1 Matricule 1904-70-0305, lot 6 359 863, 1185 Main        16.1.1    Matricule 1904-70-0305, lot 6 359 863, 1185 Main"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 2,
+      "zone_code_count": 43,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 2,
+      "served_municipalities": 2,
+      "total_lot_numbers": 1057,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z",
+  "documents": [
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal_du_14_janvier_2025_adopte.pdf",
+      "storage_key": "raw/pv-index/cas/eb7fe31efafb19364e901af93815e04a49ffa28ca1de59bc6f0156ea759d9b35.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 14 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil municipal d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "14 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             tenue à la salle multiservice, au 418-B, rue Principale, le 14 janvier 2025 à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2021-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:107",
+              "quote": "             portant sur l’application du règlement 2021-01 concernant la gestion"
+            }
+          },
+          {
+            "label": "2024-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:208",
+              "quote": "             ATTENDU QU’il est prévu à l’article 7 du règlement 2024-02 constituant le"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/56ea759d9b35.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/56ea759d9b35.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-4-juin-2024-adotpe1.pdf",
+      "storage_key": "raw/pv-index/cas/edb9d93545825b542963e4659b2482745376e3fd7c643e3909a7140d3a0a2b6e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 4 juin 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil municipal d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "4 juin 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             tenue à la salle multiservice, au 418-B, rue Principale, le 4 juin 2024 à 19h30."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-05-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:52",
+              "quote": "             Tel que prévu à la résolution 2024-05-11 de la séance du 7 mai 2024,"
+            }
+          },
+          {
+            "label": "2024-05-15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "             Tel que prévu à la résolution 2024-05-15 de la séance du 7 mai 2024, deux"
+            }
+          },
+          {
+            "label": "2024-05-18",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "             Tel que prévu à la résolution 2024-05-18 de la séance du 7 mai 2024, il a été"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-01",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "2024-06-04   9.   ADOPTION DU RÈGLEMENT 2024-01 RELATIF AUX FEUX EXTÉRIEURS"
+            }
+          },
+          {
+            "label": "2024-02",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "2024-06-05   10. ADOPTION DU RÈGLEMENT 2024-02 CONSTITUANT UN COMITÉ"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/140d3a0a2b6e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/140d3a0a2b6e.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord",
+          "saint-gervais"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-ext.-du-23-05-2023.pdf",
+      "storage_key": "raw/pv-index/cas/f678835450133e8d36103f5cc276dbd5ae22ec5a3ae206ff5da6a9062072ef56.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "               Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 23 mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "               PROCÈS-VERBAL d’une séance extraordinaire du conseil municipal de la municipalité"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "23 mai 2023",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "               d’Authier-Nord, tenue le 23 mai 2023, à 16h30, au 418-B, rue Principale."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/a9062072ef56.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/a9062072ef56.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-6-aout-2024-adopte.pdf",
+      "storage_key": "raw/pv-index/cas/fb223df4df2b523a281d0a907f2fa02ae0a1b5dbf8a790c3402bad14025d28a0.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "             Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 6 août 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:5",
+              "quote": "             Procès-verbal de la séance ordinaire du conseil municipal d’Authier-Nord,"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "6 août 2024",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "             tenue à la salle multiservice, au 418-B, rue Principale, le 6 août 2024 à 19h30."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-06-08",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "             Tel que prévu à la résolution 2024-06-08 de la séance du 4 juin 2024, l’offre"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/ad14025d28a0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/ad14025d28a0.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "authier-nord",
+      "municipality_name": "Authier-Nord",
+      "url": "https://authier-nord.ao.ca/documents/pages/proces-verbal-du-16-avril-2024.pdf",
+      "storage_key": "raw/pv-index/cas/fc3192d1888e23419560bb32b065d0780985c136a2b75e70a2176347315b891c.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Authier-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                Municipalité d’Authier-Nord"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/6347315b891c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/authier-nord/6347315b891c.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "authier",
+          "authier-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2023/09/PV-2023-08-07.pdf",
+      "storage_key": "raw/pv-index/cas/0cec19720340e75a1e186651f4b35ee6d36f45abf76ae3fa35d553ba91e8a4da.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 1,
+        "Zone": 3,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                                                                                Initiales du"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                                                                                Initiales du"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-039",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:418",
+              "quote": "     ATTENDU les résolutions 2023-039 et 2023-102 concernant11.1            WHEREAS resolutions 2023-039 and 2023-102"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-09",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:158",
+              "quote": "16.2.1 Règlement no 2023-09 modifiant le règlement de zonage"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "RES-9",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "          5 667 817 et 5 667 818, rue Laurel, zone RES-9, PIIA-      1195, lots 5 667 817 and 5 667 818, rue Laurel,"
+            }
+          },
+          {
+            "label": "RES-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:137",
+              "quote": "        Zone RES-12, Demande de dérogation mineure afin          Clough, Zone RES-12, Request for minor"
+            }
+          },
+          {
+            "label": "RES-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "         Zone RES-11, PIIA-1, Validation architecturale pour         Main, Zone RES-11, PIIA-1, Architectural"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5667817",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "          5 667 817 et 5 667 818, rue Laurel, zone RES-9, PIIA-      1195, lots 5 667 817 and 5 667 818, rue Laurel,"
+            }
+          },
+          {
+            "label": "4664682",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:136",
+              "quote": "16.1.2 Matricule 1804-82-6965, lot 4 664 682, 800 Clough, 16.1.2 Matricule 1804-82-6965, lot 4 664 682, 800"
+            }
+          },
+          {
+            "label": "4665037",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:152",
+              "quote": "16.1.5 Matricule 1904-23-6194, lot 4 665 037, 945 rue Main,   16.1.5 Matricule 1904-23-6194, lot 4 665 037, 945 rue"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/53ba91e8a4da.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/53ba91e8a4da.pdf/.graphify/.graphify_extract.json — 10 nodes, 14 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 10,
+        "edges": 14
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2025/08/ODJ-Seance.pdf",
+      "storage_key": "raw/pv-index/cas/0dd1abfde30b0446fd6f51aace61d814c5d9ab6dd810f176a9f4db8dcd84005f.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "           SÉANCE RÉGULIÈRE DU CONSEIL                           REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "           SÉANCE RÉGULIÈRE DU CONSEIL                           REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-08",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "11.4      Règlement 2025-08 décrétant une dépense de 99        a loan of $99,999 for the development of the multisport surface"
+            }
+          },
+          {
+            "label": "2025-07",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "16.2.1 Règlement numéro 2025-07 modifiant le règlement"
+            }
+          },
+          {
+            "label": "2025-11",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:126",
+              "quote": "16.2.2    Règlement no 2025-11 modifiant le règlement de"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5284627",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:114",
+              "quote": "5636 et 1904-15-7333, lots 5 284 627, 5 284 628, 4 665 010     1904-15-5636, and 1904-15-7333, lots 5 284 627, 5 284 628,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/db8dcd84005f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/db8dcd84005f.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2025/07/PV-2024-12-02.pdf",
+      "storage_key": "raw/pv-index/cas/12dfd6a5a4dcf9d52f261b8419cff98c53049437bee5ed9d5e43df13ade056ba.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 4,
+        "Regulation": 6,
+        "LotCadastre": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "353-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:361",
+              "quote": "résolution 353-24 informant les municipalités mandataires de resolution 353-24 informing the mandatary municipalities"
+            }
+          },
+          {
+            "label": "2024-021",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:697",
+              "quote": "ATTENDU la résolution 2024-021 adopté le 31 janvier 2024"
+            }
+          },
+          {
+            "label": "2022-061",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:919",
+              "quote": "ATTENDU la résolution 2022-061 adoptée le 8 mars 2022"
+            }
+          },
+          {
+            "label": "2010-335",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1157",
+              "quote": "ATTENDU QUE la résolution 2010-335 autorisant l’adoption WHEREAS resolution 2010-335 authorizing the"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-10",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "10.3 Règlement numéro 2024-10 amendant le règlement            10.3 By-law number 2024-10 amending by-law RU-"
+            }
+          },
+          {
+            "label": "10.3",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:77",
+              "quote": "10.3 Règlement numéro 2024-10 amendant le règlement            10.3 By-law number 2024-10 amending by-law RU-"
+            }
+          },
+          {
+            "label": "2024-07",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "11.2       Règlement 2024-07 sur la régie interne des séances 11.2 By-law 2024-07 respecting the internal"
+            }
+          },
+          {
+            "label": "2024-08",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:683",
+              "quote": "projet de règlement no 2024-08 pour déterminer les taux de taxes      draft by-law no. 2024-08 to determine the tax rates and"
+            }
+          },
+          {
+            "label": "2024-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:532",
+              "quote": "ATTENDU QUE le Règlement 2024-01 concernant la création WHEREAS By-law 2024-01 concerning the creation of"
+            }
+          },
+          {
+            "label": "2023-07",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:765",
+              "quote": "règlement 2023-07 visant à inclure au règlement de zonage no. WHEREAS in June 2023, the municipality adopted By-"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4665142",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:141",
+              "quote": "16.1.1     Matricule 1904-52-7624, lot 4 665 142, 1087 rue           16.1.1     Matricule 1904-52-7624, lot 4 665 142, 1087"
+            }
+          },
+          {
+            "label": "4664658",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "16.1.2     Matricule 1804-36-1553, lot 4 664 658, rue des            16.1.2     Matricule 1804-36-1553, lot 4 664 658, rue des"
+            }
+          },
+          {
+            "label": "5177868",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:152",
+              "quote": "16.1.3     Matricule 1804-16-8123, lot 5 177 868, rue des            16.1.3     Matricule 1804-16-8123, lot 5 177 868, rue des"
+            }
+          },
+          {
+            "label": "4666576",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:158",
+              "quote": "16.1.4     Matricule 1704-87-3975, lot 4 666 576, Rue des Haut-      16.1.4     Matricule 1704-87-3975, lot 4 666 576, Haut-"
+            }
+          },
+          {
+            "label": "4666332",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1179",
+              "quote": "se situe en totalité sur des lots municipaux, soit le lot 4 666 332 located entirely on municipal lots, namely lot 4 666 332"
+            }
+          },
+          {
+            "label": "4940390",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1180",
+              "quote": "et le lot 4 940 390;                                                and lot 4 940 390;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/df13ade056ba.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/df13ade056ba.pdf/.graphify/.graphify_extract.json — 18 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 18,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff",
+          "coaticook",
+          "hatley",
+          "magog"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2025/11/ODJ-Seance.pdf",
+      "storage_key": "raw/pv-index/cas/26c8373373384b04987e3a96d7835c167f068bb9caabb7d5874399d64cb4faa8.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "         SÉANCE RÉGULIÈRE DU CONSEIL                              REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "         SÉANCE RÉGULIÈRE DU CONSEIL                              REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-15",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "13.1      Règlement 2025-15 concernant la création de           13.1 Regulation 2025-15 concerning the creation of various"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/99d64cb4faa8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/99d64cb4faa8.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2025/03/PV-2025-01-13.pdf",
+      "storage_key": "raw/pv-index/cas/2aae70b2182c144f1b5f4763c988c2c1096c0ef030e9dfafaf7dab842f826ccd.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 13 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "      SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL               REGULAR SITTING OF THE MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "13 janvier 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "         Séance ordinaire du 13 janvier 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-192",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:275",
+              "quote": "CONSIDERANT la résolution 2022-192 autorisant la Régie CONSIDERING resolution 2022-192 authorizing the"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6359863",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:124",
+              "quote": "16.1.1 Matricule 1904-70-0305, lot 6 359 863, 1185 Main      16.1.1     Matricule 1904-70-0305, lot 6 359 863, 1185"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/ab842f826ccd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/ab842f826ccd.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff",
+          "hatley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2023/09/PV-2023-06-05-1.pdf",
+      "storage_key": "raw/pv-index/cas/2d06eda5c42a1137052859bcd690a175b15982f203bb83dd0c30f2bd5ebb1f0e.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 2,
+        "Regulation": 7,
+        "Zone": 9,
+        "LotCadastre": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                                                                                   Initiales du"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "                                                                                                   Initiales du"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2021-243",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:372",
+              "quote": "                                                                    adopted by Municipal Council Resolution 2021-243 and"
+            }
+          },
+          {
+            "label": "2019-189",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1003",
+              "quote": "                                                                        Resolutions 2019-189 and 2021-130 in connection with"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2023-11",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:446",
+              "quote": "       Copie du projet du Règlement numéro 2023-11 est déposée au appropriated from budget item no. 02-320-01-725."
+            }
+          },
+          {
+            "label": "2023-08",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:960",
+              "quote": "     ET RÉSOLU D’ADOPTER le Règlement 2023-08 concernant la and opened on May 31, 2023:"
+            }
+          },
+          {
+            "label": "2023-09",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:186",
+              "quote": "16.2.1 Règlement no 2023-09 modifiant le règlement de zonage 2009-04           - General Notice of Motion"
+            }
+          },
+          {
+            "label": "2023-10",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:192",
+              "quote": "16.2.3 Règlement no 2023-10 modifiant le règlement 2009- 09 concerning a Site Planning and Architectural Integration"
+            }
+          },
+          {
+            "label": "2009- 09",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:192",
+              "quote": "16.2.3 Règlement no 2023-10 modifiant le règlement 2009- 09 concerning a Site Planning and Architectural Integration"
+            }
+          },
+          {
+            "label": "2023-07",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:203",
+              "quote": "16.2.5 Règlement no 2023-07 amendant le règlement de zonage 16.2.5 By-law 2023-07 amending Zoning By-law 2009-"
+            }
+          },
+          {
+            "label": "11",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:357",
+              "quote": "          – Le maire précise que l’idée du projet de règlement 11. FINANCE, ADMINISTRATION,"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "RES-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:145",
+              "quote": "           d’aménagement du terrain (clôture)                            841        Main,    Zone    RES-11,      PIIA-1,"
+            }
+          },
+          {
+            "label": "RES-4",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "           Bay, Zone RES-4, PIIA-5, Validation architecturale pour 16.1.3 Matricule 1905-07-0429, lot 6 449 107, 3119 Round"
+            }
+          },
+          {
+            "label": "COM-4",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:158",
+              "quote": "           Zone COM-4, PIIA-1, Validation architecturale pour le 16.1.4 Matricule 1904-60-1349, lot 6 230 678, 1160 Main,"
+            }
+          },
+          {
+            "label": "RES-2",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "           d’aménagement d’un terrain (agrandissement de la             Zone RES-2, PIIA-5, Architectural validation for"
+            }
+          },
+          {
+            "label": "RES-12",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:167",
+              "quote": "           Zone RES-12, PIIA-1, Validation architecturale pour 16.1.6 Matricule 1904-03-5405, lot 4 664 756, 829 Clough,"
+            }
+          },
+          {
+            "label": "REC-5",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:194",
+              "quote": "«PIIA» pour la mise en place d’un PIIA sur       concept        de the development concept of zone Rec-5 - General notice"
+            }
+          },
+          {
+            "label": "RES-10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1115",
+              "quote": "désinfection de la station de traitement des eaux usées de la states that \"in zones Com-2 to Com-5 and Res-10, Res-"
+            }
+          },
+          {
+            "label": "COM-2",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1115",
+              "quote": "désinfection de la station de traitement des eaux usées de la states that \"in zones Com-2 to Com-5 and Res-10, Res-"
+            }
+          },
+          {
+            "label": "COM-5",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1115",
+              "quote": "désinfection de la station de traitement des eaux usées de la states that \"in zones Com-2 to Com-5 and Res-10, Res-"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4664716",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:143",
+              "quote": "16.1.1     Matricule 1804-95-8815, lot 4 664 716, 841 Main, Zone"
+            }
+          },
+          {
+            "label": "6449107",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:152",
+              "quote": "16.1.3     Matricule 1905-07-0429, lot 6 449 107, 3119 Round"
+            }
+          },
+          {
+            "label": "6230678",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:157",
+              "quote": "16.1.4     Matricule 1904-60-1349, lot 6 230 678, 1160 Main,"
+            }
+          },
+          {
+            "label": "4664642",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:161",
+              "quote": "16.1.5     Matricule 1804-08-1241, lot 4 664 642, 687 Main, Zone"
+            }
+          },
+          {
+            "label": "4664756",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:166",
+              "quote": "16.1.6     Matricule 1904-03-5405, lot 4 664 756, 829 Clough,"
+            }
+          },
+          {
+            "label": "6449105",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:171",
+              "quote": "                                                                    16.1.7 Registration number 1805-97-7796, lot 6 449 105,"
+            }
+          },
+          {
+            "label": "4664904",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:367",
+              "quote": "         pourtant tous les autres commerçants sont non conforme 13, located respectively on lots 4 664 904, 4 664 798 and"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/f2bd5ebb1f0e.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/f2bd5ebb1f0e.pdf/.graphify/.graphify_extract.json — 27 nodes, 41 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 27,
+        "edges": 41
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2025/07/ODJ-Seance.pdf",
+      "storage_key": "raw/pv-index/cas/2d9ecc472e7518b689ce3f95711f8a01e42053266d539820fdb04f0243da2fbc.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "           SÉANCE RÉGULIÈRE DU CONSEIL                           REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "           SÉANCE RÉGULIÈRE DU CONSEIL                           REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-006",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:119",
+              "quote": "15.3 Règlement numéro 2025-006 concernant les"
+            }
+          },
+          {
+            "label": "2025-07",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:143",
+              "quote": "16.2.1    Règlement numéro 2025-07 modifiant le règlement"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4664937",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "16.1.1    Matricule 1903-66-8904, lot 4 664 937, 160 rue         16.1.1   Registration number 1903-66-8904, lot 4 664 937,"
+            }
+          },
+          {
+            "label": "5284627",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:132",
+              "quote": "          5636 et 1904-15-7333, lots 5 284 627, 5 284 628, 4     16.1.2   Registration numbers 1904-14-2760, 1904-14-5192,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/4f0243da2fbc.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/4f0243da2fbc.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2025/03/PV-2025-02-03.pdf",
+      "storage_key": "raw/pv-index/cas/32aee3e7484b65f8cdd7ce996f9c8a657984d49626e937897bb2b56fbd230717.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 1,
+        "Zone": 1,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "      SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL                REGULAR SITTING OF THE MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 février 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "         Séance ordinaire du 3 février 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-133",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:583",
+              "quote": "ATTENDU la résolution 2024-133 octroyant le contrat de WHEREAS resolution 2024-133 awarding the contract"
+            }
+          },
+          {
+            "label": "2022-231",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:847",
+              "quote": "                                                                  WHEREAS resolutions 2022-231 and 2022-238 ;"
+            }
+          },
+          {
+            "label": "2022-238",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:851",
+              "quote": "nouveau la partie du dossier scinder par la résolution 2022-238, 238, without any change to the plans submitted at that time;"
+            }
+          },
+          {
+            "label": "2022-041",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:872",
+              "quote": "ATTENDU QUE le prolongement de la terrasse extérieure en the project, as indicated in resolution 2022-041;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2009-09",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:894",
+              "quote": "      visait à assurer la conformité au Règlement 2009-09 compliance with all urban planning regulations;"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "REC-5",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:134",
+              "quote": "       Ripple Cove, Zone REC-5, PIIA-5, demande de validation         chemin Ripple Cove, Zone REC-5, PIIA-5,"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4664930",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "16.1.1 Matricule 1904-51-9142, lot 4 664 930, 1114-1118 16.1.1        Matricule 1904-51-9142, lot 4 664 930, 1114-"
+            }
+          },
+          {
+            "label": "4664871",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "16.1.2 Matricule 1904-21-4151, lot 4 664 871, 944 Sanborn, 16.1.2     Matricule 1904-21-4151, lot 4 664 871, 944"
+            }
+          },
+          {
+            "label": "6563446",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "16.1.3 Matricule 1805-72-3947, lot 6 563 446, 700 chemin 16.1.3       Matricule 1805-72-3947, lot 6 563 446, 700"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/b56fbd230717.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/b56fbd230717.pdf/.graphify/.graphify_extract.json — 13 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2024/09/PV-2024-08-05-final.pdf",
+      "storage_key": "raw/pv-index/cas/3592dd242d0705ab8f50743187dbf309fff9290a0acba0aa67c434fa9b925c67.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 4,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                             PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2023-04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:648",
+              "quote": "2023-04 avait une façade avec toit en pente ;                 resolution 2023-04 had a sloped roof;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-02",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:609",
+              "quote": "ET RÉSOLU D’ADOPTER le règlement numéro 2024-02 AND RESOLVED TO ADOPT by-law number 2024-02"
+            }
+          },
+          {
+            "label": "14.1",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "14.1    Règlement numéro 2024-02 amendant le règlement        14.1 By-law number 2024-02 amending by-law RU-"
+            }
+          },
+          {
+            "label": "2018-04",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:589",
+              "quote": "ATTENDU QUE le conseil a adopté le règlement 2018-04 relatif"
+            }
+          },
+          {
+            "label": "2022-10",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:593",
+              "quote": "ATTENDU QUE le conseil a adopté le règlement 2022-10"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "COM-3",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "     Main, Zone COM-3, PIIA-1, Validation                            1105 Main, Zone COM-3, PIIA-1, Architectural"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4664931",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:124",
+              "quote": "16.1.1 Matricule 1904-51-9286, lot 4 664 931, 1099-1105       16.1.1 Matricule 1904-51-9286, lot 4 664 931, 1099-"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/34fa9b925c67.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/34fa9b925c67.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff",
+          "eastman",
+          "hatley",
+          "potton",
+          "stanstead--memphremagog",
+          "stanstead--memphremagog--2"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2025/09/ODJ-Seance.pdf",
+      "storage_key": "raw/pv-index/cas/366f73bc29a7dfad2d66692de0ce7e6e28d8487ce971e97d2f41b46a8f855b47.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "         SÉANCE RÉGULIÈRE DU CONSEIL                                      REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:15",
+              "quote": "         SÉANCE RÉGULIÈRE DU CONSEIL                                      REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-09",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:119",
+              "quote": "16.2.1     Règlement no 2025-09 modifiant le règlement de          16.2.1    Bylaw No. 2025-09 amending Building Bylaw No."
+            }
+          },
+          {
+            "label": "2025-10",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:122",
+              "quote": "16.2.2     Règlement no 2025-10 modifiant le règlement de          16.2.2    Bylaw No. 2025-10 amending Permits and Certificates"
+            }
+          },
+          {
+            "label": "2025-11",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "16.2.3     Règlement no 2025-11 modifiant le règlement de          16.2.3    Bylaw No. 2025-11 amending Zoning Bylaw No."
+            }
+          },
+          {
+            "label": "2025-12",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "16.2.4     Règlement no 2025-12 modifiant le règlement de          16.2.4    Bylaw No. 2025-12 amending PIIA Bylaw No. 2009-"
+            }
+          },
+          {
+            "label": "2025-14",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:131",
+              "quote": "16.2.5     Règlement 2025-14 modifiant le règlement de PIIA        16.2.5    Bylaw 2025-14 amending PIIA Bylaw No. 2009-09 –"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5284627",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:103",
+              "quote": "           15-5636 et 1904-15-7333, lots 5 284 627, 5 284                    1904- 15-5636, and 1904-15-7333, lots 5 284 627, 5"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/b46a8f855b47.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/b46a8f855b47.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2025/06/PV-2025-04-07.pdf",
+      "storage_key": "raw/pv-index/cas/39259300f7125e51b45744de0dd13d6613689c593b6657f0ac1f2f38e4155f1b.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 5,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                            PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                            PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 7 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:4",
+              "quote": "      SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL               REGULAR SITTING OF THE MUNICIPAL"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "7 avril 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "         Séance ordinaire du 7 avril 2025"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2022-076",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:404",
+              "quote": "ATTENDU la résolution 2022-076 nommant Mme Caroline                WHEREAS resolution 2022-076 appointing Ms. Caroline"
+            }
+          },
+          {
+            "label": "25-03-19-03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:462",
+              "quote": "conformément à la résolution 25-03-19-03 ;            accordance with resolution 25-03-19-03;"
+            }
+          },
+          {
+            "label": "2024-033",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:864",
+              "quote": "Oasis, le tout tel qu’il appert de la résolution no 2024-033;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-002",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:179",
+              "quote": "16.2.1 Règlement 2025-002 modifiant le règlement de 16.2.1                 By-law 2025-002 amending subdivision by-law"
+            }
+          },
+          {
+            "label": "2025-003",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1394",
+              "quote": "projet de règlement no 2025-003 sur les projets particuliers de occupancy projects for buildings (SCAOB) is presented for"
+            }
+          },
+          {
+            "label": "2025-004",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1468",
+              "quote": "projet de règlement no 2025-004 modifiant le règlement des the issue of building permits number 2009-08 is submitted"
+            }
+          },
+          {
+            "label": "2015-06",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:639",
+              "quote": "l’application du Règlement numéro 2015-06.             application of Regulation number 2015-06."
+            }
+          },
+          {
+            "label": "2009-08",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1472",
+              "quote": "Ce règlement à modifier le règlement 2009-08 sur les the issue of building permits in order to allow the"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4664941",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "16.1.1    Matricule 1903-66-9549, lots 4 664 941 et 4 664              16.1.1    Registration number 1903-66-9549, lots 4"
+            }
+          },
+          {
+            "label": "4664755",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:172",
+              "quote": "16.1.2    Matricule 1904-12-4986, lot 4 664 755, 873 rue          16.1.2   Registration No. 1904-12-4986, lot 4 664 755,"
+            }
+          },
+          {
+            "label": "4664582",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1473",
+              "quote": "conditions d’émission de permis de construction afin de construction of a new building on lot 4 664 582, which is"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/2f38e4155f1b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/2f38e4155f1b.pdf/.graphify/.graphify_extract.json — 15 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 15,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff",
+          "hatley",
+          "sainte-catherine",
+          "sainte-catherine-de-hatley"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2024/10/04.-PV-3-septembre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/392ff18f84608ba931bc1dcee0376535b833f183d84d326a6531aef881b37e83.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 2,
+        "Zone": 6,
+        "LotCadastre": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                              PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                              PROCÈS-VERBAL"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2024-125",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:147",
+              "quote": "          modification à la résolution 2024-125      resolution 2024-125"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2024-04",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:174",
+              "quote": "16.2.1 Règlement no 2024-04 modifiant le règlement de    plan 16.2.1 By-law No. 2024-04 amending Planning By-law"
+            }
+          },
+          {
+            "label": "2024-05",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:180",
+              "quote": "16.2.3 Règlement no 2024-05 modifiant le règlement de         16.2.3 By-law no. 2024-05 amending zoning by-law no."
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "RES-2",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:138",
+              "quote": "          Zone RES-2 PIIA-5, validation architecturale pour MAIN, Zone RES-2 PIIA-5, architectural approval for"
+            }
+          },
+          {
+            "label": "COM-3",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:142",
+              "quote": "          Zone COM-3 PIIA-1, validation architecturale pour MAIN, Zone COM-3 PIIA-1, architectural validation for"
+            }
+          },
+          {
+            "label": "RES-4",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "          RIPPLECOVE, Zone RES-4 PIIA-6 - Demande de RIPPLECOVE, Zone RES-4 PIIA-6 - Request to amend"
+            }
+          },
+          {
+            "label": "RES-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:150",
+              "quote": "          Zone RES-13 PIIA-6, validation architecturale afin SANBORN, Zone RES-13 PIIA-6, architectural"
+            }
+          },
+          {
+            "label": "RES-5",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:159",
+              "quote": "          NICOLAS, Zone RES-5, PIIA-6 & PIIA-8, demande de NICOLAS, Zone RES-5, PIIA-6 & PIIA-8, special"
+            }
+          },
+          {
+            "label": "REC-5",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:167",
+              "quote": "       Ripplecove, zone REC-5, PIIA-5, Demande de chemin Ripplecove, zone REC-5, PIIA-5, Request to"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4664623",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:137",
+              "quote": "16.1.1    Matricule 1704-88-0863, lot 4 664 623, 661 MAIN, 16.1.1 Matricule 1704-88-0863, lot 4 664 623, 661"
+            }
+          },
+          {
+            "label": "4665142",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:141",
+              "quote": "16.1.2    Matricule 1904-52-7624, lot 4 665 142, 1087 MAIN, 16.1.2 Matricule 1904-52-7624, lot 4 665 142, 1087"
+            }
+          },
+          {
+            "label": "4664703",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:145",
+              "quote": "16.1.3    Matricule 1805-80-9068, lot 4 664 703, 469 16.1.3 Matricule 1805-80-9068, lot 4 664 703, 469"
+            }
+          },
+          {
+            "label": "6642538",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:149",
+              "quote": "16.1.4    Matricule à venir, lot 6 642 538, RUE SANBORN, 16.1.4 Future registration number, lot 6 642 538, RUE"
+            }
+          },
+          {
+            "label": "6553822",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "16.1.5    Matricule 1903-67-3114, lot 6 553 822, RUE 16.1.5 Matricule 1903-67-3114, lot 6 553 822, RUE"
+            }
+          },
+          {
+            "label": "5626156",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:158",
+              "quote": "16.1.6    Matricule1905-42-1482, lot 5 626 156, CHEMIN 16.1.6 Matricule 1905-42-1482, lot 5 626 156, CHEMIN"
+            }
+          },
+          {
+            "label": "6563446",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:166",
+              "quote": "        Matricule 1805 72 3947, lot 6 563 446, 700 chemin 16.1.7 Matricule 1805 72 3947, lot 6 563 446, 700"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/aef881b37e83.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/aef881b37e83.pdf/.graphify/.graphify_extract.json — 18 nodes, 15 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 18,
+        "edges": 15
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "ayers-cliff",
+      "municipality_name": "Ayer's Cliff",
+      "url": "https://ayerscliff.ca/wp-content/uploads/2025/01/ODJ-Seance.pdf",
+      "storage_key": "raw/pv-index/cas/39411ba056b5bc460b71fbef665e500b87c767d0ce831064cd5c1a2a592977a7.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Ayer's Cliff",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "          SÉANCE RÉGULIÈRE DU CONSEIL                            REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:13",
+              "quote": "          SÉANCE RÉGULIÈRE DU CONSEIL                            REGULAR MEETING OF THE TOWN COUNCIL OF"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6359863",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:111",
+              "quote": "16.1.1 Matricule 1904-70-0305, lot 6 359 863, 1185 Main        16.1.1    Matricule 1904-70-0305, lot 6 359 863, 1185 Main"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/1a2a592977a7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T050435Z/ayers-cliff/1a2a592977a7.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "ayers-cliff"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

@@ -1,0 +1,620 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:31:03.506Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 138,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Resolution": 32,
+    "Regulation": 14,
+    "Zone": 2,
+    "LotCadastre": 3
+  },
+  "graphify": {
+    "nodes": 55,
+    "edges": 5,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 2,
+    "lot_entities": 3,
+    "documents_with_zone": 1,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/2f755c740f539df6bc439be7275822ae226cf2532abf25c5291e6e5f5d345fd8.pdf",
+      "entity_type": "Zone",
+      "value": "A-003",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:613",
+      "quote": "ATTENDU QUE l’immeuble mentionné précédemment est situé dans la zone A-003"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/2f755c740f539df6bc439be7275822ae226cf2532abf25c5291e6e5f5d345fd8.pdf",
+      "entity_type": "Zone",
+      "value": "C-003",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:672",
+      "quote": "1223, boulevard De Périgny est situé dans la zone commerciale C-003 et que l’usage"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/2f755c740f539df6bc439be7275822ae226cf2532abf25c5291e6e5f5d345fd8.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2343072",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:650",
+      "quote": "3755, rang Saint-Joseph, lot 2 343 072, en vertu du règlement 2017-1359 relatif aux"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/2f755c740f539df6bc439be7275822ae226cf2532abf25c5291e6e5f5d345fd8.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2347055",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:827",
+      "quote": "1223, boulevard De Périgny, connu comme étant le lot 2 347 055, selon la"
+    },
+    {
+      "municipality_slug": "chambly",
+      "storage_key": "raw/pv-index/cas/2f755c740f539df6bc439be7275822ae226cf2532abf25c5291e6e5f5d345fd8.pdf",
+      "entity_type": "LotCadastre",
+      "value": "2043343",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:846",
+      "quote": "l’habitation unifamiliale isolée au 83, rue Saint-Pierre, lot 2 043 343;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 246,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 12027,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043019Z",
+  "documents": [
+    {
+      "slug": "chambly",
+      "municipality_name": "Chambly",
+      "url": "https://chambly.ca/storage/app/media/ville/vie-democratique/assemblees-du-conseil/proces-verbaux/4-proces-verbal-de-la-seance-ordinaire-du-7-avril-2026.pdf",
+      "storage_key": "raw/pv-index/cas/2f755c740f539df6bc439be7275822ae226cf2532abf25c5291e6e5f5d345fd8.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 32,
+        "Regulation": 14,
+        "Zone": 2,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Chambly",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                 SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                 SÉANCE ORDINAIRE DU CONSEIL MUNICIPAL"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 17 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "QUE le conseil approuve le procès-verbal de la séance ordinaire du 17 mars 2026."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "17 mars 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "QUE le conseil approuve le procès-verbal de la séance ordinaire du 17 mars 2026."
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "2026-04-120",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "RÉSOLUTION 2026-04-120               1.1      Adoption de l’ordre du jour"
+            }
+          },
+          {
+            "label": "2026-04-121",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "RÉSOLUTION 2026-04-121               2.1      Approbation du procès-verbal de la"
+            }
+          },
+          {
+            "label": "2026-04-126",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:129",
+              "quote": "RÉSOLUTION 2026-04-126                 5.1       Vente pour défaut de paiement de"
+            }
+          },
+          {
+            "label": "2026-04-127",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:178",
+              "quote": "RÉSOLUTION 2026-04-127                 5.2       Résiliation d’entente avec la Chambre"
+            }
+          },
+          {
+            "label": "2025-01-020",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:184",
+              "quote": "ATTENDU la résolution 2025-01-020 relative à l’entente entre Chambre de"
+            }
+          },
+          {
+            "label": "2026-04-128",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:260",
+              "quote": "RÉSOLUTION 2026-04-128               6.3       Prévisions budgétaires initiales et"
+            }
+          },
+          {
+            "label": "2026-04-129",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:290",
+              "quote": "\fRÉSOLUTION 2026-04-129              6.4     Financement          de        projets"
+            }
+          },
+          {
+            "label": "2026-04-130",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:315",
+              "quote": "RÉSOLUTION 2026-04-130              6.5       Financement de projets des parcs"
+            }
+          },
+          {
+            "label": "2026-04-131",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:344",
+              "quote": "RÉSOLUTION 2026-04-131              6.6       Affectation d’une partie de la réserve"
+            }
+          },
+          {
+            "label": "2026-04-132",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:379",
+              "quote": "RÉSOLUTION 2026-04-132                6.7       Contrat d’entretien de trois terrains de"
+            }
+          },
+          {
+            "label": "2026-04-133",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:429",
+              "quote": "RÉSOLUTION 2026-04-133                6.8       Contrat de travaux d’arrachage"
+            }
+          },
+          {
+            "label": "2026-04-134",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:472",
+              "quote": "RÉSOLUTION 2026-04-134                6.9       Contrat de travaux d’aménagement de"
+            }
+          },
+          {
+            "label": "2026-04-135",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:522",
+              "quote": "RÉSOLUTION 2026-04-135              7.1      Cession de la rue Gervais-Hodiesne,"
+            }
+          },
+          {
+            "label": "2026-04-136",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:566",
+              "quote": "RÉSOLUTION 2026-04-136                  7.2       Demande de contribution financière"
+            }
+          },
+          {
+            "label": "2025-10-377",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:572",
+              "quote": "ATTENDU la résolution 2025-10-377 du conseil municipal du 1er octobre 2025"
+            }
+          },
+          {
+            "label": "2026-04-137",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:603",
+              "quote": "\fRÉSOLUTION 2026-04-137                 7.3 PIIA — Révision rénovation résidentielle"
+            }
+          },
+          {
+            "label": "2026-04-138",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:659",
+              "quote": "RÉSOLUTION 2026-04-138                7.4      PIIA — Projet de construction"
+            }
+          },
+          {
+            "label": "2026-04-139",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:841",
+              "quote": "RÉSOLUTION 2026-04-139                7.5       Révision de la décision du comité de"
+            }
+          },
+          {
+            "label": "2026-04-140",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:912",
+              "quote": "\fRÉSOLUTION 2026-04-140                8.1      Approbation   liste  contributions"
+            }
+          },
+          {
+            "label": "2026-04-141",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:939",
+              "quote": "RÉSOLUTION 2026-04-141                8.2      Soutien technique à la Société"
+            }
+          },
+          {
+            "label": "2026-04-142",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:971",
+              "quote": "\fRÉSOLUTION 2026-04-142              8.3         Soutien à Ataxie Canada — Fondation"
+            }
+          },
+          {
+            "label": "2026-04-143",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1004",
+              "quote": "RÉSOLUTION 2026-04-143              8.4         Événements — Art-Rue 13 juin 2026"
+            }
+          },
+          {
+            "label": "2026-04-144",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1044",
+              "quote": "RÉSOLUTION 2026-04-144                 8.5      Activités retenues par le conseil"
+            }
+          },
+          {
+            "label": "2026-04-145",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1080",
+              "quote": "RÉSOLUTION 2026-04-145                 8.6      Demande de subvention — Entente"
+            }
+          },
+          {
+            "label": "2026-04-146",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1115",
+              "quote": "RÉSOLUTION 2026-04-146                 10.1     Demande au Programme d’aide"
+            }
+          },
+          {
+            "label": "2026-04-147",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1151",
+              "quote": "RÉSOLUTION 2026-04-147                 10.2     Addenda et entente concernant les"
+            }
+          },
+          {
+            "label": "2026-04-148",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1262",
+              "quote": "RÉSOLUTION 2026-04-148                   12.1       Confirmation   d’embauches    et   de"
+            }
+          },
+          {
+            "label": "2026-04-149",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1286",
+              "quote": "\fRÉSOLUTION 2026-04-149               12.2     Ententes    intervenues    avec     les"
+            }
+          },
+          {
+            "label": "2026-04-150",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1311",
+              "quote": "RÉSOLUTION 2026-04-150               12.3     Révision — Politique — conditions"
+            }
+          },
+          {
+            "label": "2026-04-151",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1333",
+              "quote": "RÉSOLUTION 2026-04-151               12.4     Renouvellement         —    convention"
+            }
+          },
+          {
+            "label": "2026-04-152",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1377",
+              "quote": "RÉSOLUTION 2026-04-152               12.5      Titre d’emploi et poste cadre —"
+            }
+          },
+          {
+            "label": "2026-04-153",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1435",
+              "quote": "RÉSOLUTION 2026-04-153                14.1      Levée de la séance"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-1533-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "règlement 2026-1533-01 modifiant le règlement 2025-1533 décrétant un mode de"
+            }
+          },
+          {
+            "label": "2025-1533",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:76",
+              "quote": "règlement 2026-1533-01 modifiant le règlement 2025-1533 décrétant un mode de"
+            }
+          },
+          {
+            "label": "2026-1534-01",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "règlement 2026-1534-01 modifiant le règlement 2025-1534 décrétant les taux de"
+            }
+          },
+          {
+            "label": "2025-1534",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:92",
+              "quote": "règlement 2026-1534-01 modifiant le règlement 2025-1534 décrétant les taux de"
+            }
+          },
+          {
+            "label": "2026-1538",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "                                                  règlement 2026-1538 sur l’entretien"
+            }
+          },
+          {
+            "label": "2011-1232",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:103",
+              "quote": "                                                  règlement 2011-1232      et      ses"
+            }
+          },
+          {
+            "label": "2026-1539",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:112",
+              "quote": "                                                 règlement 2026-1539 relatif à la"
+            }
+          },
+          {
+            "label": "2022-1488",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:233",
+              "quote": "Conformément à l’article 20 du règlement 2022-1488 sur la délégation du pouvoir"
+            }
+          },
+          {
+            "label": "2020-1435",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:235",
+              "quote": "règlement 2020-1435 et ses amendements, la direction générale dépose la liste des"
+            }
+          },
+          {
+            "label": "2012-1255",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:354",
+              "quote": "fonds de voirie, conformément au règlement 2012-1255;"
+            }
+          },
+          {
+            "label": "2017-1359",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:610",
+              "quote": "ATTENDU QUE la demande est assujettie au règlement 2017-1359 sur les plans"
+            }
+          },
+          {
+            "label": "2020-1431",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:614",
+              "quote": "du règlement 2020-1431 de zonage de la Ville de Chambly;"
+            }
+          },
+          {
+            "label": "2022-1482",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:830",
+              "quote": "QUE ce projet est soumis à l’application du règlement 2022-1482 concernant"
+            }
+          },
+          {
+            "label": "2021-1467",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:833",
+              "quote": "municipaux ainsi qu’au règlement 2021-1467 concernant la contribution pour le"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "A-003",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:613",
+              "quote": "ATTENDU QUE l’immeuble mentionné précédemment est situé dans la zone A-003"
+            }
+          },
+          {
+            "label": "C-003",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:672",
+              "quote": "1223, boulevard De Périgny est situé dans la zone commerciale C-003 et que l’usage"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "2343072",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:650",
+              "quote": "3755, rang Saint-Joseph, lot 2 343 072, en vertu du règlement 2017-1359 relatif aux"
+            }
+          },
+          {
+            "label": "2347055",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:827",
+              "quote": "1223, boulevard De Périgny, connu comme étant le lot 2 347 055, selon la"
+            }
+          },
+          {
+            "label": "2043343",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:846",
+              "quote": "l’habitation unifamiliale isolée au 83, rue Saint-Pierre, lot 2 043 343;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043019Z/chambly/6e5f5d345fd8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043019Z/chambly/6e5f5d345fd8.pdf/.graphify/.graphify_extract.json — 55 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 55,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "chambly"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

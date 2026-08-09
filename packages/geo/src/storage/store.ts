@@ -16,12 +16,23 @@ export interface PutOptions {
   contentType?: string;
 }
 
+/** A byte source which yields bounded chunks instead of one whole object. */
+export type ByteStream = AsyncIterable<Uint8Array>;
+
 /** A minimal key→bytes object store. */
 export interface Store {
   /** Write `body` at `key`, creating any intermediate structure. */
   put(key: string, body: Uint8Array | string, opts?: PutOptions): Promise<void>;
   /** Read the bytes at `key`, or `undefined` if no object exists there. */
   get(key: string): Promise<Uint8Array | undefined>;
+  /**
+   * Read `key` as bounded chunks, or `undefined` if no object exists there.
+   *
+   * This is optional so existing small in-memory stores remain source
+   * compatible. Runtime stores implement it; callers serving large objects
+   * must prefer it to {@link Store.get}.
+   */
+  getStream?(key: string): Promise<ByteStream | undefined>;
   /** Whether an object exists at `key`. */
   has(key: string): Promise<boolean>;
   /** List keys, optionally restricted to those starting with `prefix`. */

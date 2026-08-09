@@ -1,0 +1,175 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:35:15.508Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 297,
+    "limit": 1,
+    "requested": 1,
+    "selected": 1,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Regulation": 2,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 6,
+    "edges": 1,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "arundel",
+      "storage_key": "raw/pv-index/cas/a4a38c19649358eccbff92547d3ede0c51f4c743dd94a515c38dc9b18fff4ecd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6214714",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:57",
+      "quote": "10.1 PIIA Lot 6214714 (127 rue du Village)                     SPAIP Lot 6214714 (127 rue du Village)"
+    },
+    {
+      "municipality_slug": "arundel",
+      "storage_key": "raw/pv-index/cas/a4a38c19649358eccbff92547d3ede0c51f4c743dd94a515c38dc9b18fff4ecd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6214535",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:58",
+      "quote": "10.2 PIIA Lot 6214535 (26 ch Courte)                           SPAIP Lot 6214535 (26 ch Courte)"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 37,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 848,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043509Z",
+  "documents": [
+    {
+      "slug": "arundel",
+      "municipality_name": "Arundel",
+      "url": "https://arundel.ca/wp-content/uploads/2026/06/01.01-ODJ-2026-06-09-1.pdf",
+      "storage_key": "raw/pv-index/cas/a4a38c19649358eccbff92547d3ede0c51f4c743dd94a515c38dc9b18fff4ecd.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Arundel",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                                                    OF THE MUNICIPALITY OF THE TOWNSHIP OF"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "                                                                    OF THE MUNICIPALITY OF THE TOWNSHIP OF"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "313-2026",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "    Adoption - Règlement 313-2026 Relatif à la Gestion         Adoption - Byalw 313-2026 relating to Contract"
+            }
+          },
+          {
+            "label": "171",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "    règlement 171relatif à la Délégation de pouvoir            bylaw 171 relating to delegation of authority"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6214714",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "10.1 PIIA Lot 6214714 (127 rue du Village)                     SPAIP Lot 6214714 (127 rue du Village)"
+            }
+          },
+          {
+            "label": "6214535",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "10.2 PIIA Lot 6214535 (26 ch Courte)                           SPAIP Lot 6214535 (26 ch Courte)"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043509Z/arundel/c9b18fff4ecd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T043509Z/arundel/c9b18fff4ecd.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "arundel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

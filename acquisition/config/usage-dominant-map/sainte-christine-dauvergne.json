@@ -1,0 +1,20 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rc": "residentiel",
+    "Rv": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "Rec": "environnemental",
+    "Cons": "environnemental",
+    "A": "agricole",
+    "Af": "agricole",
+    "Fo": "agricole",
+    "Ex": "industriel",
+    "M": null,
+    "P": null
+  },
+  "source": "https://sca.quebec/assets/documents/Reglement-zonage-Ste-Christine-refondu-05-2026.pdf",
+  "note": "Règlement de zonage (refondu 05-2026), art. 3.2 « Codification des zones »: « une ou plusieurs lettres d'appellation de zones indiquant la vocation dominante ... Types de zone / Vocations dominantes: Ra Résidentielle de faible densité; Rb Résidentielle de moyenne densité; Rc Résidentielle de haute densité; Ra/ru Résidentielle de faible densité en milieu rural; Rv Résidentielle de villégiature; M Mixte (résidentielle et commerciale); C Commerciale; I Industrielle; P Publique et institutionnelle; Rec Récréative; Cons Conservation; A Agricole dynamique; Af/a Agroforestière (résidence 5 ha et plus); Af/b Agroforestière (10 ha et plus); Fo Forestière; Fo/ru Forestière rurale; Rec/f Forestière et récréative; Ex Extraction ». Ra/Rb/Rc/Ra-ru/Rv « Résidentielle (…) » -> residentiel (Rv villégiature = résidentielle de villégiature, dit verbatim); C « Commerciale » -> commercial; I « Industrielle » et Ex « Extraction » -> industriel; Rec « Récréative », Cons « Conservation » et Rec/f « Forestière et récréative » -> environnemental (préfixe servi « Rec » couvre Rec et Rec/f); A « Agricole dynamique », Af/a-Af/b « Agroforestière » et Fo/Fo-ru « Forestière » -> agricole (préfixes servis A/Af/Fo). Null explicite: M « Mixte (résidentielle et commerciale) » est DUALE; P « Publique et institutionnelle » est publique. Préfixes servis (fold --list-prefixes, forme du polygone: Fo, Af, Ra, Rv, A, M, Cons, I, Rec, Ex, C, P, Rc, Rb, avec composites Fo/ru, Af/a, Af/b, Ra/ru, Rec/f capturés par longest-prefix) -> tous énumérés à l'art. 3.2; aucun préfixe inventé."
+}

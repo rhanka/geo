@@ -1,13 +1,15 @@
 import type {
   Feature,
+  FeatureCollection,
   Geometry,
   MultiPolygon,
   Point,
   Polygon,
   Position,
-} from "@sentropic/geo-core";
+} from "geojson";
 import booleanPointInPolygon from "@turf/boolean-point-in-polygon";
 import buffer from "@turf/buffer";
+import { featureCollection } from "@turf/helpers";
 import intersect from "@turf/intersect";
 import proj4 from "proj4";
 
@@ -392,9 +394,9 @@ function prepareInputs(
 }
 
 function intersectionArea(a: PolygonalFeature, b: PolygonalFeature): number {
-  const fc = { type: "FeatureCollection", features: [a, b] };
-  const hit = intersect(fc as never);
-  return hit ? planarArea(hit.geometry as PolygonalGeometry) : 0;
+  const fc: FeatureCollection<PolygonalGeometry> = featureCollection([a, b]);
+  const hit = intersect(fc);
+  return hit ? planarArea(hit.geometry) : 0;
 }
 
 function repairFeature<P extends Record<string, unknown>>(feature: PolygonalFeature<P>): PolygonalFeature<P> {
@@ -408,12 +410,12 @@ function repairGeometry(geometry: PolygonalGeometry): PolygonalGeometry {
         type: "Feature",
         properties: {},
         geometry,
-      } as never,
+      },
       0,
       { units: "meters" },
     );
     if (repaired?.geometry?.type === "Polygon" || repaired?.geometry?.type === "MultiPolygon") {
-      return repaired.geometry as PolygonalGeometry;
+      return repaired.geometry;
     }
   } catch {
     return geometry;
@@ -685,7 +687,7 @@ function reprojectGeometry(
 ): PolygonalGeometry {
   const projectPosition = (p: Position): Position => {
     const [x, y] = proj4(sourceCrs, targetCrs, [p[0]!, p[1]!]);
-    return p.length > 2 ? [x, y, p[2]!] : [x, y];
+    return [x, y, ...p.slice(2)];
   };
   const projectRing = (ring: Position[]): Position[] => ring.map(projectPosition);
   const projectPoly = (poly: Position[][]): Position[][] => poly.map(projectRing);

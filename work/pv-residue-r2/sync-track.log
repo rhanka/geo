@@ -1,0 +1,30 @@
+── Matrice (coverage-matrix.json) : done/total par couche ──
+  cadastre       done=1106	total=1106	planned=0	to-research=0
+  role-foncier   done=1106	total=1106	planned=0	to-research=0
+  zones          done=766	total=1106	planned=0	to-research=340
+  normes         done=556	total=1106	planned=0	to-research=550
+  pv             done=1045	total=1106	planned=2	to-research=59
+  pmtiles        done=0	total=1106	planned=1106	to-research=0
+  tod            done=39	total=39	planned=0	to-research=0
+
+── Items track chargés : 4981 ──
+
+── Plan de synchro (créations + transitions) ──
+  zones          create=0	in-progress=0	done=3
+  pv             create=0	in-progress=0	done=1
+  TOTAL item.create = 0
+  TOTAL item.realize = 8
+
+── BLOCAGES STRUCTURELS (couches agrégées non entièrement done, NON touchées) ──
+  pmtiles : matrice done=0/1106 — 1 feuille(s) agrégat laissées telles quelles
+      · [in-progress] pmtiles/derive-province · AGRÉGAT 1106 ville(s) [planned] — PMTiles — dérivé des couches province (build tuiles per-muni)
+
+[apply] 8 transitions → /home/antoinefa/src/geo/work/coverage/track-events/sync-realizes.jsonl ; ingest via `track ingest`…
+[apply] transitions track ingest OK (8 lignes en retour).
+
+[apply] immo-lots track OK: rootWpCreated=0 fieldWpsCreated=0 leavesCreated=0 realizeEvents=0 coarseLeavesCancelled=0
+  immo-lots surface_m2      done=404/407	remaining=3
+  immo-lots adresse         done=11/407	remaining=396
+  immo-lots code_postal     done=382/407	remaining=25
+  immo-lots in_tod          done=4/4	remaining=0
+  immo-lots folded-normes   done=6/407	remaining=401

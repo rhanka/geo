@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "C": "commercial",
+    "CONS": "environnemental",
+    "H": "residentiel",
+    "I": "industriel",
+    "R": "environnemental",
+    "V": "residentiel",
+    "P": null,
+    "FR": null,
+    "S": null
+  },
+  "source": "https://vplus-documents.s3.ca-central-1.amazonaws.com/entrelacs/_publication/fichiers/Zonage-00-426%20REFONDU.pdf",
+  "note": "Règlement de zonage 00-426 REFONDU de la Municipalité d'Entrelacs, article 2.3.3 « Désignation des zones » (Chapitre 2, page 2-23): « Pour des fins d'identification, les zones sont désignées dans ce règlement par un sigle dont le préfixe indique l'usage dominant comme suit : C commercial; CONS conservation; H habitation; I industriel; P public; R récréotouristique; V villégiature; FF forestier faunique; FR forestier récréatif; S zone de sommet ». Mapping VERBATIM: C « commercial » -> commercial; H « habitation » -> résidentiel; I « industriel » -> industriel; CONS « conservation » -> environnemental; R « récréotouristique » (récréative/tourisme) -> environnemental (même lecture que blue-sea.json « Zone récréotouristique (REC) » -> environnemental); V « villégiature » -> résidentiel (les zones de villégiature portent l'habitat saisonnier; même lecture que la référence saint-raymond.json « FV forestières de villégiature » -> résidentiel, et arundel.json « Va Villégiature » -> résidentiel — contrairement à baie-saint-paul.json qui met villégiature à null SUR PREUVE INTERNE d'une distinction explicite villégiature vs résidentiel dans le corps, preuve absente ici). Null explicite: P « public » est public; FR « forestier récréatif » est une fonction COMPOSITE (forestier ~ agricole ET récréatif ~ environnemental) que la légende n'arbitre pas en une seule catégorie; S « zone de sommet » est une désignation topographique, pas une fonction dominante parmi les cinq catégories. La matrice des usages permis des grilles n'est pas utilisée. Préfixe FF non servi (absent de la couche), donc non mappé."
+}

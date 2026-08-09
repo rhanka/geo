@@ -1,0 +1,251 @@
+{
+  "contract": "pv-lecture-visuelle-preflight/v1",
+  "generated_at": "2026-07-29T14:47:40.358Z",
+  "read_only": true,
+  "source_triage": "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json",
+  "selection": {
+    "description": "les 20 clés CAS suivantes parmi les 186 échecs, ordonnées par premier offset de sélection puis clé CAS, après exclusion du lot antérieur",
+    "prior_lot_report": "work/coverage/pv-lecture-visuelle-lot-01-20260729T134941Z.json",
+    "source_inventory": "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json (clés, slugs et offsets seulement; pages/taille ignorées)",
+    "candidate_cas_keys": 186,
+    "prior_lot_collisions_avoided": 20,
+    "remaining_after_dedupe": 166
+  },
+  "guard": {
+    "before_visual_reading": true,
+    "transport": "S3 GetObject",
+    "hash": "sha256 streamé; aucune mise en mémoire intégrale du PDF",
+    "mismatch_stop_threshold": 3,
+    "stopped_for_integrity_incident": false
+  },
+  "summary": {
+    "requested": 20,
+    "attempted": 20,
+    "sha_passed": 20,
+    "cas_sha_mismatch": 0,
+    "get_failed": 0
+  },
+  "local_visual_workspace": "/home/antoinefa/src/geo/work/graphify/pv-lecture-visuelle-lot-02-preflight-20260729T144733Z",
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/01ab2de6c05e9b821216b95c5d1e2420374db4fc253ef3f88745fe84359dc8c3.pdf",
+      "slug": "baie-trinite",
+      "municipality_name": "Baie-Trinité",
+      "expected_sha256": "01ab2de6c05e9b821216b95c5d1e2420374db4fc253ef3f88745fe84359dc8c3",
+      "calculated_sha256": "01ab2de6c05e9b821216b95c5d1e2420374db4fc253ef3f88745fe84359dc8c3",
+      "streamed_bytes": 2612843,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/018f25047fdf3604fab26b998fa697d5debbca5950c77200a86d073970d411ad.pdf",
+      "slug": "beauharnois",
+      "municipality_name": "Beauharnois",
+      "expected_sha256": "018f25047fdf3604fab26b998fa697d5debbca5950c77200a86d073970d411ad",
+      "calculated_sha256": "018f25047fdf3604fab26b998fa697d5debbca5950c77200a86d073970d411ad",
+      "streamed_bytes": 640448,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3f3cb11aaf10368109d40db83f15224d5d2d38d005ee3647970a27418be71908.pdf",
+      "slug": "beauharnois",
+      "municipality_name": "Beauharnois",
+      "expected_sha256": "3f3cb11aaf10368109d40db83f15224d5d2d38d005ee3647970a27418be71908",
+      "calculated_sha256": "3f3cb11aaf10368109d40db83f15224d5d2d38d005ee3647970a27418be71908",
+      "streamed_bytes": 1163550,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/07508e1b15259ffaf9f5dee549ae7fa25db01f8020db48eb453d30672d81f036.pdf",
+      "slug": "berthier-sur-mer",
+      "municipality_name": "Berthier-sur-Mer",
+      "expected_sha256": "07508e1b15259ffaf9f5dee549ae7fa25db01f8020db48eb453d30672d81f036",
+      "calculated_sha256": "07508e1b15259ffaf9f5dee549ae7fa25db01f8020db48eb453d30672d81f036",
+      "streamed_bytes": 1522460,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/0a68441cb9e88af81cb6381d466d6d5811cca380d87274bcc5a2c52078d6f274.pdf",
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "expected_sha256": "0a68441cb9e88af81cb6381d466d6d5811cca380d87274bcc5a2c52078d6f274",
+      "calculated_sha256": "0a68441cb9e88af81cb6381d466d6d5811cca380d87274bcc5a2c52078d6f274",
+      "streamed_bytes": 186169,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/0a9763b27e3bf3c079e42db81f6aeddc84d4e568681fdbe01ef6bd00216d89e4.pdf",
+      "slug": "berthierville",
+      "municipality_name": "Berthierville",
+      "expected_sha256": "0a9763b27e3bf3c079e42db81f6aeddc84d4e568681fdbe01ef6bd00216d89e4",
+      "calculated_sha256": "0a9763b27e3bf3c079e42db81f6aeddc84d4e568681fdbe01ef6bd00216d89e4",
+      "streamed_bytes": 1274326,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/00e50783bf827101f4b7fb33fe06deaef5d7a5a9ebb6077f67399f272e5f8b80.pdf",
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "expected_sha256": "00e50783bf827101f4b7fb33fe06deaef5d7a5a9ebb6077f67399f272e5f8b80",
+      "calculated_sha256": "00e50783bf827101f4b7fb33fe06deaef5d7a5a9ebb6077f67399f272e5f8b80",
+      "streamed_bytes": 6745215,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/0407cb4748455a9a4ad53308bf3fda92275f0d14d47c069fa38df16b2dac637e.pdf",
+      "slug": "carignan",
+      "municipality_name": "Carignan",
+      "expected_sha256": "0407cb4748455a9a4ad53308bf3fda92275f0d14d47c069fa38df16b2dac637e",
+      "calculated_sha256": "0407cb4748455a9a4ad53308bf3fda92275f0d14d47c069fa38df16b2dac637e",
+      "streamed_bytes": 5636223,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/00f77b9fd0fc65a88af6867d050a6fb1f10ada03d37bd24c20a36a969ee77638.pdf",
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "expected_sha256": "00f77b9fd0fc65a88af6867d050a6fb1f10ada03d37bd24c20a36a969ee77638",
+      "calculated_sha256": "00f77b9fd0fc65a88af6867d050a6fb1f10ada03d37bd24c20a36a969ee77638",
+      "streamed_bytes": 292468,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/02ba179a402bb05dd6b947c1d8199872e92c2a8c89e91a1f39a8db9ae8cdbe67.pdf",
+      "slug": "cloridorme",
+      "municipality_name": "Cloridorme",
+      "expected_sha256": "02ba179a402bb05dd6b947c1d8199872e92c2a8c89e91a1f39a8db9ae8cdbe67",
+      "calculated_sha256": "02ba179a402bb05dd6b947c1d8199872e92c2a8c89e91a1f39a8db9ae8cdbe67",
+      "streamed_bytes": 37032,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2faa831e5ce07da0dd97391a7bcc290ed11eae81e7bf12d2a3e0b59d92263a39.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "2faa831e5ce07da0dd97391a7bcc290ed11eae81e7bf12d2a3e0b59d92263a39",
+      "calculated_sha256": "2faa831e5ce07da0dd97391a7bcc290ed11eae81e7bf12d2a3e0b59d92263a39",
+      "streamed_bytes": 503575,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/376b3e8f3f59594f220510b4f183e90db1ddd91d9e970fcef38e0a41b773b776.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "376b3e8f3f59594f220510b4f183e90db1ddd91d9e970fcef38e0a41b773b776",
+      "calculated_sha256": "376b3e8f3f59594f220510b4f183e90db1ddd91d9e970fcef38e0a41b773b776",
+      "streamed_bytes": 697699,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3b3bc995201134802634063567a7c5efc25cf834817cb2783b27968f1f1b8eab.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "3b3bc995201134802634063567a7c5efc25cf834817cb2783b27968f1f1b8eab",
+      "calculated_sha256": "3b3bc995201134802634063567a7c5efc25cf834817cb2783b27968f1f1b8eab",
+      "streamed_bytes": 749412,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3d159e61a5c44a30d83713eed5ade4770cc552ed08f0c234a263d3cbf62c8ef3.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "3d159e61a5c44a30d83713eed5ade4770cc552ed08f0c234a263d3cbf62c8ef3",
+      "calculated_sha256": "3d159e61a5c44a30d83713eed5ade4770cc552ed08f0c234a263d3cbf62c8ef3",
+      "streamed_bytes": 808259,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/3e3704683b4d4e55cf8b21427c81d39837a8da1ea3336b9a9e5936507ab1e302.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "3e3704683b4d4e55cf8b21427c81d39837a8da1ea3336b9a9e5936507ab1e302",
+      "calculated_sha256": "3e3704683b4d4e55cf8b21427c81d39837a8da1ea3336b9a9e5936507ab1e302",
+      "streamed_bytes": 608128,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/41b37bd79625ab8293f927d2172ad7274e56132fdbe7f98c12dfcad6239d5040.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "41b37bd79625ab8293f927d2172ad7274e56132fdbe7f98c12dfcad6239d5040",
+      "calculated_sha256": "41b37bd79625ab8293f927d2172ad7274e56132fdbe7f98c12dfcad6239d5040",
+      "streamed_bytes": 956043,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/428ac3179da9b7ee786488d3632d9c29adb06b34afc24bb3dca177910892d56e.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "428ac3179da9b7ee786488d3632d9c29adb06b34afc24bb3dca177910892d56e",
+      "calculated_sha256": "428ac3179da9b7ee786488d3632d9c29adb06b34afc24bb3dca177910892d56e",
+      "streamed_bytes": 567327,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4578f505ed9b22dd46302a7a280625d6d4be200dcc80eb1c3c074d1490ce247e.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "4578f505ed9b22dd46302a7a280625d6d4be200dcc80eb1c3c074d1490ce247e",
+      "calculated_sha256": "4578f505ed9b22dd46302a7a280625d6d4be200dcc80eb1c3c074d1490ce247e",
+      "streamed_bytes": 562053,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/4d6ef8f9f28a6a1ce68e5e95ce34af1300d924e58c8a244d091466077c1b69f2.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "4d6ef8f9f28a6a1ce68e5e95ce34af1300d924e58c8a244d091466077c1b69f2",
+      "calculated_sha256": "4d6ef8f9f28a6a1ce68e5e95ce34af1300d924e58c8a244d091466077c1b69f2",
+      "streamed_bytes": 1405704,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/56047f2e4c87c6319e762d5af90d487abd06a072a6ac3f0a494bb620ebf80012.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "56047f2e4c87c6319e762d5af90d487abd06a072a6ac3f0a494bb620ebf80012",
+      "calculated_sha256": "56047f2e4c87c6319e762d5af90d487abd06a072a6ac3f0a494bb620ebf80012",
+      "streamed_bytes": 634946,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    }
+  ]
+}

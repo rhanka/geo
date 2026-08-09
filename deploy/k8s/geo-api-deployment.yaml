@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geo-api
+  namespace: geo
+  labels:
+    app.kubernetes.io/component: api
+    app.kubernetes.io/name: geo-api
+    app.kubernetes.io/part-of: geo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: geo-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: api
+        app.kubernetes.io/name: geo-api
+        app.kubernetes.io/part-of: geo
+    spec:
+      imagePullSecrets:
+        - name: geo-registry-pull
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: geo-api
+          image: rg.fr-par.scw.cloud/sentropic-geo/geo-api:0.1.5-stream-20260726211332
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8787
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "8787"
+            - name: GEO_DATA_URI
+              value: s3://sentropic-geo/normalized
+            - name: NODE_ENV
+              value: production
+          # S3 credentials (S3_ACCESS_KEY, S3_SECRET_KEY, S3_BUCKET, S3_ENDPOINT,
+          # S3_REGION) are injected from the out-of-repo Secret. See README.md.
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials
+          livenessProbe:
+            httpGet:
+              path: /conformance
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /conformance
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 75m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              # cgroup-v2 memory.peak on the 955,964,128-byte qc-lots-montreal
+              # object: 195.65 Mi after three concurrent complete scans, with
+              # memory.events max/oom/oom_kill all zero.
+              #
+              # Ce manifeste disait 256 Mi ; la PRODUCTION tournait à 2048 Mi.
+              # La dérive n'était visible nulle part et coûtait cher : le quota
+              # du namespace compte les LIMITES, donc geo-api réservait à elle
+              # seule la moitié des 4 Gi en n'en demandant que 150 Mi, ce qui
+              # interdisait le 3e pod de capture (cf. tenant-quota.yaml).
+              #
+              # 768 Mi = 3,9x le pic mesuré. Plus large que les 256 Mi mesurés,
+              # nettement plus sobre que les 2048 Mi qui tournaient. Le choix
+              # d'etre au-dessus du pic est deliberé : c'est l'API servie a
+              # immo en production, et sa charge n'est pas la charge du banc.
+              memory: 768Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL

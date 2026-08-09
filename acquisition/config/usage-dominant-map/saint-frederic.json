@@ -1,0 +1,10 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "AF": "agricole",
+    "F": "agricole",
+    "I": "industriel"
+  },
+  "source": "https://www.st-frederic.com/wp-content/uploads/Zonage_297-15_amende-5.pdf",
+  "note": "Règlement de zonage 297-15 de la Municipalité de Saint-Frédéric (amendé 5), CHAPITRE 2 « Les zones », article 6 « DOMINANCE D'UNE ZONE », p.1-2: « La dominance définit la vocation principale de la zone [...] indiquée au Plan de zonage immédiatement au-dessus de l'identification numérique de la zone au moyen de lettre telle que définie comme suit », suivi de la table « Dominance / Identification de la dominance » relevée VERBATIM: Résidentielle = R (faible densité « f », moyenne densité « m »); Résidentielle rurale = RR; Mixte = M; Industrielle = I; Publique, institutionnelle et de loisirs = P; Agricole = A; Agroforestière = AF; Forestière = F. Mappé ici: A « Agricole », AF « Agroforestière » et F « Forestière » -> agricole (famille agricole/agroforestière/forestière, même regroupement que champlain.json); I « Industrielle » -> industriel. NON mappés parce que ABSENTS du SIG servi (gate: aucun préfixe mappé qui n'existe pas dans le SIG): R, RR, M, P — la collection qc-zonage-saint-frederic ne sert que 6 zones codées (A-19, A-27, AF-30, F-31, F-32, I-90) sur 10 polygones (4 sans code), couverture partielle amont connue. Si le SIG se complète: R/RR -> residentiel, M « Mixte » -> null (duale), P « Publique, institutionnelle et de loisirs » -> null (publique). La matrice des usages permis des grilles n'est pas utilisée."
+}

@@ -27,20 +27,20 @@
 import { resolveLicense, type CollectionMeta, type License } from "@sentropic/geo-core";
 
 import {
-  buildLoadedCollection,
   parseMeta,
-  queryItem,
-  queryItems,
-  type LoadedCollection,
+  parseFeatureCollectionStream,
+  validateFeatureCollectionStream,
 } from "./collection-loader.js";
 import type {
   CollectionInfo,
   FeatureProvider,
   ItemsQuery,
   ItemsResult,
+  ItemsStream,
   ServedFeature,
 } from "../provider.js";
-import type { Store } from "../../storage/index.js";
+import { geometryIntersectsBBox } from "../geo-util.js";
+import type { ByteStream, Store } from "../../storage/index.js";
 
 const GEOJSON_SUFFIX = ".geojson";
 const META_SUFFIX = ".meta.json";
@@ -56,8 +56,6 @@ interface StoreCollectionEntry {
   meta: CollectionMeta | undefined;
   /** Lightweight collection info built without parsing the GeoJSON body. */
   info: CollectionInfo;
-  /** Lazy, cached full materialization. */
-  loaded: Promise<LoadedCollection | undefined> | undefined;
 }
 
 export class StoreProvider implements FeatureProvider {
@@ -101,7 +99,8 @@ export class StoreProvider implements FeatureProvider {
       this.#indexOne(geojsonKey, keySet),
     );
     for (const entry of entries) {
-      map.set(entry.info.id, entry);
+      const existing = map.get(entry.info.id);
+      map.set(entry.info.id, existing ? selectServedEntry(existing, entry) : entry);
     }
     return map;
   }
@@ -117,20 +116,7 @@ export class StoreProvider implements FeatureProvider {
       geojsonKey,
       meta,
       info: buildCollectionInfo(stem, meta),
-      loaded: undefined,
     };
-  }
-
-  async #load(entry: StoreCollectionEntry): Promise<LoadedCollection | undefined> {
-    if (!entry.loaded) {
-      entry.loaded = this.#loadEntry(entry);
-    }
-    return entry.loaded;
-  }
-
-  async #loadEntry(entry: StoreCollectionEntry): Promise<LoadedCollection | undefined> {
-    const geojsonText = await this.#getText(entry.geojsonKey);
-    return buildLoadedCollection(stemOf(entry.geojsonKey), geojsonText, entry.meta);
   }
 
   /** Read a key as UTF-8 text, returning `undefined` if absent/unreadable. */
@@ -144,6 +130,21 @@ export class StoreProvider implements FeatureProvider {
     return bytes === undefined ? undefined : decoder.decode(bytes);
   }
 
+  /**
+   * Prefer the runtime store's bounded stream. The `get()` fallback exists only
+   * for legacy in-memory test doubles; S3Store and FsStore always implement
+   * `getStream`, so the served production path cannot materialize an object.
+   */
+  async #getStream(key: string): Promise<ByteStream | undefined> {
+    try {
+      if (this.#store.getStream) return await this.#store.getStream(key);
+      const bytes = await this.#store.get(key);
+      return bytes === undefined ? undefined : oneChunk(bytes);
+    } catch {
+      return undefined;
+    }
+  }
+
   async listCollections(): Promise<CollectionInfo[]> {
     const map = await this.#ensureIndexed();
     return [...map.values()].map((entry) => entry.info);
@@ -155,20 +156,75 @@ export class StoreProvider implements FeatureProvider {
   }
 
   async getItems(id: string, query: ItemsQuery): Promise<ItemsResult | undefined> {
+    const stream = await this.streamItems(id, query);
+    if (!stream) return undefined;
+    const features: ServedFeature[] = [];
+    let numberMatched = 0;
+    const offset = query.offset ?? 0;
+    const limit = query.limit ?? Number.POSITIVE_INFINITY;
+    for await (const feature of stream.features) {
+      numberMatched++;
+      if (numberMatched <= offset || features.length >= limit) continue;
+      features.push(feature);
+    }
+    return { features, numberMatched, numberReturned: features.length };
+  }
+
+  async streamItems(
+    id: string,
+    query: Pick<ItemsQuery, "bbox">,
+  ): Promise<ItemsStream | undefined> {
     const map = await this.#ensureIndexed();
     const entry = map.get(id);
     if (!entry) return undefined;
-    const loaded = await this.#load(entry);
-    return loaded ? queryItems(new Map([[loaded.info.id, loaded]]), loaded.info.id, query) : undefined;
+    try {
+      // Validate the complete object before Hono commits a 200. A second
+      // stream is deliberate: it preserves JSON.parse's all-or-nothing
+      // contract without retaining the feature collection in memory.
+      const validationSource = await this.#getStream(entry.geojsonKey);
+      if (!validationSource) return undefined;
+      await validateFeatureCollectionStream(validationSource);
+
+      const source = await this.#getStream(entry.geojsonKey);
+      if (!source) return undefined;
+      return { features: matchingFeatures(parseFeatureCollectionStream(source), query.bbox) };
+    } catch {
+      return undefined;
+    }
   }
 
   async getItem(id: string, featureId: string): Promise<ServedFeature | undefined> {
-    const map = await this.#ensureIndexed();
-    const entry = map.get(id);
-    if (!entry) return undefined;
-    const loaded = await this.#load(entry);
-    return loaded ? queryItem(new Map([[loaded.info.id, loaded]]), loaded.info.id, featureId) : undefined;
+    const stream = await this.streamItems(id, {});
+    if (!stream) return undefined;
+    let index = 0;
+    let matched: ServedFeature | undefined;
+    for await (const feature of stream.features) {
+      if (featureKey(feature, index) === featureId) matched = feature;
+      index++;
+    }
+    return matched;
   }
+}
+
+async function* oneChunk(bytes: Uint8Array): ByteStream {
+  yield bytes;
+}
+
+/** Apply the optional bbox without retaining the matching feature sequence. */
+async function* matchingFeatures(
+  source: AsyncIterable<ServedFeature>,
+  bbox: ItemsQuery["bbox"],
+): AsyncGenerator<ServedFeature> {
+  for await (const feature of source) {
+    if (!bbox || geometryIntersectsBBox(feature.geometry, bbox)) yield feature;
+  }
+}
+
+/** A feature's stable id: GeoJSON `id`, then `properties.geoId`, then position. */
+function featureKey(feature: ServedFeature, index: number): string {
+  if (feature.id !== undefined && feature.id !== null) return String(feature.id);
+  const geoId = feature.properties?.["geoId"];
+  return typeof geoId === "string" ? geoId : String(index);
 }
 
 /** Build collection metadata without parsing the potentially-large GeoJSON body. */
@@ -191,6 +247,34 @@ function stemOf(geojsonKey: string): string {
   const slash = geojsonKey.lastIndexOf("/");
   const base = slash === -1 ? geojsonKey : geojsonKey.slice(slash + 1);
   return base.slice(0, -GEOJSON_SUFFIX.length);
+}
+
+type CollectionLayout = "flat" | "nested";
+
+/** The nested layout is `<slug>/<slug>.geojson`; prefixes are not layouts. */
+function collectionLayout(geojsonKey: string): CollectionLayout {
+  const lastSlash = geojsonKey.lastIndexOf("/");
+  if (lastSlash === -1) return "flat";
+  const parentStart = geojsonKey.lastIndexOf("/", lastSlash - 1) + 1;
+  const parent = geojsonKey.slice(parentStart, lastSlash);
+  return parent === stemOf(geojsonKey) ? "nested" : "flat";
+}
+
+/**
+ * Served-contract rule: when a collection exists in both layouts, use nested.
+ * Equal layouts keep the prior sorted, last-key-wins behavior.
+ */
+function selectServedEntry(
+  existing: StoreCollectionEntry,
+  candidate: StoreCollectionEntry,
+): StoreCollectionEntry {
+  if (stemOf(existing.geojsonKey) !== stemOf(candidate.geojsonKey)) return candidate;
+  const existingLayout = collectionLayout(existing.geojsonKey);
+  const candidateLayout = collectionLayout(candidate.geojsonKey);
+  if (existingLayout !== candidateLayout) {
+    return candidateLayout === "nested" ? candidate : existing;
+  }
+  return candidate;
 }
 
 async function mapLimit<T, U>(

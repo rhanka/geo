@@ -1,0 +1,13 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "I": "industriel",
+    "A": "agricole",
+    "AD": null,
+    "MXT": null,
+    "MXTV": null,
+    "P": null
+  },
+  "source": "https://st-clet.com/sites/default/files/PDF/Administration/sclet_r226_zonage_decembre2025.pdf",
+  "note": "Règlement de zonage numéro 226 de la Municipalité de Saint-Clet (MRC de Vaudreuil-Soulanges) — en-tête de page verbatim: « Municipalité de Saint-Clet / Règlement de zonage numéro 226 ». Chapitre 1, SOUS-SECTION 2 « RÈGLES D'INTERPRÉTATION DU PLAN DE ZONAGE », article 1.21 « DIVISION DU TERRITOIRE EN ZONES »: « Le territoire de la Municipalité de Saint-Clet est divisé en zones, lesquelles apparaissent aux feuillets 1 à 2 du plan de zonage. » puis article 1.22 « IDENTIFICATION DES ZONES »: « Chaque zone délimitée au plan de zonage est d'abord identifiée par une appellation réduite référant à l'affectation au plan d'urbanisme en vigueur, aux fins de compréhension du plan uniquement. Les zones y sont présentées sous la forme suivante : » puis le tableau Lettre d'appellation / Dominance, VERBATIM: A « Agricole »; AD « Agricole déstructurée »; I « Industrielle »; MXT « Mixte »; MXTV « Mixte – Noyau villageois »; P « Publique et institutionnelle »; R « Résidentielle ». Suit: « À titre d'exemple : R-1 — « R » : Affectation au plan d'urbanisme; « 1 » : Ordre numérique de la zone ». Les 7 lettres du tableau sont EXACTEMENT les 7 préfixes des codes SIG servis (A-1..A-5, AD-1, I-1/I-2, MXT-1..MXT-5, MXTV-1..MXTV-3, P-1..P-6, R-1..R-14 — 36 polygones), ce qui verrouille la correspondance nomenclature↔SIG. Mapping: R « Résidentielle » -> residentiel; I « Industrielle » -> industriel; A « Agricole » -> agricole. NULL EXPLICITES: AD « Agricole déstructurée » désigne un îlot déstructuré (enclave d'habitations existantes en zone agricole) et n'énonce pas de dominante tranchée entre habitation et agriculture; MXT « Mixte » et MXTV « Mixte – Noyau villageois » sont des appellations MIXTES sans dominante unique (le null sur MXTV est aussi requis pour bloquer le fallthrough longest-prefix vers MXT); P « Publique et institutionnelle » est publique. La matrice des usages permis des grilles de spécifications n'est pas utilisée."
+}

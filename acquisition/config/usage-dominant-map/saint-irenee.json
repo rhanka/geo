@@ -1,0 +1,15 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "V": "residentiel",
+    "A": "agricole",
+    "AF": "agricole",
+    "I": "industriel",
+    "REC": "environnemental",
+    "C": "environnemental",
+    "U": null,
+    "AH": null
+  },
+  "source": "Règlement de zonage de la Municipalité de Saint-Irénée (version mise à jour 2026-02-04), corpus local work/zonage-norms/saint-irenee/grille.pdf",
+  "note": "Legende lue VERBATIM a l'art. 3.2 «CODIFICATIONS DES ZONES»: «Chaque zone porte un numero d'identification auquel est attache un suffixe indiquant le ou les groupes dominants tel qu'il appert au tableau reproduit ci-apres» -- tableau Lettres/«Groupe d'usage predominant»: H=Habitation, U=«Commerce, service et habitation», C=Conservation, AF=Agro-forestier, I=Industriel, REC=Recreatif, A=Agricole, AH=«Ilot de consolidation», V=Villegiature. Tous les prefixes du SIG (AF, A, U, H, V, AH, C, I, REC) correspondent. Mapping: H «Habitation» -> residentiel; V «Villegiature» -> residentiel; A «Agricole» -> agricole; AF «Agro-forestier» -> agricole; I «Industriel» -> industriel; REC «Recreatif» -> environnemental; C «Conservation» -> environnemental (ATTENTION: ici C = Conservation, PAS Commerce). NULL EXPLICITE: U «Commerce, service et habitation» -> groupe dominant MIXTE (commerce+habitation), pas de dominante unique -> null; AH «Ilot de consolidation» -> enclave residentielle de consolidation en zone agricole, dual, sans dominante unique -> null (le longest-prefix garantit que AH-40 tombe sur AH=null et non sur A=agricole). La matrice des usages permis des grilles n'est pas utilisee; seul le tableau de codification (groupe predominant) l'est."
+}

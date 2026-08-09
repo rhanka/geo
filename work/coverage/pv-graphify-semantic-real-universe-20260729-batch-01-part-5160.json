@@ -1,0 +1,1894 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:47:24.251Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5160,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 18,
+    "failed_pvs": 2,
+    "outcomes": {
+      "INDEXED": 18,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 2
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 18,
+    "Document": 18,
+    "Regulation": 40,
+    "Zone": 4,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "LotCadastre": 20,
+    "Resolution": 2
+  },
+  "graphify": {
+    "nodes": 104,
+    "edges": 24,
+    "failures": 2
+  },
+  "matches": {
+    "zone_entities": 4,
+    "lot_entities": 20,
+    "documents_with_zone": 2,
+    "documents_with_lot": 7
+  },
+  "match_details": [
+    {
+      "municipality_slug": "lac-simon",
+      "storage_key": "raw/pv-index/cas/d4a4cfe04304bde39a6d2f042ba9b469c22208fae37bb1e38fc79a36cae4b19b.pdf",
+      "entity_type": "Zone",
+      "value": "15-V",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:75",
+      "quote": "       usages commerciaux dans les zones 36-V et 15-V."
+    },
+    {
+      "municipality_slug": "lac-simon",
+      "storage_key": "raw/pv-index/cas/d4a4cfe04304bde39a6d2f042ba9b469c22208fae37bb1e38fc79a36cae4b19b.pdf",
+      "entity_type": "Zone",
+      "value": "36-V",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:75",
+      "quote": "       usages commerciaux dans les zones 36-V et 15-V."
+    },
+    {
+      "municipality_slug": "lac-tremblant-nord",
+      "storage_key": "raw/pv-index/cas/162921c80796fd06d9fede6b8e987f158f23d9ccd0b48e88e2ac54749e2e1ccd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5011332",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:29",
+      "quote": "                lot 5 011 332 du cadastre du Québec;"
+    },
+    {
+      "municipality_slug": "lac-tremblant-nord",
+      "storage_key": "raw/pv-index/cas/162921c80796fd06d9fede6b8e987f158f23d9ccd0b48e88e2ac54749e2e1ccd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6219794",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:31",
+      "quote": "                1052-0-010-0001, lot 6 219 794 du cadastre du Québec;"
+    },
+    {
+      "municipality_slug": "lac-tremblant-nord",
+      "storage_key": "raw/pv-index/cas/162921c80796fd06d9fede6b8e987f158f23d9ccd0b48e88e2ac54749e2e1ccd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6219789",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:33",
+      "quote": "                0001, lot 6 219 789 du cadastre du Québec;"
+    },
+    {
+      "municipality_slug": "lac-tremblant-nord",
+      "storage_key": "raw/pv-index/cas/162921c80796fd06d9fede6b8e987f158f23d9ccd0b48e88e2ac54749e2e1ccd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5011370",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:35",
+      "quote": "                5649, lot 5 011 370 du cadastre du Québec;"
+    },
+    {
+      "municipality_slug": "lac-tremblant-nord",
+      "storage_key": "raw/pv-index/cas/162921c80796fd06d9fede6b8e987f158f23d9ccd0b48e88e2ac54749e2e1ccd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5011310",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:81",
+      "quote": "        9.2.5 Request DPCOL240004 for a new construction, matricule 1621-54-9153, lot 5 011 310 cadaster of Quebec;"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/010dfb1cf9e4376da774db23a7dd8f078b549a4634e513fec55409adebaed50f.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5690059",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:29",
+      "quote": "    8.5 - Règlement lot no 5 690 059"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/082203056e0290f0e7613296392cf844ae597ad2d354e2578a4f40bb9edbf38a.pdf",
+      "entity_type": "Zone",
+      "value": "M-11",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:44",
+      "quote": "d'ajouter un usage dans les zones mixtes M-3 & M-11"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/082203056e0290f0e7613296392cf844ae597ad2d354e2578a4f40bb9edbf38a.pdf",
+      "entity_type": "Zone",
+      "value": "M-3",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:44",
+      "quote": "d'ajouter un usage dans les zones mixtes M-3 & M-11"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/082203056e0290f0e7613296392cf844ae597ad2d354e2578a4f40bb9edbf38a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687366",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:47",
+      "quote": "      12.5 - Demande d'usage conditionnel pour le lot 5 687 366"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/082203056e0290f0e7613296392cf844ae597ad2d354e2578a4f40bb9edbf38a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687539",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:48",
+      "quote": "      12.6 - Demande de dérogation mineure pour le lot 5 687 539"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/082203056e0290f0e7613296392cf844ae597ad2d354e2578a4f40bb9edbf38a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687833",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:49",
+      "quote": "      12.7 - Demande d'usage conditionnel pour le lot 5 687 833"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/0d04d7bb8ef51e7b3c5b5f655c91f32787e4a92b0e7512c4195bf8ee1ee2f2fd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5688328",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:32",
+      "quote": "     10.2 - Demande de dérogation mineure pour le lot 5 688 328"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/0d04d7bb8ef51e7b3c5b5f655c91f32787e4a92b0e7512c4195bf8ee1ee2f2fd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5689789",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:33",
+      "quote": "     10.3 - Demande d'occupation du domaine public sur une partie du lot 5 689 789"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/0d04d7bb8ef51e7b3c5b5f655c91f32787e4a92b0e7512c4195bf8ee1ee2f2fd.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687637",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:35",
+      "quote": "territoire agricole (CPTAQ) - partie du lot 5 687 637"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/0dde254f32ff2603813c4096441128c3185a71cdc6e3602db09758be08582590.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687423",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:32",
+      "quote": "    10.1 - Demande de dérogation mineure pour le lot 5 687 423"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/0dde254f32ff2603813c4096441128c3185a71cdc6e3602db09758be08582590.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687349",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:33",
+      "quote": "    10.2 - Demande de dérogation mineure pour le lot 5 687 349"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/0dde254f32ff2603813c4096441128c3185a71cdc6e3602db09758be08582590.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687366",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:34",
+      "quote": "    10.3 - Demande d'usage conditionnel pour le lot 5 687 366"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/9ac67fe3ec66870184ffdf26007bdecb1eee31a2852e5f63625fd46469e2c7ec.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687265",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:35",
+      "quote": "    10.2 - Demande de dérogation mineure pour les lots 5 687 265, 5 963 295 et 6 549 945"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/9ac67fe3ec66870184ffdf26007bdecb1eee31a2852e5f63625fd46469e2c7ec.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687809",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:36",
+      "quote": "    10.3 - Demande d'usage conditionnel pour le lot 5 687 809"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/9ac67fe3ec66870184ffdf26007bdecb1eee31a2852e5f63625fd46469e2c7ec.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687315",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:37",
+      "quote": "    10.4 - Demande d'usage conditionnel pour le lot 5 687 315"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/aac850a5db279f270d59cd6573d3a07cdafd8eae8c7891eeb7ca53e963159ac9.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5688726",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:32",
+      "quote": "     10.2 - Demande de dérogation mineure pour le lot 5 688 726"
+    },
+    {
+      "municipality_slug": "lambton",
+      "storage_key": "raw/pv-index/cas/aac850a5db279f270d59cd6573d3a07cdafd8eae8c7891eeb7ca53e963159ac9.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5687315",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:33",
+      "quote": "     10.3 - Demande d'usage conditionnel pour le lot 5 687 315"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 190,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 5405,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z",
+  "documents": [
+    {
+      "slug": "lac-simon",
+      "municipality_name": "Lac-Simon",
+      "url": "https://lac-simon.net/wp-content/uploads/2026/02/2026-02-23-Avis-de-convocation-pour-une-seance-extraordinaire-le-23-fevrier-2026.pdf",
+      "storage_key": "raw/pv-index/cas/87c425e10d22537680c57b000c12f8d04dc30f0c9874d90a7d99540c9c5b3b7d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/540c9c5b3b7d.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/540c9c5b3b7d.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-simon",
+      "municipality_name": "Lac-Simon",
+      "url": "https://lac-simon.net/wp-content/uploads/2025/05/ODJ-2025-05-02.SO_.pdf",
+      "storage_key": "raw/pv-index/cas/b0ce628ccecc9ddd54b0b92205d55fcaf95b57b4e5e17b7e8f05a1a778ca14d6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Simon",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "557-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "1.4    Avis de motion du projet de règlement numéro 557-2025 sur la"
+            }
+          },
+          {
+            "label": "558-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "1.6    Avis de motion du projet de règlement numéro 558-2025 relatif à la"
+            }
+          },
+          {
+            "label": "559-2025",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:97",
+              "quote": "\f8.2    Avis de motion du règlement numéro 559-2025 concernant l’utilisation"
+            }
+          },
+          {
+            "label": "559-2024",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "8.3    Dépôt du projet de règlement numéro 559-2024 concernant l’utilisation"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/a1a778ca14d6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/a1a778ca14d6.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-simon"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-simon",
+      "municipality_name": "Lac-Simon",
+      "url": "https://lac-simon.net/wp-content/uploads/2026/03/ODJ-9-mars-2026.pdf",
+      "storage_key": "raw/pv-index/cas/c549382e9b0f1c396d10d07584e98e7a1e7f840c64a3f23fe85f440af066b36b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/440af066b36b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/440af066b36b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-simon",
+      "municipality_name": "Lac-Simon",
+      "url": "https://lac-simon.net/wp-content/uploads/2025/07/ODJ-2025-07-04.SO_-1.pdf",
+      "storage_key": "raw/pv-index/cas/d4a4cfe04304bde39a6d2f042ba9b469c22208fae37bb1e38fc79a36cae4b19b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Zone": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Simon",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "15-V",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "       usages commerciaux dans les zones 36-V et 15-V."
+            }
+          },
+          {
+            "label": "36-V",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": "       usages commerciaux dans les zones 36-V et 15-V."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/9a36cae4b19b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/9a36cae4b19b.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-simon"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-simon",
+      "municipality_name": "Lac-Simon",
+      "url": "https://lac-simon.net/wp-content/uploads/2025/01/ODJ-2025-01-10.pdf",
+      "storage_key": "raw/pv-index/cas/e72af410f3acd4d83bad81c4aabf41012c10742a994f178229081874fec6a173.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Simon",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "555-2025",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:20",
+              "quote": "1.5    Avis de motion et projet de règlement numéro 555-2025 relatif à la"
+            }
+          },
+          {
+            "label": "542-2024",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "1.6    Abrogation du Règlement numéro 542-2024 relatif à la tarification pour"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/1874fec6a173.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/1874fec6a173.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-simon"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-simon",
+      "municipality_name": "Lac-Simon",
+      "url": "https://lac-simon.net/wp-content/uploads/2025/09/ODJ-2025-09-05.SO_.pdf",
+      "storage_key": "raw/pv-index/cas/ed478864f271829ccc49d7822d315fdf4c23f3789264eea35d359e018ec303d2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Simon",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 3 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "1.4    Déplacement de la séance ordinaire du Conseil du 3 octobre 2025."
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "3 octobre 2025",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "1.4    Déplacement de la séance ordinaire du Conseil du 3 octobre 2025."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/9e018ec303d2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-simon/9e018ec303d2.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-simon"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-tremblant-nord",
+      "municipality_name": "Lac-Tremblant-Nord",
+      "url": "https://lac-tremblant-nord.qc.ca/wp-content/uploads/2026/05/ODJ-AGENDA-Conseil-municipal-Council-meeting-samedi-9-mai-11-h-Saturday-May-9-11-AM-1.pdf",
+      "storage_key": "raw/pv-index/cas/162921c80796fd06d9fede6b8e987f158f23d9ccd0b48e88e2ac54749e2e1ccd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Tremblant-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                  Municipalité de Lac-Tremblant-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                  Municipalité de Lac-Tremblant-Nord"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5011332",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "                lot 5 011 332 du cadastre du Québec;"
+            }
+          },
+          {
+            "label": "6219794",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "                1052-0-010-0001, lot 6 219 794 du cadastre du Québec;"
+            }
+          },
+          {
+            "label": "6219789",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "                0001, lot 6 219 789 du cadastre du Québec;"
+            }
+          },
+          {
+            "label": "5011370",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "                5649, lot 5 011 370 du cadastre du Québec;"
+            }
+          },
+          {
+            "label": "5011310",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:81",
+              "quote": "        9.2.5 Request DPCOL240004 for a new construction, matricule 1621-54-9153, lot 5 011 310 cadaster of Quebec;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-tremblant-nord/54749e2e1ccd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-tremblant-nord/54749e2e1ccd.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-tremblant-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-tremblant-nord",
+      "municipality_name": "Lac-Tremblant-Nord",
+      "url": "https://lac-tremblant-nord.qc.ca/wp-content/uploads/2026/01/ODJ-Conseil-municipal-31-janvier-2026-AGENDA-Council-meeting-January-31st-2026-2.pdf",
+      "storage_key": "raw/pv-index/cas/35cc2ec430808a201c834c0cc37689710c900a66ee190cb58d27899cd3dae5c8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Tremblant-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                  Municipalité de Lac-Tremblant-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                  Municipalité de Lac-Tremblant-Nord"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-01",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "    7.1. Avis de motion : Règlement 2026-01 fixant le taux de la taxe foncière pour l’exercice financier 2026 et le taux"
+            }
+          },
+          {
+            "label": "2026-02",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "    7.2. Avis de motion : Règlement 2026-02 relatif à la rémunération des membres du conseil de la municipalité de Lac-"
+            }
+          },
+          {
+            "label": "2026-03",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "    7.3. Avis de motion : Règlement 2026-03 relatif au Code d’éthique et de déontologie des élu(e)s de la municipalité"
+            }
+          },
+          {
+            "label": "2025-05",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "    7.7. Adoption : Règlement n°2025-05 modifiant le Règlement n°2021-02 relatif au zonage afin d’assurer la"
+            }
+          },
+          {
+            "label": "2021-02",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "    7.7. Adoption : Règlement n°2025-05 modifiant le Règlement n°2021-02 relatif au zonage afin d’assurer la"
+            }
+          },
+          {
+            "label": "2025-03",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "         conformité au Règlement n°2025-03 modifiant le plan d’urbanisme (Règlement de concordance);"
+            }
+          },
+          {
+            "label": "2025-06",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "    7.8. Adoption : Règlement n°2025-06 modifiant le Règlement n°2021-07 relatif aux usages conditionnels afin"
+            }
+          },
+          {
+            "label": "2021-07",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "    7.8. Adoption : Règlement n°2025-06 modifiant le Règlement n°2021-07 relatif aux usages conditionnels afin"
+            }
+          },
+          {
+            "label": "2025-07",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "    7.9. Adoption : Règlement n°2025-07 modifiant le Règlement n°2021-05 relatif aux permis et aux certificats afin"
+            }
+          },
+          {
+            "label": "2021-05",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:40",
+              "quote": "    7.9. Adoption : Règlement n°2025-07 modifiant le Règlement n°2021-05 relatif aux permis et aux certificats afin"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-tremblant-nord/899cd3dae5c8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-tremblant-nord/899cd3dae5c8.pdf/.graphify/.graphify_extract.json — 12 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-tremblant-nord",
+          "sainte-agathe-des-monts"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-tremblant-nord",
+      "municipality_name": "Lac-Tremblant-Nord",
+      "url": "https://lac-tremblant-nord.qc.ca/wp-content/uploads/2026/03/ODJ-AGENDA-Conseil-municipal-Council-meeting-samedi-7-mars-14-h-Saturday-March-7-2-PM.pdf",
+      "storage_key": "raw/pv-index/cas/d7fbdaeca6a5c12dd55123bf2074ba271078f09842bbe62e176c72979c748c54.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Tremblant-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                  Municipalité de Lac-Tremblant-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                                  Municipalité de Lac-Tremblant-Nord"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2026-04",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "    7.1. Avis de motion : Projet de Règlement 2026-04 relatif à l’occupation et l’entretien des bâtiments;"
+            }
+          },
+          {
+            "label": "2026-05",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "    7.2. Avis de motion : Projet de Règlement 2026-05 permettant d’établir les tranches de la base d’imposition des droits sur"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-tremblant-nord/72979c748c54.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-tremblant-nord/72979c748c54.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-tremblant-nord",
+          "mirabel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lac-tremblant-nord",
+      "municipality_name": "Lac-Tremblant-Nord",
+      "url": "https://lac-tremblant-nord.qc.ca/wp-content/uploads/2026/01/ODJ-Seance-extraordinaire-du-Conseil-Budget-2026-PTI-AGENDA-Special-Council-meeting-PTI-2026-Budget.pdf",
+      "storage_key": "raw/pv-index/cas/f74e715f454761f5327607ad9b329a0c907fc240c47a33b1d096d9c570984ae4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lac-Tremblant-Nord",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                         Municipalité de Lac-Tremblant-Nord"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                         Municipalité de Lac-Tremblant-Nord"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-tremblant-nord/d9c570984ae4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lac-tremblant-nord/d9c570984ae4.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lac-tremblant-nord"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20250616161913-102-1011-ordre-du-jour-10-juin-2025-1.pdf",
+      "storage_key": "raw/pv-index/cas/010dfb1cf9e4376da774db23a7dd8f078b549a4634e513fec55409adebaed50f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 3,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                            MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "25-05-121",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:21",
+              "quote": "    7.5 - Abrogation de la résolution 25-05-121"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-609",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "    13.1 - Avis de motion règlement 25-609 modifiant le règlement #22-558 - Programme d'aide"
+            }
+          },
+          {
+            "label": "25-610",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "    13.3 - Avis de motion règlement 25-610 modifiant le règlement #24-581 décrétant des"
+            }
+          },
+          {
+            "label": "25-607",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "    13.6 - Avis de motion règlement 25-607 modifiant le règlement #24-597 - Règlement de"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5690059",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:29",
+              "quote": "    8.5 - Règlement lot no 5 690 059"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/09adebaed50f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/09adebaed50f.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20260605090837-seance-ordinaire-du-9-juin-2026-projet-de-proces-verbal.pdf",
+      "storage_key": "raw/pv-index/cas/082203056e0290f0e7613296392cf844ae597ad2d354e2578a4f40bb9edbf38a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "Zone": 2,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DU GRANIT"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DU GRANIT"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26-616",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "      12.1 - Adoption du règlement no 26-616 relatif à la démolition d'immeubles"
+            }
+          },
+          {
+            "label": "26 - 619",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:45",
+              "quote": "      12.4 - Adoption - Règlement 26 - 619 / Emprunt financier Édifice"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "M-11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "d'ajouter un usage dans les zones mixtes M-3 & M-11"
+            }
+          },
+          {
+            "label": "M-3",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "d'ajouter un usage dans les zones mixtes M-3 & M-11"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5687366",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:47",
+              "quote": "      12.5 - Demande d'usage conditionnel pour le lot 5 687 366"
+            }
+          },
+          {
+            "label": "5687539",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "      12.6 - Demande de dérogation mineure pour le lot 5 687 539"
+            }
+          },
+          {
+            "label": "5687833",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "      12.7 - Demande d'usage conditionnel pour le lot 5 687 833"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/40bb9edbf38a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/40bb9edbf38a.pdf/.graphify/.graphify_extract.json — 9 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 9,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20250910090215-102-1011-ordre-du-jour-8-juillet-2025.pdf",
+      "storage_key": "raw/pv-index/cas/0d04d7bb8ef51e7b3c5b5f655c91f32787e4a92b0e7512c4195bf8ee1ee2f2fd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 6,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                              MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "25-06-156",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:19",
+              "quote": "     7.4 - Abrogation résolution 25-06-156 (Servitude Hydro-Québec)"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-607",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "     13.1 - Adoption - Règlement 25-607 modifiant le règlement #24-597 - Règlement de"
+            }
+          },
+          {
+            "label": "25-608",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "     13.2 - Avis de motion - Règlement 25-608 relatif au lavage des embarcations au Petit-Lac"
+            }
+          },
+          {
+            "label": "25-609",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:48",
+              "quote": "     13.4 - Adoption - Règlement 25-609 modifiant le règlement #22-558 - Programme d'aide"
+            }
+          },
+          {
+            "label": "25-610",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": "     13.5 - Adoption - Règlement 25-610 modifiant le règlement #24-581 décrétant des"
+            }
+          },
+          {
+            "label": "25-611",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "     13.6 - Avis de motion règlement 25-611 modifiant le règlement 24-582 décrétant des"
+            }
+          },
+          {
+            "label": "24-582",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "     13.6 - Avis de motion règlement 25-611 modifiant le règlement 24-582 décrétant des"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5688328",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "     10.2 - Demande de dérogation mineure pour le lot 5 688 328"
+            }
+          },
+          {
+            "label": "5689789",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "     10.3 - Demande d'occupation du domaine public sur une partie du lot 5 689 789"
+            }
+          },
+          {
+            "label": "5687637",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "territoire agricole (CPTAQ) - partie du lot 5 687 637"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/f8ee1ee2f2fd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/f8ee1ee2f2fd.pdf/.graphify/.graphify_extract.json — 12 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20260410122105-102-1011-ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/0dde254f32ff2603813c4096441128c3185a71cdc6e3602db09758be08582590.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                             MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                             MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "22-558",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:28",
+              "quote": "    9.1 - Modification du règlement 22-558 / Programme de mise aux normes des installations"
+            }
+          },
+          {
+            "label": "26-617",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": "    13.1 - Adoption - Règlement 26-617 concernant les règles de régie interne et les procédures"
+            }
+          },
+          {
+            "label": "26-618",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "    13.2 - Adoption - Règlement 26-618 concernant le Code de déontologie et d'éthique des élus"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5687423",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "    10.1 - Demande de dérogation mineure pour le lot 5 687 423"
+            }
+          },
+          {
+            "label": "5687349",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "    10.2 - Demande de dérogation mineure pour le lot 5 687 349"
+            }
+          },
+          {
+            "label": "5687366",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": "    10.3 - Demande d'usage conditionnel pour le lot 5 687 366"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/58be08582590.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/58be08582590.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20250512143726-ordre-du-jour-11-fevrier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/461802c240baaa094ec72f2c4b5521905007607b521570e781dcf9ef610a4d06.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                        MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/f9ef610a4d06.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/f9ef610a4d06.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20250512143419-102-1011-ordre-du-jour-11-mars-2025-1.pdf",
+      "storage_key": "raw/pv-index/cas/79db83b3db4785eda5faf1b53757f6f8f68666d6c4ac4d180ba7acd1516be56b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 5
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                          MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-602",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "      13.1 - Avis de motion règlement 25-602 modifiant le règlement no 12-395 portant sur les"
+            }
+          },
+          {
+            "label": "12-395",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:49",
+              "quote": "      13.1 - Avis de motion règlement 25-602 modifiant le règlement no 12-395 portant sur les"
+            }
+          },
+          {
+            "label": "25-604",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "      13.3 - Avis de motion - règlement 25-604 modifiant le règlement de zonage 09-345 et ses"
+            }
+          },
+          {
+            "label": "25-605",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:57",
+              "quote": "      13.5 - Avis de motion - règlement no 25-605 modifiant le règlement sur les permis et"
+            }
+          },
+          {
+            "label": "25-606",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "      13.7 - Avis de motion - règlement 25-606 modifiant le règlement de zonage 09-345 et ses"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/acd1516be56b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/acd1516be56b.pdf/.graphify/.graphify_extract.json — 7 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20250908085321-102-1011-ordre-du-jour-9-septembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/9ac67fe3ec66870184ffdf26007bdecb1eee31a2852e5f63625fd46469e2c7ec.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                           MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5687265",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "    10.2 - Demande de dérogation mineure pour les lots 5 687 265, 5 963 295 et 6 549 945"
+            }
+          },
+          {
+            "label": "5687809",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:36",
+              "quote": "    10.3 - Demande d'usage conditionnel pour le lot 5 687 809"
+            }
+          },
+          {
+            "label": "5687315",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "    10.4 - Demande d'usage conditionnel pour le lot 5 687 315"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/d46469e2c7ec.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/d46469e2c7ec.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20251110090955-ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/aac850a5db279f270d59cd6573d3a07cdafd8eae8c7891eeb7ca53e963159ac9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                             MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                             MUNICIPALITÉ DE LAMBTON"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-612",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "     13.1 - Adoption - Règlement 25-612"
+            }
+          },
+          {
+            "label": "25-613",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": "     13.2 - Adoption du règlement 25-613"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5688726",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": "     10.2 - Demande de dérogation mineure pour le lot 5 688 726"
+            }
+          },
+          {
+            "label": "5687315",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": "     10.3 - Demande d'usage conditionnel pour le lot 5 687 315"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/53e963159ac9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/53e963159ac9.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20260206075036-seance-ordinaire-du-10-fevrier-2026-projet-d-ordre-du-jour.pdf",
+      "storage_key": "raw/pv-index/cas/b80329db4529822406c21267139f9819086256b8604e728ce290254ff17bac2f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "     MRC DU GRANIT"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "     MRC DU GRANIT"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/254ff17bac2f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/254ff17bac2f.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lambton",
+      "municipality_name": "Lambton",
+      "url": "https://www.lambton.ca/fichiersUpload/fichiers/20251212131024-projet-de-l-ordre-du-jour-seance-extraordinaire-budget-du-16-decembre-2025.pdf",
+      "storage_key": "raw/pv-index/cas/cceb2dcef22c0cb3b3f542cf4628d00e300840c0bc7b49a3a8cec20a364a4ba9.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Lambton",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DU GRANIT"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:2",
+              "quote": "MRC DU GRANIT"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "25-614",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:31",
+              "quote": "     3.5 - Avis de motion - Règlement 25-614 - Taxation 2026"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/c20a364a4ba9.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T184705Z/lambton/c20a364a4ba9.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "lambton"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

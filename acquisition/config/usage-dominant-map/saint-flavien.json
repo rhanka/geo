@@ -1,0 +1,14 @@
+{
+  "prefix_map": {
+    "H": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "AD": "agricole",
+    "ADES": "agricole",
+    "AF": "agricole",
+    "CH": null,
+    "P": null
+  },
+  "source": "work/zonage-norms/saint-flavien/f75945f4-e52c-46f4-9b2e-17747e226d89.pdf (Municipalité de Saint-Flavien, Règlement de zonage, ANNEXE B: GRILLE DE SPÉCIFICATIONS, amendements R. 05-2010, R. 06-2010, R. 03-2012, R. 03-2015, R. 09-2016, R. 04-2023)",
+  "note": "Propriétaire vérifié: chaque page porte en en-tête « Municipalité de Saint-Flavien » et « ANNEXE B: GRILLE DE SPÉCIFICATIONS / RÈGLEMENT DE ZONAGE » — pas d'homonyme. Le corps du règlement (article d'identification des zones) est ABSENT du corpus local (3 fichiers seulement: la grille, son doublon grille.pdf, et le cahier des NOTES 31ef637d-*.pdf); la légende utilisée est donc celle portée par l'Annexe B elle-même. Elle est double et non ambiguë: (a) la ligne d'en-tête de chaque feuillet oppose « Numéro de zone » et « Dominance » et donne la lettre de dominance de chaque zone — « Numéro de zone 01 02 03 04 05 / Dominance H CH CH I H », « ... 09 10 / ... H P », « ... 20 21 23 25 / ... AD AD AD AD », « ... 34 / ... Ades », « ... 44 / ... C », « ... 47 / ... AF », « ... 53 54 55 56 / ... ADes ADes ADes ADes »; (b) la colonne « GROUPE » de la même annexe donne le dictionnaire des lettres: « HABITATION H », « COMMERCE ET SERVICE C », « INDUSTRIE I », « RÉCRÉATION R », « PUBLIC ET INSTITUTIONNEL P », « AGRICULTURE A », « FORET F ». Mappé en décodant la lettre de dominance par ce dictionnaire (et NON par les points de la matrice des usages permis): H = « HABITATION » -> residentiel (zones 1/5/6/7/9/12/13/15/16/17/45/52); C = « COMMERCE ET SERVICE » -> commercial (zones 44/51); I = « INDUSTRIE » -> industriel (zones 4/8/18/43); AD et ADes = lettre de tête A « AGRICULTURE » -> agricole (zones 20-42/49 et 34/37/53-56), conformément au traitement de la famille agricole/agrodynamique; AF = A « AGRICULTURE » + F « FORET » (agroforestier), les deux composantes relevant de la famille agricole/forestière -> agricole (zone 47). Null EXPLICITE: CH = combinaison des lettres C « COMMERCE ET SERVICE » et H « HABITATION », donc fonction DUALE commerciale ET résidentielle sans dominante unique (zones 2/3/14/19/50); P = « PUBLIC ET INSTITUTIONNEL » -> famille publique/institutionnelle (zones 10/11). LIMITE assumée et déclarée: les suffixes « D » (AD) et « es » (ADes) ne sont définis nulle part dans le corpus local — seule la lettre de tête A « AGRICULTURE » est documentée; aucune des deux ne peut relever d'une autre des cinq catégories. Aucun préfixe absent du SIG n'est mappé: les 51 codes SIG mesurés (_dump-sig-codes) sont exactement AD-*, ADES-*, AF-47, C-44/51, CH-2/3/14/19/50, H-*, I-4/8/18/43, P-10/11 — les groupes R « RÉCRÉATION » et F « FORET » seuls n'apparaissent dans aucune dominance servie et ne sont pas mappés."
+}

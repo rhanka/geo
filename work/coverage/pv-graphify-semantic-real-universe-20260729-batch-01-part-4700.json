@@ -1,0 +1,1159 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:36:00.798Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4700,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 13,
+    "failed_pvs": 7,
+    "outcomes": {
+      "INDEXED": 13,
+      "OWNER_NOT_CONFIRMED": 7,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 13,
+    "Document": 13,
+    "Regulation": 20,
+    "LotCadastre": 2,
+    "Zone": 2
+  },
+  "graphify": {
+    "nodes": 50,
+    "edges": 15,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 2,
+    "lot_entities": 2,
+    "documents_with_zone": 2,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "donnacona",
+      "storage_key": "raw/pv-index/cas/166a4699010ef324252e32a9d8ba15eb1f270c2cef777d31469b61036a907b76.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4777600",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:58",
+      "quote": "6.6   Intervention de la Ville à un acte de servitude sur le lot 4 777 600 du cadastre du"
+    },
+    {
+      "municipality_slug": "donnacona",
+      "storage_key": "raw/pv-index/cas/1892e861ec20701011d0e76974d19d14e47e914c756ec93b75f2f4607aaa18c3.pdf",
+      "entity_type": "Zone",
+      "value": "A-13",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:27",
+      "quote": "       l'intérieur de la zone agricole A-13"
+    },
+    {
+      "municipality_slug": "donnacona",
+      "storage_key": "raw/pv-index/cas/78440d55f0acb57456874fa241c1414372b8f7dea82ae6043eeddbc292f192ea.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6704199",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:23",
+      "quote": "6.1    Acte de cession des lots 6 704 199 et 6 704 200 du cadastre du Québec à la Ville"
+    },
+    {
+      "municipality_slug": "donnacona",
+      "storage_key": "raw/pv-index/cas/d616a5bafd29dd1d2f890c987b916046d33225b05af54cca15b42a24551c8ef0.pdf",
+      "entity_type": "Zone",
+      "value": "A-13",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:35",
+      "quote": "      d'occupation du sol à l'intérieur de la zone agricole dynamique A-13"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 477,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 3,
+      "total_lot_numbers": 22421,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z",
+  "documents": [
+    {
+      "slug": "dollard-des-ormeaux",
+      "municipality_name": "Dollard-Des Ormeaux",
+      "url": "https://ville.ddo.qc.ca/wp-content/uploads/2026/05/2026-05-12_Ordinaire_Ordre_du_jour.pdf",
+      "storage_key": "raw/pv-index/cas/8f40bd7b11b9b0ceb059544b9585a948a2bafafc4bbc0a00f78693150ced7c4c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dollard-Des Ormeaux",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R-2026-217",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:53",
+              "quote": "50.1   Adoption du règlement R-2026-217 sur les permis et certificats (SD2026-400-2936)"
+            }
+          },
+          {
+            "label": "R-2026-213",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": "50.2   Avis de motion et dépôt du projet de Règlement R-2026-213 concernant les parcs"
+            }
+          },
+          {
+            "label": "R-2026-219",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "50.3   Avis de motion et dépôt du projet de Règlement R-2026-219 abrogeant les"
+            }
+          },
+          {
+            "label": "R-2026-221",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "50.4   Avis de motion et dépôt du projet de Règlement R-2026-221 décrétant des dépenses"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/93150ced7c4c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/93150ced7c4c.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dollard-des-ormeaux"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "municipality_name": "Dollard-Des Ormeaux",
+      "url": "https://ville.ddo.qc.ca/wp-content/uploads/2026/03/2026-03-10_Ordinaire_Ordre_du_jour.pdf",
+      "storage_key": "raw/pv-index/cas/a14ecdc5eadc3e6ab4626b7bc820ba6101b95fba10f1263e4114a35c8f2dede3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 10
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dollard-Des Ormeaux",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R-2026-199-1",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "50.1   Adoption du deuxième projet de Règlement R-2026-199-1 modifiant le Règlement de"
+            }
+          },
+          {
+            "label": "R-2026-084-1",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": "50.2   Adoption du Règlement R-2026-084-1 modifiant le Règlement R-2014-084 sur"
+            }
+          },
+          {
+            "label": "R-2014-084",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:113",
+              "quote": "50.2   Adoption du Règlement R-2026-084-1 modifiant le Règlement R-2014-084 sur"
+            }
+          },
+          {
+            "label": "R-2026-217",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:116",
+              "quote": "50.3   Avis de motion et dépôt du projet de Règlement R-2026-217 sur les permis et"
+            }
+          },
+          {
+            "label": "R-2026-212",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:118",
+              "quote": "50.4   Avis de motion et dépôt du projet de règlement R-2026-212 sur le code d'éthique et"
+            }
+          },
+          {
+            "label": "R-2026-080-4",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:120",
+              "quote": "50.5   Avis de motion et dépôt du projet de Règlement R-2026-080-4 modifiant de nouveau"
+            }
+          },
+          {
+            "label": "R-2026-201-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:123",
+              "quote": "50.6   Avis de motion et dépôt du projet de Règlement R-2026-201-1 modifiant le"
+            }
+          },
+          {
+            "label": "R-2025-201",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:124",
+              "quote": "       Règlement R-2025-201 sur les dérogations mineures afin d'ajouter une disposition de"
+            }
+          },
+          {
+            "label": "R-2026-021-1",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:129",
+              "quote": "50.8   Avis de motion et dépôt du projet de Règlement R-2026-021-1 modifiant le"
+            }
+          },
+          {
+            "label": "R-2006-021",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:130",
+              "quote": "       Règlement R-2006-021 sur la salubrité et l’entretien des logements afin de modifier"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/a35c8f2dede3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/a35c8f2dede3.pdf/.graphify/.graphify_extract.json — 12 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 12,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dollard-des-ormeaux",
+          "dorval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "municipality_name": "Dollard-Des Ormeaux",
+      "url": "https://ville.ddo.qc.ca/wp-content/uploads/2026/04/2026-04-14_Ordinaire_Ordre_du_jour.pdf",
+      "storage_key": "raw/pv-index/cas/cedf5c6869374feea3db361951a8a0a093c7832f24b7303e8dca2d51ceba729b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dollard-Des Ormeaux",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "VILLE DE DOLLARD-DES-ORMEAUX"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "R-2026-080-4",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:78",
+              "quote": "50.1    Adoption du Règlement R-2026-080-4 modifiant de nouveau le règlement édictant un"
+            }
+          },
+          {
+            "label": "R-2026-212",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:81",
+              "quote": "50.2    Adoption du Règlement R-2026-212 sur le Code d’éthique et de déontologie des élus"
+            }
+          },
+          {
+            "label": "R-2026-201-1",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "50.3    Adoption du Règlement R-2026-201-1 modifiant le Règlement R-2025-201 sur les"
+            }
+          },
+          {
+            "label": "R-2025-201",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:83",
+              "quote": "50.3    Adoption du Règlement R-2026-201-1 modifiant le Règlement R-2025-201 sur les"
+            }
+          },
+          {
+            "label": "R-2026-021-1",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:86",
+              "quote": "50.4    Adoption du Règlement R-2026-021-1 modifiant le Règlement sur la salubrité et"
+            }
+          },
+          {
+            "label": "R-2026-217",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:89",
+              "quote": "50.5    Adoption du projet du Règlement R-2026-217 sur les permis et certificats (SD2026-400-"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/2d51ceba729b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dollard-des-ormeaux/2d51ceba729b.pdf/.graphify/.graphify_extract.json — 8 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dollard-des-ormeaux"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-04-13.pdf",
+      "storage_key": "raw/pv-index/cas/166a4699010ef324252e32a9d8ba15eb1f270c2cef777d31469b61036a907b76.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Donnacona",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "6.5   Avis de motion et dépôt du projet de règlement – Règlement décrétant le code"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "6.5   Avis de motion et dépôt du projet de règlement – Règlement décrétant le code"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4777600",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "6.6   Intervention de la Ville à un acte de servitude sur le lot 4 777 600 du cadastre du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/61036a907b76.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/61036a907b76.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "donnacona"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-04-27.pdf",
+      "storage_key": "raw/pv-index/cas/1892e861ec20701011d0e76974d19d14e47e914c756ec93b75f2f4607aaa18c3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Donnacona",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "6.1    Adoption du règlement numéro V-641 décrétant le code d'éthique et de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:22",
+              "quote": "6.1    Adoption du règlement numéro V-641 décrétant le code d'éthique et de"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "A-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "       l'intérieur de la zone agricole A-13"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/f4607aaa18c3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/f4607aaa18c3.pdf/.graphify/.graphify_extract.json — 3 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "donnacona"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-01-26.pdf",
+      "storage_key": "raw/pv-index/cas/21e9582a7c122afe103a58ac5cae5faa4d34b1dddb7438a69d4c06a5ed06a998.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/06a5ed06a998.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/06a5ed06a998.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-06-08.pdf",
+      "storage_key": "raw/pv-index/cas/55b00cc8cb125d4e666880f73ff676a698381ae125babed14666a41c52d1d9fe.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/a41c52d1d9fe.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/a41c52d1d9fe.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-02-09.pdf",
+      "storage_key": "raw/pv-index/cas/5c527acdab55e694b9532812c6a46ae4d1dd1bb3f4497530648d292503a59955.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/292503a59955.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/292503a59955.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-03-23.pdf",
+      "storage_key": "raw/pv-index/cas/78440d55f0acb57456874fa241c1414372b8f7dea82ae6043eeddbc292f192ea.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Donnacona",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "10.5   Autorisation à monsieur Jean-Claude Léveillée pour représenter la Ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "10.5   Autorisation à monsieur Jean-Claude Léveillée pour représenter la Ville de"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6704199",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "6.1    Acte de cession des lots 6 704 199 et 6 704 200 du cadastre du Québec à la Ville"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/dbc292f192ea.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/dbc292f192ea.pdf/.graphify/.graphify_extract.json — 3 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "donnacona"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-02-23.pdf",
+      "storage_key": "raw/pv-index/cas/ab5aa5505b30660bfb1e2d4cd2b638d8bdb63854be975557c62626a05f29d8ba.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/26a05f29d8ba.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/26a05f29d8ba.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-06-22.pdf",
+      "storage_key": "raw/pv-index/cas/baed6e7ba7db4cc271931735f0084bcd2768ba76a19528e8229ca4035e614a99.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Donnacona",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:59",
+              "quote": ""
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/a4035e614a99.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/a4035e614a99.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "donnacona",
+          "pont-rouge"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-05-11.pdf",
+      "storage_key": "raw/pv-index/cas/be240a8f2c1e6ea5ca30eb0e564fe305d2c96c25cc93082bb355bf0743e3548a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/bf0743e3548a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/bf0743e3548a.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-05-25.pdf",
+      "storage_key": "raw/pv-index/cas/d616a5bafd29dd1d2f890c987b916046d33225b05af54cca15b42a24551c8ef0.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Donnacona",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "5.2   Signature de la convention d'aide financière entre le MAMH et la Ville de"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "5.2   Signature de la convention d'aide financière entre le MAMH et la Ville de"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "A-13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "      d'occupation du sol à l'intérieur de la zone agricole dynamique A-13"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/2a24551c8ef0.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/2a24551c8ef0.pdf/.graphify/.graphify_extract.json — 3 nodes, 2 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 3,
+        "edges": 2
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "donnacona"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-03-09.pdf",
+      "storage_key": "raw/pv-index/cas/d8541fab94dc7908b22b9e21bd4dbd5e82148b646059b7f1d203c2099c027806.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/c2099c027806.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/c2099c027806.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "donnacona",
+      "municipality_name": "Donnacona",
+      "url": "https://villededonnacona.com/upload/seances-du-conseil/odj_conseil_2026-01-12.pdf",
+      "storage_key": "raw/pv-index/cas/ff967ae0eecffe701af531cc85e37cbb3298d3422cefd009d9a21f9def14d1dd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/1f9def14d1dd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/donnacona/1f9def14d1dd.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dorval",
+      "municipality_name": "Dorval",
+      "url": "https://www.ville.dorval.qc.ca/storage/app/media/la-cite/vie-democratique/seances-du-conseil/ordres-du-jour/2026/ordre_du_jour_du_11_mai_2026.pdf",
+      "storage_key": "raw/pv-index/cas/2f4da150cbd336b4c70ff722b8e5ee3d53081cae686db6a2c9e40504ec238c51.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dorval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   CITÉ DE DORVAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   CITÉ DE DORVAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/0504ec238c51.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/0504ec238c51.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dorval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dorval",
+      "municipality_name": "Dorval",
+      "url": "https://www.ville.dorval.qc.ca/storage/app/media/la-cite/vie-democratique/seances-du-conseil/ordres-du-jour/2026/ordre_du_jour_du_16_mars_2026.pdf",
+      "storage_key": "raw/pv-index/cas/4439792ed7adc87834dcb55744386fe63a7c34030bb25c4a80b309b31106cea3.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dorval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   CITÉ DE DORVAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   CITÉ DE DORVAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/09b31106cea3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/09b31106cea3.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dollard-des-ormeaux",
+          "dorval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dorval",
+      "municipality_name": "Dorval",
+      "url": "https://www.ville.dorval.qc.ca/storage/app/media/la-cite/vie-democratique/seances-du-conseil/ordres-du-jour/2026/ordre_du_jour_du_19_janvier_2026-pti.pdf",
+      "storage_key": "raw/pv-index/cas/5041149ee53a7201735b082cf817e156320e03cdd3d72e2068b02cab386d7d7c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dorval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       CITÉ DE DORVAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                       CITÉ DE DORVAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/2cab386d7d7c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/2cab386d7d7c.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dorval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dorval",
+      "municipality_name": "Dorval",
+      "url": "https://www.ville.dorval.qc.ca/storage/app/media/la-cite/vie-democratique/seances-du-conseil/ordres-du-jour/2026/ordre_du_jour_du_15_juin_2026.pdf",
+      "storage_key": "raw/pv-index/cas/943bf59433440df266c9ee9ee1c9a2a6dedf901d6df8c74a40139962a9c6a587.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dorval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               CITÉ DE DORVAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                               CITÉ DE DORVAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/9962a9c6a587.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/9962a9c6a587.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dorval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dorval",
+      "municipality_name": "Dorval",
+      "url": "https://www.ville.dorval.qc.ca/storage/app/media/la-cite/vie-democratique/seances-du-conseil/ordres-du-jour/2026/ordre_du_jour_du_16_fevrier_2026.pdf",
+      "storage_key": "raw/pv-index/cas/a768bf91d00c4d940892b9817b4e65a8f5f1cc3a15968008518ee37c402acc83.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dorval",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   CITÉ DE DORVAL"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1",
+              "quote": "                                   CITÉ DE DORVAL"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/e37c402acc83.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183534Z/dorval/e37c402acc83.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dorval"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

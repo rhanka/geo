@@ -1,0 +1,2741 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:19:54.293Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4820,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 20,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 20,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 20,
+    "Document": 20,
+    "CouncilSession": 20,
+    "MeetingDate": 20,
+    "Regulation": 80,
+    "Resolution": 35,
+    "Zone": 3,
+    "LotCadastre": 4
+  },
+  "graphify": {
+    "nodes": 202,
+    "edges": 74,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 3,
+    "lot_entities": 4,
+    "documents_with_zone": 3,
+    "documents_with_lot": 3
+  },
+  "match_details": [
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/43dd5697d4f05a5619c5a033771bb51d5d7585d52cc42292ff563be03a92d24c.pdf",
+      "entity_type": "Zone",
+      "value": "A-2",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:622",
+      "quote": "         CONSIDÉRANT QUE       l’immeuble est situé en zone A-2 et que les seuls"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/43dd5697d4f05a5619c5a033771bb51d5d7585d52cc42292ff563be03a92d24c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5220524",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:674",
+      "quote": "                               autre que l’agriculture d’une partie du lot 5 220 524"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/515d850b644898595380106861beba1091abf29097a71425da88d059d2758d89.pdf",
+      "entity_type": "LotCadastre",
+      "value": "5457610",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:301",
+      "quote": "         CONSIDÉRANT QUE         la Ville de Dunham est propriétaire du lot 5 457 610"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/515d850b644898595380106861beba1091abf29097a71425da88d059d2758d89.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3979626",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:683",
+      "quote": "         IMMEUBLE RÉSIDENTIEL MULTIFAMILIAL SUR LE LOT 3 979 626 DU"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/5a6c299013ce8a96a376c400b013ea1a4867500ed6addf0006f0b6d9ddae548a.pdf",
+      "entity_type": "Zone",
+      "value": "A-3",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:355",
+      "quote": "                                dérogation à la Grille des spécifications Zone A-3"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/5a6c299013ce8a96a376c400b013ea1a4867500ed6addf0006f0b6d9ddae548a.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4238841",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:621",
+      "quote": "         CONSIDÉRANT QUE        la municipalité est propriétaire du lot 4 238 841 du"
+    },
+    {
+      "municipality_slug": "dunham",
+      "storage_key": "raw/pv-index/cas/6f32dbdd5003ea8a7f724ff2f4ed9db971eed5bd81b15cbf023f29d8ecd5a379.pdf",
+      "entity_type": "Zone",
+      "value": "A-1",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:273",
+      "quote": "                                 situés en zone A-1 est de 50 mètres;"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 25,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 2823,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z",
+  "documents": [
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20extra%207%20juillet%202025(1).pdf",
+      "storage_key": "raw/pv-index/cas/261eaa7c664c676a23da6cdb586c887829151e9dda45b9e0e93688ff4c596173.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/07/07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/07/07   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/07/07",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/07/07   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "520-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "158-25       3.1. ADOPTION DU RÈGLEMENT NO 520-25 DÉCRÉTANT UNE DÉPENSE"
+            }
+          },
+          {
+            "label": "519-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:134",
+              "quote": "160-25     4.1. ADOPTION DU RÈGLEMENT NO 519-25 MODIFIANT LE RÈGLEMENT"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/88ff4c596173.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/88ff4c596173.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cowansville",
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20ordinaire%20-%2011%20novembre%202025.pdf",
+      "storage_key": "raw/pv-index/cas/2c71286e2faf05636fed1faec18774b589e8d167c3f3648332dd26bdf4b413de.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 5,
+        "Regulation": 7
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/11/11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/11/11          Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/11/11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/11/11          Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "041-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:221",
+              "quote": "         CONSIDÉRANT             la résolution 041-25 adoptée lors de la séance"
+            }
+          },
+          {
+            "label": "197-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:255",
+              "quote": "         CONSIDÉRANT             la résolution 197-24 concernant l’adjudication du"
+            }
+          },
+          {
+            "label": "041-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:360",
+              "quote": "         CONSIDÉRANT             les résolutions 041-22 et 066-22 nommant les"
+            }
+          },
+          {
+            "label": "200-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:510",
+              "quote": "         CONSIDÉRANT             la résolution 200-25 adoptée lors de la séance"
+            }
+          },
+          {
+            "label": "062-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:550",
+              "quote": "                                 Richelieu inc. par la résolution 062-25 de la séance"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "419-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:141",
+              "quote": "         CONSIDÉRANT             les articles 6.6, 6.7 et 6.8 du Règlement no 419-21"
+            }
+          },
+          {
+            "label": "402-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:265",
+              "quote": "                                 Règlement no 402-20 relatif à la gestion"
+            }
+          },
+          {
+            "label": "463-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:304",
+              "quote": "         CONSIDÉRANT             les dispositions du Règlement no 463-23 de gestion"
+            }
+          },
+          {
+            "label": "422-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:363",
+              "quote": "         CONSIDÉRANT             le Règlement no 422-21 établissant les règles de"
+            }
+          },
+          {
+            "label": "445-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:365",
+              "quote": "                                 consultatif et le Règlement no 445-22 modifiant le"
+            }
+          },
+          {
+            "label": "481-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:412",
+              "quote": "         CONSIDÉRANT             les dispositions du Règlement no 481-24 concernant"
+            }
+          },
+          {
+            "label": "509-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:572",
+              "quote": "                 empruntées selon le Règlement no 509-24 décrétant des dépenses"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/26bdf4b413de.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/26bdf4b413de.pdf/.graphify/.graphify_extract.json — 16 nodes, 5 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 16,
+        "edges": 5
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20extra%2015%20janvier%202026.pdf",
+      "storage_key": "raw/pv-index/cas/3d9d703e11c731b8f5c3c1029ac5ba022da9d6a6285e81b3000ac04671448fce.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2026/01/15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2026/01/15   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2026/01/15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2026/01/15   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "528-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "023-26   3.1. ADOPTION DU RÈGLEMENT NO 528-26 RELATIF À LA TAXATION,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/c04671448fce.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/c04671448fce.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV-extra-11-mars-2025.pdf",
+      "storage_key": "raw/pv-index/cas/41c1a4dbae483a42ebacf08e31dacfc5739d4236f3e973ace3ae22f7ee409ced.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/03/11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/03/11   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/03/11",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/03/11   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "024-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "         CONSIDÉRANT QUE         le conseil, par sa résolution 024-25, a octroyé le"
+            }
+          },
+          {
+            "label": "205-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:155",
+              "quote": "         CONSIDÉRANT             la résolution 205-24 et les dispositions de la Loi sur"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "509-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:110",
+              "quote": "061-25   5.1. ADOPTION DU RÈGLEMENT NO 509-24 DÉCRÉTANT DES DÉPENSES"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/22f7ee409ced.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/22f7ee409ced.pdf/.graphify/.graphify_extract.json — 7 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 7,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_9_aout2022(1).pdf",
+      "storage_key": "raw/pv-index/cas/43dd5697d4f05a5619c5a033771bb51d5d7585d52cc42292ff563be03a92d24c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 8,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2022/08/09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2022/08/09   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2022/08/09",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2022/08/09   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "179-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:96",
+              "quote": "         RÉSOLUTION 179-22 « GESTION DU PERSONNEL – DÉMISSION DE MAXIME"
+            }
+          },
+          {
+            "label": "100-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:325",
+              "quote": "         CONSIDERANT            la résolution 100-22 et le quatrième alinéa de"
+            }
+          },
+          {
+            "label": "170-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:707",
+              "quote": "CONSIDÉRANT            la résolution no 170-22 du conseil adoptant un"
+            }
+          },
+          {
+            "label": "115-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:844",
+              "quote": "         CONSIDÉRANT           la résolution numéro 115-22 octroyant le mandat à"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "449-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:255",
+              "quote": "           RÈGLEMENT NO 449-22 DÉCRÉTANT LA DÉLÉGATION DE CERTAINS"
+            }
+          },
+          {
+            "label": "421-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:275",
+              "quote": "\f         CONSIDÉRANT            le Règlement no 421-21 de délégation"
+            }
+          },
+          {
+            "label": "402-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:420",
+              "quote": "          CONSIDÉRANT            les dispositions du Règlement no 402-20 relatif à la"
+            }
+          },
+          {
+            "label": "385-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:533",
+              "quote": "                               assujettie au Règlement no 385-19 relatif aux plans"
+            }
+          },
+          {
+            "label": "446-22",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:589",
+              "quote": "                                Règlement no 446-22 sur les projets particuliers de"
+            }
+          },
+          {
+            "label": "444-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:575",
+              "quote": "         l’urbanisme et du Règlement no 444-22 décrétant la politique de"
+            }
+          },
+          {
+            "label": "448-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:730",
+              "quote": "PUBLIQUE DU RÈGLEMENT NO 448-22 MODIFIANT LE RÈGLEMENT DE"
+            }
+          },
+          {
+            "label": "454-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:747",
+              "quote": "          PUBLIQUE DU RÈGLEMENT NO 454-22 MODIFIANT LE RÈGLEMENT"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "A-2",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:622",
+              "quote": "         CONSIDÉRANT QUE       l’immeuble est situé en zone A-2 et que les seuls"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5220524",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:674",
+              "quote": "                               autre que l’agriculture d’une partie du lot 5 220 524"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/3be03a92d24c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/3be03a92d24c.pdf/.graphify/.graphify_extract.json — 18 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 18,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "abercorn",
+          "dunham",
+          "frelighsburg",
+          "sainte-croix"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_10_janvier2023.pdf",
+      "storage_key": "raw/pv-index/cas/444831765028d28c442134134cec1d90b07af728de1784c9e2f4f170ef8a7404.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2023/01/10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/01/10   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2023/01/10",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/01/10   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "039-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:345",
+              "quote": "                             la résolution 039-22 par laquelle le conseil a autorisé"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "463-22",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:213",
+              "quote": "         AVIS DE MOTION POUR LE RÈGLEMENT NO 463-22 DE GESTION"
+            }
+          },
+          {
+            "label": "402-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:220",
+              "quote": "         Règlement no 402-20 relatif à la gestion contractuelle et de la politique"
+            }
+          },
+          {
+            "label": "26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:276",
+              "quote": "                       assujetti au «Règlement numéro 26 sur la gestion"
+            }
+          },
+          {
+            "label": "457-22",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:376",
+              "quote": "010-23   ADOPTION DU RÈGLEMENT NO 457-22 CONCERNANT LES FOSSÉS ET"
+            }
+          },
+          {
+            "label": "456-22",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:419",
+              "quote": "011-23   ADOPTION DU RÈGLEMENT NO 456-22 CONCERNANT LA GESTION DES"
+            }
+          },
+          {
+            "label": "403-20",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:421",
+              "quote": "         LE RÈGLEMENT NO 403-20"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/f170ef8a7404.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/f170ef8a7404.pdf/.graphify/.graphify_extract.json — 11 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 11,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20ordinaire%201%20octobre%202025.pdf",
+      "storage_key": "raw/pv-index/cas/515d850b644898595380106861beba1091abf29097a71425da88d059d2758d89.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 7,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/10/01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/10/01   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/10/01",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/10/01   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "159-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:203",
+              "quote": "         CONSIDÉRANT             la résolution 159-25 de la séance extraordinaire du"
+            }
+          },
+          {
+            "label": "552-1224",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:816",
+              "quote": "                        2025 via les résolutions 552-1224 et 120-0325;"
+            }
+          },
+          {
+            "label": "125-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:957",
+              "quote": "                                  conformément à la résolution 125-24;"
+            }
+          },
+          {
+            "label": "062-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1072",
+              "quote": "                                 Richelieu inc. par la résolution 062-25 de la séance"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "522-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:163",
+              "quote": "205-25   4.6. ADOPTION DU RÈGLEMENT NO 522-25 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "455-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:190",
+              "quote": "         règlement no 455-22 décrétant un emprunt de 4 000 000 $ afin de financer"
+            }
+          },
+          {
+            "label": "432-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:534",
+              "quote": "\f                                  et aux termes du Règlement no 432-21 concernant"
+            }
+          },
+          {
+            "label": "516-25",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:557",
+              "quote": "         CONFORMÉMENT AU RÈGLEMENT NO 516-25 SUR LES USAGES"
+            }
+          },
+          {
+            "label": "385-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:698",
+              "quote": "         CONSIDÉRANT             les dispositions du Règlement no 385-19 relatif aux"
+            }
+          },
+          {
+            "label": "463-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1005",
+              "quote": "\f         CONSIDÉRANT             les dispositions du Règlement no 463-23 de gestion"
+            }
+          },
+          {
+            "label": "509-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:1094",
+              "quote": "                 empruntées selon le Règlement no 509-24 décrétant des dépenses"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "5457610",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:301",
+              "quote": "         CONSIDÉRANT QUE         la Ville de Dunham est propriétaire du lot 5 457 610"
+            }
+          },
+          {
+            "label": "3979626",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:683",
+              "quote": "         IMMEUBLE RÉSIDENTIEL MULTIFAMILIAL SUR LE LOT 3 979 626 DU"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/d059d2758d89.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/d059d2758d89.pdf/.graphify/.graphify_extract.json — 17 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 17,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_13juin2023.pdf",
+      "storage_key": "raw/pv-index/cas/59e7b24821cbf41862bc5fa18ff56c0519f7989506f6f911e12d829158a99dc8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2023/06/13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/06/13   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2023/06/13",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/06/13   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/829158a99dc8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/829158a99dc8.pdf/.graphify/.graphify_extract.json — 4 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_4_avril2023.pdf",
+      "storage_key": "raw/pv-index/cas/5a6c299013ce8a96a376c400b013ea1a4867500ed6addf0006f0b6d9ddae548a.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2,
+        "Regulation": 8,
+        "Zone": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2023/04/04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/04/04   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2023/04/04",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/04/04   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "021-23",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:146",
+              "quote": "                                 résolution 021-23;"
+            }
+          },
+          {
+            "label": "241-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:311",
+              "quote": "                conformément à la résolution 241-22;"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "26",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:223",
+              "quote": "                            assujetti au « Règlement numéro 26 sur la"
+            }
+          },
+          {
+            "label": "465-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:321",
+              "quote": "         AVIS DE MOTION POUR LE RÈGLEMENT NO 465-23 CONCERNANT LA"
+            }
+          },
+          {
+            "label": "466-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:450",
+              "quote": "         DÉPÔT DU RAPPORT DE RÉTROACTION – RÈGLEMENT 466-23"
+            }
+          },
+          {
+            "label": "461-23",
+            "legal_quality": "PREMIER_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:461",
+              "quote": "         publique relative au premier projet de Règlement no 461-23 modifiant le"
+            }
+          },
+          {
+            "label": "468-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:472",
+              "quote": "         AVIS DE MOTION POUR LE RÈGLEMENT NO 468-23 ÉTABLISSANT UN"
+            }
+          },
+          {
+            "label": "469-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:486",
+              "quote": "         AVIS DE MOTION POUR LE RÈGLEMENT NO 469-23 ÉTABLISSANT UN"
+            }
+          },
+          {
+            "label": "470-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:647",
+              "quote": "         AVIS DE MOTION POUR LE RÈGLEMENT NO 470-23 MODIFIANT LE"
+            }
+          },
+          {
+            "label": "453-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:648",
+              "quote": "         RÈGLEMENT NO 453-22 (RM-460) CONCERNANT LA PAIX, L’ORDRE ET"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "A-3",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:355",
+              "quote": "                                dérogation à la Grille des spécifications Zone A-3"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4238841",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:621",
+              "quote": "         CONSIDÉRANT QUE        la municipalité est propriétaire du lot 4 238 841 du"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/b6d9ddae548a.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/b6d9ddae548a.pdf/.graphify/.graphify_extract.json — 16 nodes, 4 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 16,
+        "edges": 4
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_27juin2023.pdf",
+      "storage_key": "raw/pv-index/cas/5d114292e92610c3966574582797328a1bbff0715e3c7bfd9ec881f014d10f6c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2023/06/27",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/06/27   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2023/06/27",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/06/27   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "237-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:159",
+              "quote": "             4. Que cette résolution abroge la résolution numéro 237-22."
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/81f014d10f6c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/81f014d10f6c.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV-extra-26-novembre-2024.pdf",
+      "storage_key": "raw/pv-index/cas/6203e4e824ec5b35ab1e8c3dcabb496a1aeef23bbd3e9ea724c1f7ab4df9a26c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2024/11/26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2024/11/26   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2024/11/26",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2024/11/26   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "504-24",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:64",
+              "quote": "             qu’à une prochaine séance du conseil le Règlement no 504-24 décrétant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/f7ab4df9a26c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/f7ab4df9a26c.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_14mars2023.pdf",
+      "storage_key": "raw/pv-index/cas/64737fb213de16c5594b9fdc0d15068295be8ba0310d22c86eec887807dc2d36.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2023/03/14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/03/14   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2023/03/14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/03/14   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "448-22",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": "                 6.     Adoption du Règlement no 448-22 modifiant le Règlement de"
+            }
+          },
+          {
+            "label": "454-22",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:61",
+              "quote": "                 7.     Adoption du Règlement no 454-22 modifiant le Règlement relatif"
+            }
+          },
+          {
+            "label": "386-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:100",
+              "quote": "                               Règlement no 386-19 relatif aux plans"
+            }
+          },
+          {
+            "label": "444-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "                               Règlement no 444-22 décrétant la politique de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/887807dc2d36.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/887807dc2d36.pdf/.graphify/.graphify_extract.json — 8 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 8,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_25avril2023.pdf",
+      "storage_key": "raw/pv-index/cas/6c4fb6922978f03dd9a775735d1df5cb61a2379cd8817e43a2c04a290cbd617b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2023/04/25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/04/25   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2023/04/25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/04/25   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "471-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:72",
+              "quote": "RÈGLEMENT     NO  471-23 DÉCRÉTANT DES DÉPENSES EN"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/4a290cbd617b.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/4a290cbd617b.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20ordinaire%203%20fvrier%202026.pdf",
+      "storage_key": "raw/pv-index/cas/6f32dbdd5003ea8a7f724ff2f4ed9db971eed5bd81b15cbf023f29d8ecd5a379.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 4,
+        "Regulation": 8,
+        "Zone": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2026/02/03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2026/02/03           Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2026/02/03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2026/02/03           Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "238-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:175",
+              "quote": "         CONSIDÉRANT             la résolution 238-25 de la séance ordinaire du"
+            }
+          },
+          {
+            "label": "241-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:592",
+              "quote": "042-26   5.9. MODIFICATION DE LA RÉSOLUTION 241-25 CONCERNANT LA"
+            }
+          },
+          {
+            "label": "174-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:781",
+              "quote": "044-26   7.1. MODIFICATION DE LA RÉSOLUTION 174-25 CONCERNANT"
+            }
+          },
+          {
+            "label": "062-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:872",
+              "quote": "                                 Richelieu inc. par la résolution 062-25 de la séance"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "526-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "031-26   3.4. ADOPTION DU RÈGLEMENT NO 526-26 DÉCRÉTANT LE CODE"
+            }
+          },
+          {
+            "label": "439-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:147",
+              "quote": "         AUX FINS DU RÈGLEMENT NO 439-21 SUR LE TRAITEMENT DES ÉLUS"
+            }
+          },
+          {
+            "label": "385-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:511",
+              "quote": "         CONSIDÉRANT             les dispositions du Règlement no 385-19 relatif aux"
+            }
+          },
+          {
+            "label": "429-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:758",
+              "quote": "         26 MODIFIANT LE RÈGLEMENT NO 429-21 CONCERNANT LA"
+            }
+          },
+          {
+            "label": "529-26",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:762",
+              "quote": "         prochaine séance du conseil le projet de règlement no 529-26 modifiant le"
+            }
+          },
+          {
+            "label": "527-26",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:838",
+              "quote": "046-26   8.1. ADOPTION DU RÈGLEMENT NO 527-26 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "437-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:861",
+              "quote": "         Règlement no 437-21 sur la tarification des biens et services de la Ville de"
+            }
+          },
+          {
+            "label": "509-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:897",
+              "quote": "                 empruntées selon le Règlement no 509-24 décrétant des dépenses"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "A-1",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:273",
+              "quote": "                                 situés en zone A-1 est de 50 mètres;"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/29d8ecd5a379.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/29d8ecd5a379.pdf/.graphify/.graphify_extract.json — 17 nodes, 8 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 17,
+        "edges": 8
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20extra%2015%20septembre%202025.pdf",
+      "storage_key": "raw/pv-index/cas/742607f4c7fd614b540f3efe44cc0ac7a698013185a3e5c7f5e5c172d8c535ca.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/09/15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/09/15   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/09/15",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/09/15   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "463-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": "CONSIDÉRANT             les dispositions du Règlement no 463-23 de gestion"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/c172d8c535ca.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/c172d8c535ca.pdf/.graphify/.graphify_extract.json — 5 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20ordinaire%202%20septembre%202025(1).pdf",
+      "storage_key": "raw/pv-index/cas/77a6d6fa25c23b7799f10ed033f25dc76626ecb93361dcd967c30791e57908a8.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 3,
+        "Regulation": 6
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/09/02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/09/02   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/09/02",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/09/02   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "071-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:189",
+              "quote": "         CONSIDÉRANT             les résolutions 071-25, 127-25 et 170-25 des"
+            }
+          },
+          {
+            "label": "150-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:245",
+              "quote": "         CONSIDÉRANT QUE         le conseil, par sa résolution 150-25, a octroyé le"
+            }
+          },
+          {
+            "label": "242-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:721",
+              "quote": "         CONSIDÉRANT QUE la résolution 242-24 nomme une employée comme"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "522-25",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:107",
+              "quote": "         4.4. AVIS DE MOTION POUR LE RÈGLEMENT NO 522-25 MODIFIANT LE"
+            }
+          },
+          {
+            "label": "455-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:108",
+              "quote": "         RÈGLEMENT NO 455-22 DÉCRÉTANT UN EMPRUNT DE 4 000 000 $ AFIN"
+            }
+          },
+          {
+            "label": "521-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:130",
+              "quote": "185-25   4.5. ADOPTION DU RÈGLEMENT NO 521-25 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "334-14",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:156",
+              "quote": "         no 521-25 modifiant le règlement no 334-14 visant la constitution d’un"
+            }
+          },
+          {
+            "label": "471-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:230",
+              "quote": "                 et le Règlement no 471-23 décrétant des dépenses en"
+            }
+          },
+          {
+            "label": "385-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:417",
+              "quote": "         CONSIDÉRANT             les dispositions du Règlement no 385-19 relatif aux"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/0791e57908a8.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/0791e57908a8.pdf/.graphify/.graphify_extract.json — 13 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV%20ordinaire%203%20juin%202025.pdf",
+      "storage_key": "raw/pv-index/cas/77b539641ed4109e53e697d89394ff1d3e759bace4670d5952f3fbdfd21ca9a6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 1,
+        "Regulation": 8
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/06/03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/06/03   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/06/03",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/06/03   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "071-25",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:333",
+              "quote": "         CONSIDÉRANT              la résolution 071-25 de la séance ordinaire du"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "518-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "                « 4.8 Adoption du Règlement no 518-25 décrétant une dépense de"
+            }
+          },
+          {
+            "label": "449-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:152",
+              "quote": "           PRÉVUE AU RÈGLEMENT NO 449-22 DÉCRÉTANT LA DÉLÉGATION DE"
+            }
+          },
+          {
+            "label": "463-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:301",
+              "quote": "         CONSIDÉRANT             les dispositions du Règlement no 463-23 de gestion"
+            }
+          },
+          {
+            "label": "471-23",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:358",
+              "quote": "                 (1 066 504 $) et le Règlement no 471-23 décrétant des dépenses"
+            }
+          },
+          {
+            "label": "519-25",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:370",
+              "quote": "         6.1. AVIS DE MOTION DU PROJET DE RÈGLEMENT NO 519-25"
+            }
+          },
+          {
+            "label": "444-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:413",
+              "quote": "                                    l’urbanisme et le Règlement no 444-22 décrétant la"
+            }
+          },
+          {
+            "label": "517-25",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:464",
+              "quote": "129-25     6.3. ADOPTION DU RÈGLEMENT NO 517-25 CONCERNANT LA GESTION"
+            }
+          },
+          {
+            "label": "385-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:519",
+              "quote": "         CONSIDÉRANT             les dispositions du Règlement no 385-19 relatif aux"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/fbdfd21ca9a6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/fbdfd21ca9a6.pdf/.graphify/.graphify_extract.json — 13 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 13,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_20fevrier2023.pdf",
+      "storage_key": "raw/pv-index/cas/7a34e2a5bb33022c36617e55a1ec64e2842c2552cd477c767f4b3c1219d0c011.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2023/02/20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/02/20   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2023/02/20",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2023/02/20   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "467-23",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "                5.   Avis de motion pour le Règlement no 467-23 modifiant le"
+            }
+          },
+          {
+            "label": "464-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:56",
+              "quote": "                     Règlement 464-22 relatif à la taxation, aux compensations et à la"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/3c1219d0c011.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/3c1219d0c011.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV_19-septembre-2022(1).pdf",
+      "storage_key": "raw/pv-index/cas/7ee97bbfdbda8897f4030e205e8f2aa5a5a56ffc9ff86dba0e92fca959639cf7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2022/09/19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2022/09/19   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2022/09/19",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2022/09/19   Procès-verbal de la séance extraordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "183-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "                              rue de la Métairie et la résolution 183-22 par laquelle"
+            }
+          },
+          {
+            "label": "218-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:140",
+              "quote": "                             le chemin St-Joseph et la résolution 218-22 par"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/fca959639cf7.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/fca959639cf7.pdf/.graphify/.graphify_extract.json — 6 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "dunham",
+      "municipality_name": "Dunham",
+      "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/dunham/_publication/fichiers/PV-ordinaire-14-janvier-2025.pdf",
+      "storage_key": "raw/pv-index/cas/7f970e5ad485a1d275bf4f7a32d8edf38659f466892309b63fd93a3ab3b942d4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Resolution": 6,
+        "Regulation": 9
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Dunham",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": "             MRC BROME-MISSISQUOI"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 2025/01/14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/01/14   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "2025/01/14",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "2025/01/14   Procès-verbal de la séance ordinaire du conseil de la Ville de"
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "275-22",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:175",
+              "quote": "         CONSIDÉRANT             la résolution 275-22 adoptée lors de la séance"
+            }
+          },
+          {
+            "label": "119-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:177",
+              "quote": "                                 résolution 119-24 adoptée lors de la séance"
+            }
+          },
+          {
+            "label": "066-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:311",
+              "quote": "         CONSIDÉRANT             la résolution 066-24 adoptée lors de la séance"
+            }
+          },
+          {
+            "label": "129-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:326",
+              "quote": "         CONSIDÉRANT             la résolution 129-24 adoptée lors de la séance"
+            }
+          },
+          {
+            "label": "130-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:373",
+              "quote": "         CONSIDÉRANT             la résolution 130-24 adoptée lors de la séance"
+            }
+          },
+          {
+            "label": "260-24",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:585",
+              "quote": "         CONSIDÉRANT             la résolution 260-24, concernant l’adoption du"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "449-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:133",
+              "quote": "         D’UNE DÉLÉGATION DE POUVOIRS PRÉVUE AU RÈGLEMENT NO 449-22"
+            }
+          },
+          {
+            "label": "506-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:141",
+              "quote": "005-25   4.5. ADOPTION DU RÈGLEMENT NO 506-24 RELATIF À LA TAXATION,"
+            }
+          },
+          {
+            "label": "419-21",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:180",
+              "quote": "         CONSIDÉRANT             les articles 6.6, 6.7 et 6.8 du Règlement no 419-21"
+            }
+          },
+          {
+            "label": "505-24",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:253",
+              "quote": "         et unanimement résolu d’adopter le Règlement no 505-24 autorisant le"
+            }
+          },
+          {
+            "label": "489-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:295",
+              "quote": "009-25   6.1. ADOPTION DU RÈGLEMENT NO 489-24 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "444-22",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:322",
+              "quote": "                                 l’urbanisme et le Règlement no 444-22 décrétant la"
+            }
+          },
+          {
+            "label": "494-24",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:362",
+              "quote": "010-25   6.2. ADOPTION DU RÈGLEMENT NO 494-24 MODIFIANT LE RÈGLEMENT"
+            }
+          },
+          {
+            "label": "385-19",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:407",
+              "quote": "           no 494-24 modifiant le Règlement no 385-19 relatif aux plans"
+            }
+          },
+          {
+            "label": "504-24",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:581",
+              "quote": "013-25   10.1. RETRAIT DU RÈGLEMENT NO 504-24 DÉCRÉTANT DES DÉPENSES"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/3a3ab3b942d4.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T181807Z/dunham/3a3ab3b942d4.pdf/.graphify/.graphify_extract.json — 19 nodes, 8 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 19,
+        "edges": 8
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "cowansville",
+          "dunham"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}
