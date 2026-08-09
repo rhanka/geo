@@ -1,0 +1,370 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:29:01.440Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 88,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "CouncilSession": 1,
+    "MeetingDate": 1,
+    "Regulation": 15,
+    "Zone": 3,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 24,
+    "edges": 8,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 3,
+    "lot_entities": 2,
+    "documents_with_zone": 1,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "boisbriand",
+      "storage_key": "raw/pv-index/cas/34494f18c34824857a8769cc8bf0f01d3f26ce52865a1dddc84211ac0b2a47b5.pdf",
+      "entity_type": "Zone",
+      "value": "A 521",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:737",
+      "quote": "ZONE AGRICOLE (A 521) - LOTS ACTUELS 6 489 085 ET 6 489 086 (CHEMIN DE LA CÔTE"
+    },
+    {
+      "municipality_slug": "boisbriand",
+      "storage_key": "raw/pv-index/cas/34494f18c34824857a8769cc8bf0f01d3f26ce52865a1dddc84211ac0b2a47b5.pdf",
+      "entity_type": "Zone",
+      "value": "R-3 483",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:811",
+      "quote": "LES BOISÉS DION - 7232, RUE JEAN-CLAUDE-LANGLOIS - ZONE R-3 483"
+    },
+    {
+      "municipality_slug": "boisbriand",
+      "storage_key": "raw/pv-index/cas/34494f18c34824857a8769cc8bf0f01d3f26ce52865a1dddc84211ac0b2a47b5.pdf",
+      "entity_type": "Zone",
+      "value": "C-3 405",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:867",
+      "quote": "2860, PROMENADE SAINT-HONORÉ - ZONE C-3 405"
+    },
+    {
+      "municipality_slug": "boisbriand",
+      "storage_key": "raw/pv-index/cas/34494f18c34824857a8769cc8bf0f01d3f26ce52865a1dddc84211ac0b2a47b5.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6489086",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:740",
+      "quote": "ATTENDU QUE la Ville de Boisbriand est propriétaire du lot 6 489 086 du cadastre du"
+    },
+    {
+      "municipality_slug": "boisbriand",
+      "storage_key": "raw/pv-index/cas/34494f18c34824857a8769cc8bf0f01d3f26ce52865a1dddc84211ac0b2a47b5.pdf",
+      "entity_type": "LotCadastre",
+      "value": "6489085",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:758",
+      "quote": "transitoire 6 709 080 à la FAB et la fusion du lot transitoire 6 709 080 avec le lot 6 489 085,"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 302,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 9969,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042828Z",
+  "documents": [
+    {
+      "slug": "boisbriand",
+      "municipality_name": "Boisbriand",
+      "url": "https://www.ville.boisbriand.qc.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/PV/2026/2026-05-05_Seance-ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/34494f18c34824857a8769cc8bf0f01d3f26ce52865a1dddc84211ac0b2a47b5.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "CouncilSession": 1,
+        "MeetingDate": 1,
+        "Regulation": 15,
+        "Zone": 3,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Boisbriand",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:398",
+              "quote": "D'UNE CAMPAGNE DE MESURES DE DÉBIT SANITAIRE SUR LE TERRITOIRE DE LA VILLE"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:398",
+              "quote": "D'UNE CAMPAGNE DE MESURES DE DÉBIT SANITAIRE SUR LE TERRITOIRE DE LA VILLE"
+            }
+          }
+        ],
+        "CouncilSession": [
+          {
+            "label": "Séance du conseil — 5 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal du 5 mai 2026 tenue à 19 h 30"
+            }
+          }
+        ],
+        "MeetingDate": [
+          {
+            "label": "5 mai 2026",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:6",
+              "quote": "PROCÈS-VERBAL de la séance ordinaire du conseil municipal du 5 mai 2026 tenue à 19 h 30"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "RV-1787-1",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "D'adopter le Règlement RV-1787-1 modifiant le Règlement RV-1787 sur le financement des"
+            }
+          },
+          {
+            "label": "RV-1787",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "D'adopter le Règlement RV-1787-1 modifiant le Règlement RV-1787 sur le financement des"
+            }
+          },
+          {
+            "label": "RV-1796",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:82",
+              "quote": "D'adopter le Règlement RV-1796 sur la réserve financière pour l’environnement, le"
+            }
+          },
+          {
+            "label": "RV-1446-005",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:89",
+              "quote": "PROJET DE RÈGLEMENT RV-1446-005 - ADOPTION"
+            }
+          },
+          {
+            "label": "RV-1446",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:95",
+              "quote": "Règlement RV-1446 sur les dérogations mineures."
+            }
+          },
+          {
+            "label": "RV-1497-12",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "RÈGLEMENT RV-1497-12 - AVIS DE MOTION ET DÉPÔT"
+            }
+          },
+          {
+            "label": "RV-1497",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:105",
+              "quote": "Règlement RV-1497 sur la délégation de pouvoir d’autoriser des dépenses, de passer des"
+            }
+          },
+          {
+            "label": "RV-1566-3",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:115",
+              "quote": "RÈGLEMENT RV-1566-3 - AVIS DE MOTION ET DÉPÔT"
+            }
+          },
+          {
+            "label": "RV-1566",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:118",
+              "quote": "séance subséquente du Règlement RV-1566-3 modifiant l'article 84 du Règlement RV-1566"
+            }
+          },
+          {
+            "label": "RV-1650-6",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:125",
+              "quote": "RÈGLEMENT RV-1650-6 - AVIS DE MOTION ET DÉPÔT"
+            }
+          },
+          {
+            "label": "RV-1650",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:129",
+              "quote": "Règlement RV-1650 sur la gestion contractuelle."
+            }
+          },
+          {
+            "label": "RV-1800",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:135",
+              "quote": "RÈGLEMENT RV-1800 - AVIS DE MOTION ET DÉPÔT"
+            }
+          },
+          {
+            "label": "RV-1794",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:150",
+              "quote": "d’enregistrement du 27 au 30 avril 2026 sur le Règlement RV-1794 décrétant des travaux"
+            }
+          },
+          {
+            "label": "RV-1355-2",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:629",
+              "quote": "AUTORISATION EN VERTU DU RÈGLEMENT RV-1355-2 SUR LA QUALITÉ DE VIE -"
+            }
+          },
+          {
+            "label": "RV-1441",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:819",
+              "quote": "érigé au 7232, rue Jean-Claude-Langlois dans la zone R-3 483 du Règlement RV-1441 sur"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "A 521",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:737",
+              "quote": "ZONE AGRICOLE (A 521) - LOTS ACTUELS 6 489 085 ET 6 489 086 (CHEMIN DE LA CÔTE"
+            }
+          },
+          {
+            "label": "R-3 483",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:811",
+              "quote": "LES BOISÉS DION - 7232, RUE JEAN-CLAUDE-LANGLOIS - ZONE R-3 483"
+            }
+          },
+          {
+            "label": "C-3 405",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:867",
+              "quote": "2860, PROMENADE SAINT-HONORÉ - ZONE C-3 405"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "6489086",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:740",
+              "quote": "ATTENDU QUE la Ville de Boisbriand est propriétaire du lot 6 489 086 du cadastre du"
+            }
+          },
+          {
+            "label": "6489085",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:758",
+              "quote": "transitoire 6 709 080 à la FAB et la fusion du lot transitoire 6 709 080 avec le lot 6 489 085,"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042828Z/boisbriand/11ac0b2a47b5.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042828Z/boisbriand/11ac0b2a47b5.pdf/.graphify/.graphify_extract.json — 24 nodes, 8 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 24,
+        "edges": 8
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "boisbriand",
+          "mirabel"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

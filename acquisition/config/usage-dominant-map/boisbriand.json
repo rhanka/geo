@@ -1,0 +1,12 @@
+{
+  "prefix_map": {
+    "R": "residentiel",
+    "C": "commercial",
+    "I": "industriel",
+    "A": "agricole",
+    "CONS": "environnemental",
+    "P": null
+  },
+  "source": "https://www.ville.boisbriand.qc.ca/storage/app/media/services/permis-et-reglements/reglements-d-urbanisme/zonage/Reglement-RV-1441-Codification-administrative-au-24-septembre-2025.pdf",
+  "note": "Règlement RV-1441 sur le zonage (codification administrative au 24 septembre 2025), chapitre II, § 1 « Règles d'interprétation du plan de zonage », art. 5 « Répartition des zones »: « Aux fins de la réglementation des usages, le territoire de la municipalité est divisé en zones telles que montrées au plan de zonage joint au règlement en annexe I sous le titre « PLAN DE ZONAGE » pour en faire partie intégrante. La vocation de chaque zone est identifiée par une lettre et un chiffre, nommés « appellation de zone » comme suit : 1o R-1, 2, 3, 4, 5 : zones à vocation résidentielle; 2o C-1, 2, 3, 4, 5, 6 : zones à vocation commerciale; 3o I-1, 2, 3 : zones à vocation industrielle; 4o P-1, 2, 3, 4 : zones à vocation communautaire; 5o A : zones à vocation agricole; 6o Cons. : zones à vocation de conservation; 7o M : zones à vocation mixte. » L'article ajoute: « L'emplacement des zones sur le plan de zonage est précisé par trois chiffres placés à la suite de l'appellation de zone » — d'où la forme servie au SIG (« C-1219 » = appellation C-1 + emplacement 219; « CONS-101 »; « A-321 »), la LETTRE restant le porteur de la vocation. -> R « vocation résidentielle » = residentiel; C « vocation commerciale » = commercial; I « vocation industrielle » = industriel; A « vocation agricole » = agricole; Cons. « vocation de conservation » = environnemental. Null explicite: P « vocation communautaire » n'énonce aucune des cinq catégories. M « vocation mixte » n'est PAS mappé: aucun code de préfixe M n'existe au SIG servi (il aurait été null de toute façon, le règlement le déclarant mixte). CONS est déclaré explicitement (match longest-prefix) pour ne pas retomber sur C -> commercial; il couvre aussi l'unique code composite « CONS-I215-1 », que le règlement ne définit nulle part (aucune occurrence de « CONS-I ») mais dont l'appellation commence par Cons. Préfixes SIG présents: R 129, P 60, I 38, C 35, A 28, CONS 12 codes. Les grilles des usages et normes (annexe III, matrice des usages permis) ne sont pas utilisées."
+}

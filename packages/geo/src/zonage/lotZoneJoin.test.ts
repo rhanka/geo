@@ -1,4 +1,4 @@
-import type { Feature, Polygon } from "@sentropic/geo-core";
+import type { Feature, Polygon } from "geojson";
 import { describe, expect, it } from "vitest";
 
 import {

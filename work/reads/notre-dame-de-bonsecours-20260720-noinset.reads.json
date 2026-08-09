@@ -1,0 +1,22 @@
+{
+  "_source": "Claude 4.8 vision — lecture du crop neatline emis par t2-build --labels claude render-only : /home/antoinefa/.cache-tmp/t1claude-22c1eed2/gpt55-p1-d100-76-113-2898-2213.png (2898x2213 px, region pdf-pt [54.4, 81.2, 2141.0, 1674.4], page 1, dpi 100). Plan de zonage de Notre-Dame-de-Bonsecours (Papineau), avril 2018, urbaniste P.-Y. Guay. x/y normalises 0..1 dans CE crop.",
+  "_anti_invention": "Codes revalides VERBATIM contre work/zonage-dicts/notre-dame-de-bonsecours.json (15 codes). ⚠️ La feuille porte DEUX ENCARTS : vue d'ensemble en haut a droite, AGRANDISSEMENT en bas a gauche. Leurs etiquettes sont a une position d'ENCART, pas au sol — toutes exclues. Consequence assumee : 5-Ade, 6-Ade et 7-Ade n'existent QUE dans l'agrandissement, donc non lues (12 codes distincts sur 15). Mieux vaut 3 zones manquantes que 3 zones posees au mauvais endroit.",
+  "_diff_avec_le_fichier_precedent": "work/reads/notre-dame-de-bonsecours.reads.json (passe anterieure) contient 5-ADE/6-ADE/7-ADE aux coordonnees ~(0,30-0,33 ; 0,855-0,885) — ce sont precisement les positions de l'ENCART d'agrandissement en bas a gauche, pas des positions au sol. Il ecrit aussi les codes en MAJUSCULES (10-AF) alors que le dict porte 10-Af. Je ne l'ai pas ecrase.",
+  "labels": [
+    { "code": "15-F", "x": 0.3, "y": 0.303 },
+    { "code": "1-R", "x": 0.57, "y": 0.357 },
+    { "code": "1-R", "x": 0.213, "y": 0.403 },
+    { "code": "10-Af", "x": 0.37, "y": 0.414 },
+    { "code": "14-V", "x": 0.173, "y": 0.61 },
+    { "code": "1-R", "x": 0.695, "y": 0.612 },
+    { "code": "10-Af", "x": 0.288, "y": 0.615 },
+    { "code": "2-C", "x": 0.551, "y": 0.674 },
+    { "code": "3-F", "x": 0.404, "y": 0.686 },
+    { "code": "11-Ca", "x": 0.213, "y": 0.694 },
+    { "code": "13-V", "x": 0.16, "y": 0.701 },
+    { "code": "12-F", "x": 0.074, "y": 0.706 },
+    { "code": "4-Ad", "x": 0.375, "y": 0.815 },
+    { "code": "9-V", "x": 0.341, "y": 0.872 },
+    { "code": "8-V", "x": 0.431, "y": 0.897 }
+  ]
+}
