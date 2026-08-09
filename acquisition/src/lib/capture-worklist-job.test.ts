@@ -1,4 +1,7 @@
 /** Preuve locale du contrat produit par le Job de capture, sans réseau ni S3. */
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -11,6 +14,7 @@ import {
 } from "../../../packages/qc-sources/src/capture/index.js";
 import { RobotsCache } from "../../../packages/qc-sources/src/sources/robots-txt.js";
 import { capturedRobotsFetch } from "../capture-worklist-run.js";
+import { jobManifest, kubectlApplyArgs, parseArgs } from "../k8s-capture-run.js";
 import { verifyRawCapturePayload } from "./zone-provenance-raw-capture.js";
 import { captureReceiptFromManifest } from "./zone-provenance-quality.js";
 
@@ -42,6 +46,54 @@ function response(status: number, body = "", contentType = "application/json"): 
 }
 
 describe("capture worklist job contract", () => {
+  it("declares a non-root image and a writable scratch group in the submitted Job", () => {
+    const args = {
+      lane: "normes" as const,
+      worklistPath: "/tmp/worklist.json",
+      kubeconfig: "/tmp/ovh.conf",
+      shards: 1,
+      concurrency: 1,
+      image: "registry.example/geo-capture:test",
+      namespace: "geo",
+      runStamp: "20260726T120000Z",
+      delayMs: 0,
+      maxBytes: 1024,
+      memoryLimitMi: 176,
+      egress: "direct" as const,
+      dryRun: false,
+    };
+    const manifest = jobManifest(args, "registry/capture-worklists/normes-20260726T120000Z.json");
+    expect(manifest).toContain("securityContext:\n        # The capture image declares USER 1000:1000. EmptyDir is\n        # mounted at /scratch for its redacted temporary log, so grant that\n        # group ownership before the non-root entrypoint starts.\n        fsGroup: 1000\n        runAsNonRoot: true");
+    expect(manifest).toContain("memory: 176Mi");
+    expect(manifest).toContain("memory: 120Mi");
+    expect(manifest).toContain("cpu: 60m");
+    expect(manifest).toContain("cpu: 150m");
+
+    expect(jobManifest({ ...args, memoryLimitMi: 512 }, "registry/capture-worklists/normes-20260726T120000Z.json"))
+      .toContain("memory: 512Mi");
+
+    const dockerfile = readFileSync(resolve(import.meta.dirname, "../../../deploy/capture-job/Dockerfile"), "utf8");
+    expect(dockerfile).toContain("USER 1000:1000");
+    const template = readFileSync(resolve(import.meta.dirname, "../../../deploy/capture-job/job-capture.yaml"), "utf8");
+    expect(template).toContain("memory: 176Mi");
+    expect(template).toContain("memory: 120Mi");
+    expect(template).toContain("cpu: 60m");
+    expect(template).toContain("cpu: 150m");
+  });
+
+  it("accepts an explicit memory limit for a single-pod large-body recovery", () => {
+    expect(parseArgs([
+      "--lane", "zones", "--worklist", "/tmp/worklist.json", "--kubeconfig", "/tmp/ovh.conf",
+      "--memory-limit-mi", "512",
+    ])).toMatchObject({ memoryLimitMi: 512 });
+  });
+
+  it("passes the explicit kubeconfig and namespace to kubectl", () => {
+    expect(kubectlApplyArgs({ kubeconfig: "/tmp/ovh.conf", namespace: "geo" })).toEqual([
+      "--kubeconfig", "/tmp/ovh.conf", "-n", "geo", "apply", "-f", "-",
+    ]);
+  });
+
   it("produit une capture joinable par la mesure v2 et conserve le 404 sans CAS", async () => {
     const store = fakeStore();
     const run = new CaptureRun({

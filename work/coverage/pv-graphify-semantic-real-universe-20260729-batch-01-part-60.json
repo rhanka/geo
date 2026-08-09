@@ -1,0 +1,329 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T04:27:03.534Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 59,
+    "limit": 1,
+    "selected": 1,
+    "concurrency": 1
+  },
+  "classification_reports": [],
+  "eligible_records": 300,
+  "eligible_documents": 300,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 1,
+  "indexing": {
+    "indexed_pvs": 1,
+    "failed_pvs": 0,
+    "outcomes": {
+      "INDEXED": 1,
+      "OWNER_NOT_CONFIRMED": 0,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 0
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 1,
+    "Document": 1,
+    "Regulation": 15,
+    "Zone": 2,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 21,
+    "edges": 3,
+    "failures": 0
+  },
+  "matches": {
+    "zone_entities": 2,
+    "lot_entities": 2,
+    "documents_with_zone": 1,
+    "documents_with_lot": 1
+  },
+  "match_details": [
+    {
+      "municipality_slug": "becancour",
+      "storage_key": "raw/pv-index/cas/4271ad1629e185d02c8b7310e0bbd92c43cd5e018e841879a12068fe67334ae3.pdf",
+      "entity_type": "Zone",
+      "value": "I04-405",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:87",
+      "quote": "                        que prescrit à la grille de spécifications pour la zone I04-405 de l'annexe 1 du règlement"
+    },
+    {
+      "municipality_slug": "becancour",
+      "storage_key": "raw/pv-index/cas/4271ad1629e185d02c8b7310e0bbd92c43cd5e018e841879a12068fe67334ae3.pdf",
+      "entity_type": "Zone",
+      "value": "C02-220",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:129",
+      "quote": "           1787 pour modifier les usages et normes d’implantation dans la zone C02-220 (Secteur"
+    },
+    {
+      "municipality_slug": "becancour",
+      "storage_key": "raw/pv-index/cas/4271ad1629e185d02c8b7310e0bbd92c43cd5e018e841879a12068fe67334ae3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "4183402",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:90",
+      "quote": "     4.7   Lot 4 183 402 du cadastre du Québec – 8262, rue Cartier"
+    },
+    {
+      "municipality_slug": "becancour",
+      "storage_key": "raw/pv-index/cas/4271ad1629e185d02c8b7310e0bbd92c43cd5e018e841879a12068fe67334ae3.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3293468",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:118",
+      "quote": "     5.3   Lot 3 293 468 du cadastre du Québec – 2475 et 2485, avenue Nicolas-Perrot"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 1,
+      "zone_code_count": 126,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 1,
+      "served_municipalities": 1,
+      "total_lot_numbers": 2681,
+      "missing": []
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042651Z",
+  "documents": [
+    {
+      "slug": "becancour",
+      "municipality_name": "Bécancour",
+      "url": "https://becancour.net/app/uploads/2026/05/odj-2026-05-04.pdf",
+      "storage_key": "raw/pv-index/cas/4271ad1629e185d02c8b7310e0bbd92c43cd5e018e841879a12068fe67334ae3.pdf",
+      "source_file": "document.txt",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 15,
+        "Zone": 2,
+        "LotCadastre": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Bécancour",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:219",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:219",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "1858",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:23",
+              "quote": "           le règlement numéro 1858 intitulé : « Règlement créant une réserve financière pour le"
+            }
+          },
+          {
+            "label": "1867",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "           le règlement numéro 1867 intitulé : « Règlement modifiant le règlement numéro 1796 créant"
+            }
+          },
+          {
+            "label": "1796",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:27",
+              "quote": "           le règlement numéro 1867 intitulé : « Règlement modifiant le règlement numéro 1796 créant"
+            }
+          },
+          {
+            "label": "1830",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:101",
+              "quote": "5.   Demandes de permis – Règlement numéro 1830 relatif au PIIA"
+            }
+          },
+          {
+            "label": "1851",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:128",
+              "quote": "     6.1   Règlement numéro 1851 intitulé : « Règlement modifiant le règlement de zonage numéro"
+            }
+          },
+          {
+            "label": "1853",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:138",
+              "quote": "     6.2   Règlement numéro 1853 intitulé : « Règlement modifiant le règlement de zonage numéro"
+            }
+          },
+          {
+            "label": "1864",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:153",
+              "quote": "\f      6.3    Règlement numéro 1864 intitulé : « Règlement modifiant le règlement de zonage numéro"
+            }
+          },
+          {
+            "label": "1866",
+            "legal_quality": "SECOND_PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:165",
+              "quote": "      7.1    Le second projet de règlement numéro 1866 intitulé : « Règlement modifiant le règlement"
+            }
+          },
+          {
+            "label": "1868",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:177",
+              "quote": "8.    Règlement numéro 1868 intitulé : « Règlement de concordance modifiant le règlement"
+            }
+          },
+          {
+            "label": "1848",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:229",
+              "quote": "      14.1 Règlement numéro 1848 intitulé : « Règlement décrétant une dépense et un emprunt de"
+            }
+          },
+          {
+            "label": "1859",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:237",
+              "quote": "      14.2 Règlement numéro 1859 intitulé : « Règlement concernant le financement des travaux"
+            }
+          },
+          {
+            "label": "1871",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:249",
+              "quote": "      15.1 Règlement numéro 1871 intitulé : « Règlement modifiant le règlement numéro 554"
+            }
+          },
+          {
+            "label": "554",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:249",
+              "quote": "      15.1 Règlement numéro 1871 intitulé : « Règlement modifiant le règlement numéro 554"
+            }
+          },
+          {
+            "label": "1873",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:259",
+              "quote": "      15.2 Règlement numéro 1873 intitulé : « Règlement établissant un programme d’aide aux"
+            }
+          },
+          {
+            "label": "1780",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:441",
+              "quote": "      Pour en savoir plus, vous pouvez consulter le règlement n° 1780 relatif à la régie interne du conseil municipal de la"
+            }
+          }
+        ],
+        "Zone": [
+          {
+            "label": "I04-405",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:87",
+              "quote": "                        que prescrit à la grille de spécifications pour la zone I04-405 de l'annexe 1 du règlement"
+            }
+          },
+          {
+            "label": "C02-220",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:129",
+              "quote": "           1787 pour modifier les usages et normes d’implantation dans la zone C02-220 (Secteur"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "4183402",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:90",
+              "quote": "     4.7   Lot 4 183 402 du cadastre du Québec – 8262, rue Cartier"
+            }
+          },
+          {
+            "label": "3293468",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:118",
+              "quote": "     5.3   Lot 3 293 468 du cadastre du Québec – 2475 et 2485, avenue Nicolas-Perrot"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042651Z/becancour/68fe67334ae3.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T042651Z/becancour/68fe67334ae3.pdf/.graphify/.graphify_extract.json — 21 nodes, 3 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 21,
+        "edges": 3
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "becancour",
+          "sainte-helene-de-bagot"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

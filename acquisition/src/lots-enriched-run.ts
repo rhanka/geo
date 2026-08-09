@@ -15,6 +15,14 @@
  * lot identity keys keep working; zonage + norms + TOD are merged on top. The
  * flat immo alias `code_zone` is set alongside `zone_code` (same real value).
  *
+ * The lot→zone fold also publishes an explicit quality contract:
+ *   - zone_assignment_status: area-majority | centroid-fallback | multi-zone |
+ *     unassigned. It describes the deterministic assignment method, not a claim
+ *     that a historic assignment remains current after a later zone replacement.
+ *   - dominant_fraction / multi_zone / assignment_method remain available for
+ *     expert consumers. A separate lot-zone consistency audit compares a served
+ *     qc-lots snapshot to the latest served qc-zonage snapshot.
+ *
  * Three additive per-lot fields for immo (on top of zonage/norms/TOD):
  *   - surface_m2  : real polygon area, reprojected to a local metric CRS
  *                   (MTM/UTM via computeLotAttrs). Rounded to 0.01 m².
@@ -57,6 +65,9 @@
  *   --no-role --no-fsa keeps adresse/code_postal null and avoids the expensive
  *   remote rôle XML/FSA polygon joins. This is useful for qc-lots backfill where
  *   the anti-invention contract is more important than waiting for optional joins.
+ *   --preserve-existing-optional-attrs retains those independently sourced
+ *   fields verbatim from the prior served product while only zonage/norms are
+ *   re-materialized.
  */
 import { createWriteStream } from "node:fs";
 import { mkdtemp, readFile, rm, stat } from "node:fs/promises";
@@ -121,6 +132,8 @@ interface Args {
   noRole: boolean;
   /** Skip the RTA/FSA reverse-geocode join (code_postal stays null). */
   noFsa: boolean;
+  /** Keep already-served adresse/RTA fields during a fast zonage-only rewrite. */
+  preserveExistingOptionalAttrs: boolean;
 }
 
 interface EnrichStats {
@@ -175,6 +188,7 @@ function parseArgs(argv: string[]): Args {
   let shard: { index: number; total: number } | null = null;
   let noRole = false;
   let noFsa = false;
+  let preserveExistingOptionalAttrs = false;
 
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i]!;
@@ -185,6 +199,7 @@ function parseArgs(argv: string[]): Args {
     else if (arg === "--no-upload") noUpload = true;
     else if (arg === "--no-role") noRole = true;
     else if (arg === "--no-fsa") noFsa = true;
+    else if (arg === "--preserve-existing-optional-attrs") preserveExistingOptionalAttrs = true;
     else if (arg === "--verify-only") verifyOnly = true;
     else if (arg === "--time-box") timeBoxSec = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || DEFAULT_TIME_BOX_SEC);
     else if (arg === "--max-mb") maxMb = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || DEFAULT_MAX_MB);
@@ -202,7 +217,10 @@ function parseArgs(argv: string[]): Args {
   if (uniqueSlugs.length === 0 && !all && !served) {
     throw new Error("pass --all, --served, --slug <slug>, or --slugs <a,b>");
   }
-  return { slugs: uniqueSlugs, all, served, noUpload, verifyOnly, timeBoxSec, maxMb, shard, noRole, noFsa };
+  return {
+    slugs: uniqueSlugs, all, served, noUpload, verifyOnly, timeBoxSec, maxMb, shard,
+    noRole, noFsa, preserveExistingOptionalAttrs,
+  };
 }
 
 function outKey(slug: string): string {
@@ -211,6 +229,14 @@ function outKey(slug: string): string {
 
 function statsKey(slug: string): string {
   return `${OUT_PREFIX}qc-lots-${slug}.stats.json`;
+}
+
+function nestedOutKey(slug: string): string {
+  return `${OUT_PREFIX}qc-lots-${slug}/qc-lots-${slug}.geojson`;
+}
+
+function nestedStatsKey(slug: string): string {
+  return `${OUT_PREFIX}qc-lots-${slug}/qc-lots-${slug}.stats.json`;
 }
 
 /** Same lot-id extraction priority as lot-zone-join / tod-ingest, so the join
@@ -222,6 +248,45 @@ function lotIdOf(feature: GeoFeature, index: number): string {
     if (value !== null && value !== undefined && String(value).trim()) return String(value);
   }
   return String(index);
+}
+
+interface PreservedOptionalAttrs {
+  adresse: string | null;
+  code_postal: string | null;
+  code_postal_precision: string | null;
+}
+
+function stringOrNull(value: unknown): string | null {
+  return typeof value === "string" ? value : null;
+}
+
+/**
+ * Fast zonage materialization must not erase values whose sources are unrelated
+ * to the zonage parquet.  We reuse only prior SERVED values, with the layout
+ * preference of geo-api (nested first), never synthesize a value locally.
+ */
+async function loadPreservedOptionalAttrs(s3: S3Client, slug: string): Promise<Map<string, PreservedOptionalAttrs>> {
+  const keys = [
+    `${OUT_PREFIX}qc-lots-${slug}/qc-lots-${slug}.geojson`,
+    outKey(slug),
+  ];
+  for (const key of keys) {
+    if (!(await exists(s3, key))) continue;
+    const fc = await getGeoJsonFeatureCollection<GeoFeature>(s3, key) as GeoFc;
+    const out = new Map<string, PreservedOptionalAttrs>();
+    let index = -1;
+    for (const feature of fc.features ?? []) {
+      index += 1;
+      const props = feature.properties ?? {};
+      out.set(lotIdOf(feature, index), {
+        adresse: stringOrNull(props["adresse"]),
+        code_postal: stringOrNull(props["code_postal"]),
+        code_postal_precision: stringOrNull(props["code_postal_precision"]),
+      });
+    }
+    return out;
+  }
+  throw new Error(`${slug}: qc-lots servi absent; impossible de préserver les attributs optionnels`);
 }
 
 async function resolveCadastreKey(s3: S3Client, slug: string): Promise<string> {
@@ -258,6 +323,7 @@ interface ZonageRow {
   multi_zone: boolean | null;
   zone_codes: string[] | null;
   assignment_method: string | null;
+  zone_assignment_status: string | null;
   norms: Record<string, unknown> | null;
 }
 
@@ -283,6 +349,7 @@ async function loadZonage(s3: S3Client, key: string | null): Promise<Map<string,
       multi_zone: typeof row["multi_zone"] === "boolean" ? (row["multi_zone"] as boolean) : null,
       zone_codes: Array.isArray(row["zone_codes"]) ? (row["zone_codes"] as unknown[]).map((v) => String(v)) : null,
       assignment_method: strOrNull(row["assignment_method"]),
+      zone_assignment_status: strOrNull(row["zone_assignment_status"]),
       norms,
     });
   }
@@ -484,6 +551,10 @@ function enrichProperties(
     props["multi_zone"] = zonage.multi_zone;
     props["zone_codes"] = zonage.zone_codes;
     props["assignment_method"] = zonage.assignment_method;
+    // Explicit stable contract for non-specialist API consumers. Older parquet
+    // deposits have no field: null remains an honest "not materialized" rather
+    // than reconstructing a potentially wrong status here.
+    props["zone_assignment_status"] = zonage.zone_assignment_status;
     if (zonage.norms) {
       for (const [k, v] of Object.entries(zonage.norms)) {
         if (k === "zone_code") continue; // authoritative one already set above
@@ -495,6 +566,8 @@ function enrichProperties(
     props["code_zone"] = null;
     props["dominant_fraction"] = null;
     props["multi_zone"] = null;
+    props["assignment_method"] = null;
+    props["zone_assignment_status"] = null;
   }
 
   // ── TOD ───────────────────────────────────────────────────────────────────
@@ -533,6 +606,9 @@ async function runCity(
   const [zonage, tod] = await Promise.all([loadZonage(s3, zonageKey), loadTod(s3, todKey)]);
   const cadastre = (await getGeoJsonFeatureCollection<GeoFeature>(s3, cadastreKey)) as GeoFc;
   const features = cadastre.features ?? [];
+  const preservedOptionalAttrs = args.preserveExistingOptionalAttrs
+    ? await loadPreservedOptionalAttrs(s3, slug)
+    : null;
 
   // ── rôle-foncier address resolution (collision-safe by lot overlap) ─────────
   let roleResolution: RoleResolution | null = null;
@@ -588,17 +664,22 @@ async function runCity(
       const attrs = computeLotAttrs(feature);
       const surface = attrs.superficie_m2;
       props["surface_m2"] = surface;
+      const preserved = preservedOptionalAttrs?.get(lotId);
       // adresse: rôle-foncier join by lot number (spaces stripped).
       const noLotKey = noLotKeyOf(feature);
       const roleRow = roleResolution && noLotKey ? roleResolution.roleMap.get(noLotKey) : undefined;
-      props["adresse"] = roleRow?.adresse ?? null;
+      props["adresse"] = preserved ? preserved.adresse : roleRow?.adresse ?? null;
       // code_postal: RTA/FSA (3 car.) par géocodage inverse du centroïde du lot.
       const codePostal =
-        fsaIndex && attrs.centroid_lon !== null && attrs.centroid_lat !== null
+        preserved
+          ? preserved.code_postal
+          : fsaIndex && attrs.centroid_lon !== null && attrs.centroid_lat !== null
           ? lookupFsa(fsaIndex, attrs.centroid_lon, attrs.centroid_lat)
           : null;
       props["code_postal"] = codePostal;
-      props["code_postal_precision"] = codePostal ? "fsa3" : null;
+      props["code_postal_precision"] = preserved
+        ? preserved.code_postal_precision
+        : codePostal ? "fsa3" : null;
 
       numLots += 1;
       if (zRow) numJoinedZonage += 1;
@@ -623,6 +704,9 @@ async function runCity(
     await new Promise<void>((resolve, reject) => stream.end((err?: Error | null) => (err ? reject(err) : resolve())));
 
     const warnings: string[] = [];
+    if (preservedOptionalAttrs) {
+      warnings.push("adresse/code_postal preserved verbatim from prior served qc-lots during zonage-only materialization");
+    }
     const zonageJoinRate = numLots ? round2((100 * numJoinedZonage) / numLots) : 0;
     const pctWithZoneCode = numLots ? round2((100 * numWithZoneCode) / numLots) : 0;
     const pctWithNorms = numLots ? round2((100 * numWithNorms) / numLots) : 0;
@@ -685,6 +769,10 @@ async function runCity(
 
     if (!args.noUpload) {
       const body = await readFile(path);
+      const statsBody = Buffer.from(JSON.stringify(stats, null, 2), "utf8");
+      // A fast materialization must refresh the layout geo-api actually serves,
+      // but it must not create a new nested layout where none existed.
+      const mirrorNested = args.preserveExistingOptionalAttrs && await exists(s3, nestedOutKey(slug));
       await guardedQcLotsUpload({
         slug,
         candidateAddressCount: numWithAdresse,
@@ -696,10 +784,14 @@ async function runCity(
           putBytes(
             s3,
             statsKey(slug),
-            Buffer.from(JSON.stringify(stats, null, 2), "utf8"),
+            statsBody,
             "application/json",
           ),
       });
+      if (mirrorNested) {
+        await putBytes(s3, nestedOutKey(slug), body, "application/geo+json");
+        await putBytes(s3, nestedStatsKey(slug), statsBody, "application/json");
+      }
       const dep = await verifyDeposit(s3, slug);
       stats.verified_deposit = dep;
     } else {
@@ -720,6 +812,8 @@ function exampleOf(props: Record<string, unknown>): Record<string, unknown> {
     zone_code: pick("zone_code"),
     dominant_fraction: pick("dominant_fraction"),
     multi_zone: pick("multi_zone"),
+    assignment_method: pick("assignment_method"),
+    zone_assignment_status: pick("zone_assignment_status"),
     surface_m2: pick("surface_m2"),
     adresse: pick("adresse"),
     code_postal: pick("code_postal"),
