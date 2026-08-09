@@ -1,0 +1,2251 @@
+{
+  "schema_version": "1.0.0",
+  "report": "unknown-only-38-anatomie",
+  "generated_at": "2026-07-28T07:09:23.051Z",
+  "scope": {
+    "vivier": "acquisition/config/immo-vivier-b-20260725.json",
+    "vivier_as_of": "2026-07-25",
+    "b_prime_served": 141,
+    "selection": "S3 re-list + S3 read; unknown_only uniquement si toutes les features portent effet_densifiant=inconnu",
+    "read_only": true,
+    "normalized_writes": 0
+  },
+  "measurement": {
+    "served_collections": 871,
+    "b_prime": {
+      "total": 141,
+      "known_effect": 7,
+      "unknown_only": 38,
+      "absent": 96,
+      "invalid_only": 0
+    },
+    "unknown_only_features": 3850,
+    "unknown_only_rows": 38
+  },
+  "category_partition": {
+    "closed": true,
+    "total": 38,
+    "counts": {
+      "apres_present_avant_absent_date_verbatim_presente": 7,
+      "apres_present_avant_absent_date_verbatim_absente": 7,
+      "apres_present_source_date_incoherente": 1,
+      "apres_present_source_projet": 1,
+      "normes_densite_presentes_non_raccordees": 1,
+      "source_reglement_identifie_sans_densite_numerique": 11,
+      "source_non_en_vigueur_ou_proposition": 4,
+      "source_capture_illisible": 2,
+      "source_officielle_absente_ou_identite_non_verifiee": 3,
+      "grille_antérieure_au_reglement_servi": 1
+    },
+    "zero_observed_checks": {
+      "deux_densites_presentes_sans_date_verbatim": 0,
+      "chaine_reglement_est_code_zone": 0
+    },
+    "ranking": [
+      {
+        "category": "source_reglement_identifie_sans_densite_numerique",
+        "label": "source identifiée, aucune densité numérique extraite",
+        "count": 11,
+        "action": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet.",
+        "slugs": [
+          "auclair",
+          "barnston-ouest",
+          "coaticook",
+          "deux-montagnes",
+          "disraeli--les-appalaches",
+          "grand-metis",
+          "metis-sur-mer",
+          "mont-tremblant",
+          "saint-frederic",
+          "saint-raphael",
+          "westmount"
+        ]
+      },
+      {
+        "category": "apres_present_avant_absent_date_verbatim_absente",
+        "label": "densité APRES présente, AVANT absente; date verbatim absente",
+        "count": 7,
+        "action": "Obtenir la source officielle et sa date verbatim avant de chercher l'état AVANT; la densité courante seule ne suffit pas.",
+        "slugs": [
+          "franklin",
+          "nantes",
+          "ormstown",
+          "saint-mathieu-de-beloeil",
+          "saint-sylvere",
+          "sainte-clotilde",
+          "sayabec"
+        ]
+      },
+      {
+        "category": "apres_present_avant_absent_date_verbatim_presente",
+        "label": "densité APRES présente, AVANT absente; date APRES verbatim présente",
+        "count": 7,
+        "action": "Acquérir et rattacher un état AVANT numérique, daté verbatim et en vigueur; ne rien déduire de l'écart de millésime seul.",
+        "slugs": [
+          "chambly",
+          "mont-saint-hilaire",
+          "saint-gilles",
+          "saint-jean-baptiste",
+          "saint-victor",
+          "sainte-adele",
+          "sainte-catherine"
+        ]
+      },
+      {
+        "category": "source_non_en_vigueur_ou_proposition",
+        "label": "source disponible mais PROJET/avis sans force légale démontrée",
+        "count": 4,
+        "action": "Obtenir le règlement adopté et la grille en vigueur, avec preuve de date/propriétaire; ne pas utiliser la proposition.",
+        "slugs": [
+          "godbout",
+          "ham-sud",
+          "saint-paul-de-montminy",
+          "val-alain"
+        ]
+      },
+      {
+        "category": "source_officielle_absente_ou_identite_non_verifiee",
+        "label": "source officielle absente ou identité non vérifiée",
+        "count": 3,
+        "action": "Trouver et vérifier le document de la bonne municipalité, son règlement et sa date; aucune valeur ne peut être complétée.",
+        "slugs": [
+          "lislet",
+          "notre-dame-du-rosaire",
+          "saint-francois-de-la-riviere-du-sud"
+        ]
+      },
+      {
+        "category": "source_capture_illisible",
+        "label": "source captée mais illisible/non exploitable",
+        "count": 2,
+        "action": "Récupérer des octets lisibles ou une copie officielle exploitable, vérifier le propriétaire, puis extraire APRES et AVANT.",
+        "slugs": [
+          "lac-saint-joseph",
+          "saint-robert-bellarmin"
+        ]
+      },
+      {
+        "category": "apres_present_source_date_incoherente",
+        "label": "densité APRES présente, mais source et date APRES incohérentes",
+        "count": 1,
+        "action": "Remplacer la source 2013/non-disponible par la grille 2026 en vigueur, vérifier son propriétaire et sa date verbatim, puis acquérir l'AVANT.",
+        "slugs": [
+          "saint-amable"
+        ]
+      },
+      {
+        "category": "apres_present_source_projet",
+        "label": "densité APRES présente sur un PROJET",
+        "count": 1,
+        "action": "Obtenir l'instrument adopté/en vigueur et sa grille; le projet actuel est inutilisable, puis documenter l'AVANT.",
+        "slugs": [
+          "saint-sauveur"
+        ]
+      },
+      {
+        "category": "grille_antérieure_au_reglement_servi",
+        "label": "grille datée AVANT le règlement qu'elle prétend décrire",
+        "count": 1,
+        "action": "Acquérir la grille correspondant au règlement 2026 servi; la grille 2022 ne peut pas décrire cet état, puis chercher AVANT.",
+        "slugs": [
+          "varennes"
+        ]
+      },
+      {
+        "category": "normes_densite_presentes_non_raccordees",
+        "label": "densité présente dans les normes, non raccordée aux zones servies",
+        "count": 1,
+        "action": "Résoudre la correspondance exacte propriétaire/code entre normes et zone servie; ensuite seulement rattacher APRES et chercher AVANT.",
+        "slugs": [
+          "baie-des-sables"
+        ]
+      }
+    ]
+  },
+  "collections": [
+    {
+      "slug": "auclair",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-auclair.geojson",
+      "object_sha256": "fa4573de7319a3bcf8ace97d089436144016f5f1308d367090d00bb3ffc1b2b8",
+      "feature_count": 34,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 34
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 34 features; règlement servi=2014-07.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2014-07"
+          ],
+          "reglement_numero": [
+            "2014-07"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://municipaliteauclair.ca/media/attachments/2021/03/22/grilles-de-zonage.xls",
+            "value_verbatim": "https://municipaliteauclair.ca/media/attachments/2021/03/22/grilles-de-zonage.xls",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-20"
+          }
+        ],
+        "local_files": [
+          "annexe-grille.pdf",
+          "grille-discovered.pdf",
+          "grille.pdf",
+          "grilles-de-zonage.pdf",
+          "grilles-de-zonage.xls",
+          "regl-zonage-2018-05.pdf",
+          "src.pdf"
+        ]
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "baie-des-sables",
+      "category": "normes_densite_presentes_non_raccordees",
+      "category_label": "densité présente dans les normes, non raccordée aux zones servies",
+      "key": "normalized/ca-qc-zonage/qc-zonage-baie-des-sables.geojson",
+      "object_sha256": "62c960b8e4afa818c684ba3d18014639ef3c64c6b4d5222779f43d3bd0fe7953",
+      "feature_count": 3,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 3
+      },
+      "present": {
+        "note": "Le manifeste de normes porte 19 lignes dont 19 lignes de densité, mais aucune des 3 zones servies (35 (AGF), 36 (AGC), 37 (AGC)) ne reçoit de densité_value : le blocage est la jointure/code, pas une permission de conclure.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2008"
+          ],
+          "reglement_millesime": [
+            "2008"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2008-06"
+          ],
+          "reglement_numero": [
+            "2008-06"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://vplus-documents.s3.ca-central-1.amazonaws.com/baie-des-sables/_publication/fichiers/BDS_2008-06_zonage_2008-06-8_ev26-10-2023.pdf",
+            "date_verbatim": "2008",
+            "feature_count": 3
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.municipalite.baiedessables.ca/images/Upload/Files/Reglements/urbanisme/BDS_2008-06_grilles_2008-06-8_ev26-10-2023.pdf",
+            "value_verbatim": "https://www.municipalite.baiedessables.ca/images/Upload/Files/Reglements/urbanisme/BDS_2008-06_grilles_2008-06-8_ev26-10-2023.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-18"
+          }
+        ],
+        "local_files": [
+          "BDS_2008-06_grilles_2008-06-8_ev26-10-2023.pdf"
+        ]
+      },
+      "missing": "La jointure exacte norme↔zone servie manque; après raccordement, il faudra encore une densité_avant datée."
+    },
+    {
+      "slug": "barnston-ouest",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-barnston-ouest/qc-zonage-barnston-ouest.geojson",
+      "object_sha256": "2f40d82c4d4fc0d0f6f214918194acfeee1a1c3c0b6b14734d432c80f0a1a9dd",
+      "feature_count": 38,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 38
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 38 features; règlement servi=225.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2012"
+          ],
+          "reglement_millesime": [
+            "2012"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "225"
+          ],
+          "reglement_numero": [
+            "225"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.mrcdecoaticook.qc.ca/municipalites/Urbanisme/Barnston-Ouest/BAO_Zonage_225.pdf",
+            "date_verbatim": "2012",
+            "feature_count": 38
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.mrcdecoaticook.qc.ca/municipalites/Urbanisme/Barnston-Ouest/BAO_Zonage_225.pdf",
+            "value_verbatim": "https://www.mrcdecoaticook.qc.ca/municipalites/Urbanisme/Barnston-Ouest/BAO_Zonage_225.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-12"
+          }
+        ],
+        "local_files": [
+          "grille.pdf",
+          "reglement.pdf",
+          "websrc.pdf"
+        ]
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "chambly",
+      "category": "apres_present_avant_absent_date_verbatim_presente",
+      "category_label": "densité APRES présente, AVANT absente; date APRES verbatim présente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-chambly/qc-zonage-chambly.geojson",
+      "object_sha256": "b47b635ace2a6f01f758d0f107356a0455bdce1bb8faf9121e91a5cf3d995bf5",
+      "feature_count": 246,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 246
+      },
+      "present": {
+        "note": "6 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=2020; reglement servi=2020-1431.",
+        "densite_value_features": 6,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2020"
+          ],
+          "reglement_millesime": [
+            "2020"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2020-1431"
+          ],
+          "reglement_numero": [
+            "2020-1431"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://chambly.ca/storage/app/media/ville/organisation-municipale/reglementation/reglements-d-urbanisme/reglement-2020-1431-de-zonage-modifie-2026-1431-38a-39a-et-40a-annexe-b-grilles-des-usages.pdf",
+            "date_verbatim": "2020",
+            "feature_count": 246
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://chambly.ca/storage/app/media/ville/organisation-municipale/reglementation/reglements-d-urbanisme/reglement-2020-1431-de-zonage-modifie-2026-1431-38a-39a-et-40a-annexe-b-grilles-des-usages.pdf",
+            "value_verbatim": "https://chambly.ca/storage/app/media/ville/organisation-municipale/reglementation/reglements-d-urbanisme/reglement-2020-1431-de-zonage-modifie-2026-1431-38a-39a-et-40a-annexe-b-grilles-des-usages.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-23"
+          }
+        ],
+        "local_files": []
+      },
+      "missing": "Aucune densité_avant numérique n'est présente; il manque l'état AVANT en vigueur, son règlement et sa date verbatim, zone par zone."
+    },
+    {
+      "slug": "coaticook",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-coaticook/qc-zonage-coaticook.geojson",
+      "object_sha256": "e658147e9cf3ac8f250051d5ec63d28aeda39794df302f335d41b3c9840e8054",
+      "feature_count": 178,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 177
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 178 features; règlement servi=aucun.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [],
+          "reglement_numero": []
+        },
+        "sources": [
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.coaticook.ca/fr/services/permis-et-reglements.php",
+            "value_verbatim": "https://www.coaticook.ca/fr/services/permis-et-reglements.php",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-10"
+          }
+        ],
+        "local_files": [
+          "grille-perzone.json",
+          "grille.pdf",
+          "norms-registry-fix.json",
+          "parts/01.pdf",
+          "parts/02.pdf",
+          "parts/03.pdf",
+          "parts/04.pdf",
+          "parts/05.pdf",
+          "parts/06.pdf",
+          "perzone/Zones_101_C_106_RB_.pdf",
+          "perzone/Zones_107_P_111_RT_.pdf",
+          "perzone/Zones_112_RC_113_RA_.pdf",
+          "perzone/Zones_201_RC_203-2_CV_P_.pdf",
+          "perzone/Zones_204_CV_206_RC_.pdf",
+          "perzone/Zones_207_PCV_208_CV_.pdf",
+          "perzone/Zones_209_CV_210_CV_.pdf",
+          "perzone/Zones_211_CV_213_PCV_.pdf",
+          "perzone/Zones_214_CV_215_PVC_.pdf",
+          "perzone/Zones_301_RA_304_P_.pdf",
+          "perzone/Zones_305_-1_RD_305-2_RC_.pdf",
+          "perzone/Zones_306_P_308_P_.pdf",
+          "perzone/Zones_309_RC_.pdf",
+          "perzone/Zones_310_P_311_P_.pdf",
+          "perzone/Zones_312_RC_314_RD_.pdf",
+          "perzone/Zones_315_RA_316_RB_.pdf",
+          "perzone/Zones_318_RB_321_RB_.pdf",
+          "perzone/Zones_322_RB_.pdf",
+          "perzone/Zones_401_RA_405_-2_P_.pdf",
+          "perzone/Zones_406_RB_410_RC_P_.pdf",
+          "perzone/Zones_411_I_415_RA_.pdf",
+          "perzone/Zones_416_C_421_RA_.pdf",
+          "perzone/Zones_422_I_424_RC_.pdf",
+          "perzone/Zones_425_RT_429_CV_.pdf",
+          "perzone/Zones_430_P_431_RC_.pdf",
+          "perzone/Zones_501_-1_C_501_-_3_C_.pdf",
+          "perzone/Zones_502_RB_504_RE_.pdf",
+          "perzone/Zones_505_RC_509_RA_.pdf",
+          "perzone/Zones_510_RA_515_C_.pdf",
+          "perzone/Zones_516_RA_.pdf",
+          "perzone/Zones_601_RA_605_RA_.pdf",
+          "perzone/Zones_606_RA_610_P_.pdf",
+          "perzone/Zones_611_RA_613_RC_.pdf",
+          "perzone/Zones_614_C_619_RA_.pdf",
+          "perzone/Zones_701_RA_705_C_.pdf",
+          "perzone/Zones_706_RA_.pdf",
+          "perzone/Zones_801_806.pdf",
+          "perzone/Zones_807_812.pdf",
+          "perzone/Zones_813_818.pdf",
+          "perzone/Zones_819_821.pdf",
+          "perzone/Zones_901_A_905_FD_.pdf",
+          "perzone/Zones_906_F_908_RT_.pdf",
+          "perzone/Zones_909_HBD_913_RA_.pdf",
+          "perzone/Zones_914_A_915_AD_.pdf",
+          "perzone/Zones_916_AD_920_A_.pdf",
+          "perzone/Zones_921_A_925_FD_.pdf",
+          "perzone/Zones_926_FD_929_RT_.pdf"
+        ]
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "deux-montagnes",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-deux-montagnes.geojson",
+      "object_sha256": "3c2a8e12cec40fbb91d29a36a540ff789b391af472bdf8cc56a32fe1c8cffe45",
+      "feature_count": 124,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 124
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 124 features; règlement servi=1733.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "1733"
+          ],
+          "reglement_numero": [
+            "1733"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.ville.deux-montagnes.qc.ca/storage/app/media/ville-de-deux-montagnes/administration-et-finances/reglements-municipaux/1733-zonage-annexe-b-grilles_adm_2026-06-04.pdf",
+            "date_verbatim": null,
+            "feature_count": 124
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.ville.deux-montagnes.qc.ca/storage/app/media/ville-de-deux-montagnes/administration-et-finances/reglements-municipaux/1733-zonage-annexe-b-grilles_adm_2026-06-04.pdf",
+            "value_verbatim": "https://www.ville.deux-montagnes.qc.ca/storage/app/media/ville-de-deux-montagnes/administration-et-finances/reglements-municipaux/1733-zonage-annexe-b-grilles_adm_2026-06-04.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-07"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "disraeli--les-appalaches",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-disraeli--les-appalaches.geojson",
+      "object_sha256": "7166d7278de0c06b932d186a0149b52e8d325e1f6ca100bab24ecf1e79780313",
+      "feature_count": 55,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 55
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 55 features; règlement servi=641.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2019"
+          ],
+          "reglement_millesime": [
+            "2019"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "641"
+          ],
+          "reglement_numero": [
+            "641"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.villededisraeli.ca/fichiersUpload/fichiers/20250320162041-regl-no-641-relatif-au-zonage-version-administrative.pdf",
+            "date_verbatim": "2019",
+            "feature_count": 55
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.villededisraeli.ca/fichiersUpload/fichiers/20250407142337-annexe-iii-grilles-de-specifications-1-a-10.pdf",
+            "value_verbatim": "https://www.villededisraeli.ca/fichiersUpload/fichiers/20250407142337-annexe-iii-grilles-de-specifications-1-a-10.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-24"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "franklin",
+      "category": "apres_present_avant_absent_date_verbatim_absente",
+      "category_label": "densité APRES présente, AVANT absente; date verbatim absente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-franklin.geojson",
+      "object_sha256": "f127682575d548077882a850c18b8af173e50734a9b9ef23c6dd0663c7036fdd",
+      "feature_count": 82,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 82
+      },
+      "present": {
+        "note": "63 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=aucune; reglement servi=272.",
+        "densite_value_features": 63,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "272"
+          ],
+          "reglement_numero": [
+            "272"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://municipalitedefranklin.ca/wp-content/uploads/2023/04/272-Zonage-mai-2020.pdf",
+            "date_verbatim": null,
+            "feature_count": 82
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://non-disponible",
+            "value_verbatim": "https://non-disponible",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-23"
+          }
+        ],
+        "local_files": []
+      },
+      "missing": "Aucune densité_avant numérique ni date verbatim exploitable pour l'APRES n'est présente; il faut une source officielle datée puis l'état AVANT."
+    },
+    {
+      "slug": "godbout",
+      "category": "source_non_en_vigueur_ou_proposition",
+      "category_label": "source disponible mais PROJET/avis sans force légale démontrée",
+      "key": "normalized/ca-qc-zonage/qc-zonage-godbout.geojson",
+      "object_sha256": "78d03aed75e259182543329da027fa2fc1f809e3121cef918f04087cdf30101d",
+      "feature_count": 59,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 59
+      },
+      "present": {
+        "note": "Le texte local zonage-2016-102.txt imprime « PROJET DE RÈGLEMENT » et « JANVIER 2016 »; le numéro servi 2016-102 n'est donc pas une preuve d'entrée en vigueur.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2016-102"
+          ],
+          "reglement_numero": [
+            "2016-102"
+          ]
+        },
+        "sources": [],
+        "local_files": [
+          "annexe-p192.pdf",
+          "annexe-p193.pdf",
+          "grille.pdf",
+          "zonage-2016-102-vf.pdf",
+          "zonage-2016-102.pdf",
+          "zonage-2016-102.txt"
+        ]
+      },
+      "missing": "Un règlement/grille adopté et en vigueur remplaçant le projet manque, ainsi qu'une densité APRES et une densité AVANT numériques."
+    },
+    {
+      "slug": "grand-metis",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-grand-metis.geojson",
+      "object_sha256": "a0c64976f1c0d749cffa229773274770008f85b0dea1e8f38a756288ee7ddb53",
+      "feature_count": 26,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 26
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 26 features; règlement servi=2011-0145.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2011-0145"
+          ],
+          "reglement_numero": [
+            "2011-0145"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://municipalites-du-quebec.ca/grand-metis/docs/reglements/2/2011-0145_R%C3%A8glement_de_zonage_9060__2019-04-11%5B1%5D.pdf",
+            "value_verbatim": "https://municipalites-du-quebec.ca/grand-metis/docs/reglements/2/2011-0145_R%C3%A8glement_de_zonage_9060__2019-04-11%5B1%5D.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-12"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "ham-sud",
+      "category": "source_non_en_vigueur_ou_proposition",
+      "category_label": "source disponible mais PROJET/avis sans force légale démontrée",
+      "key": "normalized/ca-qc-zonage/qc-zonage-ham-sud.geojson",
+      "object_sha256": "0ed1cf66289cde16518b54b86503f1327bf68cd7a3e3bc603b356a1c6c8509da",
+      "feature_count": 36,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 36
+      },
+      "present": {
+        "note": "La source de grille du manifeste est explicitement Projet-de-reglement-2025-08-Annexe-I; un corps final 2025-08 existe, mais la grille utilisée n'établit pas sa force légale.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2026"
+          ],
+          "reglement_millesime": [
+            "2026"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2025-08"
+          ],
+          "reglement_numero": [
+            "2025-08"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://ham-sud.ca/ham-sud/wp-content/uploads/2026/07/Reglement-2025-08-Zonage-et-lotissement.pdf",
+            "date_verbatim": "2026",
+            "feature_count": 36
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://ham-sud.ca/ham-sud/wp-content/uploads/2026/01/Projet-de-reglement-2025-08-Annexe-I-Grilles-des-usages-et-specifications-par-zone.pdf",
+            "value_verbatim": "https://ham-sud.ca/ham-sud/wp-content/uploads/2026/01/Projet-de-reglement-2025-08-Annexe-I-Grilles-des-usages-et-specifications-par-zone.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-24"
+          }
+        ],
+        "local_files": [
+          "corps-2025-08.pdf"
+        ]
+      },
+      "missing": "Une grille adoptée/en vigueur manque (la grille captée est un projet), ainsi que les deux densités numériques."
+    },
+    {
+      "slug": "lac-saint-joseph",
+      "category": "source_capture_illisible",
+      "category_label": "source captée mais illisible/non exploitable",
+      "key": "normalized/ca-qc-zonage/qc-zonage-lac-saint-joseph.geojson",
+      "object_sha256": "850a41e79897c6cb09d563811e3e7a4cd608e8120eb402444621a1687303645e",
+      "feature_count": 36,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 36
+      },
+      "present": {
+        "note": "Le fichier local cdx-reglement-2024-301-annexes-b.txt ne fournit pas de couche texte exploitable; le rapport de capture signale aussi une source PDF sans couche texte.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2024"
+          ],
+          "reglement_millesime": [
+            "2024"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2024-301"
+          ],
+          "reglement_numero": [
+            "2024-301"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.villelacstjoseph.com/fichiersUpload/fichiers/20250310090344-reglement-2024-301-annexes-b.pdf",
+            "value_verbatim": "https://www.villelacstjoseph.com/fichiersUpload/fichiers/20250310090344-reglement-2024-301-annexes-b.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-17"
+          }
+        ],
+        "local_files": [
+          "cdx-annexe-b-grilles-spec-2024-301.pdf",
+          "cdx-reglement-2024-301-annexes-b.pdf",
+          "cdx-reglement-2024-301-annexes-b.txt",
+          "grille.pdf"
+        ]
+      },
+      "missing": "Des octets lisibles/OCR fiables de l'annexe 2024-301 manquent, puis les deux densités numériques."
+    },
+    {
+      "slug": "lislet",
+      "category": "source_officielle_absente_ou_identite_non_verifiee",
+      "category_label": "source officielle absente ou identité non vérifiée",
+      "key": "normalized/ca-qc-zonage/qc-zonage-lislet.geojson",
+      "object_sha256": "7eb89a6192b88bdf6e3a4f2b84cba563513b90e0ae70d7af54cb0293df9a60a8",
+      "feature_count": 8,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 8
+      },
+      "present": {
+        "note": "Le document local src.pdf existe, mais la source du manifeste vaut non-disponible; aucun URL officiel de document n'est présent dans les propriétés servies.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "158-2013"
+          ],
+          "reglement_numero": [
+            "158-2013"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "norms_manifest_source",
+            "url": null,
+            "value_verbatim": "non-disponible",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-12"
+          }
+        ],
+        "local_files": [
+          "src.pdf"
+        ]
+      },
+      "missing": "Un document officiel de Lislet, avec propriétaire et date verbatim vérifiés, manque, puis les deux densités numériques."
+    },
+    {
+      "slug": "metis-sur-mer",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-metis-sur-mer.geojson",
+      "object_sha256": "a51f704924adc5dfd07d9500d007c31006c586a00f2c5dfa2a0b6b46f580186f",
+      "feature_count": 67,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 67
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 67 features; règlement servi=08-38.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2008"
+          ],
+          "reglement_millesime": [
+            "2008"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "08-38"
+          ],
+          "reglement_numero": [
+            "08-38"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.ville.metis-sur-mer.qc.ca/sites/default/files/fichier/08-38_reglement_de_zonage_-_version_refondue_2020.pdf",
+            "date_verbatim": "2008",
+            "feature_count": 67
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.ville.metis-sur-mer.qc.ca/sites/default/files/fichier/08-38_reglement_de_zonage_-_version_refondue_2020.pdf",
+            "value_verbatim": "https://www.ville.metis-sur-mer.qc.ca/sites/default/files/fichier/08-38_reglement_de_zonage_-_version_refondue_2020.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-28"
+          }
+        ],
+        "local_files": []
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "mont-saint-hilaire",
+      "category": "apres_present_avant_absent_date_verbatim_presente",
+      "category_label": "densité APRES présente, AVANT absente; date APRES verbatim présente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-mont-saint-hilaire/qc-zonage-mont-saint-hilaire.geojson",
+      "object_sha256": "9c73a80572ba68c1ff5c768362f764c94c3a706bf21f9603158671caa30bab0f",
+      "feature_count": 250,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 250
+      },
+      "present": {
+        "note": "3 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=2017; reglement servi=1235.",
+        "densite_value_features": 3,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2017"
+          ],
+          "reglement_millesime": [
+            "2017"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "1235"
+          ],
+          "reglement_numero": [
+            "1235"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.villemsh.ca/wp-content/uploads/2026/06/1235_codification_Zonage_26mai2026-1.pdf",
+            "date_verbatim": "2017",
+            "feature_count": 250
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://non-disponible",
+            "value_verbatim": "https://non-disponible",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-30"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique n'est présente; il manque l'état AVANT en vigueur, son règlement et sa date verbatim, zone par zone."
+    },
+    {
+      "slug": "mont-tremblant",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-mont-tremblant.geojson",
+      "object_sha256": "bb4275b0a830a4fd9885e0e1905c77e39c886ead3e27e3825fd0a0d3fc473fd9",
+      "feature_count": 628,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 628
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 628 features; règlement servi=2008-102.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2008"
+          ],
+          "reglement_millesime": [
+            "2008"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2008-102"
+          ],
+          "reglement_numero": [
+            "2008-102"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/reglement-2008-102-annexe-a-zone-100.pdf",
+            "date_verbatim": "2008",
+            "feature_count": 628
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/",
+            "value_verbatim": "https://vdmt.ca/storage/app/media/services/reglements-durbanisme/zonage/",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-11"
+          }
+        ],
+        "local_files": [
+          "grille-zones-100-1000.pdf",
+          "grille.pdf",
+          "zonage-region.geojson",
+          "zone-100.pdf",
+          "zone-1000.pdf",
+          "zone-200.pdf",
+          "zone-300.pdf",
+          "zone-400.pdf",
+          "zone-500.pdf",
+          "zone-600.pdf",
+          "zone-700.pdf",
+          "zone-800.pdf",
+          "zone-900.pdf"
+        ]
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "nantes",
+      "category": "apres_present_avant_absent_date_verbatim_absente",
+      "category_label": "densité APRES présente, AVANT absente; date verbatim absente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-nantes.geojson",
+      "object_sha256": "4fd339adb17346c3a47943ef52fee83a7a227fa745c6c8856c9689d872ddccad",
+      "feature_count": 84,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 84
+      },
+      "present": {
+        "note": "1 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=aucune; reglement servi=399-12.",
+        "densite_value_features": 1,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "399-12"
+          ],
+          "reglement_numero": [
+            "399-12"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://municipalites-du-quebec.com/nantes/docs/reglements/2/2026-03-13%20-%20Grille%20des%20sp%C3%A9cifications.pdf",
+            "value_verbatim": "https://municipalites-du-quebec.com/nantes/docs/reglements/2/2026-03-13%20-%20Grille%20des%20sp%C3%A9cifications.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-12"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique ni date verbatim exploitable pour l'APRES n'est présente; il faut une source officielle datée puis l'état AVANT."
+    },
+    {
+      "slug": "notre-dame-du-rosaire",
+      "category": "source_officielle_absente_ou_identite_non_verifiee",
+      "category_label": "source officielle absente ou identité non vérifiée",
+      "key": "normalized/ca-qc-zonage/qc-zonage-notre-dame-du-rosaire.geojson",
+      "object_sha256": "e90585d28f79337254905c32f2a433d920de84a8a193d24e3940b3d1db1a1e62",
+      "feature_count": 49,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 49
+      },
+      "present": {
+        "note": "Un URL de règlement 2026-04 est présent, mais la source de normes du manifeste vaut non-disponible et aucun millésime servi ne l'attache à une grille.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "90-01"
+          ],
+          "reglement_numero": [
+            "90-01"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.notredamedurosaire.com/wp-content/uploads/2026/05/2026-04-REGLEMENT-URBANISME-2026-04.pdf",
+            "date_verbatim": null,
+            "feature_count": 49
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": null,
+            "value_verbatim": "non-disponible",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-27"
+          }
+        ],
+        "local_files": []
+      },
+      "missing": "La grille officielle rattachée au règlement 90-01 manque avec propriétaire/date vérifiés, puis les deux densités numériques."
+    },
+    {
+      "slug": "ormstown",
+      "category": "apres_present_avant_absent_date_verbatim_absente",
+      "category_label": "densité APRES présente, AVANT absente; date verbatim absente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-ormstown.geojson",
+      "object_sha256": "0e32c257d5e841835df2ac6171eacbaab59815dc3359f4a862ef509095f98a08",
+      "feature_count": 114,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 114
+      },
+      "present": {
+        "note": "1 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=aucune; reglement servi=148-2023.",
+        "densite_value_features": 1,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "148-2023"
+          ],
+          "reglement_numero": [
+            "148-2023"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.ormstown.ca/wp-content/uploads/ORM_R148-2023_Zonage_Mars2024.pdf",
+            "date_verbatim": null,
+            "feature_count": 114
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": null,
+            "value_verbatim": "non-disponible",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-28"
+          }
+        ],
+        "local_files": []
+      },
+      "missing": "Aucune densité_avant numérique ni date verbatim exploitable pour l'APRES n'est présente; il faut une source officielle datée puis l'état AVANT."
+    },
+    {
+      "slug": "saint-amable",
+      "category": "apres_present_source_date_incoherente",
+      "category_label": "densité APRES présente, mais source et date APRES incohérentes",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-amable.geojson",
+      "object_sha256": "e38495d43fa3a2bbee371e3c2c151e303426242f450808b0a9f2a095e40a67c7",
+      "feature_count": 104,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 1
+      },
+      "present": {
+        "note": "Le servi annonce APRES millésime 2026 / règlement 712-47-2026, mais l'URL de règlement présente et le champ reglement_numero sont 2013 / 712-00-2013; le manifeste de normes est non-disponible.",
+        "densite_value_features": 66,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [
+            "2013"
+          ],
+          "densite_apres_millesime": [
+            "2026"
+          ],
+          "reglement_millesime": [
+            "2013"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [
+            "712-00-2013"
+          ],
+          "densite_apres_reglement": [
+            "712-47-2026"
+          ],
+          "reglement_numero": [
+            "712-00-2013"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.st-amable.qc.ca/wp-content/uploads/2024/09/saint-amable-reglement-zonage-usages-normes-construction-renovation.pdf",
+            "date_verbatim": "2013",
+            "feature_count": 104
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://non-disponible",
+            "value_verbatim": "https://non-disponible",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-23"
+          }
+        ],
+        "local_files": []
+      },
+      "missing": "Une source 2026 en vigueur et sa preuve de date/propriétaire manquent; aucune densité_avant numérique n'est servie."
+    },
+    {
+      "slug": "saint-francois-de-la-riviere-du-sud",
+      "category": "source_officielle_absente_ou_identite_non_verifiee",
+      "category_label": "source officielle absente ou identité non vérifiée",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-francois-de-la-riviere-du-sud.geojson",
+      "object_sha256": "37631550c22525acdb7bbb8eb385cfe92b0bd3fc3558ef81487fbaf7b632d181",
+      "feature_count": 85,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 85
+      },
+      "present": {
+        "note": "Le servi référence 111-1990; le seul fichier local nommé discovery est discovery-2010-116-zonage.pdf et le manifeste n'apporte pas de source : identité/version non résolue.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "111-1990"
+          ],
+          "reglement_numero": [
+            "111-1990"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.stfrancois.ca/_files/ugd/36c7be_ab9fe17c8935431794f6202fd758f885.pdf",
+            "date_verbatim": null,
+            "feature_count": 85
+          }
+        ],
+        "local_files": [
+          "discovery-2010-116-zonage.pdf"
+        ]
+      },
+      "missing": "La résolution de l'identité 111-1990 vs 2010-116 et un document officiel propriétaire/date manquent, puis les deux densités numériques."
+    },
+    {
+      "slug": "saint-frederic",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-frederic.geojson",
+      "object_sha256": "7510ac606148fb3fa63397ed6677539cc5fa83c7c36e6b99310902fe9e923270",
+      "feature_count": 43,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 43
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 43 features; règlement servi=297-15.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2015"
+          ],
+          "reglement_millesime": [
+            "2015"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "297-15"
+          ],
+          "reglement_numero": [
+            "297-15"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.st-frederic.com/wp-content/uploads/Zonage_297-15_amende-5.pdf",
+            "date_verbatim": "2015",
+            "feature_count": 43
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.st-frederic.com/wp-content/uploads/Grille-des-specifications_297-15_amende-5.pdf",
+            "value_verbatim": "https://www.st-frederic.com/wp-content/uploads/Grille-des-specifications_297-15_amende-5.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-10"
+          }
+        ],
+        "local_files": [
+          "grille-297-15-amende-4.pdf",
+          "grille-297-15-amende-5.pdf",
+          "grille.pdf",
+          "grille297.pdf"
+        ]
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "saint-gilles",
+      "category": "apres_present_avant_absent_date_verbatim_presente",
+      "category_label": "densité APRES présente, AVANT absente; date APRES verbatim présente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-gilles.geojson",
+      "object_sha256": "ab0823b7279f38e853642938e682a87a9e25c50597308f44b6bb1e27ade40ad2",
+      "feature_count": 54,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 54
+      },
+      "present": {
+        "note": "7 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=2008; reglement servi=363-08.",
+        "densite_value_features": 7,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2008"
+          ],
+          "reglement_millesime": [
+            "2008"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "363-08"
+          ],
+          "reglement_numero": [
+            "363-08"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.csp20.com/Handlers/FileHandler.aspx?path=Reglements%5CClient-bc18f517-d12c-433f-879c-c64503608a12%5C2e3ad339-c5f6-4c70-b63f-a799fccfa27c.pdf",
+            "date_verbatim": "2008",
+            "feature_count": 54
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.csp20.com/Handlers/FileHandler.aspx?path=Reglements\\Client-bc18f517-d12c-433f-879c-c64503608a12\\1d06172a-05c2-4219-8918-c8403cfc1bba.pdf",
+            "value_verbatim": "https://www.csp20.com/Handlers/FileHandler.aspx?path=Reglements\\Client-bc18f517-d12c-433f-879c-c64503608a12\\1d06172a-05c2-4219-8918-c8403cfc1bba.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-28"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique n'est présente; il manque l'état AVANT en vigueur, son règlement et sa date verbatim, zone par zone."
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "category": "apres_present_avant_absent_date_verbatim_presente",
+      "category_label": "densité APRES présente, AVANT absente; date APRES verbatim présente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-jean-baptiste/qc-zonage-saint-jean-baptiste.geojson",
+      "object_sha256": "b8ad8dc753bd460e9b08aa26934e00e4062f094f1f3841de7f881bf678759bd4",
+      "feature_count": 58,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 58
+      },
+      "present": {
+        "note": "33 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=2009; reglement servi=751-09.",
+        "densite_value_features": 33,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2009"
+          ],
+          "reglement_millesime": [
+            "2009"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "751-09"
+          ],
+          "reglement_numero": [
+            "751-09"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://msjb.qc.ca/wp-content/uploads/2016/02/reglement-de-zonage.pdf",
+            "date_verbatim": "2009",
+            "feature_count": 58
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://msjb.qc.ca/wp-content/uploads/2016/02/reglement-de-zonage.pdf",
+            "value_verbatim": "https://msjb.qc.ca/wp-content/uploads/2016/02/reglement-de-zonage.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-03"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique n'est présente; il manque l'état AVANT en vigueur, son règlement et sa date verbatim, zone par zone."
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "category": "apres_present_avant_absent_date_verbatim_absente",
+      "category_label": "densité APRES présente, AVANT absente; date verbatim absente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-mathieu-de-beloeil.geojson",
+      "object_sha256": "ced2b51624baef2115c4e9f32170f414ddf7bac7bb603c64d5dd93e0b31cac4b",
+      "feature_count": 54,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 54
+      },
+      "present": {
+        "note": "21 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=aucune; reglement servi=22.10.",
+        "densite_value_features": 21,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "22.10"
+          ],
+          "reglement_numero": [
+            "22.10"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://stmathieudebeloeil.ca/wp-content/uploads/2022/10/Reg-No.-22.10-Zonage.pdf",
+            "date_verbatim": null,
+            "feature_count": 54
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/06/REG-22.10-Grilles-de-specification-MAJ-6-Mars-2026.pdf",
+            "value_verbatim": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/06/REG-22.10-Grilles-de-specification-MAJ-6-Mars-2026.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-29"
+          }
+        ],
+        "local_files": [
+          "grille-08.09-2020-10-30.pdf",
+          "grille-08.09-2021-07-05.pdf",
+          "grille-08.09.pdf",
+          "grille-2026-03-06.pdf",
+          "grille.pdf",
+          "grille.txt",
+          "ocr-08.09.log",
+          "pg-004.png",
+          "pg-012.png",
+          "reglements-urbanisme.html",
+          "site-home.html",
+          "site-reglements.html",
+          "site-urbanisme.html",
+          "vision-08.09-shard1.log",
+          "vision-08.09.log"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique ni date verbatim exploitable pour l'APRES n'est présente; il faut une source officielle datée puis l'état AVANT."
+    },
+    {
+      "slug": "saint-paul-de-montminy",
+      "category": "source_non_en_vigueur_ou_proposition",
+      "category_label": "source disponible mais PROJET/avis sans force légale démontrée",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-paul-de-montminy.geojson",
+      "object_sha256": "fc7e676f6184eb6c9c6b893a530e2529e6267622d147a93f984b8005f2a38e3e",
+      "feature_count": 81,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 81
+      },
+      "present": {
+        "note": "Les PDFs locaux portent PREMIER PROJET/SECOND PROJET; certains portent une adoption ultérieure pour 2025-13, mais la collection servie reste 02-90 et aucune grille APRES numérique n'est servie.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "02-90"
+          ],
+          "reglement_numero": [
+            "02-90"
+          ]
+        },
+        "sources": [],
+        "local_files": [
+          "annexe-grille-web.pdf",
+          "grille.pdf",
+          "mamh-premier-et-second-projet-reglement-2025-13.pdf",
+          "mamh-premier-et-second-projet-reglement-2025-14.pdf",
+          "mamh-premier-projet-reglement-no-2023-03.pdf",
+          "mamh-reglement-2025-13.pdf",
+          "mamh-reglement-no-2024-02.pdf",
+          "mamh-second-projet-reglement-2025-13.pdf",
+          "mamh-second-projet-reglement-2025-14.pdf",
+          "Premier-et-second-projet-Reglement-2025-14.pdf",
+          "Second-Projet-Reglement-2025-13.pdf"
+        ]
+      },
+      "missing": "Un document adopté/en vigueur et sa grille correspondant aux changements 2025 manquent, ainsi que les deux densités numériques."
+    },
+    {
+      "slug": "saint-raphael",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-raphael/qc-zonage-saint-raphael.geojson",
+      "object_sha256": "303fc67042aa4515fe09a3db0eaea3e4991f0a9d02ffa54c2691eafbbfcf4601",
+      "feature_count": 97,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 97
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 97 features; règlement servi=2022-228.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2022"
+          ],
+          "reglement_millesime": [
+            "2022"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2022-228"
+          ],
+          "reglement_numero": [
+            "2022-228"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.saint-raphael.ca/fichiersUpload/fichiers/20251006101542-reglement-zonage-2022-228.pdf",
+            "date_verbatim": "2022",
+            "feature_count": 97
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.saint-raphael.ca/fichiersUpload/fichiers/20251006101542-reglement-zonage-2022-228.pdf",
+            "value_verbatim": "https://www.saint-raphael.ca/fichiersUpload/fichiers/20251006101542-reglement-zonage-2022-228.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-27"
+          }
+        ],
+        "local_files": [
+          "grille.pdf",
+          "PROVENANCE.md"
+        ]
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    },
+    {
+      "slug": "saint-robert-bellarmin",
+      "category": "source_capture_illisible",
+      "category_label": "source captée mais illisible/non exploitable",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-robert-bellarmin.geojson",
+      "object_sha256": "b22eb95b55a99bf1e4bcced20febd3912d112d10cb7b7861eeb40a7198e0b8f1",
+      "feature_count": 53,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 53
+      },
+      "present": {
+        "note": "La grille locale existe, mais la capture du règlement source est signalée unknown-document-container et aucune densité numérique n'est servie.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2009"
+          ],
+          "reglement_millesime": [
+            "2009"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2009-08"
+          ],
+          "reglement_numero": [
+            "2009-08"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://cdn.gestionweblex.ca/files/isNRcSQxCx",
+            "date_verbatim": "2009",
+            "feature_count": 53
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://cdn.gestionweblex.ca/files/isNRcSQxCx",
+            "value_verbatim": "https://cdn.gestionweblex.ca/files/isNRcSQxCx",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-20"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Une capture lisible et vérifiée du règlement 2009-08 manque, puis les deux densités numériques."
+    },
+    {
+      "slug": "saint-sauveur",
+      "category": "apres_present_source_projet",
+      "category_label": "densité APRES présente sur un PROJET",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-sauveur.geojson",
+      "object_sha256": "b1747a9208b85f8841401875a591d212dd07b36dbc93e6878cb802bb145fa2f1",
+      "feature_count": 140,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 140
+      },
+      "present": {
+        "note": "L'URL servie de grille contient « PR » et « 222-109-2026 »; c'est une proposition, tandis que le champ servi reste 222-2008.",
+        "densite_value_features": 4,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2008"
+          ],
+          "reglement_millesime": [
+            "2008"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "222-2008"
+          ],
+          "reglement_numero": [
+            "222-2008"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.vss.ca/storage/app/media/ville/administration-municipale/avis-publics-et-reglements/2026/2026-05-20%20-%20PR%20-%20ANNEXE%201_Annexe%20A%20GRILLES%20au%20222-109-2026.pdf",
+            "date_verbatim": "2008",
+            "feature_count": 140
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.vss.ca/storage/app/media/ville/administration-municipale/avis-publics-et-reglements/2026/2026-05-20%20-%20PR%20-%20ANNEXE%201_Annexe%20A%20GRILLES%20au%20222-109-2026.pdf",
+            "value_verbatim": "https://www.vss.ca/storage/app/media/ville/administration-municipale/avis-publics-et-reglements/2026/2026-05-20%20-%20PR%20-%20ANNEXE%201_Annexe%20A%20GRILLES%20au%20222-109-2026.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-23"
+          }
+        ],
+        "local_files": []
+      },
+      "missing": "Une grille adoptée/en vigueur remplaçant le PROJET manque; aucune densité_avant numérique n'est servie."
+    },
+    {
+      "slug": "saint-sylvere",
+      "category": "apres_present_avant_absent_date_verbatim_absente",
+      "category_label": "densité APRES présente, AVANT absente; date verbatim absente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-sylvere.geojson",
+      "object_sha256": "3899c1ac936bae1b674f40666a20d7ac00d5ab1f8400c06e42227919b78d49c4",
+      "feature_count": 19,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 19
+      },
+      "present": {
+        "note": "19 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=aucune; reglement servi=247.",
+        "densite_value_features": 19,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "247"
+          ],
+          "reglement_numero": [
+            "247"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.saint-sylvere.ca/file-23566",
+            "date_verbatim": null,
+            "feature_count": 19
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.saint-sylvere.ca/file-23566",
+            "value_verbatim": "https://www.saint-sylvere.ca/file-23566",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-04"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique ni date verbatim exploitable pour l'APRES n'est présente; il faut une source officielle datée puis l'état AVANT."
+    },
+    {
+      "slug": "saint-victor",
+      "category": "apres_present_avant_absent_date_verbatim_presente",
+      "category_label": "densité APRES présente, AVANT absente; date APRES verbatim présente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-victor.geojson",
+      "object_sha256": "88f25f5565ad8c6d321676cc052d497046f1a406b6198ea54f36eb921ca611f6",
+      "feature_count": 66,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 66
+      },
+      "present": {
+        "note": "7 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=2018; reglement servi=157-2018.",
+        "densite_value_features": 7,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2018"
+          ],
+          "reglement_millesime": [
+            "2018"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "157-2018"
+          ],
+          "reglement_numero": [
+            "157-2018"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://st-victor.qc.ca/wp-content/uploads/2025/10/SV_Zonage_157-2018_2025-09-22.pdf",
+            "date_verbatim": "2018",
+            "feature_count": 66
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": null,
+            "value_verbatim": "non-disponible",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-27"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique n'est présente; il manque l'état AVANT en vigueur, son règlement et sa date verbatim, zone par zone."
+    },
+    {
+      "slug": "sainte-adele",
+      "category": "apres_present_avant_absent_date_verbatim_presente",
+      "category_label": "densité APRES présente, AVANT absente; date APRES verbatim présente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-sainte-adele.geojson",
+      "object_sha256": "f3461a9ef25bbd02b2f450aed2797f4d4e50899501b711ca9a3cc9ba094fc3ce",
+      "feature_count": 145,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 145
+      },
+      "present": {
+        "note": "6 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=2021; reglement servi=1314-2021-Z.",
+        "densite_value_features": 6,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2021"
+          ],
+          "reglement_millesime": [
+            "2021"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "1314-2021-Z"
+          ],
+          "reglement_numero": [
+            "1314-2021-Z"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://vdsa.ca/storage/app/media/services/urbanisme-et-environnement/reglements-durbanisme/zonage/Rgl-1314-2021-Z-en-vigueur-20251003.pdf",
+            "date_verbatim": "2021",
+            "feature_count": 145
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "staged://work/zonage-norms/sainte-adele/grille.pdf",
+            "value_verbatim": "staged://work/zonage-norms/sainte-adele/grille.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-07"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique n'est présente; il manque l'état AVANT en vigueur, son règlement et sa date verbatim, zone par zone."
+    },
+    {
+      "slug": "sainte-catherine",
+      "category": "apres_present_avant_absent_date_verbatim_presente",
+      "category_label": "densité APRES présente, AVANT absente; date APRES verbatim présente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-sainte-catherine.geojson",
+      "object_sha256": "a714963757e0df8939e8f96a648fb4233f2cd4f5bc84bee3ebea5930f95bc396",
+      "feature_count": 192,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 192
+      },
+      "present": {
+        "note": "20 densités courantes sont présentes; les millésimes APRES concurrents sont 2009 et 2025, avec une seule densite_apres numérique et aucun AVANT numérique : la version APRES exacte reste à borner.",
+        "densite_value_features": 20,
+        "densite_avant_features": 0,
+        "densite_apres_features": 1,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [
+            "2009"
+          ],
+          "densite_apres_millesime": [
+            "2009",
+            "2025"
+          ],
+          "reglement_millesime": [
+            "2009"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [
+            "2009-Z-00"
+          ],
+          "densite_apres_reglement": [
+            "2009-Z-00",
+            "2024-0024"
+          ],
+          "reglement_numero": [
+            "2009-Z-00"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.ville.sainte-catherine.qc.ca/medias/documents/content/REGL-2009xZx00-Codam-v20260623.pdf",
+            "date_verbatim": "2009",
+            "feature_count": 192
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.ville.sainte-catherine.qc.ca/citoyens/reglements/reglements-durbanisme-et-du-genie/",
+            "value_verbatim": "https://www.ville.sainte-catherine.qc.ca/citoyens/reglements/reglements-durbanisme-et-du-genie/",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-30"
+          }
+        ],
+        "local_files": [
+          "gr_com.pdf",
+          "gr_com2.pdf",
+          "gr_ind.pdf",
+          "gr_mix.pdf",
+          "gr_res.pdf",
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique sur 192 features; borner d'abord quel APRES (2009 ou 2025) est légalement applicable, puis acquérir l'AVANT correspondant."
+    },
+    {
+      "slug": "sainte-clotilde",
+      "category": "apres_present_avant_absent_date_verbatim_absente",
+      "category_label": "densité APRES présente, AVANT absente; date verbatim absente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-sainte-clotilde.geojson",
+      "object_sha256": "9203326a70cc19a96329a14182607cc009b9e22d8254efd3cb1dca628fdd8768",
+      "feature_count": 76,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 76
+      },
+      "present": {
+        "note": "30 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=aucune; reglement servi=471.",
+        "densite_value_features": 30,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "471"
+          ],
+          "reglement_numero": [
+            "471"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.ste-clotilde.ca/fichiersUpload/fichiers/20240925152225-471-06-grilles-completes.pdf",
+            "date_verbatim": null,
+            "feature_count": 76
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.ste-clotilde.ca/fichiersUpload/fichiers/20240925152225-471-06-grilles-completes.pdf",
+            "value_verbatim": "https://www.ste-clotilde.ca/fichiersUpload/fichiers/20240925152225-471-06-grilles-completes.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-30"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique ni date verbatim exploitable pour l'APRES n'est présente; il faut une source officielle datée puis l'état AVANT."
+    },
+    {
+      "slug": "sayabec",
+      "category": "apres_present_avant_absent_date_verbatim_absente",
+      "category_label": "densité APRES présente, AVANT absente; date verbatim absente",
+      "key": "normalized/ca-qc-zonage/qc-zonage-sayabec.geojson",
+      "object_sha256": "9b5d699d0a26bfad2af63aaba16dd78ce6f12afde08bc2492be0b905d3c70327",
+      "feature_count": 108,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 108
+      },
+      "present": {
+        "note": "108 feature(s) portent densite_value; aucun densite_avant numérique; APRES/millésime servi=aucune; reglement servi=2005-04.",
+        "densite_value_features": 108,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "2005-04"
+          ],
+          "reglement_numero": [
+            "2005-04"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.mrcmatapedia.qc.ca/",
+            "value_verbatim": "https://www.mrcmatapedia.qc.ca/",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-07-03"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "Aucune densité_avant numérique ni date verbatim exploitable pour l'APRES n'est présente; il faut une source officielle datée puis l'état AVANT."
+    },
+    {
+      "slug": "val-alain",
+      "category": "source_non_en_vigueur_ou_proposition",
+      "category_label": "source disponible mais PROJET/avis sans force légale démontrée",
+      "key": "normalized/ca-qc-zonage/qc-zonage-val-alain.geojson",
+      "object_sha256": "8b850a99513ea018194faff899319a4a5b566085e89cf05de12b729293bd80ed",
+      "feature_count": 54,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 54
+      },
+      "present": {
+        "note": "L'URL présente est un AVIS-PUBLIC-APP-REFERENDAIRE; elle ne démontre pas un règlement adopté ni une grille en vigueur.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [
+            "2021"
+          ],
+          "reglement_millesime": [
+            "2021"
+          ]
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "204-2021"
+          ],
+          "reglement_numero": [
+            "204-2021"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.val-alain.com/wp-content/uploads/2026/06/AVIS-PUBLIC-APP-REFERENDAIRE-_-hauteur-batiments.pdf",
+            "date_verbatim": "2021",
+            "feature_count": 54
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.val-alain.com/wp-content/uploads/2026/06/AVIS-PUBLIC-APP-REFERENDAIRE-_-hauteur-batiments.pdf",
+            "value_verbatim": "https://www.val-alain.com/wp-content/uploads/2026/06/AVIS-PUBLIC-APP-REFERENDAIRE-_-hauteur-batiments.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-26"
+          }
+        ],
+        "local_files": []
+      },
+      "missing": "Un règlement/grille adopté et en vigueur manque au-delà de l'avis référendaire, ainsi que les deux densités numériques."
+    },
+    {
+      "slug": "varennes",
+      "category": "grille_antérieure_au_reglement_servi",
+      "category_label": "grille datée AVANT le règlement qu'elle prétend décrire",
+      "key": "normalized/ca-qc-zonage/qc-zonage-varennes.geojson",
+      "object_sha256": "e5066d19490e4e805f3d24c3010bb815d9089d864c0465c79423b07f81535521",
+      "feature_count": 249,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 249
+      },
+      "present": {
+        "note": "Le règlement servi est 707 avec URL zonage_reg707-165 du 12 juin 2026, alors que la grille du manifeste est reg707_AnnexeB_grilles_200 du 14 octobre 2022.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "707"
+          ],
+          "reglement_numero": [
+            "707"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://www.ville.varennes.qc.ca/uploads/Services/Urbanisme/zonage_reg707-165_12_juin_2026.pdf",
+            "date_verbatim": null,
+            "feature_count": 249
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://www.ville.varennes.qc.ca/uploads/Services/Urbanisme/reg707_AnnexeB_grilles_200_-_14_octobre_2022.pdf",
+            "value_verbatim": "https://www.ville.varennes.qc.ca/uploads/Services/Urbanisme/reg707_AnnexeB_grilles_200_-_14_octobre_2022.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-23"
+          }
+        ],
+        "local_files": [
+          "grille.pdf"
+        ]
+      },
+      "missing": "La grille 2026 correspondant à 707-165 manque; la grille 2022 ne peut pas servir d'APRES, puis il faut une densité AVANT."
+    },
+    {
+      "slug": "westmount",
+      "category": "source_reglement_identifie_sans_densite_numerique",
+      "category_label": "source identifiée, aucune densité numérique extraite",
+      "key": "normalized/ca-qc-zonage/qc-zonage-westmount/qc-zonage-westmount.geojson",
+      "object_sha256": "778c7da46dd3bd57f6a98966385d764de5e0268b8bf6cadaf02e5537c2a1f3d1",
+      "feature_count": 159,
+      "effect": {
+        "field": "effet_densifiant",
+        "value": "inconnu",
+        "features": 159
+      },
+      "present": {
+        "note": "0 densite_value, 0 densite_avant et 0 densite_apres numériques sur 159 features; règlement servi=1303.",
+        "densite_value_features": 0,
+        "densite_avant_features": 0,
+        "densite_apres_features": 0,
+        "dates_verbatim_served": {
+          "densite_avant_millesime": [],
+          "densite_apres_millesime": [],
+          "reglement_millesime": []
+        },
+        "reglements_verbatim_served": {
+          "densite_avant_reglement": [],
+          "densite_apres_reglement": [
+            "1303"
+          ],
+          "reglement_numero": [
+            "1303"
+          ]
+        },
+        "sources": [
+          {
+            "kind": "served_reglement_url",
+            "url": "https://westmount.org/storage/app/media/travaux-et-urbanisme/amenagement-urbain/reglements-de-lamenagement-urbain/EN/reglement-1641-concordance-ppuzonagevfns-avec-annexes.pdf",
+            "date_verbatim": null,
+            "feature_count": 159
+          },
+          {
+            "kind": "norms_manifest_source",
+            "url": "https://westmount.org/storage/app/media/travaux-et-urbanisme/amenagement-urbain/reglements-de-lamenagement-urbain/EN/reglement-1641-concordance-ppuzonagevfns-avec-annexes.pdf",
+            "value_verbatim": "https://westmount.org/storage/app/media/travaux-et-urbanisme/amenagement-urbain/reglements-de-lamenagement-urbain/EN/reglement-1641-concordance-ppuzonagevfns-avec-annexes.pdf",
+            "date_verbatim": null,
+            "manifest_snapshot": "2026-06-23"
+          }
+        ],
+        "local_files": []
+      },
+      "missing": "Trouver dans la source en vigueur une valeur numérique de capacité/densité (ou constater verbatim qu'elle n'existe pas); sans APRES numérique, aucun effet."
+    }
+  ]
+}
+

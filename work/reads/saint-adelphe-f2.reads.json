@@ -1,0 +1,28 @@
+{
+  "_source": "Claude vision — lecture directe de work/zonage-plans/saint-adelphe-zonage-regl.pdf page 119 (Annexe A, Feuillet 2 de 2, reglement de zonage 2009-253), rendu poppler dpi150 en respectant /Rotate 90 (2550x1650 px natif, 2000x1294 px affiche). x/y = fraction NATURELLE du rendu EFFECTIF, cohérente avec work/gcp/saint-adelphe-f2.t3.gcp.json APRES correction /Rotate (voir _rotate_fix_note dans le gcp file et work/reads/saint-adelphe-f1.reads.json pour le detail du piege).",
+  "_anti_invention": "Lectures VERBATIM revalidees contre work/zonage-dicts/saint-adelphe.dict.json (77 codes). ⛔ MUR MESURE ET CONTOURNE HONNETEMENT : work/gcp/saint-adelphe-f2.t3.gcp.json n'a que 7 GCP independants, TOUS regroupes dans un petit ilot (fx∈[0.63,0.74],fy∈[0.48,0.66] post-correction /Rotate) — un plan urbain dense ou le chamfer-seed n'a matche des coins cadastraux fiables QUE dans ce sous-secteur (reference_raster_corners=323 malgre 2360 coins releves sur le plan ; des essais --max-candidate-m 35/70 et --min-patch-score 0.08/0.12 ne font PAS grossir l'ilot, mesure 2x). MESURE : servir les 51 codes lus plein-feuillet fait DIVERGER le centroide a 10,6km du cadastre (gate spatial 8km REFUSE, extrapolation d'une affine 7-points hors de son enveloppe convexe) ; restreindre aux 22 codes dont la position tombe DANS/PRES de l'ilot calibre (marge ~0.15 en fx/fy) ramene le centroide a 5,2km (PASSE). Les 29 codes hors-ilot (32-Ad,40-Ib-A,16-Af,30-Vb-A,44-P-A,46-P,33-Ad,17-Af,61-Cb,56-Rb,80-Ia,53-Ra,52-Ra,21-Af,20-Af,34-Ad,58-Rb,23-Af,35-Ad,50-P,51-P,74-Ca,22-Af,59-Ra,49-P,75-Cb,36-Ad,76-Cb,39-Ad) sont sciemment OMIS de ce feuillet — lus (voir historique du prompt) mais NON servis faute de calage fiable a leur position ; certains (36-Ad, 34-Ad) restent couverts via le feuillet 1 qui les lit aussi.",
+  "labels": [
+    { "code": "79-Ib", "x": 0.720, "y": 0.4637 },
+    { "code": "67-Ca", "x": 0.655, "y": 0.4768 },
+    { "code": "68-Ca", "x": 0.6725, "y": 0.5062 },
+    { "code": "48-P", "x": 0.645, "y": 0.4598 },
+    { "code": "72-Ca", "x": 0.774, "y": 0.4714 },
+    { "code": "65-Ca", "x": 0.645, "y": 0.5703 },
+    { "code": "69-Ca", "x": 0.720, "y": 0.5641 },
+    { "code": "70-Ca", "x": 0.7175, "y": 0.5950 },
+    { "code": "71-Ca", "x": 0.675, "y": 0.6353 },
+    { "code": "73-Ca", "x": 0.745, "y": 0.6167 },
+    { "code": "60-Rc", "x": 0.8075, "y": 0.5100 },
+    { "code": "63-Ca", "x": 0.5175, "y": 0.4366 },
+    { "code": "64-Ca", "x": 0.580, "y": 0.4907 },
+    { "code": "77-Cb", "x": 0.560, "y": 0.4699 },
+    { "code": "47-P", "x": 0.5975, "y": 0.3555 },
+    { "code": "78-Ia", "x": 0.5565, "y": 0.3748 },
+    { "code": "54-Ra", "x": 0.590, "y": 0.4034 },
+    { "code": "55-Ra", "x": 0.575, "y": 0.4560 },
+    { "code": "81-Af", "x": 0.554, "y": 0.4343 },
+    { "code": "45-P-A", "x": 0.615, "y": 0.3207 },
+    { "code": "57-Rb", "x": 0.4735, "y": 0.4598 },
+    { "code": "62-Ca", "x": 0.4125, "y": 0.3516 }
+  ]
+}

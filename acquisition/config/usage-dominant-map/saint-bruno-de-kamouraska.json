@@ -1,0 +1,23 @@
+{
+  "prefix_map": {
+    "1AF": "agricole",
+    "2ID": null,
+    "3ID": null,
+    "4F": "agricole",
+    "5AF": "agricole",
+    "6ID": null,
+    "7AF": "agricole",
+    "8ID": null,
+    "9RZ": null,
+    "10R": "residentiel",
+    "11M": null,
+    "12R": "residentiel",
+    "13P": null,
+    "14P": null,
+    "15RZ": null,
+    "16R": "residentiel",
+    "17P": null
+  },
+  "source": "work/zonage-norms/saint-bruno-de-kamouraska/20250409161128-273-2025-zonage-web.pdf — Règlement de zonage, Municipalité de Saint-Bruno-de-Kamouraska (version 2025 du corpus local)",
+  "note": "Règlement de zonage de Saint-Bruno-de-Kamouraska, ch. 3 « Plan de zonage et grilles de spécifications », art. 3.2 « Codification des zones », p. 5: « Chacune des zones illustrées sur le plan de zonage est identifiée, à titre indicatif uniquement, par une référence alphanumérique qui indique la dominante et le numéro de la zone. » Table « Lettres d’appellation et dominante correspondante »: R « Résidentielle »; RZ « Résidentielle de réserve »; M « Mixte »; P « Publique et institutionnelle »; AF « Agroforestière »; F « Forestière »; ID « Ilot déstructuré ». AF et F -> agricole; R -> residentiel. Null explicite: RZ « Résidentielle de réserve » est une réserve; M « Mixte » est sans dominante unique; P « Publique et institutionnelle » est public; ID « Ilot déstructuré » ne nomme aucune des cinq catégories. L'article ajoute: « Les chiffres qui précèdent les lettres établissent l’ordre numérique des zones. » Le SIG sert donc les 17 codes digit-first exacts (1AF, 2ID, 10R, 15RZ, etc.); ils sont tous et seuls déclarés pour que le fold, qui compare les chaînes brutes, ne rate pas la dominante située après le numéro. La matrice des grilles n'est pas utilisée."
+}

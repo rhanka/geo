@@ -1,0 +1,255 @@
+{
+  "contract": "pv-lecture-visuelle-preflight/v1",
+  "generated_at": "2026-07-29T15:19:52.570Z",
+  "read_only": true,
+  "source_triage": "work/coverage/pv-extraction-failures-triage-20260729T115007Z.json",
+  "selection": {
+    "description": "les 20 clés CAS suivantes parmi les 186 échecs, ordonnées par premier offset de sélection puis clé CAS, après exclusion de tous les lots antérieurs",
+    "prior_lot_reports": [
+      "work/coverage/pv-lecture-visuelle-lot-01-20260729T134941Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-02-20260729T144959Z.json",
+      "work/coverage/pv-lecture-visuelle-lot-03-20260729T151721Z.json"
+    ],
+    "source_inventory": "work/coverage/pv-ocr-inventaire-pages-20260729T122121Z.json (clés, slugs et offsets seulement; pages/taille ignorées)",
+    "candidate_cas_keys": 186,
+    "prior_lot_collisions_avoided": 60,
+    "remaining_after_dedupe": 126
+  },
+  "guard": {
+    "before_visual_reading": true,
+    "transport": "S3 GetObject",
+    "hash": "sha256 streamé; aucune mise en mémoire intégrale du PDF",
+    "mismatch_stop_threshold": 3,
+    "stopped_for_integrity_incident": false
+  },
+  "summary": {
+    "requested": 20,
+    "attempted": 20,
+    "sha_passed": 20,
+    "cas_sha_mismatch": 0,
+    "get_failed": 0
+  },
+  "local_visual_workspace": "/home/antoinefa/src/geo/work/graphify/pv-lecture-visuelle-lot-04-preflight-20260729T151938Z",
+  "documents": [
+    {
+      "storage_key": "raw/pv-index/cas/c2c54bb2fb763eb6c2d19a579cef8cc77621f5e0ac6a7e051b1b4a5a5b1b7b5c.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "c2c54bb2fb763eb6c2d19a579cef8cc77621f5e0ac6a7e051b1b4a5a5b1b7b5c",
+      "calculated_sha256": "c2c54bb2fb763eb6c2d19a579cef8cc77621f5e0ac6a7e051b1b4a5a5b1b7b5c",
+      "streamed_bytes": 925958,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c76b1a33c1454a666d335d3b1d2f86efd88feb588b11747e6c4d4bd00f1ddfac.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "c76b1a33c1454a666d335d3b1d2f86efd88feb588b11747e6c4d4bd00f1ddfac",
+      "calculated_sha256": "c76b1a33c1454a666d335d3b1d2f86efd88feb588b11747e6c4d4bd00f1ddfac",
+      "streamed_bytes": 799652,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c7bd4445af5a20844566d7b47a59bc128f1c66b3f990d1f327dc84f1f6de89bb.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "c7bd4445af5a20844566d7b47a59bc128f1c66b3f990d1f327dc84f1f6de89bb",
+      "calculated_sha256": "c7bd4445af5a20844566d7b47a59bc128f1c66b3f990d1f327dc84f1f6de89bb",
+      "streamed_bytes": 786341,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/d2fe86fcf2df503c02ba4ef7008834856f0c186bbbc98903b0a851389e695086.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "d2fe86fcf2df503c02ba4ef7008834856f0c186bbbc98903b0a851389e695086",
+      "calculated_sha256": "d2fe86fcf2df503c02ba4ef7008834856f0c186bbbc98903b0a851389e695086",
+      "streamed_bytes": 598743,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ddfd2020e6a4a4fa4d3b846da152507a74b7bbadfddd613579b2948649e7f28b.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "ddfd2020e6a4a4fa4d3b846da152507a74b7bbadfddd613579b2948649e7f28b",
+      "calculated_sha256": "ddfd2020e6a4a4fa4d3b846da152507a74b7bbadfddd613579b2948649e7f28b",
+      "streamed_bytes": 572673,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/dee33b80885c2f1522e60574502836d46df1adbe6892162872e41c7dd7f96e44.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "dee33b80885c2f1522e60574502836d46df1adbe6892162872e41c7dd7f96e44",
+      "calculated_sha256": "dee33b80885c2f1522e60574502836d46df1adbe6892162872e41c7dd7f96e44",
+      "streamed_bytes": 763355,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/e752ca2f680aaa1ec49dd314eef350fdf37f60c85916c9f285a458b15746480d.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "e752ca2f680aaa1ec49dd314eef350fdf37f60c85916c9f285a458b15746480d",
+      "calculated_sha256": "e752ca2f680aaa1ec49dd314eef350fdf37f60c85916c9f285a458b15746480d",
+      "streamed_bytes": 916813,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ef416799b623c77a9df122bc05a4d891f70c516a611c89b37be7dcebd53e3553.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "ef416799b623c77a9df122bc05a4d891f70c516a611c89b37be7dcebd53e3553",
+      "calculated_sha256": "ef416799b623c77a9df122bc05a4d891f70c516a611c89b37be7dcebd53e3553",
+      "streamed_bytes": 611748,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f92b5aeb80de2bb4cbd3147ea21c8e1421c4b50f8a8ab6c5828ec014e1d23fc3.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "f92b5aeb80de2bb4cbd3147ea21c8e1421c4b50f8a8ab6c5828ec014e1d23fc3",
+      "calculated_sha256": "f92b5aeb80de2bb4cbd3147ea21c8e1421c4b50f8a8ab6c5828ec014e1d23fc3",
+      "streamed_bytes": 513153,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/ffc02505b9e21b6012e1ea5274b12cf0ce5c7984c911eff703382da2931a3b50.pdf",
+      "slug": "albertville",
+      "municipality_name": "Albertville",
+      "expected_sha256": "ffc02505b9e21b6012e1ea5274b12cf0ce5c7984c911eff703382da2931a3b50",
+      "calculated_sha256": "ffc02505b9e21b6012e1ea5274b12cf0ce5c7984c911eff703382da2931a3b50",
+      "streamed_bytes": 579201,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/c445a145ac8be1c76a4b35f99f635b40b56c326535a527dabdd6bc39fc07cacf.pdf",
+      "slug": "alleyn-et-cawood",
+      "municipality_name": "Alleyn-et-Cawood",
+      "expected_sha256": "c445a145ac8be1c76a4b35f99f635b40b56c326535a527dabdd6bc39fc07cacf",
+      "calculated_sha256": "c445a145ac8be1c76a4b35f99f635b40b56c326535a527dabdd6bc39fc07cacf",
+      "streamed_bytes": 57493,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/203e9abf00856a31a5110bda0a67ead59f434d8408349486bc9eea87af28b99a.pdf",
+      "slug": "amherst",
+      "municipality_name": "Amherst",
+      "expected_sha256": "203e9abf00856a31a5110bda0a67ead59f434d8408349486bc9eea87af28b99a",
+      "calculated_sha256": "203e9abf00856a31a5110bda0a67ead59f434d8408349486bc9eea87af28b99a",
+      "streamed_bytes": 264396,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/2f162ac9d1a1009b2f6476fb61eeed90d53cb9435dca8bd273fa253ba9750d80.pdf",
+      "slug": "amherst",
+      "municipality_name": "Amherst",
+      "expected_sha256": "2f162ac9d1a1009b2f6476fb61eeed90d53cb9435dca8bd273fa253ba9750d80",
+      "calculated_sha256": "2f162ac9d1a1009b2f6476fb61eeed90d53cb9435dca8bd273fa253ba9750d80",
+      "streamed_bytes": 192228,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/a8a4fa797d45a417578db6dcd89bf1bff29e573a6e51a6e13516ae6a4e794a7f.pdf",
+      "slug": "amherst",
+      "municipality_name": "Amherst",
+      "expected_sha256": "a8a4fa797d45a417578db6dcd89bf1bff29e573a6e51a6e13516ae6a4e794a7f",
+      "calculated_sha256": "a8a4fa797d45a417578db6dcd89bf1bff29e573a6e51a6e13516ae6a4e794a7f",
+      "streamed_bytes": 32754,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/f1e3255817042d1d9cd29b614a40992f56d071c25aa62a0f46ae8a69bed3cacf.pdf",
+      "slug": "amherst",
+      "municipality_name": "Amherst",
+      "expected_sha256": "f1e3255817042d1d9cd29b614a40992f56d071c25aa62a0f46ae8a69bed3cacf",
+      "calculated_sha256": "f1e3255817042d1d9cd29b614a40992f56d071c25aa62a0f46ae8a69bed3cacf",
+      "streamed_bytes": 221783,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/1b6e2fd261811de29c0bb6f6ccdfe5cc472cd1427e24b90af8de53372959d529.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "1b6e2fd261811de29c0bb6f6ccdfe5cc472cd1427e24b90af8de53372959d529",
+      "calculated_sha256": "1b6e2fd261811de29c0bb6f6ccdfe5cc472cd1427e24b90af8de53372959d529",
+      "streamed_bytes": 1551740,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/26bf95a5cc002261828d3a8727a4dfc916e234d1665a96f296828b460538ab5b.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "26bf95a5cc002261828d3a8727a4dfc916e234d1665a96f296828b460538ab5b",
+      "calculated_sha256": "26bf95a5cc002261828d3a8727a4dfc916e234d1665a96f296828b460538ab5b",
+      "streamed_bytes": 302391,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/374eca06e7e72ba2ee95859ada14688886c9b9073d898bc69ea54b22e57d537b.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "374eca06e7e72ba2ee95859ada14688886c9b9073d898bc69ea54b22e57d537b",
+      "calculated_sha256": "374eca06e7e72ba2ee95859ada14688886c9b9073d898bc69ea54b22e57d537b",
+      "streamed_bytes": 1550913,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/510683ee2926bc6d9ba5dd4c61de812f18b01f060d5f8cd556a858911d1c882f.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "510683ee2926bc6d9ba5dd4c61de812f18b01f060d5f8cd556a858911d1c882f",
+      "calculated_sha256": "510683ee2926bc6d9ba5dd4c61de812f18b01f060d5f8cd556a858911d1c882f",
+      "streamed_bytes": 3908923,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    },
+    {
+      "storage_key": "raw/pv-index/cas/5a219dbacfa898eb6276733e9a4dd914e9115b73df09d05e41c13044518d8095.pdf",
+      "slug": "baie-johan-beetz",
+      "municipality_name": "Baie-Johan-Beetz",
+      "expected_sha256": "5a219dbacfa898eb6276733e9a4dd914e9115b73df09d05e41c13044518d8095",
+      "calculated_sha256": "5a219dbacfa898eb6276733e9a4dd914e9115b73df09d05e41c13044518d8095",
+      "streamed_bytes": 3950387,
+      "outcome": "SHA_PASSED",
+      "local_pdf_available": true,
+      "error": null
+    }
+  ]
+}

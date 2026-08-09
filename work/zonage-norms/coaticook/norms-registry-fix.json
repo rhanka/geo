@@ -1,0 +1,66 @@
+{
+  "slug": "coaticook",
+  "_doc": "Verbatim data-quality reconciliation of the deposited qc-zonage-norms-coaticook parquet, derived from the OFFICIAL source grilles (annexe A, sept. 2022 / sept. 2023) read as native text (pdftotext -layout) + word-bbox (pdftotext -tsv) column alignment, each value triple-cross-checked against already-served anchor values on the same page. Anti-invention: every value is a verbatim transcription of the cited source cell; a truly blank cell stays null. Fixes two systemic parser defects on this multi-page HORIZONTAL grille: (a) fabricated pseudo-zones from wrapped row-labels, (b) dropped/shift-corrupted hauteur columns.",
+  "remove": [
+    "somme des marges de recul latérales min. (m)",
+    "marge de recul latérale min. (m)",
+    "6",
+    "4",
+    "2",
+    "3"
+  ],
+  "_remove_doc": "Fabricated pseudo-zones (norms=0): wrapped row-labels + stray numbers the parser mis-read as zone_codes. None matches any SIG zone number.",
+  "rekey": {
+    "V1-814": "CONSV1-814",
+    "V2-815": "CONSV2-815",
+    "V2-816": "CONSV2-816",
+    "V2-817": "CONSV2-817",
+    "HBD-924": "HDB-924"
+  },
+  "_rekey_doc": "Mis-parsed real codes: the parser truncated the 'CONS' prefix (grp38 header 'CONSV1-814' wrapped across lines) and transposed HDB->HBD (grp45). Numeric bridge to the unique SIG code restores the real code; the CONS rows keep their already-correct verbatim norms.",
+  "fill": [
+    {"zone": "RA-103", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "nativecell-grp0p3", "prov": "grp101-106 p3 hauteur max (m) row 10/9/9/9/9/9; anchors C-101=10,P-102=9,P-105=9"},
+    {"zone": "RB-106", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "nativecell-grp0p3", "prov": "grp101-106 p3; col6=9"},
+    {"zone": "RB-108", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "nativecell-grp1p3", "prov": "grp107-111 p3 bbox: P-107@373<-9@382,RB-108@404<-9@416,RA-109@441<-9@452,I-110@479<-9@486"},
+    {"zone": "RA-109", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "nativecell-grp1p3", "prov": "grp107-111 p3 bbox col3=9"},
+    {"zone": "RC-112", "field": "hauteur_max", "value": 13, "unit": "m", "raw": "13", "note": "nativecell-grp2p2", "prov": "grp112-113 p2 bbox: RC-112@370<-13@380 (3 etages); RA-113@404<-9@416"},
+    {"zone": "RA-315", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "nativecell-grp15p2", "prov": "grp315-316 p2 hauteur max (m) all values=9"},
+    {"zone": "RB-316", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "nativecell-grp15p2", "prov": "grp315-316 p2 all=9"},
+    {"zone": "I-411(P)", "field": "hauteur_max", "value": 10, "unit": "m", "raw": "10", "note": "nativecell-grp20p2", "prov": "grp411-415 p2 bbox: I-411(P)@372-382<-10@380 (marge avant 7,5@379); RC-413@433<-11,RB-414@465<-9,RA-415@497<-9; P-412 blank"},
+    {"zone": "RB-414", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "nativecell-grp20p2", "prov": "grp411-415 p2 bbox: RB-414@465<-9@477"},
+    {"zone": "RA-421", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "nativecell-grp21p3", "prov": "grp416-421 p3 bbox: RA-421@543<-9@554; RA-418/419/420=9 anchors; I-417@407 has NO hauteur"},
+    {"zone": "RB-607(P)", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "nativecell-grp31p3", "prov": "grp606-610 p3: RA-606=9,RB-607(P)=9,C-608=9,C-609=9,P-610=17 (anchors RA-606/C-608/C-609=9)"},
+    {"zone": "RIEV2-807", "field": "hauteur_max", "value": 10, "unit": "m", "raw": "10", "note": "nativecell-grp37p3", "prov": "grp807-812 p3 hauteur max (m) all=10"},
+    {"zone": "RIEV2-808", "field": "hauteur_max", "value": 10, "unit": "m", "raw": "10", "note": "nativecell-grp37p3", "prov": "grp807-812 p3 all=10"},
+    {"zone": "RIEV2-809", "field": "hauteur_max", "value": 10, "unit": "m", "raw": "10", "note": "nativecell-grp37p3", "prov": "grp807-812 p3 all=10"},
+    {"zone": "COMV-819", "field": "hauteur_max", "value": 10, "unit": "m", "raw": "10", "note": "nativecell-grp39p3", "prov": "grp819-821 p3 hauteur max (m) all=10"},
+    {"zone": "RC-431", "field": "hauteur_max", "value": 4, "unit": "etages", "raw": "4", "note": "nativecell-grp24p3et", "prov": "grp430-433 p3 bbox: hauteur max (etage) P-430=2,RC-431@456<-4@468,RC-432@488<-2@500,RC-433@520<-2; hauteur (m) blank"},
+    {"zone": "FD-905", "field": "hauteur_max", "value": 2, "unit": "etages", "raw": "2", "note": "nativecell-grp40p3et", "prov": "grp901-905 p3 hauteur max (etage)=2 all; (m) blank; siblings A-901..F-904 served 2etages"},
+    {"zone": "HBD-909", "field": "hauteur_max", "value": 2, "unit": "etages", "raw": "2", "note": "nativecell-grp42p3et", "prov": "grp909-913 p3 hauteur max (etage)=2 all; (m) blank; siblings IC-911/C-912 served 2etages"},
+    {"zone": "HBD-910", "field": "hauteur_max", "value": 2, "unit": "etages", "raw": "2", "note": "nativecell-grp42p3et", "prov": "grp909-913 p3 (etage)=2"},
+    {"zone": "RA-913", "field": "hauteur_max", "value": 2, "unit": "etages", "raw": "2", "note": "nativecell-grp42p3et", "prov": "grp909-913 p3 (etage)=2"},
+    {"zone": "A-914", "field": "hauteur_max", "value": 2, "unit": "etages", "raw": "2", "note": "nativecell-grp43p3et", "prov": "grp914-915 p3 (etage)=2; AD-915 served 2etages"},
+    {"zone": "AD-917", "field": "hauteur_max", "value": 2, "unit": "etages", "raw": "2", "note": "nativecell-grp44p3et", "prov": "grp916-920 p3 (etage)=2; AD-916 served 2etages"},
+    {"zone": "FD-926", "field": "hauteur_max", "value": 2, "unit": "etages", "raw": "2", "note": "nativecell-grp46p3et", "prov": "grp926-929 p3 (etage)=2"},
+    {"zone": "HDB-924", "field": "hauteur_max", "value": 2, "unit": "etages", "raw": "2", "note": "nativecell-grp45p3et", "prov": "grp921-925 p3 (etage)=2; rekeyed from HBD-924; siblings A-921/F-922 2etages"}
+  ],
+  "correct": [
+    {"zone": "RA-113", "field": "hauteur_max", "value": 9, "unit": "m", "raw": "9", "note": "shiftfix-grp2p2", "prov": "grp112-113 p2 bbox: RA-113@404<-9@416; served 13m was RC-112's value (shift corruption)"},
+    {"zone": "RC-432", "field": "hauteur_max", "value": 2, "unit": "etages", "raw": "2", "note": "shiftfix-grp24p3", "prov": "grp430-433 p3 bbox: RC-432@488<-2@500 (etage); served 4etages was RC-431's value (shift corruption)"}
+  ],
+  "confidence": 0.92,
+  "legit_blank_no_fill": {
+    "RT-111": "grp107-111 p3 bbox: no hauteur word near RT-111@538 (m or etage); margins only",
+    "P-306": "grp306-308 p2: hauteur (m) & (etage) rows empty",
+    "P-307": "grp306-308 p2 empty",
+    "P-308": "grp306-308 p2 empty",
+    "P-310": "grp310-311 p3 empty",
+    "P-311": "grp310-311 p3 empty",
+    "P-320": "grp318-321 p2: hauteur (m) footnotes [a]/[b] apply to RB-318/RA-319/RB-321; P-320 blank",
+    "P-412": "grp411-415 p2 bbox: no value at P-412@405 (whole column blank)",
+    "I-417": "grp416-421 p3 bbox: no hauteur (m or etage) at I-417@407; margins only",
+    "P-907": "grp906-908 p3: hauteur rows empty for P-907/RT-908 (only F-906 etage=2)",
+    "RT-908": "grp906-908 p3 empty"
+  },
+  "missing_from_parquet_note": "RT-813 and COMV-818 (real SIG zones on grp38/39) have NO parquet row at all (parser omitted them). Not fixed here (would require full-row verbatim creation); flagged for the parser re-extraction."
+}
