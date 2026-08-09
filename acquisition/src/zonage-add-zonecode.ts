@@ -45,6 +45,7 @@ const PREFIX = "normalized/ca-qc-zonage/";
  *   westmount      ZoneNumber → R13-02-02, P1-02-01 (grille)
  *   cote-saint-luc Zonage_ID  → CC-1, RM*-64, RU-20, IR-17 (grille)
  *   dorval         NUM_ZONE   → U01-01, H01-17, C01-30, V01-40 (grille)
+ *   longueuil      Zonage     → H34-327 (VLO), P34-191 (VLO), C34-317 (VLO) (1927 zones)
  */
 const FIELD_MAP: Array<{ slug: string; field: string }> = [
   { slug: "chambly", field: "NumZone" },
@@ -52,6 +53,7 @@ const FIELD_MAP: Array<{ slug: string; field: string }> = [
   { slug: "westmount", field: "ZoneNumber" },
   { slug: "cote-saint-luc", field: "Zonage_ID" },
   { slug: "dorval", field: "NUM_ZONE" },
+  { slug: "longueuil", field: "Zonage" },
 ];
 
 interface GF { type: string; properties: Record<string, unknown>; geometry: unknown }

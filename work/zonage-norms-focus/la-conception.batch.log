@@ -1,0 +1,30 @@
+npm warn Unknown builtin config "globalignorefile". This will stop working in the next major version of npm. See `npm help npmrc` for supported config options.
+[batch] MISTRAL_API_KEY chargée | OCR provider=mistral-ocr key=présente
+=== la-conception (route=vision, pages=56) ===
+[zonage-norms] slug=la-conception pdf=/home/antoinefa/src/geo/work/zonage-norms/la-conception/grille.pdf route=vision
+[route] vision: forced route=vision
+[vision] pdf pages=56 range=1..56 budget=$4
+[vision] page 12 skipped: [grille-vision:no-zone] could not determine zone_code (passes disagree and no expectedZone given)
+[vision] zones=55 attempted=56 failed=1 calls=112 estUsd=$0.161
+[crossval] grid=true sig=42 extracted=54 overlap=10 recoupExtracted=19% recoupSig=24%
+{
+  "slug": "la-conception",
+  "deposited": true,
+  "skipped": false,
+  "key": "registry/qc-zonage-norms/qc-zonage-norms-la-conception.parquet",
+  "route": "vision",
+  "methode": "mistral-vision",
+  "rows": 55,
+  "uniqueZoneCodes": 54,
+  "publishedFieldPct": 73.4,
+  "crossval": {
+    "gridFound": true,
+    "sigZoneCodes": 42,
+    "overlap": 10,
+    "recoupExtracted": 0.18518518518518517,
+    "recoupSig": 0.23809523809523808
+  },
+  "visionUsd": 0.16127999999999998
+}
+OK la-conception
+=== FIN BATCH NORMES (ok=1 fail=0 skip=0) ===

@@ -1,0 +1,676 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:35:00.910Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 4640,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 2,
+    "failed_pvs": 18,
+    "outcomes": {
+      "INDEXED": 2,
+      "OWNER_NOT_CONFIRMED": 12,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 6
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 2,
+    "Document": 2,
+    "Regulation": 3,
+    "LotCadastre": 2
+  },
+  "graphify": {
+    "nodes": 9,
+    "edges": 2,
+    "failures": 6
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 2,
+    "documents_with_zone": 0,
+    "documents_with_lot": 2
+  },
+  "match_details": [
+    {
+      "municipality_slug": "delson",
+      "storage_key": "raw/pv-index/cas/c74fe1a0b5019dee487da0c9b0842b45188f33c1e237ddcff39f8cfdae06038c.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3131045",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:37",
+      "quote": "           l'expropriation du lot 3 131 045 au cadastre du Québec"
+    },
+    {
+      "municipality_slug": "delson",
+      "storage_key": "raw/pv-index/cas/dd8e18bdef7b1bc2020ce694f8537a956f855c38665e824c0973281bc809dae6.pdf",
+      "entity_type": "LotCadastre",
+      "value": "3129422",
+      "source_file": "document.txt",
+      "source_location": "document.txt:line:66",
+      "quote": "   14.3.   Position de la Ville de Delson – Avis d’intention de vendre le lot 3 129 422 au cadastre"
+    }
+  ],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 4,
+      "zone_code_count": 145,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 4,
+      "served_municipalities": 3,
+      "total_lot_numbers": 5255,
+      "missing": [
+        "desbiens"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z",
+  "documents": [
+    {
+      "slug": "delson",
+      "municipality_name": "Delson",
+      "url": "https://ville.delson.qc.ca/wp-content/uploads/2026/01/2026-01-20-PTI-19h.pdf",
+      "storage_key": "raw/pv-index/cas/74ec637c29442247fb96272abd860a24e132b4146402d33c090b0f7e99547eac.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/0f7e99547eac.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/0f7e99547eac.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "delson",
+      "municipality_name": "Delson",
+      "url": "https://ville.delson.qc.ca/wp-content/uploads/2026/03/2026-03-10-ordinaire-20h-2.pdf",
+      "storage_key": "raw/pv-index/cas/a48de286a1fc2aeed9b74e4ca7cbd27017e9d0d0ac51fba32ac27f14d57521a6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/7f14d57521a6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/7f14d57521a6.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "delson",
+      "municipality_name": "Delson",
+      "url": "https://ville.delson.qc.ca/wp-content/uploads/2026/03/2026-04-14-consultation-19h.pdf",
+      "storage_key": "raw/pv-index/cas/c069a80574107ea3808e95f157ca20122ca9eb30241e05d6045d3f6a5d7e4184.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/3f6a5d7e4184.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/3f6a5d7e4184.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "delson",
+      "municipality_name": "Delson",
+      "url": "https://ville.delson.qc.ca/wp-content/uploads/2026/04/Ordre-du-jour-sujet-a-changement-sans-preavis-4.pdf",
+      "storage_key": "raw/pv-index/cas/c74fe1a0b5019dee487da0c9b0842b45188f33c1e237ddcff39f8cfdae06038c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 1,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Delson",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "   10.1.   Attribution d’un contrat pour la création d’une campagne publicitaire de fierté et"
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "   10.1.   Attribution d’un contrat pour la création d’une campagne publicitaire de fierté et"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "756",
+            "legal_quality": "ADOPTION_MENTIONNEE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "   9.2.    Adoption - Règlement n° 756 relatif à l'occupation et à l'entretien des bâtiments"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3131045",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "           l'expropriation du lot 3 131 045 au cadastre du Québec"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/8cfdae06038c.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/8cfdae06038c.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "delson"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "delson",
+      "municipality_name": "Delson",
+      "url": "https://ville.delson.qc.ca/wp-content/uploads/2026/06/2026-06-9-ordinaire-20h.pdf",
+      "storage_key": "raw/pv-index/cas/dd8e18bdef7b1bc2020ce694f8537a956f855c38665e824c0973281bc809dae6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2,
+        "LotCadastre": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Delson",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "759",
+            "legal_quality": "PROJET",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:39",
+              "quote": "   9.1.    Avis de motion, présentation et adoption - Projet de règlement n° 759 relatif à la création"
+            }
+          },
+          {
+            "label": "1013",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:68",
+              "quote": "\f   14.4.      Désignation de représentants pour l'application du Règlement n° 1013 relatif aux"
+            }
+          }
+        ],
+        "LotCadastre": [
+          {
+            "label": "3129422",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:66",
+              "quote": "   14.3.   Position de la Ville de Delson – Avis d’intention de vendre le lot 3 129 422 au cadastre"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/281bc809dae6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/281bc809dae6.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "delson",
+          "saint-philippe"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "delson",
+      "municipality_name": "Delson",
+      "url": "https://ville.delson.qc.ca/wp-content/uploads/2026/02/2026-02-10-ordinaire-20h-1.pdf",
+      "storage_key": "raw/pv-index/cas/e918392913a60dfa49552950812310798ab7d34caef9a831185bf6b21b3c1874.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/f6b21b3c1874.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/f6b21b3c1874.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "delson",
+      "municipality_name": "Delson",
+      "url": "https://ville.delson.qc.ca/wp-content/uploads/2026/01/2026-01-20-ordinaire-20h.pdf",
+      "storage_key": "raw/pv-index/cas/ea8fd59b3a177400f541d4aba158e83b847d7b47dce536254d570437247a1d92.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/0437247a1d92.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/delson/0437247a1d92.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "denholm",
+      "municipality_name": "Denholm",
+      "url": "https://www.denholm.ca/fichiersUpload/fichiers/20260505113952-odj-publique.pdf",
+      "storage_key": "raw/pv-index/cas/ba25844039dac4c674d3ace5dde7b5bc1b4470ab96f745c591291e98666c0baf.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/denholm/1e98666c0baf.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/denholm/1e98666c0baf.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "denholm",
+      "municipality_name": "Denholm",
+      "url": "https://www.denholm.ca/fichiersUpload/fichiers/20260610073654-odj-publique.pdf",
+      "storage_key": "raw/pv-index/cas/ec6ac9ce6a2161b7c83a6078c562f751e97100f8da38a7c997799d524c7fa097.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/denholm/9d524c7fa097.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/denholm/9d524c7fa097.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "desbiens",
+      "municipality_name": "Desbiens",
+      "url": "https://cdn.prod.website-files.com/5f0f236a050c3515a076f4e1/69ac27b628bbd33986ae82f0_2026-03-09%20Projet%20ordre%20du%20jour.pdf",
+      "storage_key": "raw/pv-index/cas/19987f38d78bdca99cf1bb3b66817a6969c2713df92024a84fa5e16ce2363b89.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/e16ce2363b89.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/e16ce2363b89.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "desbiens",
+      "municipality_name": "Desbiens",
+      "url": "https://cdn.prod.website-files.com/5f0f236a050c3515a076f4e1/69e0d7978185d50b56ae632c_2026-04-13%20ordre%20du%20jour.pdf",
+      "storage_key": "raw/pv-index/cas/1a5af86c423d1c0b4b27238fca397fd6099e08c9ccdbc9874710c20e6aea69db.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/c20e6aea69db.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/c20e6aea69db.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "desbiens",
+      "municipality_name": "Desbiens",
+      "url": "https://cdn.prod.website-files.com/5f0f236a050c3515a076f4e1/695fc4040287b2da484a1566_2026-01-12%20ordre%20du%20jour.pdf",
+      "storage_key": "raw/pv-index/cas/b01e9ccfcdd113310b28db3aa748b3c72fe4f124fc9febd7227d19d606d6c164.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/19d606d6c164.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/19d606d6c164.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "desbiens",
+      "municipality_name": "Desbiens",
+      "url": "https://cdn.prod.website-files.com/5f0f236a050c3515a076f4e1/6a021667d45865a764839263_2026-05-11%20ordre%20du%20jour.pdf",
+      "storage_key": "raw/pv-index/cas/dfe32260ed775f30d69e6c60cbb34c64fe74ca9249e120ac5b4feffd0fe02f01.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/effd0fe02f01.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/effd0fe02f01.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "desbiens",
+      "municipality_name": "Desbiens",
+      "url": "https://cdn.prod.website-files.com/5f0f236a050c3515a076f4e1/6989f5abb770ce30a223bba7_2026-02-09%20ordre%20du%20jour.pdf",
+      "storage_key": "raw/pv-index/cas/ecf8663c6b634d3cec1a90f72f3b0e05b72398f5c5d7856920a7f719a03d4249.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/f719a03d4249.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/desbiens/f719a03d4249.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28153059/PV-2022-8.pdf?ver=1693251059000",
+      "storage_key": "raw/pv-index/cas/09f154c908fd2582bdfdbbec01b7c4dd586923a61dfc02220fdccfa4084c78f1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/cfa4084c78f1.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/cfa4084c78f1.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28145250/PV-2021-12.pdf?ver=1693248770000",
+      "storage_key": "raw/pv-index/cas/0b23f907b137ae550285f526be73ff02deb9ccfd74a610ef1f3f600fabb69223.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/600fabb69223.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/600fabb69223.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28145234/PV-2021-08.pdf?ver=1693248753000",
+      "storage_key": "raw/pv-index/cas/0ff401d9772bde77d5fc9bad5c31653c4f5b0dbf9327406223c29325918a3dcc.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/9325918a3dcc.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/9325918a3dcc.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28153037/PV-2022-3.pdf?ver=1693251036000",
+      "storage_key": "raw/pv-index/cas/116463edaeca1718721305a2e257f9e70a5063053b8f0d8d5b2438632005cff1.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/38632005cff1.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/38632005cff1.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28153104/PV-2022-9.pdf?ver=1693251064000",
+      "storage_key": "raw/pv-index/cas/13cdc015cfefb4388d529e20b6d0453d9be286fd8e195966fda7dada12769c70.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/dada12769c70.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/dada12769c70.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "municipality_name": "Deschaillons-sur-Saint-Laurent",
+      "url": "https://www.deschaillons.ca/wp-content/uploads/2023/08/28145241/PV-2021-10.pdf?ver=1693248761000",
+      "storage_key": "raw/pv-index/cas/1c6d47252fc75e309b2f198c6870bd5a3a8d49146af695a28549de3ef6b7d8ae.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/de3ef6b7d8ae.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T183444Z/deschaillons-sur-saint-laurent/de3ef6b7d8ae.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

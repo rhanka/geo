@@ -1,0 +1,25 @@
+{
+  "_comment": "CIBLE KUBERNETES DE GEO — DECLAREE ICI, ET C'EST CE FICHIER QUI FAIT FOI.",
+  "_pourquoi": [
+    "Meme maladie que la cible S3, meme remede. Le 2026-07-29 a 03:32Z, l'outillage de",
+    "capture a cree un CronJob `geo-pv-backlog-pv-probable-20260728-a-0112-0117` sur le",
+    "cluster SCALEWAY, cadence */2, pods en Error, sans que rien ne le signale de ce cote:",
+    "`--kubeconfig <path>` etait requis mais AUCUN garde ne verifiait QUEL cluster ce",
+    "fichier designait. L'equipe k8s l'a vu depuis chez elle et nous a prevenus.",
+    "Ces pods echouaient tous, donc aucune donnee n'a diverge. Mais le jour ou ils",
+    "cesseraient d'echouer, ils ecriraient dans le bucket Scaleway qui n'est plus la source",
+    "de verite: un dual-run silencieux, avec des ecritures.",
+    "Declarer la cible dans le depot rend cette erreur IMPOSSIBLE au lieu de documentee."
+  ],
+  "_repartition": [
+    "CIBLE (ce fichier, versionne) : le serveur d'API attendu. Une bascule de cluster se fait ICI.",
+    "ACCES (jamais versionne)      : le kubeconfig et ses jetons restent hors depot. Le chemin",
+    "                                se passe toujours par --kubeconfig; c'est le SERVEUR qu'il",
+    "                                designe qui est verifie, pas le chemin du fichier."
+  ],
+  "server": "https://hlhedx.c1.bhs5.k8s.ovh.net",
+  "cluster": "poc-ca",
+  "namespace": "geo",
+  "provider": "ovh",
+  "declared_at": "2026-07-29"
+}

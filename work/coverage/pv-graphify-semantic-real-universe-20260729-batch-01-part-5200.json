@@ -1,0 +1,928 @@
+{
+  "contract": "pv-graphify-semantic-control/v1",
+  "generated_at": "2026-07-29T18:51:06.002Z",
+  "mode": "real-cas-universe-batch",
+  "universe_report": "work/coverage/pv-graphify-semantic-real-universe-20260729-snapshot-01.json",
+  "universe_selection": {
+    "offset": 5200,
+    "limit": 20,
+    "requested": 20,
+    "selected": 20,
+    "skipped_indexed_cas_keys": [],
+    "concurrency": 4
+  },
+  "classification_reports": [],
+  "eligible_records": 5484,
+  "eligible_documents": 5484,
+  "duplicate_eligible_records": 0,
+  "eligible_municipalities": 177,
+  "selected_documents": 20,
+  "indexing": {
+    "indexed_pvs": 5,
+    "failed_pvs": 15,
+    "outcomes": {
+      "INDEXED": 5,
+      "OWNER_NOT_CONFIRMED": 2,
+      "CONTAMINATION_OWNER_MISMATCH": 0,
+      "GRAPHIFY_FAILED": 0,
+      "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED": 13
+    },
+    "owner_contaminations": []
+  },
+  "entity_counts": {
+    "Municipality": 5,
+    "Document": 5,
+    "Resolution": 1,
+    "Regulation": 25
+  },
+  "graphify": {
+    "nodes": 36,
+    "edges": 5,
+    "failures": 13
+  },
+  "matches": {
+    "zone_entities": 0,
+    "lot_entities": 0,
+    "documents_with_zone": 0,
+    "documents_with_lot": 0
+  },
+  "match_details": [],
+  "gazetteers": {
+    "zones": {
+      "municipalities": 3,
+      "zone_code_count": 0,
+      "municipalities_with_collisions": []
+    },
+    "lots": {
+      "municipalities": 3,
+      "served_municipalities": 1,
+      "total_lot_numbers": 4493,
+      "missing": [
+        "larouche",
+        "les-cedres"
+      ]
+    }
+  },
+  "manual_verification": "UNVERIFIED",
+  "workspace": "/home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z",
+  "documents": [
+    {
+      "slug": "larouche",
+      "municipality_name": "Larouche",
+      "url": "https://cdn.prod.website-files.com/5eb9b3a74542359f5b09ca19/68c2cec149ec1da3dc3d80e5_ODJ_20250915.pdf",
+      "storage_key": "raw/pv-index/cas/6f32ce2b67a9c0df9eaed2a6618f6fbb3dedc7a913fdf27b19cba7e47e051343.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/a7e47e051343.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/a7e47e051343.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "larouche",
+      "municipality_name": "Larouche",
+      "url": "https://cdn.prod.website-files.com/5eb9b3a74542359f5b09ca19/67851c547049141369344d82_ODJ_20250113.pdf",
+      "storage_key": "raw/pv-index/cas/9eb6ff335b9fca1e71af9139bc9e2e6de5c20543797cf33fae442bd391b816ec.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Resolution": 1,
+        "Regulation": 16
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Larouche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Resolution": [
+          {
+            "label": "24-09-249",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:33",
+              "quote": " 16   Suivi de la résolution 24-09-249 : Demande de local de MDJ"
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-439",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:34",
+              "quote": " 17   Avis de motion : Règlement 2025-439 relatif au bruit sur le territoire de la municipalité de"
+            }
+          },
+          {
+            "label": "2000-217",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:35",
+              "quote": "      Larouche abrogeant ainsi le règlement 2000-217"
+            }
+          },
+          {
+            "label": "2025-440",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:38",
+              "quote": " 19   Avis de motion : Règlement 2025-440 ayant pour objet d’encadrer l’utilisation des pistes"
+            }
+          },
+          {
+            "label": "2025-441",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:42",
+              "quote": " 21   Avis de motion :Règlement 2025-441 relatif aux parcs de planche à roulettes sur le territoire de la"
+            }
+          },
+          {
+            "label": "2018-382",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:43",
+              "quote": "      municipalité de Larouche abrogeant ainsi le règlement 2018-382 article 6.0 à 6.12"
+            }
+          },
+          {
+            "label": "2025-442",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": " 23 Avis de motion : Règlement 2025-442 relatif à la paix et au bon ordre dans la municipalité de"
+            }
+          },
+          {
+            "label": "2025-443",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:50",
+              "quote": " 25 Avis de motion : Règlement 2025-443 relatif à la circulation et à la sécurité publique de la"
+            }
+          },
+          {
+            "label": "2022-413",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:51",
+              "quote": "      municipalité de Larouche et abrogeant ainsi le règlement 2022-413"
+            }
+          },
+          {
+            "label": "2025-444",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:54",
+              "quote": " 27 Avis de motion :Règlement 2025-444 concernant les animaux sur le territoire de la municipalité"
+            }
+          },
+          {
+            "label": "2021-403",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:55",
+              "quote": "      de Larouche abrogeant ainsi le règlement 2021-403 concernant les animaux"
+            }
+          },
+          {
+            "label": "2025-445",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:58",
+              "quote": " 29 Avis de motion :Règlement 2025-445 concernant les limites de vitesse sur le territoire de la"
+            }
+          },
+          {
+            "label": "2025-446",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:62",
+              "quote": " 31 Avis de motion : Règlement 2025-446 ayant pour objet de déléguer au directeur général greffier-"
+            }
+          },
+          {
+            "label": "2011-307",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:63",
+              "quote": "      trésorier le pouvoir de contracter pour la municipalité et abrogeant ainsi le règlement 2011-307"
+            }
+          },
+          {
+            "label": "2024-435",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:71",
+              "quote": " 36 Entrée en vigueur :Règlement 2024-435 -Modification au plan d’urbanisme afin de permettre des"
+            }
+          },
+          {
+            "label": "2024-436",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:73",
+              "quote": " 37 Entrée en vigueur : Règlement 2024-436- Modification au règlement de zonage afin d’ajouter des"
+            }
+          },
+          {
+            "label": "2024-437",
+            "legal_quality": "ENTREE_EN_VIGUEUR",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:75",
+              "quote": " 38 Entrée en vigueur : Règlement 2024-437 relatif aux projets particuliers de construction, de"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/2bd391b816ec.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/2bd391b816ec.pdf/.graphify/.graphify_extract.json — 19 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 19,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "larouche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "larouche",
+      "municipality_name": "Larouche",
+      "url": "https://cdn.prod.website-files.com/5eb9b3a74542359f5b09ca19/693c3a6c76c2977d7fee6ff9_ODJ_20251215.pdf",
+      "storage_key": "raw/pv-index/cas/a32256d14490bb8464ce215b91731e267d3fd3b8a7eb3e72742d175eee049e7f.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 4
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Larouche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:8",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-457",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:24",
+              "quote": "   7 Avis de motion : Règlement 2025-457 décrétant l’imposition et le prélèvement des taxes"
+            }
+          },
+          {
+            "label": "2024-446",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:26",
+              "quote": "     l’année 2026 et abrogeant à toutes fins de droit le règlement 2024-446"
+            }
+          },
+          {
+            "label": "2025-458",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:30",
+              "quote": "  9 Avis de motion : Abroge 2022-414, Règlement 2025-458 -Code d’éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "25-458",
+            "legal_quality": "INCONNUE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": " 10 Dépôt du règlement : Abroge 2022-414, Règlement 25-458 -Code d’éthique et de déontologie"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/175eee049e7f.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/175eee049e7f.pdf/.graphify/.graphify_extract.json — 6 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 6,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "larouche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "larouche",
+      "municipality_name": "Larouche",
+      "url": "https://cdn.prod.website-files.com/5eb9b3a74542359f5b09ca19/6838c35b12dfe410c59804ff_ODJ_20250602.pdf",
+      "storage_key": "raw/pv-index/cas/a6665080a17feced9adf7fa2e00c25d28a7be2d816c5e60ea3c37dbfcb8ca6cd.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 3
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Larouche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:32",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-451",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:37",
+              "quote": "  13   Adoption du règlement 2025-451- Modification au règlement de zonage afin de modifier la"
+            }
+          },
+          {
+            "label": "2025-452",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:41",
+              "quote": "  14   Adoption du règlement 2025-452 – Modification au règlement de construction afin"
+            }
+          },
+          {
+            "label": "2025-453",
+            "legal_quality": "ADOPTE",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:44",
+              "quote": "  15   Adoption du règlement 2025-453-Modification au règlement sur les plans d’implantation et"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/7dbfcb8ca6cd.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/7dbfcb8ca6cd.pdf/.graphify/.graphify_extract.json — 5 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 5,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "larouche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "larouche",
+      "municipality_name": "Larouche",
+      "url": "https://cdn.prod.website-files.com/5eb9b3a74542359f5b09ca19/67c5c8fbde6422e78ee7049b_ODJ_20250303.pdf",
+      "storage_key": "raw/pv-index/cas/c0e96f5214f2e8f7d279bdd02bf001a83f4e9c7176be6cdb33ba03264ad60261.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Larouche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/03264ad60261.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/03264ad60261.pdf/.graphify/.graphify_extract.json — 2 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 2,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "larouche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "larouche",
+      "municipality_name": "Larouche",
+      "url": "https://cdn.prod.website-files.com/5eb9b3a74542359f5b09ca19/69a08e476272a2b8c9b1d64f_Convocation%20et%20ordre%20du%20jour%20du%2002-03-2026.pdf",
+      "storage_key": "raw/pv-index/cas/dc61b020702955541b083b303599f2f4bddc8ddf5dbf5cf9abbf4d60e812c7a6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {
+        "Municipality": 1,
+        "Document": 1,
+        "Regulation": 2
+      },
+      "entities": {
+        "Municipality": [
+          {
+            "label": "Larouche",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Document": [
+          {
+            "label": "document.txt",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:3",
+              "quote": ""
+            }
+          }
+        ],
+        "Regulation": [
+          {
+            "label": "2025-458",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:46",
+              "quote": "11 Avis de motion abrogeant le règlement 2025-458 code d’éthique et de déontologie des"
+            }
+          },
+          {
+            "label": "2025-456",
+            "legal_quality": "AVIS_DE_MOTION",
+            "citation": {
+              "source_file": "document.txt",
+              "source_location": "document.txt:line:88",
+              "quote": "27 Avis de motion sur l’adoption des modifications du règlement numéro 2025-456 décrétant"
+            }
+          }
+        ]
+      },
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/4d60e812c7a6.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/larouche/4d60e812c7a6.pdf/.graphify/.graphify_extract.json — 4 nodes, 1 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 4,
+        "edges": 1
+      },
+      "outcome": "INDEXED",
+      "owner_scope": {
+        "status": "CONFIRMED",
+        "printed_owner_slugs": [
+          "larouche"
+        ]
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20s%C3%A9ance%2021%20janvier%202026.pdf",
+      "storage_key": "raw/pv-index/cas/1d89e5d82528aece0596f6b836b14f68a0de9e6c121bd51fb1be8198bbd4ffa5.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/8198bbd4ffa5.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/8198bbd4ffa5.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20S%C3%A9ance%20ordinaire.pdf",
+      "storage_key": "raw/pv-index/cas/2d6e02a70878743c3d2ba05389eb710ac5d37f80b860d45b757b231f185fd6a4.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/231f185fd6a4.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/231f185fd6a4.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20-%20S%C3%A9ance%20extraordinaire%20du%204%20mars%202026.pdf",
+      "storage_key": "raw/pv-index/cas/2e74ca51f99459dc5e738a6a911248753dd59b5452be21b38a1c20cf8762d184.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/20cf8762d184.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/20cf8762d184.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20-s%C3%A9ance%20extraordinaire%2011%20f%C3%A9vrier%202026.pdf",
+      "storage_key": "raw/pv-index/cas/3eb949fe2a2d1669ce2a72e3020dabfe1da4d669423cc2acd4955328c6b1deb7.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/5328c6b1deb7.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/5328c6b1deb7.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20du%2020%20mai%202026.pdf",
+      "storage_key": "raw/pv-index/cas/4a809ba74d13dd00bf15963d686e7955e1783aca5b2cbb025eded97177eee108.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/d97177eee108.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/d97177eee108.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Projet%20ordre%20du%20jour%20s%C3%A9ance%20du%2018%20mars%202026.pdf",
+      "storage_key": "raw/pv-index/cas/76db83b8dec290f92907a1f27dc86a27b97ba6b660c129fa663bd141fcbf12e6.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/d141fcbf12e6.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/d141fcbf12e6.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20S%C3%A9ance%20extraordinaire%2029%20avril%202026.pdf",
+      "storage_key": "raw/pv-index/cas/7da36a327241a467106f39458bd53e9c054ce8c9e58b64eb62e87a4714f4427c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/7a4714f4427c.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/7a4714f4427c.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%2011%20mars%202026.pdf",
+      "storage_key": "raw/pv-index/cas/82f35cc2f59ecaa5bf2fc54a2567a7e0ac481b2f65bf2781ef07c0d105a6a267.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/c0d105a6a267.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/c0d105a6a267.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20Extraordinaire%202026-01.pdf",
+      "storage_key": "raw/pv-index/cas/86336ee272d37127ccbfb02d7d0f204ebe46c9bfc475be493c6d377b145c2b4d.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/377b145c2b4d.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/377b145c2b4d.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour-%20s%C3%A9ance%20extraordinaire%20du%2025%20mars%202026.pdf",
+      "storage_key": "raw/pv-index/cas/9147b1c374fbdcf19198abe3aaf96dd9395b781dcf2b828fbebcf728daaf7c9b.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/f728daaf7c9b.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/f728daaf7c9b.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20S%C3%A9ance%20extraordinaire%20du%2013%20mai%202026.pdf",
+      "storage_key": "raw/pv-index/cas/b2f1a7754d1fc47b9049446710138c1bd697ecb53aea0348595220d46a2e8d5c.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/20d46a2e8d5c.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/20d46a2e8d5c.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20S%C3%A9ance%20ordinaire%20du%2018%20f%C3%A9vrier%202026.pdf",
+      "storage_key": "raw/pv-index/cas/d8c27a87cc184e5d9e59ccb2259a47578612b4e80121e5a52ec7c93fbf49f220.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/c93fbf49f220.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/c93fbf49f220.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "lepiphanie",
+      "municipality_name": "L'Épiphanie",
+      "url": "https://lepiphanie.ca/Ordre%20du%20jour%20S%C3%A9ance%20extraordinaire%20du%2028%20janvier%202026.pdf",
+      "storage_key": "raw/pv-index/cas/fdb6b794d6af126403227a6f90f5a9f1072cc2949c44262b97a8b3182a5c3644.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 1,
+        "stdout": "",
+        "stderr": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/b3182a5c3644.pdf/input/captured.pdf",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "DOCUMENT_READ_OR_TEXT_EXTRACTION_FAILED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": "pas de couche texte: /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/lepiphanie/b3182a5c3644.pdf/input/captured.pdf",
+      "manual_verification": "UNVERIFIED"
+    },
+    {
+      "slug": "les-cedres",
+      "municipality_name": "Les Cèdres",
+      "url": "https://www.ville.lescedres.qc.ca/sites/default/files/PDF/2025_11_07_ordre_du_jour_ass_extra.pdf",
+      "storage_key": "raw/pv-index/cas/93986490e15794cacdbe5f752d0de97aaa73cb764e25bd7199b6aec2d984e7a2.pdf",
+      "source_file": "document.txt",
+      "text_provenance": "NATIVE",
+      "entity_counts": {},
+      "entities": {},
+      "graphify": {
+        "exit_code": 0,
+        "stdout": "[graphify extract] scanning /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/les-cedres/aec2d984e7a2.pdf/input\n[graphify extract] wrote /home/antoinefa/src/geo/work/graphify/pv-semantic-20260729T185058Z/les-cedres/aec2d984e7a2.pdf/.graphify/.graphify_extract.json — 0 nodes, 0 edges (no clustering)\n",
+        "stderr": "",
+        "nodes": 0,
+        "edges": 0
+      },
+      "outcome": "OWNER_NOT_CONFIRMED",
+      "owner_scope": {
+        "status": "NOT_CONFIRMED",
+        "printed_owner_slugs": []
+      },
+      "failure_reason": null,
+      "manual_verification": "UNVERIFIED"
+    }
+  ]
+}

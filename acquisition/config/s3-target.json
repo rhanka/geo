@@ -1,0 +1,31 @@
+{
+  "_comment": "CIBLE S3 DE GEO — DECLAREE ICI, ET C'EST CE FICHIER QUI FAIT FOI.",
+  "_pourquoi": [
+    "endpoint, region et bucket NE SONT PAS DES SECRETS. Ils vivaient pourtant dans un",
+    "fichier gitignore, parce que les CLES les accompagnaient — donc ils etaient invisibles.",
+    "Le 2026-07-29, le bucket a migre de Scaleway vers OVH: le cluster a bascule, mon",
+    "s3.env local est reste sur https://s3.fr-par.scw.cloud, et j'ai lu l'ancien bucket",
+    "pendant une heure SANS QUE RIEN NE LE SIGNALE — la copie etant identique a l'octet,",
+    "tout marchait et rendait les bons chiffres. Une ecriture aurait ete perdue en silence.",
+    "Declarer la cible dans le depot rend cette erreur IMPOSSIBLE au lieu de documentee."
+  ],
+  "_repartition": [
+    "CIBLE (ce fichier, versionne)  : endpoint, region, bucket. Une bascule de cloud se fait ICI.",
+    "CLES (jamais versionnees)      : S3_ACCESS_KEY / S3_SECRET_KEY, en TROIS exemplaires a",
+    "                                 synchroniser ensemble — .env local, GitHub secrets,",
+    "                                 secret kube `geo-s3-credentials`. Aucun des trois ne fait",
+    "                                 foi sur les autres: ce sont trois destinations du meme",
+    "                                 identifiant."
+  ],
+  "endpoint": "https://s3.bhs.io.cloud.ovh.net",
+  "region": "bhs",
+  "bucket": "sentropic-geo",
+  "provider": "ovh",
+  "migrated_at": "2026-07-29",
+  "migration_evidence": {
+    "from": "https://s3.fr-par.scw.cloud",
+    "objects": 45378,
+    "bytes": 48939893150,
+    "note": "source et cible identiques a l'octet; Job geo-bucket-sync status.succeeded = 1"
+  }
+}

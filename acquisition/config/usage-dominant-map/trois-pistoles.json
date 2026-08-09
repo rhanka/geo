@@ -1,0 +1,28 @@
+{
+  "prefix_map": {
+    "HA": "residentiel",
+    "HB": "residentiel",
+    "HC": "residentiel",
+    "HD": "residentiel",
+    "HM": "residentiel",
+    "CO": "commercial",
+    "PA": null,
+    "PB": null,
+    "PC": null,
+    "I": "industriel",
+    "UA": null,
+    "UB": null,
+    "RA": "environnemental",
+    "RB": "environnemental",
+    "RC": "environnemental",
+    "RD": "environnemental",
+    "CVA": null,
+    "CVB": null,
+    "VA": null,
+    "VB": null,
+    "A": "agricole",
+    "AR": null
+  },
+  "source": "https://www.ville-trois-pistoles.ca/publication/reglements",
+  "note": "Règlement no 591 de zonage de la Ville de Trois-Pistoles (MRC Les Basques), mis à jour par les règlements no 921 et 925 en 2026 — CHAPITRE 3, art. 3.1 « DIVISION DU TERRITOIRE EN ZONES ». Table « UN LIBELLÉ PAR FAMILLE » citée VERBATIM: « Pour les fins de la réglementation des usages, la Ville est répartie en zones ci-après énumérées, apparaissant au plan de zonage et identifié par les lettres d'appellation ci-indiquées : | Habitation → HA, HB, HC, HD, HM | Commerce et service → CO | Mixte (habitation et commerce) → MA, MB | Communautaire → PA, PB, PC | Industrie → I | Infrastructure publique → UA, UB | Récréation → RA, RB, RC, RD | Centre ville → CVA, CVB | Villégiature → VA, VB | Agricole → A | Para agricole → AR ». La 2e lettre est une sous-classe MUETTE: le libellé de la FAMILLE est mappé sur CHAQUE code. Art. 3.2 (alinéa suivant) ne renverse rien, il ne fait qu'expliciter le suffixe numérique: « Pour les fins de votation, les zones sont subdivisées en secteurs par un chiffre placé à la suite des lettres d'appellation de zone ». HA/HB/HC/HD/HM « Habitation » → résidentiel: HM est rangé par le règlement dans la famille « Habitation », PAS dans la famille « Mixte (habitation et commerce) » (qui est MA/MB, non servie), et le CHAPITRE 4 « CLASSIFICATION DES USAGES » confirme que le groupe Habitation comprend « h4 Habitation mixte » — HM n'est donc PAS duale. CO « Commerce et service » → commercial (⚠️ chez cette muni CO est le COMMERCE, à l'opposé de la Conservation d'autres munis: libellé verbatim, aucune inférence sur la lettre). I « Industrie » → industriel. A « Agricole » → agricole. RA/RB/RC/RD « Récréation » → environnemental (⚠️ chez cette muni R* est la RÉCRÉATION, pas le résidentiel). NULLS EXPLICITES (verbatim): PA/PB/PC « Communautaire » = famille publique/institutionnelle — le CHAPITRE 4 la définit par « p1 Équipement et service municipal / p2 Équipement et service public ou parapublic / p3 Communautaire lié à l'exploitation agricole » — aucune des cinq catégories; UA/UB « Infrastructure publique » = publique (« u1 Équipement relié au transport public ferroviaire / u2 Équipement relié au transport fluvial »); CVA/CVB « Centre ville » = vocation centre-ville (duale), pas une dominante parmi les cinq; VA/VB « Villégiature » SEULE = le règlement la DISTINGUE de la famille « Habitation », donc pas résidentiel; AR « Para agricole » = le règlement lui donne un libellé de dominance DISTINCT de « Agricole » (A) dans la MÊME table — s'il avait voulu la dominance agricole il aurait écrit « Agricole → A, AR » comme il écrit « Habitation → HA, HB, HC, HD, HM » — « Para agricole » n'est donc aucune des cinq. Préfixes MA/MB (« Mixte ») OMIS: non servis par le SIG. Source: la Ville a migré sur un portail citoyen VPlus (SPA JS-gated, API vplus.modellium.com 401, ancien chemin /upload/kcfinder/ retiré) — aucune URL directe du PDF n'est résolvable publiquement à $0; l'URL citée est la page « Règlements » officielle de CETTE muni (issue de son propre sitemap https://vplus.modellium.com/api/trois-pistoles/sitemap/xml). Extraction faite sur le corpus LOCAL work/zonage-norms/trois-pistoles/591-ZONAGE-incl-921-et-925-2026.pdf (209 p; en-tête verbatim de chaque page: « Règlement no 591 de zonage mis à jour par le règlement no 921 et 925 en 2026 »), cohérent avec acquisition/config/reglement-provenance.json (« reglement_numero »: « 591 », url null, « Corpus LOCAL => url null »). URL historique du même règlement (millésime 2023, désormais morte, conservée pour traçabilité): https://www.ville-trois-pistoles.ca/upload/kcfinder/files/591%20ZONAGE%20incl%20883%202023%20a%20jour.pdf. La matrice des usages permis des grilles n'a PAS été utilisée."
+}

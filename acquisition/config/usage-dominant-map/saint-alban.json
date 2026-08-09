@@ -1,0 +1,21 @@
+{
+  "prefix_map": {
+    "A": "agricole",
+    "Af": "agricole",
+    "Cons": "environnemental",
+    "Fo": "agricole",
+    "I": "industriel",
+    "M": null,
+    "M/a": null,
+    "P": null,
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rc": "residentiel",
+    "Rec": "environnemental",
+    "Rec/f": null,
+    "Rm": "residentiel",
+    "Rv": "residentiel"
+  },
+  "source": "https://st-alban.qc.ca/file-15515",
+  "note": "Règlement de zonage URB-05 de la Municipalité de Saint-Alban (MRC de Portneuf), chapitre 3, art. 3.2 « CODIFICATION DES ZONES », p.3-1, table « Types de zone / Vocations dominantes » relevée VERBATIM. Résidentielle: Ra « Résidentielle de faible densité (unifamiliale isolée) », Ra/a « Résidentielle de faible densité en milieu agricole », Rb « Résidentielle de moyenne densité (unifamiliale et bifamiliale) », Rc « Résidentielle de haute densité », Rm « Résidentielle de maisons mobiles ou résidences unimodulaires », Rv « Résidentielle de villégiature » -> residentiel (« Ra » couvre les codes servis Ra/a-* par longest-prefix, même dominante). Industrielle: I « Industrielle » -> industriel. Agricole: A « Agricole dynamique », Af « Agroforestière » (codes servis Af/a « avec résidence sur propriété de 5 ha et plus », Af/b « 10 ha et plus », Af/c « sans résidence ») -> agricole. Forestière: Fo « Forestière » -> agricole. Publique: Rec « Récréative », Cons « Conservation » -> environnemental. Null explicite: M « Mixte » et M/a « Mixte en milieu agricole » sont rangés par le règlement sous le titre de famille « Mixte (résidentielle et commerciale) » -> DUALE; P « Publique et institutionnelle » est public. JUGEMENT SIGNALÉ: Rec/f « Forestière et récréative » -> null — le libellé nomme DEUX fonctions relevant de DEUX catégories servies distinctes (« Forestière » -> agricole, « récréative » -> environnemental), aucune ne domine dans le texte (même traitement que riviere-a-pierre.json). Mappé explicitement car le match est longest-prefix: sans cette entrée, Rec/f-* hériterait de « Rec » -> environnemental (le SIG en sert 20, soit la majorité du préfixe Rec). ABSENT de la légende ET du SIG: aucune zone « C » commerciale à Saint-Alban — le règlement n'en définit pas. Les 15 préfixes mappés couvrent exactement les 13 préfixes présents au SIG servi (100 polygones, 0 sans code). La matrice des usages permis des grilles n'est pas utilisée."
+}

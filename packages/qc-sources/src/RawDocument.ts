@@ -136,23 +136,46 @@ export function buildRawDocumentRecord(input: {
   contentType: string;
   provenance: RawDocumentRecordProvenance;
 }): RawDocumentRecord {
-  const sha256 = sha256Hex(input.body);
+  return buildRawDocumentRecordFromDigest({
+    ...input,
+    sha256: sha256Hex(input.body),
+    bytesLen: input.body.byteLength,
+  });
+}
+
+/**
+ * Build the same durable record when the body was hashed while it was streamed.
+ *
+ * This keeps the CAS identity construction in one place without asking a capture
+ * worker to retain a large document merely to build its metadata after upload.
+ */
+export function buildRawDocumentRecordFromDigest(input: {
+  source: string;
+  sourceUrl: string;
+  title?: string;
+  publishedAt?: string;
+  sha256: string;
+  bytesLen: number;
+  fetchedAt: string;
+  contentType: string;
+  provenance: RawDocumentRecordProvenance;
+}): RawDocumentRecord {
   const storageKey = rawStorageKey({
     source: input.source,
-    sha256,
+    sha256: input.sha256,
     contentType: input.contentType,
   });
   return RawDocumentRecordSchema.parse({
-    id: rawDocumentId(input.source, sha256),
+    id: rawDocumentId(input.source, input.sha256),
     source: input.source,
     sourceUrl: input.sourceUrl,
     ...(input.title !== undefined ? { title: input.title } : {}),
     ...(input.publishedAt !== undefined ? { publishedAt: input.publishedAt } : {}),
-    sha256,
+    sha256: input.sha256,
     fetchedAt: input.fetchedAt,
     storageKey,
     contentType: input.contentType,
     provenance: input.provenance,
-    bytesLen: input.body.byteLength,
+    bytesLen: input.bytesLen,
   });
 }

@@ -1,0 +1,21 @@
+{
+  "prefix_map": {
+    "Ra": "residentiel",
+    "Rb": "residentiel",
+    "Rc": "residentiel",
+    "Rd": "residentiel",
+    "Re": "residentiel",
+    "Rf": "residentiel",
+    "C": "commercial",
+    "Cb": "commercial",
+    "N": "industriel",
+    "Pa": "environnemental",
+    "G": "environnemental",
+    "Cv": null,
+    "Pb": null,
+    "Pc": null,
+    "U": null
+  },
+  "source": "https://www.pointe-claire.ca/assets/images/Documents/pc-2775_zonage_codif_2024-12-10.pdf",
+  "note": "Règlement de zonage PC-2775 de la Ville de Pointe-Claire (« RÈGLEMENT NUMÉRO PC-2775 — RÈGLEMENT DE ZONAGE — En vigueur le 1er mars 2011 »), codification administrative à jour du PC-2775-74 (10 décembre 2024). Chapitre 1 « Dispositions déclaratoires, interprétatives et administratives », art. 1.11 c) « Identification des zones », p. 6-7, texte introductif VERBATIM: « Pour fins d'identification et de référence, à l'exception des zones identifiées dans le « Plan des unités paysagères à l'Annexe « 1 » du Code villageois, chaque zone est désignée par un sigle (composé d'une ou de lettres et d'un nombre) permettant de se référer aux différentes dispositions du présent règlement. La ou les lettres identifient, de façon générale, la vocation dominante de la zone soit: » (amendement PC-2775-43, 3 août 2018). Table reproduite VERBATIM: Ra « habitations unifamiliales détachées », Rb « habitations unifamiliales jumelées », Rc « habitations unifamiliales contigües (en rangée) », Rd « habitations en duplex, triplex ou quadruplex », Re « bâtiments d'appartements et édifices multifamiliaux (incluant les habitations en rangée implantées sur un même terrain) », Rf « ensembles résidentiels mixtes (combinaison de maisons unifamiliales et de bâtiments d'appartements et multifamiliaux) », C « commerces de détail et services », Cb « bureaux et services », Cv « commerces et logements villageois », Mu « aire multifonctionnelle d'usages diversifiés », N « industries », Pa « parcs », Pb « institutions », Pc « cimetières », G « terrains de golf », U « services d'utilité publique ». Mapping: Ra/Rb/Rc/Rd/Re/Rf -> residentiel (les 6 sont des habitations nommées; Rf « ensembles résidentiels mixtes » reste residentiel car le « mixte » y combine deux typologies RÉSIDENTIELLES, pas deux vocations); C et Cb -> commercial; N « industries » -> industriel; Pa « parcs » et G « terrains de golf » -> environnemental (famille parcs/récréative; convention des dépôts: alma.json mappe « P (zones parcs, espaces verts) » -> environnemental, les-eboulements.json mappe Ri/Re « Récréatif intensif/extensif » -> environnemental). Null explicite: Cv « commerces ET logements villageois » est DUALE (deux vocations nommées, aucune dominante unique — même règle que champlain.json CR « Commerciale et résidentielle »); Pb « institutions » et Pc « cimetières » n'énoncent aucune des cinq catégories (institutionnel/public); U « services d'utilité publique » est utilité publique. PRÉSÉANCE LINGUISTIQUE — la version FR fait foi (art. 1.7 g) de la version EN: « In the event of a contradiction between the English and French versions of this by-law, the French version shall prevail. »); la divergence est réelle sur Pb (FR « institutions » vs EN « Public uses ») et sans effet ici (null dans les deux cas). Le règlement PC-2787 est le règlement de PIIA/SPAIP, PAS le zonage. La matrice des usages permis des grilles n'est PAS utilisée. Mu « aire multifonctionnelle » est défini par la légende mais ABSENT du SIG servi: sciemment NON mappé (gate: aucun préfixe mappé qui n'existe pas dans le SIG). Aucun fall-through possible: aucun « R » ni « P » d'une seule lettre n'est mappé, et Cb/Cv (2 lettres) battent C (1 lettre) par longest-prefix. Préfixes SIG réellement présents (122 polygones, lus sur S3, codes SANS tiret type « Ra55 »): Ra(33), Re(21), Pa(20), Pb(10), Rc(8), N(7), Rb(5), U(4), C(3), Cb(3), Rf(2), Rd(2), G(2), Cv(1), Pc(1)."
+}
