@@ -214,7 +214,7 @@ export interface SetRecallMiss {
 
 /**
  * Multiset score mandated for the v3.4 transition decision. `recall` is
- * always a contribution to the fixed 85-event sample, even on a city row.
+ * always a contribution to the active run denominator, even on a city row.
  */
 export interface SetRecallMeasurement {
   readonly denominator: number;
@@ -241,7 +241,7 @@ export interface StrictRecallMeasurement {
   readonly geo_events: number;
   readonly recall: number | null;
   readonly recall_state: "measured" | "no_immo_ground_truth";
-  /** Same fixed-85 denominator as SET-RECALL, for the headline comparison. */
+  /** Same active denominator as SET-RECALL, for the headline comparison. */
   readonly recall_fixed_sample: number;
 }
 
@@ -304,8 +304,8 @@ export interface RecallGateReport {
   readonly threshold: number;
   readonly scoring: {
     readonly headline: "set_recall";
-    readonly set_recall: "Σ_g min(immo_count[g], geo_count[g]) / 85";
-    readonly strict_recall: "unique crosswalk pairs / 85";
+    readonly set_recall: string;
+    readonly strict_recall: string;
     readonly precision: "Σ_g min(immo_count[g], geo_count[g]) / total_geo_events";
     readonly over_split: "geo_count[g] - min(immo_count[g], geo_count[g])";
   };
@@ -1141,11 +1141,12 @@ function strictRecallFor(
 }
 
 function markdown(report: RecallGateReport): string {
+  const activeDenominator = report.aggregate.set_recall.denominator;
   const cityRows = report.cities.map((city) => {
     const setRecall = city.set_recall.recall.toFixed(4);
     const strictRecall = city.strict_recall.recall_fixed_sample.toFixed(4);
     const precision = city.set_recall.precision === null ? "unknown (no_geo_events)" : city.set_recall.precision.toFixed(4);
-    return `| ${city.slug} | ${city.geo_collection_status} | ${city.set_recall.matched}/85 | ${strictRecall} | ${setRecall} | ${precision} | ${city.set_recall.over_split} | ${city.set_recall.geo_unmatchable} | ${city.immo_signals_excluded} |`;
+    return `| ${city.slug} | ${city.geo_collection_status} | ${city.set_recall.matched}/${activeDenominator} | ${strictRecall} | ${setRecall} | ${precision} | ${city.set_recall.over_split} | ${city.set_recall.geo_unmatchable} | ${city.immo_signals_excluded} |`;
   });
   const exceptions = report.cities.flatMap((city) => [
     ...city.set_recall.missed_immo.map((entry) => `- set-recall missed ${city.slug}: ${entry.unmatched_reason}; ${JSON.stringify(entry.immo)}`),
@@ -1160,11 +1161,11 @@ function markdown(report: RecallGateReport): string {
     "",
     "Mesure read-only du rappel event-set sur l’échantillon contractuel. **Headline ratifié : SET-RECALL**. Le strict reste visible en parallèle. L’identité (muni, source_url_norm, date_iso) est EXACTE; seul le type passe par le crosswalk vendorisé. Aucune clé incomplète ou hors-map n’est forcée.",
     "",
-    "Formule exacte : pour chaque groupe matchable g = (muni, source_url_norm, date_iso, crosswalked_type), matched[g] = min(immo_count[g], geo_count[g]). SET-RECALL = Σ_g matched[g] / 85 (dénominateur fixe). Précision = Σ_g matched[g] / total_geo_events; over_split[g] = geo_count[g] − matched[g] et n’entre jamais dans le recall. Les kinds immo hors-map et le type geo `autre` ne créent aucun groupe matchable.",
+    `Formule exacte : pour chaque groupe matchable g = (muni, source_url_norm, date_iso, crosswalked_type), matched[g] = min(immo_count[g], geo_count[g]). SET-RECALL = Σ_g matched[g] / ${activeDenominator} (dénominateur actif du run). Précision = Σ_g matched[g] / total_geo_events; over_split[g] = geo_count[g] − matched[g] et n’entre jamais dans le recall. Les kinds immo hors-map et le type geo \`autre\` ne créent aucun groupe matchable.`,
     "",
-    `Seuil : ${report.threshold}. SET-RECALL agrégé : ${setAggregate.matched}/85 (${setAggregate.recall.toFixed(4)}). Strict agrégé : ${strictAggregate.matched}/85 (${strictAggregate.recall_fixed_sample.toFixed(4)}). Précision agrégée : ${aggregatePrecision} (${setAggregate.matched}/${setAggregate.geo_events}); over_split : ${setAggregate.over_split}. État du gate : ${report.gate.status}.`,
+    `Seuil : ${report.threshold}. SET-RECALL agrégé : ${setAggregate.matched}/${activeDenominator} (${setAggregate.recall.toFixed(4)}). Strict agrégé : ${strictAggregate.matched}/${activeDenominator} (${strictAggregate.recall_fixed_sample.toFixed(4)}). Précision agrégée : ${aggregatePrecision} (${setAggregate.matched}/${setAggregate.geo_events}); over_split : ${setAggregate.over_split}. État du gate : ${report.gate.status}.`,
     "",
-    "| Ville | État geo | SET matched/85 | Strict recall | SET recall | Précision | Over-split | Geo hors groupe | Signals écartés |",
+    `| Ville | État geo | SET matched/${activeDenominator} | Strict recall | SET recall | Précision | Over-split | Geo hors groupe | Signals écartés |`,
     "| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ...cityRows,
     "",
@@ -1313,8 +1314,8 @@ export async function runRecallGate(options: RunRecallGateOptions): Promise<RunR
     threshold: RECALL_THRESHOLD,
     scoring: {
       headline: "set_recall",
-      set_recall: "Σ_g min(immo_count[g], geo_count[g]) / 85",
-      strict_recall: "unique crosswalk pairs / 85",
+      set_recall: `Σ_g min(immo_count[g], geo_count[g]) / ${denominator}`,
+      strict_recall: `unique crosswalk pairs / ${denominator}`,
       precision: "Σ_g min(immo_count[g], geo_count[g]) / total_geo_events",
       over_split: "geo_count[g] - min(immo_count[g], geo_count[g])",
     },

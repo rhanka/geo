@@ -269,6 +269,12 @@ describe("runRecallGate cohort parameterization", () => {
       expect(granby.immo_events).toBe(1);
       expect(granby.set_recall).toMatchObject({ denominator: 5, matched: 1, recall: 1 / 5 });
       expect(result.report.aggregate.set_recall).toMatchObject({ denominator: 5, matched: 1, recall: 1 / 5 });
+      expect(result.report.scoring).toMatchObject({
+        set_recall: "Σ_g min(immo_count[g], geo_count[g]) / 5",
+        strict_recall: "unique crosswalk pairs / 5",
+      });
+      expect(readFileSync(result.markdownOutput, "utf8")).toContain("SET-RECALL agrégé : 1/5");
+      expect(readFileSync(result.markdownOutput, "utf8")).not.toContain("matched/85");
     } finally {
       rmSync(outputDirectory, { recursive: true, force: true });
     }
