@@ -1,0 +1,382 @@
+{
+  "contract": "lot-refold-5v2/1",
+  "generated_at": "2026-08-03T13:54:51.378Z",
+  "scope": {
+    "slugs": [
+      "saint-charles-sur-richelieu",
+      "saint-dominique",
+      "saint-michel",
+      "saint-patrice-de-sherrington",
+      "saint-pie"
+    ],
+    "operation": "re-fold lot-zone contre la geometrie zonage v2 servie actuelle",
+    "geometry_control": {
+      "qa_attestation": "63a2bb7f",
+      "zone_record": "1f4ff519",
+      "before": "5/5 STAMPED, 0 unstamped, 0 read_error",
+      "after": "5/5 STAMPED, 0 unstamped, 0 read_error",
+      "stamp_readback_diff": "empty",
+      "control_scripts": [
+        "acquisition/src/s3-key-probe.ts",
+        "acquisition/src/_zonage-served-s3-check.ts",
+        "acquisition/src/_zone-source-readback-audit.ts"
+      ]
+    },
+    "chain": [
+      "acquisition/src/_lot-zone-refold-s3.ts (backup/report/verify)",
+      "acquisition/src/lot-zone-consistency-audit.ts (mesure avant/apres)",
+      "acquisition/src/lot-zone-join-run.ts",
+      "acquisition/src/lots-enriched-run.ts",
+      "acquisition/src/audit-lots-enriched.ts",
+      "acquisition/src/_lot-zone-refold-s3.ts (readback plat/mirror)"
+    ],
+    "s3_prefixes": [
+      "NODE_OPTIONS=--dns-result-order=ipv4first",
+      "AWS_MAX_ATTEMPTS=10"
+    ],
+    "simplify_zones_m": 0,
+    "memory": "une municipalite a la fois"
+  },
+  "entries": [
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "code_zone_avant": {
+        "lots": 1370,
+        "assigned": 1367,
+        "pct": 99.78
+      },
+      "code_zone_apres": {
+        "lots": 1370,
+        "assigned": 1367,
+        "pct": 99.78
+      },
+      "mismatch_avant": {
+        "lots": 1370,
+        "assigned": 1367,
+        "matched": 1220,
+        "misassigned": 121,
+        "outside_all": 26,
+        "unassigned": 3,
+        "pct": 10.75
+      },
+      "mismatch_apres": {
+        "lots": 1370,
+        "assigned": 1367,
+        "matched": 1291,
+        "misassigned": 50,
+        "outside_all": 26,
+        "unassigned": 3,
+        "pct": 5.56
+      },
+      "lots": {
+        "avant": 1370,
+        "apres": 1370,
+        "served_after": 1370
+      },
+      "backup": {
+        "status": "OK",
+        "timestamp": "2026-08-03T134712730ZZ",
+        "objects": 4
+      },
+      "deposit": {
+        "plate": "OK",
+        "features": 1370,
+        "with_code_zone": 1367,
+        "stats": "OK",
+        "join_parquet": "OK"
+      },
+      "mirror": {
+        "status": "OK",
+        "layout": "flat-only",
+        "required": false,
+        "subdir_before": false,
+        "subdir_after": false
+      },
+      "stamp": {
+        "status": "OK",
+        "intact": true,
+        "before": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-charles-sur-richelieu/qc-zonage-saint-charles-sur-richelieu.geojson",
+          "features": 64,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-12/arcgis/rest/services/570_LaValleeDuRichelieu/57057_SaintCharlesSurRichelieu_public/MapServer/444/query?where=1%3D1&outFields=No_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        },
+        "after": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-charles-sur-richelieu/qc-zonage-saint-charles-sur-richelieu.geojson",
+          "features": 64,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-12/arcgis/rest/services/570_LaValleeDuRichelieu/57057_SaintCharlesSurRichelieu_public/MapServer/444/query?where=1%3D1&outFields=No_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        }
+      }
+    },
+    {
+      "slug": "saint-dominique",
+      "code_zone_avant": {
+        "lots": 1544,
+        "assigned": 1542,
+        "pct": 99.87
+      },
+      "code_zone_apres": {
+        "lots": 1544,
+        "assigned": 1542,
+        "pct": 99.87
+      },
+      "mismatch_avant": {
+        "lots": 1544,
+        "assigned": 1542,
+        "matched": 1490,
+        "misassigned": 51,
+        "outside_all": 1,
+        "unassigned": 2,
+        "pct": 3.37
+      },
+      "mismatch_apres": {
+        "lots": 1544,
+        "assigned": 1542,
+        "matched": 1490,
+        "misassigned": 51,
+        "outside_all": 1,
+        "unassigned": 2,
+        "pct": 3.37
+      },
+      "lots": {
+        "avant": 1544,
+        "apres": 1544,
+        "served_after": 1544
+      },
+      "backup": {
+        "status": "OK",
+        "timestamp": "2026-08-03T134717036ZZ",
+        "objects": 4
+      },
+      "deposit": {
+        "plate": "OK",
+        "features": 1544,
+        "with_code_zone": 1542,
+        "stats": "OK",
+        "join_parquet": "OK"
+      },
+      "mirror": {
+        "status": "OK",
+        "layout": "flat-only",
+        "required": false,
+        "subdir_before": false,
+        "subdir_after": false
+      },
+      "stamp": {
+        "status": "OK",
+        "intact": true,
+        "before": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-dominique.geojson",
+          "features": 62,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54060_SaintDominique/MapServer/141/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        },
+        "after": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-dominique.geojson",
+          "features": 62,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54060_SaintDominique/MapServer/141/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        }
+      }
+    },
+    {
+      "slug": "saint-michel",
+      "before_state": "qc-lots non servi; aucun code_zone/mismatch avant n'est invente",
+      "code_zone_avant": null,
+      "code_zone_apres": {
+        "lots": 1838,
+        "assigned": 1838,
+        "pct": 100
+      },
+      "mismatch_avant": null,
+      "mismatch_apres": {
+        "lots": 1838,
+        "assigned": 1838,
+        "matched": 1791,
+        "misassigned": 44,
+        "outside_all": 3,
+        "unassigned": 0,
+        "pct": 2.56
+      },
+      "lots": {
+        "avant": null,
+        "apres": 1838,
+        "served_after": 1838
+      },
+      "backup": {
+        "status": "OK (aucun objet qc-lots/qc-lot-zonage existant)",
+        "timestamp": "2026-08-03T134721362ZZ",
+        "objects": 0
+      },
+      "deposit": {
+        "plate": "OK",
+        "features": 1838,
+        "with_code_zone": 1838,
+        "stats": "OK",
+        "join_parquet": "OK"
+      },
+      "mirror": {
+        "status": "OK",
+        "layout": "flat-only",
+        "required": false,
+        "subdir_before": false,
+        "subdir_after": false
+      },
+      "stamp": {
+        "status": "OK",
+        "intact": true,
+        "before": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-michel.geojson",
+          "features": 62,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68050_SaintMichel68050_public/MapServer/103/query?where=1%3D1&outFields=ZONAGE&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        },
+        "after": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-michel.geojson",
+          "features": 62,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68050_SaintMichel68050_public/MapServer/103/query?where=1%3D1&outFields=ZONAGE&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        }
+      }
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "before_state": "qc-lots non servi; aucun code_zone/mismatch avant n'est invente",
+      "code_zone_avant": null,
+      "code_zone_apres": {
+        "lots": 1432,
+        "assigned": 1431,
+        "pct": 99.93
+      },
+      "mismatch_avant": null,
+      "mismatch_apres": {
+        "lots": 1432,
+        "assigned": 1431,
+        "matched": 1401,
+        "misassigned": 24,
+        "outside_all": 6,
+        "unassigned": 1,
+        "pct": 2.1
+      },
+      "lots": {
+        "avant": null,
+        "apres": 1432,
+        "served_after": 1432
+      },
+      "backup": {
+        "status": "OK (aucun objet qc-lots/qc-lot-zonage existant)",
+        "timestamp": "2026-08-03T134724390ZZ",
+        "objects": 0
+      },
+      "deposit": {
+        "plate": "OK",
+        "features": 1432,
+        "with_code_zone": 1431,
+        "stats": "OK",
+        "join_parquet": "OK"
+      },
+      "mirror": {
+        "status": "OK",
+        "layout": "flat-only",
+        "required": false,
+        "subdir_before": false,
+        "subdir_after": false
+      },
+      "stamp": {
+        "status": "OK",
+        "intact": true,
+        "before": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-patrice-de-sherrington.geojson",
+          "features": 45,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68025_SaintPatriceDeSherrington/MapServer/146/query?where=1%3D1&outFields=Zonage&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        },
+        "after": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-patrice-de-sherrington.geojson",
+          "features": 45,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68025_SaintPatriceDeSherrington/MapServer/146/query?where=1%3D1&outFields=Zonage&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        }
+      }
+    },
+    {
+      "slug": "saint-pie",
+      "code_zone_avant": {
+        "lots": 3277,
+        "assigned": 3274,
+        "pct": 99.91
+      },
+      "code_zone_apres": {
+        "lots": 3277,
+        "assigned": 3274,
+        "pct": 99.91
+      },
+      "mismatch_avant": {
+        "lots": 3277,
+        "assigned": 3274,
+        "matched": 3128,
+        "misassigned": 140,
+        "outside_all": 6,
+        "unassigned": 3,
+        "pct": 4.46
+      },
+      "mismatch_apres": {
+        "lots": 3277,
+        "assigned": 3274,
+        "matched": 3128,
+        "misassigned": 140,
+        "outside_all": 6,
+        "unassigned": 3,
+        "pct": 4.46
+      },
+      "lots": {
+        "avant": 3277,
+        "apres": 3277,
+        "served_after": 3277
+      },
+      "backup": {
+        "status": "OK",
+        "timestamp": "2026-08-03T134727328ZZ",
+        "objects": 4
+      },
+      "deposit": {
+        "plate": "OK",
+        "features": 3277,
+        "with_code_zone": 3274,
+        "stats": "OK",
+        "join_parquet": "OK"
+      },
+      "mirror": {
+        "status": "OK",
+        "layout": "flat-only",
+        "required": false,
+        "subdir_before": false,
+        "subdir_after": false
+      },
+      "stamp": {
+        "status": "OK",
+        "intact": true,
+        "before": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-pie.geojson",
+          "features": 136,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54008_SaintPie/MapServer/169/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        },
+        "after": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-saint-pie.geojson",
+          "features": 136,
+          "level": "documented",
+          "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54008_SaintPie/MapServer/169/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        }
+      }
+    }
+  ],
+  "summary": {
+    "munis": 5,
+    "plat_deposits_ok": 5,
+    "mirror": "flat-only for all 5; no nested qc-lots key existed",
+    "stamp_intact": "5/5",
+    "anti_invention": "missing before products remain null/not-served; no optional values fabricated"
+  }
+}
