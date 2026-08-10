@@ -1,0 +1,689 @@
+{
+ "contract": "zones-vnatif-select-agol/v1",
+ "date": "2026-08-10",
+ "host_re": "^services\\d*\\.arcgis\\.com$",
+ "platform": "agol-hosted-featureserver (per-muni where=1=1 OU MRC-partagée filtrée F=v)",
+ "proof_intended": {
+  "type": "agol",
+  "method": "natif",
+  "reliability": "directe"
+ },
+ "candidates_total": 19,
+ "selected": 14,
+ "diag": [
+  {
+   "slug": "beaupre",
+   "level": "legacy-traceable",
+   "url_host": "services6.arcgis.com",
+   "scoping_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17",
+   "server_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-beaupre.geojson",
+    "normalized/ca-qc-zonage/qc-zonage-beaupre/qc-zonage-beaupre.geojson"
+   ],
+   "served_features": 78,
+   "served_distinct_codes": 77,
+   "served_has_v2": false,
+   "layer_count": 78,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": false,
+   "muni_partition_fields": [],
+   "geojson_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17/query?where=1=1&returnCountOnly=true&f=json",
+   "filter_where": "1=1",
+   "live_count": 78,
+   "nearest_registre_muni": "beaupre",
+   "nearest_km": 0.72,
+   "best_code_field": "logha_min",
+   "best_overlap_pct": 0,
+   "included": false,
+   "reason": "meilleur champ code-zone overlap 0% < 90% (champ=logha_min)"
+  },
+  {
+   "slug": "gore",
+   "level": "legacy-traceable",
+   "url_host": "services9.arcgis.com",
+   "scoping_url": "https://services9.arcgis.com/iZcAwIV2GibwcZLe/arcgis/rest/services/Zonage/FeatureServer/0",
+   "server_url": "https://services9.arcgis.com/iZcAwIV2GibwcZLe/arcgis/rest/services/Zonage/FeatureServer/0",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-gore.geojson",
+    "normalized/ca-qc-zonage/qc-zonage-gore/qc-zonage-gore.geojson"
+   ],
+   "served_features": 932,
+   "served_distinct_codes": 840,
+   "served_has_v2": false,
+   "layer_count": 932,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "co_mun",
+     "distinct": 10
+    }
+   ],
+   "included": false,
+   "reason": "couche partagée : aucune partition muni (F=v) ne satisfait nearest==gore & overlap≥90% (champs testés: co_mun[10])"
+  },
+  {
+   "slug": "havre-saint-pierre",
+   "level": "legacy-traceable",
+   "url_host": "www.arcgis.com",
+   "scoping_url": "https://www.arcgis.com/home/item.html?id=b94b3850ba7f4425980cef318e0d5637#HSP_Ligne",
+   "server_url": null,
+   "portal": {
+    "portal_item_id": "b94b3850ba7f4425980cef318e0d5637",
+    "layer_hint": "HSP_Ligne",
+    "item_type": "Web Map",
+    "item_title": "Carte de zonage HSP",
+    "item_url": null,
+    "webmap_layers": [
+     {
+      "title": "HSP_Ligne",
+      "url": null,
+      "itemId": null,
+      "embedded": true
+     }
+    ]
+   },
+   "included": false,
+   "reason": "portal non résolvable: Web Map → couche \"HSP_Ligne\" est une featureCollection embarquée (aucune URL FeatureServer re-téléchargeable)"
+  },
+  {
+   "slug": "plessisville",
+   "level": "legacy-traceable",
+   "url_host": "www.arcgis.com",
+   "scoping_url": "https://www.arcgis.com/home/item.html?id=2dec1bd28b774d3aa74ee5c8b52c8fba#ZONAGE",
+   "server_url": null,
+   "portal": {
+    "portal_item_id": "2dec1bd28b774d3aa74ee5c8b52c8fba",
+    "layer_hint": "ZONAGE",
+    "item_type": "Web Map",
+    "item_title": "PLAN DE ZONAGE ET MATRICE GRAPHIQUE",
+    "item_url": null,
+    "webmap_layers": [
+     {
+      "title": "ZONAGE",
+      "url": null,
+      "itemId": null,
+      "embedded": true
+     },
+     {
+      "title": "UNITÉ D'ÉVALUATION",
+      "url": null,
+      "itemId": null,
+      "embedded": true
+     },
+     {
+      "title": "SUBDIVISION CADASTRALE",
+      "url": null,
+      "itemId": null,
+      "embedded": true
+     },
+     {
+      "title": "NUMÉRO DE CADASTRE",
+      "url": null,
+      "itemId": null,
+      "embedded": true
+     }
+    ]
+   },
+   "included": false,
+   "reason": "portal non résolvable: Web Map → couche \"ZONAGE\" est une featureCollection embarquée (aucune URL FeatureServer re-téléchargeable)"
+  },
+  {
+   "slug": "saint-francois-xavier-de-brompton",
+   "level": "legacy-traceable",
+   "url_host": "services8.arcgis.com",
+   "scoping_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8",
+   "server_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-francois-xavier-de-brompton.geojson"
+   ],
+   "served_features": 114,
+   "served_distinct_codes": 112,
+   "served_has_v2": false,
+   "layer_count": 1446,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 1500,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "MUN",
+     "distinct": 18
+    }
+   ],
+   "partition_field": "MUN",
+   "partition_value": "Saint-François-Xavier-de-Brompton",
+   "partition_group_features": 114,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 1.2,
+   "geojson_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Saint-Fran%C3%A7ois-Xavier-de-Brompton%27&outFields=*&f=geojson",
+   "count_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Saint-Fran%C3%A7ois-Xavier-de-Brompton%27&returnCountOnly=true&f=json",
+   "filter_where": "MUN='Saint-François-Xavier-de-Brompton'",
+   "live_count": 114,
+   "nearest_registre_muni": "saint-francois-xavier-de-brompton",
+   "nearest_km": 1.2,
+   "best_code_field": "Sect_label",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-honore-de-temiscouata",
+   "level": "legacy-traceable",
+   "url_host": "services.arcgis.com",
+   "scoping_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "server_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-honore-de-temiscouata.geojson"
+   ],
+   "served_features": 50,
+   "served_distinct_codes": 48,
+   "served_has_v2": false,
+   "layer_count": 1180,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "CODE_MUN",
+     "distinct": 19
+    }
+   ],
+   "partition_field": "CODE_MUN",
+   "partition_value": 13090,
+   "partition_group_features": 50,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 0.95,
+   "geojson_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13090&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13090&returnCountOnly=true&f=json",
+   "filter_where": "CODE_MUN=13090",
+   "live_count": 50,
+   "nearest_registre_muni": "saint-honore-de-temiscouata",
+   "nearest_km": 0.95,
+   "best_code_field": "ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-jean-de-la-lande",
+   "level": "legacy-traceable",
+   "url_host": "services.arcgis.com",
+   "scoping_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "server_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-jean-de-la-lande.geojson"
+   ],
+   "served_features": 22,
+   "served_distinct_codes": 22,
+   "served_has_v2": false,
+   "layer_count": 1180,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "CODE_MUN",
+     "distinct": 19
+    }
+   ],
+   "partition_field": "CODE_MUN",
+   "partition_value": 13010,
+   "partition_group_features": 22,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 0.92,
+   "geojson_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13010&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13010&returnCountOnly=true&f=json",
+   "filter_where": "CODE_MUN=13010",
+   "live_count": 22,
+   "nearest_registre_muni": "saint-jean-de-la-lande",
+   "nearest_km": 0.92,
+   "best_code_field": "ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-jean-de-lile-dorleans",
+   "level": "legacy-traceable",
+   "url_host": "services8.arcgis.com",
+   "scoping_url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4",
+   "server_url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-jean-de-lile-dorleans.geojson"
+   ],
+   "served_features": 62,
+   "served_distinct_codes": 61,
+   "served_has_v2": false,
+   "layer_count": 62,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": false,
+   "muni_partition_fields": [],
+   "geojson_url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4/query?where=1=1&returnCountOnly=true&f=json",
+   "filter_where": "1=1",
+   "live_count": 62,
+   "nearest_registre_muni": "saint-jean-de-lile-dorleans",
+   "nearest_km": 0.43,
+   "best_code_field": "Usage",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-juste-du-lac",
+   "level": "legacy-traceable",
+   "url_host": "services.arcgis.com",
+   "scoping_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "server_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-juste-du-lac.geojson"
+   ],
+   "served_features": 34,
+   "served_distinct_codes": 30,
+   "served_has_v2": false,
+   "layer_count": 1180,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "CODE_MUN",
+     "distinct": 19
+    }
+   ],
+   "partition_field": "CODE_MUN",
+   "partition_value": 13040,
+   "partition_group_features": 34,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 4.82,
+   "geojson_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13040&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13040&returnCountOnly=true&f=json",
+   "filter_where": "CODE_MUN=13040",
+   "live_count": 34,
+   "nearest_registre_muni": "saint-juste-du-lac",
+   "nearest_km": 4.82,
+   "best_code_field": "ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-louis-du-ha-ha",
+   "level": "legacy-traceable",
+   "url_host": "services.arcgis.com",
+   "scoping_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "server_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-louis-du-ha-ha.geojson"
+   ],
+   "served_features": 68,
+   "served_distinct_codes": 64,
+   "served_has_v2": false,
+   "layer_count": 1180,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "CODE_MUN",
+     "distinct": 19
+    }
+   ],
+   "partition_field": "CODE_MUN",
+   "partition_value": 13080,
+   "partition_group_features": 68,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 0.89,
+   "geojson_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13080&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13080&returnCountOnly=true&f=json",
+   "filter_where": "CODE_MUN=13080",
+   "live_count": 68,
+   "nearest_registre_muni": "saint-louis-du-ha-ha",
+   "nearest_km": 0.89,
+   "best_code_field": "ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-ludger",
+   "level": "legacy-traceable",
+   "url_host": "services6.arcgis.com",
+   "scoping_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "server_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-ludger.geojson"
+   ],
+   "served_features": 68,
+   "served_distinct_codes": 67,
+   "served_has_v2": false,
+   "layer_count": 1431,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "MUNI",
+     "distinct": 20
+    },
+    {
+     "field": "Nom_Mun_View",
+     "distinct": 20
+    }
+   ],
+   "included": false,
+   "reason": "couche partagée : aucune partition muni (F=v) ne satisfait nearest==saint-ludger & overlap≥90% (champs testés: MUNI[20], Nom_Mun_View[20])"
+  },
+  {
+   "slug": "saint-marc-du-lac-long",
+   "level": "legacy-traceable",
+   "url_host": "services.arcgis.com",
+   "scoping_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "server_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-marc-du-lac-long.geojson"
+   ],
+   "served_features": 49,
+   "served_distinct_codes": 49,
+   "served_has_v2": false,
+   "layer_count": 1180,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "CODE_MUN",
+     "distinct": 19
+    }
+   ],
+   "partition_field": "CODE_MUN",
+   "partition_value": 13020,
+   "partition_group_features": 49,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 1.57,
+   "geojson_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13020&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13020&returnCountOnly=true&f=json",
+   "filter_where": "CODE_MUN=13020",
+   "live_count": 49,
+   "nearest_registre_muni": "saint-marc-du-lac-long",
+   "nearest_km": 1.57,
+   "best_code_field": "ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-michel-du-squatec",
+   "level": "legacy-traceable",
+   "url_host": "services.arcgis.com",
+   "scoping_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "server_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-michel-du-squatec.geojson"
+   ],
+   "served_features": 84,
+   "served_distinct_codes": 72,
+   "served_has_v2": false,
+   "layer_count": 1180,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "CODE_MUN",
+     "distinct": 19
+    }
+   ],
+   "partition_field": "CODE_MUN",
+   "partition_value": 13065,
+   "partition_group_features": 84,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 3.69,
+   "geojson_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13065&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13065&returnCountOnly=true&f=json",
+   "filter_where": "CODE_MUN=13065",
+   "live_count": 84,
+   "nearest_registre_muni": "saint-michel-du-squatec",
+   "nearest_km": 3.69,
+   "best_code_field": "ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-pierre-de-lamy",
+   "level": "legacy-traceable",
+   "url_host": "services.arcgis.com",
+   "scoping_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "server_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-lamy.geojson"
+   ],
+   "served_features": 17,
+   "served_distinct_codes": 17,
+   "served_has_v2": false,
+   "layer_count": 1180,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "CODE_MUN",
+     "distinct": 19
+    }
+   ],
+   "partition_field": "CODE_MUN",
+   "partition_value": 13075,
+   "partition_group_features": 17,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 0.59,
+   "geojson_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13075&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13075&returnCountOnly=true&f=json",
+   "filter_where": "CODE_MUN=13075",
+   "live_count": 17,
+   "nearest_registre_muni": "saint-pierre-de-lamy",
+   "nearest_km": 0.59,
+   "best_code_field": "ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-romain",
+   "level": "legacy-traceable",
+   "url_host": "services6.arcgis.com",
+   "scoping_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "server_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-romain.geojson"
+   ],
+   "served_features": 100,
+   "served_distinct_codes": 94,
+   "served_has_v2": false,
+   "layer_count": 1431,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "MUNI",
+     "distinct": 20
+    },
+    {
+     "field": "Nom_Mun_View",
+     "distinct": 20
+    }
+   ],
+   "partition_field": "MUNI",
+   "partition_value": "Saint-Romain",
+   "partition_group_features": 100,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 0.96,
+   "geojson_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-Romain%27&outFields=*&f=geojson",
+   "count_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-Romain%27&returnCountOnly=true&f=json",
+   "filter_where": "MUNI='Saint-Romain'",
+   "live_count": 100,
+   "nearest_registre_muni": "saint-romain",
+   "nearest_km": 0.96,
+   "best_code_field": "NO_ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "saint-sebastien--le-granit",
+   "level": "legacy-traceable",
+   "url_host": "services6.arcgis.com",
+   "scoping_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "server_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-sebastien--le-granit.geojson"
+   ],
+   "served_features": 44,
+   "served_distinct_codes": 41,
+   "served_has_v2": false,
+   "layer_count": 1431,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "MUNI",
+     "distinct": 20
+    },
+    {
+     "field": "Nom_Mun_View",
+     "distinct": 20
+    }
+   ],
+   "partition_field": "MUNI",
+   "partition_value": "Saint-Sébastien",
+   "partition_group_features": 44,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 1.04,
+   "geojson_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-S%C3%A9bastien%27&outFields=*&f=geojson",
+   "count_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-S%C3%A9bastien%27&returnCountOnly=true&f=json",
+   "filter_where": "MUNI='Saint-Sébastien'",
+   "live_count": 44,
+   "nearest_registre_muni": "saint-sebastien--le-granit",
+   "nearest_km": 1.04,
+   "best_code_field": "NO_ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "stornoway",
+   "level": "legacy-traceable",
+   "url_host": "services6.arcgis.com",
+   "scoping_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "server_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-stornoway.geojson"
+   ],
+   "served_features": 63,
+   "served_distinct_codes": 63,
+   "served_has_v2": false,
+   "layer_count": 1431,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "MUNI",
+     "distinct": 20
+    },
+    {
+     "field": "Nom_Mun_View",
+     "distinct": 20
+    }
+   ],
+   "partition_field": "MUNI",
+   "partition_value": "Stornoway",
+   "partition_group_features": 63,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 1.83,
+   "geojson_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Stornoway%27&outFields=*&f=geojson",
+   "count_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Stornoway%27&returnCountOnly=true&f=json",
+   "filter_where": "MUNI='Stornoway'",
+   "live_count": 63,
+   "nearest_registre_muni": "stornoway",
+   "nearest_km": 1.83,
+   "best_code_field": "NO_ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "ulverton",
+   "level": "legacy-traceable",
+   "url_host": "services8.arcgis.com",
+   "scoping_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8",
+   "server_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-ulverton.geojson"
+   ],
+   "served_features": 56,
+   "served_distinct_codes": 56,
+   "served_has_v2": false,
+   "layer_count": 1446,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 1500,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "MUN",
+     "distinct": 18
+    }
+   ],
+   "partition_field": "MUN",
+   "partition_value": "Ulverton",
+   "partition_group_features": 56,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 0.75,
+   "geojson_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Ulverton%27&outFields=*&f=geojson",
+   "count_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Ulverton%27&returnCountOnly=true&f=json",
+   "filter_where": "MUN='Ulverton'",
+   "live_count": 56,
+   "nearest_registre_muni": "ulverton",
+   "nearest_km": 0.75,
+   "best_code_field": "Sect",
+   "best_overlap_pct": 100,
+   "included": true
+  },
+  {
+   "slug": "val-racine",
+   "level": "legacy-traceable",
+   "url_host": "services6.arcgis.com",
+   "scoping_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "server_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-val-racine.geojson"
+   ],
+   "served_features": 36,
+   "served_distinct_codes": 34,
+   "served_has_v2": false,
+   "layer_count": 1431,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record": 2000,
+   "is_shared_layer": true,
+   "muni_partition_fields": [
+    {
+     "field": "MUNI",
+     "distinct": 20
+    },
+    {
+     "field": "Nom_Mun_View",
+     "distinct": 20
+    }
+   ],
+   "partition_field": "MUNI",
+   "partition_value": "Val-Racine",
+   "partition_group_features": 36,
+   "partition_overlap_pct": 100,
+   "partition_nearest_km": 2.53,
+   "geojson_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Val-Racine%27&outFields=*&f=geojson",
+   "count_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Val-Racine%27&returnCountOnly=true&f=json",
+   "filter_where": "MUNI='Val-Racine'",
+   "live_count": 36,
+   "nearest_registre_muni": "val-racine",
+   "nearest_km": 2.53,
+   "best_code_field": "NO_ZONE",
+   "best_overlap_pct": 100,
+   "included": true
+  }
+ ]
+}
