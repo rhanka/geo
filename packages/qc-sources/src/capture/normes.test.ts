@@ -7,6 +7,7 @@ import {
   CapturedNormesDiscoveryReceiptSchema,
   CapturedNormesDiscoveryRunReceiptSchema,
   assertCapturedNormesReference,
+  selectionIncludesPdfCaptureUrl,
   selectNormesPdfCandidates,
   selectNormesSubpages,
 } from "./normes.js";
@@ -77,6 +78,18 @@ describe("selectNormesPdfCandidates", () => {
       reference,
     );
     expect(selected.subpages).toEqual([{ url: "https://sra.quebec/services/urbanisme", anchor: "Service de l’urbanisme" }]);
+  });
+});
+
+describe("selectionIncludesPdfCaptureUrl", () => {
+  it("accepts only an exact URL from a same-city subpage selection", () => {
+    const selection = selectNormesSubpages(
+      '<a href="/reglements/zonage">Règlement de zonage</a>',
+      reference,
+    );
+    expect(selectionIncludesPdfCaptureUrl(selection, reference.slug, "https://sra.quebec/reglements/zonage")).toBe(true);
+    expect(selectionIncludesPdfCaptureUrl(selection, reference.slug, "https://sra.quebec/reglements/autre")).toBe(false);
+    expect(selectionIncludesPdfCaptureUrl(selection, "another-city", "https://sra.quebec/reglements/zonage")).toBe(false);
   });
 });
 
@@ -176,5 +189,18 @@ describe("captured normes derived worklist", () => {
       },
     }]);
     expect(parsed[0]!.derivation?.kind).toBe("captured-normes-pdf-selection/v1");
+  });
+
+  it("accepts an immutable subpage selection for a PDF that has no URL suffix", () => {
+    const parsed = parseCaptureWorklist([{
+      slug: reference.slug,
+      source: "normes-grille-pdf",
+      urls: ["https://sra.quebec/reglements/zonage"],
+      derivation: {
+        kind: "captured-normes-subpages/v1",
+        selection_key: "registry/normes-captured-subpages/example/1.json",
+      },
+    }]);
+    expect(parsed[0]!.derivation?.kind).toBe("captured-normes-subpages/v1");
   });
 });
