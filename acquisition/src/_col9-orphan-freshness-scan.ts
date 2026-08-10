@@ -39,8 +39,13 @@ function collect(node: unknown, out: Entry[]): void {
   if (Array.isArray(node)) { for (const n of node) collect(n, out); return; }
   if (!node || typeof node !== "object") return;
   const o = node as Record<string, unknown>;
-  if (typeof o["city_slug"] === "string" && typeof o["quality_status"] === "string"
-    && (o["quality_status"] === "orphan" || o["quality_status"] === "candidate")) {
+  // orphan/candidate toujours ; unknown SEULEMENT s'il a une collection servie
+  // (col-8 LEVIER-3 : l'unique unknown avec jointure exacte — source_level non
+  // uniforme ; les 238 autres unknown = no-served-collection, hors portée, écartés).
+  const qs = o["quality_status"];
+  const hasColl = typeof o["collection_key"] === "string" && (o["collection_key"] as string).length > 0;
+  if (typeof o["city_slug"] === "string" && typeof qs === "string"
+    && (qs === "orphan" || qs === "candidate" || (qs === "unknown" && hasColl))) {
     out.push({
       city_slug: o["city_slug"] as string,
       collection_key: typeof o["collection_key"] === "string" ? (o["collection_key"] as string) : undefined,
@@ -116,7 +121,7 @@ async function main(): Promise<void> {
     contract: "col9-orphan-freshness-scan/20260810",
     matrix_source: "work/coverage/zone-provenance-quality-matrix-20260726T130555Z-8c02991472f0e3a0.json (as_of 2026-07-26)",
     scanned_current_served_state: true,
-    scope: "quality_status ∈ {orphan, candidate}",
+    scope: "quality_status ∈ {orphan, candidate} ∪ {unknown AVEC collection servie} (col-8 LEVIER-3)",
     entries_scanned: entries.length,
     summary,
     interpretation: {
