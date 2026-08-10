@@ -15,6 +15,7 @@ import {
   CapturedNormesDiscoveryRunReceiptSchema,
   parseManifestJsonl,
   selectNormesPdfCandidates,
+  selectNormesSubpages,
   type CapturedNormesReference,
 } from "../../packages/qc-sources/src/capture/index.js";
 import { verifyRawCapturePayload } from "./lib/zone-provenance-raw-capture.js";
@@ -53,12 +54,25 @@ export function discoveryRunReceiptKey(runId: string, slug: string): string {
   return `registry/normes-captured-discovery-run-receipts/${runId}/${slug}.json`;
 }
 
+export function subpageSelectionKey(runId: string, lineIndex: number): string {
+  return `registry/normes-captured-subpages/${runId}/${lineIndex}.json`;
+}
+
 export async function discoverCapturedNormesPage(args: {
   runId: string;
   lineIndex: number;
   slug: string;
   outputKey?: string;
-}): Promise<{ key: string; receipt_key: string; reference: CapturedNormesReference; candidates: number; upload: "created" | "existing-equal" }> {
+}): Promise<{
+  key: string;
+  receipt_key: string;
+  subpage_selection_key: string;
+  reference: CapturedNormesReference;
+  candidates: number;
+  subpages: number;
+  subpage_candidates: Array<{ url: string; anchor: string }>;
+  upload: "created" | "existing-equal";
+}> {
   requireS3RunEnvironment();
   if (!Number.isInteger(args.lineIndex) || args.lineIndex < 0) throw new Error("--line-index must be a non-negative integer");
   const s3 = s3Client();
@@ -95,6 +109,9 @@ export async function discoverCapturedNormesPage(args: {
   const selection = selectNormesPdfCandidates(bytes.toString("utf8"), reference);
   const key = args.outputKey ?? selectionKey(args.runId, args.lineIndex);
   const upload = await putBytesIfAbsentOrEqual(s3, key, `${JSON.stringify(selection, null, 2)}\n`, "application/json");
+  const subpageSelection = selectNormesSubpages(bytes.toString("utf8"), reference);
+  const subpageKey = subpageSelectionKey(args.runId, args.lineIndex);
+  await putBytesIfAbsentOrEqual(s3, subpageKey, `${JSON.stringify(subpageSelection, null, 2)}\n`, "application/json");
   const receipt = CapturedNormesDiscoveryReceiptSchema.parse({
     contract: "captured-normes-discovery-receipt/v1",
     generated_at: reference.retrieved_at,
@@ -106,7 +123,16 @@ export async function discoverCapturedNormesPage(args: {
   });
   const receiptKey = discoveryReceiptKey(args.runId, args.lineIndex);
   await putBytesIfAbsentOrEqual(s3, receiptKey, `${JSON.stringify(receipt, null, 2)}\n`, "application/json");
-  return { key, receipt_key: receiptKey, reference, candidates: selection.candidates.length, upload };
+  return {
+    key,
+    receipt_key: receiptKey,
+    subpage_selection_key: subpageKey,
+    reference,
+    candidates: selection.candidates.length,
+    subpages: subpageSelection.subpages.length,
+    subpage_candidates: subpageSelection.subpages,
+    upload,
+  };
 }
 
 async function main(): Promise<void> {
