@@ -1,0 +1,41 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-promotion/v2",
+  "as_of": "2026-08-10T06:42:27.807Z",
+  "scope": "palier-167 / lery / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": { "state": "incomplete", "declared": "complete", "proven": "unknown" },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown"
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "complete",
+      "declared": "complete",
+      "proven": "complete",
+      "rule": "Le PDF municipal vivant imprime « Règlement 2017-451 relatif au zonage / Annexe A »; 2017-464 est textuellement qualifié d’amendement."
+    },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown",
+    "served_collections": "SKIP lery (grille non servie); SKIP lery (polygone qc-zonage non servi)."
+  },
+  "evidence": {
+    "official_municipal_pdf": {
+      "url": "https://www.lery.ca/images/articles/urbanisme/reglements/R%C3%A8glement_2017-464_Grilles.pdf",
+      "retrieved_at": "2026-08-10T06:42:27.807Z",
+      "sha256": "sha256:3bdea6415880a24f682f87fe987bde96bc4aa708972dbea6890a80502da8a13c",
+      "storage_key": "raw/reglement-official/cas/3bdea6415880a24f682f87fe987bde96bc4aa708972dbea6890a80502da8a13c.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T064400Z-0-1e1fddfe-3d0f-460f-b081-7c55706507d7/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "Règlement 2017-451 relatif au zonage / Annexe A; (M) Amendement 2017-464 — entrée en vigueur le 5 juin 2017."
+    },
+    "matrix_recalculation": "build('20260810') en mémoire: reglement=complete; prov_qualite=unknown; prov_v2=unknown; prov_url_servie=unknown."
+  },
+  "anti_invention": {
+    "base_not_amendment": "Le numéro de base 2017-451 est conservé; l’amendement 2017-464 n’est jamais substitué.",
+    "strict_proof_v2": "Aucune collection zonage servie: aucune preuve v2 n’est créée ni déduite.",
+    "served_url": "Aucune zone_source_url n’est créée ni remplacée par reglement_url.",
+    "storage": "Le PDF source est uniquement dans CAS S3; aucun octet source local."
+  }
+}
