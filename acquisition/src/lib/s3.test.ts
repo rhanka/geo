@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  copyObjectIfMatch,
   objectHead,
   putBytesIfAbsentOrEqual,
   putStream,
@@ -90,5 +91,29 @@ describe("putBytesIfAbsentOrEqual", () => {
     };
     await expect(putBytesIfAbsentOrEqual(s3 as never, "registry/worklist.json", "expected"))
       .rejects.toThrow(/immutable S3 object collision/);
+  });
+});
+
+describe("copyObjectIfMatch", () => {
+  it("copies a backup only from the ETag revision observed during preflight", async () => {
+    const sent: Array<{ input: Record<string, unknown> }> = [];
+    const s3 = { send: vi.fn(async (command: { constructor: { name: string }; input: Record<string, unknown> }) => {
+      expect(command.constructor.name).toBe("CopyObjectCommand");
+      sent.push({ input: command.input });
+      return {};
+    }) };
+
+    await copyObjectIfMatch(
+      s3 as never,
+      "normalized/ca-qc-zonage/qc-zonage-alpha.geojson",
+      "normalized/ca-qc-zonage/_replaced/run-1/flat.geojson",
+      "\"etag-before\"",
+    );
+
+    expect(sent).toHaveLength(1);
+    expect(sent[0]!.input).toMatchObject({
+      CopySourceIfMatch: "\"etag-before\"",
+      Key: "normalized/ca-qc-zonage/_replaced/run-1/flat.geojson",
+    });
   });
 });
