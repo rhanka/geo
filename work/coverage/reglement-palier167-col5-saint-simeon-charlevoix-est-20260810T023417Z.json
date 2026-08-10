@@ -1,0 +1,55 @@
+{
+  "contract": "reglement-palier167-col5-retention/v1",
+  "as_of": "2026-08-10T02:34:30.767Z",
+  "scope": "palier-167 / saint-simeon--charlevoix-est / col-5 reglement_declared",
+  "before": {
+    "state": "incomplete",
+    "reason": "Les 61 entités servies portent encore le numéro legacy 196, mais le registre n'a ni millésime, ni page, ni URL de règlement prouvée; aucune lecture PDF intègre ne permettait de valider ce résidu."
+  },
+  "after": {
+    "state": "incomplete",
+    "reason": "L'URL directe est HTTP 404; CDX confirme l'archive du PDF 196, mais l'archive servie est tronquée à 1 MiB et échoue l'intégrité PDF."
+  },
+  "evidence": {
+    "live_source": {
+      "url": "https://www.saintsimeon.ca/wp-content/uploads/2017/11/Re%CC%80g.-196-Zonage.pdf",
+      "http_status": 404,
+      "manifest_key": "capture/_runs/reglement-20260810T023210Z-0-52d0dbb8-f0ac-429e-8c07-35b4f727014c/manifest.jsonl",
+      "line_index": 1
+    },
+    "cdx_domain_query": {
+      "url": "http://web.archive.org/cdx/search/cdx?url=http%3A%2F%2Fwww.saintsimeon.ca%2F*&matchType=domain&output=json&filter=statuscode%3A200&filter=mimetype%3Aapplication%2Fpdf&fl=timestamp%2Coriginal%2Cstatuscode%2Cmimetype%2Cdigest&collapse=digest",
+      "retrieved_at": "2026-08-10T02:33:38.743Z",
+      "sha256": "sha256:8abea91fcc00cc52871721a9238c072d3f4feb0d7abebfa57faf086c65c7b63c",
+      "storage_key": "raw/reglement-wayback-cdx/cas/8abea91fcc00cc52871721a9238c072d3f4feb0d7abebfa57faf086c65c7b63c.json",
+      "manifest_key": "capture/_runs/reglement-20260810T023324Z-0-9269d27e-a518-4536-a3f7-677672e7a53b/manifest.jsonl",
+      "line_index": 1,
+      "selected_snapshot": "20211025134541"
+    },
+    "wayback_pdf": {
+      "url": "https://web.archive.org/web/20211025134541id_/https://www.saintsimeon.ca/wp-content/uploads/2017/11/Re%CC%80g.-196-Zonage.pdf",
+      "retrieved_at": "2026-08-10T02:34:30.767Z",
+      "sha256": "sha256:31cd09674b08a3fe1d6af9390ce5e45bc67648fd1ddb9e46f9d58e7919bdc946",
+      "storage_key": "raw/reglement-wayback-cdx/cas/31cd09674b08a3fe1d6af9390ce5e45bc67648fd1ddb9e46f9d58e7919bdc946.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T023417Z-0-6162db47-ae68-42ca-b0a4-cb6fbd2cbe20/manifest.jsonl",
+      "line_index": 1,
+      "http_status": 200,
+      "bytes": 1048576,
+      "integrity": "rejected: pdftotext reports missing trailer dictionary and xref table"
+    },
+    "served_readback": {
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-simeon--charlevoix-est.geojson",
+      "features": 61,
+      "legacy_reglement_numero": "196",
+      "legacy_reglement_url": "http://www.saintsimeon.ca/wp-content/uploads/2016/05/grille-pu-2015.pdf",
+      "zone_source_level": "legacy-traceable",
+      "proof_v2_features": 0,
+      "quality_features": 0
+    }
+  },
+  "anti_invention": {
+    "scope": "Le nom de fichier et le résultat CDX orientent vers le règlement 196, mais le corpus tronqué ne permet pas d'en lire le titre ni le numéro. Les champs restent null.",
+    "storage": "Toutes les réponses sont uniquement dans le CAS S3 et leurs manifestes cluster; aucun octet de source n'est écrit dans le worktree.",
+    "served_columns": "Aucun gain col-5/9/10/11; aucune écriture ou pliage des zones servies n'est exécuté."
+  }
+}
