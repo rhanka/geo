@@ -1,0 +1,728 @@
+{
+  "run_at": "2026-08-08T12:11:49.323Z",
+  "method": "preuve directe: centre de gravité des lots (shoelace) + point-in-polygon contre qc-zonage servi",
+  "dry_run": true,
+  "anti_invention_note": "preuve directe: CRS explicitement déterminé par métadonnées/boîte d'encadrement, puis containment géométrique strict point-in-polygon; aucune heuristique de réparation.",
+  "cities": [
+    {
+      "slug": "varennes",
+      "lots_crs": "EPSG:4326 (inferred via bounds)",
+      "zones_crs": "EPSG:4326 (inferred via bounds)",
+      "crs_aligned": true,
+      "verdict": "real_label_mismatch",
+      "examples": [
+        {
+          "lot_id": "5 881 874",
+          "centroid": {
+            "x": -73.374489919,
+            "y": 45.631996981,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-102",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "6 224 373",
+          "centroid": {
+            "x": -73.386039736,
+            "y": 45.664163477,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-212",
+          "containing_zone_code_s": [
+            "A-213"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 224 249",
+          "centroid": {
+            "x": -73.393214863,
+            "y": 45.633294288,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "C-220",
+          "containing_zone_code_s": [
+            "I-207"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 224 847",
+          "centroid": {
+            "x": -73.386408887,
+            "y": 45.63412993,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "I-221",
+          "containing_zone_code_s": [
+            "A-212"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 224 834",
+          "centroid": {
+            "x": -73.39567392,
+            "y": 45.679070972,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-301",
+          "containing_zone_code_s": [
+            "A-214"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 224 827",
+          "centroid": {
+            "x": -73.400507517,
+            "y": 45.644171501,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-212",
+          "containing_zone_code_s": [
+            "A-211"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 224 850",
+          "centroid": {
+            "x": -73.386285482,
+            "y": 45.673391793,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-213",
+          "containing_zone_code_s": [
+            "A-103"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 223 818",
+          "centroid": {
+            "x": -73.334749738,
+            "y": 45.674680195,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-106",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "6 223 817",
+          "centroid": {
+            "x": -73.335497071,
+            "y": 45.674615647,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-106",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "6 224 859",
+          "centroid": {
+            "x": -73.373931984,
+            "y": 45.638947788,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-102",
+          "containing_zone_code_s": [
+            "I-231"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 223 973",
+          "centroid": {
+            "x": -73.371714932,
+            "y": 45.666256992,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-107",
+          "containing_zone_code_s": [
+            "A-103"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 004 551",
+          "centroid": {
+            "x": -73.405973372,
+            "y": 45.681399838,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "P-421",
+          "containing_zone_code_s": [
+            "H-483"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 224 825",
+          "centroid": {
+            "x": -73.401911598,
+            "y": 45.722432719,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-305",
+          "containing_zone_code_s": [
+            "A-304"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 224 839",
+          "centroid": {
+            "x": -73.459957382,
+            "y": 45.750821117,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-305",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "6 006 823",
+          "centroid": {
+            "x": -73.405517382,
+            "y": 45.682398066,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "H-483",
+          "containing_zone_code_s": [
+            "H-422"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 224 438",
+          "centroid": {
+            "x": -73.341754914,
+            "y": 45.708893801,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "A-107",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "6 148 373",
+          "centroid": {
+            "x": -73.427597886,
+            "y": 45.655077981,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "H-563",
+          "containing_zone_code_s": [
+            "H-557"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 148 289",
+          "centroid": {
+            "x": -73.425010055,
+            "y": 45.65408833,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "H-571",
+          "containing_zone_code_s": [
+            "H-563"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 148 287",
+          "centroid": {
+            "x": -73.425069477,
+            "y": 45.653817673,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "H-571",
+          "containing_zone_code_s": [
+            "H-563"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "6 148 421",
+          "centroid": {
+            "x": -73.423011927,
+            "y": 45.652436386,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "H-570",
+          "containing_zone_code_s": [
+            "H-567"
+          ],
+          "is_unique_containment": true
+        }
+      ],
+      "dry_run_correction_sample": [
+        {
+          "lot_id": "6 224 373",
+          "before": "A-212",
+          "after": "A-213"
+        },
+        {
+          "lot_id": "6 224 249",
+          "before": "C-220",
+          "after": "I-207"
+        },
+        {
+          "lot_id": "6 224 847",
+          "before": "I-221",
+          "after": "A-212"
+        },
+        {
+          "lot_id": "6 224 834",
+          "before": "A-301",
+          "after": "A-214"
+        },
+        {
+          "lot_id": "6 224 827",
+          "before": "A-212",
+          "after": "A-211"
+        },
+        {
+          "lot_id": "6 224 850",
+          "before": "A-213",
+          "after": "A-103"
+        },
+        {
+          "lot_id": "6 224 859",
+          "before": "A-102",
+          "after": "I-231"
+        },
+        {
+          "lot_id": "6 223 973",
+          "before": "A-107",
+          "after": "A-103"
+        },
+        {
+          "lot_id": "6 004 551",
+          "before": "P-421",
+          "after": "H-483"
+        },
+        {
+          "lot_id": "6 224 825",
+          "before": "A-305",
+          "after": "A-304"
+        },
+        {
+          "lot_id": "6 006 823",
+          "before": "H-483",
+          "after": "H-422"
+        },
+        {
+          "lot_id": "6 148 373",
+          "before": "H-563",
+          "after": "H-557"
+        },
+        {
+          "lot_id": "6 148 289",
+          "before": "H-571",
+          "after": "H-563"
+        },
+        {
+          "lot_id": "6 148 287",
+          "before": "H-571",
+          "after": "H-563"
+        },
+        {
+          "lot_id": "6 148 421",
+          "before": "H-570",
+          "after": "H-567"
+        },
+        {
+          "lot_id": "6 148 444",
+          "before": "H-566",
+          "after": "H-567"
+        },
+        {
+          "lot_id": "PC-40896",
+          "before": "H-567",
+          "after": "P-550"
+        },
+        {
+          "lot_id": "6 148 435",
+          "before": "H-566",
+          "after": "H-571"
+        },
+        {
+          "lot_id": "6 224 813",
+          "before": "A-204",
+          "after": "A-203"
+        },
+        {
+          "lot_id": "6 148 430",
+          "before": "H-567",
+          "after": "P-550"
+        }
+      ],
+      "notes": [
+        "total_lots=8287",
+        "assigned_lots=8287",
+        "matched=7874",
+        "real_unique_mismatch=404",
+        "outside_all=9"
+      ]
+    },
+    {
+      "slug": "amherst",
+      "lots_crs": "EPSG:4326 (inferred via bounds)",
+      "zones_crs": "EPSG:4326 (inferred via bounds)",
+      "crs_aligned": true,
+      "verdict": "real_label_mismatch",
+      "examples": [
+        {
+          "lot_id": "4 942 061",
+          "centroid": {
+            "x": -74.711507757,
+            "y": 46.058692417,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "14F",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 961 605",
+          "centroid": {
+            "x": -74.787262335,
+            "y": 46.078751283,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "10F",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 941 534",
+          "centroid": {
+            "x": -74.788271928,
+            "y": 46.078468026,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "10F",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 941 537",
+          "centroid": {
+            "x": -74.787224049,
+            "y": 46.079384956,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "10F",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "6 637 329",
+          "centroid": {
+            "x": -74.713035936,
+            "y": 46.039284878,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "16V",
+          "containing_zone_code_s": [
+            "97-F"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "4 420 049",
+          "centroid": {
+            "x": -74.827658349,
+            "y": 46.100493932,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "3V",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 420 044",
+          "centroid": {
+            "x": -74.827891723,
+            "y": 46.101213365,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "3V",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 420 062",
+          "centroid": {
+            "x": -74.827106159,
+            "y": 46.10052039,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "3V",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 420 061",
+          "centroid": {
+            "x": -74.829423756,
+            "y": 46.104207608,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "3V",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 420 047",
+          "centroid": {
+            "x": -74.827217088,
+            "y": 46.101019703,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "3V",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 420 056",
+          "centroid": {
+            "x": -74.826821172,
+            "y": 46.099635532,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "3V",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 420 045",
+          "centroid": {
+            "x": -74.828321777,
+            "y": 46.101756493,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "3V",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 420 063",
+          "centroid": {
+            "x": -74.82970246,
+            "y": 46.104137614,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "3V",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "5 197 784",
+          "centroid": {
+            "x": -74.712190901,
+            "y": 46.058163265,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "15V",
+          "containing_zone_code_s": [],
+          "is_unique_containment": false
+        },
+        {
+          "lot_id": "4 941 466",
+          "centroid": {
+            "x": -74.800809353,
+            "y": 46.068950933,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "11F",
+          "containing_zone_code_s": [
+            "10-F"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "4 941 461",
+          "centroid": {
+            "x": -74.801576946,
+            "y": 46.066669173,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "11F",
+          "containing_zone_code_s": [
+            "10-F"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "4 941 464",
+          "centroid": {
+            "x": -74.801315805,
+            "y": 46.067910138,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "11F",
+          "containing_zone_code_s": [
+            "10-F"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "4 941 465",
+          "centroid": {
+            "x": -74.801269387,
+            "y": 46.068288889,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "11F",
+          "containing_zone_code_s": [
+            "10-F"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "4 941 495",
+          "centroid": {
+            "x": -74.799280964,
+            "y": 46.070801797,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "11F",
+          "containing_zone_code_s": [
+            "10-F"
+          ],
+          "is_unique_containment": true
+        },
+        {
+          "lot_id": "4 941 468",
+          "centroid": {
+            "x": -74.800288412,
+            "y": 46.06959049,
+            "crs": "EPSG:4326 (inferred via bounds)"
+          },
+          "assigned_code_zone": "11F",
+          "containing_zone_code_s": [
+            "10-F"
+          ],
+          "is_unique_containment": true
+        }
+      ],
+      "dry_run_correction_sample": [
+        {
+          "lot_id": "6 637 329",
+          "before": "16V",
+          "after": "97-F"
+        },
+        {
+          "lot_id": "4 941 466",
+          "before": "11F",
+          "after": "10-F"
+        },
+        {
+          "lot_id": "4 941 461",
+          "before": "11F",
+          "after": "10-F"
+        },
+        {
+          "lot_id": "4 941 464",
+          "before": "11F",
+          "after": "10-F"
+        },
+        {
+          "lot_id": "4 941 465",
+          "before": "11F",
+          "after": "10-F"
+        },
+        {
+          "lot_id": "4 941 495",
+          "before": "11F",
+          "after": "10-F"
+        },
+        {
+          "lot_id": "4 941 468",
+          "before": "11F",
+          "after": "10-F"
+        },
+        {
+          "lot_id": "4 941 459",
+          "before": "11F",
+          "after": "10-F"
+        },
+        {
+          "lot_id": "4 961 594",
+          "before": "11F",
+          "after": "58-M"
+        },
+        {
+          "lot_id": "6 602 118",
+          "before": "33V",
+          "after": "95-R"
+        },
+        {
+          "lot_id": "6 585 288",
+          "before": "33V",
+          "after": "39-V"
+        },
+        {
+          "lot_id": "6 585 289",
+          "before": "33V",
+          "after": "39-V"
+        },
+        {
+          "lot_id": "4 961 516",
+          "before": "52V",
+          "after": "53-V"
+        },
+        {
+          "lot_id": "4 941 107",
+          "before": "52V",
+          "after": "53-V"
+        },
+        {
+          "lot_id": "4 613 868",
+          "before": "44V",
+          "after": "41-V"
+        },
+        {
+          "lot_id": "6 510 707",
+          "before": "41V",
+          "after": "39-V"
+        },
+        {
+          "lot_id": "6 510 699",
+          "before": "41V",
+          "after": "39-V"
+        },
+        {
+          "lot_id": "4 941 155",
+          "before": "82M",
+          "after": "76-F"
+        },
+        {
+          "lot_id": "4 961 710",
+          "before": "15V",
+          "after": "97-F"
+        },
+        {
+          "lot_id": "6 449 886",
+          "before": "33V",
+          "after": "95-R"
+        }
+      ],
+      "notes": [
+        "total_lots=1833",
+        "assigned_lots=1749",
+        "matched=0",
+        "real_unique_mismatch=1132",
+        "outside_all=617"
+      ]
+    }
+  ]
+}
