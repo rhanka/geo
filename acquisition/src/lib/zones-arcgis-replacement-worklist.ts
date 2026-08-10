@@ -75,6 +75,7 @@ export const ZonesArcgisReplacementWorklistSchema = z.object({
 
 export type ZonesArcgisReplacementTarget = z.infer<typeof TargetSchema>;
 export type ZonesArcgisReplacementWorklist = z.infer<typeof ZonesArcgisReplacementWorklistSchema>;
+export interface RegisteredReplacementMunicipality { slug: string; name: string }
 
 /** Refuse les worklists génériques avant le moindre GET tiers. */
 export function parseZonesArcgisReplacementWorklist(value: unknown): ZonesArcgisReplacementWorklist {
@@ -84,6 +85,24 @@ export function parseZonesArcgisReplacementWorklist(value: unknown): ZonesArcgis
 /** Filtre SQL déterministe et explicitement rattaché à la municipalité ciblée. */
 export function whereForReplacementTarget(target: ZonesArcgisReplacementTarget): string {
   return municipalityWhere(target.municipality_filter.field, target.municipality_filter.value);
+}
+
+function comparableMunicipalityName(value: string): string {
+  return value.normalize("NFC").toLocaleLowerCase("fr-CA").trim();
+}
+
+/** The ArcGIS predicate must name the same municipality as the registry slug. */
+export function assertReplacementTargetMatchesMunicipalityRegister(
+  target: ZonesArcgisReplacementTarget,
+  municipalities: readonly RegisteredReplacementMunicipality[],
+): void {
+  const municipality = municipalities.find((candidate) => candidate.slug === target.slug);
+  if (!municipality) throw new Error(`slug de remplacement absent du registre municipal: ${target.slug}`);
+  if (comparableMunicipalityName(target.municipality_filter.value) !== comparableMunicipalityName(municipality.name)) {
+    throw new Error(
+      `filtre municipal ${JSON.stringify(target.municipality_filter.value)} ne correspond pas au slug ${target.slug} (${JSON.stringify(municipality.name)})`,
+    );
+  }
 }
 
 /** L'unique URL que le Job de capture est autorisé à appeler pour ce contrat. */
