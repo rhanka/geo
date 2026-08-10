@@ -1,0 +1,47 @@
+{
+  "contract": "reglement-palier167-col5-transition/v1",
+  "as_of": "2026-08-10T01:37:44.996Z",
+  "scope": "palier-167 / saint-mathieu / col-5 reglement_declared",
+  "before": {
+    "state": "incomplete",
+    "reglement_numero": null,
+    "reason": "Conflit historique non tranché : le règlement 229-2011 était adopté, tandis que les données servies portaient R315-2024 sur une version alors marquée projet."
+  },
+  "after": {
+    "state": "complete",
+    "reglement_numero": "315-2024",
+    "reglement_millesime": 2024,
+    "reglement_page_source": 1,
+    "reason": "Le PDF de décembre 2024 publié directement sur le domaine municipal imprime « MUNICIPALITÉ DE SAINT-MATHIEU — RÈGLEMENT DE ZONAGE NUMÉRO 315-2024 » en première page."
+  },
+  "evidence": {
+    "zoning_codification": {
+      "url": "https://saint-mathieu.com/wp-content/uploads/2024/12/SMT_R315-2024_Zonage_Decembre2024.pdf",
+      "retrieved_at": "2026-08-10T01:37:44.996Z",
+      "sha256": "sha256:3b06b644c0e2ab41e802868901a677129cd2de54ee7ca8170418602b50ebdadc",
+      "storage_key": "raw/reglement-official/cas/3b06b644c0e2ab41e802868901a677129cd2de54ee7ca8170418602b50ebdadc.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T013731Z-0-72202b94-4ec1-4db2-bded-f22349d97b5e/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "MUNICIPALITÉ DE SAINT-MATHIEU — RÈGLEMENT DE ZONAGE NUMÉRO 315-2024",
+      "article_17_1": "Le présent règlement entre en vigueur conformément à la loi."
+    },
+    "non_blocking_discovery_attempt": {
+      "url": "https://saint-mathieu.com/",
+      "http_status": 403,
+      "manifest_key": "capture/_runs/reglement-20260810T013915Z-0-dc266d93-27e9-4098-a2e2-7c840f65a57e/manifest.jsonl",
+      "line_index": 1,
+      "effect": "La page d'accueil non accessible n'est pas une preuve et ne remplace pas le PDF municipal accessible."
+    },
+    "served_fold": {
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-mathieu.geojson",
+      "features": 35,
+      "write": "additive; les seuls champs écrits sont reglement_numero, reglement_millesime, reglement_page_source et reglement_url",
+      "readback": "Les 35/35 entités relues depuis S3 portent exactement les quatre valeurs du registre."
+    }
+  },
+  "anti_invention": {
+    "scope": "La codification administrative avertit qu'elle n'a aucune valeur officielle pour l'interprétation. Le changement ne dérive que le numéro et le millésime visibles en p.1; aucune date d'adoption, date d'entrée en vigueur ni norme n'est ajoutée.",
+    "storage": "Les octets du PDF sont uniquement dans le CAS S3; le SHA-256 a été relu et recalculé depuis ce CAS. Aucun PDF n'est enregistré dans le worktree.",
+    "served_columns": "Aucun gain déclaré pour les colonnes 9, 10 ou 11. Relu après pliage : les 35 entités restent zone_source_level=legacy-traceable et zone_source_url=null (col-11 non complète); proof.schema_version=1.0, malgré proof.status=complete (ce n'est pas la preuve-v2 stricte, donc col-10 non complète). La matrice de qualité du 2026-08-09 les classe acceptable avec reason=no-geometry-proof : aucun statut col-9 n'est promu par ce lot."
+  }
+}

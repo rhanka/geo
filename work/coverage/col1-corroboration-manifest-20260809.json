@@ -1,0 +1,2392 @@
+{
+  "contract": "col1-corroboration-manifest/v1",
+  "as_of": "2026-08-09",
+  "cohort": "set-167-bprime",
+  "job": "work/coverage/qa-job-20260809.md",
+  "ratified_semantics": {
+    "source_origin_v": "géométrie servie via dépôt vecteur-natif (GOnet/ArcGIS/WFS), preuve v2 exigée (url+retrieved_at+sha256)",
+    "v2_served": "zone servie avec preuve v2 intacte et rattachée (sha256 cohérent S3), eligible recall v3.4",
+    "anti_invention": "v2-served seulement si attestation PASS-BANC + dépôt servi ; sinon unknown ; N-A seulement si source le porte"
+  },
+  "col1_authoritative_source": "work/coverage/completion-1-zones-matrix-20260723.json (figée 07-23 ; en attente re-mesure S3 fraîche)",
+  "sources": [
+    {
+      "role": "cohort-167",
+      "path": "work/coverage/palier-matrix-cohort-167.json",
+      "sha256": "sha256:dd4e257563813e2286de786a9da384cbde418aa9054b74bd667e6f613a292960"
+    },
+    {
+      "role": "completion-1-zones",
+      "path": "work/coverage/completion-1-zones-matrix-20260723.json",
+      "sha256": "sha256:518e7a7eb1b1626045fd5dc1b9ae0ac23745678752f82ef2e893901ec3488f22"
+    },
+    {
+      "role": "zone-provenance-status-manifest",
+      "path": "work/coverage/zone-provenance-status-manifest-20260722.json",
+      "sha256": "sha256:74345365b898d65ff05b08bc897f62f0c7052bd5917b7203f8afe57afce828aa"
+    },
+    {
+      "role": "vecteur-natif-attestation-gonet",
+      "path": "work/coverage/vecteur-natif-attestation-20260803.json",
+      "sha256": "sha256:7bbeef2ccfb7d55b78667cafa485db69ff4112b61f3d693e4a6c163829275130"
+    },
+    {
+      "role": "vecteur-natif-attestation-arcgis",
+      "path": "work/coverage/vecteur-natif-attestation-arcgis-20260803.json",
+      "sha256": "sha256:9e34582e3040fd7c990dc49c91c704837227700faa54adc58beff9def2430f4c"
+    }
+  ],
+  "summary": {
+    "matched": 163,
+    "col1_state": {
+      "complete": 106,
+      "unknown": 47,
+      "incomplete": 10
+    },
+    "complete_total": 106,
+    "complete_by_source_origin": {
+      "q": 80,
+      "h": 22,
+      "v": 4
+    },
+    "complete_by_v2_readiness": {
+      "unknown": 102,
+      "v2-served": 4
+    },
+    "v2_served": [
+      "saint-charles-sur-richelieu",
+      "contrecoeur",
+      "saint-pie",
+      "saint-dominique"
+    ],
+    "fresh_v2_deposit_pending": [
+      "saint-michel",
+      "saint-patrice-de-sherrington"
+    ],
+    "attested_but_held": [
+      "saint-bernard-de-michaudville",
+      "saint-jude"
+    ]
+  },
+  "cities": [
+    {
+      "slug": "westmount",
+      "priorityRank": 1,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-westmount/qc-zonage-westmount.geojson",
+          "refs": [
+            "r:866",
+            "q:354:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-lambert",
+      "priorityRank": 2,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-lambert.geojson",
+          "refs": [
+            "r:600",
+            "q:251:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "hampstead",
+      "priorityRank": 3,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-hampstead/qc-zonage-hampstead.geojson",
+          "refs": [
+            "r:169",
+            "q:82:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "mont-royal",
+      "priorityRank": 4,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-mont-royal.geojson",
+          "refs": [
+            "r:306",
+            "q:135:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "montreal-ouest",
+      "priorityRank": 5,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-montreal-ouest.geojson",
+          "refs": [
+            "r:316",
+            "q:141:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "cote-saint-luc",
+      "priorityRank": 6,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-cote-saint-luc/qc-zonage-cote-saint-luc.geojson",
+          "refs": [
+            "r:96",
+            "q:50:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "longueuil",
+      "priorityRank": 7,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-longueuil/qc-zonage-longueuil.geojson",
+          "refs": [
+            "r:277",
+            "q:123:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "brossard",
+      "priorityRank": 8,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-brossard.geojson",
+          "refs": [
+            "r:58",
+            "q:30:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "sainte-catherine",
+      "priorityRank": 9,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-catherine.geojson",
+          "refs": [
+            "r:741",
+            "h:438:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "la-prairie",
+      "priorityRank": 10,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-la-prairie.geojson",
+          "refs": [
+            "r:209",
+            "q:101:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "delson",
+      "priorityRank": 11,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-delson.geojson",
+          "refs": [
+            "r:104",
+            "q:54:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "candiac",
+      "priorityRank": 12,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-candiac.geojson",
+          "refs": [
+            "r:61",
+            "q:33:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "montreal-est",
+      "priorityRank": 13,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-montreal-est.geojson",
+          "refs": [
+            "r:315",
+            "q:140:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "boucherville",
+      "priorityRank": 14,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-boucherville.geojson",
+          "refs": [
+            "r:52",
+            "q:25:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "dorval",
+      "priorityRank": 15,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-dorval/qc-zonage-dorval.geojson",
+          "refs": [
+            "r:114",
+            "q:60:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-constant",
+      "priorityRank": 17,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-constant.geojson",
+          "refs": [
+            "r:489",
+            "q:212:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "priorityRank": 18,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-bruno-de-montarville.geojson",
+          "refs": [
+            "r:469",
+            "q:204:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "carignan",
+      "priorityRank": 19,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-carignan.geojson",
+          "refs": [
+            "r:66",
+            "q:36:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "priorityRank": 20,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-dollard-des-ormeaux.geojson",
+          "refs": [
+            "r:112",
+            "q:58:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "pointe-claire",
+      "priorityRank": 21,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-pointe-claire.geojson",
+          "refs": [
+            "r:376",
+            "q:161:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-philippe",
+      "priorityRank": 22,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-philippe.geojson",
+          "refs": [
+            "r:661",
+            "q:275:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-mathieu",
+      "priorityRank": 23,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-mathieu.geojson",
+          "refs": [
+            "r:633",
+            "q:267:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "chateauguay",
+      "priorityRank": 24,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-chateauguay.geojson",
+          "refs": [
+            "r:78",
+            "q:42:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "sainte-julie",
+      "priorityRank": 25,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-julie.geojson",
+          "refs": [
+            "r:775",
+            "q:312:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "priorityRank": 26,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-basile-le-grand.geojson",
+          "refs": [
+            "r:460",
+            "q:199:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "chambly",
+      "priorityRank": 27,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-chambly/qc-zonage-chambly.geojson",
+          "refs": [
+            "r:70",
+            "q:37:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "rosemere",
+      "priorityRank": 28,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-rosemere.geojson",
+          "refs": [
+            "r:410",
+            "q:180:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "varennes",
+      "priorityRank": 29,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-varennes.geojson",
+          "refs": [
+            "r:853",
+            "q:347:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "bois-des-filion",
+      "priorityRank": 31,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-isidore-roussillon",
+      "priorityRank": 32,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "beaconsfield",
+      "priorityRank": 33,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "lorraine",
+      "priorityRank": 34,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "lery",
+      "priorityRank": 35,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "mercier",
+      "priorityRank": 36,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "charlemagne",
+      "priorityRank": 37,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-charlemagne/qc-zonage-charlemagne.geojson",
+          "refs": [
+            "r:76",
+            "q:40:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "boisbriand",
+      "priorityRank": 38,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-boisbriand.geojson",
+          "refs": [
+            "r:46",
+            "q:19:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "deux-montagnes",
+      "priorityRank": 39,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-deux-montagnes.geojson",
+          "refs": [
+            "r:108",
+            "h:51:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "mcmasterville",
+      "priorityRank": 40,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "sainte-therese",
+      "priorityRank": 41,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "priorityRank": 42,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-mathias-sur-richelieu/qc-zonage-saint-mathias-sur-richelieu.geojson",
+          "refs": [
+            "r:632",
+            "q:266:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "priorityRank": 43,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-mathieu-de-beloeil.geojson",
+          "refs": [
+            "r:634",
+            "h:366:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-amable",
+      "priorityRank": 44,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-amable.geojson",
+          "refs": [
+            "r:437",
+            "q:189:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "terrebonne",
+      "priorityRank": 45,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-remi",
+      "priorityRank": 46,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "otterburn-park",
+      "priorityRank": 47,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-otterburn-park/qc-zonage-otterburn-park.geojson",
+          "refs": [
+            "r:357",
+            "q:157:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-jacques-le-mineur",
+      "priorityRank": 48,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "richelieu",
+      "priorityRank": 49,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "beloeil",
+      "priorityRank": 50,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "baie-durfe",
+      "priorityRank": 51,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "sainte-marthe-sur-le-lac",
+      "priorityRank": 52,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-jean-sur-richelieu",
+      "priorityRank": 53,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "mascouche",
+      "priorityRank": 54,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-eustache",
+      "priorityRank": 55,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-eustache.geojson",
+          "refs": [
+            "r:528",
+            "h:302:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "notre-dame-de-lile-perrot",
+      "priorityRank": 56,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-notre-dame-de-lile-perrot.geojson",
+          "refs": [
+            "r:334",
+            "q:148:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "repentigny",
+      "priorityRank": 57,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-repentigny.geojson",
+          "refs": [
+            "r:395",
+            "h:222:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-edouard",
+      "priorityRank": 58,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "sainte-anne-de-bellevue",
+      "priorityRank": 59,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-michel",
+      "priorityRank": 60,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {
+        "fresh_v2_deposit_pending": true
+      }
+    },
+    {
+      "slug": "blainville",
+      "priorityRank": 61,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "pointe-calumet",
+      "priorityRank": 62,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "mont-saint-hilaire",
+      "priorityRank": 63,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-mont-saint-hilaire.geojson",
+          "refs": [
+            "r:307",
+            "q:136:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "senneville",
+      "priorityRank": 64,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "lile-perrot",
+      "priorityRank": 66,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "vercheres",
+      "priorityRank": 67,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-vercheres.geojson",
+          "refs": [
+            "r:856",
+            "q:349:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-marc-sur-richelieu",
+      "priorityRank": 68,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "sainte-martine",
+      "priorityRank": 69,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "beauharnois",
+      "priorityRank": 70,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "sainte-anne-des-plaines",
+      "priorityRank": 71,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-urbain-premier",
+      "priorityRank": 72,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "terrasse-vaudreuil",
+      "priorityRank": 73,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-joseph-du-lac",
+      "priorityRank": 74,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "priorityRank": 75,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-jean-baptiste/qc-zonage-saint-jean-baptiste.geojson",
+          "refs": [
+            "r:579",
+            "q:245:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "pincourt",
+      "priorityRank": 76,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "calixa-lavallee",
+      "priorityRank": 77,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "lile-cadieux",
+      "priorityRank": 78,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "pointe-des-cascades",
+      "priorityRank": 79,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "priorityRank": 80,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "v",
+        "v2_acquisition_readiness": "v2-served",
+        "evidence": {
+          "attestation": "work/coverage/vecteur-natif-attestation-20260803.json",
+          "v2_proof": {
+            "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-12/arcgis/rest/services/570_LaValleeDuRichelieu/57057_SaintCharlesSurRichelieu_public/MapServer/444/query?where=1%3D1&outFields=No_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+            "sha256": "sha256:ee3da026677d69bfc641c9df831b900c589ad8425343629c620a61f5846f9020",
+            "retrieved_at": "2026-08-03T12:26:02.721Z"
+          },
+          "served": "lane/zones@1f4ff519 (orphan→documented)"
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "napierville",
+      "priorityRank": 81,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "vaudreuil-sur-le-lac",
+      "priorityRank": 82,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-blaise-sur-richelieu",
+      "priorityRank": 83,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "mont-saint-gregoire",
+      "priorityRank": 84,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "sainte-madeleine",
+      "priorityRank": 85,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-madeleine/qc-zonage-sainte-madeleine.geojson",
+          "refs": [
+            "r:782",
+            "q:316:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-cyprien-de-napierville",
+      "priorityRank": 86,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "priorityRank": 87,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {
+        "fresh_v2_deposit_pending": true
+      }
+    },
+    {
+      "slug": "saint-roch-de-lachigan",
+      "priorityRank": 88,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "sainte-angele-de-monnoir",
+      "priorityRank": 89,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "lepiphanie",
+      "priorityRank": 90,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-lepiphanie.geojson",
+          "refs": [
+            "r:263",
+            "q:117:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "oka",
+      "priorityRank": 91,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-oka.geojson",
+          "refs": [
+            "r:354",
+            "q:155:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "sainte-marie-madeleine",
+      "priorityRank": 92,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-marie-madeleine/qc-zonage-sainte-marie-madeleine.geojson",
+          "refs": [
+            "r:787",
+            "q:318:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "priorityRank": 93,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-etienne-de-beauharnois.geojson",
+          "refs": [
+            "r:522",
+            "q:223:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "sainte-clotilde",
+      "priorityRank": 94,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-clotilde.geojson",
+          "refs": [
+            "r:750",
+            "h:442:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "priorityRank": 95,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-vaudreuil-dorion.geojson",
+          "refs": [
+            "r:854",
+            "h:506:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "rougemont",
+      "priorityRank": 96,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-rougemont.geojson",
+          "refs": [
+            "r:411",
+            "q:181:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "priorityRank": 97,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-roch-ouest.geojson",
+          "refs": [
+            "r:682",
+            "q:282:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-sulpice",
+      "priorityRank": 98,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-sulpice/qc-zonage-saint-sulpice.geojson",
+          "refs": [
+            "r:696",
+            "q:287:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "lassomption",
+      "priorityRank": 99,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-lassomption.geojson",
+          "refs": [
+            "r:250",
+            "h:136:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "howick",
+      "priorityRank": 100,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-howick.geojson",
+          "refs": [
+            "r:182",
+            "h:92:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "mirabel",
+      "priorityRank": 101,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-mirabel.geojson",
+          "refs": [
+            "r:300",
+            "h:167:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "priorityRank": 102,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-anne-de-sabrevois.geojson",
+          "refs": [
+            "r:729",
+            "q:300:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "priorityRank": 103,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-lin-laurentides/qc-zonage-saint-lin-laurentides.geojson",
+          "refs": [
+            "r:611",
+            "q:259:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-damase-les-maskoutains",
+      "priorityRank": 104,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-antoine-sur-richelieu",
+      "priorityRank": 105,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-antoine-sur-richelieu/qc-zonage-saint-antoine-sur-richelieu.geojson",
+          "refs": [
+            "r:449",
+            "q:194:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "priorityRank": 106,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-denis-sur-richelieu/qc-zonage-saint-denis-sur-richelieu.geojson",
+          "refs": [
+            "r:502",
+            "q:216:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "priorityRank": 107,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-tres-saint-sacrement.geojson",
+          "refs": [
+            "r:834",
+            "h:494:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "la-presentation",
+      "priorityRank": 108,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-la-presentation/qc-zonage-la-presentation.geojson",
+          "refs": [
+            "r:210",
+            "q:102:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "sainte-brigide-diberville",
+      "priorityRank": 109,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-brigide-diberville.geojson",
+          "refs": [
+            "r:738",
+            "q:302:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "les-cedres",
+      "priorityRank": 110,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-les-cedres.geojson",
+          "refs": [
+            "r:265",
+            "q:119:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-esprit",
+      "priorityRank": 111,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-esprit.geojson",
+          "refs": [
+            "r:521",
+            "q:222:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-valentin",
+      "priorityRank": 112,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "sainte-sophie",
+      "priorityRank": 113,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-sophie.geojson",
+          "refs": [
+            "r:799",
+            "q:323:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "hudson",
+      "priorityRank": 114,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-hudson.geojson",
+          "refs": [
+            "r:184",
+            "q:91:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-alexandre",
+      "priorityRank": 115,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-alexandre.geojson",
+          "refs": [
+            "r:428",
+            "q:186:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-chrysostome",
+      "priorityRank": 116,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-chrysostome.geojson",
+          "refs": [
+            "r:481",
+            "h:272:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville",
+      "priorityRank": 117,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-cesaire",
+      "priorityRank": 118,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-paul-de-lile-aux-noix",
+      "priorityRank": 119,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-louis-de-gonzague-beauharnois-salaberry",
+      "priorityRank": 120,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "priorityRank": 121,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-salaberry-de-valleyfield/qc-zonage-salaberry-de-valleyfield.geojson",
+          "refs": [
+            "r:804",
+            "q:325:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-lazare",
+      "priorityRank": 122,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-lazare.geojson",
+          "refs": [
+            "r:603",
+            "q:253:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "priorityRank": 123,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-bernard-de-lacolle.geojson",
+          "refs": [
+            "r:463",
+            "h:262:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-alexis",
+      "priorityRank": 124,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-alexis.geojson",
+          "refs": [
+            "r:431",
+            "q:187:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "priorityRank": 125,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-marie-salome.geojson",
+          "refs": [
+            "r:788",
+            "q:319:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "lavaltrie",
+      "priorityRank": 126,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-lavaltrie.geojson",
+          "refs": [
+            "r:255",
+            "h:140:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "contrecoeur",
+      "priorityRank": 127,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "v",
+        "v2_acquisition_readiness": "v2-served",
+        "evidence": {
+          "attestation": "work/coverage/vecteur-natif-attestation-arcgis-20260803.json",
+          "v2_proof": {
+            "source_url": "https://services3.arcgis.com/D6yGeV5bY0BWDvJi/arcgis/rest/services/Zonage___Contrec%C5%93ur_WFL1/FeatureServer/2/query?where=1%3D1&outFields=nom_zone&outSR=4326&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+            "sha256": "sha256:671ec21f0e14ab82b97be9cf09e1829713f2a8ecf095d451ee18f1e39634b532",
+            "retrieved_at": "2026-08-03T13:55:10.159Z"
+          },
+          "served": "lane/zones@ca58a4f9 (orphan→documented, 164/164)"
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "henryville",
+      "priorityRank": 128,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-jerome",
+      "priorityRank": 129,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-jerome.geojson",
+          "refs": [
+            "r:585",
+            "q:247:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-placide",
+      "priorityRank": 130,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-jacques",
+      "priorityRank": 131,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-jacques.geojson",
+          "refs": [
+            "r:575",
+            "q:244:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville-2",
+      "priorityRank": 132,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-colomban",
+      "priorityRank": 133,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-colomban.geojson",
+          "refs": [
+            "r:486",
+            "q:210:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "priorityRank": 134,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-hyacinthe.geojson",
+          "refs": [
+            "r:571",
+            "q:242:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "lacolle",
+      "priorityRank": 135,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-lacolle.geojson",
+          "refs": [
+            "r:240",
+            "q:110:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-sebastien-le-haut-richelieu",
+      "priorityRank": 136,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-paul",
+      "priorityRank": 137,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-paul.geojson",
+          "refs": [
+            "r:657",
+            "h:384:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-pie",
+      "priorityRank": 138,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "v",
+        "v2_acquisition_readiness": "v2-served",
+        "evidence": {
+          "attestation": "work/coverage/vecteur-natif-attestation-20260803.json",
+          "v2_proof": {
+            "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54008_SaintPie/MapServer/169/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+            "sha256": "sha256:33fe9d1f1c468ae828ec40a8ba710ff372b8a0b220b19aeaddb29b38eeccdd1a",
+            "retrieved_at": "2026-08-03T13:07:40.282Z"
+          },
+          "served": "lane/zones@1f4ff519 (legacy→documented)"
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "havelock",
+      "priorityRank": 139,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-havelock.geojson",
+          "refs": [
+            "r:173",
+            "h:87:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "sainte-sabine-brome-missisquoi",
+      "priorityRank": 140,
+      "col1_state": "unknown",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "priorityRank": 141,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-bernard-de-michaudville/qc-zonage-saint-bernard-de-michaudville.geojson",
+          "refs": [
+            "r:464",
+            "q:201:e"
+          ]
+        }
+      },
+      "flags": {
+        "attested_but_held": "held: superset geomatiquecn requis (lane/zones@b371eb73)"
+      }
+    },
+    {
+      "slug": "crabtree",
+      "priorityRank": 142,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-crabtree.geojson",
+          "refs": [
+            "r:100",
+            "h:47:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "coteau-du-lac",
+      "priorityRank": 143,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-coteau-du-lac.geojson",
+          "refs": [
+            "r:97",
+            "q:51:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "sainte-julienne",
+      "priorityRank": 144,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-julienne.geojson",
+          "refs": [
+            "r:776",
+            "q:313:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "farnham",
+      "priorityRank": 145,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-farnham.geojson",
+          "refs": [
+            "r:134",
+            "h:65:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-paul-dabbotsford",
+      "priorityRank": 146,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-clet",
+      "priorityRank": 147,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-clet.geojson",
+          "refs": [
+            "r:485",
+            "q:209:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-roch-de-richelieu",
+      "priorityRank": 148,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "saint-jude",
+      "priorityRank": 149,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-jude/qc-zonage-saint-jude.geojson",
+          "refs": [
+            "r:594",
+            "q:249:e"
+          ]
+        }
+      },
+      "flags": {
+        "attested_but_held": "held: superset geomatiquecn requis (lane/zones@b371eb73)"
+      }
+    },
+    {
+      "slug": "noyan",
+      "priorityRank": 150,
+      "col1_state": "incomplete",
+      "attestation": null,
+      "flags": {}
+    },
+    {
+      "slug": "ormstown",
+      "priorityRank": 151,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-ormstown.geojson",
+          "refs": [
+            "r:356",
+            "q:156:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "ange-gardien",
+      "priorityRank": 152,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-ange-gardien.geojson",
+          "refs": [
+            "r:9",
+            "q:4:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-ours",
+      "priorityRank": 153,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-ours.geojson",
+          "refs": [
+            "r:652",
+            "h:379:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "prevost",
+      "priorityRank": 154,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-prevost.geojson",
+          "refs": [
+            "r:386",
+            "q:167:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "priorityRank": 155,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-stanislas-de-kostka.geojson",
+          "refs": [
+            "r:695",
+            "q:286:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-calixte",
+      "priorityRank": 156,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-calixte.geojson",
+          "refs": [
+            "r:470",
+            "q:205:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "priorityRank": 157,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-barnabe-sud/qc-zonage-saint-barnabe-sud.geojson",
+          "refs": [
+            "r:457",
+            "q:197:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "franklin",
+      "priorityRank": 159,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-franklin.geojson",
+          "refs": [
+            "r:144",
+            "h:71:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-pierre",
+      "priorityRank": 160,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-pierre.geojson",
+          "refs": [
+            "r:665",
+            "h:389:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-liguori",
+      "priorityRank": 161,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-liguori.geojson",
+          "refs": [
+            "r:610",
+            "q:258:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-hippolyte",
+      "priorityRank": 162,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-hippolyte.geojson",
+          "refs": [
+            "r:566",
+            "q:238:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "venise-en-quebec",
+      "priorityRank": 163,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-venise-en-quebec.geojson",
+          "refs": [
+            "r:855",
+            "q:348:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "clarenceville",
+      "priorityRank": 164,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-clarenceville.geojson",
+          "refs": [
+            "r:86",
+            "q:45:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "joliette",
+      "priorityRank": 165,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "h",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-joliette.geojson",
+          "refs": [
+            "r:189",
+            "h:96:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "les-coteaux",
+      "priorityRank": 166,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "q",
+        "v2_acquisition_readiness": "unknown",
+        "evidence": {
+          "manifest": "work/coverage/zone-provenance-status-manifest-20260722.json",
+          "collection_key": "normalized/ca-qc-zonage/qc-zonage-les-coteaux.geojson",
+          "refs": [
+            "r:266",
+            "q:120:e"
+          ]
+        }
+      },
+      "flags": {}
+    },
+    {
+      "slug": "saint-dominique",
+      "priorityRank": 167,
+      "col1_state": "complete",
+      "attestation": {
+        "source_origin": "v",
+        "v2_acquisition_readiness": "v2-served",
+        "evidence": {
+          "attestation": "work/coverage/vecteur-natif-attestation-20260803.json",
+          "v2_proof": {
+            "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54060_SaintDominique/MapServer/141/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+            "sha256": "sha256:6063c4e2e6e736580813330ab530e3c936c7fe6a95d4337d73a7f6f686c02c28",
+            "retrieved_at": "2026-08-03T12:26:53.965Z"
+          },
+          "served": "lane/zones@1f4ff519 (documented)"
+        }
+      },
+      "flags": {}
+    }
+  ]
+}
