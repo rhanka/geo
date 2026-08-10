@@ -165,6 +165,21 @@ describe("discoverGrillesInHtml", () => {
     expect(urls.some((u) => /PV-2026/i.test(u))).toBe(false);
   });
 
+  it("keeps a strong grille anchor on a CMS download endpoint without a .pdf suffix", () => {
+    const { candidates } = discoverGrillesInHtml(
+      `<a href="/download_file/view/13/195">La grille de spécifications</a>
+       <a href="/urbanisme/grille">La grille de spécifications</a>`,
+      "https://alleyn-cawood.ca/fr/amenagement-urbain/zonage",
+      "alleyn-et-cawood",
+    );
+    expect(candidates).toEqual([
+      expect.objectContaining({
+        pdfUrl: "https://alleyn-cawood.ca/download_file/view/13/195",
+        titre: "La grille de spécifications",
+      }),
+    ]);
+  });
+
   it("ranks the strongest grille match first and dedups", () => {
     const { candidates } = discoverGrillesInHtml(
       URBANISME_PAGE_HTML,
