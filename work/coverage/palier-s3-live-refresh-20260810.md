@@ -16,6 +16,7 @@ sources qui le permettent. Il est validé avec `--check`.
 
 | Source / colonnes | Commande et résultat vérifié |
 |---|---|
+| Couverture réconciliée (source des matrices Immo) | `npx tsx acquisition/src/coverage-reconcile.ts` contre S3 : premier scan **pv=1 064 (+7), normes=815 (+175), zones=911 (+94), cadastre=1 106 (+0), role-foncier=1 106 (+0), tod=39 (+0)** ; les scans suivants sont stables à +0. Le snapshot retenu est explicitement horodaté **`generatedAt=2026-08-10T02:05:34.501Z`**. |
 | Cohérence lot-zone (2) | `npx tsx acquisition/src/lot-zone-consistency-audit.ts --scale --max-seconds 600 --out work/coverage/lot-zone-consistency-scale-20260810.json` (reprises du checkpoint) : **866/866** villes auditables, 718 sous 5 %, 123 à 5 % ou plus. Aucun changement de cellule dans la cohorte. |
 | Provenance zones (8–10) | `npx tsx acquisition/src/zone-provenance-quality-run.ts --date=20260810 --batch=100 --concurrency=16` : 873 collections servies, 0 lecture illisible. La matrice retenue est `zone-provenance-quality-matrix-20260810T013417Z-ad1126284740439d.json` ; ses statuts de cohorte sont inchangés. Les manifests sont passés de 1 316 (snapshot précédent) à 1 332, sans promotion de statut. |
 | URL source servie (11) | `npx tsx acquisition/src/_zone-source-readback-audit.ts --slugs <167-slugs> --date=20260810 --concurrency 16` : **47 STAMPED, 62 STAMPED_NULL, 1 UNSTAMPED, 57 sans collection servie**. Les 57 sont des clés réellement absentes, pas des verts supposés. |
@@ -26,8 +27,10 @@ sources qui le permettent. Il est validé avec `--check`.
 ## Limites explicites du pivot
 
 - Les colonnes 1 et 3 restent reliées aux manifestes locaux de 2026-07-23.
-  La chaîne documentée ne possède pas de générateur S3 du maillon de
-  corroboration ; une collection servie sans ce maillon reste `unknown`.
+  Leur générateur existant fige lui-même ce reportDate et la chaîne documentée
+  ne possède pas le générateur S3 du maillon de corroboration. La couverture
+  20260810 n'est donc pas utilisée pour les présenter comme fraîches ; une
+  collection servie sans ce maillon reste `unknown`.
 - Les colonnes 5–7 restent reliées à
   `completion-regdens-percity-20260808.json`. La preuve règlement fraîche
   n'est pas convertie automatiquement en artefact per-city compatible : elle
@@ -35,7 +38,9 @@ sources qui le permettent. Il est validé avec `--check`.
 
 ## Résultat du pivot validé
 
-`node scripts/palier-matrix-report.mjs --date=20260810` puis `--check` :
+Après le scan de couverture S3 retenu et la régénération de la matrice Immo
+dépendante, `node scripts/palier-matrix-report.mjs --date=20260810` puis
+`--check` :
 
 - Résolu total (`complete` ou `N-A` prouvé, dénominateurs par KPI) :
   **1 656/3 284 (50,426 %) → 1 642/3 284 (50,000 %)**, soit **−14**.
@@ -48,6 +53,11 @@ sources qui le permettent. Il est validé avec `--check`.
 - Colonnes 2, 8–10, 12 et 13 : aucun changement de cellule cohorte. En
   particulier, les 37 dépôts REAL-GAIN déjà vérifiés n'ajoutent aucune ville
   complète aux colonnes 12 ou 13 dans cette passe.
+
+Le re-scan 20260810 modifie bien la couverture source, mais ne produit aucune
+cellule palier supplémentaire après la première passe fraîche : le résultat
+final reste **1 642/3 284 (50,000 %)**, avec col. 12 **24 / 93 / 46** et col. 13
+**4 / 109 / 50** (complete / incomplete / unknown).
 
 La baisse nette est donc un fait de mesure actuel, pas une absence de travail :
 les captures partielles ou les preuves non projetées per-city ne ferment pas
