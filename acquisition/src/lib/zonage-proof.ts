@@ -42,6 +42,24 @@ export interface ZoneSourceStamp { url: string | null; level: ZoneSourceLevel }
 export const ZONE_SOURCE_URL_FIELD = "zone_source_url";
 export const ZONE_SOURCE_LEVEL_FIELD = "zone_source_level";
 
+/**
+ * GRAIN DE LA GÉOMÉTRIE SERVIE (SPEC_ZONE_GEOMETRY_GRAIN.md §2, SHA 7c7f6731).
+ * Vocabulaire FERMÉ, frère de `zone_source_url` / `zone_source_level` : il décrit
+ * la NATURE de la couche source dont la géométrie est servie — pas une valeur
+ * inventée, mais un fait constaté sur la couche amont.
+ *   - "zone-polygon"    : polygones de zonage NATIFS de la source (method=natif),
+ *                         servis octet-pour-octet.
+ *   - "evaluation-unit" : parcelles / unités d'évaluation (UEV) estampillées d'un
+ *                         `zone_code` (grain fin, ex. matrice graphique).
+ *   - "dissolved-zone"  : géométrie DÉRIVÉE par dissolution des UEV — RÉSERVÉ, hors
+ *                         contrat courant ; à n'estampiller sur RIEN pour l'instant.
+ */
+export type GeometryGrain = "zone-polygon" | "evaluation-unit" | "dissolved-zone";
+export const GEOMETRY_GRAINS: ReadonlySet<GeometryGrain> = new Set<GeometryGrain>([
+  "zone-polygon", "evaluation-unit", "dissolved-zone",
+]);
+export const GEOMETRY_GRAIN_FIELD = "geometry_grain";
+
 const SOURCE_TYPES = new Set<GeometrySourceType>(["wfs", "arcgis", "agol", "geonet", "jmap", "geojson-officiel", "pdf-zonage"]);
 const METHODS = new Set<GeometryMethod>(["natif", "georeference"]);
 const RELIABILITIES = new Set<GeometryReliability>(["directe", "georeferencee"]);
@@ -147,6 +165,34 @@ export { isServedZoneKey } from "./s3.js";
 
 export interface ServedZonePropertyFeature {
   properties?: Record<string, unknown> | null;
+}
+
+/**
+ * Un feature servi est V2-PROUVÉ ssi il porte un vrai bloc de preuve géométrique
+ * PAR-FEATURE : `proof.geometry_source` avec un `sha256:<64hex>` bien formé ET un
+ * `retrieved_at` ISO (SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md, SHA 65d4c637). C'est le
+ * discriminateur ROBUSTE du gate d'identité côté runner : une `zone_source_url`
+ * http(s) réelle est NÉCESSAIRE mais NON SUFFISANTE — un `candidate` à URL
+ * *déclarative* sans capture ne porte AUCUN bloc de preuve, donc N'EST PAS prouvé.
+ * Seul un vrai dépôt v2 ({@link attachGeometryProof}) estampille ce bloc ;
+ * `zone_source_level` ("documented"/"historical-verified") ne le corrobore
+ * qu'accessoirement — la preuve elle-même reste le juge.
+ *
+ * DÉDUPLICATION (CLAUDE.md « logique dans la lib ») : ce prédicat était inliné dans
+ * `zones-obscura-run.ts` (0ea33e38) avec sa propre copie du regex ISO et sha256. Il
+ * réutilise désormais les MÊMES validateurs que le chemin de dépôt — `isIsoTimestamp`
+ * (opposé par `assertGeometryProof`) et `PROOF_SHA256_RE` (opposé par le chemin
+ * additif) — pour qu'il n'existe qu'UNE définition. Comportement inchangé octet-pour-octet.
+ */
+export function featureHasV2Proof(feature: ServedZonePropertyFeature): boolean {
+  const proof = feature.properties?.["proof"] as
+    | { geometry_source?: { sha256?: unknown; retrieved_at?: unknown } }
+    | null
+    | undefined;
+  const gs = proof?.geometry_source;
+  if (!gs) return false;
+  const shaOk = typeof gs.sha256 === "string" && PROOF_SHA256_RE.test(gs.sha256);
+  return shaOk && isIsoTimestamp(gs.retrieved_at);
 }
 
 /**
@@ -257,6 +303,17 @@ export function assertServedZoneGeojson(key: string, fc: ServedZoneGeoJson): voi
       throw new Error(
         `served qc-zonage deposit refused: feature ${i} "${ZONE_SOURCE_LEVEL_FIELD}" ${JSON.stringify(level)} is outside the served vocabulary (${[...ZONE_SOURCE_LEVELS].join(" | ")})`,
       );
+    }
+    // GEOMETRY_GRAIN (SPEC_ZONE_GEOMETRY_GRAIN.md §2) : champ additif OPTIONNEL ;
+    // s'il est présent, sa valeur DOIT appartenir au vocabulaire fermé — le fermé
+    // garanti AU BORD D'ÉCRITURE, pas seulement déclaré (cf validSourceLevel ci-dessus).
+    if (GEOMETRY_GRAIN_FIELD in props) {
+      const grain = props[GEOMETRY_GRAIN_FIELD];
+      if (typeof grain !== "string" || !GEOMETRY_GRAINS.has(grain as GeometryGrain)) {
+        throw new Error(
+          `served qc-zonage deposit refused: feature ${i} "${GEOMETRY_GRAIN_FIELD}" ${JSON.stringify(grain)} is outside the served vocabulary (${[...GEOMETRY_GRAINS].join(" | ")})`,
+        );
+      }
     }
   }
 }
@@ -375,6 +432,9 @@ export const PROVENANCE_PROP_WHITELIST: ReadonlySet<string> = new Set<string>([
   "zone_geometry_flagged",
   "zone_source_url",
   "zone_source_level",
+  // Grain de la géométrie servie (frère de zone_source_url/level ; enum fermé
+  // GEOMETRY_GRAINS). Additif pur : jamais la géométrie ni le bloc proof.
+  "geometry_grain",
   "hauteur_min_value",
   "hauteur_min_unit",
   "hauteur_max_value",
@@ -449,6 +509,19 @@ export interface AdditiveOptions {
    * may ever replace a value that is already there.
    */
   allowProofCaptureAttestation?: Iterable<ProofCaptureAttestation>;
+  /**
+   * Narrow promotion of one legacy feature-proof envelope to the served v2
+   * shape.  The current v1 envelope must already name the exact public URL and
+   * SHA-256.  The only additions are the capture's measured instant and the
+   * complete v2 geometry source derived from that exact tuple; legacy members
+   * remain byte-equivalent.
+   *
+   * This is deliberately separate from the three leaf-only legacy repair
+   * routes above: a v2 served collection also needs a matching collection
+   * proof, which can be ADDED only when every feature proof is promoted under
+   * this exact same attestation.
+   */
+  allowProofV2Promotion?: Iterable<ProofV2Promotion>;
   /** Take a non-destructive server-side backup of the current served object to
    *  `<key>.additive-prebackup.geojson` before overwriting. Default true. */
   backup?: boolean;
@@ -468,6 +541,11 @@ export interface ProofCaptureAttestation {
   sha256: `sha256:${string}`;
   /** L'instant mesure par le chokepoint de capture, jamais un horodatage de fichier. */
   retrievedAt: string;
+}
+
+/** Exact geometry source derived from one verified capture receipt. */
+export interface ProofV2Promotion {
+  geometrySource: GeometrySourceProof;
 }
 
 /** Canonical JSON: object keys sorted, array order preserved (arrays ARE ordered —
@@ -602,6 +680,23 @@ function proofCaptureAttestations(options: AdditiveOptions): ProofCaptureAttesta
     seen.add(tuple);
   }
   return attestations;
+}
+
+function proofV2Promotions(options: AdditiveOptions): ProofV2Promotion[] {
+  const promotions = options.allowProofV2Promotion ? [...options.allowProofV2Promotion] : [];
+  const seen = new Set<string>();
+  for (const promotion of promotions) {
+    try {
+      assertGeometryProof(promotion?.geometrySource);
+    } catch {
+      throw new Error("putServedZoneAdditive: invalid proof v2 promotion");
+    }
+    const source = promotion.geometrySource;
+    const tuple = `${source.url}\u0000${source.retrieved_at}\u0000${source.sha256}`;
+    if (seen.has(tuple)) throw new Error("putServedZoneAdditive: duplicate proof v2 promotion");
+    seen.add(tuple);
+  }
+  return promotions;
 }
 
 /**
@@ -757,6 +852,49 @@ function isAttestedProofCaptureStamp(
 }
 
 /**
+ * Promote a legacy v1 envelope only when its public URL and SHA are already
+ * exactly the source described by a verified capture.  Reconstructing the v1
+ * object before comparison proves that no legacy evidence was removed or
+ * edited under cover of the promotion.
+ */
+function isAttestedProofV2Promotion(
+  currentProof: unknown,
+  nextProof: unknown,
+  promotions: readonly ProofV2Promotion[],
+): boolean {
+  const current = asRecord(currentProof);
+  const next = asRecord(nextProof);
+  if (current?.schema_version !== "1.0" || next?.schema_version !== "2.0") return false;
+  const currentGeometry = asRecord(asRecord(current.sources)?.geometry);
+  const nextGeometrySource = next.geometry_source;
+  if (!currentGeometry || Object.hasOwn(currentGeometry, "retrieved_at")) return false;
+  const promotion = promotions.find((candidate) => (
+    currentGeometry.artifact_uri === candidate.geometrySource.url &&
+    currentGeometry.sha256 === candidate.geometrySource.sha256 &&
+    jsonEqual(nextGeometrySource, candidate.geometrySource)
+  ));
+  if (!promotion) return false;
+  const restored: Record<string, unknown> = { ...next, schema_version: "1.0" };
+  delete restored.geometry_source;
+  return jsonEqual(current, restored);
+}
+
+/** A collection-level v2 proof may be added only with an exact feature-proof promotion. */
+function isAttestedCollectionProofV2Promotion(
+  currentProof: unknown,
+  nextProof: unknown,
+  promotions: readonly ProofV2Promotion[],
+): boolean {
+  if (currentProof === undefined) {
+    return promotions.some((promotion) => jsonEqual(nextProof, {
+      schema_version: "2.0",
+      geometry_source: promotion.geometrySource,
+    }));
+  }
+  return isAttestedProofV2Promotion(currentProof, nextProof, promotions);
+}
+
+/**
  * ADDITIVE provenance write onto an ALREADY SERVED qc-zonage collection.
  *
  * The ONLY sanctioned way for a metadata fold to touch a served-zone key. It does
@@ -792,6 +930,7 @@ export async function putServedZoneAdditive(
   const sha256Stamps = proofArtifactUriAndSha256Stamps(opts);
   const substitutionUris = new Set(substitutions.map((item) => item.artifactUri));
   const captureAttestations = proofCaptureAttestations(opts);
+  const v2Promotions = proofV2Promotions(opts);
   if (sha256Stamps.some((item) => substitutionUris.has(item.artifactUri))) {
     throw new Error("putServedZoneAdditive: a proof artifact_uri may use either substitution or missing-sha256 restoration, never both");
   }
@@ -800,6 +939,9 @@ export async function putServedZoneAdditive(
   const stampedUris = new Set(sha256Stamps.map((item) => item.replacementUrl));
   if (captureAttestations.some((item) => substitutionUris.has(item.artifactUri) || stampedUris.has(item.artifactUri))) {
     throw new Error("putServedZoneAdditive: a proof artifact_uri may not combine a capture attestation with a substitution or a missing-sha256 restoration");
+  }
+  if (v2Promotions.length > 0 && (substitutions.length > 0 || sha256Stamps.length > 0 || captureAttestations.length > 0)) {
+    throw new Error("putServedZoneAdditive: a proof v2 promotion may not combine with another legacy proof repair route");
   }
   if (fc?.type !== "FeatureCollection" || !Array.isArray(fc.features)) {
     throw new Error("putServedZoneAdditive: payload is not a FeatureCollection");
@@ -812,15 +954,15 @@ export async function putServedZoneAdditive(
   // the caller's in-memory copy for what is currently served.
   const current = JSON.parse((await getBytes(s3, key)).toString("utf8")) as AdditiveFC;
   // (b0) EVERY top-level member except `features` must be byte-identical to the
-  // served object — `proof` FIRST AND FOREMOST. Without this, the "safe" additive
-  // door lets a caller rewrite fc.proof.geometry_source.url (a forged collection
-  // proof) while keeping the genuine per-feature proof. Collection-level members are
-  // immutable on this path: changing them means re-proving via putServedZoneGeojson.
+  // served object — `proof` FIRST AND FOREMOST. The sole exception is the exact
+  // v1 -> v2 promotion below; it is tied to every matching feature proof and a
+  // capture attestation, never a caller-supplied replacement proof.
   {
     const cur = current as unknown as Record<string, unknown>;
     const nxt = fc as unknown as Record<string, unknown>;
     for (const member of new Set([...Object.keys(cur), ...Object.keys(nxt)])) {
       if (member === "features" || jsonEqual(cur[member], nxt[member])) continue;
+      if (member === "proof" && isAttestedCollectionProofV2Promotion(cur[member], nxt[member], v2Promotions)) continue;
       throw new Error(
         `putServedZoneAdditive: top-level collection member "${member}" differs from the served object; refused (the additive path may only change whitelisted feature provenance properties — a different collection proof/metadata requires putServedZoneGeojson with a real acquisition proof)`,
       );
@@ -853,13 +995,24 @@ export async function putServedZoneAdditive(
         propKey === "proof" && (
           isAttestedProofArtifactUriSubstitution(curProps[propKey], nxtProps[propKey], substitutions) ||
           isAttestedProofArtifactUriAndSha256Stamp(curProps[propKey], nxtProps[propKey], sha256Stamps) ||
-          isAttestedProofCaptureStamp(curProps[propKey], nxtProps[propKey], captureAttestations)
+          isAttestedProofCaptureStamp(curProps[propKey], nxtProps[propKey], captureAttestations) ||
+          isAttestedProofV2Promotion(curProps[propKey], nxtProps[propKey], v2Promotions)
         )
       ) continue;
       if (!allowed.has(propKey)) {
         throw new Error(
           `putServedZoneAdditive: non-provenance property "${propKey}" changed on feature ${i}; refused (geometry/proof and substantive attributes are immutable on this path)`,
         );
+      }
+      // Vocabulaire fermé geometry_grain enforcé au bord d'écriture (SPEC §2) :
+      // la clé est whitelistée, mais sa VALEUR doit rester dans GEOMETRY_GRAINS.
+      if (propKey === GEOMETRY_GRAIN_FIELD && GEOMETRY_GRAIN_FIELD in nxtProps) {
+        const grain = nxtProps[propKey];
+        if (typeof grain !== "string" || !GEOMETRY_GRAINS.has(grain as GeometryGrain)) {
+          throw new Error(
+            `putServedZoneAdditive: "${GEOMETRY_GRAIN_FIELD}" ${JSON.stringify(grain)} is outside the served vocabulary (${[...GEOMETRY_GRAINS].join(" | ")})`,
+          );
+        }
       }
     }
   }
