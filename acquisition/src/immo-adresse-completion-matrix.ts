@@ -4,7 +4,8 @@
  * This is an analysis-only runner: it reads the geo-api authoritative
  * qc-lots layout (nested before flat) and the public MAMH role XML, then
  * compares every served lot's `adresse` to the exact `parseRole` result that
- * `lots-enriched-run.ts` folds.  It never writes to S3.
+ * `lots-enriched-run.ts` folds. It never alters served data; each MAMH role
+ * read is captured under the object-store raw/ and capture/ prefixes.
  *
  * Memory discipline: one municipality is fetched, parsed, classified and
  * released before the next one.  Only `NO_LOT`/`adresse` observations are kept
@@ -26,7 +27,9 @@ import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 
+import { capturedFetch, type CaptureRun } from "../../packages/qc-sources/src/capture/index.js";
 import { DEFAULT_MILLESIME, fetchIndex, parseRole, type IndexEntry, type RoleAttrs } from "./role-foncier.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { getBytes, objectHead, s3Client } from "./lib/s3.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -162,7 +165,7 @@ function usage(): string {
     "  --checkpoint PATH     Local checkpoint path (default: .cache/...)",
     "  --help                Show this help",
     "",
-    "Reads S3 and MAMH roles only; writes only local checkpoint/output files and never writes S3.",
+    "Reads served S3 data and captures MAMH roles under raw/ and capture/; never writes served datasets.",
     "The served qc-lots nested layout is authoritative when nested and flat both exist.",
   ].join("\n");
 }
@@ -363,26 +366,27 @@ async function readS3BytesWithinDeadline(s3: S3Client, key: string, deadline: nu
   }
 }
 
-async function fetchRoleWithinDeadline(codeGeo: string, deadline: number, maxBytes: number): Promise<Buffer | null> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeRemaining(deadline));
-  try {
-    const response = await fetch(ROLE_URL(codeGeo), { signal: controller.signal });
-    if (response.status === 403 || response.status === 404) return null;
-    if (!response.ok) throw new Error(`rôle HTTP ${response.status}`);
-    const declared = Number(response.headers.get("content-length"));
-    if (Number.isFinite(declared) && declared > maxBytes) {
-      throw new Error(`rôle object ${declared} bytes exceeds --max-mb guard ${maxBytes} bytes`);
-    }
-    const bytes = Buffer.from(await response.arrayBuffer());
-    if (bytes.length > maxBytes) throw new Error(`rôle object ${bytes.length} bytes exceeds --max-mb guard ${maxBytes} bytes`);
-    return bytes;
-  } catch (error) {
-    if (Date.now() >= deadline || controller.signal.aborted) throw new TimeboxExceeded();
-    throw error;
-  } finally {
-    clearTimeout(timeout);
+async function fetchRoleWithinDeadline(
+  codeGeo: string,
+  slug: string,
+  run: CaptureRun,
+  deadline: number,
+  maxBytes: number,
+): Promise<Buffer | null> {
+  const captured = await capturedFetch(ROLE_URL(codeGeo), undefined, {
+    run,
+    lane: "cadastre",
+    source: "immo-adresse-completion-matrix",
+    slugs: [slug],
+    timeoutMs: timeRemaining(deadline),
+    maxBytes,
+  });
+  if (captured.response?.status === 403 || captured.response?.status === 404) return null;
+  if (!captured.ok || captured.bytes === null) {
+    if (Date.now() >= deadline) throw new TimeboxExceeded();
+    throw new Error(captured.line.error ?? `rôle HTTP ${captured.line.http_status ?? "no-response"}`);
   }
+  return Buffer.from(captured.bytes);
 }
 
 function normalizedName(value: string): string {
@@ -550,41 +554,49 @@ async function resolveRole(
   if (lotKeys.size === 0) return { resolution: null, note: "No served lot exposes a usable NO_LOT-family key." };
   const candidates = candidateCodes(slug, name, byName);
   if (candidates.length === 0) return { resolution: null, note: "No MAMH code_geo candidate for municipality name." };
-  const minimumOverlap = Math.max(30, Math.floor(0.03 * lotKeys.size));
-  let best: RoleResolution | null = null;
-  const failures: string[] = [];
-  for (const codeGeo of candidates.slice(0, 6)) {
-    timeRemaining(deadline);
-    let xml: Buffer | null;
-    try {
-      xml = await fetchRoleWithinDeadline(codeGeo, deadline, maxBytes);
-    } catch (error) {
-      if (error instanceof TimeboxExceeded) throw error;
-      failures.push(`${codeGeo}: ${error instanceof Error ? error.message : String(error)}`);
-      continue;
+  const run = openCaptureRun({ lane: "cadastre", echo: null });
+  let exitCode = 1;
+  try {
+    const minimumOverlap = Math.max(30, Math.floor(0.03 * lotKeys.size));
+    let best: RoleResolution | null = null;
+    const failures: string[] = [];
+    for (const codeGeo of candidates.slice(0, 6)) {
+      timeRemaining(deadline);
+      let xml: Buffer | null;
+      try {
+        xml = await fetchRoleWithinDeadline(codeGeo, slug, run, deadline, maxBytes);
+      } catch (error) {
+        if (error instanceof TimeboxExceeded) throw error;
+        failures.push(`${codeGeo}: ${error instanceof Error ? error.message : String(error)}`);
+        continue;
+      }
+      if (!xml) {
+        failures.push(`${codeGeo}: role unavailable`);
+        continue;
+      }
+      let roleMap: Record<string, RoleAttrs>;
+      try {
+        roleMap = parseRole(xml);
+      } catch (error) {
+        failures.push(`${codeGeo}: role parse failed (${error instanceof Error ? error.message : String(error)})`);
+        continue;
+      } finally {
+        xml = Buffer.alloc(0);
+      }
+      let overlap = 0;
+      for (const key of Object.keys(roleMap)) if (lotKeys.has(key)) overlap++;
+      if (!best || overlap > best.overlap) best = { codeGeo, roleMap, overlap };
     }
-    if (!xml) {
-      failures.push(`${codeGeo}: role unavailable`);
-      continue;
-    }
-    let roleMap: Record<string, RoleAttrs>;
-    try {
-      roleMap = parseRole(xml);
-    } catch (error) {
-      failures.push(`${codeGeo}: role parse failed (${error instanceof Error ? error.message : String(error)})`);
-      continue;
-    } finally {
-      xml = Buffer.alloc(0);
-    }
-    let overlap = 0;
-    for (const key of Object.keys(roleMap)) if (lotKeys.has(key)) overlap++;
-    if (!best || overlap > best.overlap) best = { codeGeo, roleMap, overlap };
+    const result = !best
+      ? { resolution: null, note: `No readable MAMH role (${failures.join("; ") || "no candidate succeeded"}).` }
+      : best.overlap < minimumOverlap
+        ? { resolution: null, note: `MAMH role overlap too low (best code=${best.codeGeo}, matched=${best.overlap}, minimum=${minimumOverlap}).` }
+        : { resolution: best, note: null };
+    exitCode = 0;
+    return result;
+  } finally {
+    await run.finish(exitCode);
   }
-  if (!best) return { resolution: null, note: `No readable MAMH role (${failures.join("; ") || "no candidate succeeded"}).` };
-  if (best.overlap < minimumOverlap) {
-    return { resolution: null, note: `MAMH role overlap too low (best code=${best.codeGeo}, matched=${best.overlap}, minimum=${minimumOverlap}).` };
-  }
-  return { resolution: best, note: null };
 }
 
 function unknownCity(
@@ -792,7 +804,7 @@ function buildMatrix(date: string, input: LocalInputs, cities: readonly CityMeas
       served_layout_policy: "geo-api serves normalized/qc-lots/qc-lots-<slug>/qc-lots-<slug>.geojson before normalized/qc-lots/qc-lots-<slug>.geojson. The nested object is selected first and the flat shadow is never read.",
       role_join: "The production join is reproduced: first non-empty NO_LOT/noLot/no_lot/NOLOT/lot_id/LOT_ID value with literal spaces removed equals MAMH RL0103Ax; candidate code_geo is accepted only with overlap >= max(30, floor(3% of distinct served keys)). parseRole supplies the canonical RL0101 address semantics.",
       anti_invention: "Served addresses are never recomputed or repaired. A non-string/blank served adresse is unknown. No role candidate, unreadable/invalid role, insufficient overlap, missing served collection, or zero denominator outside the six explicit N/A cities is unknown, never complete. N-A proof records a verbatim NO_LOT value and whether the resolved role lookup was absent or its address was null.",
-      memory_and_write_policy: `One municipality is processed at a time; only lot observations are retained and no S3 write API is imported or called. --max-seconds is resumable through a local atomic checkpoint; --max-mb rejects oversized served objects fail-closed, and a fixed ${MAX_ROLE_MB} MiB role guard refuses a larger MAMH XML before parsing.`,
+      memory_and_write_policy: `One municipality is processed at a time; only lot observations are retained. Every external MAMH role read passes through the capture chokepoint and writes only raw/ plus capture/_runs/, never a served dataset. --max-seconds is resumable through a local atomic checkpoint; --max-mb rejects oversized served objects fail-closed, and a fixed ${MAX_ROLE_MB} MiB role guard refuses a larger MAMH XML before parsing.`,
       priority_167_policy: "The supplied _refold-normes-bprime-slugs.txt has 47 rows and is therefore not used as B'-167. The requested fallback is the committed municipality registry selector typeof priorityRank === 'number' && priorityRank <= 167, validated as exactly ranks 1..167.",
     },
     source: input.sourceMeta,
@@ -828,7 +840,7 @@ function markdown(matrix: Record<string, unknown>): string {
   return [
     "# Complétion adresse Immo — col. 17",
     "",
-    `Instantané déterministe : ${String(matrix["as_of"])}. Analyse lecture seule S3/MAMH; aucune écriture S3.`,
+    `Instantané déterministe : ${String(matrix["as_of"])}. Analyse des données S3 servies; les lectures MAMH sont capturées sous raw/ et capture/ sans écriture dans les jeux servis.`,
     "",
     "| Périmètre | complete | foldable | unknown | N/A |",
     "| --- | ---: | ---: | ---: | ---: |",
