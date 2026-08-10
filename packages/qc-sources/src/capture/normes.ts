@@ -210,6 +210,7 @@ export const CapturedNormesCampaignOutcomeSchema = z.enum([
   "http-forbidden",
   "no-official-source",
   "mistral-below-gate",
+  "mistral-refused",
   "mistral-deposited",
 ]);
 
@@ -238,7 +239,7 @@ export const CapturedNormesCampaignEntrySchema = z.object({
   if (value.source_absence_receipt_key !== undefined) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["source_absence_receipt_key"], message: "only no-official-source may carry a source absence receipt" });
   }
-  const mistralOutcome = value.outcome === "mistral-below-gate" || value.outcome === "mistral-deposited";
+  const mistralOutcome = value.outcome === "mistral-below-gate" || value.outcome === "mistral-refused" || value.outcome === "mistral-deposited";
   if (mistralOutcome && value.extraction_receipt_keys.length === 0) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${value.outcome} requires extraction receipts` });
   }
@@ -329,8 +330,12 @@ export function assertCapturedNormesCampaignEvidence(
       if (receipt.status !== "deposited" || receipt.parquet_key === null) {
         throw new Error(`${entry.slug}: mistral-deposited requires deposited parquet receipts`);
       }
-    } else if (receipt.status !== "refused" || !receipt.refusal?.startsWith("below deposit gate:")) {
+    } else if (entry.outcome === "mistral-below-gate" && (
+      receipt.status !== "refused" || !receipt.refusal?.startsWith("below deposit gate:")
+    )) {
       throw new Error(`${entry.slug}: mistral-below-gate requires below-gate refusals`);
+    } else if (entry.outcome === "mistral-refused" && (receipt.status !== "refused" || receipt.refusal === null)) {
+      throw new Error(`${entry.slug}: mistral-refused requires an explicit refusal receipt`);
     }
   }
 }
