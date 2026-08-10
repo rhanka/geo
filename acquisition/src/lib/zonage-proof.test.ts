@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
-import { assertGeometryProof, assertServedZoneGeojson, attachGeometryProof, carryForwardServedZoneProperties, isRealGeometryUrl, isServedZoneKey, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson, sameGeometryProof } from "./zonage-proof.js";
+import { assertGeometryProof, assertServedZoneGeojson, attachGeometryProof, carryForwardServedZoneProperties, isRealGeometryUrl, isServedZoneKey, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson, putServedZoneGeojsonIfMatch, sameGeometryProof } from "./zonage-proof.js";
 import { copyObject, putBytes } from "./s3.js";
 
 describe("served zonage geometry proof", () => {
@@ -97,6 +97,40 @@ describe("served zonage geometry proof", () => {
     expect(sent.filter((c) => c.name === PUT)).toHaveLength(1);
   });
 
+  it("uses the preflight ETag as a compare-and-swap for a served replacement", async () => {
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
+    const served = attachGeometryProof({
+      type: "FeatureCollection" as const,
+      features: [{ geometry: { type: "Point", coordinates: [0, 0] }, properties: { zone_code: "R-1" } }],
+    }, p);
+    const replacement = attachGeometryProof({
+      type: "FeatureCollection" as const,
+      features: [{ geometry: { type: "Point", coordinates: [1, 1] }, properties: { zone_code: "R-1" } }],
+    }, p);
+    const { s3, sent } = fakeS3(served, { etag: "\"etag-before\"" });
+
+    await putServedZoneGeojsonIfMatch(s3, KEY, replacement, "\"etag-before\"");
+
+    const put = sent.find((command) => command.name === PUT)!;
+    expect(put.input.IfMatch).toBe("\"etag-before\"");
+  });
+
+  it("refuses a served replacement when the ETag changed before validation", async () => {
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: "2026-07-22T12:00:00Z" });
+    const served = attachGeometryProof({
+      type: "FeatureCollection" as const,
+      features: [{ geometry: { type: "Point", coordinates: [0, 0] }, properties: { zone_code: "R-1" } }],
+    }, p);
+    const replacement = attachGeometryProof({
+      type: "FeatureCollection" as const,
+      features: [{ geometry: { type: "Point", coordinates: [1, 1] }, properties: { zone_code: "R-1" } }],
+    }, p);
+    const { s3, sent } = fakeS3(served, { etag: "\"etag-after\"" });
+
+    await expect(putServedZoneGeojsonIfMatch(s3, KEY, replacement, "\"etag-before\"")).rejects.toThrow(/ETag changed before validation/);
+    expect(sent.some((command) => command.name === PUT)).toBe(false);
+  });
+
   it("carries old-only properties only to freshly acquired features with the same zone code", () => {
     const incoming = [
       { properties: { zone_code: "R-1", kind: "fresh" } },
@@ -174,6 +208,9 @@ describe("served zonage geometry proof", () => {
       entry.isDirectory() ? walk(join(dir, entry.name)) : entry.name.endsWith(".ts") ? [join(dir, entry.name)] : [],
     );
     const users = walk(root)
+      // Test doubles dispatch on command class names; only production sources
+      // can introduce an S3 writer that bypasses the two guarded helpers.
+      .filter((file) => !file.endsWith(".test.ts"))
       .filter((file) => readFileSync(file, "utf8").includes(token))
       .map((file) => relative(root, file).replaceAll("\\", "/"))
       .sort();
@@ -183,7 +220,7 @@ describe("served zonage geometry proof", () => {
 
 /** Minimal S3 double: dispatches on command class name, records every send, and
  *  serves `servedObj` for GetObject. Lets us prove the additive gate without S3. */
-function fakeS3(servedObj: unknown, opts: { missing?: boolean } = {}) {
+function fakeS3(servedObj: unknown, opts: { missing?: boolean; etag?: string } = {}) {
   const sent: Array<{ name: string; input: any }> = [];
   const s3 = {
     send: async (command: any) => {
@@ -191,7 +228,7 @@ function fakeS3(servedObj: unknown, opts: { missing?: boolean } = {}) {
       sent.push({ name, input: command.input });
       if (name === "HeadObjectCommand") {
         if (opts.missing) { const e: any = new Error("nf"); e.name = "NotFound"; e.$metadata = { httpStatusCode: 404 }; throw e; }
-        return {};
+        return opts.etag ? { ETag: opts.etag } : {};
       }
       if (name === "GetObjectCommand") return { Body: [Buffer.from(JSON.stringify(servedObj))] };
       return {};
