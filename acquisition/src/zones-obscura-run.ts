@@ -61,6 +61,9 @@ import { reapplyServedZonageEnrichment } from "./lib/reapply-zonage-enrichment.j
 import {
   attachGeometryProof,
   carryForwardServedZoneProperties,
+  featureHasV2Proof,
+  GEOMETRY_GRAIN_FIELD,
+  type GeometryGrain,
   type GeometrySourceProof,
   proofFromCaptureEntry,
   putServedZoneAdditive,
@@ -118,6 +121,24 @@ const ZONE_CODE_FIELD_CODELIKE = [
 const ZONAGE_TITLE_PATTERNS = [/\bzonage\b/i, /\bzoning\b/i, /\bzones?\b/i, /grille.*zone/i, /regl.*zone/i];
 const AFFECTATION_TITLE_PATTERNS = [/\baffectation\b/i, /milieu.*humide/i, /\bpiia\b/i, /inondab/i, /patrimo/i, /contrainte/i];
 
+// Certaines munis QC codent leurs zones en NUMÉRIQUE pur (ex. "512","402" ; le
+// 1er chiffre = classe d'usage). Le gate value-based (`codeLikeRatio`/`pureIntRatio`)
+// les prend à tort pour un champ décoy/cadastre et les rejette. Discriminant sûr =
+// autorité du NOM DE CHAMP (identifiant de zone) + TITRE de couche « zonage » +
+// cardinalité bornée (un cadastre/rôle porte des MILLIERS de lots distincts). Sous
+// ces trois gardes, les valeurs numériques SONT du zonage → bypass des deux gates
+// de forme uniquement (les gardes bbox/attribution/contamination restent actives).
+export const NUMERIC_ZONAGE_MAX_DISTINCT = 500;
+export function isNumericZonageBypass(zoneField: string, layerTitle: string, distinct: number): boolean {
+  const field = (zoneField ?? "").trim();
+  const title = (layerTitle ?? "").trim();
+  const fieldIsZoneId = ZONE_CODE_FIELD_CODELIKE.some((re) => re.test(field));
+  const titleIsZonage = ZONAGE_TITLE_PATTERNS.some((re) => re.test(title));
+  const titleIsAffectation = AFFECTATION_TITLE_PATTERNS.some((re) => re.test(title));
+  return fieldIsZoneId && titleIsZonage && !titleIsAffectation
+    && distinct >= 3 && distinct <= NUMERIC_ZONAGE_MAX_DISTINCT;
+}
+
 // Attributs municipalité dans les couches MRC agrégées.
 const MUNI_ATTR_CANDIDATES = [
   "mun_nom", "MuniTopo", "municipalite", "Municipalite", "MUNICIPALITE", "NOM_MUN",
@@ -162,6 +183,7 @@ interface SlugResult {
   deposited: boolean;
   status: "deposited" | "no-zonage-layer" | "matrice-only" | "no-viewer" | "spatial-fail" | "platform-not-arcgis" | "no-site" | "error";
   detail: string;
+  captureReport?: GonetCaptureReport;
 }
 
 interface ServedAudit {
@@ -177,6 +199,21 @@ interface CapturedFeatures {
   features: GeoFeature[];
   entry: CaptureManifestLine;
   paginated: boolean;
+}
+
+interface GonetCaptureReport {
+  slug: string;
+  source_url_reelle: string | null;
+  retrieved_at: string | null;
+  sha256_octets: string | null;
+  n_features: number;
+  codes_distinct: number;
+  lettered_pct: number;
+  integer_pure_pct: number;
+  bbox_diag_km: number | null;
+  nearest_registre_muni: string | null;
+  nearest_km: number | null;
+  verdict: string;
 }
 
 /** A deposited v2 source must be a manifest entry, never a reconstructed body. */
@@ -243,6 +280,125 @@ function haversineKm(lat1: number, lon1: number, lat2: number, lon2: number): nu
   const R = 6371, dLat = ((lat2 - lat1) * Math.PI) / 180, dLon = ((lon2 - lon1) * Math.PI) / 180;
   const a = Math.sin(dLat / 2) ** 2 + Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) ** 2;
   return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+interface FeatureBbox {
+  minx: number;
+  miny: number;
+  maxx: number;
+  maxy: number;
+}
+
+function featureBbox(features: GeoFeature[]): FeatureBbox | null {
+  let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity;
+  for (const feature of features) {
+    for (const [x, y] of positionsOf(feature.geometry?.coordinates)) {
+      if (!Number.isFinite(x) || !Number.isFinite(y)) continue;
+      if (x < minx) minx = x;
+      if (x > maxx) maxx = x;
+      if (y < miny) miny = y;
+      if (y > maxy) maxy = y;
+    }
+  }
+  if (![minx, miny, maxx, maxy].every(Number.isFinite)) return null;
+  return { minx, miny, maxx, maxy };
+}
+
+function noVectorCaptureReport(slug: string, entry?: CaptureManifestLine, verdict = "NO_VECTOR"): GonetCaptureReport {
+  return {
+    slug,
+    source_url_reelle: entry?.url ?? null,
+    retrieved_at: entry?.retrieved_at ?? null,
+    sha256_octets: entry?.sha256?.replace(/^sha256:/, "") ?? null,
+    n_features: 0,
+    codes_distinct: 0,
+    lettered_pct: 0,
+    integer_pure_pct: 100,
+    bbox_diag_km: null,
+    nearest_registre_muni: null,
+    nearest_km: null,
+    verdict,
+  };
+}
+
+function captureVerdictCounts(reports: GonetCaptureReport[]): Record<string, number> {
+  const counts: Record<string, number> = { PASS_CAPTURE: 0, PASS_CAPTURE_NUMERIC: 0, REJECT: 0, NO_VECTOR: 0 };
+  for (const report of reports) {
+    if (report.verdict === "PASS_CAPTURE") counts.PASS_CAPTURE++;
+    else if (report.verdict === "PASS_CAPTURE_NUMERIC") counts.PASS_CAPTURE_NUMERIC++;
+    else if (report.verdict === "NO_VECTOR") counts.NO_VECTOR++;
+    else if (report.verdict.startsWith("REJECT_")) counts.REJECT++;
+  }
+  return counts;
+}
+
+function captureReportMarkdown(reports: GonetCaptureReport[], runId: string): string {
+  const counts = captureVerdictCounts(reports);
+  const rows = reports.map((r) =>
+    `| ${r.slug} | ${r.verdict} | ${r.n_features} | ${r.codes_distinct} | ${r.lettered_pct.toFixed(1)}% | ${r.integer_pure_pct.toFixed(1)}% | ${r.bbox_diag_km === null ? "—" : r.bbox_diag_km.toFixed(2)} | ${r.nearest_registre_muni ?? "—"} | ${r.nearest_km === null ? "—" : r.nearest_km.toFixed(2)} |`,
+  );
+  return [
+    "# Capture GOnet — rapport de gate",
+    "",
+    `Run capture : \`${runId}\``,
+    "",
+    `Verdicts : PASS_CAPTURE=${counts.PASS_CAPTURE}, REJECT=${counts.REJECT}, NO_VECTOR=${counts.NO_VECTOR}`,
+    "",
+    "| slug | verdict | features | codes | lettrés | entiers purs | diagonale km | muni registre la plus proche | distance km |",
+    "|---|---|---:|---:|---:|---:|---:|---|---:|",
+    ...rows,
+    "",
+  ].join("\n");
+}
+
+function buildGonetCaptureReport(
+  slug: string,
+  target: MuniEntry | undefined,
+  registry: MuniEntry[],
+  entry: CaptureManifestLine,
+  features: GeoFeature[],
+  paginated: boolean,
+  zoneField: string,
+  layerTitle: string,
+): GonetCaptureReport {
+  const stats = zoneCodeStats(features as never, zoneField);
+  const numericZonage = isNumericZonageBypass(zoneField, layerTitle, stats.distinct);
+  const bbox = featureBbox(features);
+  const center = bbox === null ? null : { lat: (bbox.miny + bbox.maxy) / 2, lon: (bbox.minx + bbox.maxx) / 2 };
+  let nearest: { slug: string; km: number } | null = null;
+  if (center !== null) {
+    for (const muni of registry) {
+      const km = haversineKm(muni.lat, muni.lon, center.lat, center.lon);
+      if (nearest === null || km < nearest.km) nearest = { slug: muni.slug, km };
+    }
+  }
+
+  let verdict = numericZonage ? "PASS_CAPTURE_NUMERIC" : "PASS_CAPTURE";
+  if (paginated) verdict = "REJECT_PAGINATED_RESPONSE";
+  else if (stats.distinct < 3) verdict = "REJECT_CODES_DISTINCT_LT3";
+  else if (!numericZonage && stats.codeLikeRatio < 0.5) verdict = "REJECT_LETTERED_LT50_PCT";
+  else if (!numericZonage && stats.pureIntRatio > 0.8) verdict = "REJECT_INTEGER_PURE_GT80_PCT";
+  else if (stats.maxLen > 24) verdict = "REJECT_MAXLEN_GT24";
+  else if (bbox === null) verdict = "REJECT_NO_GEOMETRY";
+  else if (haversineKm(bbox.miny, bbox.minx, bbox.maxy, bbox.maxx) > 35) verdict = "REJECT_BBOX_DIAG_GT35KM";
+  else if (nearest === null) verdict = "REJECT_NO_REGISTRE_NEAREST";
+  else if (target !== undefined && nearest.slug !== target.slug) verdict = "REJECT_MUNI_CONTAMINATION";
+  else if (nearest !== null && nearest.km > 8) verdict = "REJECT_NEAREST_GT8KM";
+
+  return {
+    slug,
+    source_url_reelle: entry.url,
+    retrieved_at: entry.retrieved_at,
+    sha256_octets: entry.sha256?.replace(/^sha256:/, "") ?? null,
+    n_features: features.length,
+    codes_distinct: stats.distinct,
+    lettered_pct: stats.codeLikeRatio * 100,
+    integer_pure_pct: stats.pureIntRatio * 100,
+    bbox_diag_km: bbox === null ? null : haversineKm(bbox.miny, bbox.minx, bbox.maxy, bbox.maxx),
+    nearest_registre_muni: nearest?.slug ?? null,
+    nearest_km: nearest?.km ?? null,
+    verdict,
+  };
 }
 
 async function capturedArcgisJson<T = unknown>(
@@ -773,7 +929,7 @@ async function fetchFeatures(
   };
 }
 
-function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string, confidence = "obscura-zone-vector"): GeoFeature[] {
+export function normalize(features: GeoFeature[], zoneField: string, serviceUrl: string, confidence = "obscura-zone-vector"): GeoFeature[] {
   return features.map((f) => {
     const raw = f.properties?.[zoneField];
     const zone = raw !== null && raw !== undefined && String(raw).trim() !== "" ? String(raw).trim() : null;
@@ -836,17 +992,34 @@ class PropertyRegressionError extends Error {
 }
 
 /**
+ * One served-only zone code dropped by a PROVENANCE-AWARE replacement: it was carried
+ * by a served feature with `zone_source_url === null` (never proven in v2) and is absent
+ * from the verified-complete v2 capture. Per SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md §3 (G3/G4)
+ * this is a DOCUMENTED DIVERGENCE — status UNKNOWN (recalage-flagged), never N-A: a
+ * replacement does not attest abolition. The prior served geometry is backed up
+ * byte-for-byte under `_replaced/` in the same pass.
+ */
+export interface DroppedServedCode {
+  code: string;
+  prior_levels: string[];
+  zone_source_url: null;
+  status: "UNKNOWN";
+  reason: string;
+}
+
+/**
  * Safe geometry replacement shared by the ArcGIS and GoNet paths in this runner.
  * It refuses an identity mismatch, keeps served properties by canonical zone code,
  * replays the committed folds, then records a before/after served audit.  The v2
  * proof is already bound to one captured response when this function is called.
  */
-async function depositCapturedZones(
+export async function depositCapturedZones(
   s3: S3Client,
   slug: string,
   norm: GeoFeature[],
   proof: GeometrySourceProof,
-): Promise<{ servedBefore: ServedAudit[]; servedAfter: ServedAudit[] }> {
+  opts: { geometryGrain?: GeometryGrain } = {},
+): Promise<{ servedBefore: ServedAudit[]; servedAfter: ServedAudit[]; droppedDivergence: DroppedServedCode[]; replacedBackups: string[] }> {
   const flatKey = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
   const nestedKey = `${S3_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
   const present = (await Promise.all([readServedAudit(s3, flatKey), readServedAudit(s3, nestedKey)])).filter(
@@ -858,9 +1031,48 @@ async function depositCapturedZones(
   const servedCodes = new Set(present.flatMap(({ features }) => features.map((f) => canonicalZoneCode(f.properties?.["zone_code"])).filter(Boolean)));
   const incomingCodes = new Set(norm.map((f) => canonicalZoneCode(f.properties?.["zone_code"])).filter(Boolean));
   const uncovered = [...servedCodes].filter((code) => !incomingCodes.has(code));
-  if (uncovered.length > 0) {
-    throw new Error(`identity gate: ${uncovered.length} code(s) servi(s) absent(s) de la couche amont (${uncovered.sort().join(",")}); aucun dépôt`);
+
+  // PROVENANCE-AWARE identity gate (SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md §2-3, SHA 65d4c637).
+  // Per served-only code, the discriminator is whether the code is genuinely V2-PROVEN:
+  // at least one of its served features carries a per-feature `proof.geometry_source`
+  // block (real sha256 + retrieved_at — see featureHasV2Proof). A real http(s)
+  // `zone_source_url` is NECESSARY but NOT SUFFICIENT: a `candidate` with a *declarative*
+  // URL and no capture carries NO proof block, so it is NOT proven — it does not block a
+  // verified-complete v2 capture and passes as a DOCUMENTED DIVERGENCE (recorded here,
+  // backed up byte-for-byte under _replaced/ below). A served code that IS v2-proven still
+  // blocks: the strict superset holds for it — a proven code may not be silently dropped
+  // (its removal needs a reproducible per-code absence proof). Testing the proof block
+  // rather than the URL can only make MORE codes unproven, never fewer — strictly SAFER.
+  const provenanceByCode = new Map<string, { levels: Set<string>; hasV2Proof: boolean }>();
+  for (const { features } of present) {
+    for (const f of features) {
+      const code = canonicalZoneCode(f.properties?.["zone_code"]);
+      if (!code) continue;
+      const entry = provenanceByCode.get(code) ?? { levels: new Set<string>(), hasV2Proof: false };
+      const level = f.properties?.["zone_source_level"];
+      if (typeof level === "string") entry.levels.add(level);
+      if (featureHasV2Proof(f)) entry.hasV2Proof = true;
+      provenanceByCode.set(code, entry);
+    }
   }
+  const isProven = (code: string): boolean => provenanceByCode.get(code)?.hasV2Proof === true;
+  const uncoveredProven = uncovered.filter(isProven).sort();
+  if (uncoveredProven.length > 0) {
+    throw new Error(
+      `identity gate (provenance-aware): ${uncoveredProven.length} code(s) servi(s) PROUVÉ(s) (preuve v2 par feature: proof.geometry_source sha256+retrieved_at) absent(s) de la couche amont (${uncoveredProven.join(",")}); un code prouvé ne se droppe pas sans preuve d'absence reproductible; aucun dépôt`,
+    );
+  }
+  const droppedDivergence: DroppedServedCode[] = uncovered
+    .filter((code) => !isProven(code))
+    .sort()
+    .map((code) => ({
+      code,
+      prior_levels: [...(provenanceByCode.get(code)?.levels ?? [])].sort(),
+      zone_source_url: null,
+      status: "UNKNOWN",
+      reason: "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)",
+    }));
+
   const maxServedFeatures = Math.max(0, ...present.map(({ features }) => features.length));
   if (norm.length < maxServedFeatures) {
     throw new Error(`coverage gate: ${norm.length} features amont < ${maxServedFeatures} features servies; aucun dépôt`);
@@ -870,10 +1082,12 @@ async function depositCapturedZones(
     ? present.map(({ audit, features }) => ({ key: audit.key, current: features }))
     : [{ key: flatKey, current: [] as GeoFeature[] }];
   const stamp = new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
+  const replacedBackups: string[] = [];
   for (const { key, current } of targets) {
     if (current.length > 0) {
       const backup = `${S3_PREFIX}_replaced/qc-zonage-${slug}__${key === flatKey ? "flat" : "nested"}.${stamp}.geojson`;
       await copyObject(s3, key, backup);
+      replacedBackups.push(backup);
       console.error(`[obscura] BACKUP ${key} -> s3://${backup}`);
     }
     const features = norm.map((feature) => ({ ...feature, properties: { ...(feature.properties ?? {}) } }));
@@ -884,7 +1098,13 @@ async function depositCapturedZones(
   }
 
   // A geometry replacement resets enrichment values. Re-run the committed folds
-  // in the same pass, then stamp the exact live v2 source last.
+  // in the same pass, then stamp the exact live v2 source last. `geometry_grain`
+  // (source-layer nature: zone-polygon | evaluation-unit) is stamped in the SAME
+  // additive pass when the caller supplies it — additive-only, geometry byte-exact.
+  const grain = opts.geometryGrain;
+  const stampAllowed = grain
+    ? ["zone_source_url", "zone_source_level", GEOMETRY_GRAIN_FIELD]
+    : ["zone_source_url", "zone_source_level"];
   await reapplyServedZonageEnrichment(slug);
   for (const { key } of targets) {
     const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { type: "FeatureCollection"; features: GeoFeature[] };
@@ -893,9 +1113,10 @@ async function depositCapturedZones(
         ...(feature.properties ?? {}),
         zone_source_url: proof.url,
         zone_source_level: "documented",
+        ...(grain ? { [GEOMETRY_GRAIN_FIELD]: grain } : {}),
       };
     }
-    await putServedZoneAdditive(s3, key, fc, { allowedProps: ["zone_source_url", "zone_source_level"] });
+    await putServedZoneAdditive(s3, key, fc, { allowedProps: stampAllowed });
   }
 
   const servedAfter = (await Promise.all(targets.map(({ key }) => readServedAudit(s3, key)))).map((value) => {
@@ -911,7 +1132,7 @@ async function depositCapturedZones(
       );
     }
   }
-  return { servedBefore, servedAfter };
+  return { servedBefore, servedAfter, droppedDivergence, replacedBackups };
 }
 
 // ── GoNet / GoAzimut (PG Solutions GOnet6) ────────────────────────────────────
@@ -1061,6 +1282,7 @@ async function gonetFetchUnpaginated(
 async function processGonetZonage(
   slug: string, muni: MuniEntry | undefined, viewerUrl: string,
   browser: Browser, run: CaptureRun, s3: S3Client | null, args: Args, base: SlugResult,
+  registry: MuniEntry[],
 ): Promise<SlugResult> {
   // The GOnet6 viewer is a heavy JS map: the in-session MapServer proxy request
   // (the only signal that the muni IS on goazimut) is not fired until the map
@@ -1070,18 +1292,18 @@ async function processGonetZonage(
   const session = await browser.openSession(viewerUrl, Math.max(args.navMs, 40_000) + 8_000);
   try {
     const mapBase = gonetMapServerBase(session.requests);
-    if (!mapBase) return { ...base, status: "no-zonage-layer", detail: `gonet: aucune requête proxy MapServer captée (session/recaptcha?) @${viewerUrl}` };
+    if (!mapBase) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet: aucune requête proxy MapServer captée (session/recaptcha?) @${viewerUrl}` };
     const proxy = gonetProxyBase(session.requests);
 
     const info = await capturedGonetJson<{ layers?: GoNetLayer[] }>(browser, session.sid, `${proxy}${mapBase}/?f=json`, run, slug);
     const layers = info?.value.layers ?? [];
-    if (layers.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: MapServer sans couches lisibles (${mapBase})` };
+    if (layers.length === 0) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet: MapServer sans couches lisibles (${mapBase})` };
     if (process.env["GONET_DUMP_LAYERS"]) {
       console.error(`[gonet-dump ${slug}] ${layers.length} couches @ ${mapBase}`);
       for (const l of layers) console.error(`    #${l.id}\tp=${l.parentLayerId ?? "-"}\t${l.type ?? "?"}\t${l.geometryType ?? "?"}\t${l.name}`);
     }
     const candidates = gonetZonageCandidates(layers);
-    if (candidates.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet MapServer (${layers.length} couches) sans couche 'Zonage municipal'` };
+    if (candidates.length === 0) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet MapServer (${layers.length} couches) sans couche 'Zonage municipal'` };
 
     // Among zonage-named polygon layers, keep the one with a usable zone field AND
     // the most features (scale variants are duplicated; one may be empty).
@@ -1097,11 +1319,14 @@ async function processGonetZonage(
       if (count <= 0) continue;
       if (!best || count > best.count) best = { id: c.id, name: stripGonetPrefix(c.name), zoneField, oidField, count };
     }
-    if (!best) return { ...base, status: "no-zonage-layer", detail: `gonet: couche(s) zonage sans champ zone_code exploitable` };
+    if (!best) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet: couche(s) zonage sans champ zone_code exploitable` };
 
     const layerUrl = `${mapBase}/${best.id}`;
     const received = await gonetFetchUnpaginated(browser, session.sid, proxy, mapBase, best.id, best.zoneField, best.count, run, slug);
-    if (!received || received.features.length === 0) return { ...base, status: "no-zonage-layer", detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
+    if (!received) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug), detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée sans GeoJSON exploitable` };
+    if (received.features.length === 0) return { ...base, status: "no-zonage-layer", captureReport: noVectorCaptureReport(slug, received.entry), detail: `gonet: couche ${best.name} (${best.count} attendues) téléchargée vide` };
+    const captureReport = buildGonetCaptureReport(slug, muni, registry, received.entry, received.features, received.paginated, best.zoneField, best.name);
+    base.captureReport = captureReport;
     if (received.paginated) {
       return { ...base, status: "no-zonage-layer", detail: `gonet: réponse PAGINÉE/refusée (${received.features.length}/${best.count} features; preuve v2 à URL unique impossible)` };
     }
@@ -1149,7 +1374,7 @@ async function processGonetZonage(
 }
 
 // ── Traitement d'une ville ────────────────────────────────────────────────────
-async function processCity(slug: string, muni: MuniEntry | undefined, browser: Browser, s3: S3Client | null, args: Args): Promise<SlugResult> {
+async function processCity(slug: string, muni: MuniEntry | undefined, browser: Browser, s3: S3Client | null, args: Args, registry: MuniEntry[]): Promise<SlugResult> {
   const site = websiteForSlug(slug) ?? null;
   const base: SlugResult = { slug, site, platforms: [], viewerUrls: [], deposited: false, status: "no-viewer", detail: "" };
   if (!site) return { ...base, status: "no-site", detail: "aucun site dans l'annuaire" };
@@ -1208,7 +1433,7 @@ async function processCity(slug: string, muni: MuniEntry | undefined, browser: B
     const viewer = gonetViewerUrl(lead.goazimut);
     dbg(`gonet viewer=${viewer ?? "n/a"}`);
     if (viewer) {
-      const g = await processGonetZonage(slug, muni, viewer, browser, CAPTURE!, s3, args, base);
+      const g = await processGonetZonage(slug, muni, viewer, browser, CAPTURE!, s3, args, base, registry);
       if (g.deposited || g.status === "deposited") return g;
       if (!platforms.includes("arcgis")) return g; // gonet-only → classement gonet terminal
       base.detail = g.detail; // garde la note gonet si l'ArcGIS échoue aussi
@@ -1459,10 +1684,10 @@ async function main(): Promise<void> {
         const viewer = `https://www.goazimut.com/GOnet6/?m=${code}&pl=1`;
         const seedBase: SlugResult = { slug, site: websiteForSlug(slug) ?? null, platforms: ["goazimut"], viewerUrls: [viewer], deposited: false, status: "no-zonage-layer", detail: "" };
         let r: SlugResult;
-        try { r = await processGonetZonage(slug, bySlug.get(slug), viewer, browser, CAPTURE!, s3, args, seedBase); }
+        try { r = await processGonetZonage(slug, bySlug.get(slug), viewer, browser, CAPTURE!, s3, args, seedBase, munis); }
         catch (e) {
           if (e instanceof PropertyRegressionError) throw e;
-          r = { ...seedBase, status: "error", detail: e instanceof Error ? e.message : String(e) };
+          r = { ...seedBase, status: "error", captureReport: noVectorCaptureReport(slug, undefined, "REJECT_RUN_ERROR"), detail: e instanceof Error ? e.message : String(e) };
         }
         results.push(r);
         console.error(`[${i + 1}/${args.gonetSeeds.length}] ${r.status.padEnd(18)} ${slug} (m=${code}) :: ${r.detail}`);
@@ -1489,7 +1714,7 @@ async function main(): Promise<void> {
       for (let i = 0; i < args.slugs.length; i++) {
         const slug = args.slugs[i]!;
         let r: SlugResult;
-        try { r = await processCity(slug, bySlug.get(slug), browser, s3, args); }
+        try { r = await processCity(slug, bySlug.get(slug), browser, s3, args, munis); }
         catch (e) {
           if (e instanceof PropertyRegressionError) throw e;
           r = { slug, site: websiteForSlug(slug) ?? null, platforms: [], viewerUrls: [], deposited: false, status: "error", detail: e instanceof Error ? e.message : String(e) };
@@ -1505,10 +1730,25 @@ async function main(): Promise<void> {
   const byStatus: Record<string, number> = {};
   for (const r of results) byStatus[r.status] = (byStatus[r.status] ?? 0) + 1;
   const deposited = results.filter((r) => r.deposited).map((r) => r.slug);
+  const captureReports = results.map((r) => r.captureReport).filter((r): r is GonetCaptureReport => r !== undefined);
 
-  const report = { generatedAt: new Date().toISOString(), deposit: args.deposit, byStatus, deposited, results };
-  const out = args.outFile ?? resolve(HERE, "../../work/delegation-mass/zones-obscura-report.json");
+  const report = {
+    contract: "zones-gonet-capture-report/v1",
+    generatedAt: new Date().toISOString(),
+    capture_run_id: captureRun.runId,
+    deposit: args.deposit,
+    verdict_counts: captureVerdictCounts(captureReports),
+    capture_report: captureReports,
+    byStatus,
+    deposited,
+    results,
+  };
+  // --out est résolu contre la RACINE du dépôt (pas le CWD) : un run lancé depuis
+  // acquisition/ écrivait sinon dans acquisition/work/... inexistant → ENOENT, perte
+  // du rapport malgré une capture S3 réussie. resolve ignore la base si --out est absolu.
+  const out = args.outFile ? resolve(HERE, "../..", args.outFile) : resolve(HERE, "../../work/delegation-mass/zones-obscura-report.json");
   writeFileSync(out, JSON.stringify(report, null, 2) + "\n");
+  if (captureReports.length > 0) writeFileSync(out.replace(/\.json$/i, ".md"), captureReportMarkdown(captureReports, captureRun.runId));
   console.error(`\n=== STATUS ${JSON.stringify(byStatus)}`);
   console.error(`déposés=${deposited.length} [${deposited.join(",")}]`);
   console.error(`rapport → ${out}`);
