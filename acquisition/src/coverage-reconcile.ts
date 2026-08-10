@@ -113,6 +113,7 @@ const LAYERS: Layer[] = [
 async function main(): Promise<void> {
   const s3 = s3Client();
   const matrix = JSON.parse(readFileSync(MATRIX, "utf8")) as {
+    generatedAt?: string;
     cities: Record<string, Record<string, { status?: string; doneTrack?: string }>>;
   };
   const cities = matrix.cities;
@@ -137,6 +138,9 @@ async function main(): Promise<void> {
     deltas[layer.field] = added;
   }
 
+  // La matrice est un snapshot réconcilié : conserver l'horodatage du seed
+  // ferait passer une lecture S3 fraîche pour une couverture historique.
+  matrix.generatedAt = new Date().toISOString();
   writeFileSync(MATRIX, JSON.stringify(matrix, null, 2));
 
   const done = (field: string): number =>
@@ -144,7 +148,7 @@ async function main(): Promise<void> {
   const line = LAYERS.map(
     (l) => `${l.field}=${done(l.field)} (+${deltas[l.field]})`,
   ).join(" | ");
-  console.log(`SCOREBOARD /1106 : ${line}`);
+  console.log(`SCOREBOARD /1106 : ${line} | reconciled_at=${matrix.generatedAt}`);
 }
 
 main().catch((e: unknown) => {
