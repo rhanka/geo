@@ -1,0 +1,44 @@
+{
+  "contract": "reglement-palier167-col5-transition/v1",
+  "as_of": "2026-08-10T01:53:49.877Z",
+  "scope": "palier-167 / pointe-calumet / col-5 reglement_declared",
+  "before": {
+    "state": "incomplete",
+    "reglement_numero": null,
+    "reason": "La seule grille connue ne portait pas le numéro du règlement de base; les numéros en colonne AMENDEMENT étaient explicitement écartés."
+  },
+  "after": {
+    "state": "complete",
+    "reglement_numero": "308-91",
+    "reglement_millesime": 1991,
+    "reglement_page_source": 3,
+    "reason": "Le PDF d'urbanisme publié par la municipalité liste explicitement « RÈGLEMENT DE ZONAGE No 308-91 »; sa p.1 est datée du 24 juillet 1991."
+  },
+  "evidence": {
+    "official_index": {
+      "url": "https://www.pointe-calumet.ca/articles/sujets/reglements",
+      "retrieved_at": "2026-08-10T01:52:52.487Z",
+      "sha256": "sha256:7248b1f18ce1cc1880a91493a935fe10e351273aa8323f38c2aa184819ef88bf",
+      "storage_key": "raw/reglement-discovery/cas/7248b1f18ce1cc1880a91493a935fe10e351273aa8323f38c2aa184819ef88bf.html",
+      "manifest_key": "capture/_runs/reglement-20260810T015243Z-0-a9964d6f-e555-437a-9c32-06458551d50e/manifest.jsonl",
+      "line_index": 1,
+      "published_url": "https://www.pointe-calumet.ca/storage/app/media/uploaded-files/reglements-durbanisme-fevrier-2025.pdf",
+      "published_description": "Ensemble des règlements encadrant l’aménagement et le développement du territoire."
+    },
+    "urbanism_regulations": {
+      "url": "https://www.pointe-calumet.ca/storage/app/media/uploaded-files/reglements-durbanisme-fevrier-2025.pdf",
+      "retrieved_at": "2026-08-10T01:53:49.877Z",
+      "sha256": "sha256:f7955544ed66afa8e4b0893b6d8955cd63dafa759724e61bcd0babbcde0da152",
+      "storage_key": "raw/reglement-official/cas/f7955544ed66afa8e4b0893b6d8955cd63dafa759724e61bcd0babbcde0da152.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T015336Z-0-9c8d73c7-2d0f-4187-9ac6-55be5ef50c01/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "RÉGLEMENTATION D’URBANISME — MUNICIPALITÉ DE POINTE-CALUMET — 24 juillet 1991 — Mise à jour: février 2025",
+      "page_3": "RÈGLEMENT DE ZONAGE No 308-91"
+    }
+  },
+  "anti_invention": {
+    "scope": "Le changement prend le numéro de base dans la liste explicite du PDF; il ne déduit aucun numéro des amendements, aucune norme, ni aucune date autre que celle imprimée en première page.",
+    "storage": "Les octets cités sont exclusivement des CAS S3, liés aux manifestes de capture cluster; le SHA-256 du PDF a été relu et recalculé depuis le CAS.",
+    "served_columns": "Aucun gain déclaré pour les colonnes 9, 10 ou 11 : Pointe-Calumet n'a pas de polygone qc-zonage servi, donc aucune preuve-v2 ni URL de source servie ne peut être promue."
+  }
+}
