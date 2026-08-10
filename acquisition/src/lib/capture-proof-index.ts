@@ -158,7 +158,14 @@ export async function materializeCaptureProofIndex(reader: CaptureProofManifestR
   return serializeCaptureProofIndex(entries);
 }
 
-/** Exact pair membership required by C-1/C-2 before a future served write. */
-export function hasCaptureProof(entries: readonly CaptureProofIndexEntry[], proof: Pick<GeometrySourceProof, "url" | "sha256">): boolean {
-  return entries.some((entry) => entry.url === proof.url && entry.sha256 === proof.sha256);
+/** Exact v2 tuple membership required by C-1/C-2 before a future served write. */
+export function hasCaptureProof(
+  entries: readonly CaptureProofIndexEntry[],
+  proof: Pick<GeometrySourceProof, "url" | "retrieved_at" | "sha256">,
+): boolean {
+  return entries.some(
+    (entry) => entry.url === proof.url
+      && entry.retrieved_at === proof.retrieved_at
+      && entry.sha256 === proof.sha256,
+  );
 }
