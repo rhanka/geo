@@ -276,6 +276,17 @@ export function assertServedZoneGeojson(key: string, fc: ServedZoneGeoJson): voi
         `served qc-zonage deposit refused: feature ${i} "${ZONE_SOURCE_LEVEL_FIELD}" ${JSON.stringify(level)} is outside the served vocabulary (${[...ZONE_SOURCE_LEVELS].join(" | ")})`,
       );
     }
+    // GEOMETRY_GRAIN (SPEC_ZONE_GEOMETRY_GRAIN.md §2) : champ additif OPTIONNEL ;
+    // s'il est présent, sa valeur DOIT appartenir au vocabulaire fermé — le fermé
+    // garanti AU BORD D'ÉCRITURE, pas seulement déclaré (cf validSourceLevel ci-dessus).
+    if (GEOMETRY_GRAIN_FIELD in props) {
+      const grain = props[GEOMETRY_GRAIN_FIELD];
+      if (typeof grain !== "string" || !GEOMETRY_GRAINS.has(grain as GeometryGrain)) {
+        throw new Error(
+          `served qc-zonage deposit refused: feature ${i} "${GEOMETRY_GRAIN_FIELD}" ${JSON.stringify(grain)} is outside the served vocabulary (${[...GEOMETRY_GRAINS].join(" | ")})`,
+        );
+      }
+    }
   }
 }
 
@@ -930,6 +941,16 @@ export async function putServedZoneAdditive(
         throw new Error(
           `putServedZoneAdditive: non-provenance property "${propKey}" changed on feature ${i}; refused (geometry/proof and substantive attributes are immutable on this path)`,
         );
+      }
+      // Vocabulaire fermé geometry_grain enforcé au bord d'écriture (SPEC §2) :
+      // la clé est whitelistée, mais sa VALEUR doit rester dans GEOMETRY_GRAINS.
+      if (propKey === GEOMETRY_GRAIN_FIELD && GEOMETRY_GRAIN_FIELD in nxtProps) {
+        const grain = nxtProps[propKey];
+        if (typeof grain !== "string" || !GEOMETRY_GRAINS.has(grain as GeometryGrain)) {
+          throw new Error(
+            `putServedZoneAdditive: "${GEOMETRY_GRAIN_FIELD}" ${JSON.stringify(grain)} is outside the served vocabulary (${[...GEOMETRY_GRAINS].join(" | ")})`,
+          );
+        }
       }
     }
   }
