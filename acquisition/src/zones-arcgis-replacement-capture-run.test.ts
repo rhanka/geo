@@ -3,12 +3,12 @@ import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 
 import {
-  assertReplacementTargetMatchesMunicipalityRegister,
   isZonesArcgisReplacementWorklistKey,
   parseReplacementRunId,
   parseVerifiedReplacementWorklist,
 } from "./zones-arcgis-replacement-capture-run.js";
 import {
+  assertReplacementTargetMatchesMunicipalityRegister,
   parseZonesArcgisReplacementWorklist,
   serializeZonesArcgisReplacementWorklist,
 } from "./lib/zones-arcgis-replacement-worklist.js";
