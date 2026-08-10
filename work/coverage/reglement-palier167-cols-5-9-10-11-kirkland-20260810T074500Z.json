@@ -1,0 +1,46 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-retention/v1",
+  "as_of": "2026-08-10T07:44:02.797Z",
+  "scope": "palier-167 / kirkland / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": {
+      "state": "unknown",
+      "declared": "complete",
+      "proven": "incomplete"
+    },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown"
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "unknown",
+      "declared": "complete",
+      "proven": "incomplete",
+      "reason": "Kirkland est PENDING-GRAPH-NODE : le générateur de matrice impose unknown aux colonnes non slug_measured, dont c5, même avec un PDF municipal vivant. La fermeture de cette porte relève du graphe WP5."
+    },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown",
+    "publish_reglement_provenance": "Non exécuté : le dry-run aurait modifié 966 cellules de 138 normes alors que le gate réel de c5 reste unknown."
+  },
+  "evidence": {
+    "official_municipal_pdf": {
+      "url": "https://www.ville.kirkland.qc.ca/client_file/upload/Zonage/Codification_administrative_Zonage_90-58.pdf",
+      "retrieved_at": "2026-08-10T07:44:02.797Z",
+      "sha256": "sha256:0e4c50ea1efe912826d52b5c371a4856ee2bfad5fc25a220cdb04f762aff653a",
+      "storage_key": "raw/reglement-official/cas/0e4c50ea1efe912826d52b5c371a4856ee2bfad5fc25a220cdb04f762aff653a.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T074500Z-0-f7580aba-606c-460b-af5d-b7c16de8e9f5/manifest.jsonl",
+      "line_index": 1,
+      "cover": "PROVINCE DE QUÉBEC — VILLE DE KIRKLAND — RÈGLEMENT NO : 90-58 — RÈGLEMENT DE ZONAGE."
+    },
+    "matrix_recalculation": "build('20260810') avec reglement_proven=complete reproduit reglement=unknown, car palier-cohort-167 marque Kirkland graph_matched=false / PENDING-GRAPH-NODE."
+  },
+  "anti_invention": {
+    "codification": "Le document municipal avertit que sa codification administrative n’a pas été adoptée officiellement; aucune date, norme ou modification réglementaire n’en est déduite.",
+    "matrix_gate": "Le statut PENDING-GRAPH-NODE est une porte réelle de la matrice, non contournable par une métrique de couverture ou par une bascule du fichier règlement.",
+    "strict_proof_v2": "Aucune preuve v2 n’est créée ou déduite du règlement; la colonne 10 demeure unknown.",
+    "served_url": "reglement_url ne remplace jamais zone_source_url; la colonne 11 demeure unknown.",
+    "storage": "PDF uniquement en CAS S3; aucun octet source local."
+  }
+}
