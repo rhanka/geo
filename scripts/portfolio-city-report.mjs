@@ -153,9 +153,12 @@ const immoLotZoneRel = discoverLatest(/^immo-lot-zone-assignment-matrix-.*\.json
 const immoFoldedRel = discoverLatest(/^immo-folded-normes-city-matrix-.*\.json$/) || 'work/coverage/immo-folded-normes-city-matrix.json';
 
 const SRC = {
-  zonesNormes: loadFile('work/coverage/completion-1-zones-normes-summary-20260723.json'),
+  // Sources datées : discoverLatest (nom daté = ordre déterministe), repli explicite
+  // sur l'ancien nom si aucune passe datée plus récente n'existe. Évite le hardcode
+  // stale (cf. immo/lotzone auto-découverts) ; auto-frais quand une re-mesure arrive.
+  zonesNormes: loadFile(discoverLatest(/^completion-1-zones-normes-summary-\d{8}\.json$/) || 'work/coverage/completion-1-zones-normes-summary-20260723.json'),
   pv: loadFile('work/coverage/pv-completion-city-audit.json'),
-  regdens: loadFile('work/coverage/completion-regdens-20260802.json'),
+  regdens: loadFile(discoverLatest(/^completion-regdens-\d{8}\.json$/) || 'work/coverage/completion-regdens-20260802.json'),
   provQuality: provQualityRel ? loadFile(provQualityRel) : { path: null, exists: false, sha256: null, data: null, asOf: null },
   immoLotZone: loadFile(immoLotZoneRel),
   immoFolded: loadFile(immoFoldedRel),

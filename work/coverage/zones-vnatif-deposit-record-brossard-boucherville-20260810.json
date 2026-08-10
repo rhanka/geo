@@ -1,0 +1,1054 @@
+{
+ "contract": "zones-vnatif-deposit-record-brossard-boucherville/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md + SPEC_ZONE_GEOMETRY_GRAIN.md + SPEC_ACQUISITION_METHODES_PAR_SOURCE.md §12 ; réplique dépôt agol/victoriaville 5564b2f5 / altus 0b343380 (variante ESTABLISH cible-unprouvée, champ code fixe)",
+ "decision": "ESTABLISH v2 brossard+boucherville depuis le SIG Agglomération de Longueuil (ArcGIS Server on-prem geomatique.longueuil.quebec, couche Zonage MapServer/3 PARTAGÉE filtrée GROUPEUSAGE=BRO|BOU, f=geojson outSR=4326), zone_code brut du champ autoritaire ZONAGEMUNICIPALID, grain zone-polygon, preuve arcgis/natif/directe",
+ "mode": "commit",
+ "run_stamp": "20260810T230000Z",
+ "worklist": "work/coverage/zones-vnatif-capture-worklist-brossard-boucherville-20260810.json",
+ "source_layer": "https://geomatique.longueuil.quebec/public/rest/services/CarteInteractive/Amenagement_du_territoire/MapServer/3",
+ "code_field": "ZONAGEMUNICIPALID",
+ "proof_intended": {
+  "type": "arcgis",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (discriminateur = preuve v2 par-feature) + geometry_grain + anti-troncature ArcGIS (returnCountOnly[MÊME where]==features & !exceededTransferLimit) + anti-homonyme nearest==slug ; overlap RAPPORTÉ non opposé (ÉTABLISSEMENT d'une cible unprouvée)",
+ "summary": {
+  "total": 2,
+  "deposited": 2,
+  "skipped": 0,
+  "other": 0
+ },
+ "cities": [
+  {
+   "slug": "brossard",
+   "run_stamp": "20260810T230000Z",
+   "source_url": "https://geomatique.longueuil.quebec/public/rest/services/CarteInteractive/Amenagement_du_territoire/MapServer/3/query?where=GROUPEUSAGE=%27BRO%27&outFields=*&outSR=4326&f=geojson",
+   "count_url": "https://geomatique.longueuil.quebec/public/rest/services/CarteInteractive/Amenagement_du_territoire/MapServer/3/query?where=GROUPEUSAGE%3D%27BRO%27&returnCountOnly=true&f=json",
+   "code_field": "ZONAGEMUNICIPALID",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "champ autoritaire ZONAGEMUNICIPALID (valeur brute)",
+   "deposit_mode": "ESTABLISH (servi UNPROUVÉ → v2 frais ; overlap RAPPORTÉ, non opposé)",
+   "capture_run_id": "zones-20260810T230000Z-0-1a686cd5-4b3b-4f3d-b1e4-029cef4d6a2f",
+   "http_status": 200,
+   "sha256": "sha256:e6d0c6a0be2207a5cc5d9b349fa8505bfa5a9739174b0718775180c4e474358b",
+   "retrieved_at": "2026-08-10T18:47:32.238Z",
+   "storage_key": "raw/zones-vnatif/cas/e6d0c6a0be2207a5cc5d9b349fa8505bfa5a9739174b0718775180c4e474358b.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 694,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "brossard",
+   "registry_attribution_km": 0.48,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "code_field_resolved": "ZONAGEMUNICIPALID",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 692,
+   "sample_codes": [
+    {
+     "code_field_value": "Hl-637",
+     "zone_code": "Hl-637"
+    },
+    {
+     "code_field_value": "Pl-608",
+     "zone_code": "Pl-608"
+    },
+    {
+     "code_field_value": "Hm-361",
+     "zone_code": "Hm-361"
+    },
+    {
+     "code_field_value": "Ha-175",
+     "zone_code": "Ha-175"
+    },
+    {
+     "code_field_value": "Ha-189",
+     "zone_code": "Ha-189"
+    },
+    {
+     "code_field_value": "Ht-736",
+     "zone_code": "Ht-736"
+    },
+    {
+     "code_field_value": "Cl-395",
+     "zone_code": "Cl-395"
+    },
+    {
+     "code_field_value": "Pb-266",
+     "zone_code": "Pb-266"
+    }
+   ],
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-brossard.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 306,
+   "served_distinct_codes": 306,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    null
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 237,
+   "served_codes_uncovered": 69,
+   "uncovered_codes": [
+    "A21",
+    "A23",
+    "A5",
+    "AY40",
+    "B1",
+    "B2",
+    "B24",
+    "B279",
+    "B53",
+    "B55",
+    "B68",
+    "B69",
+    "B70",
+    "C2",
+    "C6",
+    "CL46",
+    "CL6",
+    "CM3",
+    "CN4",
+    "CV1",
+    "CV10",
+    "H012",
+    "H18PA",
+    "HA1",
+    "HCV0",
+    "HL38",
+    "HL39",
+    "HL45",
+    "HL5",
+    "HL52",
+    "HL59",
+    "HL60",
+    "HL61",
+    "HM08",
+    "HP1",
+    "HP7",
+    "HS7",
+    "HT57",
+    "HT7",
+    "HV1",
+    "HV7",
+    "II5",
+    "II6",
+    "IJ5",
+    "IJ6",
+    "J6",
+    "L3",
+    "L4",
+    "L45",
+    "L6",
+    "M705",
+    "MCV0",
+    "MCV02",
+    "N4",
+    "PB169",
+    "PJ5",
+    "PL4",
+    "PL59",
+    "PL6",
+    "PO5",
+    "PR4",
+    "PS4",
+    "PT32",
+    "PV1",
+    "PW6",
+    "S3",
+    "V0",
+    "V010",
+    "V10"
+   ],
+   "overlap_ratio_pct": 77.5,
+   "served_only_codes_to_unknown": 69,
+   "live_count": 694,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(694) == features(694)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-brossard__flat.2026-08-10T1848Z.geojson"
+   ],
+   "dropped_divergence": [
+    {
+     "code": "A21",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "A23",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "A5",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "AY40",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "B1",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "B2",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "B24",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "B279",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "B53",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "B55",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "B68",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "B69",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "B70",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "C2",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "C6",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "CL46",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "CL6",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "CM3",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "CN4",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "CV1",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "CV10",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "H012",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "H18PA",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HA1",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HCV0",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HL38",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HL39",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HL45",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HL5",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HL52",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HL59",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HL60",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HL61",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HM08",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HP1",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HP7",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HS7",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HT57",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HT7",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HV1",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "HV7",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "II5",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "II6",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "IJ5",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "IJ6",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "J6",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "L3",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "L4",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "L45",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "L6",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "M705",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "MCV0",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "MCV02",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "N4",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PB169",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PJ5",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PL4",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PL59",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PL6",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PO5",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PR4",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PS4",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PT32",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PV1",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PW6",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "S3",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "V0",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "V010",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "V10",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    }
+   ],
+   "dropped_codes": [
+    "A21",
+    "A23",
+    "A5",
+    "AY40",
+    "B1",
+    "B2",
+    "B24",
+    "B279",
+    "B53",
+    "B55",
+    "B68",
+    "B69",
+    "B70",
+    "C2",
+    "C6",
+    "CL46",
+    "CL6",
+    "CM3",
+    "CN4",
+    "CV1",
+    "CV10",
+    "H012",
+    "H18PA",
+    "HA1",
+    "HCV0",
+    "HL38",
+    "HL39",
+    "HL45",
+    "HL5",
+    "HL52",
+    "HL59",
+    "HL60",
+    "HL61",
+    "HM08",
+    "HP1",
+    "HP7",
+    "HS7",
+    "HT57",
+    "HT7",
+    "HV1",
+    "HV7",
+    "II5",
+    "II6",
+    "IJ5",
+    "IJ6",
+    "J6",
+    "L3",
+    "L4",
+    "L45",
+    "L6",
+    "M705",
+    "MCV0",
+    "MCV02",
+    "N4",
+    "PB169",
+    "PJ5",
+    "PL4",
+    "PL59",
+    "PL6",
+    "PO5",
+    "PR4",
+    "PS4",
+    "PT32",
+    "PV1",
+    "PW6",
+    "S3",
+    "V0",
+    "V010",
+    "V10"
+   ],
+   "dropped_count": 69,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-brossard__flat.2026-08-10T1848Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-brossard.geojson",
+     "served_features": 694,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geomatique.longueuil.quebec/public/rest/services/CarteInteractive/Amenagement_du_territoire/MapServer/3/query?where=GROUPEUSAGE=%27BRO%27&outFields=*&outSR=4326&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:e6d0c6a0be2207a5cc5d9b349fa8505bfa5a9739174b0718775180c4e474358b",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T18:47:32.238Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geomatique.longueuil.quebec/public/rest/services/CarteInteractive/Amenagement_du_territoire/MapServer/3/query?where=GROUPEUSAGE=%27BRO%27&outFields=*&outSR=4326&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "ESTABLISH v2 byte-exact (arcgis/natif/directe) ; zone_code = ZONAGEMUNICIPALID brut ; grain=zone-polygon ; overlap servi 77.5% ; 69 code(s) servi-seulement→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "boucherville",
+   "run_stamp": "20260810T230000Z",
+   "source_url": "https://geomatique.longueuil.quebec/public/rest/services/CarteInteractive/Amenagement_du_territoire/MapServer/3/query?where=GROUPEUSAGE=%27BOU%27&outFields=*&outSR=4326&f=geojson",
+   "count_url": "https://geomatique.longueuil.quebec/public/rest/services/CarteInteractive/Amenagement_du_territoire/MapServer/3/query?where=GROUPEUSAGE%3D%27BOU%27&returnCountOnly=true&f=json",
+   "code_field": "ZONAGEMUNICIPALID",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "champ autoritaire ZONAGEMUNICIPALID (valeur brute)",
+   "deposit_mode": "ESTABLISH (servi UNPROUVÉ → v2 frais ; overlap RAPPORTÉ, non opposé)",
+   "capture_run_id": "zones-20260810T230000Z-1-af148a94-b574-4b37-a70a-fab3c31548e5",
+   "http_status": 200,
+   "sha256": "sha256:02b5af5a5fa92b732a92e862efe99aa0e9224528c2778033de730a7b32bf6288",
+   "retrieved_at": "2026-08-10T18:47:25.049Z",
+   "storage_key": "raw/zones-vnatif/cas/02b5af5a5fa92b732a92e862efe99aa0e9224528c2778033de730a7b32bf6288.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 463,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "boucherville",
+   "registry_attribution_km": 0.14,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "code_field_resolved": "ZONAGEMUNICIPALID",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 463,
+   "sample_codes": [
+    {
+     "code_field_value": "C-555",
+     "zone_code": "C-555"
+    },
+    {
+     "code_field_value": "C-562",
+     "zone_code": "C-562"
+    },
+    {
+     "code_field_value": "H-525",
+     "zone_code": "H-525"
+    },
+    {
+     "code_field_value": "P-509",
+     "zone_code": "P-509"
+    },
+    {
+     "code_field_value": "H-526",
+     "zone_code": "H-526"
+    },
+    {
+     "code_field_value": "P-530",
+     "zone_code": "P-530"
+    },
+    {
+     "code_field_value": "H-113",
+     "zone_code": "H-113"
+    },
+    {
+     "code_field_value": "H-115",
+     "zone_code": "H-115"
+    }
+   ],
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-boucherville.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 386,
+   "served_distinct_codes": 386,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    null
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 386,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "served_only_codes_to_unknown": 0,
+   "live_count": 463,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(463) == features(463)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-boucherville__flat.2026-08-10T1849Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-boucherville__flat.2026-08-10T1849Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-boucherville.geojson",
+     "served_features": 463,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geomatique.longueuil.quebec/public/rest/services/CarteInteractive/Amenagement_du_territoire/MapServer/3/query?where=GROUPEUSAGE=%27BOU%27&outFields=*&outSR=4326&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:02b5af5a5fa92b732a92e862efe99aa0e9224528c2778033de730a7b32bf6288",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T18:47:25.049Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geomatique.longueuil.quebec/public/rest/services/CarteInteractive/Amenagement_du_territoire/MapServer/3/query?where=GROUPEUSAGE=%27BOU%27&outFields=*&outSR=4326&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "ESTABLISH v2 byte-exact (arcgis/natif/directe) ; zone_code = ZONAGEMUNICIPALID brut ; grain=zone-polygon ; overlap servi 100% ; 0 code(s) servi-seulement→UNKNOWN ; backup _replaced/ présent"
+  }
+ ]
+}
