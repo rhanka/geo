@@ -8,6 +8,6 @@ describe("parseArgs", () => {
       "--lane", "normes",
       "--worklist", "acquisition/config/normes-col6-subpages-20260810.json",
       "--kubeconfig", "/tmp/ovh.kubeconfig",
-    ]).image).toBe("rg.fr-par.scw.cloud/sentropic-geo/geo-capture:normes-captured-d97a76da");
+    ]).image).toBe("rg.fr-par.scw.cloud/sentropic-geo/geo-capture:normes-pdf-aa66adf5");
   });
 });
