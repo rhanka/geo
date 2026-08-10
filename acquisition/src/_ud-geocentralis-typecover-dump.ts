@@ -23,7 +23,10 @@ async function main(): Promise<void> {
   const max = Number(arg("max") ?? 4000);
   if (!muni) throw new Error("required: --muni <id_municipalite>");
 
-  const cql = `id_municipalite=${muni}`;
+  // Les identifiants municipaux GeoCentralis sont des chaînes à cinq caractères
+  // (p. ex. « 09035 ») : sans guillemets, le WFS les traite comme un nombre et
+  // perd le zéro initial.
+  const cql = `id_municipalite='${muni.replace(/'/g, "''")}'`;
   const url =
     `${BASE}?service=WFS&version=2.0.0&request=GetFeature&typeNames=${encodeURIComponent(type)}` +
     `&outputFormat=${encodeURIComponent("application/json")}&count=${max}` +
