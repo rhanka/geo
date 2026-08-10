@@ -1,0 +1,1675 @@
+{
+ "contract": "zones-vnatif-select-altus/v1",
+ "date": "2026-08-10",
+ "host": "gis.altusquebec.com",
+ "platform": "arcgis-mapserver-f-geojson",
+ "zone_code_field": "résolu-par-recouvrement-au-dépôt (Zone|Zonage|Usage selon la couche)",
+ "candidates_total": 12,
+ "selected": 11,
+ "diag": [
+  {
+   "slug": "gaspe",
+   "level": "legacy-traceable",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03005_Publique/MapServer/20",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03005_Publique/MapServer/20/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03005_Publique/MapServer/20/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 262,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "OBJECTID",
+    "Shape",
+    "Id",
+    "Type_zone",
+    "Nom_zone",
+    "No_zone",
+    "Zone",
+    "Type",
+    "Superficie",
+    "Shape_Length",
+    "Shape_Area",
+    "Usage",
+    "Num_Fichier"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 100,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "No_zone",
+     "distinct": 100,
+     "codeLikeRatio": 0,
+     "sample": [
+      "123",
+      "116",
+      "172",
+      "171",
+      "179",
+      "114"
+     ]
+    },
+    {
+     "field": "Zone",
+     "distinct": 100,
+     "codeLikeRatio": 1,
+     "sample": [
+      "A-123",
+      "A-116",
+      "A-172",
+      "A-171",
+      "A-179",
+      "AF-114"
+     ]
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 100,
+     "codeLikeRatio": 0,
+     "sample": [
+      6638.890843623281,
+      3741.1831171389986,
+      7020.505362939729,
+      3504.8692654334736,
+      19317.54205330685,
+      9655.319417300865
+     ]
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 100,
+     "codeLikeRatio": 0,
+     "sample": [
+      1017115.0126016231,
+      692632.5493575267,
+      2130940.290343122,
+      328505.9315098103,
+      18382681.976727877,
+      2692351.6875655497
+     ]
+    },
+    {
+     "field": "Usage",
+     "distinct": 100,
+     "codeLikeRatio": 1,
+     "sample": [
+      "A-123",
+      "A-116",
+      "A-172",
+      "A-171",
+      "A-179",
+      "AF-114"
+     ]
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 100,
+     "codeLikeRatio": 0,
+     "sample": [
+      2,
+      1,
+      5,
+      3,
+      6,
+      15
+     ]
+    },
+    {
+     "field": "Type_zone",
+     "distinct": 11,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Agricole",
+      "Agricole",
+      "Agricole",
+      "Agricole",
+      "Agricole",
+      "Agro-forestière"
+     ]
+    },
+    {
+     "field": "Nom_zone",
+     "distinct": 11,
+     "codeLikeRatio": 0,
+     "sample": [
+      "A",
+      "A",
+      "A",
+      "A",
+      "A",
+      "AF"
+     ]
+    },
+    {
+     "field": "Type",
+     "distinct": 0,
+     "codeLikeRatio": 0,
+     "sample": [
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " "
+     ]
+    },
+    {
+     "field": "Superficie",
+     "distinct": 0,
+     "codeLikeRatio": 0,
+     "sample": [
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " "
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Zone(distinct=100,codeLike=100%)",
+    "Usage(distinct=100,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "hope-town",
+   "level": "legacy-traceable",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05020_Publique/MapServer/23",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05020_Publique/MapServer/23/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05020_Publique/MapServer/23/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 17,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "SHAPE",
+    "Dominance",
+    "SHAPE_Length",
+    "SHAPE_Area",
+    "Usage",
+    "Type_Zone",
+    "Num_Fichier",
+    "OBJECTID",
+    "Num_Zone"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 17,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "SHAPE_Length",
+     "distinct": 17,
+     "codeLikeRatio": 0,
+     "sample": [
+      5344.741716659757,
+      7816.946238162034,
+      4667.382351552329,
+      5476.222493163601,
+      11721.850205833176,
+      5165.040419699685
+     ]
+    },
+    {
+     "field": "SHAPE_Area",
+     "distinct": 17,
+     "codeLikeRatio": 0,
+     "sample": [
+      1331549.702299775,
+      3691140.984837974,
+      423528.68596799177,
+      907488.5505906873,
+      3112205.1896318654,
+      654158.1494781019
+     ]
+    },
+    {
+     "field": "Usage",
+     "distinct": 17,
+     "codeLikeRatio": 1,
+     "sample": [
+      "15-RE",
+      "6-AF",
+      "7-RU",
+      "14-RE",
+      "8-AF",
+      "16-C"
+     ]
+    },
+    {
+     "field": "Num_Zone",
+     "distinct": 17,
+     "codeLikeRatio": 0,
+     "sample": [
+      15,
+      6,
+      7,
+      14,
+      8,
+      16
+     ]
+    },
+    {
+     "field": "Dominance",
+     "distinct": 7,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Résidenciel",
+      "Agroforestière",
+      "Rurale",
+      "Résidenciel",
+      "Agroforestière",
+      "Conservation"
+     ]
+    },
+    {
+     "field": "Type_Zone",
+     "distinct": 7,
+     "codeLikeRatio": 0,
+     "sample": [
+      "RE",
+      "AF",
+      "RU",
+      "RE",
+      "AF",
+      "C"
+     ]
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 3,
+     "codeLikeRatio": 0,
+     "sample": [
+      3,
+      1,
+      1,
+      3,
+      2,
+      3
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Usage(distinct=17,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "matapedia",
+   "level": "legacy-traceable",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06045_Publique/MapServer/14",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06045_Publique/MapServer/14/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06045_Publique/MapServer/14/query?where=1=1&returnCountOnly=true&f=json",
+   "count": null,
+   "count_status": 200,
+   "count_error": null,
+   "included": false,
+   "reason": "count query KO / numberMatched<=0 (undefined)"
+  },
+  {
+   "slug": "murdochville",
+   "level": "candidate",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 29,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "OBJECTID",
+    "Shape",
+    "Id",
+    "Nom",
+    "Type_de_zo",
+    "Nom_zone",
+    "No_zone",
+    "Zone",
+    "Zone_2",
+    "Shape_Length",
+    "Shape_Area"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 29,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "No_zone",
+     "distinct": 29,
+     "codeLikeRatio": 0,
+     "sample": [
+      "8",
+      "27",
+      "5",
+      "25",
+      "16",
+      "17"
+     ]
+    },
+    {
+     "field": "Zone",
+     "distinct": 29,
+     "codeLikeRatio": 1,
+     "sample": [
+      "8-Ha",
+      "27-ZC",
+      "5-F",
+      "25-REC",
+      "16-I",
+      "17-I"
+     ]
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 29,
+     "codeLikeRatio": 0,
+     "sample": [
+      1455.9121977761756,
+      8814.804384918054,
+      7932.638996517067,
+      41545.132464691465,
+      31200.487743482856,
+      12977.215057210113
+     ]
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 29,
+     "codeLikeRatio": 0,
+     "sample": [
+      96259.06438587543,
+      630053.8540326526,
+      1811377.5726954844,
+      38622558.0651031,
+      17384042.943307135,
+      4088631.569534737
+     ]
+    },
+    {
+     "field": "Nom_zone",
+     "distinct": 9,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Ha",
+      "ZC",
+      "F",
+      "REC",
+      "I",
+      "I"
+     ]
+    },
+    {
+     "field": "Type_de_zo",
+     "distinct": 5,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Urbaine",
+      "Conservation",
+      "Forestière",
+      "Récréative",
+      "Industrielle",
+      "Industrielle"
+     ]
+    },
+    {
+     "field": "Zone_2",
+     "distinct": 5,
+     "codeLikeRatio": 1,
+     "sample": [
+      " ",
+      " ",
+      "5-F",
+      "25-REC",
+      "16-I",
+      "17-I"
+     ]
+    },
+    {
+     "field": "Nom",
+     "distinct": 0,
+     "codeLikeRatio": 0,
+     "sample": [
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " "
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Zone(distinct=29,codeLike=100%)",
+    "Zone_2(distinct=5,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "paspebiac",
+   "level": "legacy-traceable",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05032_Publique/MapServer/26",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05032_Publique/MapServer/26/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05032_Publique/MapServer/26/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 128,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "Shape",
+    "Num_Zone",
+    "Dominance",
+    "Shape_Length",
+    "Shape_Area",
+    "Usage",
+    "Type_Zone",
+    "Num_Fichier",
+    "OBJECTID"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 100,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "Num_Zone",
+     "distinct": 100,
+     "codeLikeRatio": 0,
+     "sample": [
+      242,
+      243,
+      231,
+      248,
+      250,
+      232
+     ]
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 100,
+     "codeLikeRatio": 0,
+     "sample": [
+      486.93113171576755,
+      1640.492054878358,
+      1827.1323470185148,
+      453.97813889559677,
+      549.8278790949881,
+      299.07179229221697
+     ]
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 100,
+     "codeLikeRatio": 0,
+     "sample": [
+      14070.524393377109,
+      126624.0529567886,
+      88549.76019846032,
+      11092.682800479692,
+      17094.700214295357,
+      4979.715005396643
+     ]
+    },
+    {
+     "field": "Usage",
+     "distinct": 100,
+     "codeLikeRatio": 1,
+     "sample": [
+      "242-P",
+      "243-M",
+      "231-RE",
+      "248-P",
+      "250-RE",
+      "232-RE"
+     ]
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 12,
+     "codeLikeRatio": 0,
+     "sample": [
+      8,
+      9,
+      7,
+      9,
+      9,
+      7
+     ]
+    },
+    {
+     "field": "Dominance",
+     "distinct": 9,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Publique",
+      "Mixte (Commerciale - résidentielle)",
+      "Résidentielle",
+      "Publique",
+      "Résidentielle",
+      "Résidentielle"
+     ]
+    },
+    {
+     "field": "Type_Zone",
+     "distinct": 9,
+     "codeLikeRatio": 0,
+     "sample": [
+      "P",
+      "M",
+      "RE",
+      "P",
+      "RE",
+      "RE"
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Usage(distinct=100,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "saint-flavien",
+   "level": "legacy-traceable",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33052_Publique/MapServer/16",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33052_Publique/MapServer/16/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33052_Publique/MapServer/16/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 51,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "OBJECTID",
+    "Shape",
+    "Zonage",
+    "Secteur",
+    "Description",
+    "Numero_reglement",
+    "Adopte",
+    "code_mun",
+    "nom_mun",
+    "created_user",
+    "created_date",
+    "last_edited_user",
+    "last_edited_date",
+    "En_vigueur",
+    "cl_zonage",
+    "Dominante",
+    "No_certificat",
+    "No_ilot",
+    "Note_",
+    "Shape_Length",
+    "Shape_Area"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 51,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "Zonage",
+     "distinct": 51,
+     "codeLikeRatio": 1,
+     "sample": [
+      "43-I",
+      "08-I",
+      "04-I",
+      "33-AD",
+      "03-CH",
+      "53-ADes"
+     ]
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 51,
+     "codeLikeRatio": 0,
+     "sample": [
+      1456.1814830832375,
+      469.7531387006166,
+      668.0970469864568,
+      13792.168642776267,
+      3143.1609039459468,
+      1715.6128149896986
+     ]
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 51,
+     "codeLikeRatio": 0,
+     "sample": [
+      118373.39780781802,
+      12646.276149616957,
+      14566.098002976005,
+      6620198.960080633,
+      155627.75593186205,
+      94041.05337936268
+     ]
+    },
+    {
+     "field": "cl_zonage",
+     "distinct": 9,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Industriel",
+      "Industriel",
+      "Industriel",
+      "Agricole",
+      "Commercial et résidentiel",
+      "Agricole déstructuré"
+     ]
+    },
+    {
+     "field": "Dominante",
+     "distinct": 9,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Industriel",
+      "Industriel",
+      "Industriel",
+      "Agricole",
+      "Commercial et résidentiel",
+      "Agricole déstructuré"
+     ]
+    },
+    {
+     "field": "Secteur",
+     "distinct": 2,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Village",
+      "Village",
+      "Village",
+      "Paroisse",
+      "Village",
+      "Paroisse"
+     ]
+    },
+    {
+     "field": "created_date",
+     "distinct": 2,
+     "codeLikeRatio": 0,
+     "sample": [
+      1746189200000,
+      1746189200000,
+      1746189200000,
+      1746189200000,
+      1746189200000,
+      1746189200000
+     ]
+    },
+    {
+     "field": "last_edited_date",
+     "distinct": 2,
+     "codeLikeRatio": 0,
+     "sample": [
+      1746189200000,
+      1746189200000,
+      1746189200000,
+      1746189200000,
+      1746189200000,
+      1746189200000
+     ]
+    },
+    {
+     "field": "Numero_reglement",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      "10-2024",
+      "10-2024",
+      "10-2024",
+      "10-2024",
+      "10-2024",
+      "10-2024"
+     ]
+    },
+    {
+     "field": "code_mun",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      "33052",
+      "33052",
+      "33052",
+      "33052",
+      "33052",
+      "33052"
+     ]
+    },
+    {
+     "field": "nom_mun",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Saint-Flavien",
+      "Saint-Flavien",
+      "Saint-Flavien",
+      "Saint-Flavien",
+      "Saint-Flavien",
+      "Saint-Flavien"
+     ]
+    },
+    {
+     "field": "created_user",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      "DANIEL.LEMAY",
+      "DANIEL.LEMAY",
+      "DANIEL.LEMAY",
+      "DANIEL.LEMAY",
+      "DANIEL.LEMAY",
+      "DANIEL.LEMAY"
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Zonage(distinct=51,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "saint-francois-dassise",
+   "level": "legacy-traceable",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06055_Publique/MapServer/13",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06055_Publique/MapServer/13/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06055_Publique/MapServer/13/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 45,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "OBJECTID",
+    "Shape",
+    "Usage",
+    "Type_Zone",
+    "Num_Zone",
+    "Num_Fichier",
+    "Shape_Length",
+    "Shape_Area",
+    "Description"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 45,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "Usage",
+     "distinct": 45,
+     "codeLikeRatio": 1,
+     "sample": [
+      "FB-1",
+      "FA-1",
+      "FA-9",
+      "FA-2",
+      "FB-6",
+      "AB-1"
+     ]
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 45,
+     "codeLikeRatio": 0,
+     "sample": [
+      60493.717513394375,
+      14538.485167485396,
+      3433.434439096603,
+      29095.805747607348,
+      2676.807175460235,
+      13220.094465111562
+     ]
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 45,
+     "codeLikeRatio": 0,
+     "sample": [
+      56391548.18097117,
+      5986774.227169561,
+      402964.45212481596,
+      24316945.211106382,
+      157537.74559636513,
+      6681817.615740461
+     ]
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 18,
+     "codeLikeRatio": 0,
+     "sample": [
+      18,
+      15,
+      15,
+      15,
+      18,
+      13
+     ]
+    },
+    {
+     "field": "Type_Zone",
+     "distinct": 11,
+     "codeLikeRatio": 0,
+     "sample": [
+      "FB",
+      "FA",
+      "FA",
+      "FA",
+      "FB",
+      "AB"
+     ]
+    },
+    {
+     "field": "Num_Zone",
+     "distinct": 11,
+     "codeLikeRatio": 0,
+     "sample": [
+      1,
+      1,
+      9,
+      2,
+      6,
+      1
+     ]
+    },
+    {
+     "field": "Description",
+     "distinct": 11,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Forêt publique",
+      "Forêt privée",
+      "Forêt privée",
+      "Forêt privée",
+      "Forêt publique",
+      "Agricole dévitalisée"
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Usage(distinct=45,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "saint-francois-de-lile-dorleans",
+   "level": "candidate",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 48,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "OBJECTID",
+    "Shape",
+    "MUN",
+    "TYPE_ZONE",
+    "NUM_ZONE",
+    "SECTEURS",
+    "Num_Fichier",
+    "Usage",
+    "Shape_Length",
+    "Shape_Area",
+    "OBJECTID_1",
+    "SHAPE_Leng"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 48,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "Usage",
+     "distinct": 48,
+     "codeLikeRatio": 1,
+     "sample": [
+      "V-303",
+      "CO-304",
+      "R-304",
+      "REC-301",
+      "CM-300",
+      "R-305"
+     ]
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 48,
+     "codeLikeRatio": 0,
+     "sample": [
+      3218.5051771432395,
+      1098.7050605113127,
+      1316.665693458961,
+      1281.3289984520256,
+      945.662035166599,
+      408.04914772321337
+     ]
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 48,
+     "codeLikeRatio": 0,
+     "sample": [
+      202624.49995663366,
+      61987.72866877678,
+      59506.699592232966,
+      64578.782837724815,
+      22219.547077915304,
+      9100.083809938826
+     ]
+    },
+    {
+     "field": "OBJECTID_1",
+     "distinct": 48,
+     "codeLikeRatio": 0,
+     "sample": [
+      826,
+      827,
+      828,
+      829,
+      830,
+      831
+     ]
+    },
+    {
+     "field": "SHAPE_Leng",
+     "distinct": 44,
+     "codeLikeRatio": 0,
+     "sample": [
+      3511.05646967,
+      1252.80979869,
+      1147.39246441,
+      801.327714845,
+      528.10850076,
+      399.713906249
+     ]
+    },
+    {
+     "field": "NUM_ZONE",
+     "distinct": 17,
+     "codeLikeRatio": 0,
+     "sample": [
+      "303",
+      "304",
+      "304",
+      "301",
+      "300",
+      "305"
+     ]
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 12,
+     "codeLikeRatio": 0,
+     "sample": [
+      3,
+      9,
+      1,
+      2,
+      2,
+      2
+     ]
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 7,
+     "codeLikeRatio": 0,
+     "sample": [
+      "V",
+      "CO",
+      "R",
+      "REC",
+      "CM",
+      "R"
+     ]
+    },
+    {
+     "field": "SECTEURS",
+     "distinct": 0,
+     "codeLikeRatio": 0,
+     "sample": [
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " "
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Usage(distinct=48,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "saint-gabriel-de-valcartier",
+   "level": "legacy-traceable",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC220/22025_Publique/MapServer/23",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC220/22025_Publique/MapServer/23/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC220/22025_Publique/MapServer/23/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 62,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "OBJECTID",
+    "SHAPE",
+    "Usage",
+    "Type_Zone",
+    "Num_Zone",
+    "Num_Fichier",
+    "SHAPE_Length",
+    "SHAPE_Area"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 62,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "Usage",
+     "distinct": 62,
+     "codeLikeRatio": 1,
+     "sample": [
+      "H-2",
+      "P-2",
+      "Mx-3",
+      "Mx-4",
+      "A-2",
+      "Ru-4"
+     ]
+    },
+    {
+     "field": "SHAPE_Length",
+     "distinct": 62,
+     "codeLikeRatio": 0,
+     "sample": [
+      1907.8363764478192,
+      626.1251262632329,
+      1241.3336366742928,
+      1244.724237885455,
+      11455.967250746427,
+      3469.058484126141
+     ]
+    },
+    {
+     "field": "SHAPE_Area",
+     "distinct": 62,
+     "codeLikeRatio": 0,
+     "sample": [
+      181951.3398616626,
+      21582.035559798383,
+      56772.40412661507,
+      89130.46928644074,
+      5417345.1736136135,
+      744528.1899810156
+     ]
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 61,
+     "codeLikeRatio": 0,
+     "sample": [
+      20,
+      50,
+      46,
+      47,
+      2,
+      58
+     ]
+    },
+    {
+     "field": "Num_Zone",
+     "distinct": 21,
+     "codeLikeRatio": 0,
+     "sample": [
+      2,
+      2,
+      3,
+      4,
+      2,
+      4
+     ]
+    },
+    {
+     "field": "Type_Zone",
+     "distinct": 12,
+     "codeLikeRatio": 0,
+     "sample": [
+      "H",
+      "P",
+      "Mx",
+      "Mx",
+      "A",
+      "Ru"
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Usage(distinct=62,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "saint-janvier-de-joly",
+   "level": "legacy-traceable",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33065_Publique/MapServer/16",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33065_Publique/MapServer/16/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33065_Publique/MapServer/16/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 43,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "OBJECTID",
+    "Shape",
+    "Zonage",
+    "Secteur",
+    "Description",
+    "Numero_reglement",
+    "Adopte",
+    "code_mun",
+    "nom_mun",
+    "created_user",
+    "created_date",
+    "last_edited_user",
+    "last_edited_date",
+    "En_vigueur",
+    "cl_zonage",
+    "Dominante",
+    "No_certificat",
+    "No_ilot",
+    "Note_",
+    "Shape_Length",
+    "Shape_Area"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 43,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "Zonage",
+     "distinct": 43,
+     "codeLikeRatio": 1,
+     "sample": [
+      "37-C",
+      "30-AF",
+      "27-AF",
+      "28-AF",
+      "4-A",
+      "16-Ta"
+     ]
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 43,
+     "codeLikeRatio": 0,
+     "sample": [
+      4158.590006620106,
+      10311.90348617436,
+      14975.42653957545,
+      4509.765433947541,
+      9201.66762123485,
+      19981.429975674433
+     ]
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 43,
+     "codeLikeRatio": 0,
+     "sample": [
+      547257.6578929258,
+      5687613.208113566,
+      8005146.440035887,
+      1169400.231342167,
+      4062117.0890398957,
+      1191664.3763775679
+     ]
+    },
+    {
+     "field": "cl_zonage",
+     "distinct": 10,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Loisir parc et escpace vert",
+      "Agricole et forestier",
+      "Agricole et forestier",
+      "Agricole et forestier",
+      "Agricole",
+      "Transport"
+     ]
+    },
+    {
+     "field": "Dominante",
+     "distinct": 10,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Loisir parc et espace vert",
+      "Agricole et forestier",
+      "Agricole et forestier",
+      "Agricole et forestier",
+      "Agricole",
+      "Transport"
+     ]
+    },
+    {
+     "field": "created_date",
+     "distinct": 2,
+     "codeLikeRatio": 0,
+     "sample": [
+      1695401808000,
+      1695401808000,
+      1695401808000,
+      1695401808000,
+      1695401808000,
+      1695401808000
+     ]
+    },
+    {
+     "field": "Numero_reglement",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      "395-24",
+      "395-24",
+      "395-24",
+      "395-24",
+      "395-24",
+      "395-24"
+     ]
+    },
+    {
+     "field": "code_mun",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      "33065",
+      "33065",
+      "33065",
+      "33065",
+      "33065",
+      "33065"
+     ]
+    },
+    {
+     "field": "nom_mun",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      "Saint-Janvier-de-Joly",
+      "Saint-Janvier-de-Joly",
+      "Saint-Janvier-de-Joly",
+      "Saint-Janvier-de-Joly",
+      "Saint-Janvier-de-Joly",
+      "Saint-Janvier-de-Joly"
+     ]
+    },
+    {
+     "field": "created_user",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      "DANIELL",
+      "DANIELL",
+      "DANIELL",
+      "DANIELL",
+      "DANIELL",
+      "DANIELL"
+     ]
+    },
+    {
+     "field": "last_edited_user",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      "DANIELL",
+      "DANIELL",
+      "DANIELL",
+      "DANIELL",
+      "DANIELL",
+      "DANIELL"
+     ]
+    },
+    {
+     "field": "last_edited_date",
+     "distinct": 1,
+     "codeLikeRatio": 0,
+     "sample": [
+      1729541724000,
+      1729541724000,
+      1729541724000,
+      1729541724000,
+      1729541724000,
+      1729541724000
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Zonage(distinct=43,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "saint-laurent-de-lile-dorleans",
+   "level": "legacy-traceable",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20020_Publique/MapServer/17",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20020_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20020_Publique/MapServer/17/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 34,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "OBJECTID",
+    "Shape",
+    "MUN",
+    "TYPE_ZONE",
+    "NUM_ZONE",
+    "SECTEURS",
+    "Num_Fichier",
+    "Usage",
+    "Shape_Length",
+    "Shape_Area",
+    "OBJECTID_1",
+    "SHAPE_Leng"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 34,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "Usage",
+     "distinct": 34,
+     "codeLikeRatio": 1,
+     "sample": [
+      "R-604",
+      "R-602",
+      "A-602",
+      "R-601",
+      "CO-601",
+      "CO-604"
+     ]
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 34,
+     "codeLikeRatio": 0,
+     "sample": [
+      3127.688523041992,
+      1883.5255583271621,
+      5324.997532288482,
+      1460.1480860912188,
+      4881.615826048274,
+      52439.12912214301
+     ]
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 34,
+     "codeLikeRatio": 0,
+     "sample": [
+      139991.65615064985,
+      41483.02339442417,
+      743228.008344119,
+      51228.04897023722,
+      892722.6944093504,
+      8435626.347485667
+     ]
+    },
+    {
+     "field": "OBJECTID_1",
+     "distinct": 34,
+     "codeLikeRatio": 0,
+     "sample": [
+      1003,
+      1004,
+      1005,
+      1006,
+      1007,
+      1008
+     ]
+    },
+    {
+     "field": "SHAPE_Leng",
+     "distinct": 28,
+     "codeLikeRatio": 0,
+     "sample": [
+      3330.82800907,
+      1347.61274632,
+      5060.26097083,
+      1429.34724744,
+      4866.20827545,
+      4904.57414486
+     ]
+    },
+    {
+     "field": "NUM_ZONE",
+     "distinct": 12,
+     "codeLikeRatio": 0,
+     "sample": [
+      "604",
+      "602",
+      "602",
+      "601",
+      "601",
+      "604"
+     ]
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 8,
+     "codeLikeRatio": 0,
+     "sample": [
+      5,
+      4,
+      2,
+      4,
+      7,
+      7
+     ]
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 5,
+     "codeLikeRatio": 0,
+     "sample": [
+      "R",
+      "R",
+      "A",
+      "R",
+      "CO",
+      "CO"
+     ]
+    },
+    {
+     "field": "SECTEURS",
+     "distinct": 0,
+     "codeLikeRatio": 0,
+     "sample": [
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " "
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Usage(distinct=34,codeLike=100%)"
+   ],
+   "included": true
+  },
+  {
+   "slug": "saint-pierre-de-lile-dorleans",
+   "level": "candidate",
+   "endpoint_class": "arcgis-rest",
+   "base_layer_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17",
+   "geojson_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17/query?where=1=1&returnCountOnly=true&f=json",
+   "count": 67,
+   "count_status": 200,
+   "count_error": null,
+   "geometry_type": "esriGeometryPolygon",
+   "max_record_count": 5000,
+   "field_names": [
+    "OBJECTID",
+    "Shape",
+    "MUN",
+    "TYPE_ZONE",
+    "NUM_ZONE",
+    "SECTEURS",
+    "Num_Fichier",
+    "Usage",
+    "Shape_Length",
+    "Shape_Area",
+    "OBJECTID_1",
+    "SHAPE_Leng"
+   ],
+   "sample_is_featurecollection": true,
+   "sample_features": 67,
+   "sample_error": null,
+   "candidate_fields": [
+    {
+     "field": "Usage",
+     "distinct": 67,
+     "codeLikeRatio": 1,
+     "sample": [
+      "CO-104",
+      "M-103",
+      "R-112",
+      "R-109",
+      "CM-101",
+      "M-102"
+     ]
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 67,
+     "codeLikeRatio": 0,
+     "sample": [
+      3268.195560983083,
+      872.3349303803584,
+      1056.6946615679728,
+      1666.431919435681,
+      714.7114587500532,
+      1044.3527246939268
+     ]
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 67,
+     "codeLikeRatio": 0,
+     "sample": [
+      163468.09183780377,
+      21043.573391677233,
+      51275.93235127505,
+      91235.70379016003,
+      16237.060115056467,
+      32919.605193509145
+     ]
+    },
+    {
+     "field": "OBJECTID_1",
+     "distinct": 67,
+     "codeLikeRatio": 0,
+     "sample": [
+      1141,
+      1142,
+      1143,
+      1144,
+      1145,
+      1146
+     ]
+    },
+    {
+     "field": "SHAPE_Leng",
+     "distinct": 59,
+     "codeLikeRatio": 0,
+     "sample": [
+      3348.61024259,
+      866.277785944,
+      1054.46918254,
+      2016.59942683,
+      698.629188879,
+      932.677671448
+     ]
+    },
+    {
+     "field": "NUM_ZONE",
+     "distinct": 25,
+     "codeLikeRatio": 0,
+     "sample": [
+      "104",
+      "103",
+      "112",
+      "109",
+      "101",
+      "102"
+     ]
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 15,
+     "codeLikeRatio": 0,
+     "sample": [
+      15,
+      1,
+      2,
+      2,
+      1,
+      1
+     ]
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 6,
+     "codeLikeRatio": 0,
+     "sample": [
+      "CO",
+      "M",
+      "R",
+      "R",
+      "CM",
+      "M"
+     ]
+    },
+    {
+     "field": "SECTEURS",
+     "distinct": 0,
+     "codeLikeRatio": 0,
+     "sample": [
+      " ",
+      " ",
+      " ",
+      " ",
+      " ",
+      " "
+     ]
+    }
+   ],
+   "plausible_code_fields": [
+    "Usage(distinct=67,codeLike=100%)"
+   ],
+   "included": true
+  }
+ ]
+}
