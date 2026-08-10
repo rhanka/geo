@@ -7,10 +7,10 @@
 import { pathToFileURL } from "node:url";
 
 import {
-  CapturedNormesPdfSelectionSchema,
   assertCapturedNormesReference,
   captureRunKeys,
   parseManifestJsonl,
+  selectionIncludesPdfCaptureUrl,
 } from "../../packages/qc-sources/src/capture/index.js";
 import { loadCapturedNormesPdf } from "./capture-cas-materialize.js";
 import { getBytes, putBytesIfAbsentOrEqual, s3Client } from "./lib/s3.js";
@@ -47,9 +47,7 @@ export async function publishCapturedNormesPdfReference(args: {
   requireS3RunEnvironment();
   if (!Number.isInteger(args.lineIndex) || args.lineIndex < 0) throw new Error("--line-index must be a non-negative integer");
   const s3 = s3Client();
-  const selection = CapturedNormesPdfSelectionSchema.parse(
-    JSON.parse((await getBytes(s3, args.selectionKey)).toString("utf8")),
-  );
+  const selection = JSON.parse((await getBytes(s3, args.selectionKey)).toString("utf8")) as unknown;
   const keys = captureRunKeys(args.runId);
   const header = JSON.parse((await getBytes(s3, keys.header)).toString("utf8")) as unknown;
   const lines = parseManifestJsonl((await getBytes(s3, keys.manifest)).toString("utf8"));
@@ -70,8 +68,8 @@ export async function publishCapturedNormesPdfReference(args: {
     storage_key: line.storage_key,
     selection_key: args.selectionKey,
   }, header, line);
-  if (!selection.candidates.some((candidate) => candidate.slug === args.slug && candidate.pdf_url === reference.url)) {
-    throw new Error("captured PDF URL is not present in the immutable discovery selection");
+  if (!selectionIncludesPdfCaptureUrl(selection, args.slug, reference.url)) {
+    throw new Error("captured PDF URL is not present in its immutable discovery selection");
   }
   const verified = await loadCapturedNormesPdf(reference);
   const key = args.outputKey ?? referenceKey(args.runId, args.lineIndex);
