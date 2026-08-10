@@ -6,7 +6,9 @@ import {
   CapturedNormesDiscoveryRunReceiptSchema,
   assertCapturedNormesReference,
   selectNormesPdfCandidates,
+  selectNormesSubpages,
 } from "./normes.js";
+import { parseCaptureWorklist } from "./worklist.js";
 
 const RUN = "normes-20260810T011257Z-0-example";
 const MANIFEST = `capture/_runs/${RUN}/manifest.jsonl`;
@@ -66,6 +68,14 @@ describe("selectNormesPdfCandidates", () => {
       pdf_url: "https://sra.quebec/docs/grille-des-specifications.pdf",
     })]);
   });
+
+  it("keeps a bounded internal urbanisme link without inventing a URL", () => {
+    const selected = selectNormesSubpages(
+      '<a href="/services/urbanisme">Service de l’urbanisme</a><a href="https://example.org">Externe</a>',
+      reference,
+    );
+    expect(selected.subpages).toEqual([{ url: "https://sra.quebec/services/urbanisme", anchor: "Service de l’urbanisme" }]);
+  });
 });
 
 describe("CapturedNormesExtractionReceiptSchema", () => {
@@ -102,5 +112,20 @@ describe("CapturedNormesDiscoveryRunReceiptSchema", () => {
     });
     expect(receipt.status).toBe("refused");
     expect(CapturedNormesDiscoveryRunReceiptSchema.safeParse({ ...receipt, refusal: null }).success).toBe(false);
+  });
+});
+
+describe("captured normes derived worklist", () => {
+  it("keeps the immutable subpage-selection key in the validated capture control", () => {
+    const parsed = parseCaptureWorklist([{
+      slug: reference.slug,
+      source: "normes-grille-discovery",
+      urls: ["https://sra.quebec/urbanisme"],
+      derivation: {
+        kind: "captured-normes-subpages/v1",
+        selection_key: "registry/normes-captured-subpages/example/1.json",
+      },
+    }]);
+    expect(parsed[0]!.derivation?.selection_key).toContain("normes-captured-subpages");
   });
 });

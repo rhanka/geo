@@ -14,7 +14,11 @@ import {
   type CaptureManifestLine,
   type CaptureRunHeader,
 } from "./manifest.js";
-import { discoverGrillesInHtml, type GrilleCandidate } from "../sources/grille-discovery.js";
+import {
+  discoverGrillesInHtml,
+  extractInternalSubpages,
+  type GrilleCandidate,
+} from "../sources/grille-discovery.js";
 
 const SLUG_RE = /^[a-z0-9][a-z0-9-]*$/;
 const SHA_RE = /^sha256:[a-f0-9]{64}$/;
@@ -48,6 +52,18 @@ export const CapturedNormesPdfSelectionSchema = z.object({
   }).strict()),
 }).strict();
 export type CapturedNormesPdfSelection = z.infer<typeof CapturedNormesPdfSelectionSchema>;
+
+/** Bounded same-site HTML links verbatim-derived from one captured source page. */
+export const CapturedNormesSubpageSelectionSchema = z.object({
+  contract: z.literal("captured-normes-subpage-selection/v1"),
+  generated_at: z.string().datetime(),
+  source_capture: CapturedNormesReferenceSchema,
+  subpages: z.array(z.object({
+    url: z.string().url(),
+    anchor: z.string().min(1),
+  }).strict()).max(5),
+}).strict();
+export type CapturedNormesSubpageSelection = z.infer<typeof CapturedNormesSubpageSelectionSchema>;
 
 /** Immutable closure for the HTML discovery phase, including an honest no-grid outcome. */
 export const CapturedNormesDiscoveryReceiptSchema = z.object({
@@ -194,5 +210,22 @@ export function selectNormesPdfCandidates(
       score_classif: candidate.scoreClassif,
       matched: [...candidate.matched],
     })),
+  });
+}
+
+/**
+ * Emits at most five same-site urbanisme/règlement HTML hops already named by
+ * captured markup. They are candidates only: a later cluster capture decides
+ * whether each is readable and whether it actually exposes a classified PDF.
+ */
+export function selectNormesSubpages(
+  html: string,
+  sourceCapture: CapturedNormesReference,
+): CapturedNormesSubpageSelection {
+  return CapturedNormesSubpageSelectionSchema.parse({
+    contract: "captured-normes-subpage-selection/v1",
+    generated_at: sourceCapture.retrieved_at,
+    source_capture: sourceCapture,
+    subpages: extractInternalSubpages(html, sourceCapture.final_url),
   });
 }
