@@ -1,0 +1,2009 @@
+{
+ "contract": "zones-vnatif-deposit-record-altus/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md + SPEC_ZONE_GEOMETRY_GRAIN.md + SPEC_ACQUISITION_METHODES_PAR_SOURCE.md §12 ; réplique dépôt géoCentralis lot-D f6f44d95",
+ "decision": "CLEAN-UPGRADE batch altus (legacy-traceable/candidate→documented v2), source ArcGIS MapServer f=geojson, champ code-zone résolu par recouvrement ≥90% avec le servi, zone_code brut",
+ "mode": "commit",
+ "run_stamp": "20260810T190000Z",
+ "worklist": "work/coverage/zones-vnatif-capture-worklist-altus-20260810.json",
+ "proof_intended": {
+  "type": "arcgis",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (discriminateur = preuve v2 par-feature) + geometry_grain + anti-troncature ArcGIS (returnCountOnly==features & !exceededTransferLimit)",
+ "summary": {
+  "total": 11,
+  "deposited": 10,
+  "skipped": 1,
+  "other": 0
+ },
+ "cities": [
+  {
+   "slug": "gaspe",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03005_Publique/MapServer/20/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03005_Publique/MapServer/20/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-0-35836970-1745-4391-83f5-7d418276eff6",
+   "http_status": 200,
+   "sha256": "sha256:b98850ef6ba19e8d635ef908ea2fa420ffca3526cb70c0faeb22064aa4bde1a4",
+   "retrieved_at": "2026-08-10T17:05:39.329Z",
+   "storage_key": "raw/zones-vnatif/cas/b98850ef6ba19e8d635ef908ea2fa420ffca3526cb70c0faeb22064aa4bde1a4.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 262,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "gaspe",
+   "registry_attribution_km": 3.45,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-gaspe.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 26,
+   "served_distinct_codes": 26,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03005_Publique/MapServer/20"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Zone",
+     "distinct": 262,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Usage",
+     "distinct": 262,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 262,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 262,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "No_zone",
+     "distinct": 260,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 260,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Type_zone",
+     "distinct": 23,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Nom_zone",
+     "distinct": 23,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Superficie",
+     "distinct": 1,
+     "null_count": 260,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Type",
+     "distinct": 0,
+     "null_count": 262,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Zone",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 262,
+   "sample_codes": [
+    {
+     "code_field_value": "A-123",
+     "zone_code": "A-123"
+    },
+    {
+     "code_field_value": "A-116",
+     "zone_code": "A-116"
+    },
+    {
+     "code_field_value": "A-172",
+     "zone_code": "A-172"
+    },
+    {
+     "code_field_value": "A-171",
+     "zone_code": "A-171"
+    },
+    {
+     "code_field_value": "A-179",
+     "zone_code": "A-179"
+    },
+    {
+     "code_field_value": "AF-114",
+     "zone_code": "AF-114"
+    },
+    {
+     "code_field_value": "AF-143",
+     "zone_code": "AF-143"
+    },
+    {
+     "code_field_value": "AF-137",
+     "zone_code": "AF-137"
+    }
+   ],
+   "served_codes_covered": 26,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 262,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(262) == features(262)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-gaspe__flat.2026-08-10T1706Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-gaspe__flat.2026-08-10T1706Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-gaspe.geojson",
+     "served_features": 262,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03005_Publique/MapServer/20/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:b98850ef6ba19e8d635ef908ea2fa420ffca3526cb70c0faeb22064aa4bde1a4",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:39.329Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03005_Publique/MapServer/20/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Zone brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "hope-town",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05020_Publique/MapServer/23/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05020_Publique/MapServer/23/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-1-c1184261-9264-47b8-a26b-341eebf5ef4a",
+   "http_status": 200,
+   "sha256": "sha256:0f2a73dc4f9213203af990b19b87598818631693a9b7835fc1acec2e12f3ddbb",
+   "retrieved_at": "2026-08-10T17:05:35.918Z",
+   "storage_key": "raw/zones-vnatif/cas/0f2a73dc4f9213203af990b19b87598818631693a9b7835fc1acec2e12f3ddbb.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 17,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "hope-town",
+   "registry_attribution_km": 0.15,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-hope-town.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 16,
+   "served_distinct_codes": 16,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05020_Publique/MapServer/23"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Usage",
+     "distinct": 17,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "SHAPE_Length",
+     "distinct": 17,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "SHAPE_Area",
+     "distinct": 17,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Zone",
+     "distinct": 17,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Dominance",
+     "distinct": 7,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Type_Zone",
+     "distinct": 7,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 3,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Usage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 17,
+   "sample_codes": [
+    {
+     "code_field_value": "15-RE",
+     "zone_code": "15-RE"
+    },
+    {
+     "code_field_value": "6-AF",
+     "zone_code": "6-AF"
+    },
+    {
+     "code_field_value": "7-RU",
+     "zone_code": "7-RU"
+    },
+    {
+     "code_field_value": "14-RE",
+     "zone_code": "14-RE"
+    },
+    {
+     "code_field_value": "8-AF",
+     "zone_code": "8-AF"
+    },
+    {
+     "code_field_value": "16-C",
+     "zone_code": "16-C"
+    },
+    {
+     "code_field_value": "5-RU",
+     "zone_code": "5-RU"
+    },
+    {
+     "code_field_value": "3-F",
+     "zone_code": "3-F"
+    }
+   ],
+   "served_codes_covered": 16,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 17,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(17) == features(17)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-hope-town__flat.2026-08-10T1707Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-hope-town__flat.2026-08-10T1707Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-hope-town.geojson",
+     "served_features": 17,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05020_Publique/MapServer/23/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:0f2a73dc4f9213203af990b19b87598818631693a9b7835fc1acec2e12f3ddbb",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:35.918Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05020_Publique/MapServer/23/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Usage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "murdochville",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-2-b166c08a-8513-4118-935b-41eb33e0d4a1",
+   "http_status": 200,
+   "sha256": "sha256:3db1990fa453ed41d0568ee09e1bce7ca85b77fec7b2f73bef6fb7d733cc460a",
+   "retrieved_at": "2026-08-10T17:05:35.840Z",
+   "storage_key": "raw/zones-vnatif/cas/3db1990fa453ed41d0568ee09e1bce7ca85b77fec7b2f73bef6fb7d733cc460a.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 29,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "murdochville",
+   "registry_attribution_km": 0.38,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-murdochville.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 17,
+   "served_distinct_codes": 17,
+   "served_levels": [
+    "candidate"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Zone",
+     "distinct": 29,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Zone_2",
+     "distinct": 5,
+     "null_count": 24,
+     "overlap_pct": 17.6
+    },
+    {
+     "field": "No_zone",
+     "distinct": 29,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 29,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 29,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Nom_zone",
+     "distinct": 9,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Type_de_zo",
+     "distinct": 5,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Nom",
+     "distinct": 0,
+     "null_count": 29,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Zone",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 29,
+   "sample_codes": [
+    {
+     "code_field_value": "8-Ha",
+     "zone_code": "8-Ha"
+    },
+    {
+     "code_field_value": "27-ZC",
+     "zone_code": "27-ZC"
+    },
+    {
+     "code_field_value": "5-F",
+     "zone_code": "5-F"
+    },
+    {
+     "code_field_value": "25-REC",
+     "zone_code": "25-REC"
+    },
+    {
+     "code_field_value": "16-I",
+     "zone_code": "16-I"
+    },
+    {
+     "code_field_value": "17-I",
+     "zone_code": "17-I"
+    },
+    {
+     "code_field_value": "24-P",
+     "zone_code": "24-P"
+    },
+    {
+     "code_field_value": "18-I",
+     "zone_code": "18-I"
+    }
+   ],
+   "served_codes_covered": 17,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 29,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(29) == features(29)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-murdochville__flat.2026-08-10T1707Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-murdochville__flat.2026-08-10T1707Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-murdochville.geojson",
+     "served_features": 29,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:3db1990fa453ed41d0568ee09e1bce7ca85b77fec7b2f73bef6fb7d733cc460a",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:35.840Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Zone brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "paspebiac",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05032_Publique/MapServer/26/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05032_Publique/MapServer/26/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-3-5324266b-189c-4ebd-9ed1-39c8297e05cf",
+   "http_status": 200,
+   "sha256": "sha256:25a7c22bfa2f6ad75505488e41ba86c2cd4a4d075d50fd202da14e6c0a3cc11f",
+   "retrieved_at": "2026-08-10T17:05:37.342Z",
+   "storage_key": "raw/zones-vnatif/cas/25a7c22bfa2f6ad75505488e41ba86c2cd4a4d075d50fd202da14e6c0a3cc11f.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 128,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "paspebiac",
+   "registry_attribution_km": 0.49,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-paspebiac.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 44,
+   "served_distinct_codes": 44,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05032_Publique/MapServer/26"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Usage",
+     "distinct": 128,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Num_Zone",
+     "distinct": 128,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 128,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 128,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 13,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Dominance",
+     "distinct": 10,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Type_Zone",
+     "distinct": 10,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Usage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 128,
+   "sample_codes": [
+    {
+     "code_field_value": "242-P",
+     "zone_code": "242-P"
+    },
+    {
+     "code_field_value": "243-M",
+     "zone_code": "243-M"
+    },
+    {
+     "code_field_value": "231-RE",
+     "zone_code": "231-RE"
+    },
+    {
+     "code_field_value": "248-P",
+     "zone_code": "248-P"
+    },
+    {
+     "code_field_value": "250-RE",
+     "zone_code": "250-RE"
+    },
+    {
+     "code_field_value": "232-RE",
+     "zone_code": "232-RE"
+    },
+    {
+     "code_field_value": "245-M",
+     "zone_code": "245-M"
+    },
+    {
+     "code_field_value": "257-M",
+     "zone_code": "257-M"
+    }
+   ],
+   "served_codes_covered": 44,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 128,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(128) == features(128)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-paspebiac__flat.2026-08-10T1707Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-paspebiac__flat.2026-08-10T1707Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-paspebiac.geojson",
+     "served_features": 128,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05032_Publique/MapServer/26/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:25a7c22bfa2f6ad75505488e41ba86c2cd4a4d075d50fd202da14e6c0a3cc11f",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:37.342Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05032_Publique/MapServer/26/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Usage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-flavien",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33052_Publique/MapServer/16/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33052_Publique/MapServer/16/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-4-78989750-5e7c-4db7-8b4a-0dbd08d41023",
+   "http_status": 200,
+   "sha256": "sha256:aaed76a13e2a82799a87946cbc8422a3f3375a1c10dc49000bd0a1506dc6c7bf",
+   "retrieved_at": "2026-08-10T17:05:49.574Z",
+   "storage_key": "raw/zones-vnatif/cas/aaed76a13e2a82799a87946cbc8422a3f3375a1c10dc49000bd0a1506dc6c7bf.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 51,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-flavien",
+   "registry_attribution_km": 0.7,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-flavien.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 51,
+   "served_distinct_codes": 51,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33052_Publique/MapServer/16"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Zonage",
+     "distinct": 51,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 51,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 51,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "cl_zonage",
+     "distinct": 9,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Dominante",
+     "distinct": 9,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Secteur",
+     "distinct": 2,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "created_date",
+     "distinct": 2,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "last_edited_date",
+     "distinct": 2,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Numero_reglement",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "code_mun",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "nom_mun",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "created_user",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Zonage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 51,
+   "sample_codes": [
+    {
+     "code_field_value": "43-I",
+     "zone_code": "43-I"
+    },
+    {
+     "code_field_value": "08-I",
+     "zone_code": "08-I"
+    },
+    {
+     "code_field_value": "04-I",
+     "zone_code": "04-I"
+    },
+    {
+     "code_field_value": "33-AD",
+     "zone_code": "33-AD"
+    },
+    {
+     "code_field_value": "03-CH",
+     "zone_code": "03-CH"
+    },
+    {
+     "code_field_value": "53-ADes",
+     "zone_code": "53-ADes"
+    },
+    {
+     "code_field_value": "55-ADes",
+     "zone_code": "55-ADes"
+    },
+    {
+     "code_field_value": "37-ADes",
+     "zone_code": "37-ADes"
+    }
+   ],
+   "served_codes_covered": 51,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 51,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(51) == features(51)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-flavien__flat.2026-08-10T1707Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-flavien__flat.2026-08-10T1707Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-flavien.geojson",
+     "served_features": 51,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33052_Publique/MapServer/16/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:aaed76a13e2a82799a87946cbc8422a3f3375a1c10dc49000bd0a1506dc6c7bf",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:49.574Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33052_Publique/MapServer/16/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Zonage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-francois-dassise",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06055_Publique/MapServer/13/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06055_Publique/MapServer/13/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-5-90dc0a4a-9836-429a-a9f0-12474368291b",
+   "http_status": 200,
+   "sha256": "sha256:1c387bd54cf544d8a3686a461c48f4e3a524ea0f2a9b60033f0c599019194ecd",
+   "retrieved_at": "2026-08-10T17:05:36.607Z",
+   "storage_key": "raw/zones-vnatif/cas/1c387bd54cf544d8a3686a461c48f4e3a524ea0f2a9b60033f0c599019194ecd.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 45,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-francois-dassise",
+   "registry_attribution_km": 0.73,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-francois-dassise.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 45,
+   "served_distinct_codes": 45,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06055_Publique/MapServer/13"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Usage",
+     "distinct": 45,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 45,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 45,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 18,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Type_Zone",
+     "distinct": 11,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Zone",
+     "distinct": 11,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Description",
+     "distinct": 11,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Usage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 45,
+   "sample_codes": [
+    {
+     "code_field_value": "FB-1",
+     "zone_code": "FB-1"
+    },
+    {
+     "code_field_value": "FA-1",
+     "zone_code": "FA-1"
+    },
+    {
+     "code_field_value": "FA-9",
+     "zone_code": "FA-9"
+    },
+    {
+     "code_field_value": "FA-2",
+     "zone_code": "FA-2"
+    },
+    {
+     "code_field_value": "FB-6",
+     "zone_code": "FB-6"
+    },
+    {
+     "code_field_value": "AB-1",
+     "zone_code": "AB-1"
+    },
+    {
+     "code_field_value": "Ru-1",
+     "zone_code": "Ru-1"
+    },
+    {
+     "code_field_value": "FA-4",
+     "zone_code": "FA-4"
+    }
+   ],
+   "served_codes_covered": 45,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 45,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(45) == features(45)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-francois-dassise__flat.2026-08-10T1707Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-francois-dassise__flat.2026-08-10T1707Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-francois-dassise.geojson",
+     "served_features": 45,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06055_Publique/MapServer/13/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:1c387bd54cf544d8a3686a461c48f4e3a524ea0f2a9b60033f0c599019194ecd",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:36.607Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06055_Publique/MapServer/13/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Usage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-francois-de-lile-dorleans",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-6-79d10ba8-83c1-4cc4-b40a-fb7e1c72d764",
+   "http_status": 200,
+   "sha256": "sha256:2c2986813cc4549256d13013fe70d096a565d2f6d868ed46e2dfdbce597f6406",
+   "retrieved_at": "2026-08-10T17:05:35.505Z",
+   "storage_key": "raw/zones-vnatif/cas/2c2986813cc4549256d13013fe70d096a565d2f6d868ed46e2dfdbce597f6406.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 48,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-francois-de-lile-dorleans",
+   "registry_attribution_km": 1.11,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-francois-de-lile-dorleans.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 44,
+   "served_distinct_codes": 44,
+   "served_levels": [
+    "candidate"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Usage",
+     "distinct": 48,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 48,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 48,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "OBJECTID_1",
+     "distinct": 48,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "SHAPE_Leng",
+     "distinct": 44,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "NUM_ZONE",
+     "distinct": 17,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 12,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 7,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "SECTEURS",
+     "distinct": 0,
+     "null_count": 48,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Usage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 48,
+   "sample_codes": [
+    {
+     "code_field_value": "V-303",
+     "zone_code": "V-303"
+    },
+    {
+     "code_field_value": "CO-304",
+     "zone_code": "CO-304"
+    },
+    {
+     "code_field_value": "R-304",
+     "zone_code": "R-304"
+    },
+    {
+     "code_field_value": "REC-301",
+     "zone_code": "REC-301"
+    },
+    {
+     "code_field_value": "CM-300",
+     "zone_code": "CM-300"
+    },
+    {
+     "code_field_value": "R-305",
+     "zone_code": "R-305"
+    },
+    {
+     "code_field_value": "R-307",
+     "zone_code": "R-307"
+    },
+    {
+     "code_field_value": "R-300",
+     "zone_code": "R-300"
+    }
+   ],
+   "served_codes_covered": 44,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 48,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(48) == features(48)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-francois-de-lile-dorleans__flat.2026-08-10T1708Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-francois-de-lile-dorleans__flat.2026-08-10T1708Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-francois-de-lile-dorleans.geojson",
+     "served_features": 48,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:2c2986813cc4549256d13013fe70d096a565d2f6d868ed46e2dfdbce597f6406",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:35.505Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Usage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-gabriel-de-valcartier",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC220/22025_Publique/MapServer/23/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC220/22025_Publique/MapServer/23/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-7-132c0814-e7ce-4678-b0bb-1e9455fc8397",
+   "http_status": 200,
+   "sha256": "sha256:565e2a3f30cf312decce1d23e5f5e054d35774e4066ff95afbcc4e8ab23e8d11",
+   "retrieved_at": "2026-08-10T17:05:51.912Z",
+   "storage_key": "raw/zones-vnatif/cas/565e2a3f30cf312decce1d23e5f5e054d35774e4066ff95afbcc4e8ab23e8d11.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 62,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-gabriel-de-valcartier",
+   "registry_attribution_km": 1.65,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-gabriel-de-valcartier.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 62,
+   "served_distinct_codes": 62,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC220/22025_Publique/MapServer/23"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Usage",
+     "distinct": 62,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "SHAPE_Length",
+     "distinct": 62,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "SHAPE_Area",
+     "distinct": 62,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 61,
+     "null_count": 1,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Zone",
+     "distinct": 21,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Type_Zone",
+     "distinct": 12,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Usage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 62,
+   "sample_codes": [
+    {
+     "code_field_value": "H-2",
+     "zone_code": "H-2"
+    },
+    {
+     "code_field_value": "P-2",
+     "zone_code": "P-2"
+    },
+    {
+     "code_field_value": "Mx-3",
+     "zone_code": "Mx-3"
+    },
+    {
+     "code_field_value": "Mx-4",
+     "zone_code": "Mx-4"
+    },
+    {
+     "code_field_value": "A-2",
+     "zone_code": "A-2"
+    },
+    {
+     "code_field_value": "Ru-4",
+     "zone_code": "Ru-4"
+    },
+    {
+     "code_field_value": "H-16",
+     "zone_code": "H-16"
+    },
+    {
+     "code_field_value": "Ru-3",
+     "zone_code": "Ru-3"
+    }
+   ],
+   "served_codes_covered": 62,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 62,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(62) == features(62)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-gabriel-de-valcartier__flat.2026-08-10T1708Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-gabriel-de-valcartier__flat.2026-08-10T1708Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-gabriel-de-valcartier.geojson",
+     "served_features": 62,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC220/22025_Publique/MapServer/23/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:565e2a3f30cf312decce1d23e5f5e054d35774e4066ff95afbcc4e8ab23e8d11",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:51.912Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC220/22025_Publique/MapServer/23/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Usage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-janvier-de-joly",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33065_Publique/MapServer/16/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33065_Publique/MapServer/16/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-8-fc8c71ff-d7e0-4d77-9555-c4ac352bd2a0",
+   "http_status": 200,
+   "sha256": "sha256:f33bbb5ebdae716d6ca8ce9f655636fce7f865f0570369247b6c50d409c214b5",
+   "retrieved_at": "2026-08-10T17:05:52.481Z",
+   "storage_key": "raw/zones-vnatif/cas/f33bbb5ebdae716d6ca8ce9f655636fce7f865f0570369247b6c50d409c214b5.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 43,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-janvier-de-joly",
+   "registry_attribution_km": 0.26,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-janvier-de-joly.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 43,
+   "served_distinct_codes": 43,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33065_Publique/MapServer/16"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Zonage",
+     "distinct": 43,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 43,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 43,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "cl_zonage",
+     "distinct": 10,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Dominante",
+     "distinct": 10,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "created_date",
+     "distinct": 2,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Numero_reglement",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "code_mun",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "nom_mun",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "created_user",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "last_edited_user",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "last_edited_date",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Zonage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 43,
+   "sample_codes": [
+    {
+     "code_field_value": "37-C",
+     "zone_code": "37-C"
+    },
+    {
+     "code_field_value": "30-AF",
+     "zone_code": "30-AF"
+    },
+    {
+     "code_field_value": "27-AF",
+     "zone_code": "27-AF"
+    },
+    {
+     "code_field_value": "28-AF",
+     "zone_code": "28-AF"
+    },
+    {
+     "code_field_value": "4-A",
+     "zone_code": "4-A"
+    },
+    {
+     "code_field_value": "16-Ta",
+     "zone_code": "16-Ta"
+    },
+    {
+     "code_field_value": "26-AF",
+     "zone_code": "26-AF"
+    },
+    {
+     "code_field_value": "2-A",
+     "zone_code": "2-A"
+    }
+   ],
+   "served_codes_covered": 43,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 43,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(43) == features(43)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-janvier-de-joly__flat.2026-08-10T1708Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-janvier-de-joly__flat.2026-08-10T1708Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-janvier-de-joly.geojson",
+     "served_features": 43,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33065_Publique/MapServer/16/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:f33bbb5ebdae716d6ca8ce9f655636fce7f865f0570369247b6c50d409c214b5",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:52.481Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33065_Publique/MapServer/16/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Zonage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-laurent-de-lile-dorleans",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20020_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20020_Publique/MapServer/17/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-9-f6cbe97b-d068-45be-8c47-e46f9120250a",
+   "http_status": 200,
+   "sha256": "sha256:6ef6f6beb4089152fd2f90a33085baf76b3117005e953e9a7d5985de3534dcce",
+   "retrieved_at": "2026-08-10T17:05:52.498Z",
+   "storage_key": "raw/zones-vnatif/cas/6ef6f6beb4089152fd2f90a33085baf76b3117005e953e9a7d5985de3534dcce.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 34,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-laurent-de-lile-dorleans",
+   "registry_attribution_km": 0.93,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-laurent-de-lile-dorleans.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 42,
+   "served_distinct_codes": 42,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20020_Publique/MapServer/17"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Usage",
+     "distinct": 34,
+     "null_count": 0,
+     "overlap_pct": 78.6
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 34,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 34,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "OBJECTID_1",
+     "distinct": 34,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "SHAPE_Leng",
+     "distinct": 28,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "NUM_ZONE",
+     "distinct": 12,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 8,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 5,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "SECTEURS",
+     "distinct": 0,
+     "null_count": 34,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": null,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 0,
+   "sample_codes": [],
+   "served_codes_covered": 0,
+   "served_codes_uncovered": 42,
+   "uncovered_codes": [
+    "A103",
+    "A108",
+    "A401",
+    "A601",
+    "A602",
+    "A603",
+    "A604",
+    "A605",
+    "A606",
+    "A607",
+    "A608",
+    "A610",
+    "CM600",
+    "CM601",
+    "CO401",
+    "CO601",
+    "CO602",
+    "CO603",
+    "CO604",
+    "CO605",
+    "CO606",
+    "CO607",
+    "CO801",
+    "CO802",
+    "R401",
+    "R601",
+    "R602",
+    "R603",
+    "R604",
+    "R605",
+    "R606",
+    "R607",
+    "R608",
+    "R609",
+    "R610",
+    "R611",
+    "R801",
+    "R802",
+    "VA601",
+    "VA602",
+    "VA603",
+    "VA604"
+   ],
+   "overlap_ratio_pct": 0,
+   "live_count": 34,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(34) == features(34)",
+   "guard_blocks": [
+    "aucun champ code-zone ne reproduit ≥90% des codes servis sans valeur vide (candidats=Usage:ov=78.6%,d=34,null=0 | Shape_Length:ov=0%,d=34,null=0 | Shape_Area:ov=0%,d=34,null=0 | OBJECTID_1:ov=0%,d=34,null=0 | SHAPE_Leng:ov=0%,d=28,null=0 | NUM_ZONE:ov=0%,d=12,null=0 | Num_Fichier:ov=0%,d=8,null=0 | TYPE_ZONE:ov=0%,d=5,null=0 | SECTEURS:ov=0%,d=0,null=34) → ambigu, SKIP"
+   ],
+   "statut": "SKIP",
+   "raison": "aucun champ code-zone ne reproduit ≥90% des codes servis sans valeur vide (candidats=Usage:ov=78.6%,d=34,null=0 | Shape_Length:ov=0%,d=34,null=0 | Shape_Area:ov=0%,d=34,null=0 | OBJECTID_1:ov=0%,d=34,null=0 | SHAPE_Leng:ov=0%,d=28,null=0 | NUM_ZONE:ov=0%,d=12,null=0 | Num_Fichier:ov=0%,d=8,null=0 | TYPE_ZONE:ov=0%,d=5,null=0 | SECTEURS:ov=0%,d=0,null=34) → ambigu, SKIP"
+  },
+  {
+   "slug": "saint-pierre-de-lile-dorleans",
+   "run_stamp": "20260810T190000Z",
+   "source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17/query?where=1=1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T190000Z-10-4c97e594-23f7-44ca-af7f-05b4c2811536",
+   "http_status": 200,
+   "sha256": "sha256:57a3f592300b3649039c0423e0eae600df5fcd4d8c7ebd0a0a0babb576e7fef7",
+   "retrieved_at": "2026-08-10T17:05:53.598Z",
+   "storage_key": "raw/zones-vnatif/cas/57a3f592300b3649039c0423e0eae600df5fcd4d8c7ebd0a0a0babb576e7fef7.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 67,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-pierre-de-lile-dorleans",
+   "registry_attribution_km": 0.15,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-lile-dorleans.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 64,
+   "served_distinct_codes": 64,
+   "served_levels": [
+    "candidate"
+   ],
+   "served_source_urls": [
+    "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Usage",
+     "distinct": 67,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Shape_Length",
+     "distinct": 67,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Shape_Area",
+     "distinct": 67,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "OBJECTID_1",
+     "distinct": 67,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "SHAPE_Leng",
+     "distinct": 59,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "NUM_ZONE",
+     "distinct": 25,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "Num_Fichier",
+     "distinct": 15,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 6,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "SECTEURS",
+     "distinct": 0,
+     "null_count": 67,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Usage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 67,
+   "sample_codes": [
+    {
+     "code_field_value": "CO-104",
+     "zone_code": "CO-104"
+    },
+    {
+     "code_field_value": "M-103",
+     "zone_code": "M-103"
+    },
+    {
+     "code_field_value": "R-112",
+     "zone_code": "R-112"
+    },
+    {
+     "code_field_value": "R-109",
+     "zone_code": "R-109"
+    },
+    {
+     "code_field_value": "CM-101",
+     "zone_code": "CM-101"
+    },
+    {
+     "code_field_value": "M-102",
+     "zone_code": "M-102"
+    },
+    {
+     "code_field_value": "R-111",
+     "zone_code": "R-111"
+    },
+    {
+     "code_field_value": "M-110",
+     "zone_code": "M-110"
+    }
+   ],
+   "served_codes_covered": 64,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 67,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(67) == features(67)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre-de-lile-dorleans__flat.2026-08-10T1708Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre-de-lile-dorleans__flat.2026-08-10T1708Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-lile-dorleans.geojson",
+     "served_features": 67,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:57a3f592300b3649039c0423e0eae600df5fcd4d8c7ebd0a0a0babb576e7fef7",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:05:53.598Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Usage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  }
+ ]
+}
