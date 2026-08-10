@@ -200,6 +200,7 @@ interface IngestReport {
   engine: string;
   methode: string;
   pageSelection: string;
+  pages: number[];
   pagesSelected: number;
   pagesProcessed: number;
   usd: number;
@@ -300,6 +301,7 @@ async function ingestSlug(
     engine: ENGINE,
     methode: SCHEMA_METHODE,
     pageSelection: selectionKind,
+    pages,
     pagesSelected: pages.length,
     pagesProcessed: extract.pagesProcessed,
     usd: Math.round(extract.usd * 1e4) / 1e4,
@@ -325,6 +327,13 @@ async function ingestSlug(
     gatesOk: false,
     deposited: false,
   };
+
+  // A captured-mode product must be complete: a skipped/invalid Mistral chunk
+  // could otherwise turn a partial page range into apparently valid norms.
+  if (extract.chunksFailed > 0) {
+    report.reason = `anti-invention reject: ${extract.chunksFailed} Mistral schema chunk(s) failed`;
+    return report;
+  }
 
   // ── Anti-invention gates — identical floor to zonage-norms-run / transposed-ingest ──
   if (zones.length < MIN_DEPOSIT_ZONE_CODES) {
@@ -390,6 +399,9 @@ async function main(): Promise<void> {
   const sourceUrl = arg(argv, "source-url") ?? DEFAULT_SOURCE_URL;
   const reglement = arg(argv, "reglement");
   const budgetUsd = Number(arg(argv, "budget-usd") ?? "5");
+  if (!Number.isFinite(budgetUsd) || budgetUsd <= 0) {
+    throw new Error("--budget-usd must be a finite positive number");
+  }
   const pagesArg = arg(argv, "pages");
   const pages = pagesArg
     ? pagesArg.split(",").map((s) => Number(s.trim())).filter((n) => Number.isFinite(n) && n >= 1)
@@ -422,6 +434,7 @@ async function main(): Promise<void> {
         engine: ENGINE,
         methode: SCHEMA_METHODE,
         pageSelection: "n/a",
+        pages: [],
         pagesSelected: 0,
         pagesProcessed: 0,
         usd: 0,
