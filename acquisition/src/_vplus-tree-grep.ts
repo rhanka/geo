@@ -7,7 +7,7 @@
  *   https://vplus.modellium.com/api/<hostname>/structure/tree?localisation=fr
  *   https://vplus.modellium.com/api/<hostname>/structure/detail/<GUID>?inStructure=true&localisation=fr
  *
- * Ce script grep l'arbre JSON déjà téléchargé et imprime les noeuds dont le titre
+ * Ce script grep l'arbre JSON déjà téléchargé ou déposé sur S3 et imprime les noeuds dont le titre
  * matche, AVEC leur GUID — c'est le GUID qu'il faut passer à /structure/detail
  * pour obtenir le HTML porteur des liens S3 du bucket vplus-documents.
  *
@@ -15,9 +15,12 @@
  *
  * Usage:
  *   npx tsx acquisition/src/_vplus-tree-grep.ts <tree.json> [motif ...]
+ *   npx tsx acquisition/src/_vplus-tree-grep.ts --s3-key raw/.../tree.json [motif ...]
  * Sans motif: zonage|urbanisme|reglement (défaut).
+ * La variante --s3-key lit l'objet en mémoire; elle ne crée aucune capture locale.
  */
 import { readFileSync } from "node:fs";
+import { getBytes, s3Client } from "./lib/s3.js";
 
 const GUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
@@ -56,16 +59,30 @@ function walk(
   }
 }
 
-function main(): void {
-  const [file, ...motifs] = process.argv.slice(2);
-  if (!file) {
-    console.error("usage: _vplus-tree-grep.ts <tree.json> [motif ...]");
+async function main(): Promise<void> {
+  const args = process.argv.slice(2);
+  const s3KeyIndex = args.indexOf("--s3-key");
+  const s3Key = s3KeyIndex === -1 ? undefined : args[s3KeyIndex + 1];
+  if (s3KeyIndex !== -1 && !s3Key) {
+    console.error("usage: _vplus-tree-grep.ts --s3-key <key> [motif ...]");
+    process.exit(2);
+  }
+  const remaining = s3KeyIndex === -1
+    ? args
+    : [...args.slice(0, s3KeyIndex), ...args.slice(s3KeyIndex + 2)];
+  const file = s3Key ? undefined : remaining[0];
+  const motifs = s3Key ? remaining : remaining.slice(1);
+  if (!file && !s3Key) {
+    console.error("usage: _vplus-tree-grep.ts <tree.json> [motif ...] | --s3-key <key> [motif ...]");
     process.exit(2);
   }
   const pats = (motifs.length ? motifs : ["zonage", "urbanisme", "reglement"]).map(norm);
 
   const out: Array<{ titre: string; guid: string | null; chemin: string }> = [];
-  walk(JSON.parse(readFileSync(file, "utf8")), [], out);
+  const source = s3Key
+    ? (await getBytes(s3Client(), s3Key)).toString("utf8")
+    : readFileSync(file!, "utf8");
+  walk(JSON.parse(source), [], out);
 
   const seen = new Set<string>();
   let n = 0;
@@ -81,4 +98,4 @@ function main(): void {
   console.log("# detail: https://vplus.modellium.com/api/<host>/structure/detail/<GUID>?inStructure=true&localisation=fr");
 }
 
-main();
+void main();

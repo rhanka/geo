@@ -1,0 +1,52 @@
+{
+  "contract": "reglement-palier167-capture-campaign/v1",
+  "as_of": "2026-08-03T17:00:00Z",
+  "lane": "geo-reglement",
+  "read_only": true,
+  "scope": "Handoff campagne : ce qui reste pour porter les 3 axes règlement/usage/effet du palier-167 à 100%-RÉSOLU (0 unknown), une fois la voie LOCALE épuisée.",
+  "gap_source": "work/coverage/completion-regdens-palier167-20260803.json (partition + gaps par axe, dérivés reproductibles)",
+  "na_mechanism": "acquisition/config/palier-na-proofs.json (registre v1) + scripts/generate-completion-regdens.mjs (générateur, commit 75acc14d). VIDE aujourd'hui : toute résolution N-A EXIGE une preuve d'absence reproductible déposée ici.",
+  "verdict_global": "CAPTURE-BOUND sur les 4 axes. La curation locale est épuisée (confirmé 54dab557 pour col-5 : 0 curable / 18 needs-capture / 2 cross-lane). Aucun gain X/167 n'est fabricable en lecture seule. La résolution passe par une capture cluster (principe fondateur : la capture est de la donnée de production, elle tourne sur le cluster ; les agents locaux analysent en lecture seule).",
+  "resolved_now": {
+    "reglement_declared": "147/167",
+    "reglement_proven": "83/167",
+    "usage_dominant": "95/167",
+    "effet_densifiant": "1/167"
+  },
+  "axes": [
+    {
+      "axis": "reglement_declared",
+      "non_resolved": 20,
+      "buckets": { "unknown": 9, "incomplete": 11 },
+      "resolution_path": "COMPLETE via capture (pas de N-A : le 167 est urbain, toutes ces munis ont un règlement structurel). Capture du CORPS du règlement de zonage adopté (clause d'adoption → numéro verbatim), pas la grille/annexe nue ni le projet auto-déclaré.",
+      "runner": "acquisition/src/k8s-capture-run.ts (worklist = gaps.reglement_declared, 20 slugs)",
+      "known_traps": "projet non-adopté (saint-edouard 2015-259, saint-mathieu R315-2024 servi mais projet) ; grille/annexe nue sans numéro de base (pointe-calumet, saint-jacques-le-mineur) ; renvoi d'amendement ; 404. Fold registre acquisition/config/reglement-provenance.json en fin de passe.",
+      "cross_lane": ["saint-mathieu (229-2011 en vigueur DOMINE R315-2024 projet qui alimente les zone_codes servis — trancher avec lane ZONES)"]
+    },
+    {
+      "axis": "reglement_proven",
+      "non_resolved": 84,
+      "buckets": { "unknown": 73, "incomplete": 11 },
+      "resolution_path": "COMPLETE via re-capture octet-pour-octet (manifeste = preuve v2) ; sinon N-A si URL de preuve PROUVÉE MORTE (CDX matchType=domain, http:// lenient) ET 0 carte géoréf publique (recalage épuisé) — les DEUX tracés (SPEC §2 KPI 10).",
+      "runner": "acquisition/src/lib/reglement-capture-kpi.ts + k8s-capture-run.ts",
+      "ceiling": "Plafond connu ~52 % : 48 % des URL de preuve sont MORTES (memoire preuve-zonage-url-sources-mortes). Le reste bascule en N-A (URL morte prouvée) — c'est la voie majoritaire ici, pas la re-capture."
+    },
+    {
+      "axis": "usage_dominant",
+      "non_resolved": 72,
+      "buckets": { "unknown": 14, "incomplete": 58 },
+      "resolution_path": "COMPLETE via enrichment zonage (dépend de l'acquisition ZONES : usage dominant se lit sur la grille/SIG). 58 incomplete = zonage servi sans vocation dominante résolue ; 14 unknown = hors couverture enrichment.",
+      "runner": "chaîne zonage-enrichment (lane ZONES amont) → work/coverage/zonage-enrichment.json",
+      "cross_lane": ["Majoritairement ZONES-bound : l'usage dominant n'est complétable que là où la grille/SIG est acquise et pliée."]
+    },
+    {
+      "axis": "effet_densifiant",
+      "non_resolved": 166,
+      "buckets": { "unknown": 147, "incomplete": 19 },
+      "resolution_path": "MAJORITAIREMENT N-A PROUVÉ : le 167 urbain a peu d'EEV densifiant adopté. N-A ssi 0 avis public + 0 certificat MRC 137.3 après recherche EXHAUSTIVE tracée (SPEC §2 KPI 7).",
+      "blocker_criterion": "DÉCISION REQUISE avant capture. Le runner existant acquisition/src/k8s-density-document-discovery-run.ts capture des DOCUMENTS de densité et cherche un SIGNAL de densité (valeur de norme) — PAS l'avis public / certificat 137.3. Il ne produit donc PAS la preuve §2. Deux voies : (a) lane effet propose que « 0 signal densité après capture exhaustive tracée » soit un critère N-A proxy ratifié par archi (SPEC §3) ; (b) nouveau worklist/runner ciblant avis-public (date EEV) + certificat MRC 137.3 par muni + MRC. Sans l'une des deux, les 147 restent UNKNOWN (interdit de relabel sans preuve).",
+      "ceiling": "Plafond documentaire connu 8/141 (memoire effet-densifiant-plafond-documentaire) : la voie COMPLETE est marginale ; la résolution vient quasi entièrement du N-A."
+    }
+  ],
+  "conductor_note": "Mécanisme N-A livré (75acc14d) : la campagne peut désormais DÉPOSER des preuves qui résolvent. Deux préalables non-fabricables restent : (1) lancer la capture cluster (col 5 corps-de-règlement 20 slugs ; col 10 re-capture/CDX ; col 6 via ZONES) ; (2) TRANCHER le critère N-A effet (proxy densité vs runner EEV dédié). Ce sont des décisions/campagnes, pas du travail local — remontées à l'owner + lanes ZONES/effet."
+}
