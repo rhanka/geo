@@ -61,7 +61,10 @@ import { reapplyServedZonageEnrichment } from "./lib/reapply-zonage-enrichment.j
 import {
   attachGeometryProof,
   carryForwardServedZoneProperties,
+  GEOMETRY_GRAIN_FIELD,
+  type GeometryGrain,
   type GeometrySourceProof,
+  isRealGeometryUrl,
   proofFromCaptureEntry,
   putServedZoneAdditive,
   putServedZoneGeojson,
@@ -989,6 +992,22 @@ class PropertyRegressionError extends Error {
 }
 
 /**
+ * One served-only zone code dropped by a PROVENANCE-AWARE replacement: it was carried
+ * by a served feature with `zone_source_url === null` (never proven in v2) and is absent
+ * from the verified-complete v2 capture. Per SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md §3 (G3/G4)
+ * this is a DOCUMENTED DIVERGENCE — status UNKNOWN (recalage-flagged), never N-A: a
+ * replacement does not attest abolition. The prior served geometry is backed up
+ * byte-for-byte under `_replaced/` in the same pass.
+ */
+export interface DroppedServedCode {
+  code: string;
+  prior_levels: string[];
+  zone_source_url: null;
+  status: "UNKNOWN";
+  reason: string;
+}
+
+/**
  * Safe geometry replacement shared by the ArcGIS and GoNet paths in this runner.
  * It refuses an identity mismatch, keeps served properties by canonical zone code,
  * replays the committed folds, then records a before/after served audit.  The v2
@@ -999,7 +1018,8 @@ export async function depositCapturedZones(
   slug: string,
   norm: GeoFeature[],
   proof: GeometrySourceProof,
-): Promise<{ servedBefore: ServedAudit[]; servedAfter: ServedAudit[] }> {
+  opts: { geometryGrain?: GeometryGrain } = {},
+): Promise<{ servedBefore: ServedAudit[]; servedAfter: ServedAudit[]; droppedDivergence: DroppedServedCode[]; replacedBackups: string[] }> {
   const flatKey = `${S3_PREFIX}qc-zonage-${slug}.geojson`;
   const nestedKey = `${S3_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`;
   const present = (await Promise.all([readServedAudit(s3, flatKey), readServedAudit(s3, nestedKey)])).filter(
@@ -1011,9 +1031,45 @@ export async function depositCapturedZones(
   const servedCodes = new Set(present.flatMap(({ features }) => features.map((f) => canonicalZoneCode(f.properties?.["zone_code"])).filter(Boolean)));
   const incomingCodes = new Set(norm.map((f) => canonicalZoneCode(f.properties?.["zone_code"])).filter(Boolean));
   const uncovered = [...servedCodes].filter((code) => !incomingCodes.has(code));
-  if (uncovered.length > 0) {
-    throw new Error(`identity gate: ${uncovered.length} code(s) servi(s) absent(s) de la couche amont (${uncovered.sort().join(",")}); aucun dépôt`);
+
+  // PROVENANCE-AWARE identity gate (SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md §2-3, SHA 64f82eae).
+  // Per served-only code, `zone_source_url === null` (no live http(s) URL) is THE
+  // discriminator: a code that was NEVER proven in v2 does not block a verified-complete
+  // v2 capture — it passes as a DOCUMENTED DIVERGENCE (recorded here, backed up
+  // byte-for-byte under _replaced/ below). A served code carrying a live http(s)
+  // zone_source_url is PROVEN, so the strict superset STILL holds for it: a proven code
+  // may not be silently dropped (its removal needs a reproducible per-code absence proof).
+  const provenanceByCode = new Map<string, { levels: Set<string>; provenUrls: Set<string> }>();
+  for (const { features } of present) {
+    for (const f of features) {
+      const code = canonicalZoneCode(f.properties?.["zone_code"]);
+      if (!code) continue;
+      const entry = provenanceByCode.get(code) ?? { levels: new Set<string>(), provenUrls: new Set<string>() };
+      const level = f.properties?.["zone_source_level"];
+      if (typeof level === "string") entry.levels.add(level);
+      const url = f.properties?.["zone_source_url"];
+      if (isRealGeometryUrl(url)) entry.provenUrls.add(url);
+      provenanceByCode.set(code, entry);
+    }
   }
+  const isProven = (code: string): boolean => (provenanceByCode.get(code)?.provenUrls.size ?? 0) > 0;
+  const uncoveredProven = uncovered.filter(isProven).sort();
+  if (uncoveredProven.length > 0) {
+    throw new Error(
+      `identity gate (provenance-aware): ${uncoveredProven.length} code(s) servi(s) PROUVÉ(s) (zone_source_url live http(s)) absent(s) de la couche amont (${uncoveredProven.join(",")}); un code prouvé ne se droppe pas sans preuve d'absence reproductible; aucun dépôt`,
+    );
+  }
+  const droppedDivergence: DroppedServedCode[] = uncovered
+    .filter((code) => !isProven(code))
+    .sort()
+    .map((code) => ({
+      code,
+      prior_levels: [...(provenanceByCode.get(code)?.levels ?? [])].sort(),
+      zone_source_url: null,
+      status: "UNKNOWN",
+      reason: "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)",
+    }));
+
   const maxServedFeatures = Math.max(0, ...present.map(({ features }) => features.length));
   if (norm.length < maxServedFeatures) {
     throw new Error(`coverage gate: ${norm.length} features amont < ${maxServedFeatures} features servies; aucun dépôt`);
@@ -1023,10 +1079,12 @@ export async function depositCapturedZones(
     ? present.map(({ audit, features }) => ({ key: audit.key, current: features }))
     : [{ key: flatKey, current: [] as GeoFeature[] }];
   const stamp = new Date().toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
+  const replacedBackups: string[] = [];
   for (const { key, current } of targets) {
     if (current.length > 0) {
       const backup = `${S3_PREFIX}_replaced/qc-zonage-${slug}__${key === flatKey ? "flat" : "nested"}.${stamp}.geojson`;
       await copyObject(s3, key, backup);
+      replacedBackups.push(backup);
       console.error(`[obscura] BACKUP ${key} -> s3://${backup}`);
     }
     const features = norm.map((feature) => ({ ...feature, properties: { ...(feature.properties ?? {}) } }));
@@ -1037,7 +1095,13 @@ export async function depositCapturedZones(
   }
 
   // A geometry replacement resets enrichment values. Re-run the committed folds
-  // in the same pass, then stamp the exact live v2 source last.
+  // in the same pass, then stamp the exact live v2 source last. `geometry_grain`
+  // (source-layer nature: zone-polygon | evaluation-unit) is stamped in the SAME
+  // additive pass when the caller supplies it — additive-only, geometry byte-exact.
+  const grain = opts.geometryGrain;
+  const stampAllowed = grain
+    ? ["zone_source_url", "zone_source_level", GEOMETRY_GRAIN_FIELD]
+    : ["zone_source_url", "zone_source_level"];
   await reapplyServedZonageEnrichment(slug);
   for (const { key } of targets) {
     const fc = JSON.parse((await getBytes(s3, key)).toString("utf8")) as { type: "FeatureCollection"; features: GeoFeature[] };
@@ -1046,9 +1110,10 @@ export async function depositCapturedZones(
         ...(feature.properties ?? {}),
         zone_source_url: proof.url,
         zone_source_level: "documented",
+        ...(grain ? { [GEOMETRY_GRAIN_FIELD]: grain } : {}),
       };
     }
-    await putServedZoneAdditive(s3, key, fc, { allowedProps: ["zone_source_url", "zone_source_level"] });
+    await putServedZoneAdditive(s3, key, fc, { allowedProps: stampAllowed });
   }
 
   const servedAfter = (await Promise.all(targets.map(({ key }) => readServedAudit(s3, key)))).map((value) => {
@@ -1064,7 +1129,7 @@ export async function depositCapturedZones(
       );
     }
   }
-  return { servedBefore, servedAfter };
+  return { servedBefore, servedAfter, droppedDivergence, replacedBackups };
 }
 
 // ── GoNet / GoAzimut (PG Solutions GOnet6) ────────────────────────────────────
