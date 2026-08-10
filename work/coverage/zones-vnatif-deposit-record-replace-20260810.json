@@ -1,0 +1,676 @@
+{
+ "contract": "zones-vnatif-deposit-record-replace/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md@64f82eae",
+ "mode": "commit",
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (bloque uniquement si ≥1 code servi-seulement PROUVÉ zone_source_url live)",
+ "proof_intended": {
+  "type": "arcgis",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "total": 5,
+ "deposited": 4,
+ "skipped": 1,
+ "cities": [
+  {
+   "slug": "saint-lin-laurentides",
+   "run_stamp": "20260810T121500Z",
+   "source_url": "https://services8.arcgis.com/PF86XLgxesdAEe8M/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "CodeZone",
+   "layer_id": "0",
+   "expected_geometry_grain": "zone-polygon",
+   "capture_run_id": "zones-20260810T121500Z-1-c33e2339-9a25-442f-a750-87c33e15019d",
+   "http_status": 200,
+   "sha256": "sha256:1277ed3a3692691436b1d086b78e0969b563107efca1084d4ec7abfab81de1fc",
+   "retrieved_at": "2026-08-10T11:21:13.965Z",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 139,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-lin-laurentides",
+   "registry_attribution_km": 3.52,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "capture_distinct_codes": 139,
+   "source_count": 139,
+   "source_layer_name": "Zonage",
+   "count_query": "https://services8.arcgis.com/PF86XLgxesdAEe8M/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&returnCountOnly=true&f=json",
+   "source_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "feature_count(139) == source_count(139) && exceededTransferLimit=false",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-lin-laurentides/qc-zonage-saint-lin-laurentides.geojson"
+   ],
+   "served_layout": "nested",
+   "served_features": 139,
+   "served_distinct_codes": 115,
+   "served_levels": [
+    "orphan"
+   ],
+   "served_source_urls": [
+    null
+   ],
+   "served_has_v2_proof": false,
+   "served_all_url_null": true,
+   "served_codes_covered": 109,
+   "served_codes_uncovered": 6,
+   "uncovered_codes": [
+    "C4",
+    "H148",
+    "H149",
+    "H150",
+    "H210",
+    "P13"
+   ],
+   "overlap_ratio_pct": 94.8,
+   "g6_overlap_outlier": false,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-lin-laurentides__nested.2026-08-10T1202Z.geojson"
+   ],
+   "dropped_divergence": [
+    {
+     "code": "C4",
+     "prior_levels": [
+      "orphan"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "H148",
+     "prior_levels": [
+      "orphan"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "H149",
+     "prior_levels": [
+      "orphan"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "H150",
+     "prior_levels": [
+      "orphan"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "H210",
+     "prior_levels": [
+      "orphan"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "P13",
+     "prior_levels": [
+      "orphan"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    }
+   ],
+   "dropped_codes": [
+    "C4",
+    "H148",
+    "H149",
+    "H150",
+    "H210",
+    "P13"
+   ],
+   "expected_dropped_codes": [
+    "C4",
+    "H148",
+    "H149",
+    "H150",
+    "H210",
+    "P13"
+   ],
+   "dropped_matches_record": true,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-lin-laurentides__nested.2026-08-10T1202Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-lin-laurentides/qc-zonage-saint-lin-laurentides.geojson",
+     "served_features": 139,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "proof_url": "https://services8.arcgis.com/PF86XLgxesdAEe8M/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:1277ed3a3692691436b1d086b78e0969b563107efca1084d4ec7abfab81de1fc",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T11:21:13.965Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services8.arcgis.com/PF86XLgxesdAEe8M/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "remplacé v2 byte-exact ; provenance documented/url=proof.url ; grain estampillé ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-hippolyte",
+   "run_stamp": "20260810T121500Z",
+   "source_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75045_PUBLIC/MapServer/142/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "REGLEMENT_",
+   "layer_id": "142",
+   "expected_geometry_grain": "zone-polygon",
+   "capture_run_id": "zones-20260810T121500Z-0-012352ff-ebba-4a29-8c9b-7d0c749eaf73",
+   "http_status": 200,
+   "sha256": "sha256:543f88a17bcb534f6504098a0440d39e044d6949bd797b4db1f4d17d9c9b33b8",
+   "retrieved_at": "2026-08-10T11:21:17.445Z",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 112,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-hippolyte",
+   "registry_attribution_km": 0.75,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "capture_distinct_codes": 112,
+   "source_count": 112,
+   "source_layer_name": "Zonage municipal (sans valeur légale)",
+   "count_query": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75045_PUBLIC/MapServer/142/query?where=1%3D1&returnCountOnly=true&f=json",
+   "source_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "feature_count(112) == source_count(112) && exceededTransferLimit=false",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-hippolyte.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 93,
+   "served_distinct_codes": 93,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    null
+   ],
+   "served_has_v2_proof": false,
+   "served_all_url_null": true,
+   "served_codes_covered": 92,
+   "served_codes_uncovered": 1,
+   "uncovered_codes": [
+    "REC612"
+   ],
+   "overlap_ratio_pct": 98.9,
+   "g6_overlap_outlier": false,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-hippolyte__flat.2026-08-10T1202Z.geojson"
+   ],
+   "dropped_divergence": [
+    {
+     "code": "REC612",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    }
+   ],
+   "dropped_codes": [
+    "REC612"
+   ],
+   "expected_dropped_codes": [
+    "REC612"
+   ],
+   "dropped_matches_record": true,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-hippolyte__flat.2026-08-10T1202Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-hippolyte.geojson",
+     "served_features": 112,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "proof_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75045_PUBLIC/MapServer/142/query?where=1%3D1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:543f88a17bcb534f6504098a0440d39e044d6949bd797b4db1f4d17d9c9b33b8",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T11:21:17.445Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75045_PUBLIC/MapServer/142/query?where=1%3D1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "remplacé v2 byte-exact ; provenance documented/url=proof.url ; grain estampillé ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-colomban",
+   "run_stamp": "20260810T110000Z",
+   "source_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75005_PUBLIC/MapServer/140/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "COMBINE",
+   "layer_id": "140",
+   "expected_geometry_grain": "zone-polygon",
+   "capture_run_id": "zones-20260810T110000Z-1-1198718e-8269-46bd-8ef0-0cd0efe245ab",
+   "http_status": 200,
+   "sha256": "sha256:c11db3670cc659d73fc3b608fd92acd429560f0dec74122b550ceac8ee60a8f4",
+   "retrieved_at": "2026-08-10T10:49:30.796Z",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 199,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-colomban",
+   "registry_attribution_km": 0.55,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "capture_distinct_codes": 189,
+   "source_count": 199,
+   "source_layer_name": "Zonage municipal (sans valeur légale)",
+   "count_query": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75005_PUBLIC/MapServer/140/query?where=1%3D1&returnCountOnly=true&f=json",
+   "source_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "feature_count(199) == source_count(199) && exceededTransferLimit=false",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-colomban.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 161,
+   "served_distinct_codes": 161,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    null
+   ],
+   "served_has_v2_proof": false,
+   "served_all_url_null": true,
+   "served_codes_covered": 155,
+   "served_codes_uncovered": 6,
+   "uncovered_codes": [
+    "C176",
+    "C177",
+    "C3093",
+    "H1161",
+    "P170",
+    "P175"
+   ],
+   "overlap_ratio_pct": 96.3,
+   "g6_overlap_outlier": false,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-colomban__flat.2026-08-10T1202Z.geojson"
+   ],
+   "dropped_divergence": [
+    {
+     "code": "C176",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "C177",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "C3093",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "H1161",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "P170",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "P175",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    }
+   ],
+   "dropped_codes": [
+    "C176",
+    "C177",
+    "C3093",
+    "H1161",
+    "P170",
+    "P175"
+   ],
+   "expected_dropped_codes": [
+    "C176",
+    "C177",
+    "C3093",
+    "H1161",
+    "P170",
+    "P175"
+   ],
+   "dropped_matches_record": true,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-colomban__flat.2026-08-10T1202Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-colomban.geojson",
+     "served_features": 199,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "proof_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75005_PUBLIC/MapServer/140/query?where=1%3D1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:c11db3670cc659d73fc3b608fd92acd429560f0dec74122b550ceac8ee60a8f4",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T10:49:30.796Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75005_PUBLIC/MapServer/140/query?where=1%3D1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "remplacé v2 byte-exact ; provenance documented/url=proof.url ; grain estampillé ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-sophie",
+   "run_stamp": "20260810T110000Z",
+   "source_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75028_PUBLIC/MapServer/140/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "Numero",
+   "layer_id": "140",
+   "expected_geometry_grain": "zone-polygon",
+   "capture_run_id": "zones-20260810T110000Z-2-1b1cf021-2a88-4b81-875a-2393d9cf02e1",
+   "http_status": 200,
+   "sha256": "sha256:ef5591835f309dd64f5d4df47c5a0110a16a752c0d9d77c7a246d81263d5c5b0",
+   "retrieved_at": "2026-08-10T10:49:30.745Z",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 105,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-sophie",
+   "registry_attribution_km": 0.57,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "capture_distinct_codes": 105,
+   "source_count": 105,
+   "source_layer_name": "Zonage municipal (sans valeur légale)",
+   "count_query": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75028_PUBLIC/MapServer/140/query?where=1%3D1&returnCountOnly=true&f=json",
+   "source_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "feature_count(105) == source_count(105) && exceededTransferLimit=false",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-sophie.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 64,
+   "served_distinct_codes": 64,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    null
+   ],
+   "served_has_v2_proof": false,
+   "served_all_url_null": true,
+   "served_codes_covered": 61,
+   "served_codes_uncovered": 3,
+   "uncovered_codes": [
+    "V80",
+    "V804",
+    "V805"
+   ],
+   "overlap_ratio_pct": 95.3,
+   "g6_overlap_outlier": false,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-sophie__flat.2026-08-10T1203Z.geojson"
+   ],
+   "dropped_divergence": [
+    {
+     "code": "V80",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "V804",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "V805",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    }
+   ],
+   "dropped_codes": [
+    "V80",
+    "V804",
+    "V805"
+   ],
+   "expected_dropped_codes": [
+    "V80",
+    "V804",
+    "V805"
+   ],
+   "dropped_matches_record": true,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-sophie__flat.2026-08-10T1203Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-sophie.geojson",
+     "served_features": 105,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "proof_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75028_PUBLIC/MapServer/140/query?where=1%3D1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:ef5591835f309dd64f5d4df47c5a0110a16a752c0d9d77c7a246d81263d5c5b0",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T10:49:30.745Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75028_PUBLIC/MapServer/140/query?where=1%3D1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "remplacé v2 byte-exact ; provenance documented/url=proof.url ; grain estampillé ; backup _replaced/ présent"
+  },
+  {
+   "slug": "hampstead",
+   "run_stamp": "20260810T124000Z",
+   "source_url": "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "Zone",
+   "layer_id": "61",
+   "expected_geometry_grain": "evaluation-unit",
+   "capture_run_id": "zones-20260810T124000Z-0-308101d7-db1b-4e18-b9b6-17fad861db05",
+   "http_status": 200,
+   "sha256": "sha256:4d1c0a9c8385248102691a00086472fca5f9ba838a2c93b9548a214f3074dc20",
+   "retrieved_at": "2026-08-10T11:26:59.235Z",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 1869,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "hampstead",
+   "registry_attribution_km": 0.21,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [
+    "ID_UEV",
+    "MATRICULE8",
+    "CODE_UTILI"
+   ],
+   "geometry_grain_classified": "evaluation-unit",
+   "grain_matches_expected": true,
+   "capture_distinct_codes": 29,
+   "source_count": 1869,
+   "source_layer_name": "Zonage_Hampstead_S",
+   "count_query": "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&returnCountOnly=true&f=json",
+   "source_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "feature_count(1869) == source_count(1869) && exceededTransferLimit=false",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-hampstead/qc-zonage-hampstead.geojson"
+   ],
+   "served_layout": "nested",
+   "served_features": 1869,
+   "served_distinct_codes": 29,
+   "served_levels": [
+    "candidate"
+   ],
+   "served_source_urls": [
+    "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&outFields=*&f=geojson"
+   ],
+   "served_has_v2_proof": false,
+   "served_all_url_null": false,
+   "served_codes_covered": 29,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "g6_overlap_outlier": false,
+   "guard_blocks": [
+    "servi zone_source_url NON-null (v2_proof=false) → hors politique remplacement url=null (SPEC §2/§6); 0 code droppé (aucune régression), mais état à arbitrer par archi avant tout dépôt"
+   ],
+   "statut": "SKIP",
+   "raison": "servi zone_source_url NON-null (v2_proof=false) → hors politique remplacement url=null (SPEC §2/§6); 0 code droppé (aucune régression), mais état à arbitrer par archi avant tout dépôt"
+  }
+ ]
+}

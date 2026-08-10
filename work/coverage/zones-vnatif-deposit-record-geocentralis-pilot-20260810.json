@@ -1,0 +1,419 @@
+{
+ "contract": "zones-vnatif-deposit-record-geocentralis-pilot/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md@64f82eae/65d4c637 + SPEC_ZONE_GEOMETRY_GRAIN.md@7c7f6731 + SPEC_ACQUISITION_METHODES_PAR_SOURCE.md@47fc8104 §12",
+ "decision": "CLEAN-UPGRADE pilote géoCentralis WFS (legacy-traceable→documented v2), source-identity WFS, zone_code brut du champ-code",
+ "mode": "commit",
+ "run_stamp": "20260810T140000Z",
+ "proof_intended": {
+  "type": "wfs",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (discriminateur = preuve v2 par-feature) + geometry_grain",
+ "cities": [
+  {
+   "slug": "adstock",
+   "layer": "evb:zonage_municipal",
+   "id_municipalite": "31056",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T140000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=31056",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T140000Z-0-ca683556-dfed-462c-94ea-7254ff97bd94",
+   "http_status": 200,
+   "sha256": "sha256:7af1b5e96f28257e483fa19dcc2e72c78040496b73e2a0585294317846abc60a",
+   "retrieved_at": "2026-08-10T15:17:31.640Z",
+   "storage_key": "raw/zones-vnatif/cas/7af1b5e96f28257e483fa19dcc2e72c78040496b73e2a0585294317846abc60a.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 174,
+   "wfs_number_matched": 174,
+   "wfs_number_returned": 174,
+   "wfs_total_features": 174,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "adstock",
+   "registry_attribution_km": 0.97,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 173,
+   "sample_codes": [
+    {
+     "code_field_value": "M2.3-1",
+     "zone_code": "M2.3-1"
+    },
+    {
+     "code_field_value": "M2.3-3",
+     "zone_code": "M2.3-3"
+    },
+    {
+     "code_field_value": "M2.3-4",
+     "zone_code": "M2.3-4"
+    },
+    {
+     "code_field_value": "M2.3-5",
+     "zone_code": "M2.3-5"
+    },
+    {
+     "code_field_value": "M2.3-7",
+     "zone_code": "M2.3-7"
+    },
+    {
+     "code_field_value": "M2.3-8",
+     "zone_code": "M2.3-8"
+    },
+    {
+     "code_field_value": "M2.4-1",
+     "zone_code": "M2.4-1"
+    },
+    {
+     "code_field_value": "M2.4-3",
+     "zone_code": "M2.4-3"
+    }
+   ],
+   "live_number_matched": 174,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(174)==numberMatched(174)==features(174) && live numberMatched(174)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-adstock.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 174,
+   "served_distinct_codes": 173,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=31056]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_all_url_null": false,
+   "served_codes_covered": 173,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-adstock__flat.2026-08-10T1521Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-adstock__flat.2026-08-10T1521Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-adstock.geojson",
+     "served_features": 174,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=31056",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:7af1b5e96f28257e483fa19dcc2e72c78040496b73e2a0585294317846abc60a",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:17:31.640Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=31056"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "baie-comeau",
+   "layer": "evb:siadmin_pzon_99_s",
+   "id_municipalite": "96020",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T140000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=96020",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T140000Z-1-63bfe5d2-aaf0-4621-ab4c-a20f034b90e3",
+   "http_status": 200,
+   "sha256": "sha256:00dd053fad5bad8081e88a412e06a06e2c39e9d640754d007c38f70296b2c907",
+   "retrieved_at": "2026-08-10T15:17:29.566Z",
+   "storage_key": "raw/zones-vnatif/cas/00dd053fad5bad8081e88a412e06a06e2c39e9d640754d007c38f70296b2c907.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 238,
+   "wfs_number_matched": 238,
+   "wfs_number_returned": 238,
+   "wfs_total_features": 238,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "baie-comeau",
+   "registry_attribution_km": 3.13,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 237,
+   "sample_codes": [
+    {
+     "code_field_value": "281 R",
+     "zone_code": "281 R"
+    },
+    {
+     "code_field_value": "316 P",
+     "zone_code": "316 P"
+    },
+    {
+     "code_field_value": "177 C",
+     "zone_code": "177 C"
+    },
+    {
+     "code_field_value": "152 R",
+     "zone_code": "152 R"
+    },
+    {
+     "code_field_value": "21 I",
+     "zone_code": "21 I"
+    },
+    {
+     "code_field_value": "140 R",
+     "zone_code": "140 R"
+    },
+    {
+     "code_field_value": "142 P",
+     "zone_code": "142 P"
+    },
+    {
+     "code_field_value": "104 P",
+     "zone_code": "104 P"
+    }
+   ],
+   "live_number_matched": 238,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(238)==numberMatched(238)==features(238) && live numberMatched(238)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-baie-comeau.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 238,
+   "served_distinct_codes": 237,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96020]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_all_url_null": false,
+   "served_codes_covered": 237,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-comeau__flat.2026-08-10T1521Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-comeau__flat.2026-08-10T1521Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-baie-comeau.geojson",
+     "served_features": 238,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=96020",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:00dd053fad5bad8081e88a412e06a06e2c39e9d640754d007c38f70296b2c907",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:17:29.566Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=96020"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "beauceville",
+   "layer": "evb:zonage_municipal",
+   "id_municipalite": "27028",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T140000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=27028",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T140000Z-2-dccb9cad-68e7-48a8-b610-f507f6175aaa",
+   "http_status": 200,
+   "sha256": "sha256:542d458aac23f8f4187593a680c4404f349d96b58d850e90052098f934fcaa1e",
+   "retrieved_at": "2026-08-10T15:17:29.520Z",
+   "storage_key": "raw/zones-vnatif/cas/542d458aac23f8f4187593a680c4404f349d96b58d850e90052098f934fcaa1e.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 196,
+   "wfs_number_matched": 196,
+   "wfs_number_returned": 196,
+   "wfs_total_features": 196,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "beauceville",
+   "registry_attribution_km": 1.57,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 193,
+   "sample_codes": [
+    {
+     "code_field_value": "310-CN",
+     "zone_code": "310-CN"
+    },
+    {
+     "code_field_value": "36-ID",
+     "zone_code": "36-ID"
+    },
+    {
+     "code_field_value": "103-ID",
+     "zone_code": "103-ID"
+    },
+    {
+     "code_field_value": "14-ID",
+     "zone_code": "14-ID"
+    },
+    {
+     "code_field_value": "323-H",
+     "zone_code": "323-H"
+    },
+    {
+     "code_field_value": "26-ID",
+     "zone_code": "26-ID"
+    },
+    {
+     "code_field_value": "120-ID",
+     "zone_code": "120-ID"
+    },
+    {
+     "code_field_value": "17-ID",
+     "zone_code": "17-ID"
+    }
+   ],
+   "live_number_matched": 196,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(196)==numberMatched(196)==features(196) && live numberMatched(196)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-beauceville.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 196,
+   "served_distinct_codes": 193,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=27028]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_all_url_null": false,
+   "served_codes_covered": 193,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-beauceville__flat.2026-08-10T1521Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-beauceville__flat.2026-08-10T1521Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-beauceville.geojson",
+     "served_features": 196,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=27028",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:542d458aac23f8f4187593a680c4404f349d96b58d850e90052098f934fcaa1e",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:17:29.520Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=27028"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  }
+ ]
+}
