@@ -10,13 +10,16 @@
  *   npx tsx acquisition/src/capture-cas-materialize.ts \
  *     --run <capture-run-id> --url <exact-source-url> --output /tmp/source.pdf
  */
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { pathToFileURL } from "node:url";
 
 import {
+  CapturedNormesReferenceSchema,
   CaptureRunHeaderSchema,
+  assertCapturedNormesReference,
   captureRunKeys,
   parseManifestJsonl,
+  type CapturedNormesReference,
 } from "../../packages/qc-sources/src/capture/index.js";
 import { captureReceiptFromManifest } from "./lib/zone-provenance-quality.js";
 import { verifyRawCapturePayload } from "./lib/zone-provenance-raw-capture.js";
@@ -37,13 +40,81 @@ function requireS3RunEnvironment(): void {
   }
 }
 
+export const MAX_CAPTURED_NORMES_PDF_BYTES = 104_857_600;
+
+function requireRemoteMaterialization(): void {
+  if (process.env["GEO_NORMES_CAPTURED_EXECUTION"] !== "remote") {
+    throw new Error("captured normes PDF materialization is remote-only");
+  }
+}
+
+function hasPdfMagic(bytes: Uint8Array): boolean {
+  return bytes.length >= 5 && Buffer.from(bytes.subarray(0, 5)).toString("ascii") === "%PDF-";
+}
+
+/**
+ * Materialise the one PDF named by a strict capture receipt. This is used by the
+ * remote normes job only; it never fetches the municipal source URL.
+ */
+export async function materializeCapturedNormesPdf(
+  referenceValue: unknown,
+  output: string,
+): Promise<Record<string, unknown>> {
+  requireRemoteMaterialization();
+  const { capture, bytes } = await loadCapturedNormesPdf(referenceValue);
+  writeFileSync(output, bytes, { flag: "wx" });
+  return {
+    contract: "capture-cas-materialize/v2",
+    capture,
+    bytes: bytes.length,
+    output,
+  };
+}
+
+/** Read and re-verify a captured PDF in memory; no municipal network request occurs. */
+export async function loadCapturedNormesPdf(
+  referenceValue: unknown,
+): Promise<{ capture: CapturedNormesReference; bytes: Buffer }> {
+  requireS3RunEnvironment();
+  const reference = CapturedNormesReferenceSchema.parse(referenceValue);
+  const s3 = s3Client();
+  const keys = captureRunKeys(reference.run_id);
+  const header = CaptureRunHeaderSchema.parse(
+    JSON.parse((await getBytes(s3, keys.header)).toString("utf8")),
+  );
+  const manifest = parseManifestJsonl((await getBytes(s3, keys.manifest)).toString("utf8"));
+  const line = manifest[reference.line_index];
+  if (!line) throw new Error(`capture line does not exist: ${reference.line_index}`);
+  const exact = assertCapturedNormesReference(reference, header, line);
+  const receipt = captureReceiptFromManifest(line, keys.manifest, reference.line_index);
+  if (receipt === null) throw new Error("reçu de capture invalide");
+  const bytes = await getBytes(s3, exact.storage_key);
+  if (bytes.length > MAX_CAPTURED_NORMES_PDF_BYTES) {
+    throw new Error(`captured PDF exceeds ${MAX_CAPTURED_NORMES_PDF_BYTES} bytes`);
+  }
+  if (!hasPdfMagic(bytes)) throw new Error("captured body is not a PDF (%PDF- missing)");
+  const sidecar = JSON.parse(
+    (await getBytes(s3, `${exact.storage_key}.meta.json`)).toString("utf8"),
+  ) as unknown;
+  const verification = verifyRawCapturePayload(receipt, bytes, sidecar);
+  if (!verification.verified) throw new Error(`CAS non vérifié: ${verification.reason}`);
+  return { capture: exact, bytes };
+}
+
 async function main(): Promise<void> {
   requireS3RunEnvironment();
   const run = value("run");
   const url = value("url");
   const output = value("output");
+  const referencePath = value("reference-json");
+  if (referencePath) {
+    if (!output) throw new Error("--output <local-path> is required with --reference-json");
+    const result = await materializeCapturedNormesPdf(JSON.parse(readFileSync(referencePath, "utf8")), output);
+    process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
+    return;
+  }
   if (!run || !url || !output) {
-    throw new Error("usage: --run <capture-run-id> --url <exact-source-url> --output <local-path>");
+    throw new Error("usage: --run <capture-run-id> --url <exact-source-url> --output <local-path> | --reference-json <capture.json> --output <local-path>");
   }
 
   const s3 = s3Client();
