@@ -4,7 +4,7 @@
 
 La page municipale officielle de règlements déjà capturée sur S3 publie
 littéralement le lien « Matrice graphique »
-`https://www.goazimut.com/GOnet6/?m=50065&pl=1`. Trois captures unitaires ont
+`https://www.goazimut.com/GOnet6/?m=50065&pl=1`. Quatre captures unitaires ont
 été exécutées sur le cluster OVH; tous les octets et manifestes sont sur S3.
 
 | Élément dérivé | Run cluster | CAS S3 | Résultat |
