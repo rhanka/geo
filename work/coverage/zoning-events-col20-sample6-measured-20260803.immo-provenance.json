@@ -1,0 +1,24 @@
+{
+  "$meta": "Pin de provenance de la vérité-terrain immo utilisée pour le col-20 MESURÉ 6 villes (WP5 v3.4). La preuve événement-par-événement (70 matched + 15 missed, source_fields verbatim) est capitalisée dans l'audit voisin recall-gate.json; ce fichier pin la SOURCE pour re-vérification byte-identique.",
+  "retrieved_at": "2026-08-03",
+  "source_path": "/home/antoinefa/src/radar-immobilier/tmp/handoff/jointures-designation-events-6.ndjson",
+  "git_blob_sha1": "acabcc1895bc97e9c3d7157eb27e4d475c850ed8",
+  "lines_total": 267,
+  "designation_events": 85,
+  "signals_excluded": 182,
+  "note_capitalisation": "Export AUTORITAIRE = immo (radar). geo capitalise la preuve DÉRIVÉE (audit recall-gate.json) + ce pin. immo doit déposer l'export brut sur S3/committé (principe fondateur). Re-valider byte-identique au dépôt autoritaire (cf. set-167-bprime pin radar feat/set-167-canonical).",
+  "measure": {
+    "metric": "recall directionnel immo→geo (identité doc exacte + type crosswalké, match multiset min-based)",
+    "aggregate_matched": 70,
+    "aggregate_immo_designation_events": 85,
+    "aggregate_recall_pct": 82.35,
+    "per_city": {
+      "saint-raymond": "5/8 = 62.5%",
+      "sutton": "1/3 = 33.3%",
+      "coaticook": "2/6 = 33.3%",
+      "saint-mathieu-de-beloeil": "12/18 = 66.7%",
+      "saint-eustache": "50/50 = 100.0%",
+      "saint-stanislas": "immo-gt-pending (0 event sous le slug nu; slug ambigu)"
+    }
+  }
+}
