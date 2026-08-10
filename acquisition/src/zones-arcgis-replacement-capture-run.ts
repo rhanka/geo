@@ -18,7 +18,7 @@ import {
   captureUrlForReplacementTarget,
   parseZonesArcgisReplacementWorklist,
   serializeZonesArcgisReplacementWorklist,
-  type ZonesArcgisReplacementTarget,
+  assertReplacementTargetMatchesMunicipalityRegister,
   type ZonesArcgisReplacementWorklist,
 } from "./lib/zones-arcgis-replacement-worklist.js";
 
@@ -52,34 +52,14 @@ export function parseReplacementRunId(value: string): string {
   return value;
 }
 
-interface RegisteredMunicipality { slug: string; name: string }
-
-function comparableMunicipalityName(value: string): string {
-  return value.normalize("NFC").toLocaleLowerCase("fr-CA").trim();
-}
-
-/** The ArcGIS predicate must name the same municipality as the registry slug. */
-export function assertReplacementTargetMatchesMunicipalityRegister(
-  target: ZonesArcgisReplacementTarget,
-  municipalities: readonly RegisteredMunicipality[],
-): void {
-  const municipality = municipalities.find((candidate) => candidate.slug === target.slug);
-  if (!municipality) throw new Error(`slug de remplacement absent du registre municipal: ${target.slug}`);
-  if (comparableMunicipalityName(target.municipality_filter.value) !== comparableMunicipalityName(municipality.name)) {
-    throw new Error(
-      `filtre municipal ${JSON.stringify(target.municipality_filter.value)} ne correspond pas au slug ${target.slug} (${JSON.stringify(municipality.name)})`,
-    );
-  }
-}
-
-function municipalityRegister(): RegisteredMunicipality[] {
+function municipalityRegister(): Array<{ slug: string; name: string }> {
   const value = JSON.parse(readFileSync(MUNICIPALITIES, "utf8")) as unknown;
   if (!Array.isArray(value) || value.some((entry) => typeof entry !== "object" || entry === null
-    || typeof (entry as Partial<RegisteredMunicipality>).slug !== "string"
-    || typeof (entry as Partial<RegisteredMunicipality>).name !== "string")) {
+    || typeof (entry as Partial<{ slug: string; name: string }>).slug !== "string"
+    || typeof (entry as Partial<{ slug: string; name: string }>).name !== "string")) {
     throw new Error("registre municipal invalide");
   }
-  return value as RegisteredMunicipality[];
+  return value as Array<{ slug: string; name: string }>;
 }
 
 /** Vérifie les octets réellement lus de S3 AVANT de les interpréter. */
