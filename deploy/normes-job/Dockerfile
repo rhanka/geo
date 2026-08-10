@@ -34,6 +34,9 @@ RUN cd acquisition && npm ci \
  && ln -s acquisition/node_modules /geo/node_modules
 COPY acquisition/src/ ./acquisition/src/
 COPY acquisition/tsconfig.json ./acquisition/
+# Static, non-secret S3 endpoint contract read at module load. Credentials stay
+# exclusively in the Kubernetes SecretRef environment.
+COPY acquisition/config/s3-target.json ./acquisition/config/s3-target.json
 
 # Regression guard for the captured bridge: its TypeScript source reaches both
 # @sentropic/geo (through the acquisition tsconfig paths) and zod (from the
