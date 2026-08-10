@@ -1,0 +1,40 @@
+{
+  "contract": "reglement-palier167-col5-retention/v1",
+  "as_of": "2026-08-10T02:40:25.265Z",
+  "scope": "palier-167 / ogden / col-5 reglement_declared",
+  "before": {
+    "state": "incomplete",
+    "reason": "Les 47 entités servies portent encore les valeurs candidates 2025-05/2025, mais sans URL source, preuve v2 ni qualité; le seul candidat connu était explicitement un projet non adopté."
+  },
+  "after": {
+    "state": "incomplete",
+    "reason": "La version municipale actuelle a été capturée et reste explicitement marquée «Projet Septembre 2025»; les dates d'adoption et d'entrée en vigueur sont laissées vides."
+  },
+  "evidence": {
+    "zoning_regulation_draft": {
+      "url": "https://www.munogden.ca/uploads/1/3/4/8/134872540/2025-05_zonage_ogden_-_version_septembre_2025.pdf",
+      "retrieved_at": "2026-08-10T02:40:25.265Z",
+      "sha256": "sha256:1cd893bc3d39640d9a49619b7fe0e8fee9d4abc18d9812fda40ed7ebcd8c9e94",
+      "storage_key": "raw/reglement-official/cas/1cd893bc3d39640d9a49619b7fe0e8fee9d4abc18d9812fda40ed7ebcd8c9e94.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T024010Z-0-451a7f4a-842f-4b66-9115-7c51b37eb050/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "Projet Septembre 2025 — RÈGLEMENT DE ZONAGE # 2025-05 — MUNICIPALITÉ D’OGDEN",
+      "rejection": "Le document est un projet; les gabarits de date ne sont pas une adoption ni une entrée en vigueur."
+    },
+    "served_readback": {
+      "key": "normalized/ca-qc-zonage/qc-zonage-ogden.geojson",
+      "features": 47,
+      "candidate_reglement_numero": "2025-05",
+      "candidate_reglement_millesime": "2025",
+      "reglement_url_features": 0,
+      "zone_source_level": "candidate",
+      "proof_v2_features": 0,
+      "quality_features": 0
+    }
+  },
+  "anti_invention": {
+    "scope": "Le numéro 2025-05 est imprimé, mais sa promotion ferait déclarer un règlement que l'émetteur qualifie encore de projet. L'année 2025 ne devient pas un millésime par le seul numéro ou le gabarit.",
+    "storage": "Les octets du projet sont uniquement dans le CAS S3 et leur manifeste de capture cluster; aucun PDF n'est enregistré dans le worktree.",
+    "served_columns": "Aucun gain col-5/9/10/11; aucune écriture ou pliage des zones servies n'est exécuté."
+  }
+}
