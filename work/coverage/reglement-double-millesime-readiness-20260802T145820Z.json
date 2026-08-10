@@ -1,0 +1,5766 @@
+{
+  "contract": "reglement-double-millesime-readiness/v1",
+  "as_of": "2026-08-02T15:01:27.379Z",
+  "read_only_local": true,
+  "inputs": {
+    "reglement_provenance": {
+      "path": "acquisition/config/reglement-provenance.json",
+      "sha256": "cbb36bd56d5af02e39974e1e2b1e591dbed63b4a219be70d8edbbb7644a30d35",
+      "bytes": 951593
+    },
+    "municipalities_catalog": {
+      "path": "packages/qc-sources/src/geo/municipalities.qc.json",
+      "sha256": "7569b3ae83b61a589ccef3aa20b08747370904eba82b0c8c63792d28c5f966ef",
+      "bytes": 332495,
+      "municipalities": 1106
+    }
+  },
+  "universe": {
+    "reglement_provenance_entries": 944,
+    "denominator": "reglement_provenance_entries"
+  },
+  "partition": {
+    "counts": {
+      "ANCIEN_VERBATIM": 53,
+      "REZONAGE_AMBIGU": 192,
+      "EN_VIGUEUR_SEUL": 699
+    },
+    "equation": "ANCIEN_VERBATIM (53) + REZONAGE_AMBIGU (192) + EN_VIGUEUR_SEUL (699) = 944",
+    "total": 944,
+    "validated": true
+  },
+  "flags": {
+    "MILLESIME_NULL": 416
+  },
+  "ancien_verbatim": [
+    {
+      "slug": "baie-des-sables",
+      "en_vigueur_numero": "2008-06",
+      "en_vigueur_millesime": 2008,
+      "ancien_numero_verbatim": "94-02",
+      "_note_span": {
+        "start": 291,
+        "end": 337,
+        "text": "REMPLACANT LE REGLEMENT DE ZONAGE NUMERO 94-02"
+      }
+    },
+    {
+      "slug": "beaupre",
+      "en_vigueur_numero": "1192",
+      "en_vigueur_millesime": 2016,
+      "ancien_numero_verbatim": "967",
+      "_note_span": {
+        "start": 323,
+        "end": 375,
+        "text": "Abroge et remplace le Règlement de zonage numéro 967"
+      }
+    },
+    {
+      "slug": "candiac",
+      "en_vigueur_numero": "5000",
+      "en_vigueur_millesime": 2013,
+      "ancien_numero_verbatim": "555",
+      "_note_span": {
+        "start": 611,
+        "end": 673,
+        "text": "remplacés par le présent règlement, le règlement de zonage 555"
+      }
+    },
+    {
+      "slug": "cheneville",
+      "en_vigueur_numero": "2016-061",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "2000-005",
+      "_note_span": {
+        "start": 282,
+        "end": 359,
+        "text": "abroge et remplace toutes les dispositions du règlement de zonage nº 2000-005"
+      }
+    },
+    {
+      "slug": "crabtree",
+      "en_vigueur_numero": "2024-421",
+      "en_vigueur_millesime": 2024,
+      "ancien_numero_verbatim": "99-044",
+      "_note_span": {
+        "start": 643,
+        "end": 672,
+        "text": "abroge le règlement n° 99-044"
+      }
+    },
+    {
+      "slug": "disraeli--les-appalaches--2",
+      "en_vigueur_numero": "369-2011",
+      "en_vigueur_millesime": 2011,
+      "ancien_numero_verbatim": "219",
+      "_note_span": {
+        "start": 554,
+        "end": 584,
+        "text": "abroge le reglement numero 219"
+      }
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "en_vigueur_numero": "R-2025-199",
+      "en_vigueur_millesime": "2025",
+      "ancien_numero_verbatim": "82-704",
+      "_note_span": {
+        "start": 147,
+        "end": 252,
+        "text": "REMPLACE («adoption d'un nouveau reglement de zonage en remplacement du reglement de zonage numero 82-704"
+      }
+    },
+    {
+      "slug": "escuminac",
+      "en_vigueur_numero": "2022-003",
+      "en_vigueur_millesime": 2022,
+      "ancien_numero_verbatim": "2021-003",
+      "_note_span": {
+        "start": 405,
+        "end": 512,
+        "text": "remplace et abroge toute disposition incompatible […] Sans limiter ce qui précède, le règlement n° 2021-003"
+      }
+    },
+    {
+      "slug": "hudson",
+      "en_vigueur_numero": "526",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "321",
+      "_note_span": {
+        "start": 617,
+        "end": 679,
+        "text": "abroge et remplace en entier le règlement de zonage numéro 321"
+      }
+    },
+    {
+      "slug": "irlande",
+      "en_vigueur_numero": "339",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "307",
+      "_note_span": {
+        "start": 346,
+        "end": 409,
+        "text": "remplaçant ainsi les dispositions contenues au règlement no 307"
+      }
+    },
+    {
+      "slug": "ivry-sur-le-lac",
+      "en_vigueur_numero": "2013-060",
+      "en_vigueur_millesime": "2013",
+      "ancien_numero_verbatim": "117",
+      "_note_span": {
+        "start": 425,
+        "end": 503,
+        "text": "remplace le zonage no 117 (p7: «l'abrogation du règlement de zonage numéro 117"
+      }
+    },
+    {
+      "slug": "la-minerve",
+      "en_vigueur_numero": "2024-732",
+      "en_vigueur_millesime": "2024",
+      "ancien_numero_verbatim": "2013-103",
+      "_note_span": {
+        "start": 223,
+        "end": 297,
+        "text": "remplace a toutes fins que de droit le Reglement de zonage numero 2013-103"
+      }
+    },
+    {
+      "slug": "la-peche",
+      "en_vigueur_numero": "113-2025",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "03-429",
+      "_note_span": {
+        "start": 798,
+        "end": 846,
+        "text": "abroge et remplace le reglement de zonage 03-429"
+      }
+    },
+    {
+      "slug": "la-presentation",
+      "en_vigueur_numero": "06-81",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "382",
+      "_note_span": {
+        "start": 625,
+        "end": 686,
+        "text": "remplace les règlements suivants : Règlement de zonage no 382"
+      }
+    },
+    {
+      "slug": "laval",
+      "en_vigueur_numero": "CDU-1",
+      "en_vigueur_millesime": 2022,
+      "ancien_numero_verbatim": "L-2000",
+      "_note_span": {
+        "start": 986,
+        "end": 1030,
+        "text": "remplace l'ancien reglement de zonage L-2000"
+      }
+    },
+    {
+      "slug": "mayo",
+      "en_vigueur_numero": "2016-03",
+      "en_vigueur_millesime": 2016,
+      "ancien_numero_verbatim": "2000-03",
+      "_note_span": {
+        "start": 154,
+        "end": 230,
+        "text": "abroge et remplace toutes les dispositions du règlement de zonage nº 2000-03"
+      }
+    },
+    {
+      "slug": "metis-sur-mer",
+      "en_vigueur_numero": "08-38",
+      "en_vigueur_millesime": "2008",
+      "ancien_numero_verbatim": "156-92",
+      "_note_span": {
+        "start": 406,
+        "end": 484,
+        "text": "remplace et abroge les règlements suivants : Règlement de zonage numéro 156-92"
+      }
+    },
+    {
+      "slug": "mulgrave-et-derry",
+      "en_vigueur_numero": "2017-012",
+      "en_vigueur_millesime": 2018,
+      "ancien_numero_verbatim": "2000-04",
+      "_note_span": {
+        "start": 237,
+        "end": 313,
+        "text": "abroge et remplace toutes les dispositions du reglement de zonage no 2000-04"
+      }
+    },
+    {
+      "slug": "murdochville",
+      "en_vigueur_numero": "12-352",
+      "en_vigueur_millesime": 2012,
+      "ancien_numero_verbatim": "92-247",
+      "_note_span": {
+        "start": 157,
+        "end": 187,
+        "text": "remplaçant le règlement 92-247"
+      }
+    },
+    {
+      "slug": "notre-dame-de-lourdes--lerable",
+      "en_vigueur_numero": "300-2017",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "140-89",
+      "_note_span": {
+        "start": 590,
+        "end": 627,
+        "text": "remplacant le reglement numero 140-89"
+      }
+    },
+    {
+      "slug": "ormstown",
+      "en_vigueur_numero": "148-2023",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "25-2006",
+      "_note_span": {
+        "start": 404,
+        "end": 450,
+        "text": "abroge et remplace le règlement numéro 25-2006"
+      }
+    },
+    {
+      "slug": "petite-riviere-saint-francois",
+      "en_vigueur_numero": "603",
+      "en_vigueur_millesime": 2018,
+      "ancien_numero_verbatim": "582",
+      "_note_span": {
+        "start": 424,
+        "end": 454,
+        "text": "abroge le reglement numero 582"
+      }
+    },
+    {
+      "slug": "plessisville",
+      "en_vigueur_numero": "595-16",
+      "en_vigueur_millesime": "2016",
+      "ancien_numero_verbatim": "364-90",
+      "_note_span": {
+        "start": 623,
+        "end": 683,
+        "text": "REMPLACE (p2 verbatim «remplacant le reglement numero 364-90"
+      }
+    },
+    {
+      "slug": "pontiac",
+      "en_vigueur_numero": "11-24",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "177-01",
+      "_note_span": {
+        "start": 364,
+        "end": 416,
+        "text": "remplace et abroge le règlement de zonage n o 177-01"
+      }
+    },
+    {
+      "slug": "prevost",
+      "en_vigueur_numero": "843",
+      "en_vigueur_millesime": 2024,
+      "ancien_numero_verbatim": "601",
+      "_note_span": {
+        "start": 265,
+        "end": 342,
+        "text": "abroge et remplace les règlements suivants : 1° le règlement de zonage no 601"
+      }
+    },
+    {
+      "slug": "price",
+      "en_vigueur_numero": "317",
+      "en_vigueur_millesime": 2011,
+      "ancien_numero_verbatim": "232",
+      "_note_span": {
+        "start": 163,
+        "end": 197,
+        "text": "REMPLAÇANT LE RÈGLEMENT NUMÉRO 232"
+      }
+    },
+    {
+      "slug": "saint-andre-de-kamouraska",
+      "en_vigueur_numero": "251",
+      "en_vigueur_millesime": 2025,
+      "ancien_numero_verbatim": "45",
+      "_note_span": {
+        "start": 792,
+        "end": 825,
+        "text": "remplaçant le règlement numéro 45"
+      }
+    },
+    {
+      "slug": "saint-antonin",
+      "en_vigueur_numero": "922-26",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "311",
+      "_note_span": {
+        "start": 626,
+        "end": 663,
+        "text": "remplacer le règlement de zonage #311"
+      }
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "en_vigueur_numero": "171",
+      "en_vigueur_millesime": 2021,
+      "ancien_numero_verbatim": "86",
+      "_note_span": {
+        "start": 62,
+        "end": 101,
+        "text": "abroge le règlement de zonage numéro 86"
+      }
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "en_vigueur_numero": "URB-Z2017",
+      "en_vigueur_millesime": 2017,
+      "ancien_numero_verbatim": "URB-Z2009",
+      "_note_span": {
+        "start": 205,
+        "end": 246,
+        "text": "remplace le Règlement de zonage URB-Z2009"
+      }
+    },
+    {
+      "slug": "saint-calixte",
+      "en_vigueur_numero": "722-2023",
+      "en_vigueur_millesime": "2023",
+      "ancien_numero_verbatim": "345-A-88",
+      "_note_span": {
+        "start": 684,
+        "end": 715,
+        "text": "abroge le règlement n° 345-A-88"
+      }
+    },
+    {
+      "slug": "saint-colomban",
+      "en_vigueur_numero": "3001",
+      "en_vigueur_millesime": 2017,
+      "ancien_numero_verbatim": "601",
+      "_note_span": {
+        "start": 354,
+        "end": 381,
+        "text": "REMPLAÇANT LE RÈGLEMENT 601"
+      }
+    },
+    {
+      "slug": "saint-damien",
+      "en_vigueur_numero": "753",
+      "en_vigueur_millesime": 2017,
+      "ancien_numero_verbatim": "382",
+      "_note_span": {
+        "start": 361,
+        "end": 391,
+        "text": "abroge le reglement numero 382"
+      }
+    },
+    {
+      "slug": "saint-elie-de-caxton",
+      "en_vigueur_numero": "2010-012",
+      "en_vigueur_millesime": "2010",
+      "ancien_numero_verbatim": "99-011",
+      "_note_span": {
+        "start": 832,
+        "end": 891,
+        "text": "ABROGE (p100 verbatim «Le règlement de zonage numéro 99-011"
+      }
+    },
+    {
+      "slug": "saint-esprit",
+      "en_vigueur_numero": "738-2025",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "364",
+      "_note_span": {
+        "start": 194,
+        "end": 238,
+        "text": "remplacés par le présent, le règlement # 364"
+      }
+    },
+    {
+      "slug": "saint-eusebe",
+      "en_vigueur_numero": "05-2014",
+      "en_vigueur_millesime": 2015,
+      "ancien_numero_verbatim": "02-1990",
+      "_note_span": {
+        "start": 631,
+        "end": 676,
+        "text": "Abroge «le Reglement de zonage numero 02-1990"
+      }
+    },
+    {
+      "slug": "saint-gabriel-de-brandon",
+      "en_vigueur_numero": "620-1",
+      "en_vigueur_millesime": 2026,
+      "ancien_numero_verbatim": "297",
+      "_note_span": {
+        "start": 277,
+        "end": 310,
+        "text": "remplaçant l'ancien règlement 297"
+      }
+    },
+    {
+      "slug": "saint-gilbert",
+      "en_vigueur_numero": "U-08-2014",
+      "en_vigueur_millesime": 2014,
+      "ancien_numero_verbatim": "93",
+      "_note_span": {
+        "start": 607,
+        "end": 648,
+        "text": "remplace le reglement de zonage numero 93"
+      }
+    },
+    {
+      "slug": "saint-jules",
+      "en_vigueur_numero": "05-2021",
+      "en_vigueur_millesime": "2021",
+      "ancien_numero_verbatim": "05-2015",
+      "_note_span": {
+        "start": 689,
+        "end": 768,
+        "text": "REMPLACE («ATTENDU QU’IL y a lieu de remplacer le Règlement de zonage # 05-2015"
+      }
+    },
+    {
+      "slug": "saint-leandre",
+      "en_vigueur_numero": "233",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "110",
+      "_note_span": {
+        "start": 212,
+        "end": 256,
+        "text": "REMPLACANT LE REGLEMENT DE ZONAGE NUMERO 110"
+      }
+    },
+    {
+      "slug": "saint-leonard-de-portneuf",
+      "en_vigueur_numero": "400-12",
+      "en_vigueur_millesime": 2012,
+      "ancien_numero_verbatim": "221-91",
+      "_note_span": {
+        "start": 438,
+        "end": 483,
+        "text": "remplace le règlement de zonage numéro 221-91"
+      }
+    },
+    {
+      "slug": "saint-louis",
+      "en_vigueur_numero": "389-06",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "242-89",
+      "_note_span": {
+        "start": 568,
+        "end": 635,
+        "text": "remplace les règlements suivants : - Règlement de zonage n o 242-89"
+      }
+    },
+    {
+      "slug": "saint-marcellin",
+      "en_vigueur_numero": "2014-247",
+      "en_vigueur_millesime": "2014",
+      "ancien_numero_verbatim": "1990-97",
+      "_note_span": {
+        "start": 472,
+        "end": 516,
+        "text": "abroge le Règlement de zonage numéro 1990-97"
+      }
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "en_vigueur_numero": "308",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "277",
+      "_note_span": {
+        "start": 428,
+        "end": 451,
+        "text": "Abroge le reglement 277"
+      }
+    },
+    {
+      "slug": "saint-pierre-baptiste",
+      "en_vigueur_numero": "250-A",
+      "en_vigueur_millesime": 2017,
+      "ancien_numero_verbatim": "106-A",
+      "_note_span": {
+        "start": 363,
+        "end": 399,
+        "text": "remplaçant le règlement numéro 106-A"
+      }
+    },
+    {
+      "slug": "saint-polycarpe",
+      "en_vigueur_numero": "218-2025",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "113-2012",
+      "_note_span": {
+        "start": 256,
+        "end": 304,
+        "text": "remplace le «Règlement de zonage numéro 113-2012"
+      }
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "en_vigueur_numero": "151-2023",
+      "en_vigueur_millesime": 2024,
+      "ancien_numero_verbatim": "8-1987",
+      "_note_span": {
+        "start": 1058,
+        "end": 1094,
+        "text": "remplacés le règlement numéro 8-1987"
+      }
+    },
+    {
+      "slug": "saint-simon-les-mines",
+      "en_vigueur_numero": "165-2006",
+      "en_vigueur_millesime": 2007,
+      "ancien_numero_verbatim": "66",
+      "_note_span": {
+        "start": 592,
+        "end": 627,
+        "text": "Abroge le reglement de zonage no 66"
+      }
+    },
+    {
+      "slug": "sainte-justine-de-newton",
+      "en_vigueur_numero": "414",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "314",
+      "_note_span": {
+        "start": 301,
+        "end": 343,
+        "text": "remplace le Reglement de zonage numero 314"
+      }
+    },
+    {
+      "slug": "sainte-praxede",
+      "en_vigueur_numero": "204-2013",
+      "en_vigueur_millesime": "2013",
+      "ancien_numero_verbatim": "107",
+      "_note_span": {
+        "start": 451,
+        "end": 518,
+        "text": "remplaçant ainsi les dispositions contenues au règlement numéro 107"
+      }
+    },
+    {
+      "slug": "sainte-victoire-de-sorel",
+      "en_vigueur_numero": "290-06",
+      "en_vigueur_millesime": "2007",
+      "ancien_numero_verbatim": "205-91",
+      "_note_span": {
+        "start": 877,
+        "end": 947,
+        "text": "ABROGE (p2 «CONCERNANT LE REMPLACEMENT DU REGLEMENT DE ZONAGE # 205-91"
+      }
+    },
+    {
+      "slug": "schefferville",
+      "en_vigueur_numero": "2013-120",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "93-02-10",
+      "_note_span": {
+        "start": 174,
+        "end": 221,
+        "text": "Remplacement du Règlement de zonage n° 93-02-10"
+      }
+    },
+    {
+      "slug": "scott",
+      "en_vigueur_numero": "198-2007",
+      "en_vigueur_millesime": "2007",
+      "ancien_numero_verbatim": "60",
+      "_note_span": {
+        "start": 310,
+        "end": 357,
+        "text": "abroge et remplace le Reglement de zonage no 60"
+      }
+    }
+  ],
+  "rows": [
+    {
+      "slug": "abercorn",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "acton-vale",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "adstock",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "albanel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "albertville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "alma",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "amherst",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "amos",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "amqui",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "ange-gardien",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "armagh",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "arundel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "ascot-corner",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "aston-jonction",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "auclair",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "audet",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "austin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "authier",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "authier-nord",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "ayers-cliff",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "baie-comeau",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "baie-des-sables",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "2008-06",
+      "en_vigueur_millesime": 2008,
+      "ancien_numero_verbatim": "94-02",
+      "_note_span": {
+        "start": 291,
+        "end": 337,
+        "text": "REMPLACANT LE REGLEMENT DE ZONAGE NUMERO 94-02"
+      }
+    },
+    {
+      "slug": "baie-du-febvre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "baie-durfe",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "baie-saint-paul",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "baie-sainte-catherine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "baie-trinite",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "barkmere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "barnston-ouest",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "barraute",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "batiscan",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "beaconsfield",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "bearn",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "beauceville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "beauharnois",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "beaulac-garthby",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "beaumont",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "beaupre",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "1192",
+      "en_vigueur_millesime": 2016,
+      "ancien_numero_verbatim": "967",
+      "_note_span": {
+        "start": 323,
+        "end": 375,
+        "text": "Abroge et remplace le Règlement de zonage numéro 967"
+      }
+    },
+    {
+      "slug": "becancour",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "bedford--brome-missisquoi",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "bedford--brome-missisquoi--2",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "belcourt",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "belleterre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "beloeil",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "berry",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "berthierville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "bethanie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "biencourt",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "blainville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "blue-sea",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "boileau",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "bois-des-filion",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "bois-franc",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "boisbriand",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "boischatel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "bolton-est",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "bolton-ouest",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "bonaventure",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "bonsecours",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "boucherville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "bowman",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "brebeuf",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "brigham",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "bristol",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "bromont",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "brossard",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "brownsburg-chatham",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "bury",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "calixa-lavallee",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "campbells-bay",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "candiac",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "5000",
+      "en_vigueur_millesime": 2013,
+      "ancien_numero_verbatim": "555",
+      "_note_span": {
+        "start": 611,
+        "end": 673,
+        "text": "remplacés par le présent règlement, le règlement de zonage 555"
+      }
+    },
+    {
+      "slug": "cantley",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "cap-saint-ignace",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "cap-sante",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "caplan",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "carignan",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "carleton-sur-mer",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "cascapedia-saint-jules",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "causapscal",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "chambly",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "chambord",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "champlain",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "champneuf",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "chandler",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "charette",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "charlemagne",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "chateau-richer",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "chateauguay",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "chazel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "chelsea",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "cheneville",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "2016-061",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "2000-005",
+      "_note_span": {
+        "start": 282,
+        "end": 359,
+        "text": "abroge et remplace toutes les dispositions du règlement de zonage nº 2000-005"
+      }
+    },
+    {
+      "slug": "chertsey",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "chesterville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "clarenceville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "clerval",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "cleveland",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "cloridorme",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "coaticook",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "compton",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "contrecoeur",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "cookshire-eaton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "cote-saint-luc",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "coteau-du-lac",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "courcelles-saint-evariste",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "cowansville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "crabtree",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "2024-421",
+      "en_vigueur_millesime": 2024,
+      "ancien_numero_verbatim": "99-044",
+      "_note_span": {
+        "start": 643,
+        "end": 672,
+        "text": "abroge le règlement n° 99-044"
+      }
+    },
+    {
+      "slug": "danville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "daveluyville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "degelis",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "deleage",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "delson",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "denholm",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "deschaillons-sur-saint-laurent",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "deschambault-grondines",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "deux-montagnes",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "disraeli--les-appalaches",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "disraeli--les-appalaches--2",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "369-2011",
+      "en_vigueur_millesime": 2011,
+      "ancien_numero_verbatim": "219",
+      "_note_span": {
+        "start": 554,
+        "end": 584,
+        "text": "abroge le reglement numero 219"
+      }
+    },
+    {
+      "slug": "dixville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "R-2025-199",
+      "en_vigueur_millesime": "2025",
+      "ancien_numero_verbatim": "82-704",
+      "_note_span": {
+        "start": 147,
+        "end": 252,
+        "text": "REMPLACE («adoption d'un nouveau reglement de zonage en remplacement du reglement de zonage numero 82-704"
+      }
+    },
+    {
+      "slug": "donnacona",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "dorval",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "dosquet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "drummondville",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "dudswell",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "duhamel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "duhamel-ouest",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "dundee",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "dunham",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "duparquet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "dupuy",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "durham-sud",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "east-angus",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "east-broughton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "east-farnham",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "east-hereford",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "eastman",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "egan-sud",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "elgin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "entrelacs",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "escuminac",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "2022-003",
+      "en_vigueur_millesime": 2022,
+      "ancien_numero_verbatim": "2021-003",
+      "_note_span": {
+        "start": 405,
+        "end": 512,
+        "text": "remplace et abroge toute disposition incompatible […] Sans limiter ce qui précède, le règlement n° 2021-003"
+      }
+    },
+    {
+      "slug": "esprit-saint",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "esterel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "farnham",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "fassett",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "ferland-et-boilleau",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "ferme-neuve",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "fermont",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "forestville",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "fort-coulonge",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "fortierville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "fossambault-sur-le-lac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "frampton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "franklin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "franquelin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "frelighsburg",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "frontenac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "fugereville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "gallichan",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "gaspe",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "gatineau",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "girardville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "godbout",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "godmanchester",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "gore",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "gracefield",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "granby",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "grand-metis",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "grand-remous",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "grand-saint-esprit",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "grande-riviere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "grandes-piles",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "grenville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "grenville-sur-la-rouge",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "grosse-ile",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "grosses-roches",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "guerin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "ham-nord",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "ham-sud",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "hampstead",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "harrington",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "hatley",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "hatley-township-municipality",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "havelock",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "havre-saint-pierre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville--2",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "herouxville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "hinchinbrooke",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "honfleur",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "hope",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "hope-town",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "howick",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "huberdeau",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "hudson",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "526",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "321",
+      "_note_span": {
+        "start": 617,
+        "end": 679,
+        "text": "abroge et remplace en entier le règlement de zonage numéro 321"
+      }
+    },
+    {
+      "slug": "huntingdon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "inverness",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "irlande",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "339",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "307",
+      "_note_span": {
+        "start": 346,
+        "end": 409,
+        "text": "remplaçant ainsi les dispositions contenues au règlement no 307"
+      }
+    },
+    {
+      "slug": "ivry-sur-le-lac",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "2013-060",
+      "en_vigueur_millesime": "2013",
+      "ancien_numero_verbatim": "117",
+      "_note_span": {
+        "start": 425,
+        "end": 503,
+        "text": "remplace le zonage no 117 (p7: «l'abrogation du règlement de zonage numéro 117"
+      }
+    },
+    {
+      "slug": "joliette",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "kamouraska",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "kazabazua",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "kiamika",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "kingsbury",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "kingsey-falls",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "kinnears-mills",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "kirkland",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "l-assomption",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "l-epiphanie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "la-bostonnais",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "la-conception",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "la-corne",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "la-durantaye",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "la-guadeloupe",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "la-macaza",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "la-malbaie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "la-minerve",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "2024-732",
+      "en_vigueur_millesime": "2024",
+      "ancien_numero_verbatim": "2013-103",
+      "_note_span": {
+        "start": 223,
+        "end": 297,
+        "text": "remplace a toutes fins que de droit le Reglement de zonage numero 2013-103"
+      }
+    },
+    {
+      "slug": "la-motte",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "la-peche",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "113-2025",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "03-429",
+      "_note_span": {
+        "start": 798,
+        "end": 846,
+        "text": "abroge et remplace le reglement de zonage 03-429"
+      }
+    },
+    {
+      "slug": "la-pocatiere",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "la-prairie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "la-presentation",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "06-81",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "382",
+      "_note_span": {
+        "start": 625,
+        "end": 686,
+        "text": "remplace les règlements suivants : Règlement de zonage no 382"
+      }
+    },
+    {
+      "slug": "la-redemption",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "la-reine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "la-sarre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "la-trinite-des-monts",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "la-visitation-de-lile-dupas",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "la-visitation-de-yamaska",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "labelle",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "labrecque",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-au-saumon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-beauport",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-brome",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-delage",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-des-aigles",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-des-ecorces",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-des-plages",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-des-seize-iles",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-drolet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-du-cerf",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-etchemin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-frontiere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-megantic",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-saguay",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-saint-joseph",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-saint-paul",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-sainte-marie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-sergent",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-simon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lac-superieur",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lac-tremblant-nord",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lachute",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lacolle",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "lambton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lancienne-lorette",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "landrienne",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lange-gardien--la-cote-de-beaupre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lange-gardien--les-collines-de-loutaouais",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lanoraie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lantier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lascension",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lascension-de-patapedia",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lassomption",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "latulipe-et-gaboury",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "launay",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "laurier-station",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "laval",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "CDU-1",
+      "en_vigueur_millesime": 2022,
+      "ancien_numero_verbatim": "L-2000",
+      "_note_span": {
+        "start": 986,
+        "end": 1030,
+        "text": "remplace l'ancien reglement de zonage L-2000"
+      }
+    },
+    {
+      "slug": "lavaltrie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lavenir",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "laverlochere-angliers",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lawrenceville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lebel-sur-quevillon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "leclercville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lefebvre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lejeune",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lemieux",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lepiphanie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lery",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "les-bergeronnes",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "les-cedres",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "les-coteaux",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "les-eboulements",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "les-escoumins",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "les-hauteurs",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "les-iles-de-la-madeleine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "levis",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lile-cadieux",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lile-danticosti",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "lile-dorval",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lile-du-grand-calumet",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "lile-perrot",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lingwick",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lisle-aux-coudres",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "lislet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "longueuil",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lorraine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lorrainville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "lotbiniere",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "louiseville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "low",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "lyster",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "macamic",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "maddington-falls",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "magog",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mandeville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "maniwaki",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "manseau",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mansfield-et-pontefract",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "maria",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "maricourt",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "marieville",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "marston",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "martinville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mascouche",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "maskinonge",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "matane",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "matapedia",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mayo",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "2016-03",
+      "en_vigueur_millesime": 2016,
+      "ancien_numero_verbatim": "2000-03",
+      "_note_span": {
+        "start": 154,
+        "end": 230,
+        "text": "abroge et remplace toutes les dispositions du règlement de zonage nº 2000-03"
+      }
+    },
+    {
+      "slug": "mcmasterville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "melbourne",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mercier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "metis-sur-mer",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "08-38",
+      "en_vigueur_millesime": "2008",
+      "ancien_numero_verbatim": "156-92",
+      "_note_span": {
+        "start": 406,
+        "end": 484,
+        "text": "remplace et abroge les règlements suivants : Règlement de zonage numéro 156-92"
+      }
+    },
+    {
+      "slug": "milan",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mille-isles",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mirabel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "moffet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mont-blanc",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mont-carmel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mont-joli",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "mont-laurier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mont-royal",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mont-saint-gregoire",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "mont-saint-hilaire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mont-saint-michel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mont-tremblant",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "montcalm",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "montcerf-lytton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "montebello",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "montmagny",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "montpellier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "montreal",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "montreal-est",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "montreal-ouest",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "morin-heights",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "mulgrave-et-derry",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "2017-012",
+      "en_vigueur_millesime": 2018,
+      "ancien_numero_verbatim": "2000-04",
+      "_note_span": {
+        "start": 237,
+        "end": 313,
+        "text": "abroge et remplace toutes les dispositions du reglement de zonage no 2000-04"
+      }
+    },
+    {
+      "slug": "murdochville",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "12-352",
+      "en_vigueur_millesime": 2012,
+      "ancien_numero_verbatim": "92-247",
+      "_note_span": {
+        "start": 157,
+        "end": 187,
+        "text": "remplaçant le règlement 92-247"
+      }
+    },
+    {
+      "slug": "namur",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "nantes",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "napierville",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "nedelec",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "neuville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "new-carlisle",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "new-richmond",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "nicolet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "nominingue",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "normandin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "normetal",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "notre-dame-auxiliatrice-de-buckland",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-de-bonsecours",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-de-la-merci",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-de-la-paix",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-de-lile-perrot",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "notre-dame-de-lourdes--joliette",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-de-lourdes--lerable",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "300-2017",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "140-89",
+      "_note_span": {
+        "start": 590,
+        "end": 627,
+        "text": "remplacant le reglement numero 140-89"
+      }
+    },
+    {
+      "slug": "notre-dame-de-pontmain",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "notre-dame-de-stanbridge",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-des-bois",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-des-monts",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-des-neiges",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-des-pins",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-des-prairies",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-du-bon-conseil--drummond",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-du-bon-conseil--drummond--2",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "notre-dame-du-laus",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-du-mont-carmel",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "notre-dame-du-nord",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-du-portage",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "notre-dame-du-rosaire",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "notre-dame-du-sacre-coeur-dissoudun",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "nouvelle",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "ogden",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "oka",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "orford",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "ormstown",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "148-2023",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "25-2006",
+      "_note_span": {
+        "start": 404,
+        "end": 450,
+        "text": "abroge et remplace le règlement numéro 25-2006"
+      }
+    },
+    {
+      "slug": "otterburn-park",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "packington",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "padoue",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "palmarolle",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "papineauville",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "parisville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "paspebiac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "perce",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "peribonka",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "petit-saguenay",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "petite-riviere-saint-francois",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "603",
+      "en_vigueur_millesime": 2018,
+      "ancien_numero_verbatim": "582",
+      "_note_span": {
+        "start": 424,
+        "end": 454,
+        "text": "abroge le reglement numero 582"
+      }
+    },
+    {
+      "slug": "piedmont",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "pierreville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "pincourt",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "piopolis",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "plaisance",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "plessisville",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "595-16",
+      "en_vigueur_millesime": "2016",
+      "ancien_numero_verbatim": "364-90",
+      "_note_span": {
+        "start": 623,
+        "end": 683,
+        "text": "REMPLACE (p2 verbatim «remplacant le reglement numero 364-90"
+      }
+    },
+    {
+      "slug": "pohenegamook",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "pointe-a-la-croix",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "pointe-aux-outardes",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "pointe-calumet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "pointe-claire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "pointe-des-cascades",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "pointe-fortune",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "pointe-lebel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "pont-rouge",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "pontiac",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "11-24",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "177-01",
+      "_note_span": {
+        "start": 364,
+        "end": 416,
+        "text": "remplace et abroge le règlement de zonage n o 177-01"
+      }
+    },
+    {
+      "slug": "port-daniel-gascons",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "portneuf",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "potton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "poularies",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "preissac",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "prevost",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "843",
+      "en_vigueur_millesime": 2024,
+      "ancien_numero_verbatim": "601",
+      "_note_span": {
+        "start": 265,
+        "end": 342,
+        "text": "abroge et remplace les règlements suivants : 1° le règlement de zonage no 601"
+      }
+    },
+    {
+      "slug": "price",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "317",
+      "en_vigueur_millesime": 2011,
+      "ancien_numero_verbatim": "232",
+      "_note_span": {
+        "start": 163,
+        "end": 197,
+        "text": "REMPLAÇANT LE RÈGLEMENT NUMÉRO 232"
+      }
+    },
+    {
+      "slug": "princeville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "quebec",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "racine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "ragueneau",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "rapide-danseur",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "rawdon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "remigny",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "repentigny",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "richelieu",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "richmond",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "rigaud",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "rimouski",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "ripon",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "ristigouche-sud-est",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "riviere-a-pierre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "riviere-au-tonnerre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "riviere-beaudette",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "riviere-bleue",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "riviere-du-loup",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "riviere-heva",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "riviere-ouelle",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "riviere-rouge",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "roberval",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "roquemaure",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "rosemere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "rougemont",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "rouyn-noranda",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "roxton-falls",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "roxton-pond",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sacre-coeur",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sacre-coeur-de-jesus",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saguenay",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-adelphe",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-adolphe-dhoward",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-adrien",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-adrien-dirlande",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-agapit",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-aime",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-aime-des-lacs",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-aime-du-lac-des-iles",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-alban",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-albert",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-alexandre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-alexandre-de-kamouraska",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-alexandre-des-lacs",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-alexis",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-alexis-de-matapedia",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-alfred",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-alphonse",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-alphonse-de-granby",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-alphonse-rodriguez",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-amable",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-ambroise",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-ambroise-de-kildare",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-anaclet-de-lessard",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-andre-avellin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-andre-dargenteuil",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-andre-de-kamouraska",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "251",
+      "en_vigueur_millesime": 2025,
+      "ancien_numero_verbatim": "45",
+      "_note_span": {
+        "start": 792,
+        "end": 825,
+        "text": "remplaçant le règlement numéro 45"
+      }
+    },
+    {
+      "slug": "saint-andre-de-restigouche",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-anicet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-anselme",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-antoine-de-lisle-aux-grues",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-antoine-de-tilly",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-antoine-sur-richelieu",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-antonin",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "922-26",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "311",
+      "_note_span": {
+        "start": 626,
+        "end": 663,
+        "text": "remplacer le règlement de zonage #311"
+      }
+    },
+    {
+      "slug": "saint-apollinaire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-armand",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-athanase",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-aubert",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-augustin-de-desmaures",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-augustin-de-woburn",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-barthelemy",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-basile",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-benjamin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-benoit-labre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "171",
+      "en_vigueur_millesime": 2021,
+      "ancien_numero_verbatim": "86",
+      "_note_span": {
+        "start": 62,
+        "end": 101,
+        "text": "abroge le règlement de zonage numéro 86"
+      }
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-blaise-sur-richelieu",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-bonaventure",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-boniface",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-bruno-de-guigues",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-bruno-de-kamouraska",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "URB-Z2017",
+      "en_vigueur_millesime": 2017,
+      "ancien_numero_verbatim": "URB-Z2009",
+      "_note_span": {
+        "start": 205,
+        "end": 246,
+        "text": "remplace le Règlement de zonage URB-Z2009"
+      }
+    },
+    {
+      "slug": "saint-calixte",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "722-2023",
+      "en_vigueur_millesime": "2023",
+      "ancien_numero_verbatim": "345-A-88",
+      "_note_span": {
+        "start": 684,
+        "end": 715,
+        "text": "abroge le règlement n° 345-A-88"
+      }
+    },
+    {
+      "slug": "saint-camille",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-camille-de-lellis",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-casimir",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-celestin--nicolet-yamaska",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-celestin--nicolet-yamaska--2",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-cesaire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-charles-borromee",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-charles-de-bellechasse",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-charles-garnier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-christophe-darthabaska",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-chrysostome",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-claude",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-cleophas",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-cleophas-de-brandon",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-clet",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-colomban",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "3001",
+      "en_vigueur_millesime": 2017,
+      "ancien_numero_verbatim": "601",
+      "_note_span": {
+        "start": 354,
+        "end": 381,
+        "text": "REMPLAÇANT LE RÈGLEMENT 601"
+      }
+    },
+    {
+      "slug": "saint-come",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-come-liniere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-constant",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-cuthbert",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-cyprien--les-etchemins",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-cyprien-de-napierville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-cyrille-de-lessard",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-cyrille-de-wendover",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-damase--la-matapedia",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-damase--les-maskoutains",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-damien",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "753",
+      "en_vigueur_millesime": 2017,
+      "ancien_numero_verbatim": "382",
+      "_note_span": {
+        "start": 361,
+        "end": 391,
+        "text": "abroge le reglement numero 382"
+      }
+    },
+    {
+      "slug": "saint-damien-de-buckland",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-david",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-david-de-falardeau",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-denis-de-brompton",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-denis-de-la-bouteillerie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-didace",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-dominique",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-dominique-du-rosaire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-donat--la-mitis",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-donat--matawinie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-edmond-de-grantham",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-edmond-les-plaines",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-edouard",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-edouard-de-fabre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-edouard-de-lotbiniere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-elie-de-caxton",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "2010-012",
+      "en_vigueur_millesime": "2010",
+      "ancien_numero_verbatim": "99-011",
+      "_note_span": {
+        "start": 832,
+        "end": 891,
+        "text": "ABROGE (p100 verbatim «Le règlement de zonage numéro 99-011"
+      }
+    },
+    {
+      "slug": "saint-eloi",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-elphege",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-elzear--bonaventure",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-elzear--la-nouvelle-beauce",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-elzear-de-temiscouata",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-emile-de-suffolk",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-ephrem-de-beauce",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-epiphane",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-esprit",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "738-2025",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "364",
+      "_note_span": {
+        "start": 194,
+        "end": 238,
+        "text": "remplacés par le présent, le règlement # 364"
+      }
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-etienne-de-bolton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-etienne-des-gres",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-eugene",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-eugene-de-ladriere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-eusebe",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "05-2014",
+      "en_vigueur_millesime": 2015,
+      "ancien_numero_verbatim": "02-1990",
+      "_note_span": {
+        "start": 631,
+        "end": 676,
+        "text": "Abroge «le Reglement de zonage numero 02-1990"
+      }
+    },
+    {
+      "slug": "saint-eustache",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-fabien",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-fabien-de-panet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-felicien",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-felix-de-dalquier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-felix-de-kingsey",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-felix-de-valois",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-felix-dotis",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-ferdinand",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-ferreol-les-neiges",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-flavien",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-fortunat",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-francois-dassise",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-francois-de-la-riviere-du-sud",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-francois-de-lile-dorleans",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-francois-du-lac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-francois-xavier-de-brompton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-frederic",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-gabriel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-gabriel-de-brandon",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "620-1",
+      "en_vigueur_millesime": 2026,
+      "ancien_numero_verbatim": "297",
+      "_note_span": {
+        "start": 277,
+        "end": 310,
+        "text": "remplaçant l'ancien règlement 297"
+      }
+    },
+    {
+      "slug": "saint-gabriel-de-rimouski",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-gabriel-de-valcartier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-gabriel-lalemant",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-gedeon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-gedeon-de-beauce",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-georges",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-georges-de-windsor",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-germain-de-grantham",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-germain-de-kamouraska",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-gervais",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-gilbert",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "U-08-2014",
+      "en_vigueur_millesime": 2014,
+      "ancien_numero_verbatim": "93",
+      "_note_span": {
+        "start": 607,
+        "end": 648,
+        "text": "remplace le reglement de zonage numero 93"
+      }
+    },
+    {
+      "slug": "saint-gilles",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-godefroi",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-guillaume",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-henri",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-hermenegilde",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-hilaire-de-dorset",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-hilarion",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-hippolyte",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-honore",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-honore-de-temiscouata",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-hubert-de-riviere-du-loup",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-hugues",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-ignace-de-loyola",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-ignace-de-stanbridge",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-irenee",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-isidore--roussillon",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-isidore-de-clifton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-jacques",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-jacques-de-leeds",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-jacques-le-majeur-de-wolfestown",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-jacques-le-mineur",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-janvier-de-joly",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-jean-de-brebeuf",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-jean-de-dieu",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-jean-de-la-lande",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-jean-de-lile-dorleans",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-jean-de-matha",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-jean-port-joli",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-jean-sur-richelieu",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-jerome",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-joachim",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-joachim-de-shefford",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-joseph-de-beauce",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-joseph-de-coleraine",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-joseph-de-kamouraska",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-joseph-de-lepage",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-joseph-de-sorel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-joseph-des-erables",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-joseph-du-lac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-jude",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-jules",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "05-2021",
+      "en_vigueur_millesime": "2021",
+      "ancien_numero_verbatim": "05-2015",
+      "_note_span": {
+        "start": 689,
+        "end": 768,
+        "text": "REMPLACE («ATTENDU QU’IL y a lieu de remplacer le Règlement de zonage # 05-2015"
+      }
+    },
+    {
+      "slug": "saint-julien",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-just-de-bretenieres",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-juste-du-lac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-justin",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-lambert",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-lambert--abitibi-ouest",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-laurent-de-lile-dorleans",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-lazare",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-lazare-de-bellechasse",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-leandre",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "233",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "110",
+      "_note_span": {
+        "start": 212,
+        "end": 256,
+        "text": "REMPLACANT LE REGLEMENT DE ZONAGE NUMERO 110"
+      }
+    },
+    {
+      "slug": "saint-leon-de-standon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-leon-le-grand--la-matapedia",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-leonard-daston",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-leonard-de-portneuf",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "400-12",
+      "en_vigueur_millesime": 2012,
+      "ancien_numero_verbatim": "221-91",
+      "_note_span": {
+        "start": 438,
+        "end": 483,
+        "text": "remplace le règlement de zonage numéro 221-91"
+      }
+    },
+    {
+      "slug": "saint-liboire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-liguori",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-louis",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "389-06",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "242-89",
+      "_note_span": {
+        "start": 568,
+        "end": 635,
+        "text": "remplace les règlements suivants : - Règlement de zonage n o 242-89"
+      }
+    },
+    {
+      "slug": "saint-louis-de-blandford",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-louis-de-gonzague--les-etchemins",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-louis-de-gonzague-du-cap-tourmente",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-louis-du-ha-ha",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-luc-de-bellechasse",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-luc-de-vincennes",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-lucien",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-ludger",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-magloire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-majorique-de-grantham",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-malachie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-malo",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-marc-de-figuery",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-marc-des-carrieres",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-marc-du-lac-long",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-marc-sur-richelieu",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-marcel",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-marcel-de-richelieu",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-marcellin",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "2014-247",
+      "en_vigueur_millesime": "2014",
+      "ancien_numero_verbatim": "1990-97",
+      "_note_span": {
+        "start": 472,
+        "end": 516,
+        "text": "abroge le Règlement de zonage numéro 1990-97"
+      }
+    },
+    {
+      "slug": "saint-martin",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-mathieu",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-mathieu-dharricana",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-mathieu-du-parc",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-maurice",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-maxime-du-mont-louis",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-medard",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-michel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-michel-de-bellechasse",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-michel-des-saints",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-michel-du-squatec",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-moise",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-narcisse",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-narcisse-de-beaurivage",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-narcisse-de-rimouski",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-nazaire-de-dorchester",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-neree-de-bellechasse",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-noel",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-octave-de-metis",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-odilon-de-cranbourne",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-ours",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-pacome",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-pamphile",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-pascal",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-patrice-de-beaurivage",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "308",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "277",
+      "_note_span": {
+        "start": 428,
+        "end": 451,
+        "text": "Abroge le reglement 277"
+      }
+    },
+    {
+      "slug": "saint-paul",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-paul-de-montminy",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-paulin",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-philemon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-philippe",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-philippe-de-neri",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-pie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-pie-de-guire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-pierre",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-pierre-baptiste",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "250-A",
+      "en_vigueur_millesime": 2017,
+      "ancien_numero_verbatim": "106-A",
+      "_note_span": {
+        "start": 363,
+        "end": 399,
+        "text": "remplaçant le règlement numéro 106-A"
+      }
+    },
+    {
+      "slug": "saint-pierre-de-broughton",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-pierre-de-la-riviere-du-sud",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-pierre-de-lamy",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-pierre-de-lile-dorleans",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-pierre-les-becquets",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-polycarpe",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "218-2025",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "113-2012",
+      "_note_span": {
+        "start": 256,
+        "end": 304,
+        "text": "remplace le «Règlement de zonage numéro 113-2012"
+      }
+    },
+    {
+      "slug": "saint-prosper",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-prosper-de-champlain",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-raphael",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-raymond",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-remi",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-remi-de-tingwick",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-rene",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-rene-de-matane",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-robert-bellarmin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-roch-de-richelieu",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-roch-des-aulnaies",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "151-2023",
+      "en_vigueur_millesime": 2024,
+      "ancien_numero_verbatim": "8-1987",
+      "_note_span": {
+        "start": 1058,
+        "end": 1094,
+        "text": "remplacés le règlement numéro 8-1987"
+      }
+    },
+    {
+      "slug": "saint-romain",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-rosaire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-sauveur",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-sebastien--le-granit",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-sebastien--le-haut-richelieu",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-severin--beauce-centre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-simeon--charlevoix-est",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-simon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-simon-de-rimouski",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-simon-les-mines",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "165-2006",
+      "en_vigueur_millesime": 2007,
+      "ancien_numero_verbatim": "66",
+      "_note_span": {
+        "start": 592,
+        "end": 627,
+        "text": "Abroge le reglement de zonage no 66"
+      }
+    },
+    {
+      "slug": "saint-sixte",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-stanislas--des-chenaux",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-stanislas--maria-chapdelaine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-sulpice",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-sylvere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-sylvestre",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-telesphore",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-tharcisius",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-theodore-dacton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-theophile",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-thomas",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-thomas-didyme",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-thuribe",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-tite",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-tite-des-caps",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-ubalde",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-ulric",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-urbain",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-urbain-premier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-valere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-valerien",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-valerien-de-milton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-vallier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-venant-de-paquette",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-vianney",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-victor",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-wenceslas",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-zacharie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "saint-zenon-du-lac-humqui",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-zephirin-de-courval",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "saint-zotique",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-adele",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-agathe-de-lotbiniere",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-angele-de-merici",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-anne-de-beaupre",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-anne-de-bellevue",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-anne-de-la-perade",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-anne-de-la-rochelle",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-anne-de-sorel",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-anne-des-lacs",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-anne-des-monts",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-anne-des-plaines",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-anne-du-lac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-apolline-de-patton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-aurelie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-barbe",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-beatrix",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-brigide-diberville",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-brigitte-de-laval",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-brigitte-des-saults",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-catherine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-catherine-de-hatley",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-catherine-de-la-jacques-cartier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-cecile-de-levrard",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-cecile-de-milton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-cecile-de-whitton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-christine-d-auvergne",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-christine-dauvergne",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-claire",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-clotilde",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-clotilde-de-beauce",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-clotilde-de-horton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-croix",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-edwidge-de-clifton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-elisabeth",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-elizabeth-de-warwick",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-emelie-de-lenergie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-eulalie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-euphemie-sur-riviere-du-sud",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-famille-de-lile-dorleans",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-felicite--la-matanie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-felicite--lislet",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-flavie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-florence",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-francoise--becancour",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-francoise--les-basques",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-genevieve-de-batiscan",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-genevieve-de-berthier",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-germaine-boule",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-gertrude-manneville",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-helene-de-bagot",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-helene-de-kamouraska",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-helene-de-mancebourg",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-henedine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-irene",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-julie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-julienne",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-justine",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-justine-de-newton",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "414",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "314",
+      "_note_span": {
+        "start": 301,
+        "end": 343,
+        "text": "remplace le Reglement de zonage numero 314"
+      }
+    },
+    {
+      "slug": "sainte-louise",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-luce",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-lucie-de-beauregard",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-lucie-des-laurentides",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-madeleine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-marcelline-de-kildare",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-marguerite-du-lac-masson",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-marguerite-marie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-marie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-marie-de-blandford",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-marie-madeleine",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-marthe-sur-le-lac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-martine",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-melanie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-monique--lac-saint-jean-est",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-monique--nicolet-yamaska",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-paule",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-perpetue--nicolet-yamaska",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-petronille",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-praxede",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "204-2013",
+      "en_vigueur_millesime": "2013",
+      "ancien_numero_verbatim": "107",
+      "_note_span": {
+        "start": 451,
+        "end": 518,
+        "text": "remplaçant ainsi les dispositions contenues au règlement numéro 107"
+      }
+    },
+    {
+      "slug": "sainte-rose-de-watford",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-sabine--les-etchemins",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-seraphine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-sophie",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-sophie-de-levrard",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-thecle",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-therese",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-therese-de-gaspe",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sainte-therese-de-la-gatineau",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sainte-victoire-de-sorel",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "290-06",
+      "en_vigueur_millesime": "2007",
+      "ancien_numero_verbatim": "205-91",
+      "_note_span": {
+        "start": 877,
+        "end": 947,
+        "text": "ABROGE (p2 «CONCERNANT LE REMPLACEMENT DU REGLEMENT DE ZONAGE # 205-91"
+      }
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sayabec",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "schefferville",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": true,
+      "en_vigueur_numero": "2013-120",
+      "en_vigueur_millesime": null,
+      "ancien_numero_verbatim": "93-02-10",
+      "_note_span": {
+        "start": 174,
+        "end": 221,
+        "text": "Remplacement du Règlement de zonage n° 93-02-10"
+      }
+    },
+    {
+      "slug": "scotstown",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "scott",
+      "bucket": "ANCIEN_VERBATIM",
+      "millesime_null": false,
+      "en_vigueur_numero": "198-2007",
+      "en_vigueur_millesime": "2007",
+      "ancien_numero_verbatim": "60",
+      "_note_span": {
+        "start": 310,
+        "end": 357,
+        "text": "abroge et remplace le Reglement de zonage no 60"
+      }
+    },
+    {
+      "slug": "senneterre--la-vallee-de-lor",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "senneville",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sept-iles",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "shannon",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "shawinigan",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "shefford",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "sherbrooke",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "shigawake",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "sorel-tracy",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "stanbridge-east",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "stanstead--memphremagog",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "stanstead--memphremagog--2",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "stanstead-est",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "stoke",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "stoneham-et-tewkesbury",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "stornoway",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "stratford",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "stukely-sud",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "sutton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "tadoussac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "taschereau",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "temiscaming",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "temiscouata-sur-le-lac",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "terrasse-vaudreuil",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "terrebonne",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "thetford-mines",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "thurso",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "tingwick",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "trecesson",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "tres-saint-redempteur",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "tring-jonction",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "trois-pistoles",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "trois-rives",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "trois-rivieres",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "ulverton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "upton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "val-alain",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "val-brillant",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "val-david",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "val-des-bois",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "val-des-lacs",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "val-des-monts",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "val-des-sources",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "val-dor",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "val-joli",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "val-morin",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "val-racine",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "val-saint-gilles",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "valcourt--le-val-saint-francois",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "valcourt--le-val-saint-francois--2",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "varennes",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "vaudreuil-sur-le-lac",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "venise-en-quebec",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "vercheres",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "victoriaville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "ville-marie",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "warden",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": false
+    },
+    {
+      "slug": "warwick",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "waterloo",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "waterville",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "weedon",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "wentworth",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "wentworth-nord",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "westbury",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "westmount",
+      "bucket": "REZONAGE_AMBIGU",
+      "millesime_null": true
+    },
+    {
+      "slug": "wickham",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "windsor",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    },
+    {
+      "slug": "wotton",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": false
+    },
+    {
+      "slug": "yamaska",
+      "bucket": "EN_VIGUEUR_SEUL",
+      "millesime_null": true
+    }
+  ]
+}

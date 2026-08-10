@@ -1,0 +1,60 @@
+{
+  "contract": "vecteur-natif-attestation/v1",
+  "banc": {
+    "http_ok": 200,
+    "polygon_types": [
+      "Polygon",
+      "MultiPolygon"
+    ],
+    "feature_min": 1,
+    "zone_distinct_min": 3,
+    "zone_maxlen_max": 24,
+    "bbox_diag_max": 35,
+    "sha256_hex_len": 64,
+    "feature_url_re": {},
+    "registry_attribution_km_tight": 1.1
+  },
+  "lot_zone_source_post_depot": "work/coverage/lot-zone-consistency-scale-20260725.json",
+  "total": 1,
+  "pass_banc": 1,
+  "fail": 0,
+  "fail_breakdown": {},
+  "aggregate": "1 vecteur-natif PASS-banc / 0 FAIL",
+  "attestations": [
+    {
+      "slug": "contrecoeur",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://services3.arcgis.com/D6yGeV5bY0BWDvJi/arcgis/rest/services/Zonage___Contrec%C5%93ur_WFL1/FeatureServer/2/query?where=1%3D1&outFields=nom_zone&outSR=4326&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T13:55:10.159Z",
+        "sha256": "sha256:671ec21f0e14ab82b97be9cf09e1829713f2a8ecf095d451ee18f1e39634b532",
+        "http_status": 200,
+        "feature_count": 164,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "nom_zone",
+        "zone_distinct": 164,
+        "zone_maxlen": 7,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 25.377688641037896,
+        "registry_attribution_km": 1.3,
+        "nearest_registre_muni": "contrecoeur",
+        "zone_codes": null,
+        "prior_served_codes": null
+      },
+      "superset_missing_codes": null,
+      "lot_zone_mismatch_pct_post_depot": 4.9
+    }
+  ],
+  "source_manifest": {
+    "ref": "lane/zones@5a8c00da:work/coverage/zones-vecteur-natif-manifest-arcgis-20260803.json",
+    "contract": "zones-vecteur-natif-capture-manifest/v1",
+    "sha256": "sha256:4edffbdccb6b4de8ddff5a836f8a378640f629e7bf8717c890dc8c88becd0b14"
+  }
+}

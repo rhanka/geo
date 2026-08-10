@@ -5,6 +5,8 @@ import {
   extractionFromAnnotationZones,
   extractGrilleSchemaFromPdf,
   createMistralSchemaAnnotateCall,
+  parseMistralSchemaAnnotation,
+  assertMistralSchemaConfig,
   MISTRAL_SCHEMA_USD_PER_PAGE,
   SCHEMA_METHODE,
   type SchemaAnnotateCall,
@@ -13,6 +15,16 @@ import {
 import { FIELD_SPECS } from "../../../packages/qc-sources/src/sources/grille-vision-extractor.js";
 
 const OPTS = { source_url: "https://example.test/grille.pdf", snapshot: "2026-07-05" };
+
+function annotationZone(zoneCode: string, values: Record<string, string | null> = {}): Record<string, string | null> {
+  const zone: Record<string, string | null> = { zone_code: zoneCode };
+  for (const spec of FIELD_SPECS) {
+    zone[spec.id] = values[spec.id] ?? null;
+    zone[`${spec.id}__libelle`] = values[`${spec.id}__libelle`] ?? null;
+    zone[`${spec.id}__colonnes`] = values[`${spec.id}__colonnes`] ?? null;
+  }
+  return zone;
+}
 
 // A slice seam that never touches disk; records the pages it was asked to slice
 // and how many times cleanup ran.
@@ -95,7 +107,7 @@ describe("extractGrilleSchemaFromPdf — chunking, guard reuse, cost", () => {
       return {
         annotation: {
           zones: [
-            { zone_code: pageIdxs.length === 8 ? "COM-01" : "COM-99", marge_avant_min: "7,5", hauteur_metres: "10" },
+            annotationZone(pageIdxs.length === 8 ? "COM-01" : "COM-99", { marge_avant_min: "7,5", hauteur_metres: "10" }),
           ],
         },
         pagesProcessed: pageIdxs.length,
@@ -126,8 +138,8 @@ describe("extractGrilleSchemaFromPdf — chunking, guard reuse, cost", () => {
     const annotate: SchemaAnnotateCall = async () => ({
       annotation: {
         zones: [
-          { zone_code: "Z1", marge_avant_min: "999" }, // out of plausibility window → null
-          { zone_code: "Z2", marge_avant_min: "415 m²" }, // wrong unit (area for a length) → null
+          annotationZone("Z1", { marge_avant_min: "999" }), // out of plausibility window → null
+          annotationZone("Z2", { marge_avant_min: "415 m²" }), // wrong unit (area for a length) → null
         ],
       },
       pagesProcessed: 1,
@@ -148,7 +160,7 @@ describe("extractGrilleSchemaFromPdf — chunking, guard reuse, cost", () => {
       n += 1;
       if (n === 1) throw new Error("HTTP 429 rate limited");
       return {
-        annotation: { zones: [{ zone_code: "OK-1", densite: "0,4" }] },
+        annotation: { zones: [annotationZone("OK-1", { densite: "0,4" })] },
         pagesProcessed: pageIdxs.length,
       };
     };
@@ -175,7 +187,7 @@ describe("createMistralSchemaAnnotateCall — wire shape, key never logged", () 
       // The Authorization header carries the key but we never assert its VALUE here.
       return new Response(
         JSON.stringify({
-          document_annotation: JSON.stringify({ zones: [{ zone_code: "A-1", densite: "0,3" }] }),
+          document_annotation: JSON.stringify({ zones: [annotationZone("A-1", { densite: "0,3" })] }),
           usage_info: { pages_processed: 2 },
         }),
         { status: 200 },
@@ -214,5 +226,15 @@ describe("createMistralSchemaAnnotateCall — wire shape, key never logged", () 
     );
     await expect(call("/whatever.pdf", [0])).rejects.toThrow(/no API key/);
     expect(fetchImpl).not.toHaveBeenCalled();
+  });
+
+  it("rejects a non-Mistral provider configuration before any network call", () => {
+    expect(() => assertMistralSchemaConfig({
+      provider: "chandra", model: "mistral-ocr-latest", apiBase: "https://api.mistral.ai", apiPath: "/v1/ocr", apiKey: "x", costPerPage: 0.003,
+    })).toThrow(/requires provider/);
+  });
+
+  it("rejects an incomplete annotation instead of coercing it", () => {
+    expect(() => parseMistralSchemaAnnotation({ zones: [{ zone_code: "A-1" }] })).toThrow(/annotation invalid/);
   });
 });
