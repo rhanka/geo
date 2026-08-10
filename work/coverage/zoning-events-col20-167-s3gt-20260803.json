@@ -1,0 +1,1715 @@
+{
+  "$meta": {
+    "contract": "qc-zoning-events-col20-s3gt/20260803",
+    "generated_at": "2026-08-03T19:57:35Z",
+    "source_s3_uri": "s3://radar-immobilier-docs-pocs/gt/designation-events-167-20260803/",
+    "manifest_byte_check": {
+      "key": "gt/designation-events-167-20260803/_manifest.json",
+      "bytes": 12160,
+      "sha256": "b9664a9e9d904dcf8694bd85b76d73219254d2262c08c21cdbc2ed7993c39eee",
+      "summary": {
+        "total_167": 167,
+        "with_events": 126,
+        "zero_events": 41,
+        "total_designation_events": 1018
+      }
+    },
+    "geo_events_source": "work/coverage/qc-zoning-events-dryrun-action-grain-20260803/documents.json",
+    "generator_reused": {
+      "col20": "acquisition/src/zoning-events-cohort-col20.ts@3929fda0",
+      "recall_gate": "acquisition/src/zoning-events-recall-gate.ts@67af1c49",
+      "set_recall": "min-based multiset over (muni, source_url_norm, date_iso, crosswalked_type)",
+      "crosswalk": "acquisition/src/data/crosswalk-taxonomie.json@b9c121d (frozen)"
+    },
+    "mapping_gt_to_key": {
+      "event_id": "id -> node_id -> source_fields.event_id",
+      "muni": "citySlug -> city_slug -> muni",
+      "type": "category when non-null, otherwise etapeAnnote -> kind -> canonicalizeImmoCategory (frozen crosswalk)",
+      "source_url_and_date": "sourceRef.url and sourceRef.date only; props.refs/properties are deliberately not fallback identity sources",
+      "observed_sourceRef": "sourceRef is null for 1018/1018 GT events; source_url and date_iso are therefore null",
+      "consequence": "all 1018 events are identity_unmappable and counted missed; the frozen gate internal label remains identity_key_incomplete in recall-gate.json"
+    },
+    "aggregate": {
+      "gt_munis": 126,
+      "gap_acquisition_munis": 41,
+      "immo_events": 1018,
+      "matched": 0,
+      "recall_pct": 0,
+      "identity_unmappable": 1018,
+      "measured": 2,
+      "no_geo_events": 124
+    }
+  },
+  "cities": [
+    {
+      "slug": "westmount",
+      "rank": 1,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-lambert",
+      "rank": 2,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "hampstead",
+      "rank": 3,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "mont-royal",
+      "rank": 4,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "montreal-ouest",
+      "rank": 5,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "cote-saint-luc",
+      "rank": 6,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "longueuil",
+      "rank": 7,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "brossard",
+      "rank": 8,
+      "statut": "no_geo_events",
+      "immo_events": 23,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-catherine",
+      "rank": 9,
+      "statut": "no_geo_events",
+      "immo_events": 12,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "la-prairie",
+      "rank": 10,
+      "statut": "no_geo_events",
+      "immo_events": 11,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "delson",
+      "rank": 11,
+      "statut": "no_geo_events",
+      "immo_events": 12,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "candiac",
+      "rank": 12,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "montreal-est",
+      "rank": 13,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "boucherville",
+      "rank": 14,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "dorval",
+      "rank": 15,
+      "statut": "no_geo_events",
+      "immo_events": 11,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "lile-dorval",
+      "rank": 16,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-constant",
+      "rank": 17,
+      "statut": "no_geo_events",
+      "immo_events": 14,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "rank": 18,
+      "statut": "no_geo_events",
+      "immo_events": 10,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "carignan",
+      "rank": 19,
+      "statut": "no_geo_events",
+      "immo_events": 15,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "rank": 20,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "pointe-claire",
+      "rank": 21,
+      "statut": "no_geo_events",
+      "immo_events": 25,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-philippe",
+      "rank": 22,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-mathieu",
+      "rank": 23,
+      "statut": "no_geo_events",
+      "immo_events": 10,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "chateauguay",
+      "rank": 24,
+      "statut": "no_geo_events",
+      "immo_events": 6,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-julie",
+      "rank": 25,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "rank": 26,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "chambly",
+      "rank": 27,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "rosemere",
+      "rank": 28,
+      "statut": "no_geo_events",
+      "immo_events": 8,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "varennes",
+      "rank": 29,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "kirkland",
+      "rank": 30,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "bois-des-filion",
+      "rank": 31,
+      "statut": "no_geo_events",
+      "immo_events": 8,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-isidore--roussillon",
+      "rank": 32,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "beaconsfield",
+      "rank": 33,
+      "statut": "no_geo_events",
+      "immo_events": 13,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "lorraine",
+      "rank": 34,
+      "statut": "no_geo_events",
+      "immo_events": 10,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "lery",
+      "rank": 35,
+      "statut": "no_geo_events",
+      "immo_events": 24,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "mercier",
+      "rank": 36,
+      "statut": "no_geo_events",
+      "immo_events": 9,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "charlemagne",
+      "rank": 37,
+      "statut": "no_geo_events",
+      "immo_events": 12,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "boisbriand",
+      "rank": 38,
+      "statut": "no_geo_events",
+      "immo_events": 12,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "deux-montagnes",
+      "rank": 39,
+      "statut": "no_geo_events",
+      "immo_events": 9,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "mcmasterville",
+      "rank": 40,
+      "statut": "no_geo_events",
+      "immo_events": 12,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-therese",
+      "rank": 41,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "rank": 42,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "rank": 43,
+      "statut": "measured",
+      "immo_events": 18,
+      "geo_events": 37,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "identity_unmappable : sourceRef=null; URL/date non fabriquées; tous les GT restent missed."
+    },
+    {
+      "slug": "saint-amable",
+      "rank": 44,
+      "statut": "no_geo_events",
+      "immo_events": 13,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "terrebonne",
+      "rank": 45,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-remi",
+      "rank": 46,
+      "statut": "no_geo_events",
+      "immo_events": 6,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "otterburn-park",
+      "rank": 47,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-jacques-le-mineur",
+      "rank": 48,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "richelieu",
+      "rank": 49,
+      "statut": "no_geo_events",
+      "immo_events": 14,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "beloeil",
+      "rank": 50,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "baie-durfe",
+      "rank": 51,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-marthe-sur-le-lac",
+      "rank": 52,
+      "statut": "no_geo_events",
+      "immo_events": 11,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-jean-sur-richelieu",
+      "rank": 53,
+      "statut": "no_geo_events",
+      "immo_events": 13,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "mascouche",
+      "rank": 54,
+      "statut": "no_geo_events",
+      "immo_events": 6,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-eustache",
+      "rank": 55,
+      "statut": "measured",
+      "immo_events": 50,
+      "geo_events": 377,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "identity_unmappable : sourceRef=null; URL/date non fabriquées; tous les GT restent missed."
+    },
+    {
+      "slug": "notre-dame-de-lile-perrot",
+      "rank": 56,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "repentigny",
+      "rank": 57,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-edouard",
+      "rank": 58,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "sainte-anne-de-bellevue",
+      "rank": 59,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-michel",
+      "rank": 60,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "blainville",
+      "rank": 61,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "pointe-calumet",
+      "rank": 62,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "mont-saint-hilaire",
+      "rank": 63,
+      "statut": "no_geo_events",
+      "immo_events": 6,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "senneville",
+      "rank": 64,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "marieville",
+      "rank": 65,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "lile-perrot",
+      "rank": 66,
+      "statut": "no_geo_events",
+      "immo_events": 17,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "vercheres",
+      "rank": 67,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-marc-sur-richelieu",
+      "rank": 68,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-martine",
+      "rank": 69,
+      "statut": "no_geo_events",
+      "immo_events": 16,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "beauharnois",
+      "rank": 70,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "sainte-anne-des-plaines",
+      "rank": 71,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-urbain-premier",
+      "rank": 72,
+      "statut": "no_geo_events",
+      "immo_events": 8,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "terrasse-vaudreuil",
+      "rank": 73,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-joseph-du-lac",
+      "rank": 74,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "rank": 75,
+      "statut": "no_geo_events",
+      "immo_events": 15,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "pincourt",
+      "rank": 76,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "calixa-lavallee",
+      "rank": 77,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "lile-cadieux",
+      "rank": 78,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "pointe-des-cascades",
+      "rank": 79,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "rank": 80,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "napierville",
+      "rank": 81,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "vaudreuil-sur-le-lac",
+      "rank": 82,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-blaise-sur-richelieu",
+      "rank": 83,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "mont-saint-gregoire",
+      "rank": 84,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "sainte-madeleine",
+      "rank": 85,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-cyprien-de-napierville",
+      "rank": 86,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "rank": 87,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-roch-de-lachigan",
+      "rank": 88,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-angele-de-monnoir",
+      "rank": 89,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "lepiphanie",
+      "rank": 90,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "oka",
+      "rank": 91,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "sainte-marie-madeleine",
+      "rank": 92,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "rank": 93,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "sainte-clotilde",
+      "rank": 94,
+      "statut": "no_geo_events",
+      "immo_events": 13,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "rank": 95,
+      "statut": "no_geo_events",
+      "immo_events": 27,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "rougemont",
+      "rank": 96,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "rank": 97,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-sulpice",
+      "rank": 98,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "lassomption",
+      "rank": 99,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "howick",
+      "rank": 100,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "mirabel",
+      "rank": 101,
+      "statut": "no_geo_events",
+      "immo_events": 9,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "rank": 102,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "rank": 103,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-damase--les-maskoutains",
+      "rank": 104,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-antoine-sur-richelieu",
+      "rank": 105,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "rank": 106,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "rank": 107,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "la-presentation",
+      "rank": 108,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "sainte-brigide-diberville",
+      "rank": 109,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "les-cedres",
+      "rank": 110,
+      "statut": "no_geo_events",
+      "immo_events": 7,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-esprit",
+      "rank": 111,
+      "statut": "no_geo_events",
+      "immo_events": 19,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-valentin",
+      "rank": 112,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-sophie",
+      "rank": 113,
+      "statut": "no_geo_events",
+      "immo_events": 13,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "hudson",
+      "rank": 114,
+      "statut": "no_geo_events",
+      "immo_events": 6,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-alexandre",
+      "rank": 115,
+      "statut": "no_geo_events",
+      "immo_events": 17,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-chrysostome",
+      "rank": 116,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville",
+      "rank": 117,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-cesaire",
+      "rank": 118,
+      "statut": "no_geo_events",
+      "immo_events": 9,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-paul-de-lile-aux-noix",
+      "rank": 119,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+      "rank": 120,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "rank": 121,
+      "statut": "no_geo_events",
+      "immo_events": 9,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-lazare",
+      "rank": 122,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "rank": 123,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-alexis",
+      "rank": 124,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "rank": 125,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "lavaltrie",
+      "rank": 126,
+      "statut": "no_geo_events",
+      "immo_events": 8,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "contrecoeur",
+      "rank": 127,
+      "statut": "no_geo_events",
+      "immo_events": 9,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "henryville",
+      "rank": 128,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-jerome",
+      "rank": 129,
+      "statut": "no_geo_events",
+      "immo_events": 9,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-placide",
+      "rank": 130,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-jacques",
+      "rank": 131,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville--2",
+      "rank": 132,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-colomban",
+      "rank": 133,
+      "statut": "no_geo_events",
+      "immo_events": 10,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "rank": 134,
+      "statut": "no_geo_events",
+      "immo_events": 16,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "lacolle",
+      "rank": 135,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-sebastien--le-haut-richelieu",
+      "rank": 136,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-paul",
+      "rank": 137,
+      "statut": "no_geo_events",
+      "immo_events": 16,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-pie",
+      "rank": 138,
+      "statut": "no_geo_events",
+      "immo_events": 32,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "havelock",
+      "rank": 139,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-sabine--brome-missisquoi",
+      "rank": 140,
+      "statut": "no_geo_events",
+      "immo_events": 6,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "rank": 141,
+      "statut": "no_geo_events",
+      "immo_events": 8,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "crabtree",
+      "rank": 142,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "coteau-du-lac",
+      "rank": 143,
+      "statut": "no_geo_events",
+      "immo_events": 10,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "sainte-julienne",
+      "rank": 144,
+      "statut": "no_geo_events",
+      "immo_events": 9,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "farnham",
+      "rank": 145,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-paul-dabbotsford",
+      "rank": 146,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-clet",
+      "rank": 147,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-roch-de-richelieu",
+      "rank": 148,
+      "statut": "no_geo_events",
+      "immo_events": 8,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-jude",
+      "rank": 149,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "noyan",
+      "rank": 150,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "ormstown",
+      "rank": 151,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "ange-gardien",
+      "rank": 152,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-ours",
+      "rank": 153,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "prevost",
+      "rank": 154,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "rank": 155,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-calixte",
+      "rank": 156,
+      "statut": "no_geo_events",
+      "immo_events": 4,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "rank": 157,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "notre-dame-de-stanbridge",
+      "rank": 158,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "franklin",
+      "rank": 159,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-pierre",
+      "rank": 160,
+      "statut": "no_geo_events",
+      "immo_events": 2,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-liguori",
+      "rank": 161,
+      "statut": "gap_acquisition",
+      "immo_events": null,
+      "geo_events": 0,
+      "matched": null,
+      "recall_pct": null,
+      "note": "UNKNOWN honnête : fichier GT S3 absent (manifest events=0), hors dénominateur; jamais N-A."
+    },
+    {
+      "slug": "saint-hippolyte",
+      "rank": 162,
+      "statut": "no_geo_events",
+      "immo_events": 30,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "venise-en-quebec",
+      "rank": 163,
+      "statut": "no_geo_events",
+      "immo_events": 3,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "clarenceville",
+      "rank": 164,
+      "statut": "no_geo_events",
+      "immo_events": 1,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "joliette",
+      "rank": 165,
+      "statut": "no_geo_events",
+      "immo_events": 9,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "les-coteaux",
+      "rank": 166,
+      "statut": "no_geo_events",
+      "immo_events": 5,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    },
+    {
+      "slug": "saint-dominique",
+      "rank": 167,
+      "statut": "no_geo_events",
+      "immo_events": 6,
+      "geo_events": 0,
+      "matched": 0,
+      "recall_pct": 0,
+      "note": "incomplete/pending : aucune émission geo dans l’entrée dry-run locale; GT comptée au dénominateur."
+    }
+  ]
+}

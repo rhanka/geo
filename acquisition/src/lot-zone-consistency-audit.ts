@@ -30,11 +30,11 @@
  *   npx tsx acquisition/src/lot-zone-consistency-audit.ts --slugs saint-stanislas-de-kostka --verbose
  *   npx tsx acquisition/src/lot-zone-consistency-audit.ts --all
  */
-import { mkdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
-import { exists, getBytes, s3Client } from "./lib/s3.js";
+import { exists, getBytes, parseFeatureCollectionBuffer, s3Client } from "./lib/s3.js";
 import type { S3Client } from "@aws-sdk/client-s3";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -165,11 +165,79 @@ interface CityReport {
   note?: string;
 }
 
+interface ScaleCityReport {
+  slug: string;
+  lots: number;
+  assigned: number;
+  matched: number;
+  misassigned: number;
+  outside_all: number;
+  unassigned: number;
+  mismatch_pct: number | null;
+  status: "measured" | "inconclusive_zero_assigned" | "not_measured";
+  examples: Array<{ no_lot: string; assigned: string; actual: string[] }>;
+}
+
+interface ScaleReport {
+  generatedAt: string;
+  asOfS3Listing: string;
+  method: Record<string, unknown>;
+  universe: {
+    portfolio_universe: number;
+    zonage_served_slugs: number;
+    lots_served_slugs: number;
+    auditable_both_served: number;
+    zonage_without_lots: number;
+    zonage_without_lots_slugs: string[];
+    lots_without_zonage: number;
+    lots_without_zonage_slugs: string[];
+    portfolio_without_zonage_or_lots: number;
+  };
+  coverage: {
+    attempted: number;
+    measured: number;
+    conclusive: number;
+    inconclusive_zero_assigned: number;
+    not_measured: number;
+    still_pending: number;
+    pending_slugs: string[];
+  };
+  totals: {
+    lots: number;
+    assigned: number;
+    matched: number;
+    misassigned: number;
+    outside_all: number;
+    unassigned: number;
+    weighted_mismatch_pct: number | null;
+    median_city_mismatch_pct: number | null;
+    p90_city_mismatch_pct: number | null;
+  };
+  kpi_threshold_5pct: {
+    rule: string;
+    complete_under_5pct: number;
+    incomplete_at_or_over_5pct: number;
+    inconclusive_zero_assigned: number;
+    not_measured: number;
+    coverage_min_for_kpi: number;
+    coverage_reached: number;
+  };
+  distribution: Array<{ band: string; cities: number; lots_assigned: number }>;
+  top20_worst_pct: Array<{ slug: string; mismatch_pct: number; assigned: number; misassigned: number; outside_all: number; unassigned: number; lots: number; examples: ScaleCityReport["examples"] }>;
+  top20_worst_pct_min200assigned: Array<{ slug: string; mismatch_pct: number; assigned: number; misassigned: number; outside_all: number; unassigned: number; lots: number; examples: ScaleCityReport["examples"] }>;
+  top20_worst_volume: Array<{ slug: string; mismatch_pct: number; assigned: number; misassigned: number; outside_all: number; unassigned: number; lots: number }>;
+  inconclusive_zero_assigned_slugs: Array<{ slug: string; lots: number; unassigned: number }>;
+  degenerate_small_denominator: Array<{ slug: string; mismatch_pct: number; assigned: number; lots: number; unassigned: number }>;
+  not_measured: Array<{ slug: string; error: string }>;
+  cities: ScaleCityReport[];
+}
+
 async function loadFC(s3: S3Client, keys: string[]): Promise<Feature[] | null> {
   for (const k of keys) {
     if (!(await exists(s3, k))) continue;
-    const fc = JSON.parse((await getBytes(s3, k)).toString("utf8"));
-    return (fc.features ?? []) as Feature[];
+    // Ne pas matérialiser le GeoJSON entier en string : Laval dépasse la limite
+    // V8. Le parseur commun ne décode qu'une Feature à la fois.
+    return parseFeatureCollectionBuffer<Feature>(await getBytes(s3, k), k).features;
   }
   return null;
 }
@@ -179,13 +247,15 @@ async function auditCity(s3: S3Client, slug: string, exampleLimit: number): Prom
     slug, lots: 0, assigned: 0, matched: 0, misassigned: 0, outside_all: 0,
     unassigned: 0, mismatch_pct: 0, examples: [],
   };
-  const zones = await loadFC(s3, [
-    `${ZONAGE_PREFIX}qc-zonage-${slug}.geojson`,
-    `${ZONAGE_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`,
-  ]);
-  const lots = await loadFC(s3, [
-    `${LOTS_PREFIX}qc-lots-${slug}.geojson`,
-    `${LOTS_PREFIX}qc-lots-${slug}/qc-lots-${slug}.geojson`,
+  const [zones, lots] = await Promise.all([
+    loadFC(s3, [
+      `${ZONAGE_PREFIX}qc-zonage-${slug}/qc-zonage-${slug}.geojson`,
+      `${ZONAGE_PREFIX}qc-zonage-${slug}.geojson`,
+    ]),
+    loadFC(s3, [
+      `${LOTS_PREFIX}qc-lots-${slug}/qc-lots-${slug}.geojson`,
+      `${LOTS_PREFIX}qc-lots-${slug}.geojson`,
+    ]),
   ]);
   if (!zones) { base.note = "qc-zonage non servi"; return base; }
   if (!lots) { base.note = "qc-lots non servi"; return base; }
@@ -253,7 +323,306 @@ async function servedLotSlugs(s3: S3Client): Promise<string[]> {
   return [...have].sort();
 }
 
+function rounded(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+function percentileNearestRank(values: readonly number[], percentile: number): number | null {
+  if (!values.length) return null;
+  const index = Math.ceil(values.length * percentile) - 1;
+  return values[Math.max(0, Math.min(values.length - 1, index))] ?? null;
+}
+
+function scaleMethod(): Record<string, unknown> {
+  return {
+    tool: "acquisition/src/lot-zone-consistency-audit.ts (auditCity, réutilisé tel quel)",
+    runner: "une municipalité à la fois, checkpoint JSON atomique après chaque ville (reprise idempotente)",
+    test: "centroïde shoelace du plus grand anneau du lot -> point-in-polygon (avec trous) contre les polygones du code_zone ASSIGNÉ; layout servi nested avant flat",
+    classes: {
+      matched: "centroïde dans un polygone du code assigné",
+      misassigned: "centroïde hors du code assigné mais DANS un autre code servi",
+      outside_all: "centroïde hors de TOUTE zone servie",
+      unassigned: "lot sans code_zone (ou géométrie inexploitable) — EXCLU du dénominateur",
+    },
+    denominator: "mismatch_pct = (misassigned + outside_all) / assigned",
+    limits: [
+      "le centroïde est un proxy premier ordre : un lot fin/long à cheval sur deux zones peut être compté à tort (candidats, pas verdicts)",
+      "une ville dont TOUS les lots sont unassigned a assigned=0 : le mismatch n'est PAS calculable (classée 'non concluante', pas 0 %)",
+      "aucune écriture S3, aucun dépôt : mesure en lecture seule de l'univers SERVI",
+    ],
+    io: "LECTURE SEULE (S3 GET/LIST). Aucun PUT, aucun fold, aucune donnée servie modifiée.",
+  };
+}
+
+function scaleCity(city: CityReport): ScaleCityReport {
+  const status = city.assigned === 0 ? "inconclusive_zero_assigned" : "measured";
+  return {
+    slug: city.slug,
+    lots: city.lots,
+    assigned: city.assigned,
+    matched: city.matched,
+    misassigned: city.misassigned,
+    outside_all: city.outside_all,
+    unassigned: city.unassigned,
+    mismatch_pct: status === "measured" ? city.mismatch_pct : null,
+    status,
+    examples: city.examples,
+  };
+}
+
+function notMeasuredCity(slug: string): ScaleCityReport {
+  return {
+    slug, lots: 0, assigned: 0, matched: 0, misassigned: 0, outside_all: 0,
+    unassigned: 0, mismatch_pct: null, status: "not_measured", examples: [],
+  };
+}
+
+function compareCities(left: ScaleCityReport, right: ScaleCityReport): number {
+  if (left.mismatch_pct === null && right.mismatch_pct === null) return left.slug.localeCompare(right.slug);
+  if (left.mismatch_pct === null) return 1;
+  if (right.mismatch_pct === null) return -1;
+  return right.mismatch_pct - left.mismatch_pct || left.slug.localeCompare(right.slug);
+}
+
+function worstPct(city: ScaleCityReport): ScaleReport["top20_worst_pct"][number] {
+  if (city.mismatch_pct === null) throw new Error(`${city.slug}: mismatch_pct absent du classement`);
+  return {
+    slug: city.slug,
+    mismatch_pct: city.mismatch_pct,
+    assigned: city.assigned,
+    misassigned: city.misassigned,
+    outside_all: city.outside_all,
+    unassigned: city.unassigned,
+    lots: city.lots,
+    examples: city.examples,
+  };
+}
+
+function worstVolume(city: ScaleCityReport): ScaleReport["top20_worst_volume"][number] {
+  if (city.mismatch_pct === null) throw new Error(`${city.slug}: mismatch_pct absent du classement`);
+  return {
+    slug: city.slug,
+    mismatch_pct: city.mismatch_pct,
+    assigned: city.assigned,
+    misassigned: city.misassigned,
+    outside_all: city.outside_all,
+    unassigned: city.unassigned,
+    lots: city.lots,
+  };
+}
+
+function distribution(conclusive: readonly ScaleCityReport[]): ScaleReport["distribution"] {
+  const bands: ScaleReport["distribution"] = [
+    { band: "0 % (parfait)", cities: 0, lots_assigned: 0 },
+    { band: "] 0 – 1 %]", cities: 0, lots_assigned: 0 },
+    { band: "] 1 – 2 %]", cities: 0, lots_assigned: 0 },
+    { band: "] 2 – 5 %[", cities: 0, lots_assigned: 0 },
+    { band: "[5 – 10 %[", cities: 0, lots_assigned: 0 },
+    { band: "[10 – 25 %[", cities: 0, lots_assigned: 0 },
+    { band: "[25 – 50 %[", cities: 0, lots_assigned: 0 },
+    { band: "[50 – 100 %]", cities: 0, lots_assigned: 0 },
+  ];
+  for (const city of conclusive) {
+    const pct = city.mismatch_pct;
+    if (pct === null) continue;
+    const index = pct === 0 ? 0 : pct <= 1 ? 1 : pct <= 2 ? 2 : pct < 5 ? 3 : pct < 10 ? 4 : pct < 25 ? 5 : pct < 50 ? 6 : 7;
+    const band = bands[index]!;
+    band.cities++;
+    band.lots_assigned += city.assigned;
+  }
+  return bands;
+}
+
+function buildScaleReport(
+  generatedAt: string,
+  asOfS3Listing: string,
+  universe: ScaleReport["universe"],
+  auditable: readonly string[],
+  cities: ReadonlyMap<string, ScaleCityReport>,
+  errors: ReadonlyMap<string, string>,
+): ScaleReport {
+  const rows = [...cities.values()].sort(compareCities);
+  const pending = auditable.filter((slug) => !cities.has(slug));
+  const measured = rows.filter((city) => city.status !== "not_measured");
+  const conclusive = rows.filter((city) => city.status === "measured");
+  const inconclusive = rows.filter((city) => city.status === "inconclusive_zero_assigned");
+  const notMeasured = rows.filter((city) => city.status === "not_measured");
+  const totals = measured.reduce((acc, city) => ({
+    lots: acc.lots + city.lots,
+    assigned: acc.assigned + city.assigned,
+    matched: acc.matched + city.matched,
+    misassigned: acc.misassigned + city.misassigned,
+    outside_all: acc.outside_all + city.outside_all,
+    unassigned: acc.unassigned + city.unassigned,
+  }), { lots: 0, assigned: 0, matched: 0, misassigned: 0, outside_all: 0, unassigned: 0 });
+  const pctValues = conclusive.map((city) => city.mismatch_pct!).sort((left, right) => left - right);
+  const ranked = [...conclusive].sort(compareCities);
+  const complete = conclusive.filter((city) => city.mismatch_pct! < 5);
+  const incomplete = conclusive.filter((city) => city.mismatch_pct! >= 5);
+  const listedErrors = notMeasured.map((city) => ({ slug: city.slug, error: errors.get(city.slug) ?? "erreur non documentée" })).sort((left, right) => left.slug.localeCompare(right.slug));
+  return {
+    generatedAt,
+    asOfS3Listing,
+    method: scaleMethod(),
+    universe,
+    coverage: {
+      attempted: auditable.length,
+      measured: measured.length,
+      conclusive: conclusive.length,
+      inconclusive_zero_assigned: inconclusive.length,
+      not_measured: notMeasured.length,
+      still_pending: pending.length,
+      pending_slugs: pending,
+    },
+    totals: {
+      ...totals,
+      weighted_mismatch_pct: totals.assigned ? rounded(((totals.misassigned + totals.outside_all) / totals.assigned) * 100) : null,
+      median_city_mismatch_pct: percentileNearestRank(pctValues, 0.5),
+      p90_city_mismatch_pct: percentileNearestRank(pctValues, 0.9),
+    },
+    kpi_threshold_5pct: {
+      rule: "ville complete ssi mismatch_pct < 5 % (SPEC_PORTFOLIO_REPORT.md)",
+      complete_under_5pct: complete.length,
+      incomplete_at_or_over_5pct: incomplete.length,
+      inconclusive_zero_assigned: inconclusive.length,
+      not_measured: notMeasured.length,
+      coverage_min_for_kpi: 553,
+      coverage_reached: measured.length,
+    },
+    distribution: distribution(conclusive),
+    top20_worst_pct: ranked.slice(0, 20).map(worstPct),
+    top20_worst_pct_min200assigned: ranked.filter((city) => city.assigned >= 200).slice(0, 20).map(worstPct),
+    top20_worst_volume: [...conclusive]
+      .sort((left, right) => (right.misassigned + right.outside_all) - (left.misassigned + left.outside_all) || left.slug.localeCompare(right.slug))
+      .slice(0, 20)
+      .map(worstVolume),
+    inconclusive_zero_assigned_slugs: inconclusive.map((city) => ({ slug: city.slug, lots: city.lots, unassigned: city.unassigned })),
+    degenerate_small_denominator: conclusive.filter((city) => city.assigned < 200 && city.mismatch_pct! >= 5)
+      .map((city) => ({ slug: city.slug, mismatch_pct: city.mismatch_pct!, assigned: city.assigned, lots: city.lots, unassigned: city.unassigned })),
+    not_measured: listedErrors,
+    cities: rows,
+  };
+}
+
+function writeAtomic(path: string, contents: string): void {
+  mkdirSync(dirname(path), { recursive: true });
+  const temporary = `${path}.tmp.${process.pid}`;
+  writeFileSync(temporary, contents, "utf8");
+  renameSync(temporary, path);
+}
+
+async function listServedProductSlugs(s3: S3Client, prefix: string, product: string): Promise<string[]> {
+  const { ListObjectsV2Command } = await import("@aws-sdk/client-s3");
+  const { BUCKET } = await import("./lib/s3.js");
+  const slugs = new Set<string>();
+  let token: string | undefined;
+  do {
+    const page = await s3.send(new ListObjectsV2Command({ Bucket: BUCKET, Prefix: prefix, ContinuationToken: token, MaxKeys: 1000 }));
+    for (const object of page.Contents ?? []) {
+      const key = object.Key;
+      if (!key?.startsWith(prefix)) continue;
+      const rest = key.slice(prefix.length);
+      const flat = rest.match(new RegExp(`^${product}-([^/]+)\\.geojson$`));
+      const nested = rest.match(new RegExp(`^${product}-([^/]+)/${product}-([^/]+)\\.geojson$`));
+      if (flat) slugs.add(flat[1]!);
+      else if (nested && nested[1] === nested[2]) slugs.add(nested[1]!);
+    }
+    token = page.IsTruncated ? page.NextContinuationToken : undefined;
+  } while (token);
+  return [...slugs].sort();
+}
+
+function portfolioSlugs(): string[] {
+  const path = join(ROOT, "packages", "qc-sources", "src", "geo", "municipalities.qc.json");
+  const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
+  if (!Array.isArray(parsed)) throw new Error(`${path}: registre municipal invalide`);
+  const slugs = parsed.map((row) => typeof row === "object" && row !== null && typeof (row as { slug?: unknown }).slug === "string"
+    ? (row as { slug: string }).slug
+    : null);
+  if (slugs.some((slug) => !slug) || new Set(slugs).size !== 1106) throw new Error(`${path}: attendu 1106 slugs municipaux uniques`);
+  return slugs as string[];
+}
+
+function loadScaleResume(path: string): ScaleReport | null {
+  if (!existsSync(path)) return null;
+  const parsed: unknown = JSON.parse(readFileSync(path, "utf8"));
+  if (!parsed || typeof parsed !== "object") throw new Error(`checkpoint scale invalide: ${path}`);
+  const report = parsed as Partial<ScaleReport>;
+  if (!report.universe || !report.coverage || !Array.isArray(report.cities) || !Array.isArray(report.coverage.pending_slugs)) {
+    throw new Error(`checkpoint scale incompatible: ${path}`);
+  }
+  return report as ScaleReport;
+}
+
+async function scaleMain(argv: readonly string[]): Promise<void> {
+  const maxSeconds = Number(arg(argv, "max-seconds"));
+  if (!Number.isFinite(maxSeconds) || maxSeconds <= 0) throw new Error("--scale exige --max-seconds N positif");
+  const output = resolve(ROOT, arg(argv, "out") ?? `work/coverage/lot-zone-consistency-scale-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}.json`);
+  const resumed = loadScaleResume(output);
+  const cities = new Map<string, ScaleCityReport>();
+  const errors = new Map<string, string>();
+  let universe: ScaleReport["universe"];
+  let auditable: string[];
+  let asOfS3Listing: string;
+  if (resumed) {
+    universe = resumed.universe;
+    asOfS3Listing = resumed.asOfS3Listing;
+    for (const city of resumed.cities) cities.set(city.slug, city);
+    for (const error of resumed.not_measured) errors.set(error.slug, error.error);
+    auditable = [...new Set([...resumed.cities.map((city) => city.slug), ...resumed.coverage.pending_slugs])].sort();
+    if (auditable.length !== universe.auditable_both_served) throw new Error("checkpoint scale: partition auditable incohérente");
+  } else {
+    const s3 = s3Client();
+    const portfolio = new Set(portfolioSlugs());
+    const zonage = (await listServedProductSlugs(s3, ZONAGE_PREFIX, "qc-zonage")).filter((slug) => portfolio.has(slug));
+    const lots = (await listServedProductSlugs(s3, LOTS_PREFIX, "qc-lots")).filter((slug) => portfolio.has(slug));
+    const zonageSet = new Set(zonage);
+    const lotsSet = new Set(lots);
+    auditable = zonage.filter((slug) => lotsSet.has(slug));
+    const zonageWithoutLots = zonage.filter((slug) => !lotsSet.has(slug));
+    const lotsWithoutZonage = lots.filter((slug) => !zonageSet.has(slug));
+    universe = {
+      portfolio_universe: portfolio.size,
+      zonage_served_slugs: zonage.length,
+      lots_served_slugs: lots.length,
+      auditable_both_served: auditable.length,
+      zonage_without_lots: zonageWithoutLots.length,
+      zonage_without_lots_slugs: zonageWithoutLots,
+      lots_without_zonage: lotsWithoutZonage.length,
+      lots_without_zonage_slugs: lotsWithoutZonage,
+      portfolio_without_zonage_or_lots: [...portfolio].filter((slug) => !zonageSet.has(slug) && !lotsSet.has(slug)).length,
+    };
+    asOfS3Listing = new Date().toISOString();
+  }
+  const persist = (): void => {
+    const report = buildScaleReport(new Date().toISOString(), asOfS3Listing, universe, auditable, cities, errors);
+    writeAtomic(output, `${JSON.stringify(report, null, 2)}\n`);
+  };
+  persist();
+  const deadline = Date.now() + maxSeconds * 1000;
+  const s3 = s3Client();
+  for (const slug of auditable) {
+    if (cities.get(slug)?.status !== "not_measured" && cities.has(slug)) continue;
+    if (Date.now() >= deadline) break;
+    try {
+      cities.set(slug, scaleCity(await auditCity(s3, slug, 8)));
+      errors.delete(slug);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      cities.set(slug, notMeasuredCity(slug));
+      errors.set(slug, message);
+    }
+    persist();
+  }
+  const report = buildScaleReport(new Date().toISOString(), asOfS3Listing, universe, auditable, cities, errors);
+  console.log(`lot-zone-consistency scale: measured=${report.coverage.measured}/${report.coverage.attempted} pending=${report.coverage.still_pending} -> ${output}`);
+}
+
 async function main(argv: readonly string[]): Promise<void> {
+  if (argv.includes("--scale")) {
+    await scaleMain(argv);
+    return;
+  }
   const verbose = argv.includes("--verbose");
   const exampleLimit = Number(arg(argv, "examples") ?? "8");
   const only = arg(argv, "slugs")?.split(",").map((s) => s.trim()).filter(Boolean);
