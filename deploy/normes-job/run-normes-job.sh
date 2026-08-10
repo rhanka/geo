@@ -39,10 +39,21 @@ if [ "$MODE" = "captured" ]; then
   : "${NORMS_CAPTURE_REFERENCE_KEY:?NORMS_CAPTURE_REFERENCE_KEY is required for MODE=captured}"
   export GEO_NORMES_CAPTURED_EXECUTION="remote"
   echo "[$(ts)] captured CAS → Mistral strict schema (reference=$NORMS_CAPTURE_REFERENCE_KEY)"
-  tsx src/captured-normes-extract.ts \
+  if tsx src/captured-normes-extract.ts \
     --reference-key "$NORMS_CAPTURE_REFERENCE_KEY" \
-    --budget-usd "${NORMS_BUDGET_USD:-5}"
-  exit $?
+    --budget-usd "${NORMS_BUDGET_USD:-5}"; then
+    exit 0
+  else
+    bridge_status=$?
+    # Exit 2 means the bridge successfully wrote an immutable `refused` S3
+    # receipt. A refusal closes the city attempt; it is not a transient Pod
+    # failure for Kubernetes to retry or operators to mistake for missing data.
+    if [ "$bridge_status" -eq 2 ]; then
+      echo "[$(ts)] captured extraction refused with durable S3 receipt"
+      exit 0
+    fi
+    exit "$bridge_status"
+  fi
 elif [ "$MODE" = "full" ]; then
   # FULL: province-wide (or LIMIT-capped) discovery + download + route-guess.
   # robots ON by default; politeness delay honoured. Writes work/zonage-norms/
