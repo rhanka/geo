@@ -1,0 +1,627 @@
+{
+  "contract": "col9-orphan-freshness-scan/20260810",
+  "matrix_source": "work/coverage/zone-provenance-quality-matrix-20260726T130555Z-8c02991472f0e3a0.json (as_of 2026-07-26)",
+  "scanned_current_served_state": true,
+  "scope": "quality_status ∈ {orphan, candidate} ∪ {unknown AVEC collection servie} (col-8 LEVIER-3)",
+  "entries_scanned": 120,
+  "summary": {
+    "proof_present_stamped": 8,
+    "proof_present_unstamped": 0,
+    "no_proof": 112,
+    "unavailable": 0
+  },
+  "interpretation": {
+    "proof_present_stamped": "matrice PÉRIMÉE — objet servi porte déjà une preuve v2 réelle + stamp; reclassable documented/v2, AUCUN write requis (re-mesure suffit).",
+    "proof_present_unstamped": "preuve v2 présente mais stamp incomplet — restampable additif SANS risque via _restamp-served-from-proof.ts.",
+    "no_proof": "orphan RÉEL — nécessite campagne capture↔servi (lane zones, gated g-cond). Hors rattrapage jointures.",
+    "unavailable": "objet servi absent/illisible/trop-grand — noté, jamais deviné (anti-invention)."
+  },
+  "buckets": {
+    "proof_present_stamped": [
+      {
+        "slug": "boisbriand",
+        "quality_status": "orphan",
+        "served_url": "https://services3.arcgis.com/x2965icj4V1l01th/arcgis/rest/services/Plan_de_zonage/FeatureServer/32/query?where=1%3D1&outFields=*&f=geojson"
+      },
+      {
+        "slug": "contrecoeur",
+        "quality_status": "orphan",
+        "served_url": "https://services3.arcgis.com/D6yGeV5bY0BWDvJi/arcgis/rest/services/Zonage___Contrec%C5%93ur_WFL1/FeatureServer/2/query?where=1%3D1&outFields=nom_zone&outSR=4326&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+      },
+      {
+        "slug": "hampstead",
+        "quality_status": "orphan",
+        "served_url": "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&outFields=*&f=geojson"
+      },
+      {
+        "slug": "saint-charles-sur-richelieu",
+        "quality_status": "orphan",
+        "served_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-12/arcgis/rest/services/570_LaValleeDuRichelieu/57057_SaintCharlesSurRichelieu_public/MapServer/444/query?where=1%3D1&outFields=No_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+      },
+      {
+        "slug": "saint-lin-laurentides",
+        "quality_status": "orphan",
+        "served_url": "https://services8.arcgis.com/PF86XLgxesdAEe8M/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson"
+      },
+      {
+        "slug": "salaberry-de-valleyfield",
+        "quality_status": "orphan",
+        "served_url": "https://services5.arcgis.com/8TXm0JD0A0eOyxy5/arcgis/rest/services/SdV__Zonage_Reglement150/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson"
+      },
+      {
+        "slug": "sherbrooke",
+        "quality_status": "orphan",
+        "served_url": "https://services3.arcgis.com/qsNXG7LzoUbR4c1C/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson"
+      },
+      {
+        "slug": "vercheres",
+        "quality_status": "orphan",
+        "served_url": "https://services3.arcgis.com/D6yGeV5bY0BWDvJi/arcgis/rest/services/Carte_de_zonage___Verch%C3%A8res_WFL1/FeatureServer/2/query?where=1%3D1&outFields=*&f=geojson"
+      }
+    ],
+    "proof_present_unstamped": [],
+    "no_proof": [
+      {
+        "slug": "amherst",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "amos",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "beaumont",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "bethanie",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "bowman",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "brownsburg-chatham",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "cap-sante",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "charette",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "charlemagne",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "chateau-richer",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "chelsea",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "compton",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "cote-saint-luc",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "denholm",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "deschambault-grondines",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "dixville",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "donnacona",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "dorval",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "duhamel",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "east-hereford",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "frampton",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "grandes-piles",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "grenville",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "grenville-sur-la-rouge",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "harrington",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "hatley-township-municipality",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "hemmingford--les-jardins-de-napierville--2",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "la-presentation",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "lac-sainte-marie",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "lac-tremblant-nord",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "lachute",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "lepiphanie",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "les-bergeronnes",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "les-cedres",
+        "quality_status": "unknown",
+        "served_url": null
+      },
+      {
+        "slug": "les-escoumins",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "martinville",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "montebello",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "montpellier",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "murdochville",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "neuville",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "ogden",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "oka",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "otterburn-park",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "peribonka",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "pont-rouge",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "portneuf",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "preissac",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "riviere-a-pierre",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "rougemont",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "roxton-falls",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-alban",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-amable",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-andre-avellin",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-andre-dargenteuil",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-anselme",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-aubert",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-barnabe-sud",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-basile",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-bernard-de-michaudville",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-damien",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-denis-sur-richelieu",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-epiphane",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-esprit",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-etienne-de-beauharnois",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-felix-dotis",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-ferreol-les-neiges",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-francois-de-lile-dorleans",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-gilbert",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-henri",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-hermenegilde",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-jerome",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-joachim",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-jude",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-leandre",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-liboire",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-louis",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-louis-de-gonzague-du-cap-tourmente",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-malachie",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-malo",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-marc-des-carrieres",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-marcel-de-richelieu",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-mathias-sur-richelieu",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-maxime-du-mont-louis",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-michel-de-bellechasse",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-nazaire-de-dorchester",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-neree-de-bellechasse",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-pierre-baptiste",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-pierre-de-lile-dorleans",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-raymond",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "saint-sulpice",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-thuribe",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-ubalde",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-vallier",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "saint-venant-de-paquette",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-brigide-diberville",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-christine-dauvergne",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-claire",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-edwidge-de-clifton",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-emelie-de-lenergie",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-justine-de-newton",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-madeleine",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-marie-madeleine",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-monique--lac-saint-jean-est",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-paule",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-petronille",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "sainte-therese-de-la-gatineau",
+        "quality_status": "candidate",
+        "served_url": null
+      },
+      {
+        "slug": "shawinigan",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "stanstead-est",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "stratford",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "val-des-monts",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "waterville",
+        "quality_status": "orphan",
+        "served_url": null
+      },
+      {
+        "slug": "wentworth",
+        "quality_status": "orphan",
+        "served_url": null
+      }
+    ],
+    "unavailable": []
+  }
+}
