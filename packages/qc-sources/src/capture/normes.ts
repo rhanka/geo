@@ -169,6 +169,7 @@ export const CapturedNormesCampaignOutcomeSchema = z.enum([
   "unreachable",
   "http-forbidden",
   "mistral-below-gate",
+  "mistral-deposited",
 ]);
 
 export const CapturedNormesCampaignEntrySchema = z.object({
@@ -177,14 +178,91 @@ export const CapturedNormesCampaignEntrySchema = z.object({
   discovery_run_receipt_key: z.string().regex(/^registry\/normes-captured-discovery-run-receipts\/(?:v\d+\/)?[^/]+\/[^/]+\.json$/),
   extraction_receipt_keys: z.array(z.string().regex(/^registry\/normes-captured-receipts\/[a-f0-9]+\.json$/)).max(8),
 }).strict().superRefine((value, ctx) => {
-  if (value.outcome === "mistral-below-gate" && value.extraction_receipt_keys.length === 0) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "mistral-below-gate requires extraction receipts" });
+  const mistralOutcome = value.outcome === "mistral-below-gate" || value.outcome === "mistral-deposited";
+  if (mistralOutcome && value.extraction_receipt_keys.length === 0) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${value.outcome} requires extraction receipts` });
   }
-  if (value.outcome !== "mistral-below-gate" && value.extraction_receipt_keys.length > 0) {
-    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "only mistral-below-gate may carry extraction receipts" });
+  if (!mistralOutcome && value.extraction_receipt_keys.length > 0) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "only Mistral outcomes may carry extraction receipts" });
   }
 });
 export type CapturedNormesCampaignEntry = z.infer<typeof CapturedNormesCampaignEntrySchema>;
+
+/** Parsed immutable evidence consumed by the campaign closer for one OCR pass. */
+export interface CapturedNormesCampaignExtractionEvidence {
+  readonly receipt: CapturedNormesExtractionReceipt;
+  readonly selection: unknown;
+}
+
+/**
+ * Validates a city closure entirely from immutable receipts. A successful OCR
+ * result is an explicit campaign outcome, not an omission. The selection is
+ * re-parsed and joined back to the discovery run so an arbitrary parquet or
+ * another city's PDF cannot be smuggled into the closed partition.
+ */
+export function assertCapturedNormesCampaignEvidence(
+  entryValue: CapturedNormesCampaignEntry | unknown,
+  discoveryValue: CapturedNormesDiscoveryRunReceipt | unknown,
+  evidence: readonly CapturedNormesCampaignExtractionEvidence[],
+): void {
+  const entry = CapturedNormesCampaignEntrySchema.parse(entryValue);
+  const discovery = CapturedNormesDiscoveryRunReceiptSchema.parse(discoveryValue);
+  if (discovery.slug !== entry.slug) throw new Error(`${entry.slug}: discovery receipt slug mismatch`);
+  if (entry.extraction_receipt_keys.length !== evidence.length) {
+    throw new Error(`${entry.slug}: extraction evidence count mismatch`);
+  }
+
+  if (entry.outcome === "no-grid") {
+    if (discovery.status !== "refused" || discovery.refusal !== "no classified grille PDF candidate in eligible captured HTML") {
+      throw new Error(`${entry.slug}: no-grid requires an eligible HTML no-grid refusal`);
+    }
+    return;
+  }
+  if (entry.outcome === "unreachable") {
+    if (discovery.status !== "refused" || discovery.attempts.some((attempt) => attempt.http_status === 200)) {
+      throw new Error(`${entry.slug}: unreachable receipt contains an HTTP 200 attempt`);
+    }
+    return;
+  }
+  if (entry.outcome === "http-forbidden") {
+    if (discovery.status !== "refused" || !discovery.attempts.some((attempt) => attempt.http_status === 403)) {
+      throw new Error(`${entry.slug}: http-forbidden requires an HTTP 403 attempt`);
+    }
+    return;
+  }
+
+  for (const item of evidence) {
+    const receipt = CapturedNormesExtractionReceiptSchema.parse(item.receipt);
+    if (receipt.capture.slug !== entry.slug || receipt.capture.selection_key === null) {
+      throw new Error(`${entry.slug}: extraction receipt does not name its city and selection`);
+    }
+    const selection = CapturedNormesPdfCaptureSelectionSchema.parse(item.selection);
+    if (
+      selection.source_capture.slug !== entry.slug ||
+      selection.source_capture.run_id !== discovery.run_id ||
+      selection.source_capture.manifest_key !== discovery.manifest_key ||
+      !selectionIncludesPdfCaptureUrl(selection, entry.slug, receipt.capture.url)
+    ) {
+      throw new Error(`${entry.slug}: extraction selection is not derived from this discovery run`);
+    }
+    const directSubpage = selection.contract === "captured-normes-subpage-selection/v1";
+    const discoverySupportsSelection = discovery.status === "candidates" || (
+      directSubpage &&
+      discovery.status === "refused" &&
+      discovery.refusal === "no classified grille PDF candidate in eligible captured HTML"
+    );
+    if (!discoverySupportsSelection) {
+      throw new Error(`${entry.slug}: discovery receipt does not support the extraction selection`);
+    }
+    if (entry.outcome === "mistral-deposited") {
+      if (receipt.status !== "deposited" || receipt.parquet_key === null) {
+        throw new Error(`${entry.slug}: mistral-deposited requires deposited parquet receipts`);
+      }
+    } else if (receipt.status !== "refused" || !receipt.refusal?.startsWith("below deposit gate:")) {
+      throw new Error(`${entry.slug}: mistral-below-gate requires below-gate refusals`);
+    }
+  }
+}
 
 /** Committed input control: one closed, finite city partition. */
 export const CapturedNormesCampaignPlanSchema = z.object({
