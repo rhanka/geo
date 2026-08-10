@@ -1,0 +1,68 @@
+[
+  {
+    "slug": "hemmingford",
+    "status": "rien",
+    "reason": "pdf-only. Deux territoires distincts (Canton de Hemmingford ~1995 hab / 157 km2 ET Village de Hemmingford ~829 hab / 1.08 km2), tous deux MRC des Jardins-de-Napierville, Monteregie. Chaque muni ne diffuse que des plans de zonage PDF (canton: annexe-a-plan-zonage-general; village: reg293 plan de zonage). Sur AGOL, la seule presence 'Hemmingford' est un projet academique UdeM (paysage/agriculture: Occupation du sol, Couvert forestier, Cadastre, StoryMaps) -- PAS un reglement de zonage municipal. Org FQM (4U6MoU9BMk5KQKc9) ne contient rien pour Hemmingford. Aucun serveur ArcGIS/WFS municipal ou MRC decouvert.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null,
+    "coverage_note": "Aucune source vecteur. NB: si une source apparait un jour, verifier lequel des deux territoires (canton vs village) elle couvre."
+  },
+  {
+    "slug": "hampstead",
+    "status": "found",
+    "reason": "Zonage propre de Hampstead (enclave sur l'ile de Montreal), diffuse sur AGOL org IP2j0oTRjMlb9KsM (owner gsavignac-bourdeau), service hebergé Zonage_Hampstead_S/FeatureServer. NON servi par l'agglo de Montreal (Hampstead est une ville reconstituee avec son propre reglement). Couche polygonale confirmee avec vrais codes de zone (Zone='CW-1'/'CW-2'/'CW-3'..., Code_zone='CW'/'I'/'RA'/'RB'/'RC'/'RE'). NOM_RUE suffixe '(HMS)' + MUNICIPALI='07' + extent restreint = territoire de Hampstead uniquement.",
+    "service_url": "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer",
+    "query_url": "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&outFields=*&f=geojson",
+    "code_field": "Zone",
+    "feature_count": 1869,
+    "geometry_type": "Polygon",
+    "coverage_note": "Couche whole-muni (extent Web Mercator ~2.9km x 2.4km = empreinte de Hampstead ~1.8 km2). ATTENTION: layer id = 61 (pas 0). Les features NE sont PAS des polygones de zone dissous: ce sont des unites d'evaluation / geometrie du role (champs ID_UEV, CIVIQUE_DE, NOM_RUE, MATRICULE8, CODE_UTILI, LIBELLE_UT, ANNEE_CONS presents) estampillees avec Zone (code granulaire ex 'CW-1') + Code_zone (categorie ex 'CW'). Pour obtenir une grille de zones, dissoudre par Zone. exceededTransferLimit=true -> capture paginee necessaire (1869 features)."
+  },
+  {
+    "slug": "saint-pierre",
+    "status": "rien",
+    "reason": "proprietary-viewer. Territoire confirme = Saint-Pierre-de-l'Ile-d'Orleans (MRC de L'Ile-d'Orleans); le Saint-Pierre de la region de Montreal a ete fusionne dans Lachine en 2002 (n'existe plus comme muni). La MRC diffuse le zonage via l'outil proprietaire Sigale (sigale.ca/main.aspx?mrc=200, 'matrice graphique', editeur Groupe Altus) -- viewer .aspx avec integration Google Maps/StreetView, aucune couche vecteur native (aucun endpoint ArcGIS REST / WFS / GeoJSON decouvrable). Org FQM (4U6MoU9BMk5KQKc9) ne contient aucun zonage Ile-d'Orleans (seul zonage_p = Princeville).",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null,
+    "coverage_note": "Aucune source vecteur queryable. Sigale = matrice graphique du role (Altus), overlay zonage non exporte en vecteur."
+  },
+  {
+    "slug": "saint-stanislas-de-kostka",
+    "status": "rien",
+    "reason": "pdf-only. Monteregie, MRC de Beauharnois-Salaberry (pres de Salaberry-de-Valleyfield). L'org MRC (services5.arcgis.com/8TXm0JD0A0eOyxy5) ne publie POUR CE muni que des couches limites/lots-vacants/espaces-a-redevelopper/affectation: le web map 'Validation des espaces disponibles - Saint-Stanislas-de-Kostka' (owner mrcbeauharnoissalaberry) ne reference AUCUNE couche de zonage (operationalLayers = Limites municipales, Limites MRC, Lots Vacants 5ha+, Espaces a redevelopper). La muni ne diffuse que des plans de zonage PDF (330-2018-A general / -B village / -C riverain; regl 330-2018). Aucune couche vecteur de zonage propre sur AGOL.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null,
+    "coverage_note": "Aucune source vecteur. La MRC (meme org que Salaberry-de-Valleyfield SdV__Zonage) n'a pas de grille de zonage pour St-Stanislas-de-Kostka."
+  },
+  {
+    "slug": "saint-calixte",
+    "status": "rien",
+    "reason": "no-vector-endpoint. Lanaudiere, MRC de Montcalm. 0 item sur AGOL (recherche par nom ET dans l'org FQM = vide). La MRC de Montcalm offre un 'service de geomatique municipal' mais aucun viewer cartographique public / ArcGIS / WFS decouvrable; seulement des plans d'affectation PDF. Aucun serveur ArcGIS municipal de Saint-Calixte decouvert. Org FQM (4U6MoU9BMk5KQKc9) sans contenu pour Saint-Calixte.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null,
+    "coverage_note": "Aucune source vecteur de zonage decouverte."
+  },
+  {
+    "slug": "saint-roch-ouest",
+    "status": "rien",
+    "reason": "pdf-only. Petite muni (~150 hab), MRC de Montcalm, Lanaudiere (le brief indiquait Monteregie -- correction: Lanaudiere). Territoire quasi entierement en zone agricole dynamique. Seul le plan d'urbanisme/zonage PDF existe (regl 150-2023 sur saint-roch-ouest.ca); MRC de Montcalm = plans d'affectation PDF seulement. Aucun item sur AGOL (recherche par nom = 0). Org FQM sans contenu. Pas de portail cartographique propre -- coherent avec une tres petite muni.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null,
+    "coverage_note": "Aucune source vecteur. Tres peu de lots (agricole) -- absence de portail propre plausible/legitime."
+  }
+]
