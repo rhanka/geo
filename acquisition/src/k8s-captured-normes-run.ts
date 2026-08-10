@@ -48,12 +48,16 @@ function parseArgs(argv: string[]): Args {
   };
 }
 
-export function jobName(referenceKey: string): string {
-  return `geo-normes-mistral-${createHash("sha256").update(referenceKey).digest("hex").slice(0, 20)}`;
+export function jobName(referenceKey: string, image: string): string {
+  // A Kubernetes Job spec is immutable. Include the image identity so a fixed
+  // container can be retried against the same durable reference without
+  // deleting the failed Job and its diagnostic evidence. The same input pair
+  // remains idempotent.
+  return `geo-normes-mistral-${createHash("sha256").update(`${referenceKey}\n${image}`).digest("hex").slice(0, 20)}`;
 }
 
 export function jobManifest(args: Omit<Args, "dryRun">): string {
-  const name = jobName(args.referenceKey);
+  const name = jobName(args.referenceKey, args.image);
   return `apiVersion: batch/v1
 kind: Job
 metadata:
@@ -136,7 +140,7 @@ async function main(): Promise<void> {
   const manifest = jobManifest(args);
   process.stderr.write(
     `[captured-normes-job] slug=${reference.slug} reference=s3://sentropic-geo/${args.referenceKey}\n` +
-      `[captured-normes-job] job=${jobName(args.referenceKey)} image=${args.image}\n`,
+      `[captured-normes-job] job=${jobName(args.referenceKey, args.image)} image=${args.image}\n`,
   );
   if (args.dryRun) {
     process.stdout.write(manifest);
