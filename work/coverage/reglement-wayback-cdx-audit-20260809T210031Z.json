@@ -1,0 +1,135 @@
+{
+  "contract": "reglement-wayback-cdx-audit/v1",
+  "generated_at": "2026-08-09T21:00:31Z",
+  "scope": "palier-167 served reglement_url values classified jamais_capture by reglement-capture-kpi-20260809-46b5730d6529aaff.json",
+  "method": {
+    "domain_query": "http://web.archive.org/cdx/search/cdx?url=<host>/*&matchType=domain&output=json&fl=original,timestamp,statuscode,mimetype,digest,length&filter=statuscode:200&collapse=urlkey&limit=800",
+    "exact_followup": "http://web.archive.org/cdx/search/cdx?url=<served-url>&matchType=exact&output=json&fl=original,timestamp,statuscode,mimetype,digest,length&filter=statuscode:200&collapse=digest",
+    "rule": "The domain query is performed before the exact follow-up. An archived URL is only a recovery lead: it is not substituted for the exact served URL and does not change a completion state until a cluster capture has emitted an immutable manifest receipt and CAS object."
+  },
+  "rows": [
+    {
+      "slug": "boucherville",
+      "served_url": "https://www.boucherville.ca/wp-content/uploads/2018/11/Reglement-zonage-2018-290.pdf",
+      "prior_failure": "HTTP 404",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 0,
+      "recovery": null
+    },
+    {
+      "slug": "hampstead",
+      "served_url": "https://www.hampstead.qc.ca/wp-content/uploads/2022/05/Consolidation1001_0-18_ENannexes.pdf",
+      "prior_failure": "TypeError: fetch failed (twice)",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 0,
+      "recovery": null
+    },
+    {
+      "slug": "howick",
+      "served_url": "http://www.villagehowick.com/docs/fichiers_documents/9.pdf",
+      "prior_failure": "robots-disallowed (twice)",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 2,
+      "recovery": {
+        "original_url": "http://villagehowick.com/docs/fichiers_documents/9.pdf",
+        "timestamp": "20190419200144",
+        "mimetype": "application/pdf",
+        "length": 2650852,
+        "snapshot_url": "http://web.archive.org/web/20190419200144id_/http://villagehowick.com/docs/fichiers_documents/9.pdf"
+      }
+    },
+    {
+      "slug": "kirkland",
+      "served_url": "https://www.ville.kirkland.qc.ca/client_file/upload/Zonage/Codification_administrative_Zonage_90-58.pdf",
+      "prior_failure": "HTTP 403 (four times)",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 0,
+      "recovery": null
+    },
+    {
+      "slug": "mirabel",
+      "served_url": "https://mirabel.ca/uploads/2._Ville/2.5_Reglements/2025/1.1_-_TABLEAUX_DES_DISPOSITIONS_U-2300_(U-2679_11_septembre_2025).pdf",
+      "prior_failure": "HTTP 200 then timeout",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 2,
+      "recovery": {
+        "original_url": "https://mirabel.ca/uploads/2._Ville/2.5_Reglements/2025/1.1_-_TABLEAUX_DES_DISPOSITIONS_U-2300_(U-2679_11_septembre_2025).pdf",
+        "timestamp": "20260113131017",
+        "mimetype": "application/pdf",
+        "length": 4908476,
+        "snapshot_url": "http://web.archive.org/web/20260113131017id_/https://mirabel.ca/uploads/2._Ville/2.5_Reglements/2025/1.1_-_TABLEAUX_DES_DISPOSITIONS_U-2300_(U-2679_11_septembre_2025).pdf"
+      }
+    },
+    {
+      "slug": "montreal-ouest",
+      "served_url": "https://montreal-ouest.ca/wp-content/uploads/2026/07/1-R-amendant-le-r-de-zonage_FRA-Consolide-2026.pdf",
+      "prior_failure": "TypeError: fetch failed (twice)",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 0,
+      "recovery": null
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "served_url": "https://www.villesblg.ca/wp-content/uploads/2025/10/U-220-1-Declaratoires.pdf",
+      "prior_failure": "robots-disallowed",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 0,
+      "recovery": null
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "served_url": "https://saintbruno-site.s3.ca-central-1.amazonaws.com/wp-content/uploads/2026/07/urb-z2017-1-dispositions-declaratoires-codad-web.pdf",
+      "prior_failure": "robots-disallowed",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 0,
+      "recovery": null
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "served_url": "https://www.st-etiennedebeauharnois.qc.ca/wp-content/uploads/2021/10/R%C3%A8glement-zonage-2021-224_.pdf",
+      "prior_failure": "TypeError: fetch failed (twice)",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 2,
+      "recovery": {
+        "original_url": "https://www.st-etiennedebeauharnois.qc.ca/wp-content/uploads/2021/10/R%C3%A8glement-zonage-2021-224_.pdf?",
+        "timestamp": "20220307194349",
+        "mimetype": "application/pdf",
+        "length": 4488594,
+        "snapshot_url": "http://web.archive.org/web/20220307194349id_/https://www.st-etiennedebeauharnois.qc.ca/wp-content/uploads/2021/10/R%C3%A8glement-zonage-2021-224_.pdf?"
+      }
+    },
+    {
+      "slug": "saint-mathieu",
+      "served_url": "https://www.ville.saint-mathieu.qc.ca/wp-content/uploads/SMT_R315-2024_Zonage_AnnexeB_Grilles.pdf",
+      "prior_failure": "TypeError: fetch failed",
+      "domain_http_status": 200,
+      "domain_records": 0,
+      "exact_200_records": 0,
+      "recovery": null
+    },
+    {
+      "slug": "varennes",
+      "served_url": "https://www.ville.varennes.qc.ca/uploads/Services/Urbanisme/zonage_reg707-165_12_juin_2026.pdf",
+      "prior_failure": "HTTP 404 (twice)",
+      "domain_http_status": 200,
+      "domain_records": 800,
+      "exact_200_records": 0,
+      "recovery": null
+    }
+  ],
+  "summary": {
+    "examined": 11,
+    "exact_archived_pdf_recoveries": 3,
+    "no_exact_200_snapshot": 8,
+    "not_abandoned": "All rows remain incomplete or unknown until a real, current or archived source becomes a durable cluster-captured object. No N/A was produced."
+  }
+}
