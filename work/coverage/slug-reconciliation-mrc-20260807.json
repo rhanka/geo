@@ -1,0 +1,73 @@
+{
+  "contract": "slug-reconciliation-mrc/v1",
+  "generatedAt": "2026-08-07T00:00:00.000Z",
+  "description": "Mapping cohorte set-167-bprime (simple-tiret) → artefacts sources (double-tiret MRC-désambiguïsé). Ces 7 paires sont la MÊME municipalité : le double tiret est un séparateur nom↔MRC, pas un homonyme distinct. Confirmé par présence dans coverage-matrix.json sous double-tiret avec données riches (cadastre/zones/pmtiles). Fix appliqué dans palier-matrix-report.mjs : normSlug fallback étendu aux cols 1-13 (makeNormMap/lu).",
+  "motif": "double_tiret_mrc",
+  "confirmed_by": "coverage-matrix.json 2026-06-23 + sources complétion cols 1-13 (tous double-tiret)",
+  "pairs": [
+    {
+      "cohort_slug": "saint-isidore-roussillon",
+      "source_slug": "saint-isidore--roussillon",
+      "priority_rank": 32,
+      "mrc": "Roussillon",
+      "coverage_matrix_zones": "done",
+      "coverage_matrix_normes": "to-research",
+      "confirmed": true
+    },
+    {
+      "cohort_slug": "saint-damase-les-maskoutains",
+      "source_slug": "saint-damase--les-maskoutains",
+      "priority_rank": 104,
+      "mrc": "Les Maskoutains",
+      "coverage_matrix_zones": "done",
+      "coverage_matrix_normes": "to-research",
+      "confirmed": true
+    },
+    {
+      "cohort_slug": "hemmingford-les-jardins-de-napierville",
+      "source_slug": "hemmingford--les-jardins-de-napierville",
+      "priority_rank": 117,
+      "mrc": "Les Jardins-de-Napierville",
+      "coverage_matrix_zones": "done",
+      "coverage_matrix_normes": "done",
+      "confirmed": true
+    },
+    {
+      "cohort_slug": "saint-louis-de-gonzague-beauharnois-salaberry",
+      "source_slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+      "priority_rank": 120,
+      "mrc": "Beauharnois-Salaberry",
+      "coverage_matrix_zones": "to-research",
+      "coverage_matrix_normes": "done",
+      "confirmed": true
+    },
+    {
+      "cohort_slug": "hemmingford-les-jardins-de-napierville-2",
+      "source_slug": "hemmingford--les-jardins-de-napierville--2",
+      "priority_rank": 132,
+      "mrc": "Les Jardins-de-Napierville",
+      "coverage_matrix_zones": "done",
+      "coverage_matrix_normes": "done",
+      "confirmed": true,
+      "note": "Deuxième entité de la municipalité hemmingford dans la même MRC (suffix -2)"
+    },
+    {
+      "cohort_slug": "saint-sebastien-le-haut-richelieu",
+      "source_slug": "saint-sebastien--le-haut-richelieu",
+      "priority_rank": 136,
+      "mrc": "Le Haut-Richelieu",
+      "coverage_matrix_zones": "to-research",
+      "coverage_matrix_normes": "done",
+      "confirmed": true
+    },
+    {
+      "cohort_slug": "sainte-sabine-brome-missisquoi",
+      "source_slug": "sainte-sabine--brome-missisquoi",
+      "priority_rank": 140,
+      "mrc": "Brome-Missisquoi",
+      "coverage_matrix_zones": "to-research",
+      "coverage_matrix_normes": "done",
+      "confirmed": true
+    }
+  ]
+}
