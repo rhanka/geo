@@ -42,6 +42,12 @@ function requireS3RunEnvironment(): void {
 
 export const MAX_CAPTURED_NORMES_PDF_BYTES = 104_857_600;
 
+function requireRemoteMaterialization(): void {
+  if (process.env["GEO_NORMES_CAPTURED_EXECUTION"] !== "remote") {
+    throw new Error("captured normes PDF materialization is remote-only");
+  }
+}
+
 function hasPdfMagic(bytes: Uint8Array): boolean {
   return bytes.length >= 5 && Buffer.from(bytes.subarray(0, 5)).toString("ascii") === "%PDF-";
 }
@@ -54,6 +60,7 @@ export async function materializeCapturedNormesPdf(
   referenceValue: unknown,
   output: string,
 ): Promise<Record<string, unknown>> {
+  requireRemoteMaterialization();
   const { capture, bytes } = await loadCapturedNormesPdf(referenceValue);
   writeFileSync(output, bytes, { flag: "wx" });
   return {
