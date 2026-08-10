@@ -43,15 +43,18 @@ function requireS3RunEnvironment(): void {
 }
 
 export function selectionKey(runId: string, lineIndex: number): string {
-  return `registry/normes-captured-discovery/${runId}/${lineIndex}.json`;
+  // v2 tightens the classifier so generic codifications cannot be selected as
+  // zoning grids. Keep v1 receipts immutable: their bytes document the then
+  // current decision, while a rerun publishes an independently auditable v2.
+  return `registry/normes-captured-discovery/v2/${runId}/${lineIndex}.json`;
 }
 
 export function discoveryReceiptKey(runId: string, lineIndex: number): string {
-  return `registry/normes-captured-discovery-receipts/${runId}/${lineIndex}.json`;
+  return `registry/normes-captured-discovery-receipts/v2/${runId}/${lineIndex}.json`;
 }
 
 export function discoveryRunReceiptKey(runId: string, slug: string): string {
-  return `registry/normes-captured-discovery-run-receipts/${runId}/${slug}.json`;
+  return `registry/normes-captured-discovery-run-receipts/v2/${runId}/${slug}.json`;
 }
 
 export function subpageSelectionKey(runId: string, lineIndex: number): string {
