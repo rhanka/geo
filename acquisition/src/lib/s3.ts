@@ -537,6 +537,33 @@ export async function copyObject(
 }
 
 /**
+ * Server-side backup tied to the exact source revision observed during a
+ * preflight.  A geometry replacement cannot claim to have backed up revision
+ * A, then silently copy (and later overwrite) revision B after a concurrent
+ * writer.  The destination remains non-served, exactly like {@link copyObject}.
+ */
+export async function copyObjectIfMatch(
+  s3: S3Client,
+  srcKey: string,
+  destKey: string,
+  sourceEtag: string,
+  bucket: string = BUCKET,
+): Promise<void> {
+  if (!sourceEtag) throw new Error(`copyObjectIfMatch requires the observed source ETag (${srcKey})`);
+  if (isServedZoneKey(destKey)) {
+    throw new Error(`direct served qc-zonage copy refused: destination proof must be validated before write (${destKey})`);
+  }
+  await s3.send(
+    new CopyObjectCommand({
+      Bucket: bucket,
+      CopySource: `${bucket}/${encodeURI(srcKey)}`,
+      CopySourceIfMatch: sourceEtag,
+      Key: destKey,
+    }),
+  );
+}
+
+/**
  * List top-level slugs under `prefix` ending in `suffix`. When `topLevelOnly`
  * is true, keys whose remaining path contains a `/` are skipped (mirrors the
  * `cadastre_index_province.list_slugs` behaviour that excludes nested ArcGIS
