@@ -20,7 +20,7 @@ interface Args {
   dryRun: boolean;
 }
 
-const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/normes-job:captured-mistral";
+export const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/normes-job:captured-mistral-ba5b1b69";
 
 function option(argv: string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
