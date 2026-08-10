@@ -1,0 +1,151 @@
+{
+  "contract": "zones-identity-analysis/v1",
+  "slug": "saint-hyacinthe",
+  "date": "2026-08-10",
+  "analysis_type": "READ-ONLY identity gate (replace-vs-held) — no capture, no deposit, no S3 writes",
+  "branch": "lane/zones",
+  "policy_applied": {
+    "replace_policy": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md (64f82eae/65d4c637) — v2 capture may REPLACE served IFF every uncovered served code is UNPROVEN; wide divergence / low overlap = wrong-layer (G6) -> HELD, do not force. 'Proven' = feature carries a v2 proof (geometry_source sha256+retrieved_at); url!=null alone is NOT proof.",
+    "geometry_grain": "SPEC_ZONE_GEOMETRY_GRAIN.md (7c7f6731) — classify by source-layer NATURE; native zone polygons -> zone-polygon; UEV/parcel identifiers -> evaluation-unit.",
+    "proven_ness_helper": "acquisition/src/lib/zonage-proof.ts featureHasV2Proof()"
+  },
+
+  "live_source_candidate": {
+    "url": "https://services3.arcgis.com/KHxqinF9QiQAuCwv/arcgis/rest/services/Zonage_SHY/FeatureServer/0",
+    "query_url": "https://services3.arcgis.com/KHxqinF9QiQAuCwv/arcgis/rest/services/Zonage_SHY/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+    "agol_org": "mrcdesmaskoutains (KHxqinF9QiQAuCwv) — MRC des Maskoutains, serves Saint-Hyacinthe zonage",
+    "layer_name": "Zonage_SHY",
+    "geometryType": "esriGeometryPolygon",
+    "objectIdField": "FID",
+    "feature_count": 1066,
+    "fields": [
+      { "name": "FID", "type": "esriFieldTypeOID" },
+      { "name": "NO_ZONE", "type": "esriFieldTypeInteger", "role": "bare zone number (e.g. 5048)" },
+      { "name": "ETQ_ZONE", "type": "esriFieldTypeString", "length": 200, "role": "COMPOSITE OFFICIAL ZONE CODE 'NNNN-L' (e.g. '5048-R') = NO_ZONE + '-' + CODE_AFFEC; keys the official city grille URL_Grille (grilles.ville.st-hyacinthe.qc.ca/zone/<ETQ_ZONE>)" },
+      { "name": "SECTEUR", "type": "esriFieldTypeInteger", "role": "sector number (leading digit family of NO_ZONE)" },
+      { "name": "AFFECTATIO", "type": "esriFieldTypeString", "length": 100, "role": "human affectation label (long text)" },
+      { "name": "CODE_AFFEC", "type": "esriFieldTypeString", "length": 200, "role": "affectation designation letter(s) = the suffix of ETQ_ZONE; 14 distinct incl. blank" },
+      { "name": "REGLEMENT", "type": "esriFieldTypeString", "length": 200 },
+      { "name": "NOTES", "type": "esriFieldTypeString", "length": 254 },
+      { "name": "URL_Grille", "type": "esriFieldTypeString", "length": 254, "role": "official grille URL keyed by ETQ_ZONE" },
+      { "name": "Shape_Leng", "type": "esriFieldTypeDouble" },
+      { "name": "Shape_Area", "type": "esriFieldTypeDouble" },
+      { "name": "Sup_m2", "type": "esriFieldTypeDouble" },
+      { "name": "Shape__Area", "type": "esriFieldTypeDouble" },
+      { "name": "Shape__Length", "type": "esriFieldTypeDouble" }
+    ],
+    "code_field_characterization": "ETQ_ZONE is the authoritative composite zone code (NOT a prose label): 'NNNN-L' resolving to the official grille. NO_ZONE is its bare integer component. CODE_AFFEC is the letter suffix (affectation designation). No field is a human prose 'Zone H-101'-style label.",
+    "uev_parcel_markers_present": false,
+    "geometry_grain_of_source": "zone-polygon",
+    "grain_evidence": "esriGeometryPolygon; fields are zone-level (NO_ZONE/ETQ_ZONE/CODE_AFFEC/AFFECTATIO); NO ID_UEV / MATRICULE8 / CODE_UTILI / parcel identifiers.",
+    "distinct_code_sets": {
+      "ETQ_ZONE_distinct": 1066,
+      "CODE_AFFEC_distinct_values": [" ", "A", "AA", "AC", "AH", "AHC", "C", "H", "I", "M", "P", "R", "RA", "Z", "ZR"]
+    }
+  },
+
+  "served_collection": {
+    "served_key_flat": "normalized/ca-qc-zonage/qc-zonage-saint-hyacinthe.geojson",
+    "served_key_flat_exists": true,
+    "served_key_nested_geojson": "normalized/ca-qc-zonage/qc-zonage-saint-hyacinthe/qc-zonage-saint-hyacinthe.geojson",
+    "served_key_nested_geojson_exists": false,
+    "nested_meta_only": "normalized/ca-qc-zonage/qc-zonage-saint-hyacinthe/qc-zonage-saint-hyacinthe.meta.json (present; no nested .geojson) — geo-api serves the flat object",
+    "last_modified": "2026-08-08T15:58:18Z",
+    "content_length_bytes": 2228975,
+    "feature_count": 1091,
+    "served_code_field": "zone_code",
+    "distinct_zone_code": 1089,
+    "zone_code_format": "'NNNN-L' (e.g. '4052-C','5048-R') = NUM_ZONE + '-' + GROUPE_USAGE_DOM",
+    "derivation_source_field_text": "arcgis.st-hyacinthe.ca ISOGEO_SigimProd_Features/FeatureServer/13 (NUM_ZONE-GROUPE_USAGE_DOM, Regl.350)",
+    "provenance": {
+      "zone_source_url": "https://arcgis.st-hyacinthe.ca/server/rest/services/ISOGEO_SigimProd_Features/FeatureServer/13",
+      "zone_source_url_is_null": false,
+      "zone_source_level": "candidate",
+      "zone_source_level_distribution": { "candidate": 1091 },
+      "featureHasV2Proof_count": 0,
+      "featureHasV2Proof_total": 1091,
+      "feature_proof_schema_version": "1.0",
+      "feature_proof_geometry": "artifact_uri=s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-saint-hyacinthe.geojson (SELF-REFERENTIAL S3 key), upstream_uri=null",
+      "collection_level_proof_present": false,
+      "proven_verdict": "UNPROVEN — url!=null but DECLARATIVE (level=candidate, self-referential artifact_uri, no upstream capture); 0/1091 features carry a v2 proof. Every served code is UNPROVEN per policy."
+    },
+    "distinct_zone_code_suffix_vocab": ["A", "C", "H", "I", "M", "P", "R", "X"]
+  },
+
+  "overlap_matrix": {
+    "candidate_1_ETQ_ZONE_exact": {
+      "description": "served.zone_code (full 'NNNN-L') vs live.ETQ_ZONE (full 'NNNN-L') — exact string match",
+      "served_distinct": 1089,
+      "live_distinct": 1066,
+      "intersection": 237,
+      "served_only": 852,
+      "live_only": 829,
+      "overlap_served_into_live_pct": 21.8,
+      "overlap_live_into_served_pct": 22.2
+    },
+    "candidate_2_NO_ZONE_numeric_prefix": {
+      "description": "served.zone_code numeric prefix (NUM_ZONE) vs live.NO_ZONE — bare zone number, suffix stripped",
+      "served_prefixes": 1087,
+      "live_prefixes": 1066,
+      "intersection": 627,
+      "served_only_prefixes": 460,
+      "live_only_prefixes": 439,
+      "overlap_served_into_live_pct": 57.7,
+      "overlap_live_into_served_pct": 58.8
+    },
+    "candidate_3_CODE_AFFEC": {
+      "description": "RULED OUT as a zone code — only ~14 distinct affectation categories, not a per-zone identifier."
+    },
+    "suffix_agreement_on_common_numbers": {
+      "common_numeric_prefixes": 627,
+      "same_suffix_set": 236,
+      "different_suffix_set": 391,
+      "agreement_rate_pct": 37.6,
+      "interpretation": "Where the zone NUMBER matches, the suffix DISAGREES 62.4% of the time — because the suffixes are DIFFERENT attributes: served suffix = GROUPE_USAGE_DOM (dominant usage group), live suffix = CODE_AFFEC (affectation designation)."
+    },
+    "suffix_vocabularies": {
+      "served_GROUPE_USAGE_DOM": ["A", "C", "H", "I", "M", "P", "R", "X"],
+      "live_CODE_AFFEC": ["A", "AA", "AC", "AH", "AHC", "C", "H", "I", "M", "P", "R", "RA", "Z", "ZR"],
+      "served_only_suffixes": ["X"],
+      "live_only_suffixes": ["AA", "AC", "AH", "AHC", "RA", "Z", "ZR"]
+    }
+  },
+
+  "direct_source_confirmations": {
+    "note": "Queried the live AGOL directly (small reliable WebFetch) to corroborate the bulk-list overlap, removing any transcription concern.",
+    "suffix_mismatches_same_number": [
+      { "num": 3002, "live_ETQ_ZONE": "3002-H", "live_CODE_AFFEC": "H", "served_zone_code": "3002-A" },
+      { "num": 3020, "live_ETQ_ZONE": "3020-H", "live_CODE_AFFEC": "H", "served_zone_code": "3020-I" },
+      { "num": 4002, "live_ETQ_ZONE": "4002-I", "live_CODE_AFFEC": "I", "served_zone_code": "4002-H" },
+      { "num": 2016, "live_ETQ_ZONE": "2016-C", "live_CODE_AFFEC": "C", "served_zone_code": "2016-H" },
+      { "num": 2031, "live_ETQ_ZONE": "2031-I", "live_CODE_AFFEC": "I", "served_zone_code": "2031-H" }
+    ],
+    "served_only_numbers_absent_from_live": {
+      "queried": [10001, 10002, 10003, 4216, 4209, 4211],
+      "live_count_returned": 0,
+      "interpretation": "These served zone numbers do not exist in the live AGOL — the two sources cover materially different zone universes (served has a 10000-series and 4200s absent upstream)."
+    }
+  },
+
+  "decision": {
+    "verdict": "HELD",
+    "reason_code": "G6 wrong-layer / different-taxonomy + different zone universe",
+    "reason": "The live AGOL Zonage_SHY (ETQ_ZONE = NO_ZONE + CODE_AFFEC) is NOT the same layer the served collection was derived from (the CITY ISOGEO server arcgis.st-hyacinthe.ca FeatureServer/13, zone_code = NUM_ZONE + GROUPE_USAGE_DOM). Exact code overlap is only ~22% (852/1089 served codes have no upstream match — reproduces the prior held's 852). Even on the bare zone NUMBER, overlap is only ~58% (460 served numbers absent upstream, 439 live numbers absent from served; served-only numbers confirmed count=0 upstream). Where numbers match, the suffix disagrees 62% of the time because the suffix attributes differ (dominant-usage-group vs affectation-designation; disjoint vocab items 'X' vs 'Z/ZR/AA/AC/AH/AHC/RA'). Forcing this replacement would drop 852 served codes as UNKNOWN and re-key the collection into an incompatible taxonomy — the exact wrong-layer forced replacement the policy forbids.",
+    "served_unproven_confirmed": true,
+    "served_unproven_note": "The REPLACE-policy precondition (every uncovered served code UNPROVEN) IS met (level=candidate, url declarative, featureHasV2Proof=0/1091). But unproven-ness is NECESSARY, not SUFFICIENT — the G6 wrong-layer guard overrides: low overlap + divergent taxonomy + divergent zone universe = do NOT force.",
+    "clean_replace": false,
+    "recommended_reconciliation_path_NOT_an_action": "The identity-clean v2 source is the SAME layer the served zone_code was derived from: arcgis.st-hyacinthe.ca/server/rest/services/ISOGEO_SigimProd_Features/FeatureServer/13 (NUM_ZONE + GROUPE_USAGE_DOM). A v2 capture there would upgrade the same identity candidate->documented WITHOUT dropping codes. It requires its own identity + verifiable-complete check (out of scope here). The AGOL ETQ_ZONE dataset is a distinct, non-substitutable dataset (its ETQ_ZONE is the authoritative official grille code, but for a DIFFERENT zone catalog than the currently served one).",
+    "geometry_grain_if_ever_deposited": "zone-polygon (both the AGOL candidate and the served collection are native zone polygons; grain is NOT the blocker — identity/taxonomy is)."
+  },
+
+  "cross_references": {
+    "prior_held_record": "work/coverage/zones-vnatif-deposit-record-20260810.json (slug saint-hyacinthe, statut SKIP): '852 code(s) servi(s) absent(s) de la couche amont capturee ... HELD, pas de depot force (a reconcilier, cf bernard/jude 20260803)'. This analysis independently reproduces the 852 figure and refines the taxonomy diagnosis.",
+    "prior_discovery_record": "work/coverage/zones-vnatif-discovery-20260810.json (slug saint-hyacinthe, verdict VECTEUR_TROUVE): AGOL mrcdesmaskoutains Zonage_SHY, ETQ_ZONE='5048-R', URL_Grille=grilles.ville.st-hyacinthe.qc.ca/zone/5048-R.",
+    "live_capture_receipt": "prior capture run zones-20260810T100500Z-1 (sha256:599f769e...c5a97729, retrieved_at 2026-08-10T10:07:07.819Z) confirmed the AGOL is fetchable/valid — but identity, not fetchability, is the blocker."
+  },
+
+  "caveats": {
+    "bulk_live_list_source": "The full distinct ETQ_ZONE set (1066 codes) was obtained via WebFetch (summarizing model). The DECISION is robust to any minor transcription imperfection: the ~22% exact / ~58% numeric overlap, the 62% suffix disagreement, and the different-taxonomy conclusion are all independently corroborated by (a) the served collection's own source field text (NUM_ZONE-GROUPE_USAGE_DOM), (b) direct single-zone AGOL queries, and (c) the prior held's 852 figure.",
+    "read_only": "No S3 writes, no capture, no deposit, no putServedZone*. Only WebFetch (live source) + S3 reads + this committed record."
+  }
+}
