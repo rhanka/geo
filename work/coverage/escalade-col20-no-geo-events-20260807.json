@@ -1,0 +1,1085 @@
+{
+  "$meta": {
+    "contract": "qc-escalade-col20-no-geo-events/20260807",
+    "generated_from": "work/coverage/zoning-events-col20-167-fresh-geofix-20260807.json",
+    "generated_from_commit": "b16d7947",
+    "generated_at": "2026-08-07T00:00:00.000Z",
+    "scope": "132 villes statut no_geo_events — géo n'émet pas d'événements de zonage",
+    "interdiction": "Ces villes restent au dénominateur (recall 0%). Ne jamais marquer N-A.",
+    "classification": {
+      "escalade_geo_zones": "url_http > 0 — GT a des URLs HTTP → geo-zones doit émettre des événements sur ces sources",
+      "missed_honnetes_only": "url_http = 0, url_non_http > 0 — GT sans source URL HTTP → données non-web, hors portée immédiate",
+      "escalade_geo_pv_only": "url_http = 0, url_non_http = 0 — aucune URL GT → PV entièrement manquant"
+    },
+    "destinations": {
+      "geo_zones": "équipe geo-zones : déclencher émission d'événements zonage sur les villes escalade_geo_zones",
+      "geo_pv": "équipe geo-pv : capturer PV manquants pour villes escalade_geo_pv_only"
+    },
+    "anti_invention": "Batch reflète uniquement l'artefact source (bucket no_geo_events). Pas d'inférence sur les causes."
+  },
+  "summary": {
+    "total_no_geo_events": 132,
+    "escalade_geo_zones": 93,
+    "missed_honnetes_only": 39,
+    "escalade_geo_pv_only": 0,
+    "note_escalade_geo_pv_only": "Aucune ville no_geo_events sans aucune URL GT dans cet artefact — toutes ont au moins url_http > 0 ou url_non_http > 0."
+  },
+  "villes": [
+    {
+      "slug": "westmount",
+      "immo_events": 2,
+      "url_http": 2,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 2 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-lambert",
+      "immo_events": 1,
+      "url_http": 1,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 1 URL HTTP disponible"
+    },
+    {
+      "slug": "hampstead",
+      "immo_events": 3,
+      "url_http": 3,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 3 URLs HTTP disponibles"
+    },
+    {
+      "slug": "mont-royal",
+      "immo_events": 5,
+      "url_http": 5,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 5 URLs HTTP disponibles"
+    },
+    {
+      "slug": "cote-saint-luc",
+      "immo_events": 1,
+      "url_http": 0,
+      "url_non_http": 1,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 1 GT sans URL HTTP — documenter missed honnête; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "longueuil",
+      "immo_events": 3,
+      "url_http": 3,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 3 URLs HTTP disponibles"
+    },
+    {
+      "slug": "brossard",
+      "immo_events": 23,
+      "url_http": 23,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 23 URLs HTTP disponibles"
+    },
+    {
+      "slug": "sainte-catherine",
+      "immo_events": 12,
+      "url_http": 11,
+      "url_non_http": 1,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 11 URLs HTTP disponibles (1 missed honnête)"
+    },
+    {
+      "slug": "la-prairie",
+      "immo_events": 11,
+      "url_http": 11,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 11 URLs HTTP disponibles"
+    },
+    {
+      "slug": "delson",
+      "immo_events": 12,
+      "url_http": 12,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 12 URLs HTTP disponibles"
+    },
+    {
+      "slug": "candiac",
+      "immo_events": 5,
+      "url_http": 5,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 5 URLs HTTP disponibles"
+    },
+    {
+      "slug": "montreal-est",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "boucherville",
+      "immo_events": 5,
+      "url_http": 4,
+      "url_non_http": 1,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles (1 missed honnête)"
+    },
+    {
+      "slug": "dorval",
+      "immo_events": 11,
+      "url_http": 11,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 11 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-constant",
+      "immo_events": 14,
+      "url_http": 0,
+      "url_non_http": 14,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 14 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "immo_events": 10,
+      "url_http": 10,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 10 URLs HTTP disponibles"
+    },
+    {
+      "slug": "carignan",
+      "immo_events": 15,
+      "url_http": 15,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 15 URLs HTTP disponibles"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "immo_events": 2,
+      "url_http": 2,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 2 URLs HTTP disponibles"
+    },
+    {
+      "slug": "pointe-claire",
+      "immo_events": 25,
+      "url_http": 25,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 25 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-philippe",
+      "immo_events": 7,
+      "url_http": 0,
+      "url_non_http": 7,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 7 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-mathieu",
+      "immo_events": 10,
+      "url_http": 0,
+      "url_non_http": 10,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 10 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "chateauguay",
+      "immo_events": 6,
+      "url_http": 6,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 6 URLs HTTP disponibles"
+    },
+    {
+      "slug": "sainte-julie",
+      "immo_events": 5,
+      "url_http": 5,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 5 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "immo_events": 3,
+      "url_http": 3,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 3 URLs HTTP disponibles"
+    },
+    {
+      "slug": "chambly",
+      "immo_events": 1,
+      "url_http": 1,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 1 URL HTTP disponible"
+    },
+    {
+      "slug": "rosemere",
+      "immo_events": 8,
+      "url_http": 8,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 8 URLs HTTP disponibles"
+    },
+    {
+      "slug": "varennes",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "bois-des-filion",
+      "immo_events": 8,
+      "url_http": 8,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 8 URLs HTTP disponibles"
+    },
+    {
+      "slug": "beaconsfield",
+      "immo_events": 13,
+      "url_http": 0,
+      "url_non_http": 13,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 13 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "lorraine",
+      "immo_events": 10,
+      "url_http": 10,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 10 URLs HTTP disponibles"
+    },
+    {
+      "slug": "lery",
+      "immo_events": 24,
+      "url_http": 0,
+      "url_non_http": 24,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 24 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "mercier",
+      "immo_events": 9,
+      "url_http": 0,
+      "url_non_http": 9,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 9 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "charlemagne",
+      "immo_events": 12,
+      "url_http": 11,
+      "url_non_http": 1,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 11 URLs HTTP disponibles (1 missed honnête)"
+    },
+    {
+      "slug": "boisbriand",
+      "immo_events": 12,
+      "url_http": 12,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 12 URLs HTTP disponibles"
+    },
+    {
+      "slug": "deux-montagnes",
+      "immo_events": 9,
+      "url_http": 9,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 9 URLs HTTP disponibles"
+    },
+    {
+      "slug": "mcmasterville",
+      "immo_events": 12,
+      "url_http": 12,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 12 URLs HTTP disponibles"
+    },
+    {
+      "slug": "sainte-therese",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-amable",
+      "immo_events": 13,
+      "url_http": 13,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 13 URLs HTTP disponibles"
+    },
+    {
+      "slug": "terrebonne",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-remi",
+      "immo_events": 6,
+      "url_http": 4,
+      "url_non_http": 2,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles (2 missed honnêtes)"
+    },
+    {
+      "slug": "otterburn-park",
+      "immo_events": 7,
+      "url_http": 7,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 7 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-jacques-le-mineur",
+      "immo_events": 7,
+      "url_http": 7,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 7 URLs HTTP disponibles"
+    },
+    {
+      "slug": "richelieu",
+      "immo_events": 14,
+      "url_http": 14,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 14 URLs HTTP disponibles"
+    },
+    {
+      "slug": "beloeil",
+      "immo_events": 7,
+      "url_http": 7,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 7 URLs HTTP disponibles"
+    },
+    {
+      "slug": "baie-durfe",
+      "immo_events": 3,
+      "url_http": 3,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 3 URLs HTTP disponibles"
+    },
+    {
+      "slug": "sainte-marthe-sur-le-lac",
+      "immo_events": 11,
+      "url_http": 0,
+      "url_non_http": 11,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 11 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-jean-sur-richelieu",
+      "immo_events": 13,
+      "url_http": 0,
+      "url_non_http": 13,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 13 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "mascouche",
+      "immo_events": 6,
+      "url_http": 4,
+      "url_non_http": 2,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles (2 missed honnêtes)"
+    },
+    {
+      "slug": "repentigny",
+      "immo_events": 2,
+      "url_http": 0,
+      "url_non_http": 2,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 2 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-edouard",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "sainte-anne-de-bellevue",
+      "immo_events": 1,
+      "url_http": 1,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 1 URL HTTP disponible"
+    },
+    {
+      "slug": "saint-michel",
+      "immo_events": 7,
+      "url_http": 0,
+      "url_non_http": 7,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 7 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "blainville",
+      "immo_events": 7,
+      "url_http": 7,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 7 URLs HTTP disponibles"
+    },
+    {
+      "slug": "pointe-calumet",
+      "immo_events": 5,
+      "url_http": 0,
+      "url_non_http": 5,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 5 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "mont-saint-hilaire",
+      "immo_events": 6,
+      "url_http": 6,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 6 URLs HTTP disponibles"
+    },
+    {
+      "slug": "lile-perrot",
+      "immo_events": 17,
+      "url_http": 17,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 17 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-marc-sur-richelieu",
+      "immo_events": 2,
+      "url_http": 0,
+      "url_non_http": 2,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 2 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "sainte-martine",
+      "immo_events": 16,
+      "url_http": 0,
+      "url_non_http": 16,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 16 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "sainte-anne-des-plaines",
+      "immo_events": 1,
+      "url_http": 1,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 1 URL HTTP disponible"
+    },
+    {
+      "slug": "saint-urbain-premier",
+      "immo_events": 8,
+      "url_http": 0,
+      "url_non_http": 8,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 8 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-joseph-du-lac",
+      "immo_events": 3,
+      "url_http": 3,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 3 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "immo_events": 15,
+      "url_http": 0,
+      "url_non_http": 15,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 15 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "pincourt",
+      "immo_events": 7,
+      "url_http": 6,
+      "url_non_http": 1,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 6 URLs HTTP disponibles (1 missed honnête)"
+    },
+    {
+      "slug": "calixa-lavallee",
+      "immo_events": 5,
+      "url_http": 5,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 5 URLs HTTP disponibles"
+    },
+    {
+      "slug": "lile-cadieux",
+      "immo_events": 2,
+      "url_http": 2,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 2 URLs HTTP disponibles"
+    },
+    {
+      "slug": "pointe-des-cascades",
+      "immo_events": 7,
+      "url_http": 7,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 7 URLs HTTP disponibles"
+    },
+    {
+      "slug": "vaudreuil-sur-le-lac",
+      "immo_events": 1,
+      "url_http": 1,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 1 URL HTTP disponible"
+    },
+    {
+      "slug": "saint-blaise-sur-richelieu",
+      "immo_events": 7,
+      "url_http": 7,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 7 URLs HTTP disponibles"
+    },
+    {
+      "slug": "mont-saint-gregoire",
+      "immo_events": 7,
+      "url_http": 7,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 7 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-roch-de-lachigan",
+      "immo_events": 5,
+      "url_http": 0,
+      "url_non_http": 5,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 5 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "sainte-angele-de-monnoir",
+      "immo_events": 7,
+      "url_http": 7,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 7 URLs HTTP disponibles"
+    },
+    {
+      "slug": "oka",
+      "immo_events": 2,
+      "url_http": 2,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 2 URLs HTTP disponibles"
+    },
+    {
+      "slug": "sainte-clotilde",
+      "immo_events": 13,
+      "url_http": 0,
+      "url_non_http": 13,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 13 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "immo_events": 27,
+      "url_http": 0,
+      "url_non_http": 27,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 27 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "lassomption",
+      "immo_events": 5,
+      "url_http": 0,
+      "url_non_http": 5,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 5 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "howick",
+      "immo_events": 3,
+      "url_http": 0,
+      "url_non_http": 3,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 3 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "mirabel",
+      "immo_events": 9,
+      "url_http": 8,
+      "url_non_http": 1,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 8 URLs HTTP disponibles (1 missed honnête)"
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "immo_events": 1,
+      "url_http": 0,
+      "url_non_http": 1,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 1 GT sans URL HTTP — documenter missed honnête; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-damase--les-maskoutains",
+      "immo_events": 1,
+      "url_http": 1,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 1 URL HTTP disponible"
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "immo_events": 5,
+      "url_http": 5,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 5 URLs HTTP disponibles"
+    },
+    {
+      "slug": "sainte-brigide-diberville",
+      "immo_events": 2,
+      "url_http": 0,
+      "url_non_http": 2,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 2 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "les-cedres",
+      "immo_events": 7,
+      "url_http": 7,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 7 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-esprit",
+      "immo_events": 19,
+      "url_http": 0,
+      "url_non_http": 19,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 19 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-valentin",
+      "immo_events": 2,
+      "url_http": 0,
+      "url_non_http": 2,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 2 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "sainte-sophie",
+      "immo_events": 13,
+      "url_http": 0,
+      "url_non_http": 13,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 13 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "hudson",
+      "immo_events": 6,
+      "url_http": 6,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 6 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-alexandre",
+      "immo_events": 17,
+      "url_http": 0,
+      "url_non_http": 17,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 17 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville",
+      "immo_events": 4,
+      "url_http": 0,
+      "url_non_http": 4,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 4 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-cesaire",
+      "immo_events": 9,
+      "url_http": 0,
+      "url_non_http": 9,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 9 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-paul-de-lile-aux-noix",
+      "immo_events": 2,
+      "url_http": 0,
+      "url_non_http": 2,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 2 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "immo_events": 9,
+      "url_http": 9,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 9 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-alexis",
+      "immo_events": 3,
+      "url_http": 3,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 3 URLs HTTP disponibles"
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "immo_events": 2,
+      "url_http": 1,
+      "url_non_http": 1,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 1 URL HTTP disponible (1 missed honnête)"
+    },
+    {
+      "slug": "lavaltrie",
+      "immo_events": 8,
+      "url_http": 8,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 8 URLs HTTP disponibles"
+    },
+    {
+      "slug": "contrecoeur",
+      "immo_events": 9,
+      "url_http": 9,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 9 URLs HTTP disponibles"
+    },
+    {
+      "slug": "henryville",
+      "immo_events": 1,
+      "url_http": 1,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 1 URL HTTP disponible"
+    },
+    {
+      "slug": "saint-jerome",
+      "immo_events": 9,
+      "url_http": 9,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 9 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-jacques",
+      "immo_events": 1,
+      "url_http": 0,
+      "url_non_http": 1,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 1 GT sans URL HTTP — documenter missed honnête; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville--2",
+      "immo_events": 4,
+      "url_http": 0,
+      "url_non_http": 4,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 4 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-colomban",
+      "immo_events": 10,
+      "url_http": 5,
+      "url_non_http": 5,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 5 URLs HTTP disponibles (5 missed honnêtes)"
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "immo_events": 16,
+      "url_http": 16,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 16 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-sebastien--le-haut-richelieu",
+      "immo_events": 5,
+      "url_http": 5,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 5 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-paul",
+      "immo_events": 16,
+      "url_http": 16,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 16 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-pie",
+      "immo_events": 32,
+      "url_http": 22,
+      "url_non_http": 10,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 22 URLs HTTP disponibles (10 missed honnêtes)"
+    },
+    {
+      "slug": "havelock",
+      "immo_events": 3,
+      "url_http": 0,
+      "url_non_http": 3,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 3 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "sainte-sabine--brome-missisquoi",
+      "immo_events": 6,
+      "url_http": 0,
+      "url_non_http": 6,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 6 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "immo_events": 8,
+      "url_http": 8,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 8 URLs HTTP disponibles"
+    },
+    {
+      "slug": "crabtree",
+      "immo_events": 1,
+      "url_http": 0,
+      "url_non_http": 1,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 1 GT sans URL HTTP — documenter missed honnête; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "immo_events": 10,
+      "url_http": 10,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 10 URLs HTTP disponibles"
+    },
+    {
+      "slug": "sainte-julienne",
+      "immo_events": 9,
+      "url_http": 9,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 9 URLs HTTP disponibles"
+    },
+    {
+      "slug": "farnham",
+      "immo_events": 2,
+      "url_http": 0,
+      "url_non_http": 2,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 2 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-paul-dabbotsford",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-roch-de-richelieu",
+      "immo_events": 8,
+      "url_http": 8,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 8 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-jude",
+      "immo_events": 2,
+      "url_http": 2,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 2 URLs HTTP disponibles"
+    },
+    {
+      "slug": "ormstown",
+      "immo_events": 5,
+      "url_http": 0,
+      "url_non_http": 5,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 5 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "ange-gardien",
+      "immo_events": 5,
+      "url_http": 0,
+      "url_non_http": 5,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 5 GT sans URL HTTP — documenter missed honnêtes; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "saint-ours",
+      "immo_events": 3,
+      "url_http": 3,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 3 URLs HTTP disponibles"
+    },
+    {
+      "slug": "prevost",
+      "immo_events": 2,
+      "url_http": 2,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 2 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-calixte",
+      "immo_events": 4,
+      "url_http": 4,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 4 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-pierre",
+      "immo_events": 2,
+      "url_http": 2,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 2 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-liguori",
+      "immo_events": 2,
+      "url_http": 2,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 2 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-hippolyte",
+      "immo_events": 30,
+      "url_http": 30,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 30 URLs HTTP disponibles"
+    },
+    {
+      "slug": "venise-en-quebec",
+      "immo_events": 3,
+      "url_http": 3,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 3 URLs HTTP disponibles"
+    },
+    {
+      "slug": "clarenceville",
+      "immo_events": 1,
+      "url_http": 0,
+      "url_non_http": 1,
+      "categorie": "missed_honnetes_only",
+      "levier": "hors-portée: 1 GT sans URL HTTP — documenter missed honnête; geo-pv à investiguer source non-web"
+    },
+    {
+      "slug": "joliette",
+      "immo_events": 9,
+      "url_http": 9,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 9 URLs HTTP disponibles"
+    },
+    {
+      "slug": "les-coteaux",
+      "immo_events": 5,
+      "url_http": 5,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 5 URLs HTTP disponibles"
+    },
+    {
+      "slug": "saint-dominique",
+      "immo_events": 6,
+      "url_http": 6,
+      "url_non_http": 0,
+      "categorie": "escalade_geo_zones",
+      "levier": "geo-zones → émettre événements zonage sur 6 URLs HTTP disponibles"
+    }
+  ]
+}
