@@ -1,0 +1,211 @@
+{
+  "contract": "reglement-palier167-declared-candidates/v1",
+  "as_of": "2026-08-03T12:30:00Z",
+  "lane": "geo-reglement",
+  "scope": "palier-167 colonne 5 reglement_declared — 20 cités sans reglement_numero",
+  "read_only": true,
+  "method": "Lecture seule: registre acquisition/config/reglement-provenance.json (_note = analyse verbatim antérieure du corpus capté), inventaire corpus local work/zonage-norms/<slug>/ (VIDE dans ce worktree pour les 20), et readback lecture seule API OGC servie (qc-zonage-<slug>). AUCUNE capture. Numéro exigé depuis la clause d'adoption; projet auto-déclaré, grille/annexe nue et renvoi d'amendement REJETÉS; millésime null sauf date verbatim.",
+  "summary": { "curable": 0, "ambiguous": 2, "needs_capture": 18, "total": 20 },
+  "candidates": [
+    {
+      "slug": "saint-mathieu",
+      "verdict": "ambiguous",
+      "reglement_numero_verbatim": "229-2011",
+      "clause_or_context_verbatim": "«RÈGLEMENT DE ZONAGE 229-2011», adopté 14 août 2012, entrée en vigueur 4 septembre 2012, remplace 200-2004, «Municipalité de Saint-Mathieu» (lecture verbatim antérieure de Reglement-229-2011_Zonage.pdf, consignée dans le _note du registre). Le served layer OGC porte reglement_numero=R315-2024 dont TOUTES les versions portent «Ce document est un projet de règlement faisant l'objet d'une consultation publique et évoluera», SANS adoption/EEV (piège projet).",
+      "millesime_verbatim": "2012",
+      "pdf_key": "https://saint-mathieu.com/wp-content/uploads/2024/05/Reglement-229-2011_Zonage.pdf",
+      "page": 1,
+      "owner_gate_note": "Owner OK «Municipalité de Saint-Mathieu». AMBIGU deux-numéros: 229-2011 QUALIFIE le zonage EN VIGUEUR par clause d'adoption; R315-2024 est un PROJET (auto-déclaré) mais alimente les codes de zone SERVIS (ex. ADR-13) — risque de mésattribution, à trancher avec la lane ZONES. Le registre a délibérément mis null pour cette raison."
+    },
+    {
+      "slug": "saint-edouard",
+      "verdict": "ambiguous",
+      "reglement_numero_verbatim": "2015-259",
+      "clause_or_context_verbatim": "art.1 p4: «Le présent règlement porte le nom de \"Règlement de zonage de la municipalité de Saint-Édouard\" (Règlement numéro 2015-259).» MAIS p1 titrée «PROJET RÈGLEMENT DE ZONAGE», seule date «30 novembre 2015», sans libellé adoption ni entrée en vigueur. «2015-258» en pied de page p1-p175 écarté (contredit l'article Titre).",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": 4,
+      "owner_gate_note": "Owner OK (Saint-Édouard). ABORT GATE projet non adopté: le numéro 2015-259 est verbatim mais le document est un PROJET; la version ADOPTÉE finale n'est pas dans le corpus capté. _source_url servi = «non-disponible». Capture de la version adoptée (ou PV d'adoption) requise pour confirmer l'in-force."
+    },
+    {
+      "slug": "pointe-calumet",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "PDF servi = «Règlement de zonage / Grille des usages et normes» (p1), sans numéro du règlement de base. «308-48-10», «308-33-2001», «308-51-12» sont en colonne «AMENDEMENT» (base 308-famille NON énoncée verbatim).",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": 1,
+      "owner_gate_note": "Seule la grille est captée; le corps du règlement de base (probable série 308, mais non prouvé verbatim → invention interdite) est absent du corpus. Capture du corps requise."
+    },
+    {
+      "slug": "saint-jacques-le-mineur",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "PDF servi = «Annexe 2 du Règlement de zonage» + «GRILLE DES SPÉCIFICATIONS» (p1-p3), sans aucun numéro du règlement parent ni date d'adoption/EEV.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": 1,
+      "owner_gate_note": "Annexe/grille nue captée; corps parent absent. Capture du corps requise."
+    },
+    {
+      "slug": "terrasse-vaudreuil",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Grille servie = Annexe B (82-tvl-685-zonage-annexeb-grilles.pdf), «GRILLES DES USAGES ET NORMES PAR ZONE». Seul numéro du doc = renvoi «à la date d'entrée en vigueur du règlement 2001-506» (ancien règlement, pas le zonage courant). Le n° de l'annexe B (URL: 685) n'est PAS énoncé verbatim.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": 1,
+      "owner_gate_note": "Annexe B captée sans numéro de base verbatim; «685» du nom de fichier non-énoncé. Capture du corps requise."
+    },
+    {
+      "slug": "saint-joseph-du-lac",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Grille servie «grilles_de_specification_des_usages (mise à jour 28 août 2025)» (Saint-Joseph-du-Lac). Aucun numéro de règlement de base énoncé dans le texte.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": 1,
+      "owner_gate_note": "Grille nue captée; corps absent. Capture du corps requise."
+    },
+    {
+      "slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Cahier «GRILLES DES USAGES ET DES NORMES PAR ZONE» (69 p, une fiche par zone). Balayage plein texte des 69 p = 0 occurrence «règlement no/numéro» et 0 date d'adoption.",
+      "millesime_verbatim": null,
+      "pdf_key": "http://sldg.ca/sldg/wp-content/uploads/2026/04/Grilles-des-usages-et-normes-par-zone.pdf",
+      "page": null,
+      "owner_gate_note": "Owner sldg.ca = bien Saint-Louis-de-Gonzague (Beauharnois-Salaberry) — INVERSE de la contamination connue avec l'homonyme --les-etchemins. Grille nue non stampable; capture du corps requise."
+    },
+    {
+      "slug": "lile-dorval",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "qc-zonage-lile-dorval: HTTP 404 (collection servie absente); aucune grille ni reglement_url servie; aucun PDF local dans work/zonage-norms/lile-dorval/. Aucun document de règlement lisible.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "Île Dorval (micro-territoire). Aucun corpus capté; découverte + capture d'un document source requises."
+    },
+    {
+      "slug": "sainte-anne-des-plaines",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Les deux PDF locaux ne sont pas le règlement de zonage: grille.pdf = plan cartographique (sans motif «règlement» ni numéro); grille-tarifaire-urbanisme-environnement.pdf = «Grille tarifaire en date de janvier 2026». qc-zonage-norms-sainte-anne-des-plaines: HTTP 404.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "Aucun document de zonage capté (plan + grille tarifaire seulement). Capture du corps requise."
+    },
+    {
+      "slug": "mcmasterville",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Grille normes servie porte littéralement _source_url=«non-disponible» et reglement_url=null; work/zonage-norms/mcmasterville/ ne contient aucun PDF. Aucun règlement à ouvrir.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "Aucun corpus capté. Découverte + capture requises."
+    },
+    {
+      "slug": "saint-michel",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "work/zonage-norms/saint-michel/ ne contient aucun PDF; qc-zonage-norms-saint-michel répond 404. Aucun document source connu.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "⚠ Homonymie «Saint-Michel» (plusieurs municipalités QC + arrondissement Montréal): gate propriétaire STRICT exigé à la future capture. Aucun corpus capté."
+    },
+    {
+      "slug": "saint-roch-de-lachigan",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Absent du registre reglement-provenance.json; qc-zonage-saint-roch-de-lachigan = NotFound (collection servie inexistante); aucun PDF local. Aucun corpus capté.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "⚠ Nom canonique = Saint-Roch-de-l'Achigan (vérifier slug/apostrophe au gate). Découverte + capture requises."
+    },
+    {
+      "slug": "sainte-angele-de-monnoir",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Absent du registre; qc-zonage-sainte-angele-de-monnoir = NotFound; aucun PDF local. Aucun corpus capté.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "Découverte + capture requises."
+    },
+    {
+      "slug": "saint-valentin",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Absent du registre; qc-zonage-saint-valentin = NotFound; aucun PDF local. Aucun corpus capté.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "Découverte + capture requises."
+    },
+    {
+      "slug": "saint-paul-de-lile-aux-noix",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Absent du registre; qc-zonage-saint-paul-de-lile-aux-noix = NotFound; aucun PDF local. Aucun corpus capté.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "⚠ Nom canonique = Saint-Paul-de-l'Île-aux-Noix (apostrophes). Découverte + capture requises."
+    },
+    {
+      "slug": "henryville",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Absent du registre; qc-zonage-henryville = NotFound; aucun PDF local. Aucun corpus capté.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "Découverte + capture requises."
+    },
+    {
+      "slug": "saint-placide",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Absent du registre; qc-zonage-saint-placide = NotFound; aucun PDF local. Aucun corpus capté.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "Découverte + capture requises."
+    },
+    {
+      "slug": "sainte-sabine--brome-missisquoi",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Absent du registre; qc-zonage-sainte-sabine--brome-missisquoi = NotFound; aucun PDF local. Aucun corpus capté.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "⚠ Homonyme Sainte-Sabine (Bellechasse): suffixe MRC --brome-missisquoi = gate propriétaire au moment de la capture. Découverte + capture requises."
+    },
+    {
+      "slug": "saint-paul-dabbotsford",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Absent du registre; qc-zonage-saint-paul-dabbotsford = NotFound; aucun PDF local. Aucun corpus capté.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "⚠ Nom canonique = Saint-Paul-d'Abbotsford (apostrophe). Découverte + capture requises."
+    },
+    {
+      "slug": "noyan",
+      "verdict": "needs-capture",
+      "reglement_numero_verbatim": null,
+      "clause_or_context_verbatim": "Absent du registre; qc-zonage-noyan = NotFound; aucun PDF local. Aucun corpus capté.",
+      "millesime_verbatim": null,
+      "pdf_key": null,
+      "page": null,
+      "owner_gate_note": "Découverte + capture requises."
+    }
+  ]
+}
