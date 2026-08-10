@@ -168,6 +168,34 @@ export interface ServedZonePropertyFeature {
 }
 
 /**
+ * Un feature servi est V2-PROUVÉ ssi il porte un vrai bloc de preuve géométrique
+ * PAR-FEATURE : `proof.geometry_source` avec un `sha256:<64hex>` bien formé ET un
+ * `retrieved_at` ISO (SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md, SHA 65d4c637). C'est le
+ * discriminateur ROBUSTE du gate d'identité côté runner : une `zone_source_url`
+ * http(s) réelle est NÉCESSAIRE mais NON SUFFISANTE — un `candidate` à URL
+ * *déclarative* sans capture ne porte AUCUN bloc de preuve, donc N'EST PAS prouvé.
+ * Seul un vrai dépôt v2 ({@link attachGeometryProof}) estampille ce bloc ;
+ * `zone_source_level` ("documented"/"historical-verified") ne le corrobore
+ * qu'accessoirement — la preuve elle-même reste le juge.
+ *
+ * DÉDUPLICATION (CLAUDE.md « logique dans la lib ») : ce prédicat était inliné dans
+ * `zones-obscura-run.ts` (0ea33e38) avec sa propre copie du regex ISO et sha256. Il
+ * réutilise désormais les MÊMES validateurs que le chemin de dépôt — `isIsoTimestamp`
+ * (opposé par `assertGeometryProof`) et `PROOF_SHA256_RE` (opposé par le chemin
+ * additif) — pour qu'il n'existe qu'UNE définition. Comportement inchangé octet-pour-octet.
+ */
+export function featureHasV2Proof(feature: ServedZonePropertyFeature): boolean {
+  const proof = feature.properties?.["proof"] as
+    | { geometry_source?: { sha256?: unknown; retrieved_at?: unknown } }
+    | null
+    | undefined;
+  const gs = proof?.geometry_source;
+  if (!gs) return false;
+  const shaOk = typeof gs.sha256 === "string" && PROOF_SHA256_RE.test(gs.sha256);
+  return shaOk && isIsoTimestamp(gs.retrieved_at);
+}
+
+/**
  * Carry the current served properties onto freshly acquired geometries for the
  * same canonical zone code.  The new source's properties win where it actually
  * supplies a value; old-only properties remain long enough for the additive
