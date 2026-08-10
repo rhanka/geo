@@ -3,6 +3,8 @@
  * proof.  The index is intentionally a projection of capture manifests: it
  * never accepts a URL/hash supplied by a served writer.
  */
+import { createHash } from "node:crypto";
+
 import {
   CaptureRunHeaderSchema,
   parseManifestJsonl,
@@ -10,7 +12,9 @@ import {
 } from "../../../packages/qc-sources/src/capture/index.js";
 import type { GeometrySourceProof } from "./zonage-proof.js";
 
-export const CAPTURE_PROOF_INDEX_KEY = "capture/_index/by-sha256.jsonl";
+/** Immutable snapshot namespace; a generated index is never overwritten in place. */
+export const CAPTURE_PROOF_INDEX_PREFIX = "capture/_index/by-sha256/";
+export const CAPTURE_PROOF_INDEX_CONTENT_TYPE = "application/x-ndjson";
 
 export interface CaptureProofIndexEntry {
   url: string;
@@ -28,7 +32,36 @@ export interface CaptureProofManifestReader {
   getBytes(key: string): Promise<Buffer>;
 }
 
+/**
+ * The sole mutable capability needed to publish an index snapshot.  The S3
+ * adapter maps this to a conditional PUT followed by a byte-for-byte re-read
+ * on a pre-existing key, so a key collision cannot silently replace evidence.
+ */
+export interface CaptureProofIndexSnapshotStore extends CaptureProofManifestReader {
+  putBytesIfAbsentOrEqual(
+    key: string,
+    body: Buffer,
+    contentType: string,
+  ): Promise<"created" | "existing-equal">;
+}
+
+export interface PublishedCaptureProofIndex {
+  key: string;
+  sha256: `sha256:${string}`;
+  bytes: number;
+  disposition: "created" | "existing-equal";
+}
+
 const SHA256_RE = /^sha256:[a-f0-9]{64}$/;
+
+function digestSha256(bytes: Uint8Array): `sha256:${string}` {
+  return `sha256:${createHash("sha256").update(bytes).digest("hex")}`;
+}
+
+/** The index content digest names its immutable S3 snapshot. */
+export function captureProofIndexSnapshotKey(bytes: Uint8Array): string {
+  return `${CAPTURE_PROOF_INDEX_PREFIX}${digestSha256(bytes).slice("sha256:".length)}.jsonl`;
+}
 
 function canonicalEntry(entry: CaptureProofIndexEntry): CaptureProofIndexEntry {
   // Do not serialize the parsed object directly: JSON key insertion order is
@@ -175,6 +208,21 @@ export async function materializeCaptureProofIndex(reader: CaptureProofManifestR
     }
   }
   return serializeCaptureProofIndex(entries);
+}
+
+/**
+ * Materialize then conditionally publish one immutable index snapshot.  The
+ * returned key is content-addressed and must be pinned by every future deposit;
+ * there is deliberately no mutable `latest` pointer to race or to rewrite.
+ */
+export async function publishCaptureProofIndex(
+  store: CaptureProofIndexSnapshotStore,
+): Promise<PublishedCaptureProofIndex> {
+  const body = Buffer.from(await materializeCaptureProofIndex(store), "utf8");
+  const sha256 = digestSha256(body);
+  const key = captureProofIndexSnapshotKey(body);
+  const disposition = await store.putBytesIfAbsentOrEqual(key, body, CAPTURE_PROOF_INDEX_CONTENT_TYPE);
+  return { key, sha256, bytes: body.byteLength, disposition };
 }
 
 /** Exact v2 tuple membership required by C-1/C-2 before a future served write. */
