@@ -33,6 +33,7 @@ import {
 } from "@sentropic/geo";
 
 import { readParquetRows, readParquetRowsFromBuffer } from "./lib/parquet-read.js";
+import { buildServedZoneIndex, lotCentroidOutsideAllServedZones } from "./lot-zone-consistency-audit.js";
 import { norm as normCadastreSlug } from "./cadastre-clip-sda.js";
 import { BUCKET, exists, getBytes, getGeoJsonFeatureCollection, getJson, listSlugs, putBytes, s3Client } from "./lib/s3.js";
 import { projConstants } from "./lib/t1-zones.js";
@@ -561,8 +562,42 @@ async function runCity(s3: S3Client, slug: string, noUpload: boolean, simplifyZo
   const recalage = await loadRecalageStats(s3, recalageStatsKey);
 
   const assignments = assignLotZones(projectedLots, projectedZones, zoneCodeOf, { lotIdOf });
+
+  // Anti-invention (Option A archi 18410a95): un lot dont le CENTROÏDE est hors de
+  // TOUTE zone servie → zone_code=null (UNKNOWN-recalage), JAMAIS le code d'une UEV
+  // voisine touchée par un simple recouvrement de bord (l'aire-majorité peut ramasser
+  // ce sliver et écrire le zonage du voisin sur un vacant/voirie — fabrication interdite).
+  // On réutilise le prédicat `outside_all` de l'audit (mêmes centroïde shoelace +
+  // point-in-polygon avec trous) sur la géométrie WGS84 servie à l'identique (le
+  // cadastre passe verbatim vers qc-lots), donc le dépôt et l'audit-after concordent.
+  // NEUTRE au grain zone-polygon : un centroïde DANS une zone n'est jamais nullifié,
+  // même si l'aire-majorité a hésité entre deux zones adjacentes qui se chevauchent.
+  const zoneIndex = buildServedZoneIndex(zones.features ?? []);
+  let nullifiedOutsideAll = 0;
+  const guardedAssignments = assignments.map((assignment, i) => {
+    if (assignment.zoneCode === null) return assignment;
+    const lotGeometry = lots[i]?.geometry;
+    if (!lotGeometry) return assignment;
+    if (!lotCentroidOutsideAllServedZones(lotGeometry, zoneIndex, assignment.zoneCode)) return assignment;
+    nullifiedOutsideAll += 1;
+    return {
+      ...assignment,
+      zoneCode: null,
+      dominantFraction: 0,
+      multiZone: false,
+      zoneCodes: [],
+      method: "unassigned" as const,
+    };
+  });
+  if (nullifiedOutsideAll > 0) {
+    console.error(
+      `[lot-zone-join] ${slug}: centroïde-hors-zone → UNKNOWN-recalage: ` +
+        `${nullifiedOutsideAll}/${assignments.length} lot(s) nullifié(s) (zone_code=null, jamais le code d'une UEV voisine)`,
+    );
+  }
+
   if (simplifyZonesM > 0) console.error(`[lot-zone-join] ${slug}: writing outputs`);
-  const enriched = enrichWithNorms(assignments, normsByCode);
+  const enriched = enrichWithNorms(guardedAssignments, normsByCode);
   const stats = buildStats(
     slug,
     {

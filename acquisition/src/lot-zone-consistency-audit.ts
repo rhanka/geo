@@ -152,6 +152,54 @@ function assignedCode(props: Record<string, unknown> | undefined): string | null
   return null;
 }
 
+/**
+ * Index code_zone → polygones servis, IDENTIQUE à l'index interne d'`auditCity`
+ * (mêmes clés via `assignedCode`, même `polygonsOf`). Construit UNE fois par ville.
+ * Partagé avec le re-fold lot→zone (pass centroïde-hors-zone → UNKNOWN-recalage) :
+ * réutiliser cet index garantit que le prédicat `outside_all` appliqué au dépôt est
+ * exactement celui que l'audit-after recalcule sur le produit servi.
+ */
+export type ZonePolyIndex = Map<string, Poly[]>;
+
+export function buildServedZoneIndex(
+  zones: ReadonlyArray<{ properties?: Record<string, unknown> | null; geometry?: Feature["geometry"] }>,
+): ZonePolyIndex {
+  const index: ZonePolyIndex = new Map();
+  for (const z of zones) {
+    const code = assignedCode(z.properties ?? undefined);
+    if (!code) continue;
+    const polys = polygonsOf(z.geometry ?? null);
+    if (!polys.length) continue;
+    const arr = index.get(code) ?? [];
+    arr.push(...polys);
+    index.set(code, arr);
+  }
+  return index;
+}
+
+/**
+ * Prédicat `outside_all` PARTAGÉ : vrai ssi le centroïde (shoelace du plus grand
+ * anneau extérieur) du lot n'est contenu dans AUCUNE zone servie. C'est EXACTEMENT
+ * le test qu'`auditCity` applique pour classer `outside_all` — le code assigné
+ * d'abord (chemin rapide identique à l'audit), sinon TOUTE zone servie. Le re-fold
+ * s'en sert pour nullifier `zone_code` (UNKNOWN-recalage) de sorte que l'audit-after
+ * reflète UNKNOWN, jamais outside_all-assigné.
+ *
+ * Anti-invention : un lot sans centroïde exploitable renvoie `false` — on ne
+ * FABRIQUE pas un « hors-zone » ; ce lot garde le sort que le join lui donne.
+ */
+export function lotCentroidOutsideAllServedZones(
+  lotGeometry: Feature["geometry"],
+  zoneIndex: ZonePolyIndex,
+  assignedZoneCode: string | null,
+): boolean {
+  const c = lotCentroid(lotGeometry);
+  if (!c) return false;
+  if (assignedZoneCode !== null && inCode(c, zoneIndex.get(assignedZoneCode))) return false;
+  for (const polys of zoneIndex.values()) if (inCode(c, polys)) return false;
+  return true;
+}
+
 interface CityReport {
   slug: string;
   lots: number;
