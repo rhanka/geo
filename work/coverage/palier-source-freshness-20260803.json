@@ -1,0 +1,172 @@
+{
+  "contract": "palier-source-freshness-audit/v1",
+  "reportDate": "20260803",
+  "stale_threshold_days": 7,
+  "reference": "réconciliation complétion-vs-capté (duty QA #3) — col 4 PV corrigée au capté en réf.",
+  "columns": [
+    {
+      "cols": "1",
+      "nature": "LOCAL-MANIFEST",
+      "source": "work/coverage/completion-1-zones-matrix-20260723.json",
+      "sha256": "sha256:518e7a7eb1b1626045fd5dc1b9ae0ac23745678752f82ef2e893901ec3488f22",
+      "as_of": "2026-07-23",
+      "age_days": 11,
+      "note": "complete = coverage-matrix zones.status=done ET ligne slug dans le manifeste LOCAL (execution s3:false). Capté au moment de la capture, PAS re-vérifié servi."
+    },
+    {
+      "cols": "3",
+      "nature": "LOCAL-MANIFEST",
+      "source": "work/coverage/completion-1-normes-matrix-20260723.json",
+      "sha256": "sha256:c98c374ab572c5e5e1c26122143d2a439dc416f3b5bdc3fb47cf1991793bd12d",
+      "as_of": "2026-07-23",
+      "age_days": 11,
+      "note": "idem zones : status=done + corroboration manifeste local (s3:false)."
+    },
+    {
+      "cols": "2",
+      "nature": "DERIVED-METRIC",
+      "source": "work/coverage/lot-zone-consistency-scale-20260725.json",
+      "sha256": "sha256:36cccc45e94ee81a7736f309609d2eec03c69dcab533bb6118d7f903d68268d3",
+      "as_of": "2026-07-25T20:19:03.459Z",
+      "age_days": 9,
+      "note": "seuil mismatch_pct<5 sur une mesure de cohérence lot-zone."
+    },
+    {
+      "cols": "4",
+      "nature": "CAPTURED-INDEX",
+      "source": "work/coverage/pv-couverture-municipale-20260803T015524Z.json",
+      "sha256": "sha256:7c6d135a52da7bcc8e9650bf15a871b856b3904d85c0ee0d2d4ed76c5172fddc",
+      "as_of": "2026-08-03T01:55:31.458Z",
+      "age_days": 0,
+      "note": "RÉCONCILIÉE : complete ssi ≥1 PV INDEXÉ owner-confirmé (capté). Le déclaratif (pv-completion-city-audit) ne sert plus qu'à N-A/incomplete. Réf de la duty #3."
+    },
+    {
+      "cols": "5",
+      "nature": "DECLARED+PROVEN",
+      "source": "work/coverage/completion-regdens-percity-20260803.json",
+      "sha256": "sha256:3e86b18e0954283bb6305bd44fbc59d2a4023817c0fe0f7a55642ab53ad8d17d",
+      "as_of": "2026-07-26T22:55:25.985Z",
+      "age_days": 8,
+      "note": "deux axes : reglement_declared (numéro connu) ET reglement_proven (capture live). proven=complete ⇒ capté ; declared seul ⇒ incomplete."
+    },
+    {
+      "cols": "6",
+      "nature": "DECLARATIVE",
+      "source": "work/coverage/completion-regdens-percity-20260803.json",
+      "sha256": "sha256:3e86b18e0954283bb6305bd44fbc59d2a4023817c0fe0f7a55642ab53ad8d17d",
+      "as_of": "2026-07-20T00:11:11.869Z",
+      "age_days": 14,
+      "note": "usage_dominant : état de complétion déclaré per-city (pas de contre-preuve captée séparée dans le palier)."
+    },
+    {
+      "cols": "7",
+      "nature": "DECLARATIVE",
+      "source": "work/coverage/completion-regdens-percity-20260803.json",
+      "sha256": "sha256:3e86b18e0954283bb6305bd44fbc59d2a4023817c0fe0f7a55642ab53ad8d17d",
+      "as_of": "2026-07-27",
+      "age_days": 7,
+      "note": "effet_densifiant : plafond documentaire ; état déclaré."
+    },
+    {
+      "cols": "8,9,10",
+      "nature": "SERVED-FACT",
+      "source": "work/coverage/zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json",
+      "sha256": "sha256:81de8d776a7d73c91644d8f9306517f46c12adf55ed96d6a7a6d9c95f57470b4",
+      "as_of": "2026-08-03",
+      "age_days": 0,
+      "note": "matrice qualité de provenance zones : collection_key servie (8), quality_status (9), preuve-v2 (10). Dérivé de collections réellement servies."
+    },
+    {
+      "cols": "11",
+      "nature": "SERVED-READBACK",
+      "source": "work/coverage/zone-source-readback-audit-20260802.json",
+      "sha256": "sha256:182068b736a5f199ea62f7a70cabf566926ac0f55a3accd1db4cd41746fddf60",
+      "as_of": "2026-08-02T18:53:17.750Z",
+      "age_days": 1,
+      "note": "read-back de l'URL source SERVIE (STAMPED). Le capté vérifié le plus fort — étalon."
+    },
+    {
+      "cols": "12",
+      "nature": "SERVED-FACT",
+      "source": "work/coverage/immo-lot-zone-assignment-matrix-20260802.json",
+      "sha256": "sha256:95e5c7bc077bdf0b3087483dd99b95de6b07b3903ded0971a53ef52879da208d",
+      "as_of": "20260802",
+      "age_days": 1,
+      "note": "assignation lot-zone depuis matrice immo."
+    },
+    {
+      "cols": "13",
+      "nature": "SERVED-FACT",
+      "source": "work/coverage/immo-folded-normes-city-matrix-20260802.json",
+      "sha256": "sha256:e6dd636758a0d2e3bf706d78cc5c117659f5d663ba98ff3a043637da0b75ff8f",
+      "as_of": "20260802",
+      "age_days": 1,
+      "note": "normes pliées depuis matrice immo."
+    },
+    {
+      "cols": "14-19",
+      "nature": "SERVED-FACT",
+      "source": "work/immo-field-completion-matrices/immo-field-completion-matrix.json",
+      "sha256": "sha256:fb0f8b2df00507b167982accfbeef24e34c70f78fc1fbbf810e833c9fceb9f5c",
+      "as_of": null,
+      "age_days": null,
+      "note": "champs immo servis (lots/surface/CP/adresse/TOD) — statut par champ depuis la matrice de complétion immo."
+    },
+    {
+      "cols": "20",
+      "nature": "GAP",
+      "source": null,
+      "sha256": null,
+      "as_of": null,
+      "age_days": null,
+      "note": "aucune source recall/précision v3.4 per-ville (WP5) — colonne track."
+    }
+  ],
+  "alerts": [
+    {
+      "level": "MANIFESTE-LOCAL",
+      "cols": "1",
+      "msg": "colonne 1 corroborée par manifeste LOCAL (s3:false) — non re-vérifiée servi."
+    },
+    {
+      "level": "FIGÉ",
+      "cols": "1",
+      "msg": "source de la colonne 1 figée à 2026-07-23 (11 j) — un dépôt d'acquisition FRAIS n'y apparaîtra pas tant que la matrice-source n'est pas régénérée depuis S3. ANGLE MORT mesure↔acquisition."
+    },
+    {
+      "level": "MANIFESTE-LOCAL",
+      "cols": "3",
+      "msg": "colonne 3 corroborée par manifeste LOCAL (s3:false) — non re-vérifiée servi."
+    },
+    {
+      "level": "FIGÉ",
+      "cols": "3",
+      "msg": "source de la colonne 3 figée à 2026-07-23 (11 j) — un dépôt d'acquisition FRAIS n'y apparaîtra pas tant que la matrice-source n'est pas régénérée depuis S3. ANGLE MORT mesure↔acquisition."
+    },
+    {
+      "level": "FIGÉ",
+      "cols": "2",
+      "msg": "source de la colonne 2 figée à 2026-07-25T20:19:03.459Z (9 j) — un dépôt d'acquisition FRAIS n'y apparaîtra pas tant que la matrice-source n'est pas régénérée depuis S3. ANGLE MORT mesure↔acquisition."
+    },
+    {
+      "level": "FIGÉ",
+      "cols": "5",
+      "msg": "source de la colonne 5 figée à 2026-07-26T22:55:25.985Z (8 j) — un dépôt d'acquisition FRAIS n'y apparaîtra pas tant que la matrice-source n'est pas régénérée depuis S3. ANGLE MORT mesure↔acquisition."
+    },
+    {
+      "level": "DECLARATIF",
+      "cols": "6",
+      "msg": "colonne 6 déclarative sans contre-preuve captée dans le palier — vérifier qu'un « complete » n'est pas « vert par omission » (cf. réconciliation col 4 PV)."
+    },
+    {
+      "level": "FIGÉ",
+      "cols": "6",
+      "msg": "source de la colonne 6 figée à 2026-07-20T00:11:11.869Z (14 j) — un dépôt d'acquisition FRAIS n'y apparaîtra pas tant que la matrice-source n'est pas régénérée depuis S3. ANGLE MORT mesure↔acquisition."
+    },
+    {
+      "level": "DECLARATIF",
+      "cols": "7",
+      "msg": "colonne 7 déclarative sans contre-preuve captée dans le palier — vérifier qu'un « complete » n'est pas « vert par omission » (cf. réconciliation col 4 PV)."
+    }
+  ]
+}

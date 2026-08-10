@@ -1,0 +1,1116 @@
+{
+  "schema": "refold-167-dryrun/v1",
+  "generated_at": "2026-08-09T14:21:58.638Z",
+  "mode": "lecture-s3-seule",
+  "s3_writes": false,
+  "scope": {
+    "candidates": 113,
+    "skipped_progress_entries": 16,
+    "skipped_preexisting": 7,
+    "remaining_measured": 90
+  },
+  "s3_head_control": {
+    "slug": "dorval",
+    "qc_lots_geojson": "PRESENT",
+    "qc_lots_stats": "PRESENT",
+    "qc_lot_zonage_parquet": "PRESENT",
+    "qc_lot_zonage_stats": "PRESENT"
+  },
+  "method": {
+    "col12": "lots sans code_zone dont le centroïde shoelace est dans une zone servie; hors zone et sans géométrie restent des résidus coverage.",
+    "col13": "M = lots à code de zone présent dans la grille de normes servie; F = lots déjà folded_normes. M=F -> 0; M>F -> M−F (gain minimal prouvé); M<F, grille/parquet absent ou jointure absente -> null (aucune valeur inventée).",
+    "classification": "REAL-GAIN si col12_gagnables>0 ou col13_gagnables>0; AT-CEILING seulement sans gain ni résidu; sinon COVERAGE-BOUND."
+  },
+  "entries": [
+    {
+      "slug": "dorval",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "farnham",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "franklin",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "hampstead",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "havelock",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville--2",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "howick",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "hudson",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "joliette",
+      "col12_gagnables": 4,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "kirkland",
+      "col12_gagnables": 5,
+      "col13_gagnables": null,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "la-prairie",
+      "col12_gagnables": 9,
+      "col13_gagnables": null,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "la-presentation",
+      "col12_gagnables": 3,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "lacolle",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "lassomption",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "lavaltrie",
+      "col12_gagnables": 2,
+      "col13_gagnables": null,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "lepiphanie",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "les-coteaux",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "longueuil",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "mirabel",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "mont-royal",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "mont-saint-hilaire",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "AT-CEILING"
+    },
+    {
+      "slug": "montreal-ouest",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "notre-dame-de-stanbridge",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "oka",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "ormstown",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "otterburn-park",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "pointe-claire",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "prevost",
+      "col12_gagnables": 6,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "repentigny",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "rosemere",
+      "col12_gagnables": 32,
+      "col13_gagnables": null,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "rougemont",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-alexandre",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-alexis",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-amable",
+      "col12_gagnables": 130,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "col12_gagnables": 8,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-calixte",
+      "col12_gagnables": 5,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-chrysostome",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-clet",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-colomban",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-constant",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-damase--les-maskoutains",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-dominique",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-esprit",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-eustache",
+      "col12_gagnables": 3,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-hippolyte",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-jacques",
+      "col12_gagnables": 1,
+      "col13_gagnables": null,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-jerome",
+      "col12_gagnables": 2,
+      "col13_gagnables": 419,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-jude",
+      "col12_gagnables": 1,
+      "col13_gagnables": null,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-lambert",
+      "col12_gagnables": 2,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-lazare",
+      "col12_gagnables": 8,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-liguori",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "col12_gagnables": 1,
+      "col13_gagnables": null,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-mathieu",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-ours",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-paul",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-philippe",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "saint-pie",
+      "col12_gagnables": 1,
+      "col13_gagnables": null,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-pierre",
+      "col12_gagnables": 4,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "col12_gagnables": 2,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "col12_gagnables": 2,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "saint-sulpice",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "sainte-anne-de-bellevue",
+      "col12_gagnables": null,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "sainte-brigide-diberville",
+      "col12_gagnables": 3,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "sainte-catherine",
+      "col12_gagnables": 3,
+      "col13_gagnables": null,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "sainte-clotilde",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "sainte-julie",
+      "col12_gagnables": 23,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "sainte-julienne",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "sainte-madeleine",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "sainte-marie-madeleine",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "col12_gagnables": 2,
+      "col13_gagnables": 0,
+      "classe": "REAL-GAIN"
+    },
+    {
+      "slug": "sainte-sophie",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "col12_gagnables": 0,
+      "col13_gagnables": null,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "varennes",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "vercheres",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    },
+    {
+      "slug": "westmount",
+      "col12_gagnables": 0,
+      "col13_gagnables": 0,
+      "classe": "COVERAGE-BOUND"
+    }
+  ],
+  "aggregates": {
+    "nb_REAL_GAIN": 37,
+    "total_col12_gagnables": 274,
+    "total_col13_gagnables": 419,
+    "nb_AT_CEILING": 1,
+    "nb_COVERAGE_BOUND": 52,
+    "total_residus": null,
+    "total_residus_connus": 350911,
+    "residus_non_mesures": [
+      "sainte-anne-de-bellevue"
+    ]
+  },
+  "deposit_worthy": [
+    {
+      "slug": "saint-jerome",
+      "col12_gagnables": 2,
+      "col13_gagnables": 419,
+      "gain_total_minimum": 421
+    },
+    {
+      "slug": "saint-amable",
+      "col12_gagnables": 130,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 130
+    },
+    {
+      "slug": "rosemere",
+      "col12_gagnables": 32,
+      "col13_gagnables": null,
+      "gain_total_minimum": 32
+    },
+    {
+      "slug": "sainte-julie",
+      "col12_gagnables": 23,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 23
+    },
+    {
+      "slug": "la-prairie",
+      "col12_gagnables": 9,
+      "col13_gagnables": null,
+      "gain_total_minimum": 9
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "col12_gagnables": 8,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 8
+    },
+    {
+      "slug": "saint-lazare",
+      "col12_gagnables": 8,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 8
+    },
+    {
+      "slug": "prevost",
+      "col12_gagnables": 6,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 6
+    },
+    {
+      "slug": "kirkland",
+      "col12_gagnables": 5,
+      "col13_gagnables": null,
+      "gain_total_minimum": 5
+    },
+    {
+      "slug": "saint-calixte",
+      "col12_gagnables": 5,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 5
+    },
+    {
+      "slug": "joliette",
+      "col12_gagnables": 4,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 4
+    },
+    {
+      "slug": "saint-pierre",
+      "col12_gagnables": 4,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 4
+    },
+    {
+      "slug": "la-presentation",
+      "col12_gagnables": 3,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 3
+    },
+    {
+      "slug": "saint-eustache",
+      "col12_gagnables": 3,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 3
+    },
+    {
+      "slug": "sainte-brigide-diberville",
+      "col12_gagnables": 3,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 3
+    },
+    {
+      "slug": "sainte-catherine",
+      "col12_gagnables": 3,
+      "col13_gagnables": null,
+      "gain_total_minimum": 3
+    },
+    {
+      "slug": "lavaltrie",
+      "col12_gagnables": 2,
+      "col13_gagnables": null,
+      "gain_total_minimum": 2
+    },
+    {
+      "slug": "saint-lambert",
+      "col12_gagnables": 2,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 2
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "col12_gagnables": 2,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 2
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "col12_gagnables": 2,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 2
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "col12_gagnables": 2,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 2
+    },
+    {
+      "slug": "hampstead",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville--2",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "mont-royal",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "otterburn-park",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "repentigny",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "saint-alexis",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "saint-constant",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "saint-esprit",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "saint-jacques",
+      "col12_gagnables": 1,
+      "col13_gagnables": null,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "saint-jude",
+      "col12_gagnables": 1,
+      "col13_gagnables": null,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "col12_gagnables": 1,
+      "col13_gagnables": null,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "saint-pie",
+      "col12_gagnables": 1,
+      "col13_gagnables": null,
+      "gain_total_minimum": 1
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "col12_gagnables": 1,
+      "col13_gagnables": 0,
+      "gain_total_minimum": 1
+    }
+  ],
+  "coverage_bound": [
+    {
+      "slug": "dorval",
+      "residu_col12_coverage": 71,
+      "residu_col13_coverage": 136,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "farnham",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 4950,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "franklin",
+      "residu_col12_coverage": 1,
+      "residu_col13_coverage": 12,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "havelock",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 554,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "howick",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 29,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "hudson",
+      "residu_col12_coverage": 22,
+      "residu_col13_coverage": 2987,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "lacolle",
+      "residu_col12_coverage": 30,
+      "residu_col13_coverage": 78,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "lassomption",
+      "residu_col12_coverage": 1,
+      "residu_col13_coverage": 1064,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "lepiphanie",
+      "residu_col12_coverage": 11,
+      "residu_col13_coverage": 4493,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "les-coteaux",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 1145,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "longueuil",
+      "residu_col12_coverage": 35,
+      "residu_col13_coverage": 34531,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "mirabel",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 7409,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "montreal-ouest",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 1601,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "notre-dame-de-stanbridge",
+      "residu_col12_coverage": 55,
+      "residu_col13_coverage": 55,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "oka",
+      "residu_col12_coverage": 3,
+      "residu_col13_coverage": 34,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "ormstown",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 2359,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "pointe-claire",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 3884,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "rougemont",
+      "residu_col12_coverage": 8,
+      "residu_col13_coverage": 8,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-alexandre",
+      "residu_col12_coverage": 77,
+      "residu_col13_coverage": 1347,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "residu_col12_coverage": 680,
+      "residu_col13_coverage": 681,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "residu_col12_coverage": 14,
+      "residu_col13_coverage": 8339,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "residu_col12_coverage": 955,
+      "residu_col13_coverage": 1136,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "residu_col12_coverage": 2,
+      "residu_col13_coverage": 10,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "residu_col12_coverage": 3,
+      "residu_col13_coverage": 395,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-chrysostome",
+      "residu_col12_coverage": 4,
+      "residu_col13_coverage": 1740,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-clet",
+      "residu_col12_coverage": 112,
+      "residu_col13_coverage": 674,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-colomban",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 10729,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "saint-damase--les-maskoutains",
+      "residu_col12_coverage": 2,
+      "residu_col13_coverage": 1708,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "residu_col12_coverage": 1,
+      "residu_col13_coverage": 17,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-dominique",
+      "residu_col12_coverage": 2,
+      "residu_col13_coverage": 91,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "residu_col12_coverage": 29,
+      "residu_col13_coverage": 60,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-hippolyte",
+      "residu_col12_coverage": 4757,
+      "residu_col13_coverage": 9308,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 13727,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "saint-liguori",
+      "residu_col12_coverage": 8,
+      "residu_col13_coverage": 1409,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-mathieu",
+      "residu_col12_coverage": 2,
+      "residu_col13_coverage": 2,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "residu_col12_coverage": 6,
+      "residu_col13_coverage": 48,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-ours",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 1285,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "saint-paul",
+      "residu_col12_coverage": 2,
+      "residu_col13_coverage": 3576,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-philippe",
+      "residu_col12_coverage": 133,
+      "residu_col13_coverage": 226,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "saint-sulpice",
+      "residu_col12_coverage": 2,
+      "residu_col13_coverage": 1121,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "sainte-anne-de-bellevue",
+      "residu_col12_coverage": null,
+      "residu_col13_coverage": null,
+      "raison": "mesure incomplète ou millésimes divergents — ne pas inférer"
+    },
+    {
+      "slug": "sainte-clotilde",
+      "residu_col12_coverage": 6,
+      "residu_col13_coverage": 944,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "sainte-julienne",
+      "residu_col12_coverage": 1,
+      "residu_col13_coverage": 8247,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "sainte-madeleine",
+      "residu_col12_coverage": 1,
+      "residu_col13_coverage": 947,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "sainte-marie-madeleine",
+      "residu_col12_coverage": 6,
+      "residu_col13_coverage": 6,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "sainte-sophie",
+      "residu_col12_coverage": 44,
+      "residu_col13_coverage": 8276,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 324,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "residu_col12_coverage": 1,
+      "residu_col13_coverage": 981,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "varennes",
+      "residu_col12_coverage": 0,
+      "residu_col13_coverage": 1752,
+      "raison": "coverage normes"
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "residu_col12_coverage": 9,
+      "residu_col13_coverage": 72,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "vercheres",
+      "residu_col12_coverage": 1,
+      "residu_col13_coverage": 2856,
+      "raison": "coverage zones"
+    },
+    {
+      "slug": "westmount",
+      "residu_col12_coverage": 27,
+      "residu_col13_coverage": 5016,
+      "raison": "coverage zones"
+    }
+  ]
+}
