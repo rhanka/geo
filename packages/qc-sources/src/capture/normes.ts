@@ -65,6 +65,17 @@ export const CapturedNormesSubpageSelectionSchema = z.object({
 }).strict();
 export type CapturedNormesSubpageSelection = z.infer<typeof CapturedNormesSubpageSelectionSchema>;
 
+/**
+ * A second-phase PDF can be justified either by a classified PDF link or by a
+ * bounded, verbatim urbanisme subpage link whose response later proves to be a
+ * PDF. Both controls remain immutable and schema-validated.
+ */
+export const CapturedNormesPdfCaptureSelectionSchema = z.union([
+  CapturedNormesPdfSelectionSchema,
+  CapturedNormesSubpageSelectionSchema,
+]);
+export type CapturedNormesPdfCaptureSelection = z.infer<typeof CapturedNormesPdfCaptureSelectionSchema>;
+
 /** Immutable closure for the HTML discovery phase, including an honest no-grid outcome. */
 export const CapturedNormesDiscoveryReceiptSchema = z.object({
   contract: z.literal("captured-normes-discovery-receipt/v1"),
@@ -277,4 +288,19 @@ export function selectNormesSubpages(
     source_capture: sourceCapture,
     subpages: extractInternalSubpages(html, sourceCapture.final_url),
   });
+}
+
+/**
+ * Confirms that one exact PDF capture URL was justified by its immutable
+ * selection. A subpage selection is intentionally accepted only for its own
+ * city and only when it carries that exact verbatim URL; the later CAS gate
+ * still proves that the response is an actual PDF.
+ */
+export function selectionIncludesPdfCaptureUrl(selectionValue: unknown, slug: string, url: string): boolean {
+  const selection = CapturedNormesPdfCaptureSelectionSchema.parse(selectionValue);
+  if (selection.source_capture.slug !== slug) return false;
+  if (selection.contract === "captured-normes-pdf-selection/v1") {
+    return selection.candidates.some((candidate) => candidate.slug === slug && candidate.pdf_url === url);
+  }
+  return selection.subpages.some((subpage) => subpage.url === url);
 }
