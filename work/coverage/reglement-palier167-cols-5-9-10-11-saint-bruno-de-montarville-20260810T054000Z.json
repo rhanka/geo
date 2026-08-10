@@ -1,0 +1,59 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-retention/v1",
+  "as_of": "2026-08-10T05:35:52.351Z",
+  "scope": "palier-167 / saint-bruno-de-montarville / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "incomplete"
+    },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "incomplete"
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "incomplete",
+      "reason": "Le host de l’URL de règlement sert robots.txt mais interdit la capture du PDF ; le job n’obtient ni octets, ni retrieved_at, ni sha256 ni CAS."
+    },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "incomplete",
+    "served_readback": {
+      "norms_features": 20,
+      "zonage_features": 309,
+      "reglement_numero": "URB-Z2017",
+      "reglement_millesime": 2017,
+      "reglement_page_source": 1,
+      "reglement_url": "https://saintbruno-site.s3.ca-central-1.amazonaws.com/wp-content/uploads/2026/07/urb-z2017-1-dispositions-declaratoires-codad-web.pdf",
+      "zone_source_url": null,
+      "zone_source_level": "legacy-traceable",
+      "zone_proof_version": null,
+      "zone_provenance_quality": null
+    }
+  },
+  "evidence": {
+    "capture_attempt": {
+      "url": "https://saintbruno-site.s3.ca-central-1.amazonaws.com/wp-content/uploads/2026/07/urb-z2017-1-dispositions-declaratoires-codad-web.pdf",
+      "result": "robots-disallowed",
+      "requested_at": "2026-08-10T05:35:52.351Z",
+      "manifest_key": "capture/_runs/reglement-20260810T054000Z-0-b418291f-660d-4cc7-89a3-1b0ea3769cea/manifest.jsonl",
+      "line_index": 1,
+      "raw_receipt": null
+    },
+    "robots": {
+      "url": "https://saintbruno-site.s3.ca-central-1.amazonaws.com/robots.txt",
+      "retrieved_at": "2026-08-10T05:35:52.582Z",
+      "sha256": "sha256:331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1",
+      "storage_key": "raw/robots-txt/cas/331ea9090db0c9f6f597bd9840fd5b171830f6e0b3ba1cb24dfa91f0c95aedc1.txt"
+    }
+  },
+  "anti_invention": {
+    "not_dead": "Il ne s’agit pas d’un HTTP 404/URL morte ; la procédure CDX/Wayback spécifique aux URL mortes ne transforme donc pas cette interdiction robots en preuve de corps.",
+    "strict_proof_v2": "Aucun v2 ni URL de source géométrique n’est promu : zone_proof_version et zone_source_url restent null.",
+    "storage": "Aucun PDF source n’est écrit localement ; le seul octet conservé est robots.txt dans le CAS S3."
+  }
+}
