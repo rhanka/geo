@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   CapturedNormesCampaignEntrySchema,
   CapturedNormesCampaignPlanSchema,
+  CapturedNormesSourceAbsenceReceiptSchema,
   CapturedNormesExtractionReceiptSchema,
   CapturedNormesDiscoveryReceiptSchema,
   CapturedNormesDiscoveryRunReceiptSchema,
@@ -167,6 +168,55 @@ describe("CapturedNormesCampaignPlanSchema", () => {
       ...base,
       extraction_receipt_keys: ["registry/normes-captured-receipts/abcdef.json"],
     }).success).toBe(false);
+  });
+
+  it("closes a no-official-source city only from its immutable MAMH absence receipt", () => {
+    const absence = {
+      contract: "captured-normes-source-absence-receipt/v1",
+      slug: "city-absence",
+      status: "no-official-source" as const,
+      directory_sha256: SHA,
+      directory: {
+        schema: "qc-municipal-directory/v1",
+        generated_at: "2026-06-16T00:52:48.516Z",
+        source: {
+          name: "MAMH — Répertoire des municipalités du Québec",
+          dataset: "repertoire-des-municipalites-du-quebec",
+          dataset_url: "https://www.donneesquebec.ca/recherche/dataset/repertoire-des-municipalites-du-quebec",
+          resource_url: "https://donneesouvertes.affmunqc.net/repertoire/MUN.csv",
+          license: "cc-by-4.0",
+          field: "mweb",
+          join_key: "nfd-normalized-name",
+        },
+      },
+      entry: {
+        slug: "city-absence",
+        name: "City Absence",
+        mamh_code: "12345",
+        mamh_name: "City Absence",
+        designation: "Municipalité",
+        website: null,
+        source: "mamh-repertoire",
+        verified_at: "2026-06-15",
+      },
+    };
+    const entry = {
+      slug: absence.slug,
+      outcome: "no-official-source" as const,
+      source_absence_receipt_key: "registry/normes-captured-source-absence-receipts/city-absence/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa.json",
+      extraction_receipt_keys: [],
+    };
+    expect(CapturedNormesSourceAbsenceReceiptSchema.safeParse(absence).success).toBe(true);
+    expect(CapturedNormesCampaignEntrySchema.safeParse(entry).success).toBe(true);
+    expect(() => assertCapturedNormesCampaignEvidence(entry, null, [], absence)).not.toThrow();
+    expect(CapturedNormesSourceAbsenceReceiptSchema.safeParse({
+      ...absence,
+      entry: { ...absence.entry, website: "https://invented.example" },
+    }).success).toBe(false);
+    expect(() => assertCapturedNormesCampaignEvidence(entry, null, [], {
+      ...absence,
+      entry: { ...absence.entry, slug: "another-city" },
+    })).toThrow();
   });
 
   it("accepts a deposited Mistral receipt tied to its discovery PDF selection", () => {
