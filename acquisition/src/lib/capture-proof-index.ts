@@ -67,7 +67,7 @@ export function captureProofIndexEntryFromManifest(
     !manifestKey.startsWith("capture/_runs/") ||
     !Number.isInteger(manifestLine) || manifestLine < 0 ||
     line.http_status === null || line.http_status < 200 || line.http_status >= 300 ||
-    line.error !== null || line.redacted ||
+    line.error !== null || line.redacted || line.robots !== "allowed" ||
     !line.url.startsWith("http://") && !line.url.startsWith("https://") ||
     line.sha256 === null || !SHA256_RE.test(line.sha256) ||
     line.storage_key === null || !line.storage_key.startsWith("raw/") ||
