@@ -154,7 +154,7 @@ describe("CapturedNormesCampaignPlanSchema", () => {
     }).success).toBe(false);
   });
 
-  it("requires a Mistral receipt for below-gate and deposited outcomes", () => {
+  it("requires a Mistral receipt for every Mistral outcome", () => {
     const base = city("city-0");
     expect(CapturedNormesCampaignEntrySchema.safeParse({
       ...base,
@@ -163,6 +163,10 @@ describe("CapturedNormesCampaignPlanSchema", () => {
     expect(CapturedNormesCampaignEntrySchema.safeParse({
       ...base,
       outcome: "mistral-deposited",
+    }).success).toBe(false);
+    expect(CapturedNormesCampaignEntrySchema.safeParse({
+      ...base,
+      outcome: "mistral-refused",
     }).success).toBe(false);
     expect(CapturedNormesCampaignEntrySchema.safeParse({
       ...base,
@@ -254,6 +258,45 @@ describe("CapturedNormesCampaignPlanSchema", () => {
       status: "deposited" as const,
       parquet_key: "registry/qc-zonage-norms/qc-zonage-norms-saint-roch-de-lachigan.parquet",
       refusal: null,
+    } satisfies CapturedNormesExtractionReceipt;
+    expect(() => assertCapturedNormesCampaignEvidence(entry, discovery, [{ receipt, selection }])).not.toThrow();
+  });
+
+  it("accepts an explicit non-gate Mistral refusal tied to its discovery PDF selection", () => {
+    const entry = {
+      ...city(reference.slug),
+      outcome: "mistral-refused" as const,
+      extraction_receipt_keys: ["registry/normes-captured-receipts/abcdef.json"],
+    };
+    const discovery = {
+      contract: "captured-normes-discovery-run-receipt/v1",
+      generated_at: "2026-08-10T01:02:00.000Z",
+      run_id: RUN,
+      manifest_key: MANIFEST,
+      slug: reference.slug,
+      attempts: [],
+      page_receipt_keys: ["registry/normes-captured-discovery-receipts/run/1.json"],
+      candidate_count: 1,
+      status: "candidates",
+      refusal: null,
+    };
+    const selection = {
+      contract: "captured-normes-pdf-selection/v1",
+      generated_at: reference.retrieved_at,
+      source_capture: reference,
+      candidates: [{ slug: reference.slug, pdf_url: reference.url, titre: "Grille", score_classif: 6, matched: ["grille"] }],
+    };
+    const receipt = {
+      contract: "captured-normes-extraction-receipt/v1",
+      generated_at: "2026-08-10T01:02:00.000Z",
+      capture: reference,
+      engine: "mistral-schema",
+      methode: "ocr/mistral-schema",
+      pages: [],
+      budget_usd: 1,
+      status: "refused" as const,
+      parquet_key: null,
+      refusal: "existing norms parquet without captured bridge receipt: registry/qc-zonage-norms/example.parquet",
     } satisfies CapturedNormesExtractionReceipt;
     expect(() => assertCapturedNormesCampaignEvidence(entry, discovery, [{ receipt, selection }])).not.toThrow();
   });
