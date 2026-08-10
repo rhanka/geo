@@ -1,0 +1,66 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-promotion/v2",
+  "as_of": "2026-08-10T06:14:56.446Z",
+  "scope": "palier-167 / bois-des-filion / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "unknown"
+    },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown"
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "complete",
+      "declared": "complete",
+      "proven": "complete",
+      "rule": "Le PDF vivant publié sur le domaine de la Ville relie explicitement Bois-des-Filion, l’amendement 7210 et le règlement de zonage de base 7200 entré en vigueur le 17 mars 2018; reçu CAS et manifeste Kubernetes attachables à l’URL exacte du registre."
+    },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown",
+    "norms": {
+      "key": "normalized/qc-zonage-norms/qc-zonage-norms-bois-des-filion.geojson",
+      "features": 1,
+      "reglement_numero": "7200",
+      "reglement_millesime": "2018",
+      "reglement_page_source": 1,
+      "reglement_url": "https://villebdf.ca/wp-content/uploads/2024/07/7210-Ajout-dans-la-grille-de-specifications-H-01.pdf",
+      "readback": "La feature servie S3 porte exactement les quatre valeurs du registre."
+    },
+    "zonage_polygons": {
+      "state": "not served",
+      "fold": "SKIP bois-des-filion (polygone qc-zonage non servi)"
+    }
+  },
+  "evidence": {
+    "official_municipal_pdf": {
+      "url": "https://villebdf.ca/wp-content/uploads/2024/07/7210-Ajout-dans-la-grille-de-specifications-H-01.pdf",
+      "retrieved_at": "2026-08-10T06:14:56.446Z",
+      "sha256": "sha256:9262411a5d294fb0a15a535460338b04d0ea1c14564bd5810d9c8ba9fa016ef8",
+      "storage_key": "raw/reglement-official/cas/9262411a5d294fb0a15a535460338b04d0ea1c14564bd5810d9c8ba9fa016ef8.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T061600Z-0-1671ecf3-6e08-4287-83b7-1b2356c11275/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "VILLE DE BOIS-DES-FILION — RÈGLEMENT NUMÉRO 7210 — RÈGLEMENT AMENDANT LE RÈGLEMENT DE ZONAGE NUMÉRO 7200.",
+      "base_regulation": "Le conseil a adopté un règlement de zonage portant le numéro 7200 entré en vigueur le 17 mars 2018."
+    },
+    "publication": {
+      "norms_key": "normalized/qc-zonage-norms/qc-zonage-norms-bois-des-filion.geojson",
+      "result": "OK features=1 cellsChanged=7 reglement=7200",
+      "readback": "S3 relu après écriture: 1 feature et les quatre valeurs du registre."
+    },
+    "matrix_recalculation": {
+      "method": "import build('20260810') from scripts/palier-matrix-report.mjs in memory",
+      "expected_result": "reglement=complete; prov_qualite=unknown; prov_v2=unknown; prov_url_servie=unknown."
+    }
+  },
+  "anti_invention": {
+    "codification_notice": "Le PDF avertit qu’il n’a pas de valeur officielle en cas de divergence. Le lot en tire uniquement le numéro, le millésime et la relation d’amendement textuellement imprimés par la Ville; aucune norme ni autre date n’est dérivée.",
+    "strict_proof_v2": "Aucun polygone qc-zonage n’est servi; aucun zone_proof_version=v2 n’est donc créé ni déclaré complete.",
+    "served_url": "Aucune zone_source_url n’est ajoutée ni remplacée par reglement_url; la col. 11 reste unknown.",
+    "storage": "Le PDF source est uniquement dans le CAS S3 avec son reçu; aucun octet source n’est créé localement."
+  }
+}
