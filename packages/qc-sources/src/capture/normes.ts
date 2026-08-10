@@ -163,11 +163,52 @@ export const CapturedNormesExtractionReceiptSchema = z.object({
 });
 export type CapturedNormesExtractionReceipt = z.infer<typeof CapturedNormesExtractionReceiptSchema>;
 
+/**
+ * Durable evidence that the authoritative MAMH directory names a municipality
+ * but declares no municipal website. This is intentionally not a discovery
+ * receipt: no URL is available to capture without inventing one.
+ */
+export const CapturedNormesSourceAbsenceReceiptSchema = z.object({
+  contract: z.literal("captured-normes-source-absence-receipt/v1"),
+  slug: z.string().regex(SLUG_RE),
+  status: z.literal("no-official-source"),
+  directory_sha256: z.string().regex(SHA_RE),
+  directory: z.object({
+    schema: z.literal("qc-municipal-directory/v1"),
+    generated_at: z.string().datetime(),
+    source: z.object({
+      name: z.literal("MAMH — Répertoire des municipalités du Québec"),
+      dataset: z.literal("repertoire-des-municipalites-du-quebec"),
+      dataset_url: z.string().url(),
+      resource_url: z.string().url(),
+      license: z.literal("cc-by-4.0"),
+      field: z.literal("mweb"),
+      join_key: z.literal("nfd-normalized-name"),
+    }).strict(),
+  }).strict(),
+  entry: z.object({
+    slug: z.string().regex(SLUG_RE),
+    name: z.string().min(1),
+    mamh_code: z.string().min(1),
+    mamh_name: z.string().min(1),
+    designation: z.string().min(1),
+    website: z.null(),
+    source: z.literal("mamh-repertoire"),
+    verified_at: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  }).strict(),
+}).strict().superRefine((value, ctx) => {
+  if (value.entry.slug !== value.slug) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["entry", "slug"], message: "absence receipt entry slug must match receipt slug" });
+  }
+});
+export type CapturedNormesSourceAbsenceReceipt = z.infer<typeof CapturedNormesSourceAbsenceReceiptSchema>;
+
 /** Explicit outcome for one city in a bounded captured-normes campaign. */
 export const CapturedNormesCampaignOutcomeSchema = z.enum([
   "no-grid",
   "unreachable",
   "http-forbidden",
+  "no-official-source",
   "mistral-below-gate",
   "mistral-deposited",
 ]);
@@ -175,9 +216,28 @@ export const CapturedNormesCampaignOutcomeSchema = z.enum([
 export const CapturedNormesCampaignEntrySchema = z.object({
   slug: z.string().regex(SLUG_RE),
   outcome: CapturedNormesCampaignOutcomeSchema,
-  discovery_run_receipt_key: z.string().regex(/^registry\/normes-captured-discovery-run-receipts\/(?:v\d+\/)?[^/]+\/[^/]+\.json$/),
+  discovery_run_receipt_key: z.string().regex(/^registry\/normes-captured-discovery-run-receipts\/(?:v\d+\/)?[^/]+\/[^/]+\.json$/).optional(),
+  source_absence_receipt_key: z.string().regex(/^registry\/normes-captured-source-absence-receipts\/[a-z0-9][a-z0-9-]*\/[a-f0-9]{64}\.json$/).optional(),
   extraction_receipt_keys: z.array(z.string().regex(/^registry\/normes-captured-receipts\/[a-f0-9]+\.json$/)).max(8),
 }).strict().superRefine((value, ctx) => {
+  if (value.outcome === "no-official-source") {
+    if (value.discovery_run_receipt_key !== undefined) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["discovery_run_receipt_key"], message: "no-official-source cannot claim a discovery run" });
+    }
+    if (value.source_absence_receipt_key === undefined) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["source_absence_receipt_key"], message: "no-official-source requires an immutable source absence receipt" });
+    }
+    if (value.extraction_receipt_keys.length !== 0) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["extraction_receipt_keys"], message: "no-official-source cannot carry OCR receipts" });
+    }
+    return;
+  }
+  if (value.discovery_run_receipt_key === undefined) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["discovery_run_receipt_key"], message: "captured discovery outcomes require a discovery run receipt" });
+  }
+  if (value.source_absence_receipt_key !== undefined) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["source_absence_receipt_key"], message: "only no-official-source may carry a source absence receipt" });
+  }
   const mistralOutcome = value.outcome === "mistral-below-gate" || value.outcome === "mistral-deposited";
   if (mistralOutcome && value.extraction_receipt_keys.length === 0) {
     ctx.addIssue({ code: z.ZodIssueCode.custom, message: `${value.outcome} requires extraction receipts` });
@@ -202,10 +262,21 @@ export interface CapturedNormesCampaignExtractionEvidence {
  */
 export function assertCapturedNormesCampaignEvidence(
   entryValue: CapturedNormesCampaignEntry | unknown,
-  discoveryValue: CapturedNormesDiscoveryRunReceipt | unknown,
+  discoveryValue: CapturedNormesDiscoveryRunReceipt | unknown | null,
   evidence: readonly CapturedNormesCampaignExtractionEvidence[],
+  sourceAbsenceValue: CapturedNormesSourceAbsenceReceipt | unknown | null = null,
 ): void {
   const entry = CapturedNormesCampaignEntrySchema.parse(entryValue);
+  if (entry.outcome === "no-official-source") {
+    if (discoveryValue !== null || evidence.length !== 0) {
+      throw new Error(`${entry.slug}: no-official-source cannot consume discovery or OCR evidence`);
+    }
+    const absence = CapturedNormesSourceAbsenceReceiptSchema.parse(sourceAbsenceValue);
+    if (absence.slug !== entry.slug || absence.status !== "no-official-source" || absence.entry.website !== null) {
+      throw new Error(`${entry.slug}: source absence receipt does not prove its declared absence`);
+    }
+    return;
+  }
   const discovery = CapturedNormesDiscoveryRunReceiptSchema.parse(discoveryValue);
   if (discovery.slug !== entry.slug) throw new Error(`${entry.slug}: discovery receipt slug mismatch`);
   if (entry.extraction_receipt_keys.length !== evidence.length) {
