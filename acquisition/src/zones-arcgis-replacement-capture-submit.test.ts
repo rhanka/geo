@@ -43,6 +43,7 @@ describe("ArcGIS replacement cluster submitter", () => {
     expect(manifest).toContain("CAPTURE_RUNNER\n              value: \"src/zones-arcgis-replacement-capture-run.ts\"");
     expect(manifest).toContain("WORKLIST_SHA256");
     expect(manifest).toContain("RUN_ID\n              value: \"zones-20260810T020304Z-audet\"");
+    expect(manifest).toContain("geo.run-id: \"zones-20260810T020304Z-audet\"");
     expect(manifest).toContain("GEO_CAPTURE_EXECUTION\n              value: \"cluster\"");
     expect(manifest).toContain("NODE_OPTIONS\n              value: \"--dns-result-order=ipv4first\"");
     expect(manifest).toContain("AWS_MAX_ATTEMPTS\n              value: \"10\"");
