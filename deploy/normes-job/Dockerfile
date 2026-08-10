@@ -22,6 +22,10 @@ WORKDIR /geo
 # packages/qc-sources is source-only (TS run via tsx, no build) — its sole
 # runtime dep (zod) is hoisted into acquisition/node_modules at `npm ci` time.
 COPY packages/qc-sources/ ./packages/qc-sources/
+# `acquisition/tsconfig.json` maps @sentropic/geo to this source module while
+# tsx runs the bridge. It must therefore be present in the image even though
+# its ignored dist/ output is deliberately rebuilt elsewhere.
+COPY packages/geo/src/ ./packages/geo/src/
 
 # Install acquisition deps (tsx, @aws-sdk/client-s3, @dsnp/parquetjs, zod, …)
 # from its committed lockfile, then copy its sources.
@@ -29,6 +33,11 @@ COPY acquisition/package.json acquisition/package-lock.json ./acquisition/
 RUN cd acquisition && npm ci
 COPY acquisition/src/ ./acquisition/src/
 COPY acquisition/tsconfig.json ./acquisition/
+
+# Regression guard for the captured bridge: the previous image omitted the
+# source target of the @sentropic/geo tsconfig path and died before producing a
+# durable S3 receipt. Resolve the exact import during the image build.
+RUN cd acquisition && ./node_modules/.bin/tsx -e 'import { canonicalizeZoneCodeForJoin } from "@sentropic/geo"; if (typeof canonicalizeZoneCodeForJoin !== "function") process.exit(1)'
 
 # Entrypoint (materialises s3.env from job ENV, runs pull/discover → batch).
 COPY deploy/normes-job/run-normes-job.sh /usr/local/bin/run-normes-job.sh
