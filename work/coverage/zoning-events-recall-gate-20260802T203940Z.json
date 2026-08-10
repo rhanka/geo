@@ -1,0 +1,2485 @@
+{
+  "contract": "qc-zoning-events-recall-gate/v1",
+  "generated_at": "2026-08-02T20:39:44.815Z",
+  "read_only_aggregation": true,
+  "sample_municipalities": [
+    "saint-raymond",
+    "saint-stanislas",
+    "sutton",
+    "coaticook",
+    "saint-mathieu-de-beloeil",
+    "saint-eustache"
+  ],
+  "natural_key_definition": {
+    "tuple": "(muni, source_url_norm, date_iso, type)",
+    "source_url_normalization": "trim; lowercase host; remove trailing pathname slash; remove utm_*, fbclid, gclid, mc_cid, mc_eid, _ga, _gl, ref, source, download, cache, timestamp, ts; sort retained query pairs",
+    "matching": "exact_only_unique_gated",
+    "secondary_key": "(muni, bylaw_numero_norm, type, date_iso), only when non-null on both sides"
+  },
+  "threshold": 0.95,
+  "input": {
+    "geo": "local_file",
+    "geo_events_path": "work/coverage/qc-zoning-events-dryrun/documents.json",
+    "immo_events_path": "/home/antoinefa/src/radar-immobilier/tmp/handoff/jointures-designation-events-6.ndjson"
+  },
+  "states": [
+    "recall_below_threshold",
+    "no_immo_ground_truth"
+  ],
+  "findings": [
+    {
+      "code": "taxonomy_crosswalk_required",
+      "detail": "La taxonomie immo kind (rezonage/piia/…) diffère de la taxonomie neutre geo (changement-de-zonage/ppcmoi/derogation-mineure/…) ; type ne peut pas matcher cross-side sans crosswalk explicite."
+    },
+    {
+      "code": "source_url_alignment_risk",
+      "detail": "geo(url_pdf) et immo(source_url) peuvent référer des URL différentes pour un même event, créant des faux missed sous le matching exact."
+    },
+    {
+      "code": "saint_stanislas_absent",
+      "detail": "Le slug saint-stanislas est ambigu (saint-stanislas-de-kostka / saint-stanislas--des-chenaux / saint-stanislas--maria-chapdelaine) et l’export immo ne fournit pas de graphe sous le slug nu ; la ville est no_immo_ground_truth."
+    }
+  ],
+  "cities": [
+    {
+      "slug": "saint-raymond",
+      "geo_collection_status": "geo_local_events_loaded",
+      "geo_read_error": null,
+      "partition": {
+        "matched": [],
+        "missed": [
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-raymond",
+                "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/09-02-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-02-09",
+                "type": "rezonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-raymond",
+                "source_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/09-02-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-02-09",
+                "type": "rezonage",
+                "bylaw_numero": null,
+                "zone_ref": "HC-13",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-raymond",
+                "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/09-02-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-02-09",
+                "type": "rezonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-raymond",
+                "source_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/09-02-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-02-09",
+                "type": "rezonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-raymond",
+                "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/11-05-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-05-11",
+                "type": "derogation"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-raymond",
+                "source_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/11-05-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-05-11",
+                "type": "derogation",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "6727555"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-raymond",
+                "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/11-05-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-05-11",
+                "type": "rezonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-raymond",
+                "source_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/11-05-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-05-11",
+                "type": "rezonage",
+                "bylaw_numero": null,
+                "zone_ref": "HB-9",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-raymond",
+                "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/12-01-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-01-12",
+                "type": "derogation"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-raymond",
+                "source_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/12-01-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-01-12",
+                "type": "derogation",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "3515446"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-raymond",
+                "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/12-01-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-01-12",
+                "type": "derogation"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-raymond",
+                "source_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/12-01-2026-Ordre-du-jour.pdf",
+                "date_iso": "2026-01-12",
+                "type": "derogation",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "6463883"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-raymond",
+                "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/20-04-2026-ordre-du-jour.pdf",
+                "date_iso": "2026-04-20",
+                "type": "rezonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-raymond",
+                "source_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/20-04-2026-ordre-du-jour.pdf",
+                "date_iso": "2026-04-20",
+                "type": "rezonage",
+                "bylaw_numero": null,
+                "zone_ref": "HC-14",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-raymond",
+                "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/20-04-2026-ordre-du-jour.pdf",
+                "date_iso": "2026-04-20",
+                "type": "rezonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-raymond",
+                "source_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/20-04-2026-ordre-du-jour.pdf",
+                "date_iso": "2026-04-20",
+                "type": "rezonage",
+                "bylaw_numero": null,
+                "zone_ref": "RU-30",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          }
+        ],
+        "extra": []
+      },
+      "matched": 0,
+      "missed": 8,
+      "extra": 0,
+      "immo_events": 8,
+      "immo_signals_excluded": 3,
+      "immo_node_type_missing_or_unknown": 0,
+      "immo_node_type_other": 0,
+      "geo_events": 0,
+      "recall": 0,
+      "recall_state": "measured"
+    },
+    {
+      "slug": "saint-stanislas",
+      "geo_collection_status": "geo_local_events_loaded",
+      "geo_read_error": null,
+      "partition": {
+        "matched": [],
+        "missed": [],
+        "extra": []
+      },
+      "matched": 0,
+      "missed": 0,
+      "extra": 0,
+      "immo_events": 0,
+      "immo_signals_excluded": 0,
+      "immo_node_type_missing_or_unknown": 0,
+      "immo_node_type_other": 0,
+      "geo_events": 0,
+      "recall": null,
+      "recall_state": "no_immo_ground_truth"
+    },
+    {
+      "slug": "sutton",
+      "geo_collection_status": "geo_local_events_loaded",
+      "geo_read_error": null,
+      "partition": {
+        "matched": [],
+        "missed": [
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "sutton",
+                "source_url_norm": "https://sutton.ca/wp-content/uploads/2025/12/WEB-Proces-verbal-2026-05-27-VF.pdf",
+                "date_iso": "2026-05-27",
+                "type": "rezonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "sutton",
+                "source_url": "https://sutton.ca/wp-content/uploads/2025/12/WEB-Proces-verbal-2026-05-27-VF.pdf",
+                "date_iso": "2026-05-27",
+                "type": "rezonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "sutton",
+                "source_url_norm": "https://sutton.ca/wp-content/uploads/2025/12/WEB-Proces-verbal-2026-06-03-V3.pdf",
+                "date_iso": "2026-06-03",
+                "type": "derogation"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "sutton",
+                "source_url": "https://sutton.ca/wp-content/uploads/2025/12/WEB-Proces-verbal-2026-06-03-V3.pdf",
+                "date_iso": "2026-06-03",
+                "type": "derogation",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "6418623"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "sutton",
+                "source_url_norm": "https://sutton.ca/wp-content/uploads/2025/12/WEB-Proces-verbal-2026-06-03-V3.pdf",
+                "date_iso": "2026-06-03",
+                "type": "ppcmoi"
+              },
+              "secondary_natural_key": {
+                "muni": "sutton",
+                "bylaw_numero_norm": "220",
+                "type": "ppcmoi",
+                "date_iso": "2026-06-03"
+              },
+              "source_fields": {
+                "event_id": null,
+                "muni": "sutton",
+                "source_url": "https://sutton.ca/wp-content/uploads/2025/12/WEB-Proces-verbal-2026-06-03-V3.pdf",
+                "date_iso": "2026-06-03",
+                "type": "ppcmoi",
+                "bylaw_numero": "220",
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_or_secondary_key_match"
+          }
+        ],
+        "extra": []
+      },
+      "matched": 0,
+      "missed": 3,
+      "extra": 0,
+      "immo_events": 3,
+      "immo_signals_excluded": 2,
+      "immo_node_type_missing_or_unknown": 0,
+      "immo_node_type_other": 0,
+      "geo_events": 0,
+      "recall": 0,
+      "recall_state": "measured"
+    },
+    {
+      "slug": "coaticook",
+      "geo_collection_status": "geo_local_events_loaded",
+      "geo_read_error": null,
+      "partition": {
+        "matched": [],
+        "missed": [
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "coaticook",
+                "source_url_norm": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20210111.pdf",
+                "date_iso": "2021-01-11",
+                "type": "derogation"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "coaticook",
+                "source_url": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20210111.pdf",
+                "date_iso": "2021-01-11",
+                "type": "derogation",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "2935568"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "coaticook",
+                "source_url_norm": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20210111.pdf",
+                "date_iso": "2021-01-11",
+                "type": "derogation"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "coaticook",
+                "source_url": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20210111.pdf",
+                "date_iso": "2021-01-11",
+                "type": "derogation",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "3311486"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "coaticook",
+                "source_url_norm": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20260112.pdf",
+                "date_iso": "2026-01-12",
+                "type": "derogation"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "coaticook",
+                "source_url": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20260112.pdf",
+                "date_iso": "2026-01-12",
+                "type": "derogation",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "3310225"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "coaticook",
+                "source_url_norm": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20260129%20extra.pdf",
+                "date_iso": "2026-01-29",
+                "type": "cptaq"
+              },
+              "secondary_natural_key": {
+                "muni": "coaticook",
+                "bylaw_numero_norm": "6-1",
+                "type": "cptaq",
+                "date_iso": "2026-01-29"
+              },
+              "source_fields": {
+                "event_id": null,
+                "muni": "coaticook",
+                "source_url": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20260129%20extra.pdf",
+                "date_iso": "2026-01-29",
+                "type": "cptaq",
+                "bylaw_numero": "6-1",
+                "zone_ref": null,
+                "no_lot": "3148001"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_or_secondary_key_match"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "coaticook",
+                "source_url_norm": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20260209.pdf",
+                "date_iso": "2026-02-09",
+                "type": "ppcmoi"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "coaticook",
+                "source_url": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20260209.pdf",
+                "date_iso": "2026-02-09",
+                "type": "ppcmoi",
+                "bylaw_numero": null,
+                "zone_ref": "RD-104",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "coaticook",
+                "source_url_norm": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20260209.pdf",
+                "date_iso": "2026-02-09",
+                "type": "rezonage"
+              },
+              "secondary_natural_key": {
+                "muni": "coaticook",
+                "bylaw_numero_norm": "6-1-93",
+                "type": "rezonage",
+                "date_iso": "2026-02-09"
+              },
+              "source_fields": {
+                "event_id": null,
+                "muni": "coaticook",
+                "source_url": "https://www.coaticook.ca/upload/DOCUMENTS/PV/PV20260209.pdf",
+                "date_iso": "2026-02-09",
+                "type": "rezonage",
+                "bylaw_numero": "6-1-93",
+                "zone_ref": "C-416",
+                "no_lot": "3311583"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_or_secondary_key_match"
+          }
+        ],
+        "extra": [
+          {
+            "outcome": "extra",
+            "match_kind": null,
+            "geo": {
+              "side": "geo",
+              "natural_key": {
+                "muni": "coaticook",
+                "source_url_norm": "https://www.coaticook.ca/upload/DOCUMENTS/ODJ_2026_06_08.pdf",
+                "date_iso": "2026-06-08",
+                "type": "projet-reglement"
+              },
+              "secondary_natural_key": {
+                "muni": "coaticook",
+                "bylaw_numero_norm": "6-1-93",
+                "type": "projet-reglement",
+                "date_iso": "2026-06-08"
+              },
+              "source_fields": {
+                "event_id": "d31634250a5fc6a46cc71476a4dba6d0951876866a599b6c67fb27936b033ffb",
+                "muni": "coaticook",
+                "source_url": "https://www.coaticook.ca/upload/DOCUMENTS/ODJ_2026_06_08.pdf",
+                "date_iso": "2026-06-08",
+                "type": "projet-reglement",
+                "bylaw_numero": "6-1-93",
+                "zone_ref": [
+                  {
+                    "zone_code": "RB-414",
+                    "relation_type": "concerns_zone",
+                    "target_id": "RB-414",
+                    "target_type": "Zone",
+                    "score_confiance": 1,
+                    "provenance": "exact_geom",
+                    "as_of_date": "2026-08-02"
+                  },
+                  {
+                    "zone_code": "C-416",
+                    "relation_type": "concerns_zone",
+                    "target_id": "C-416",
+                    "target_type": "Zone",
+                    "score_confiance": 1,
+                    "provenance": "exact_geom",
+                    "as_of_date": "2026-08-02"
+                  },
+                  {
+                    "zone_code": "P-412",
+                    "relation_type": "concerns_zone",
+                    "target_id": "P-412",
+                    "target_type": "Zone",
+                    "score_confiance": 1,
+                    "provenance": "exact_geom",
+                    "as_of_date": "2026-08-02"
+                  }
+                ],
+                "no_lot": null
+              }
+            },
+            "immo": null,
+            "unmatched_reason": "no_exact_natural_or_secondary_key_match"
+          }
+        ]
+      },
+      "matched": 0,
+      "missed": 6,
+      "extra": 1,
+      "immo_events": 6,
+      "immo_signals_excluded": 2,
+      "immo_node_type_missing_or_unknown": 0,
+      "immo_node_type_other": 0,
+      "geo_events": 1,
+      "recall": 0,
+      "recall_state": "measured"
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "geo_collection_status": "geo_local_events_loaded",
+      "geo_read_error": null,
+      "partition": {
+        "matched": [],
+        "missed": [
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/01/ODJ-SMB-2026-01-12.pdf",
+                "date_iso": "2026-01-12",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/01/ODJ-SMB-2026-01-12.pdf",
+                "date_iso": "2026-01-12",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": "R-1",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/01/ODJ-SMB-2026-01-12.pdf",
+                "date_iso": "2026-01-12",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/01/ODJ-SMB-2026-01-12.pdf",
+                "date_iso": "2026-01-12",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": "R-14",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/01/ODJ-SMB-2026-01-12.pdf",
+                "date_iso": "2026-01-12",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/01/ODJ-SMB-2026-01-12.pdf",
+                "date_iso": "2026-01-12",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/02/PV-SMB-2026-02-02.pdf",
+                "date_iso": "2026-02-02",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/02/PV-SMB-2026-02-02.pdf",
+                "date_iso": "2026-02-02",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": "R-1",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/02/PV-SMB-2026-02-02.pdf",
+                "date_iso": "2026-02-02",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/02/PV-SMB-2026-02-02.pdf",
+                "date_iso": "2026-02-02",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": "R-14",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/02/PV-SMB-2026-02-02.pdf",
+                "date_iso": "2026-02-02",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/02/PV-SMB-2026-02-02.pdf",
+                "date_iso": "2026-02-02",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-03-02.pdf",
+                "date_iso": "2026-03-02",
+                "type": "derogation_mineure"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-03-02.pdf",
+                "date_iso": "2026-03-02",
+                "type": "derogation_mineure",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "5131797"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-03-02.pdf",
+                "date_iso": "2026-03-02",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-03-02.pdf",
+                "date_iso": "2026-03-02",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": "I-4",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-03-02.pdf",
+                "date_iso": "2026-03-02",
+                "type": "piia"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-03-02.pdf",
+                "date_iso": "2026-03-02",
+                "type": "piia",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "5131797"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-03-02.pdf",
+                "date_iso": "2026-03-02",
+                "type": "piia"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-03-02.pdf",
+                "date_iso": "2026-03-02",
+                "type": "piia",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "5749526"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-04-07.pdf",
+                "date_iso": "2026-04-07",
+                "type": "derogation_mineure"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-04-07.pdf",
+                "date_iso": "2026-04-07",
+                "type": "derogation_mineure",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "5131051"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-04-07.pdf",
+                "date_iso": "2026-04-07",
+                "type": "modification_reglementation"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-04-07.pdf",
+                "date_iso": "2026-04-07",
+                "type": "modification_reglementation",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-04-07.pdf",
+                "date_iso": "2026-04-07",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-04-07.pdf",
+                "date_iso": "2026-04-07",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-04-07.pdf",
+                "date_iso": "2026-04-07",
+                "type": "piia"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/04/PV-SMB-2026-04-07.pdf",
+                "date_iso": "2026-04-07",
+                "type": "piia",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": "5131051"
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/05/2026-05-04_PVR_Proces-verbal-seance.pdf",
+                "date_iso": "2026-05-04",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/05/2026-05-04_PVR_Proces-verbal-seance.pdf",
+                "date_iso": "2026-05-04",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": "I-10",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/05/2026-05-04_PVR_Proces-verbal-seance.pdf",
+                "date_iso": "2026-05-04",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/05/2026-05-04_PVR_Proces-verbal-seance.pdf",
+                "date_iso": "2026-05-04",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": "I-4",
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/05/2026-05-04_PVR_Proces-verbal-seance.pdf",
+                "date_iso": "2026-05-04",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/05/2026-05-04_PVR_Proces-verbal-seance.pdf",
+                "date_iso": "2026-05-04",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url_norm": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/05/2026-05-04_PVR_Proces-verbal-seance.pdf",
+                "date_iso": "2026-05-04",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-mathieu-de-beloeil",
+                "source_url": "https://stmathieudebeloeil.ca/wp-content/uploads/2026/05/2026-05-04_PVR_Proces-verbal-seance.pdf",
+                "date_iso": "2026-05-04",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          }
+        ],
+        "extra": []
+      },
+      "matched": 0,
+      "missed": 18,
+      "extra": 0,
+      "immo_events": 18,
+      "immo_signals_excluded": 4,
+      "immo_node_type_missing_or_unknown": 0,
+      "immo_node_type_other": 0,
+      "geo_events": 0,
+      "recall": 0,
+      "recall_state": "measured"
+    },
+    {
+      "slug": "saint-eustache",
+      "geo_collection_status": "geo_local_events_loaded",
+      "geo_read_error": null,
+      "partition": {
+        "matched": [],
+        "missed": [
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2022PV_internet.pdf",
+                "date_iso": "2022-01-17",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2023PV_internet.pdf",
+                "date_iso": "2023-01-16",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2024PV_internet.pdf",
+                "date_iso": "2024-01-22",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          },
+          {
+            "outcome": "missed",
+            "match_kind": null,
+            "geo": null,
+            "immo": {
+              "side": "immo",
+              "natural_key": {
+                "muni": "saint-eustache",
+                "source_url_norm": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage"
+              },
+              "secondary_natural_key": null,
+              "source_fields": {
+                "event_id": null,
+                "muni": "saint-eustache",
+                "source_url": "https://www.saint-eustache.ca/storage/app/media/ville/vie-democratique/seances-du-conseil/proces-verbaux/2025PV_internet.pdf",
+                "date_iso": "2025-01-20",
+                "type": "modification_zonage",
+                "bylaw_numero": null,
+                "zone_ref": null,
+                "no_lot": null
+              }
+            },
+            "unmatched_reason": "no_exact_natural_key_match_secondary_key_unavailable"
+          }
+        ],
+        "extra": []
+      },
+      "matched": 0,
+      "missed": 50,
+      "extra": 0,
+      "immo_events": 50,
+      "immo_signals_excluded": 171,
+      "immo_node_type_missing_or_unknown": 0,
+      "immo_node_type_other": 0,
+      "geo_events": 0,
+      "recall": 0,
+      "recall_state": "measured"
+    }
+  ],
+  "aggregate": {
+    "matched": 0,
+    "missed": 85,
+    "extra": 1,
+    "immo_events": 85,
+    "immo_signals_excluded": 182,
+    "immo_node_type_missing_or_unknown": 0,
+    "immo_node_type_other": 0,
+    "geo_events": 1,
+    "geo_read_error_count": 0,
+    "recall": 0,
+    "recall_state": "measured"
+  },
+  "immo_zone_or_lot_population": {
+    "designation_events": 85,
+    "zone_ref": {
+      "populated": 13,
+      "null_or_unknown": 72
+    },
+    "no_lot": {
+      "populated": 14,
+      "null_or_unknown": 71
+    }
+  },
+  "immo_events_outside_sample": [],
+  "geo_documents_outside_sample": [],
+  "gate": {
+    "status": "recall_below_threshold",
+    "exit_code": 1
+  }
+}
