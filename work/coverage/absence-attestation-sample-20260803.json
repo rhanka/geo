@@ -1,0 +1,68 @@
+[
+  {
+    "source": {
+      "cadastre": "qc-lots-served",
+      "role": "mamh-role-foncier"
+    },
+    "asOf": "20260803",
+    "query": {
+      "s3_key": "normalized/qc-lots/qc-lots-westmount.geojson",
+      "served_layout": "flat",
+      "lot_selector": {
+        "NO_LOT": "1 581 067"
+      },
+      "role_url": "https://donneesouvertes.affmunqc.net/role/RL66032_2026.xml",
+      "role_selector": "RL0103Ax = \"1581067\"",
+      "field_selector": "served properties.noLot; role RL0103Ax"
+    },
+    "result": "present",
+    "evidence": {
+      "NO_LOT": "1 581 067",
+      "noLot": "1 581 067"
+    }
+  },
+  {
+    "source": {
+      "cadastre": "qc-lots-served",
+      "role": "mamh-role-foncier"
+    },
+    "asOf": "20260803",
+    "query": {
+      "s3_key": "normalized/qc-lots/qc-lots-westmount.geojson",
+      "served_layout": "flat",
+      "lot_selector": {
+        "NO_LOT": "1 581 067"
+      },
+      "role_url": "https://donneesouvertes.affmunqc.net/role/RL66032_2026.xml",
+      "role_selector": "RL0103Ax = \"1581067\"",
+      "field_selector": "served properties.adresse; role RL0101Ax/RL0101Ex/RL0101Gx (parseRole canonical address)"
+    },
+    "result": "absent",
+    "evidence": {
+      "NO_LOT": "1 581 067",
+      "RL0103Ax": null
+    }
+  },
+  {
+    "source": {
+      "cadastre": "qc-lots-served",
+      "role": "mamh-role-foncier"
+    },
+    "asOf": "20260803",
+    "query": {
+      "s3_key": "normalized/qc-lots/qc-lots-westmount.geojson",
+      "served_layout": "flat",
+      "lot_selector": {
+        "NO_LOT": "1 581 067"
+      },
+      "role_url": "https://donneesouvertes.affmunqc.net/role/RL66032_2026.xml",
+      "role_selector": "RL0103Ax = \"1581067\"",
+      "field_selector": "served properties.code_postal; role code_postal (null by role-foncier contract)"
+    },
+    "result": "present",
+    "evidence": {
+      "NO_LOT": "1 581 067",
+      "code_postal": "H3Z"
+    }
+  }
+]
