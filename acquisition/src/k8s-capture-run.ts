@@ -37,7 +37,7 @@ interface Args {
 // This image parses the immutable `derivation` control carried by captured
 // normes subpage/PDF worklists. The legacy 0.1.1 image rejects that field
 // before any capture attempt.
-const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:normes-captured-d97a76da";
+const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:normes-pdf-aa66adf5";
 
 function option(argv: string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
