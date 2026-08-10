@@ -1,0 +1,61 @@
+{
+  "contract": "reglement-palier167-real-completion/v1",
+  "as_of": "2026-08-10T03:28:17.032Z",
+  "scope": "palier-167 / terrasse-vaudreuil / cols-5-9-10-11",
+  "transitions": {
+    "col_5_reglement_declared": {
+      "before": "incomplete — 29/29 normes servies ont reglement_numero=null, reglement_millesime=null et reglement_page_source=null",
+      "after": "complete — 29/29 normes servies portent le règlement de zonage 685 et la page source 1; le millésime reste null faute d'attestation"
+    },
+    "col_9_provenance_quality": {
+      "before": "incomplete — zone_quality acceptable sur 0/29",
+      "after": "incomplete — aucune écriture de qualité; zone_quality acceptable reste 0/29"
+    },
+    "col_10_proof_v2": {
+      "before": "incomplete — zone_proof_version=v2 sur 0/29",
+      "after": "incomplete — zone_proof_version=v2 reste 0/29; le règlement ne constitue pas une preuve de géométrie"
+    },
+    "col_11_source_url_served": {
+      "before": "complete — l'URL de l'annexe B était servie sur 29/29",
+      "after": "complete — l'URL servie est remplacée par le règlement de zonage complet sur 29/29",
+      "gain": false
+    }
+  },
+  "evidence": {
+    "official_publication_page": {
+      "url": "https://www.terrasse-vaudreuil.ca/reglementation/",
+      "retrieved_at": "2026-08-10T03:27:17.108Z",
+      "sha256": "sha256:6ef87cb92ecd7ad96f88451378df30caccf6d9623cded5869bbcf86f65972c83",
+      "storage_key": "raw/reglement-discovery/cas/6ef87cb92ecd7ad96f88451378df30caccf6d9623cded5869bbcf86f65972c83.html",
+      "manifest_key": "capture/_runs/reglement-20260810T032800Z-0-bf7ac93e-57a8-49b2-a780-a27a7395a010/manifest.jsonl",
+      "line_index": 1,
+      "published_link": "https://www.terrasse-vaudreuil.ca/wp-content/uploads/2026/05/82-tvl-r685-zonage.pdf"
+    },
+    "zoning_regulation": {
+      "url": "https://www.terrasse-vaudreuil.ca/wp-content/uploads/2026/05/82-tvl-r685-zonage.pdf",
+      "retrieved_at": "2026-08-10T03:28:17.032Z",
+      "sha256": "sha256:7ff548ea2a9c665c363bac6953aa48401aafb8e01df617a760246d5387a8a769",
+      "storage_key": "raw/reglement-official/cas/7ff548ea2a9c665c363bac6953aa48401aafb8e01df617a760246d5387a8a769.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T032900Z-0-71cdaa02-72e0-44ea-873d-c725e2492269/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "MUNICIPALITÉ DE TERRASSE-VAUDREUIL — RÈGLEMENT DE ZONAGE NUMÉRO 685",
+      "limitation": "La codification administrative a des dates vides et avertit qu'elle n'a pas de valeur légale; aucune année ni date d'adoption n'est déduite."
+    },
+    "served_readback": {
+      "key": "normalized/qc-zonage-norms/qc-zonage-norms-terrasse-vaudreuil.geojson",
+      "features": 29,
+      "before_reglement_url": "https://www.terrasse-vaudreuil.ca/wp-content/uploads/2026/05/82-tvl-685-zonage-annexeb-grilles.pdf",
+      "after_reglement_numero": "685",
+      "after_reglement_millesime": null,
+      "after_reglement_page_source": 1,
+      "after_reglement_url": "https://www.terrasse-vaudreuil.ca/wp-content/uploads/2026/05/82-tvl-r685-zonage.pdf",
+      "proof_v2_features": 0,
+      "quality_features": 0
+    }
+  },
+  "anti_invention": {
+    "scope": "Le numéro 685 est imprimé par le règlement complet publié par la municipalité; le millésime reste null car ni l'adoption ni l'entrée en vigueur du règlement de base ne sont renseignées.",
+    "storage": "Les octets de la page et du PDF sont uniquement dans le CAS S3 avec manifestes de capture cluster; aucun octet source n'est écrit dans le worktree.",
+    "strict_gate": "Aucun statut col-10 n'est promu : la collection servie contient 0 zone_proof_version=v2 et le PDF ne prouve pas les géométries."
+  }
+}

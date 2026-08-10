@@ -1,0 +1,49 @@
+{
+  "contract": "reglement-prov-stamp-audit/v1",
+  "as_of": "2026-08-07",
+  "lane": "reglement",
+  "scope": "Re-stamp additif des règlements déjà curés sur les collections qc-zonage effectivement servies.",
+  "before": {
+    "runner": "acquisition/src/_reglprov-stamp-audit.ts --all --conc=8 --timeout-ms=60000",
+    "population": 840,
+    "missing_served_stamps": 3,
+    "s3_errors": 0,
+    "missing": [
+      {
+        "slug": "saint-damien-de-buckland",
+        "key": "normalized/ca-qc-zonage/qc-zonage-saint-damien-de-buckland/qc-zonage-saint-damien-de-buckland.geojson",
+        "reglement_numero": "09-2022"
+      },
+      {
+        "slug": "saint-lazare-de-bellechasse",
+        "key": "normalized/ca-qc-zonage/qc-zonage-saint-lazare-de-bellechasse/qc-zonage-saint-lazare-de-bellechasse.geojson",
+        "reglement_numero": "290-2021"
+      },
+      {
+        "slug": "saint-leon-de-standon",
+        "key": "normalized/ca-qc-zonage/qc-zonage-saint-leon-de-standon.geojson",
+        "reglement_numero": "827-2022"
+      }
+    ]
+  },
+  "write": {
+    "runner": "acquisition/src/fold-reglement-to-zonage.ts",
+    "mode": "putServedZoneAdditive",
+    "allowed_properties": [
+      "reglement_numero",
+      "reglement_millesime",
+      "reglement_page_source",
+      "reglement_url"
+    ],
+    "cities": 3,
+    "features": 162,
+    "property_cells_changed": 648
+  },
+  "after": {
+    "runner": "acquisition/src/_reglprov-stamp-audit.ts --all --conc=8 --timeout-ms=60000",
+    "population": 840,
+    "missing_served_stamps": 0,
+    "s3_errors": 0
+  },
+  "anti_invention": "Aucune valeur règlement n'a été déduite : les quatre propriétés proviennent exclusivement des entrées déjà curées de acquisition/config/reglement-provenance.json. Aucune géométrie ni donnée d'effet_densifiant n'a été écrite."
+}
