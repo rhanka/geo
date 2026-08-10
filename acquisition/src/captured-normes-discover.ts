@@ -55,7 +55,9 @@ export function discoveryRunReceiptKey(runId: string, slug: string): string {
 }
 
 export function subpageSelectionKey(runId: string, lineIndex: number): string {
-  return `registry/normes-captured-subpages/${runId}/${lineIndex}.json`;
+  // v2 selection keys supersede the initial media-extension gap without ever
+  // mutating the immutable v1 control object already published in S3.
+  return `registry/normes-captured-subpages/v2/${runId}/${lineIndex}.json`;
 }
 
 export async function discoverCapturedNormesPage(args: {
@@ -69,6 +71,7 @@ export async function discoverCapturedNormesPage(args: {
   subpage_selection_key: string;
   reference: CapturedNormesReference;
   candidates: number;
+  pdf_candidates: Array<{ slug: string; pdf_url: string; titre: string; score_classif: number; matched: string[] }>;
   subpages: number;
   subpage_candidates: Array<{ url: string; anchor: string }>;
   upload: "created" | "existing-equal";
@@ -129,6 +132,7 @@ export async function discoverCapturedNormesPage(args: {
     subpage_selection_key: subpageKey,
     reference,
     candidates: selection.candidates.length,
+    pdf_candidates: selection.candidates.map((candidate) => ({ ...candidate, matched: [...candidate.matched] })),
     subpages: subpageSelection.subpages.length,
     subpage_candidates: subpageSelection.subpages,
     upload,
