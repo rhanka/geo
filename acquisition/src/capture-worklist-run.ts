@@ -106,7 +106,11 @@ export function capturedRobotsFetch(
 async function main(): Promise<void> {
   const lane = captureLane(requireEnv("LANE"));
   const worklistKey = requireEnv("WORKLIST");
-  const runId = requireEnv("RUN_ID");
+  // `k8s-capture-run` publishes RUN_STAMP as the immutable, operator-visible
+  // run identity.  Keep RUN_ID as a compatibility override for specialised
+  // runners, but never require an environment variable its standard manifest
+  // does not provide.
+  const runId = process.env["RUN_ID"]?.trim() || requireEnv("RUN_STAMP");
   const shard = nonNegativeInt("SHARD", 0);
   const shards = positiveInt("SHARDS", 1);
   if (shard >= shards) throw new Error(`SHARD=${shard} doit être inférieur à SHARDS=${shards}`);
