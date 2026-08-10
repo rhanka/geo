@@ -37,7 +37,12 @@ export function campaignReceiptKey(campaign: string): string {
 
 async function assertClosedCity(entry: CapturedNormesCampaignEntry): Promise<void> {
   const s3 = s3Client();
-  const discovery = JSON.parse((await getBytes(s3, entry.discovery_run_receipt_key)).toString("utf8")) as unknown;
+  const discovery = entry.discovery_run_receipt_key === undefined
+    ? null
+    : JSON.parse((await getBytes(s3, entry.discovery_run_receipt_key)).toString("utf8")) as unknown;
+  const sourceAbsence = entry.source_absence_receipt_key === undefined
+    ? null
+    : JSON.parse((await getBytes(s3, entry.source_absence_receipt_key)).toString("utf8")) as unknown;
   const evidence = [];
   for (const key of entry.extraction_receipt_keys) {
     const extraction = CapturedNormesExtractionReceiptSchema.parse(
@@ -49,7 +54,7 @@ async function assertClosedCity(entry: CapturedNormesCampaignEntry): Promise<voi
       selection: JSON.parse((await getBytes(s3, extraction.capture.selection_key)).toString("utf8")) as unknown,
     });
   }
-  assertCapturedNormesCampaignEvidence(entry, discovery, evidence);
+  assertCapturedNormesCampaignEvidence(entry, discovery, evidence, sourceAbsence);
 }
 
 export async function closeCapturedNormesCampaign(planPath: string): Promise<{ key: string; upload: "created" | "existing-equal" }> {
