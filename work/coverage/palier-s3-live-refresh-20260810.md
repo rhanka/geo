@@ -16,7 +16,7 @@ sources qui le permettent. Il est validé avec `--check`.
 
 | Source / colonnes | Commande et résultat vérifié |
 |---|---|
-| Couverture réconciliée (source des matrices Immo) | `npx tsx acquisition/src/coverage-reconcile.ts` contre S3 : premier scan **pv=1 064 (+7), normes=815 (+175), zones=911 (+94), cadastre=1 106 (+0), role-foncier=1 106 (+0), tod=39 (+0)** ; second scan stable à +0. Le snapshot est désormais explicitement horodaté **`generatedAt=2026-08-10T01:56:41.264Z`**. |
+| Couverture réconciliée (source des matrices Immo) | `npx tsx acquisition/src/coverage-reconcile.ts` contre S3 : premier scan **pv=1 064 (+7), normes=815 (+175), zones=911 (+94), cadastre=1 106 (+0), role-foncier=1 106 (+0), tod=39 (+0)** ; les scans suivants sont stables à +0. Le snapshot retenu est explicitement horodaté **`generatedAt=2026-08-10T02:01:06.776Z`**. |
 | Cohérence lot-zone (2) | `npx tsx acquisition/src/lot-zone-consistency-audit.ts --scale --max-seconds 600 --out work/coverage/lot-zone-consistency-scale-20260810.json` (reprises du checkpoint) : **866/866** villes auditables, 718 sous 5 %, 123 à 5 % ou plus. Aucun changement de cellule dans la cohorte. |
 | Provenance zones (8–10) | `npx tsx acquisition/src/zone-provenance-quality-run.ts --date=20260810 --batch=100 --concurrency=16` : 873 collections servies, 0 lecture illisible. La matrice retenue est `zone-provenance-quality-matrix-20260810T013417Z-ad1126284740439d.json` ; ses statuts de cohorte sont inchangés. Les manifests sont passés de 1 316 (snapshot précédent) à 1 332, sans promotion de statut. |
 | URL source servie (11) | `npx tsx acquisition/src/_zone-source-readback-audit.ts --slugs <167-slugs> --date=20260810 --concurrency 16` : **47 STAMPED, 62 STAMPED_NULL, 1 UNSTAMPED, 57 sans collection servie**. Les 57 sont des clés réellement absentes, pas des verts supposés. |
@@ -38,8 +38,8 @@ sources qui le permettent. Il est validé avec `--check`.
 
 ## Résultat du pivot validé
 
-Après le second scan de couverture S3 et la régénération des deux matrices
-Immo dépendantes, `node scripts/palier-matrix-report.mjs --date=20260810` puis
+Après le scan de couverture S3 retenu et la régénération de la matrice Immo
+dépendante, `node scripts/palier-matrix-report.mjs --date=20260810` puis
 `--check` :
 
 - Résolu total (`complete` ou `N-A` prouvé, dénominateurs par KPI) :
