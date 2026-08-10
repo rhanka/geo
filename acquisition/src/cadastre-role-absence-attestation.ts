@@ -30,7 +30,9 @@ import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 
+import { capturedFetch, type CaptureRun } from "../../packages/qc-sources/src/capture/index.js";
 import { DEFAULT_MILLESIME, fetchIndex, parseRole, type IndexEntry, type RoleAttrs } from "./role-foncier.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { getBytes, objectHead, s3Client } from "./lib/s3.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..", "..");
@@ -329,26 +331,27 @@ async function getS3BytesWithinDeadline(s3: S3Client, key: string, deadline: num
   }
 }
 
-async function getRoleWithinDeadline(codeGeo: string, deadline: number, maxBytes: number): Promise<Buffer | null> {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), timeRemaining(deadline));
-  try {
-    const response = await fetch(ROLE_URL(codeGeo), { signal: controller.signal });
-    if (response.status === 403 || response.status === 404) return null;
-    if (!response.ok) throw new Error(`MAMH role HTTP ${response.status}`);
-    const declaredLength = Number(response.headers.get("content-length"));
-    if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
-      throw new Error(`MAMH role ${declaredLength} bytes exceeds --max-mb guard ${maxBytes} bytes`);
-    }
-    const body = Buffer.from(await response.arrayBuffer());
-    if (body.length > maxBytes) throw new Error(`MAMH role ${body.length} bytes exceeds --max-mb guard ${maxBytes} bytes`);
-    return body;
-  } catch (error) {
-    if (Date.now() >= deadline || controller.signal.aborted) throw new TimeboxExceeded();
-    throw error;
-  } finally {
-    clearTimeout(timeout);
+async function getRoleWithinDeadline(
+  codeGeo: string,
+  slug: string,
+  run: CaptureRun,
+  deadline: number,
+  maxBytes: number,
+): Promise<Buffer | null> {
+  const captured = await capturedFetch(ROLE_URL(codeGeo), undefined, {
+    run,
+    lane: "cadastre",
+    source: "cadastre-role-absence-attestation",
+    slugs: [slug],
+    timeoutMs: timeRemaining(deadline),
+    maxBytes,
+  });
+  if (captured.response?.status === 403 || captured.response?.status === 404) return null;
+  if (!captured.ok || captured.bytes === null) {
+    if (Date.now() >= deadline) throw new TimeboxExceeded();
+    throw new Error(captured.line.error ?? `MAMH role HTTP ${captured.line.http_status ?? "no-response"}`);
   }
+  return Buffer.from(captured.bytes);
 }
 
 function normalizedName(value: string): string {
@@ -533,41 +536,49 @@ async function resolveRole(
   if (allLotKeys.size === 0) return { resolution: null, state: "qc-lots-served-without-usable-NO_LOT" };
   const candidates = candidateCodes(slug, name, roleByName);
   if (candidates.length === 0) return { resolution: null, state: "mamh-code-geo-candidate-absent" };
-  const minimumOverlap = Math.max(30, Math.floor(0.03 * allLotKeys.size));
-  let best: RoleResolution | null = null;
-  const failures: string[] = [];
-  for (const codeGeo of candidates.slice(0, 6)) {
-    timeRemaining(deadline);
-    let xml: Buffer | null;
-    try {
-      xml = await getRoleWithinDeadline(codeGeo, deadline, maxBytes);
-    } catch (error) {
-      if (error instanceof TimeboxExceeded) throw error;
-      failures.push(`${codeGeo}:${error instanceof Error ? error.message : String(error)}`);
-      continue;
+  const run = openCaptureRun({ lane: "cadastre", echo: null });
+  let exitCode = 1;
+  try {
+    const minimumOverlap = Math.max(30, Math.floor(0.03 * allLotKeys.size));
+    let best: RoleResolution | null = null;
+    const failures: string[] = [];
+    for (const codeGeo of candidates.slice(0, 6)) {
+      timeRemaining(deadline);
+      let xml: Buffer | null;
+      try {
+        xml = await getRoleWithinDeadline(codeGeo, slug, run, deadline, maxBytes);
+      } catch (error) {
+        if (error instanceof TimeboxExceeded) throw error;
+        failures.push(`${codeGeo}:${error instanceof Error ? error.message : String(error)}`);
+        continue;
+      }
+      if (!xml) {
+        failures.push(`${codeGeo}:role-http-unavailable`);
+        continue;
+      }
+      let roleMap: Record<string, RoleAttrs>;
+      try {
+        roleMap = parseRole(xml);
+      } catch (error) {
+        failures.push(`${codeGeo}:role-parse-failed:${error instanceof Error ? error.message : String(error)}`);
+        continue;
+      }
+      let overlap = 0;
+      for (const lotKey of Object.keys(roleMap)) if (allLotKeys.has(lotKey)) overlap++;
+      if (!best || overlap > best.overlap) {
+        best = { codeGeo, roleUrl: ROLE_URL(codeGeo), roleMap, xml, overlap };
+      }
     }
-    if (!xml) {
-      failures.push(`${codeGeo}:role-http-unavailable`);
-      continue;
-    }
-    let roleMap: Record<string, RoleAttrs>;
-    try {
-      roleMap = parseRole(xml);
-    } catch (error) {
-      failures.push(`${codeGeo}:role-parse-failed:${error instanceof Error ? error.message : String(error)}`);
-      continue;
-    }
-    let overlap = 0;
-    for (const lotKey of Object.keys(roleMap)) if (allLotKeys.has(lotKey)) overlap++;
-    if (!best || overlap > best.overlap) {
-      best = { codeGeo, roleUrl: ROLE_URL(codeGeo), roleMap, xml, overlap };
-    }
+    const result = !best
+      ? { resolution: null, state: `mamh-role-unreadable:${failures.join(";") || "no-candidate-succeeded"}` }
+      : best.overlap < minimumOverlap
+        ? { resolution: null, state: `mamh-role-overlap-insufficient:code=${best.codeGeo},matched=${best.overlap},minimum=${minimumOverlap}` }
+        : { resolution: best, state: "resolved" };
+    exitCode = 0;
+    return result;
+  } finally {
+    await run.finish(exitCode);
   }
-  if (!best) return { resolution: null, state: `mamh-role-unreadable:${failures.join(";") || "no-candidate-succeeded"}` };
-  if (best.overlap < minimumOverlap) {
-    return { resolution: null, state: `mamh-role-overlap-insufficient:code=${best.codeGeo},matched=${best.overlap},minimum=${minimumOverlap}` };
-  }
-  return { resolution: best, state: "resolved" };
 }
 
 function unitFragments(buffer: Buffer): Generator<string> {

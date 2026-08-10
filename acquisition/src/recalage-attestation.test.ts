@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 
-const recalageAttestationScript = "../../scripts/recalage-attestation.mjs";
-const mod = await import(recalageAttestationScript);
+// @ts-expect-error Script executable MJS sans déclaration TypeScript publique.
+const mod = await import("../../scripts/recalage-attestation.mjs");
 const { attestFromMetrics, BANC } = mod as any;
 
 // Métriques d'un recalage sain (belcourt-like) : residual < 30, marge large,
