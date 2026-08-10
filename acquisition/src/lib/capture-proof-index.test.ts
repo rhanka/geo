@@ -7,9 +7,11 @@ import {
 } from "../../../packages/qc-sources/src/capture/index.js";
 import {
   captureProofIndexEntryFromManifest,
+  captureProofIndexSnapshotKey,
   hasCaptureProof,
   materializeCaptureProofIndex,
   parseCaptureProofIndex,
+  publishCaptureProofIndex,
   serializeCaptureProofIndex,
 } from "./capture-proof-index.js";
 
@@ -130,5 +132,37 @@ describe("capture proof index", () => {
         ? Buffer.from(`${serializeManifestLine(line())}\n`)
         : Buffer.from(JSON.stringify(header("zones-20260810T020304Z-audet", { execution: "local" }))),
     })).rejects.toThrow(/not a completed cluster capture/);
+  });
+
+  it("publishes a content-addressed immutable snapshot", async () => {
+    const runId = "zones-20260810T020304Z-audet";
+    const manifestKey = `capture/_runs/${runId}/manifest.jsonl`;
+    const stored = new Map<string, Buffer>();
+    const store = {
+      listManifestKeys: async () => [manifestKey],
+      getBytes: async (key: string) => key === manifestKey
+        ? Buffer.from(`${serializeManifestLine(line())}\n`)
+        : Buffer.from(JSON.stringify(header(runId))),
+      putBytesIfAbsentOrEqual: async (key: string, body: Buffer, contentType: string) => {
+        expect(contentType).toBe("application/x-ndjson");
+        const prior = stored.get(key);
+        if (prior === undefined) {
+          stored.set(key, body);
+          return "created" as const;
+        }
+        expect(prior.equals(body)).toBe(true);
+        return "existing-equal" as const;
+      },
+    };
+    const first = await publishCaptureProofIndex(store);
+    expect(first.key).toBe(captureProofIndexSnapshotKey(stored.get(first.key)!));
+    expect(first.sha256).toMatch(/^sha256:[a-f0-9]{64}$/);
+    expect(first.bytes).toBe(stored.get(first.key)!.byteLength);
+    expect(first.disposition).toBe("created");
+    await expect(publishCaptureProofIndex(store)).resolves.toMatchObject({
+      key: first.key,
+      sha256: first.sha256,
+      disposition: "existing-equal",
+    });
   });
 });
