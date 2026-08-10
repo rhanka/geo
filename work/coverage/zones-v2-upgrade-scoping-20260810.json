@@ -1,0 +1,3736 @@
+{
+  "contract": "zones-v2-upgrade-scoping/v1",
+  "generated_at": "2026-08-10T14:54:50.379Z",
+  "as_of_data": "2026-08-10 (fresh read-only S3 scan of normalized/ca-qc-zonage/)",
+  "read_only": true,
+  "method": {
+    "data_source": "fresh read-only S3 list + ranged first-feature read of every served qc-zonage collection (nested-when-present); zone_source_level / zone_source_url / feature-level v2 proof extracted from the (uniform) first feature. NOT a full-geometry download.",
+    "scan_script": "acquisition/src/_zones-v2-upgrade-scoping-scan.ts (uncommitted diagnostic sonde)",
+    "raw_scan": "work/coverage/_zones-v2-upgrade-scoping-scan-raw-20260810.json",
+    "portfolio_artifact_checked": "zone-provenance-quality-matrix-20260803T001639Z-81de8d776a7d73c9.json (used for cross-check; lacks per-slug zone_source_url so a fresh scan was required to split UPGRADABLE vs NO-URL)",
+    "v2_proof_predicate": "acquisition/src/lib/zonage-proof.ts featureHasV2Proof (proof.geometry_source with sha256:<64hex> + ISO retrieved_at)",
+    "level_vocabulary": "historical-verified | documented | legacy-traceable | candidate | orphan | unknown (ZONE_SOURCE_LEVELS)"
+  },
+  "bucket_definitions": {
+    "PROVEN": "zone_source_level in {documented, historical-verified} AND feature carries a v2 proof",
+    "UPGRADABLE": "zone_source_level in {candidate, orphan, legacy-traceable, unknown} AND zone_source_url is a real http(s) URL AND no v2 proof — candidate->documented target via source-identity capture",
+    "NO-URL": "unproven level AND zone_source_url is null — not upgradable without discovering a new source",
+    "DECLARED-DOC-NO-V2": "level says documented/historical-verified but NO v2 proof block (provenance-declared, not byte-captured) — neither PROVEN nor in the upgradable level set",
+    "UNKNOWN-PROVENANCE": "level absent / not determinable"
+  },
+  "totals": {
+    "total_served_collections": 873,
+    "PROVEN": 179,
+    "UPGRADABLE": 388,
+    "NO-URL": 278,
+    "DECLARED-DOC-NO-V2": 28,
+    "UNKNOWN-PROVENANCE": 0
+  },
+  "upgradable_breakdown": {
+    "by_level": {
+      "legacy-traceable": 374,
+      "candidate": 14
+    },
+    "by_endpoint_class": {
+      "geoserver-wfs": 147,
+      "arcgis-rest": 229,
+      "other-http": 6,
+      "pdf-plan (georeference, NOT source-identity)": 6
+    },
+    "by_url_host_top": {
+      "www.goazimut.com": 184,
+      "geoserver.geocentralis.com": 147,
+      "geo.victoriaville.ca": 12,
+      "gis.altusquebec.com": 12,
+      "services.arcgis.com": 7,
+      "services6.arcgis.com": 6,
+      "sig.mrcal.ca": 3,
+      "portneuf.blob.core.windows.net": 3,
+      "services8.arcgis.com": 3,
+      "www.arcgis.com": 2,
+      "geo.ville.alma.qc.ca": 1,
+      "www.chelsea.ca": 1,
+      "services9.arcgis.com": 1,
+      "www.villagedehemmingford.ca": 1,
+      "preissac.com": 1,
+      "carte.rouyn-noranda.ca": 1,
+      "st-amable.qc.ca": 1,
+      "www.municipalite.saint-armand.qc.ca": 1,
+      "stepetronille.com": 1
+    },
+    "source_identity_capturable_estimate": 376,
+    "pdf_needs_georeference": 6
+  },
+  "net_new_vs_campaign": {
+    "campaign_slug_set_broad_size": 177,
+    "campaign_set_note": "broad union of all vnatif + v2mass campaign artifacts in work/coverage (superset of the ~52 coverage-bound handled); used to be conservative (maximises overlap, minimises net-new claim)",
+    "upgradable_intersect_campaign": 19,
+    "intersect_slugs": [
+      "chateauguay",
+      "farnham",
+      "havelock",
+      "howick",
+      "saint-bernard-de-lacolle",
+      "saint-chrysostome",
+      "saint-damase--les-maskoutains",
+      "saint-denis-sur-richelieu",
+      "saint-francois-xavier-de-brompton",
+      "saint-honore-de-temiscouata",
+      "saint-jean-de-la-lande",
+      "saint-juste-du-lac",
+      "saint-louis-du-ha-ha",
+      "saint-ludger",
+      "saint-ours",
+      "saint-paul",
+      "saint-pierre",
+      "tres-saint-sacrement",
+      "vaudreuil-dorion"
+    ],
+    "NET_NEW_UPGRADABLE": 369,
+    "upgradable_intersect_20260810_handled": 0
+  },
+  "caveats": [
+    "UPGRADABLE counts PRESENCE of a real http(s) zone_source_url, NOT verified liveness. A per-URL liveness sweep (acquisition/src/zones-served-proof-url-liveness-sweep.ts style) is the next refinement to confirm which are still capturable now.",
+    "Endpoint classes are pattern-based on the URL. arcgis-rest (goAzimut, altusquebec, victoriaville, services*.arcgis.com) and geoserver-wfs (geocentralis /geoserver/ows) are geometry endpoints in principle; empirical automatability is NOT guaranteed (prior lane verdicts found several platform sources non-automatable: MapServer without geojson export, access controls, layer-identity mismatch). Treat the source_identity_capturable_estimate as an UPPER BOUND on the source-identity yield.",
+    "The 6 pdf-plan URLs are real http URLs but require georeference, not the source-identity method; excluded from the source-identity estimate.",
+    "zone_source_level / zone_source_url read from the FIRST feature; the write gates enforce uniformity across features, so the first feature is authoritative.",
+    "DECLARED-DOC-NO-V2 (28) are declared documented/historical-verified without a v2 proof block; they are provenance-declared, not byte-captured, and sit outside both PROVEN and the upgradable level set.",
+    "873 served collections vs 1106 catalogue: ~233 have no served collection (unserved) and are outside 'served zones' scope."
+  ],
+  "upgradable_list": [
+    {
+      "slug": "adstock",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=31056]"
+    },
+    {
+      "slug": "albanel",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/920_MariaChapdelaine/92030_Albanel/MapServer/197"
+    },
+    {
+      "slug": "albertville",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07025]"
+    },
+    {
+      "slug": "alma",
+      "level": "legacy-traceable",
+      "url_host": "geo.ville.alma.qc.ca",
+      "endpoint_class": "other-http",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.ville.alma.qc.ca/services/rest/v2.0/projects/10/layers/29/elements"
+    },
+    {
+      "slug": "amqui",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07047]"
+    },
+    {
+      "slug": "aston-jonction",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50013_AstonJonction/MapServer/177"
+    },
+    {
+      "slug": "authier",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87050_Authier/MapServer/155"
+    },
+    {
+      "slug": "authier-nord",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87100_AuthierNord/MapServer/155"
+    },
+    {
+      "slug": "baie-comeau",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96020]"
+    },
+    {
+      "slug": "baie-du-febvre",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50100_BaieDuFebvre/MapServer/182"
+    },
+    {
+      "slug": "baie-saint-paul",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-02/arcgis/rest/services/160_Charlevoix/16013_BaieSaintPaul/MapServer/177"
+    },
+    {
+      "slug": "baie-sainte-catherine",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/150_CharlevoixEst/15065_BaieSainteCatherine/MapServer/574"
+    },
+    {
+      "slug": "baie-trinite",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96005]"
+    },
+    {
+      "slug": "barraute",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88022]"
+    },
+    {
+      "slug": "batiscan",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37210_Batiscan/MapServer/186"
+    },
+    {
+      "slug": "beauceville",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=27028]"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31008]"
+    },
+    {
+      "slug": "beaupre",
+      "level": "legacy-traceable",
+      "url_host": "services6.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17"
+    },
+    {
+      "slug": "bedford--brome-missisquoi--2",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-10/arcgis/rest/services/460_BromeMissisquoi/46035_Bedford/MapServer/133"
+    },
+    {
+      "slug": "berry",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=88070]"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18065]"
+    },
+    {
+      "slug": "berthierville",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52035]"
+    },
+    {
+      "slug": "bromont",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-10/arcgis/rest/services/460_BromeMissisquoi/46078_Bromont/MapServer/267"
+    },
+    {
+      "slug": "cap-saint-ignace",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18045]"
+    },
+    {
+      "slug": "causapscal",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07018]"
+    },
+    {
+      "slug": "champlain",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37220_Champlain/MapServer/184"
+    },
+    {
+      "slug": "champneuf",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88005]"
+    },
+    {
+      "slug": "chandler",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/020_LeRocherPerce/02028_Chandler/MapServer/159"
+    },
+    {
+      "slug": "chateauguay",
+      "level": "candidate",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=67050"
+    },
+    {
+      "slug": "chazel",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87095_Chazel/MapServer/157"
+    },
+    {
+      "slug": "chelsea",
+      "level": "candidate",
+      "url_host": "www.chelsea.ca",
+      "endpoint_class": "pdf-plan (georeference, NOT source-identity)",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.chelsea.ca/application/files/3317/4015/0717/Annexe_1_-_PlanP-20-010_1_Zonage_0G.pdf"
+    },
+    {
+      "slug": "cheneville",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80103_Cheneville_public/MapServer/144"
+    },
+    {
+      "slug": "chesterville",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96035]"
+    },
+    {
+      "slug": "chute-saint-philippe",
+      "level": "legacy-traceable",
+      "url_host": "sig.mrcal.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0"
+    },
+    {
+      "slug": "clermont--abitibi-ouest",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87110_Clermont87110/MapServer/155"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/150_CharlevoixEst/15035_Clermont/MapServer/165"
+    },
+    {
+      "slug": "clerval",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87075_Clerval/MapServer/155"
+    },
+    {
+      "slug": "courcelles-saint-evariste",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/290_BeauceSartigan/29027_CourcellesSaintEvariste/MapServer/163"
+    },
+    {
+      "slug": "crabtree",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61013]"
+    },
+    {
+      "slug": "danville",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=40047]"
+    },
+    {
+      "slug": "disraeli--les-appalaches--2",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=31015]"
+    },
+    {
+      "slug": "dundee",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69075]"
+    },
+    {
+      "slug": "duparquet",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87005_Duparquet/MapServer/159"
+    },
+    {
+      "slug": "dupuy",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87085_Dupuy/MapServer/157"
+    },
+    {
+      "slug": "durham-sud",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49015_DurhamSud/MapServer/151"
+    },
+    {
+      "slug": "east-broughton",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31122]"
+    },
+    {
+      "slug": "elgin",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69050]"
+    },
+    {
+      "slug": "esprit-saint",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/100_RimouskiNeigette/10005_EspritSaint/MapServer/151"
+    },
+    {
+      "slug": "esterel",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77011]"
+    },
+    {
+      "slug": "farnham",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=46112]"
+    },
+    {
+      "slug": "fermont",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=97035]"
+    },
+    {
+      "slug": "franquelin",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96015]"
+    },
+    {
+      "slug": "gallichan",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87020_Gallichan/MapServer/158"
+    },
+    {
+      "slug": "gaspe",
+      "level": "legacy-traceable",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03005_Publique/MapServer/20"
+    },
+    {
+      "slug": "gatineau",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=81017]"
+    },
+    {
+      "slug": "girardville",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/920_MariaChapdelaine/92055_Girardville/MapServer/196"
+    },
+    {
+      "slug": "godmanchester",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69060]"
+    },
+    {
+      "slug": "gore",
+      "level": "legacy-traceable",
+      "url_host": "services9.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services9.arcgis.com/iZcAwIV2GibwcZLe/arcgis/rest/services/Zonage/FeatureServer/0"
+    },
+    {
+      "slug": "grand-saint-esprit",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50065_GrandSaintEsprit/MapServer/173"
+    },
+    {
+      "slug": "grande-riviere",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/020_LeRocherPerce/02015_GrandeRiviere/MapServer/145"
+    },
+    {
+      "slug": "grosse-ile",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-07/arcgis/rest/services/010_LesIlesDeLaMadeleine/01042_GrosseIle/MapServer/144"
+    },
+    {
+      "slug": "grosses-roches",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/080_LaMatanie/08015_GrossesRoches/MapServer/163"
+    },
+    {
+      "slug": "ham-nord",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "havelock",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69005]"
+    },
+    {
+      "slug": "havre-saint-pierre",
+      "level": "legacy-traceable",
+      "url_host": "www.arcgis.com",
+      "endpoint_class": "other-http",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.arcgis.com/home/item.html?id=b94b3850ba7f4425980cef318e0d5637#HSP_Ligne"
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68015_Hemmingford68015_public/MapServer/144"
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville--2",
+      "level": "candidate",
+      "url_host": "www.villagedehemmingford.ca",
+      "endpoint_class": "pdf-plan (georeference, NOT source-identity)",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.villagedehemmingford.ca/fichiersUpload/fichiers/20220718135723-reg293-annexe-a-plan-de-zonage-general-version-administrative.pdf"
+    },
+    {
+      "slug": "hinchinbrooke",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69045]"
+    },
+    {
+      "slug": "hope-town",
+      "level": "legacy-traceable",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05020_Publique/MapServer/23"
+    },
+    {
+      "slug": "howick",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69025]"
+    },
+    {
+      "slug": "huntingdon",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69055]"
+    },
+    {
+      "slug": "irlande",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31040]"
+    },
+    {
+      "slug": "joliette",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61025]"
+    },
+    {
+      "slug": "kamouraska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14050_Kamouraska/MapServer/158"
+    },
+    {
+      "slug": "kingsey-falls",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "kinnears-mills",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31105]"
+    },
+    {
+      "slug": "la-corne",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=88030]"
+    },
+    {
+      "slug": "la-guadeloupe",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/290_BeauceSartigan/29030_LaGuadeloupe/MapServer/151"
+    },
+    {
+      "slug": "la-malbaie",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/150_CharlevoixEst/15013_LaMalbaie_public/MapServer/102"
+    },
+    {
+      "slug": "la-motte",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88045]"
+    },
+    {
+      "slug": "la-pocatiere",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14082_LaPocatiere/MapServer/183"
+    },
+    {
+      "slug": "la-redemption",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09005]"
+    },
+    {
+      "slug": "la-reine",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87080_LaReine/MapServer/157"
+    },
+    {
+      "slug": "la-trinite-des-monts",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/100_RimouskiNeigette/10010_LaTriniteDesMonts/MapServer/151"
+    },
+    {
+      "slug": "la-visitation-de-lile-dupas",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52050]"
+    },
+    {
+      "slug": "la-visitation-de-yamaska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50085_LaVisitationDeYamaska/MapServer/187"
+    },
+    {
+      "slug": "lac-au-saumon",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07057]"
+    },
+    {
+      "slug": "lac-brome",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-10/arcgis/rest/services/460_BromeMissisquoi/46075_LacBrome_public/MapServer/39"
+    },
+    {
+      "slug": "lac-des-ecorces",
+      "level": "legacy-traceable",
+      "url_host": "sig.mrcal.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0"
+    },
+    {
+      "slug": "lac-des-seize-iles",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77055]"
+    },
+    {
+      "slug": "lac-etchemin",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28053_LacEtchemin/MapServer/144"
+    },
+    {
+      "slug": "lac-frontiere",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18010]"
+    },
+    {
+      "slug": "lac-simon",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80095_LacSimon/MapServer/161"
+    },
+    {
+      "slug": "landrienne",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88035]"
+    },
+    {
+      "slug": "lange-gardien--la-cote-de-beaupre",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/210_LaCoteDeBeaupre/21040_LAngeGardien21040/MapServer/197"
+    },
+    {
+      "slug": "lanoraie",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52017]"
+    },
+    {
+      "slug": "lascension",
+      "level": "legacy-traceable",
+      "url_host": "sig.mrcal.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0"
+    },
+    {
+      "slug": "launay",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88080]"
+    },
+    {
+      "slug": "lavaltrie",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52007]"
+    },
+    {
+      "slug": "lavenir",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49025_LAvenir/MapServer/158"
+    },
+    {
+      "slug": "lefebvre",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49020_Lefebvre/MapServer/154"
+    },
+    {
+      "slug": "les-eboulements",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-02/arcgis/rest/services/160_Charlevoix/16048_LesEboulements/MapServer/169"
+    },
+    {
+      "slug": "les-iles-de-la-madeleine",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-07/arcgis/rest/services/010_LesIlesDeLaMadeleine/01023_LesIlesDeLaMadeleine/MapServer/179"
+    },
+    {
+      "slug": "lile-danticosti",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/981_Minganie/98020_LIleDAnticosti/MapServer/145"
+    },
+    {
+      "slug": "lile-du-grand-calumet",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-06/arcgis/rest/services/840_Pontiac/84035_LIleDuGrandCalumet/MapServer/152"
+    },
+    {
+      "slug": "lisle-aux-coudres",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-02/arcgis/rest/services/160_Charlevoix/16023_LIsleAuxCoudres/MapServer/174"
+    },
+    {
+      "slug": "macamic",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87058_Macamic/MapServer/157"
+    },
+    {
+      "slug": "maddington-falls",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "magog",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-15/arcgis/rest/services/450_Memphremagog/45072_Magog_public/MapServer/9"
+    },
+    {
+      "slug": "mandeville",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52095]"
+    },
+    {
+      "slug": "matapedia",
+      "level": "legacy-traceable",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06045_Publique/MapServer/14"
+    },
+    {
+      "slug": "mont-carmel",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14005_MontCarmel/MapServer/156"
+    },
+    {
+      "slug": "mont-joli",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09077]"
+    },
+    {
+      "slug": "montmagny",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18050]"
+    },
+    {
+      "slug": "morin-heights",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77050]"
+    },
+    {
+      "slug": "mulgrave-et-derry",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80085_MulgraveEtDerry/MapServer/152"
+    },
+    {
+      "slug": "murdochville",
+      "level": "candidate",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC030/03025_Publique/MapServer/14"
+    },
+    {
+      "slug": "namur",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80110_Namur/MapServer/151"
+    },
+    {
+      "slug": "neuville",
+      "level": "candidate",
+      "url_host": "portneuf.blob.core.windows.net",
+      "endpoint_class": "other-http",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://portneuf.blob.core.windows.net/media/4878/zonage_neu_mtm83-7_s_10-2020.zip"
+    },
+    {
+      "slug": "nicolet",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50072_Nicolet/MapServer/152"
+    },
+    {
+      "slug": "normandin",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/920_MariaChapdelaine/92040_Normandin/MapServer/209"
+    },
+    {
+      "slug": "normetal",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87115_Normetal/MapServer/158"
+    },
+    {
+      "slug": "notre-dame-de-la-paix",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80020_NotreDameDeLaPaix/MapServer/150"
+    },
+    {
+      "slug": "notre-dame-des-monts",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/150_CharlevoixEst/15025_NotreDameDesMonts/MapServer/575"
+    },
+    {
+      "slug": "notre-dame-des-neiges",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/110_LesBasques/11045_NotreDameDesNeiges/MapServer/153"
+    },
+    {
+      "slug": "notre-dame-des-pins",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/290_BeauceSartigan/29120_NotreDameDesPins/MapServer/166"
+    },
+    {
+      "slug": "notre-dame-des-prairies",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61030]"
+    },
+    {
+      "slug": "notre-dame-du-bon-conseil--drummond",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49075_NotreDameDuBonConseil/MapServer/160"
+    },
+    {
+      "slug": "notre-dame-du-bon-conseil--drummond--2",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49080_NotreDameDuBonConseil/MapServer/160"
+    },
+    {
+      "slug": "notre-dame-du-mont-carmel",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37235_NotreDameDuMontCarmel/MapServer/188"
+    },
+    {
+      "slug": "orford",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-15/arcgis/rest/services/450_Memphremagog/45115_Orford_public/MapServer/64"
+    },
+    {
+      "slug": "otterburn-park",
+      "level": "candidate",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=57030"
+    },
+    {
+      "slug": "padoue",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09040]"
+    },
+    {
+      "slug": "palmarolle",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87025_Palmarolle/MapServer/167"
+    },
+    {
+      "slug": "papineauville",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80037_Papineauville/MapServer/151"
+    },
+    {
+      "slug": "paspebiac",
+      "level": "legacy-traceable",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC050/05032_Publique/MapServer/26"
+    },
+    {
+      "slug": "perce",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/020_LeRocherPerce/02005_Perce/MapServer/148"
+    },
+    {
+      "slug": "petite-riviere-saint-francois",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-02/arcgis/rest/services/160_Charlevoix/16005_PetiteRiviereSaintFrancois/MapServer/172"
+    },
+    {
+      "slug": "piedmont",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77030]"
+    },
+    {
+      "slug": "pierreville",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50113_Pierreville/MapServer/176"
+    },
+    {
+      "slug": "plaisance",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80045_Plaisance_public/MapServer/144"
+    },
+    {
+      "slug": "plessisville",
+      "level": "legacy-traceable",
+      "url_host": "www.arcgis.com",
+      "endpoint_class": "other-http",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.arcgis.com/home/item.html?id=2dec1bd28b774d3aa74ee5c8b52c8fba#ZONAGE"
+    },
+    {
+      "slug": "pointe-aux-outardes",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96030]"
+    },
+    {
+      "slug": "pointe-lebel",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=96025]"
+    },
+    {
+      "slug": "port-daniel-gascons",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/020_LeRocherPerce/02047_PortDanielGascons/MapServer/145"
+    },
+    {
+      "slug": "poularies",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87035_Poularies/MapServer/155"
+    },
+    {
+      "slug": "preissac",
+      "level": "candidate",
+      "url_host": "preissac.com",
+      "endpoint_class": "pdf-plan (georeference, NOT source-identity)",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://preissac.com/resources/medias/PLAN_DE_ZONAGE_RURAL_URBAIN_PREISSAC_MAJ_2015.pdf"
+    },
+    {
+      "slug": "price",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09065]"
+    },
+    {
+      "slug": "ragueneau",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96040]"
+    },
+    {
+      "slug": "rapide-danseur",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87010_RapideDanseur/MapServer/155"
+    },
+    {
+      "slug": "ripon",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80078_Ripon/MapServer/152"
+    },
+    {
+      "slug": "riviere-au-tonnerre",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/981_Minganie/98055_RiviereAuTonnerre/MapServer/880"
+    },
+    {
+      "slug": "riviere-ouelle",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14065_RiviereOuelle/MapServer/350"
+    },
+    {
+      "slug": "roquemaure",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87015_Roquemaure/MapServer/157"
+    },
+    {
+      "slug": "rouyn-noranda",
+      "level": "legacy-traceable",
+      "url_host": "carte.rouyn-noranda.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://carte.rouyn-noranda.ca/arcgis/rest/services/Donnees_ouvertes/Donnees_ouvertes/MapServer/5"
+    },
+    {
+      "slug": "roxton-pond",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/470_LaHauteYamaska/47047_RoxtonPond/MapServer/166"
+    },
+    {
+      "slug": "sacre-coeur-de-jesus",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=31130]"
+    },
+    {
+      "slug": "saint-adolphe-dhoward",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77065]"
+    },
+    {
+      "slug": "saint-adrien",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=40010]"
+    },
+    {
+      "slug": "saint-adrien-dirlande",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31095]"
+    },
+    {
+      "slug": "saint-aime",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53015_SaintAime/MapServer/151"
+    },
+    {
+      "slug": "saint-aime-des-lacs",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/150_CharlevoixEst/15030_SaintAimeDesLacs/MapServer/203"
+    },
+    {
+      "slug": "saint-albert",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "saint-alexandre-de-kamouraska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14035_SaintAlexandreDeKamouraska/MapServer/158"
+    },
+    {
+      "slug": "saint-alexandre-des-lacs",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07065]"
+    },
+    {
+      "slug": "saint-alfred",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=27015]"
+    },
+    {
+      "slug": "saint-alphonse-de-granby",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/470_LaHauteYamaska/47010_SaintAlphonseDeGranby/MapServer/163"
+    },
+    {
+      "slug": "saint-amable",
+      "level": "candidate",
+      "url_host": "st-amable.qc.ca",
+      "endpoint_class": "pdf-plan (georeference, NOT source-identity)",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "http://st-amable.qc.ca/wp-content/uploads/2023/02/saint-amable-plan-zonage-urbanisme-ville.pdf"
+    },
+    {
+      "slug": "saint-ambroise-de-kildare",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-01/arcgis/rest/services/610_Joliette/61040_SaintAmbroiseDeKildare/MapServer/150"
+    },
+    {
+      "slug": "saint-anaclet-de-lessard",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=10030]"
+    },
+    {
+      "slug": "saint-andre-de-kamouraska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14040_SaintAndre/MapServer/157"
+    },
+    {
+      "slug": "saint-anicet",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69070]"
+    },
+    {
+      "slug": "saint-antoine-de-lisle-aux-grues",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18070]"
+    },
+    {
+      "slug": "saint-antonin",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/120_RiviereDuLoup/12015_SaintAntonin/MapServer/522"
+    },
+    {
+      "slug": "saint-armand",
+      "level": "legacy-traceable",
+      "url_host": "www.municipalite.saint-armand.qc.ca",
+      "endpoint_class": "pdf-plan (georeference, NOT source-identity)",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "http://www.municipalite.saint-armand.qc.ca/images/stories/MUN/AVIS/ANNEXE%20B_Plan%20de%20Zonage_96-10.pdf"
+    },
+    {
+      "slug": "saint-barthelemy",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52055]"
+    },
+    {
+      "slug": "saint-benjamin",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28025_SaintBenjamin/MapServer/144"
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68005_SaintBernardDeLacolle/MapServer/162"
+    },
+    {
+      "slug": "saint-bonaventure",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49125_SaintBonaventure/MapServer/160"
+    },
+    {
+      "slug": "saint-bruno-de-kamouraska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14010_SaintBrunoDeKamouraska/MapServer/156"
+    },
+    {
+      "slug": "saint-camille",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=40025]"
+    },
+    {
+      "slug": "saint-camille-de-lellis",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=28070]"
+    },
+    {
+      "slug": "saint-celestin--nicolet-yamaska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50030_SaintCelestin50030/MapServer/172"
+    },
+    {
+      "slug": "saint-celestin--nicolet-yamaska--2",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50035_SaintCelestin50035/MapServer/172"
+    },
+    {
+      "slug": "saint-charles-borromee",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61035]"
+    },
+    {
+      "slug": "saint-charles-garnier",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09010]"
+    },
+    {
+      "slug": "saint-christophe-darthabaska",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "saint-chrysostome",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69017]"
+    },
+    {
+      "slug": "saint-cleophas",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07090]"
+    },
+    {
+      "slug": "saint-cleophas-de-brandon",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52075]"
+    },
+    {
+      "slug": "saint-come-liniere",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/290_BeauceSartigan/29057_SaintComeLiniere/MapServer/154"
+    },
+    {
+      "slug": "saint-cuthbert",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52062]"
+    },
+    {
+      "slug": "saint-cyprien--les-etchemins",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28040_SaintCyprien28040/MapServer/144"
+    },
+    {
+      "slug": "saint-cyrille-de-lessard",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=17045]"
+    },
+    {
+      "slug": "saint-cyrille-de-wendover",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49070_SaintCyrilleDeWendover/MapServer/189"
+    },
+    {
+      "slug": "saint-damase--la-matapedia",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07105]"
+    },
+    {
+      "slug": "saint-damase--les-maskoutains",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54017_SaintDamase54017/MapServer/162"
+    },
+    {
+      "slug": "saint-david",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53005_SaintDavid/MapServer/184"
+    },
+    {
+      "slug": "saint-denis-de-la-bouteillerie",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14055_SaintDenisDeLaBouteillerie/MapServer/155"
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "level": "candidate",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=57068"
+    },
+    {
+      "slug": "saint-didace",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52090]"
+    },
+    {
+      "slug": "saint-dominique-du-rosaire",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88065]"
+    },
+    {
+      "slug": "saint-donat--la-mitis",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09030]"
+    },
+    {
+      "slug": "saint-edmond-de-grantham",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49100_SaintEdmondDeGrantham/MapServer/157"
+    },
+    {
+      "slug": "saint-edmond-les-plaines",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/920_MariaChapdelaine/92050_SaintEdmondLesPlaines/MapServer/191"
+    },
+    {
+      "slug": "saint-eloi",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/110_LesBasques/11035_SaintEloi/MapServer/157"
+    },
+    {
+      "slug": "saint-elphege",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50095_SaintElphege/MapServer/182"
+    },
+    {
+      "slug": "saint-emile-de-suffolk",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80125_SaintEmileDeSuffolk/MapServer/151"
+    },
+    {
+      "slug": "saint-ephrem-de-beauce",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/290_BeauceSartigan/29112_SaintEphremDeBeauce/MapServer/209"
+    },
+    {
+      "slug": "saint-eugene",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49105_SaintEugene/MapServer/154"
+    },
+    {
+      "slug": "saint-eugene-de-ladriere",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/100_RimouskiNeigette/10075_SaintEugeneDeLadriere/MapServer/153"
+    },
+    {
+      "slug": "saint-fabien",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/100_RimouskiNeigette/10070_SaintFabien/MapServer/154"
+    },
+    {
+      "slug": "saint-fabien-de-panet",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18015]"
+    },
+    {
+      "slug": "saint-felicien",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-01/arcgis/rest/services/910_LeDomaineDuRoy/91042_SaintFelicien/MapServer/208"
+    },
+    {
+      "slug": "saint-felix-de-kingsey",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49005_SaintFelixDeKingsey/MapServer/157"
+    },
+    {
+      "slug": "saint-flavien",
+      "level": "legacy-traceable",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33052_Publique/MapServer/16"
+    },
+    {
+      "slug": "saint-fortunat",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31030]"
+    },
+    {
+      "slug": "saint-francois-dassise",
+      "level": "legacy-traceable",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC060/06055_Publique/MapServer/13"
+    },
+    {
+      "slug": "saint-francois-de-lile-dorleans",
+      "level": "candidate",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20005_Publique/MapServer/17"
+    },
+    {
+      "slug": "saint-francois-du-lac",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50128_SaintFrancoisDuLac/MapServer/184"
+    },
+    {
+      "slug": "saint-francois-xavier-de-brompton",
+      "level": "legacy-traceable",
+      "url_host": "services8.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8"
+    },
+    {
+      "slug": "saint-gabriel",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52080]"
+    },
+    {
+      "slug": "saint-gabriel-de-brandon",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52085]"
+    },
+    {
+      "slug": "saint-gabriel-de-rimouski",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09025]"
+    },
+    {
+      "slug": "saint-gabriel-de-valcartier",
+      "level": "legacy-traceable",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC220/22025_Publique/MapServer/23"
+    },
+    {
+      "slug": "saint-gabriel-lalemant",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14075_SaintGabrielLalemant/MapServer/155"
+    },
+    {
+      "slug": "saint-gedeon-de-beauce",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/290_BeauceSartigan/29013_SaintGedeonDeBeauce/MapServer/161"
+    },
+    {
+      "slug": "saint-georges",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=29073]"
+    },
+    {
+      "slug": "saint-georges-de-windsor",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=40032]"
+    },
+    {
+      "slug": "saint-germain-de-grantham",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49048_SaintGermainDeGrantham_public/MapServer/102"
+    },
+    {
+      "slug": "saint-germain-de-kamouraska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14045_SaintGermain/MapServer/156"
+    },
+    {
+      "slug": "saint-gilbert",
+      "level": "candidate",
+      "url_host": "portneuf.blob.core.windows.net",
+      "endpoint_class": "other-http",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://portneuf.blob.core.windows.net/media/7431/zonage_sg_mtm83-8_s-2023-07.zip"
+    },
+    {
+      "slug": "saint-guillaume",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49113_SaintGuillaume/MapServer/165"
+    },
+    {
+      "slug": "saint-hilarion",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-02/arcgis/rest/services/160_Charlevoix/16050_SaintHilarion/MapServer/176"
+    },
+    {
+      "slug": "saint-honore-de-temiscouata",
+      "level": "legacy-traceable",
+      "url_host": "services.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+    },
+    {
+      "slug": "saint-ignace-de-loyola",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52045]"
+    },
+    {
+      "slug": "saint-irenee",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/150_CharlevoixEst/15005_SaintIrenee/MapServer/162"
+    },
+    {
+      "slug": "saint-jacques-de-leeds",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31140]"
+    },
+    {
+      "slug": "saint-jacques-le-majeur-de-wolfestown",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31025]"
+    },
+    {
+      "slug": "saint-janvier-de-joly",
+      "level": "legacy-traceable",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC330/33065_Publique/MapServer/16"
+    },
+    {
+      "slug": "saint-jean-de-brebeuf",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31100]"
+    },
+    {
+      "slug": "saint-jean-de-dieu",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/110_LesBasques/11010_SaintJeanDeDieu/MapServer/153"
+    },
+    {
+      "slug": "saint-jean-de-la-lande",
+      "level": "legacy-traceable",
+      "url_host": "services.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+    },
+    {
+      "slug": "saint-jean-de-lile-dorleans",
+      "level": "legacy-traceable",
+      "url_host": "services8.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4"
+    },
+    {
+      "slug": "saint-joachim-de-shefford",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/470_LaHauteYamaska/47040_SaintJoachimDeShefford/MapServer/161"
+    },
+    {
+      "slug": "saint-joseph-de-beauce",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=27043]"
+    },
+    {
+      "slug": "saint-joseph-de-coleraine",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31045]"
+    },
+    {
+      "slug": "saint-joseph-de-kamouraska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14030_SaintJosephDeKamouraska/MapServer/156"
+    },
+    {
+      "slug": "saint-joseph-de-lepage",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09070]"
+    },
+    {
+      "slug": "saint-joseph-de-sorel",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53050_SaintJosephDeSorel/MapServer/164"
+    },
+    {
+      "slug": "saint-joseph-des-erables",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=27050]"
+    },
+    {
+      "slug": "saint-jules",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=27055]"
+    },
+    {
+      "slug": "saint-julien",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31035]"
+    },
+    {
+      "slug": "saint-just-de-bretenieres",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18005]"
+    },
+    {
+      "slug": "saint-juste-du-lac",
+      "level": "legacy-traceable",
+      "url_host": "services.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+    },
+    {
+      "slug": "saint-lambert--abitibi-ouest",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87120_SaintLambert87120/MapServer/159"
+    },
+    {
+      "slug": "saint-laurent-de-lile-dorleans",
+      "level": "legacy-traceable",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20020_Publique/MapServer/17"
+    },
+    {
+      "slug": "saint-leon-le-grand--la-matapedia",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07030]"
+    },
+    {
+      "slug": "saint-leonard-daston",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50042_SaintLeonardDAston/MapServer/189"
+    },
+    {
+      "slug": "saint-louis-de-gonzague--les-etchemins",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28035_SaintLouisDeGonzague28035/MapServer/144"
+    },
+    {
+      "slug": "saint-louis-du-ha-ha",
+      "level": "legacy-traceable",
+      "url_host": "services.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+    },
+    {
+      "slug": "saint-luc-de-bellechasse",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28060_SaintLucDeBellechasse/MapServer/144"
+    },
+    {
+      "slug": "saint-luc-de-vincennes",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37225_SaintLucDeVincennes/MapServer/183"
+    },
+    {
+      "slug": "saint-lucien",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49030_SaintLucien/MapServer/156"
+    },
+    {
+      "slug": "saint-ludger",
+      "level": "legacy-traceable",
+      "url_host": "services6.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5"
+    },
+    {
+      "slug": "saint-magloire",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28075_SaintMagloire/MapServer/144"
+    },
+    {
+      "slug": "saint-majorique-de-grantham",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49095_SaintMajoriqueDeGrantham/MapServer/158"
+    },
+    {
+      "slug": "saint-marc-de-figuery",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88040]"
+    },
+    {
+      "slug": "saint-marc-du-lac-long",
+      "level": "legacy-traceable",
+      "url_host": "services.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+    },
+    {
+      "slug": "saint-marcel",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=17020]"
+    },
+    {
+      "slug": "saint-marcellin",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=10025]"
+    },
+    {
+      "slug": "saint-mathieu-dharricana",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88050]"
+    },
+    {
+      "slug": "saint-maurice",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37230_SaintMaurice/MapServer/182"
+    },
+    {
+      "slug": "saint-medard",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/110_LesBasques/11025_SaintMedard/MapServer/154"
+    },
+    {
+      "slug": "saint-michel-du-squatec",
+      "level": "legacy-traceable",
+      "url_host": "services.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+    },
+    {
+      "slug": "saint-moise",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07095]"
+    },
+    {
+      "slug": "saint-narcisse",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37240_SaintNarcisse/MapServer/185"
+    },
+    {
+      "slug": "saint-narcisse-de-rimouski",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/100_RimouskiNeigette/10015_SaintNarcisseDeRimouski/MapServer/153"
+    },
+    {
+      "slug": "saint-noel",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07100]"
+    },
+    {
+      "slug": "saint-octave-de-metis",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09055]"
+    },
+    {
+      "slug": "saint-ours",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53032_SaintOurs/MapServer/169"
+    },
+    {
+      "slug": "saint-pacome",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14070_SaintPacome/MapServer/158"
+    },
+    {
+      "slug": "saint-pamphile",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-12/arcgis/rest/services/170_LIslet/17010_SaintPamphile/MapServer/201"
+    },
+    {
+      "slug": "saint-pascal",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14018_SaintPascal/MapServer/156"
+    },
+    {
+      "slug": "saint-paul",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61005]"
+    },
+    {
+      "slug": "saint-philippe-de-neri",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14060_SaintPhilippeDeNeri/MapServer/158"
+    },
+    {
+      "slug": "saint-pie-de-guire",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49130_SaintPieDeGuire/MapServer/162"
+    },
+    {
+      "slug": "saint-pierre",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61020]"
+    },
+    {
+      "slug": "saint-pierre-de-broughton",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31135]"
+    },
+    {
+      "slug": "saint-pierre-de-la-riviere-du-sud",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18055]"
+    },
+    {
+      "slug": "saint-pierre-de-lamy",
+      "level": "legacy-traceable",
+      "url_host": "services.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+    },
+    {
+      "slug": "saint-pierre-de-lile-dorleans",
+      "level": "candidate",
+      "url_host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://gis.altusquebec.com/arcgis/rest/services/MRC200/20025_Publique/MapServer/17"
+    },
+    {
+      "slug": "saint-prosper",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28020_SaintProsper28020/MapServer/144"
+    },
+    {
+      "slug": "saint-prosper-de-champlain",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37250_SaintProsperDeChamplain/MapServer/189"
+    },
+    {
+      "slug": "saint-raymond",
+      "level": "candidate",
+      "url_host": "portneuf.blob.core.windows.net",
+      "endpoint_class": "other-http",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://portneuf.blob.core.windows.net/media/9932/zonage_sr_mtm83-7_s-2026-02.zip"
+    },
+    {
+      "slug": "saint-remi-de-tingwick",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "saint-rene",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/290_BeauceSartigan/29050_SaintRene/MapServer/153"
+    },
+    {
+      "slug": "saint-rene-de-matane",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/080_LaMatanie/08035_SaintReneDeMatane/MapServer/168"
+    },
+    {
+      "slug": "saint-romain",
+      "level": "legacy-traceable",
+      "url_host": "services6.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5"
+    },
+    {
+      "slug": "saint-rosaire",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "saint-sebastien--le-granit",
+      "level": "legacy-traceable",
+      "url_host": "services6.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5"
+    },
+    {
+      "slug": "saint-severin--beauce-centre",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=27070]"
+    },
+    {
+      "slug": "saint-simeon--charlevoix-est",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/150_CharlevoixEst/15058_SaintSimeon/MapServer/161"
+    },
+    {
+      "slug": "saint-simon",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54090_SaintSimon/MapServer/442"
+    },
+    {
+      "slug": "saint-simon-de-rimouski",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/110_LesBasques/11055_SaintSimon11055/MapServer/157"
+    },
+    {
+      "slug": "saint-stanislas--des-chenaux",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37245_SaintStanislas37245/MapServer/191"
+    },
+    {
+      "slug": "saint-tharcisius",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07070]"
+    },
+    {
+      "slug": "saint-theophile",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/290_BeauceSartigan/29005_SaintTheophile_public/MapServer/124"
+    },
+    {
+      "slug": "saint-thomas",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-01/arcgis/rest/services/610_Joliette/61027_SaintThomas/MapServer/151"
+    },
+    {
+      "slug": "saint-thomas-didyme",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/920_MariaChapdelaine/92045_SaintThomasDidyme/MapServer/193"
+    },
+    {
+      "slug": "saint-ulric",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/080_LaMatanie/08073_SaintUlric/MapServer/171"
+    },
+    {
+      "slug": "saint-urbain",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-02/arcgis/rest/services/160_Charlevoix/16055_SaintUrbain/MapServer/171"
+    },
+    {
+      "slug": "saint-valerien",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/100_RimouskiNeigette/10060_SaintValerien/MapServer/152"
+    },
+    {
+      "slug": "saint-vianney",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07075]"
+    },
+    {
+      "slug": "saint-wenceslas",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50023_SaintWenceslas/MapServer/172"
+    },
+    {
+      "slug": "saint-zacharie",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28005_SaintZacharie/MapServer/144"
+    },
+    {
+      "slug": "saint-zenon-du-lac-humqui",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07035]"
+    },
+    {
+      "slug": "saint-zephirin-de-courval",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50090_SaintZephirinDeCourval/MapServer/184"
+    },
+    {
+      "slug": "sainte-angele-de-merici",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09035]"
+    },
+    {
+      "slug": "sainte-anne-de-la-perade",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37205_SainteAnneDeLaPerade/MapServer/183"
+    },
+    {
+      "slug": "sainte-anne-de-sorel",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53065_SainteAnneDeSorel/MapServer/168"
+    },
+    {
+      "slug": "sainte-anne-des-lacs",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77035]"
+    },
+    {
+      "slug": "sainte-anne-des-monts",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/040_LaHauteGaspesie/04037_SainteAnneDesMonts/MapServer/203"
+    },
+    {
+      "slug": "sainte-apolline-de-patton",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18025]"
+    },
+    {
+      "slug": "sainte-aurelie",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28015_SainteAurelie/MapServer/144"
+    },
+    {
+      "slug": "sainte-barbe",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69065]"
+    },
+    {
+      "slug": "sainte-brigitte-des-saults",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49085_SainteBrigitteDesSaults/MapServer/184"
+    },
+    {
+      "slug": "sainte-clotilde-de-beauce",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31060]"
+    },
+    {
+      "slug": "sainte-clotilde-de-horton",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "sainte-elizabeth-de-warwick",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "sainte-eulalie",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50005_SainteEulalie/MapServer/171"
+    },
+    {
+      "slug": "sainte-euphemie-sur-riviere-du-sud",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18035]"
+    },
+    {
+      "slug": "sainte-felicite--la-matanie",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-09/arcgis/rest/services/080_LaMatanie/08023_SainteFelicite08023/MapServer/169"
+    },
+    {
+      "slug": "sainte-flavie",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09085]"
+    },
+    {
+      "slug": "sainte-florence",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07010]"
+    },
+    {
+      "slug": "sainte-francoise--les-basques",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/110_LesBasques/11030_SainteFrancoise/MapServer/157"
+    },
+    {
+      "slug": "sainte-genevieve-de-batiscan",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-13/arcgis/rest/services/372_LesChenaux/37215_SainteGenevieveDeBatiscan/MapServer/188"
+    },
+    {
+      "slug": "sainte-genevieve-de-berthier",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52040]"
+    },
+    {
+      "slug": "sainte-germaine-boule",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87030_SainteGermaineBoule/MapServer/158"
+    },
+    {
+      "slug": "sainte-gertrude-manneville",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88085]"
+    },
+    {
+      "slug": "sainte-helene-de-bagot",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54095_SainteHeleneDeBagot/MapServer/169"
+    },
+    {
+      "slug": "sainte-helene-de-kamouraska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/140_Kamouraska/14025_SainteHeleneDeKamouraska/MapServer/158"
+    },
+    {
+      "slug": "sainte-helene-de-mancebourg",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87070_SainteHeleneDeMancebourg/MapServer/158"
+    },
+    {
+      "slug": "sainte-irene",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07040]"
+    },
+    {
+      "slug": "sainte-justine",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28045_SainteJustine/MapServer/144"
+    },
+    {
+      "slug": "sainte-luce",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09092]"
+    },
+    {
+      "slug": "sainte-lucie-de-beauregard",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18020]"
+    },
+    {
+      "slug": "sainte-marguerite-du-lac-masson",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77012]"
+    },
+    {
+      "slug": "sainte-marguerite-marie",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07005]"
+    },
+    {
+      "slug": "sainte-melanie",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61050]"
+    },
+    {
+      "slug": "sainte-monique--nicolet-yamaska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50057_SainteMonique/MapServer/169"
+    },
+    {
+      "slug": "sainte-perpetue--nicolet-yamaska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50050_SaintePerpetue/MapServer/192"
+    },
+    {
+      "slug": "sainte-petronille",
+      "level": "candidate",
+      "url_host": "stepetronille.com",
+      "endpoint_class": "pdf-plan (georeference, NOT source-identity)",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "http://stepetronille.com/wp-content/uploads/2023/12/annexe_1_plan_zonage.pdf"
+    },
+    {
+      "slug": "sainte-praxede",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=31050]"
+    },
+    {
+      "slug": "sainte-rose-de-watford",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28030_SainteRoseDeWatford/MapServer/144"
+    },
+    {
+      "slug": "sainte-sabine--les-etchemins",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-18/arcgis/rest/services/280_LesEtchemins/28065_SainteSabine28065/MapServer/144"
+    },
+    {
+      "slug": "sainte-seraphine",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "sainte-therese-de-gaspe",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/020_LeRocherPerce/02010_SainteThereseDeGaspe/MapServer/145"
+    },
+    {
+      "slug": "sainte-victoire-de-sorel",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53025_SainteVictoireDeSorel/MapServer/144"
+    },
+    {
+      "slug": "schefferville",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=97040]"
+    },
+    {
+      "slug": "senneterre--la-vallee-de-lor",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=89040]"
+    },
+    {
+      "slug": "sept-iles",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=97007]"
+    },
+    {
+      "slug": "shefford",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/470_LaHauteYamaska/47035_Shefford/MapServer/144"
+    },
+    {
+      "slug": "sorel-tracy",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]"
+    },
+    {
+      "slug": "stornoway",
+      "level": "legacy-traceable",
+      "url_host": "services6.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5"
+    },
+    {
+      "slug": "taschereau",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87042_Taschereau/MapServer/160"
+    },
+    {
+      "slug": "temiscouata-sur-le-lac",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-10/arcgis/rest/services/130_Temiscouata/13073_TemiscouataSurLeLac/MapServer/145"
+    },
+    {
+      "slug": "thetford-mines",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31084]"
+    },
+    {
+      "slug": "tingwick",
+      "level": "legacy-traceable",
+      "url_host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3"
+    },
+    {
+      "slug": "trecesson",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88075]"
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69030]"
+    },
+    {
+      "slug": "tring-jonction",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=27060]"
+    },
+    {
+      "slug": "trois-pistoles",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/110_LesBasques/11040_TroisPistoles/MapServer/152"
+    },
+    {
+      "slug": "ulverton",
+      "level": "legacy-traceable",
+      "url_host": "services8.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8"
+    },
+    {
+      "slug": "val-brillant",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07080]"
+    },
+    {
+      "slug": "val-des-bois",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-19/arcgis/rest/services/800_Papineau/80140_ValDesBois/MapServer/531"
+    },
+    {
+      "slug": "val-des-sources",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=40043]"
+    },
+    {
+      "slug": "val-racine",
+      "level": "legacy-traceable",
+      "url_host": "services6.arcgis.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5"
+    },
+    {
+      "slug": "val-saint-gilles",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87105_ValSaintGilles/MapServer/155"
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": true,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=71083]"
+    },
+    {
+      "slug": "warden",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/470_LaHauteYamaska/47030_Warden/MapServer/161"
+    },
+    {
+      "slug": "warwick",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=39077]"
+    },
+    {
+      "slug": "waterloo",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-08/arcgis/rest/services/470_LaHauteYamaska/47025_Waterloo/MapServer/163"
+    },
+    {
+      "slug": "wentworth-nord",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77060]"
+    },
+    {
+      "slug": "wickham",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-05/arcgis/rest/services/490_Drummond/49040_Wickham/MapServer/170"
+    },
+    {
+      "slug": "wotton",
+      "level": "legacy-traceable",
+      "url_host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=40017]"
+    },
+    {
+      "slug": "yamaska",
+      "level": "legacy-traceable",
+      "url_host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "in_campaign_set": false,
+      "in_20260810_handled": false,
+      "zone_source_url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53072_Yamaska/MapServer/159"
+    }
+  ],
+  "declared_doc_no_v2_list": [
+    {
+      "slug": "bearn",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "belleterre",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "duhamel-ouest",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "dunham",
+      "level": "historical-verified",
+      "url_host": "web.archive.org"
+    },
+    {
+      "slug": "fugereville",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "guerin",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "inverness",
+      "level": "historical-verified",
+      "url_host": "www.invernessquebec.ca"
+    },
+    {
+      "slug": "labrecque",
+      "level": "historical-verified",
+      "url_host": "ville.labrecque.qc.ca"
+    },
+    {
+      "slug": "lac-sergent",
+      "level": "historical-verified",
+      "url_host": "villelacsergent.com"
+    },
+    {
+      "slug": "latulipe-et-gaboury",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "laverlochere-angliers",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "lorrainville",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "moffet",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "nedelec",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "notre-dame-du-nord",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "pointe-fortune",
+      "level": "historical-verified",
+      "url_host": "pointefortune.ca"
+    },
+    {
+      "slug": "remigny",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "rimouski",
+      "level": "documented",
+      "url_host": "www.donneesquebec.ca"
+    },
+    {
+      "slug": "saguenay",
+      "level": "historical-verified",
+      "url_host": "www.donneesquebec.ca"
+    },
+    {
+      "slug": "saint-bruno-de-guigues",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "saint-edouard-de-fabre",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "saint-lazare",
+      "level": "historical-verified",
+      "url_host": "www.ville.saint-lazare.qc.ca"
+    },
+    {
+      "slug": "saint-mathieu-du-parc",
+      "level": "historical-verified",
+      "url_host": "www.saint-mathieu-du-parc.ca"
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "level": "historical-verified",
+      "url_host": "sainte-anne-de-sabrevois.com"
+    },
+    {
+      "slug": "stanbridge-east",
+      "level": "historical-verified",
+      "url_host": "stanbridgeeast.ca"
+    },
+    {
+      "slug": "temiscaming",
+      "level": "historical-verified",
+      "url_host": null
+    },
+    {
+      "slug": "trois-rivieres",
+      "level": "historical-verified",
+      "url_host": "www.donneesquebec.ca"
+    },
+    {
+      "slug": "ville-marie",
+      "level": "historical-verified",
+      "url_host": null
+    }
+  ]
+}

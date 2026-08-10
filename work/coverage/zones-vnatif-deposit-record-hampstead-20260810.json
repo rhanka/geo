@@ -1,0 +1,116 @@
+{
+ "contract": "zones-vnatif-deposit-record-hampstead/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md@65d4c637",
+ "mode": "commit",
+ "operation": "candidate→documented v2 UPGRADE (0 perte)",
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE — discriminateur = preuve v2 par-feature (proof.geometry_source sha256+retrieved_at)",
+ "proof_intended": {
+  "type": "arcgis",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "city": {
+  "slug": "hampstead",
+  "run_stamp": "20260810T124000Z",
+  "source_url": "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&outFields=*&f=geojson",
+  "zone_field": "Zone",
+  "layer_id": "61",
+  "expected_geometry_grain": "evaluation-unit",
+  "capture_run_id": "zones-20260810T124000Z-0-308101d7-db1b-4e18-b9b6-17fad861db05",
+  "http_status": 200,
+  "sha256": "sha256:4d1c0a9c8385248102691a00086472fca5f9ba838a2c93b9548a214f3074dc20",
+  "retrieved_at": "2026-08-10T11:26:59.235Z",
+  "rehash_ok": true,
+  "cas_key_matches": true,
+  "storage_key": "raw/zones-vnatif/cas/4d1c0a9c8385248102691a00086472fca5f9ba838a2c93b9548a214f3074dc20.json",
+  "raw_capture_verified": true,
+  "raw_capture_reason": null,
+  "is_featurecollection": true,
+  "feature_count": 1869,
+  "exceeded_transfer_limit": false,
+  "geometry_types": [
+   "Polygon"
+  ],
+  "all_polygonal": true,
+  "nearest_registre_muni": "hampstead",
+  "registry_attribution_km": 0.21,
+  "nearest_matches_slug": true,
+  "uev_fields_present": [
+   "ID_UEV",
+   "MATRICULE8",
+   "CODE_UTILI"
+  ],
+  "geometry_grain_classified": "evaluation-unit",
+  "grain_matches_expected": true,
+  "capture_distinct_codes": 29,
+  "source_count": 1869,
+  "source_layer_name": "Zonage_Hampstead_S",
+  "count_query": "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&returnCountOnly=true&f=json",
+  "source_enum_error": null,
+  "count_complete": true,
+  "count_complete_basis": "feature_count(1869) == source_count(1869) && exceededTransferLimit=false",
+  "served_keys": [
+   "normalized/ca-qc-zonage/qc-zonage-hampstead/qc-zonage-hampstead.geojson"
+  ],
+  "served_layout": "nested",
+  "served_features": 1869,
+  "served_distinct_codes": 29,
+  "served_levels": [
+   "candidate"
+  ],
+  "served_source_urls": [
+   "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&outFields=*&f=geojson"
+  ],
+  "served_has_collection_v2": false,
+  "served_has_real_v2_proof_block": false,
+  "served_all_url_null": false,
+  "served_candidate_declarative": true,
+  "served_codes_covered": 29,
+  "served_codes_uncovered": 0,
+  "uncovered_codes": [],
+  "overlap_ratio_pct": 100,
+  "guard_blocks": [],
+  "deposited": true,
+  "replaced_backups": [
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-hampstead__nested.2026-08-10T1224Z.geojson"
+  ],
+  "dropped_divergence": [],
+  "dropped_codes": [],
+  "dropped_count": 0,
+  "replaced_backups_listed": [
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-hampstead__nested.2026-08-10T1224Z.geojson"
+  ],
+  "readback": [
+   {
+    "key": "normalized/ca-qc-zonage/qc-zonage-hampstead/qc-zonage-hampstead.geojson",
+    "served_features": 1869,
+    "feature_count_matches_capture": true,
+    "geometry_digest_byte_exact": true,
+    "proof_url": "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&outFields=*&f=geojson",
+    "proof_url_matches": true,
+    "proof_sha256": "sha256:4d1c0a9c8385248102691a00086472fca5f9ba838a2c93b9548a214f3074dc20",
+    "proof_sha_matches_capture": true,
+    "proof_retrieved_at": "2026-08-10T11:26:59.235Z",
+    "carries_capture_sha256": true,
+    "zone_source_levels": [
+     "documented"
+    ],
+    "zone_source_urls": [
+     "https://services1.arcgis.com/IP2j0oTRjMlb9KsM/arcgis/rest/services/Zonage_Hampstead_S/FeatureServer/61/query?where=1%3D1&outFields=*&f=geojson"
+    ],
+    "level_documented": true,
+    "url_all_proof": true,
+    "geometry_grain": [
+     "evaluation-unit"
+    ],
+    "grain_uniform_expected": true
+   }
+  ],
+  "served_key_deposited": "normalized/ca-qc-zonage/qc-zonage-hampstead/qc-zonage-hampstead.geojson",
+  "readback_ok": true,
+  "statut": "DEPOSITED",
+  "raison": "upgrade candidate→documented v2 byte-exact ; grain=evaluation-unit ; 0 code droppé ; backup _replaced/ présent"
+ }
+}
