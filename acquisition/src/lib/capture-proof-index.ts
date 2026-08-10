@@ -3,7 +3,11 @@
  * proof.  The index is intentionally a projection of capture manifests: it
  * never accepts a URL/hash supplied by a served writer.
  */
-import { parseManifestJsonl, type CaptureManifestLine } from "../../../packages/qc-sources/src/capture/index.js";
+import {
+  CaptureRunHeaderSchema,
+  parseManifestJsonl,
+  type CaptureManifestLine,
+} from "../../../packages/qc-sources/src/capture/index.js";
 import type { GeometrySourceProof } from "./zonage-proof.js";
 
 export const CAPTURE_PROOF_INDEX_KEY = "capture/_index/by-sha256.jsonl";
@@ -146,8 +150,23 @@ export async function materializeCaptureProofIndex(reader: CaptureProofManifestR
   const keys = [...new Set(await reader.listManifestKeys())].sort();
   const entries: CaptureProofIndexEntry[] = [];
   for (const key of keys) {
-    if (!key.startsWith("capture/_runs/") || !key.endsWith("/manifest.jsonl")) {
+    const match = /^capture\/_runs\/([^/]+)\/manifest\.jsonl$/.exec(key);
+    if (!match) {
       throw new Error(`capture proof index: unexpected manifest key ${key}`);
+    }
+    const runId = match[1]!;
+    const headerKey = `capture/_runs/${runId}/run.json`;
+    let header: ReturnType<typeof CaptureRunHeaderSchema.parse>;
+    try {
+      header = CaptureRunHeaderSchema.parse(JSON.parse((await reader.getBytes(headerKey)).toString("utf8")));
+    } catch {
+      throw new Error(`capture proof index: invalid run header ${headerKey}`);
+    }
+    if (
+      header.run_id !== runId || header.execution !== "cluster"
+      || header.finished_at === null || header.exit_code !== 0
+    ) {
+      throw new Error(`capture proof index: run is not a completed cluster capture ${runId}`);
     }
     const lines = parseManifestJsonl((await reader.getBytes(key)).toString("utf8"));
     for (const [index, line] of lines.entries()) {
