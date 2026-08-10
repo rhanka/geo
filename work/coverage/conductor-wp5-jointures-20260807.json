@@ -1,0 +1,117 @@
+{
+  "$meta": {
+    "contract": "conductor-wp5-jointures/20260807",
+    "conductor": "claude:geo",
+    "mandate_date": "2026-08-07",
+    "lane": "lane/jointures",
+    "worktree": ".lanes/jointures"
+  },
+  "col20_state_received": {
+    "artefact": "zoning-events-col20-167-fresh-geofix-20260807",
+    "commit": "b16d7947",
+    "generated_at": "2026-08-07T00:56:13.999Z",
+    "gt_uri": "s3://radar-immobilier-docs-pocs/gt/designation-events-167-v2-20260803/",
+    "denominator": 1040,
+    "aggregate": "62/1040 (6.0%)",
+    "buckets": {
+      "measured": 2,
+      "na_proven": 15,
+      "gap_acquisition": 4,
+      "no_geo_events": 132,
+      "unknown": 14
+    },
+    "measured_cities": [
+      { "slug": "saint-eustache", "recall": "100.0%" },
+      { "slug": "saint-mathieu-de-beloeil", "recall": "66.7%" }
+    ],
+    "na_proven_15": [
+      "montreal-ouest", "senneville", "vercheres", "terrasse-vaudreuil",
+      "saint-charles-sur-richelieu", "saint-chrysostome", "franklin", "lepiphanie",
+      "saint-antoine-sur-richelieu", "la-presentation", "lacolle", "rougemont",
+      "saint-bernard-de-lacolle", "saint-sulpice", "sainte-anne-de-sabrevois"
+    ],
+    "gap_acquisition_4": [
+      "kirkland", "lile-dorval", "marieville", "notre-dame-de-stanbridge"
+    ],
+    "unknown_14": [
+      "saint-isidore--roussillon", "notre-dame-de-lile-perrot", "beauharnois",
+      "napierville", "sainte-madeleine", "saint-cyprien-de-napierville",
+      "sainte-marie-madeleine", "saint-etienne-de-beauharnois", "tres-saint-sacrement",
+      "saint-lazare", "saint-placide", "saint-clet", "noyan", "saint-barnabe-sud"
+    ]
+  },
+  "col20_disposition": {
+    "no_geo_events_132": {
+      "verdict": "ESCALADE_GEO_PV_ZONES",
+      "rationale": "geo n'émet pas d'events = trou couverture PV/doc. N-A est interdit. Les 132 villes restent au dénominateur. Escalade structurée vers geo-pv et geo-zones pour déclenchement capture + émission.",
+      "worker_task": "ESCALADE-BATCH-COL20"
+    },
+    "unknown_14": {
+      "verdict": "RESTE_UNKNOWN",
+      "rationale": "GT présent mais 0 événement, sans attestation N-A recette. unknown reste unknown si donnée absente. Worker triage: vérifier geo coverage (zones servies S3) pour identifier si escalade geo-zones ou candidat N-A à soumettre recette.",
+      "worker_task": "TRIAGE-UNKNOWN-COL20"
+    },
+    "measured_2": {
+      "verdict": "CAPITALISE",
+      "rationale": "recall directionnel mesuré. Amélioration possible via augmentation émission geo sur ces 2 villes.",
+      "worker_task": null
+    }
+  },
+  "col2_state_received": {
+    "artefact": "lot-zone-consistency-scale-20260725",
+    "source": "work/coverage/lot-zone-consistency-scale-20260725.json",
+    "auditable_cities": 867,
+    "complete_lt5pct": 716,
+    "incomplete_gte5pct": 121,
+    "non_conclusive_zero_assigned": 30,
+    "portfolio_unknown": 239,
+    "worker_task": "COL2-JOINTURE-TRIAGE",
+    "note": "31 inc cité dans le mandat = sous-ensemble prioritaire jointures lane à identifier"
+  },
+  "col89_state_received": {
+    "artefact": "zone-provenance-quality-matrix-20260726T130555Z-8c02991472f0e3a0",
+    "col8_jointure_exacte": {
+      "exact_slug_joins": 868,
+      "cities_without_exact_zone_row": 238,
+      "total": 1106
+    },
+    "col9_qualite_retained": {
+      "acceptable": 706,
+      "candidate": 37,
+      "orphan": 82,
+      "unknown": 239,
+      "v2": 42
+    },
+    "worker_task": "COL89-PROVENANCE-TRIAGE"
+  },
+  "worker_assignments": [
+    {
+      "id": "ESCALADE-BATCH-COL20",
+      "target_worker": "codex:sparkx",
+      "description": "Produire batch escalade structuré pour les 132 villes no_geo_events vers geo-pv/geo-zones. Format: JSON par ville avec slug, immo_events_count, motif escalade (PV manquant / doc non-capturée / émission geo manquante). Commit: work/coverage/escalade-col20-no-geo-events-20260807.json",
+      "input": "work/coverage/zoning-events-col20-167-fresh-geofix-20260807.json (bucket=no_geo_events)",
+      "acceptance": "JSON commis, 132 entrées, partitionné par cause si identifiable"
+    },
+    {
+      "id": "TRIAGE-UNKNOWN-COL20",
+      "target_worker": "gemini:3.6",
+      "description": "Pour chacune des 14 villes unknown: vérifier (1) si zones servies S3 (qc-zonage-<slug> dans coverage-matrix), (2) si lots servis, (3) statut pv/doc. Verdict par ville: geo_zones_served|pas_de_zones|unknown_reste. Commit: work/coverage/triage-unknown-col20-20260807.json",
+      "input": "14 slugs unknown_14 + work/coverage/coverage-matrix.json + lot-zone-consistency-scale-20260725.json",
+      "acceptance": "JSON commis, 14 entrées, verdict+motif par ville, aucune inférence N-A sans attestation recette"
+    },
+    {
+      "id": "COL2-JOINTURE-TRIAGE",
+      "target_worker": "codex:sparkx",
+      "description": "Identifier le sous-ensemble jointures-lane des 121 incomplete lot-zone (31 prioritaires). Analyser les causes géométriques (CRS, offset, couche source) vs données (code_zone absent, lot hors emprise). Commit: work/coverage/col2-jointure-triage-20260807.json",
+      "input": "work/coverage/lot-zone-consistency-scale-20260725.json (cities ≥5% mismatch)",
+      "acceptance": "JSON commis avec partition: fixable_jointure|fixable_zone_geom|fixable_lot|escalade_acquisition|unknown"
+    },
+    {
+      "id": "COL89-PROVENANCE-TRIAGE",
+      "target_worker": "gemini:3.6",
+      "description": "Analyser les 238 villes sans jointure exacte (col-8) et les 82 orphan + 37 candidate (col-9) pour identifier leviers jointures lane. Commit: work/coverage/col89-provenance-triage-20260807.json",
+      "input": "work/coverage/zone-provenance-quality-matrix-20260726T130555Z-8c02991472f0e3a0.json",
+      "acceptance": "JSON commis, partition orphan/candidate/unknown avec levier identifié par catégorie"
+    }
+  ]
+}
