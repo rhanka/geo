@@ -52,7 +52,7 @@ describe("capture proof index", () => {
   it("does not index failures, redactions, non-CAS rows, or malformed source receipts", () => {
     for (const candidate of [
       line({ http_status: 404 }), line({ error: "HTTP 404" }), line({ redacted: true }),
-      line({ storage_key: null }), line({ sha256: null }), line({ retrieved_at: "not-a-date" }),
+      line({ robots: "unknown" }), line({ storage_key: null }), line({ sha256: null }), line({ retrieved_at: "not-a-date" }),
     ]) {
       expect(captureProofIndexEntryFromManifest(candidate, "capture/_runs/zones-run/manifest.jsonl", 0)).toBeNull();
     }
