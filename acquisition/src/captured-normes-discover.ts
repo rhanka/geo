@@ -43,18 +43,19 @@ function requireS3RunEnvironment(): void {
 }
 
 export function selectionKey(runId: string, lineIndex: number): string {
-  // v3 additionally excludes standalone amendments. Keep earlier decisions
-  // immutable: their bytes document the then-current classifier, while a
-  // rerun publishes an independently auditable corrected selection.
-  return `registry/normes-captured-discovery/v3/${runId}/${lineIndex}.json`;
+  // v4 additionally recognizes high-confidence CMS download controllers that
+  // do not expose a `.pdf` suffix. Keep earlier decisions immutable: their
+  // bytes document the then-current classifier, while a rerun publishes an
+  // independently auditable corrected selection.
+  return `registry/normes-captured-discovery/v4/${runId}/${lineIndex}.json`;
 }
 
 export function discoveryReceiptKey(runId: string, lineIndex: number): string {
-  return `registry/normes-captured-discovery-receipts/v3/${runId}/${lineIndex}.json`;
+  return `registry/normes-captured-discovery-receipts/v4/${runId}/${lineIndex}.json`;
 }
 
 export function discoveryRunReceiptKey(runId: string, slug: string): string {
-  return `registry/normes-captured-discovery-run-receipts/v3/${runId}/${slug}.json`;
+  return `registry/normes-captured-discovery-run-receipts/v4/${runId}/${slug}.json`;
 }
 
 export function subpageSelectionKey(runId: string, lineIndex: number): string {
