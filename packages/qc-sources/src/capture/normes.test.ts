@@ -200,7 +200,7 @@ describe("CapturedNormesCampaignPlanSchema", () => {
       methode: "ocr/mistral-schema",
       pages: [1],
       budget_usd: 1,
-      status: "deposited",
+      status: "deposited" as const,
       parquet_key: "registry/qc-zonage-norms/qc-zonage-norms-saint-roch-de-lachigan.parquet",
       refusal: null,
     };
@@ -241,7 +241,7 @@ describe("CapturedNormesCampaignPlanSchema", () => {
       methode: "ocr/mistral-schema",
       pages: [1],
       budget_usd: 1,
-      status: "deposited",
+      status: "deposited" as const,
       parquet_key: "registry/qc-zonage-norms/qc-zonage-norms-saint-roch-de-lachigan.parquet",
       refusal: null,
     };
