@@ -713,3 +713,34 @@ export function extractPvSemantic(
     output_tokens: 0,
   };
 }
+
+/**
+ * Contrôle d'intégrité d'une extraction sémantique avant qu'elle ne serve de
+ * fragment Graphify : chaque nœud et chaque arête doit porter au moins une
+ * citation ancrée (fichier, localisation et verbatim non vides), les
+ * identifiants de nœud doivent être uniques et chaque arête doit relier deux
+ * nœuds présents dans l'extraction. Retourne la liste des manquements ; un
+ * tableau vide signifie que l'extraction est source-ancrée et cohérente.
+ */
+export function validateExtraction(extraction: GraphifySemanticExtraction): string[] {
+  const problems: string[] = [];
+  const nodeIds = new Set<string>();
+
+  const grounded = (citations: readonly GraphifyCitation[]): boolean =>
+    citations.length > 0 &&
+    citations.every((c) => c.source_file.length > 0 && c.source_location.length > 0 && c.quote.length > 0);
+
+  for (const entity of extraction.nodes) {
+    if (nodeIds.has(entity.id)) problems.push(`nœud dupliqué: ${entity.id}`);
+    nodeIds.add(entity.id);
+    if (!grounded(entity.citations)) problems.push(`nœud sans citation ancrée: ${entity.id}`);
+  }
+
+  for (const link of extraction.edges) {
+    if (!nodeIds.has(link.source)) problems.push(`arête vers une source absente: ${link.source}`);
+    if (!nodeIds.has(link.target)) problems.push(`arête vers une cible absente: ${link.target}`);
+    if (!grounded(link.citations)) problems.push(`arête sans citation ancrée: ${link.source}→${link.target}`);
+  }
+
+  return problems;
+}

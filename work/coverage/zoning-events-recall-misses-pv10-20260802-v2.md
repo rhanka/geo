@@ -1,0 +1,172 @@
+# qc-zoning-events — événements immo manqués (dry-run PV v10)
+
+Recall : **2/85** (2.35 %); 83 événements immo restent hors match.
+
+Les raisons ci-dessous sont le constat de scoring. Elles ne sont jamais une entrée du détecteur geo.
+
+- **coaticook** — `event-coaticook-dero-21-01-35729` — Dérogation mineure 21-01-35729 — 379 rue Saint-Jacques Sud (lot 3 311 486)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **coaticook** — `event-coaticook-dero-21-01-35730` — Dérogation mineure 21-01-35730 — 1625 chemin Rodrigue (lot 2 935 568)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **coaticook** — `event-coaticook-dero-26-01-38196` — Dérogation mineure 26-01-38196 — 31 rue Thornton Nord (lot 3 310 225)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **coaticook** — `event-coaticook-rezonage-26-02-38262` — 1er projet règlement 6-1-93 — rezonage C-416 / lots 3 311 583, 5 820 197, 4 999 198 (résolution 26-02-38262)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-366` — Modification zonage règlement 1675-366 (second_projet) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-367` — Modification zonage règlement 1675-367 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-368` — Modification zonage règlement 1675-368 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-370` — Modification zonage règlement 1675-370 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-371` — Modification zonage règlement 1675-371 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-372` — Modification zonage règlement 1675-372 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-374` — Modification zonage règlement 1675-374 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-375` — Modification zonage règlement 1675-375 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-376` — Modification zonage règlement 1675-376 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-377` — Modification zonage règlement 1675-377 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-379` — Modification zonage règlement 1675-379 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-380` — Modification zonage règlement 1675-380 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-381` — Modification zonage règlement 1675-381 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-382` — Modification zonage règlement 1675-382 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-383` — Modification zonage règlement 1675-383 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-385` — Modification zonage règlement 1675-385 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-386` — Modification zonage règlement 1675-386 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-387` — Modification zonage règlement 1675-387 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-388` — Modification zonage règlement 1675-388 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-390` — Modification zonage règlement 1675-390 (projet_reglement) — Saint-Eustache 2022-01-17
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-392` — Modification zonage règlement 1675-392 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-393` — Modification zonage règlement 1675-393 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-395` — Modification zonage règlement 1675-395 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-396` — Modification zonage règlement 1675-396 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-397` — Modification zonage règlement 1675-397 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-398` — Modification zonage règlement 1675-398 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-399` — Modification zonage règlement 1675-399 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-401` — Modification zonage règlement 1675-401 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-402` — Modification zonage règlement 1675-402 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-403` — Modification zonage règlement 1675-403 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-406` — Modification zonage règlement 1675-406 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-407` — Modification zonage règlement 1675-407 (projet_reglement) — Saint-Eustache 2023-01-16
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-409` — Modification zonage règlement 1675-409 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-411` — Modification zonage règlement 1675-411 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-413` — Modification zonage règlement 1675-413 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-414` — Modification zonage règlement 1675-414 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-415` — Modification zonage règlement 1675-415 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-416` — Modification zonage règlement 1675-416 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-417` — Modification zonage règlement 1675-417 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-418` — Modification zonage règlement 1675-418 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-420` — Modification zonage règlement 1675-420 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-421` — Modification zonage règlement 1675-421 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-422` — Modification zonage règlement 1675-422 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-423` — Modification zonage règlement 1675-423 (projet_reglement) — Saint-Eustache 2024-01-22
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-424` — Modification zonage règlement 1675-424 (projet_reglement) — Saint-Eustache 2025-01-20
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-425` — Modification zonage règlement 1675-425 (projet_reglement) — Saint-Eustache 2025-01-20
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-426` — Modification zonage règlement 1675-426 (projet_reglement) — Saint-Eustache 2025-01-20
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-427` — Modification zonage règlement 1675-427 (projet_reglement) — Saint-Eustache 2025-01-20
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-428` — Modification zonage règlement 1675-428 (projet_reglement) — Saint-Eustache 2025-01-20
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-eustache** — `event-saint-eustache-zonage-1675-429` — Modification zonage règlement 1675-429 (projet_reglement) — Saint-Eustache 2025-01-20
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-derog-2475-2026-04-07` — Dérogation mineure accordée — Installation 2e enseigne bâtiment 2475 ch. de l'Industrie (lot 5 131 051)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-derog-4195-2026-03-02` — Dérogation mineure refusée — Installation 2e enseigne sur poteau, 4195 rue Bernard-Pilon (lot 5 131 797)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-piia-enseigne-2475-2026-04-07` — PIIA accordé — Enseignes bâtiment 2475 ch. de l'Industrie (lot 5 131 051)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-piia-enseigne-4195-2026-03-02` — PIIA partiellement refusé — Enseignes sur poteau, 4195 rue Bernard-Pilon (lot 5 131 797)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-piia-tour-telecom-2026-03-02` — PIIA accordé — Tour de télécommunication TELUS, 2055 ch. de l'Industrie (lot 5 749 526)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-aero-2026-01-12` — Adoption second projet règlement 22.10.12.25 — Modification zonage zones AERO (réservoirs carburant)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-aero-adoption-2026-02-02` — Adoption définitive règlement 22.10.12.25 — zones AERO (après consultation et période référendaire)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-aero19-premier-projet-2026-05-04` — Premier projet règlement 22.10.19.26 — zones AERO (usages complémentaires hangars aéronefs)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-habitation-avis-2026-04-07` — Avis de motion 22.09.05.26 + 22.14.02.26 — dispositions habitation, logement abordable/HLM
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-i10-avis-2026-05-04` — Avis de motion 22.10.18.26 — zone I-10 (enseignes)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-i4-adoption-2026-05-04` — Adoption définitive règlement 22.10.15.26 — zone I-4 (après consultation et période référendaire)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-i4-avis-2026-03-02` — Avis de motion et premier projet règlement 22.10.15.26 — zone I-4
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-idc-avis-2026-04-07` — Avis de motion et premier projet 22.10.17.26 — zones IDC (usages agricoles + PIIA IDC-1)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-idc-second-projet-2026-05-04` — Second projet règlement 22.10.17.26 — zones IDC (usages agricoles + PIIA IDC-1, après consultation 4 mai)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-r1-2026-01-12` — Adoption second projet règlement 22.10.13.25 — Modification zonage zone R-1 (cour avant)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-r1-adoption-2026-02-02` — Adoption définitive règlement 22.10.13.25 — zone R-1
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-r14-2026-01-12` — Adoption second projet règlement 22.10.14.25 — Modification zonage zone R-14 (bâtiments accessoires)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-mathieu-de-beloeil** — `event-saint-mathieu-de-beloeil-zonage-r14-adoption-2026-02-02` — Adoption définitive règlement 22.10.14.25 — zone R-14
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-raymond** — `event-saint-raymond-derogation-3515446-2026-01` — Dérogation mineure — 704, rue Saint-Joseph (lot 3 515 446, Garage du coin inc.)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-raymond** — `event-saint-raymond-derogation-6463883-2026-01` — Dérogation mineure — 943, rue des Draveurs (lot 6 463 883)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-raymond** — `event-saint-raymond-derogation-6727555-2026-05` — Dérogation mineure — rue de la Tourbière (lot 6 727 555)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-raymond** — `event-saint-raymond-rezonage-hb9-2026-05-11` — Autorisation usage résidentiel multifamilial zone HB-9 — règlement 929-26
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-raymond** — `event-saint-raymond-rezonage-hc13-2026-02-09` — Création zone HC-13 résidentielle haute densité — côte Joyeuse (règlement 921-26, 1er projet)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-raymond** — `event-saint-raymond-rezonage-hc14-2026-04-20` — Création zone HC-14 résidentielle haute densité — route des Pionniers (règlement 922-26)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-raymond** — `event-saint-raymond-rezonage-hc15-2026-02-09` — Création zone HC-15 résidentielle haute densité — côte Joyeuse (règlement 923-26, 1er projet)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **saint-raymond** — `event-saint-raymond-rezonage-ru30-2026-04-20` — Création zone rurale RU-30 — secteur lac Bison (règlement 932-26, 1er projet)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **sutton** — `event-sutton-ppcmoi-sentiers-maple-2026-06` — PPCMOI — implantation sentiers/piste secteur rue Maple (juin 2026)
+  - document inaccessible (lecture source impossible: HTTP 404)
+- **sutton** — `event-sutton-refonte-reglementaire-2026-05-27` — Refonte réglementaire complète — Sutton (séance extraordinaire 27 mai 2026)
+  - clé de scoring non alignée : taxonomie immo et taxonomie neutre geo différentes (crosswalk absent)
+- **sutton** — `event-sutton-usage-conditionnel-santerre-2026-06` — Usage conditionnel — lot 6418623 chemin Santerre (modification 2025-08-313)
+  - document inaccessible (lecture source impossible: HTTP 404)

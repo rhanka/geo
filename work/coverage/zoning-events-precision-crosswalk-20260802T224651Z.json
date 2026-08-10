@@ -1,0 +1,167 @@
+{
+  "contract": "qc-zoning-events-precision-analysis/v1",
+  "generated_at": "2026-08-02T22:46:56.899Z",
+  "read_only_aggregation": true,
+  "input": {
+    "recall_gate_path": "work/coverage/zoning-events-recall-gate-crosswalk-20260802T224651Z.json",
+    "immo_events_path": "/home/antoinefa/src/radar-immobilier/tmp/handoff/jointures-designation-events-6.ndjson",
+    "recall_gate_contract": "qc-zoning-events-recall-gate/v1"
+  },
+  "definition": {
+    "precision_naive": "matched / (matched + extra)",
+    "interpretation": "Borne basse descriptive: les extras ne sont pas déclarés faux positifs; la ventilation distingue un résidu de taxonomie, un document partagé avec écart de granularité possible, et un document non observé côté immo.",
+    "extra_partition": {
+      "residual_taxonomy": "Même (muni, source_url_norm, date_iso) qu’un DesignationEvent immo, mais type différent: résidu de crosswalk à vérifier.",
+      "shared_doc_immo_undercount": "Même (muni, source_url_norm) qu’au moins un DesignationEvent immo, sans le signal de type divergent ci-dessus: sous-comptage immo ou sur-split geo à qualifier.",
+      "geo_only_doc": "Aucun (muni, source_url_norm) normalisé observé parmi les DesignationEvents immo: document geo-only réel ou bruit à qualifier."
+    },
+    "document_identity_incomplete": "Une identité de document geo incomplète est classée geo_only_doc pour préserver la partition, mais est marquée inconclusive dans l’échantillon; aucune absence immo n’est alors affirmée."
+  },
+  "cities": [
+    {
+      "slug": "saint-raymond",
+      "matched": 0,
+      "extra": 40,
+      "precision_naive": 0,
+      "precision_state": "measured",
+      "extras": {
+        "residual_taxonomy": 40,
+        "shared_doc_immo_undercount": 0,
+        "geo_only_doc": 0
+      }
+    },
+    {
+      "slug": "saint-stanislas",
+      "matched": 0,
+      "extra": 0,
+      "precision_naive": null,
+      "precision_state": "no_geo_events",
+      "extras": {
+        "residual_taxonomy": 0,
+        "shared_doc_immo_undercount": 0,
+        "geo_only_doc": 0
+      }
+    },
+    {
+      "slug": "sutton",
+      "matched": 0,
+      "extra": 8,
+      "precision_naive": 0,
+      "precision_state": "measured",
+      "extras": {
+        "residual_taxonomy": 8,
+        "shared_doc_immo_undercount": 0,
+        "geo_only_doc": 0
+      }
+    },
+    {
+      "slug": "coaticook",
+      "matched": 2,
+      "extra": 14,
+      "precision_naive": 0.125,
+      "precision_state": "measured",
+      "extras": {
+        "residual_taxonomy": 14,
+        "shared_doc_immo_undercount": 0,
+        "geo_only_doc": 0
+      }
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "matched": 0,
+      "extra": 68,
+      "precision_naive": 0,
+      "precision_state": "measured",
+      "extras": {
+        "residual_taxonomy": 68,
+        "shared_doc_immo_undercount": 0,
+        "geo_only_doc": 0
+      }
+    },
+    {
+      "slug": "saint-eustache",
+      "matched": 0,
+      "extra": 618,
+      "precision_naive": 0,
+      "precision_state": "measured",
+      "extras": {
+        "residual_taxonomy": 618,
+        "shared_doc_immo_undercount": 0,
+        "geo_only_doc": 0
+      }
+    }
+  ],
+  "aggregate": {
+    "slug": "aggregate",
+    "matched": 2,
+    "extra": 748,
+    "precision_naive": 0.0026666666666666666,
+    "precision_state": "measured",
+    "extras": {
+      "residual_taxonomy": 748,
+      "shared_doc_immo_undercount": 0,
+      "geo_only_doc": 0
+    }
+  },
+  "samples": {
+    "residual_taxonomy": [
+      {
+        "city": "saint-raymond",
+        "natural_key": {
+          "muni": "saint-raymond",
+          "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/09-02-2026-Ordre-du-jour.pdf",
+          "date_iso": "2026-02-09",
+          "type": "autre"
+        },
+        "extrait_brut": null,
+        "document_identity_state": "complete"
+      },
+      {
+        "city": "saint-raymond",
+        "natural_key": {
+          "muni": "saint-raymond",
+          "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/09-02-2026-Ordre-du-jour.pdf",
+          "date_iso": "2026-02-09",
+          "type": "derogation-mineure"
+        },
+        "extrait_brut": null,
+        "document_identity_state": "complete"
+      },
+      {
+        "city": "saint-raymond",
+        "natural_key": {
+          "muni": "saint-raymond",
+          "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/09-02-2026-Ordre-du-jour.pdf",
+          "date_iso": "2026-02-09",
+          "type": "derogation-mineure"
+        },
+        "extrait_brut": null,
+        "document_identity_state": "complete"
+      },
+      {
+        "city": "saint-raymond",
+        "natural_key": {
+          "muni": "saint-raymond",
+          "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/09-02-2026-Ordre-du-jour.pdf",
+          "date_iso": "2026-02-09",
+          "type": "derogation-mineure"
+        },
+        "extrait_brut": null,
+        "document_identity_state": "complete"
+      },
+      {
+        "city": "saint-raymond",
+        "natural_key": {
+          "muni": "saint-raymond",
+          "source_url_norm": "https://villesaintraymond.com/uploads/documents/pieces-jointes/09-02-2026-Ordre-du-jour.pdf",
+          "date_iso": "2026-02-09",
+          "type": "projet-reglement"
+        },
+        "extrait_brut": null,
+        "document_identity_state": "complete"
+      }
+    ],
+    "shared_doc_immo_undercount": [],
+    "geo_only_doc": []
+  }
+}
