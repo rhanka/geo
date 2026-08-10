@@ -1,0 +1,65 @@
+{
+  "contract": "reglement-palier167-col5-transition/v1",
+  "as_of": "2026-08-10T02:09:01.245Z",
+  "scope": "palier-167 / danville / col-5 reglement_declared",
+  "before": {
+    "state": "incomplete",
+    "reglement_numero": null,
+    "reason": "Le PDF antérieur 2025-05 laissait avis de motion, adoption et entrée en vigueur vides; il était correctement traité comme projet probable."
+  },
+  "after": {
+    "state": "complete",
+    "reglement_numero": "2025-05",
+    "reglement_millesime": 2025,
+    "reglement_page_source": 3,
+    "reason": "Le PDF actuellement publié par la page municipale imprime le numéro 2025-05 et les trois dates de procédure, dont l’adoption le 7 avril 2025 et l’entrée en vigueur le 18 septembre 2025."
+  },
+  "evidence": {
+    "official_index": {
+      "url": "https://danville.ca/vie-municipale/administration/reglements-municipaux/",
+      "retrieved_at": "2026-08-10T02:08:00.677Z",
+      "sha256": "sha256:1ac08589417bdf7905494b44481093e18e4723ab971c6ac708de3f67d0fdb80e",
+      "storage_key": "raw/reglement-discovery/cas/1ac08589417bdf7905494b44481093e18e4723ab971c6ac708de3f67d0fdb80e.html",
+      "manifest_key": "capture/_runs/reglement-20260810T020746Z-0-775d80b6-d283-4ca5-a4af-b1ec771ae235/manifest.jsonl",
+      "line_index": 1,
+      "published_url": "https://danville.ca/wp-content/uploads/2023/03/2025-05_Zonage_Danville_VF.pdf",
+      "published_label": "2025-05 - Sur le zonage de la Ville de Danville",
+      "corroborating_published_amendments": [
+        "2025-19 - modifiant le règlement de zonage numéro 2025-05 et ses amendements",
+        "2026-08 - modifiant le règlement de zonage numéro 2025-05 et ses amendements"
+      ]
+    },
+    "zoning_regulation": {
+      "url": "https://danville.ca/wp-content/uploads/2023/03/2025-05_Zonage_Danville_VF.pdf",
+      "retrieved_at": "2026-08-10T02:09:01.245Z",
+      "sha256": "sha256:96d294390a2a09f1c0b3fd7210a51654d9b5fc93c695ccf357d0e39c7e8311d0",
+      "storage_key": "raw/reglement-official/cas/96d294390a2a09f1c0b3fd7210a51654d9b5fc93c695ccf357d0e39c7e8311d0.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T020843Z-0-3c36770e-4ff3-4de4-8eb5-f01f08efa75f/manifest.jsonl",
+      "line_index": 1,
+      "page_3": {
+        "title": "RÈGLEMENT NUMÉRO 2025-05 — VILLE DE DANVILLE",
+        "avis_de_motion": "10 février 2025",
+        "adoption": "7 avril 2025",
+        "entree_en_vigueur": "18 septembre 2025"
+      }
+    },
+    "rejected_initial_candidate": {
+      "url": "https://danville.ca/wp-content/uploads/2023/11/VF_Zonage_Danville_2025-02-06_avecAnnexes-1.pdf",
+      "retrieved_at": "2026-08-10T02:05:35.684Z",
+      "sha256": "sha256:a3d4d9d154fa905b4da9c009294ad1fd08d72427b945bbde794c18779c9bbc2a",
+      "manifest_key": "capture/_runs/reglement-20260810T020520Z-0-c89cbc3a-f13a-47c4-8948-0ca665d05dd7/manifest.jsonl",
+      "reason": "Les champs avis de motion, adoption et entrée en vigueur y sont vides; il n'a pas déclenché le changement."
+    },
+    "served_fold": {
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-danville.geojson",
+      "features": 129,
+      "write": "additive; seuls reglement_numero, reglement_millesime, reglement_page_source et reglement_url sont écrits",
+      "readback": "Les 129/129 entités relues depuis S3 portent exactement les quatre valeurs du registre."
+    }
+  },
+  "anti_invention": {
+    "scope": "La promotion attend la version directement liée par l’index municipal qui imprime toutes les dates de procédure. Le numéro n’est pas dérivé du nom de fichier ni de l’ancien gabarit incomplet.",
+    "storage": "Tous les octets sont des CAS S3 avec manifestes de capture cluster; le SHA-256 de la version finale a été relu et recalculé depuis S3. Aucun PDF n’est enregistré dans le worktree.",
+    "served_columns": "Aucun gain déclaré pour les colonnes 9, 10 ou 11. L’audit qualité frais classe la collection servie acceptable avec reason=no-geometry-proof; les 129 entités relues ont proof.schema_version=1.0, donc pas de preuve-v2 stricte. Leur zone_source_url est déjà renseignée et ce lot ne la modifie pas."
+  }
+}
