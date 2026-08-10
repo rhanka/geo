@@ -1,0 +1,219 @@
+{
+  "contract": "vecteur-natif-attestation/v1",
+  "banc": {
+    "http_ok": 200,
+    "polygon_types": [
+      "Polygon",
+      "MultiPolygon"
+    ],
+    "feature_min": 1,
+    "zone_distinct_min": 3,
+    "zone_maxlen_max": 24,
+    "bbox_diag_max": 35,
+    "sha256_hex_len": 64,
+    "feature_url_re": {},
+    "registry_attribution_km_tight": 1.1
+  },
+  "lot_zone_source_post_depot": "work/coverage/lot-zone-consistency-scale-20260725.json",
+  "total": 7,
+  "pass_banc": 7,
+  "fail": 0,
+  "fail_breakdown": {},
+  "aggregate": "7 vecteur-natif PASS-banc / 0 FAIL",
+  "attestations": [
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54115_SaintBernardDeMichaudville/MapServer/224/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T12:24:23.670Z",
+        "sha256": "sha256:4316832b1d50bfce845b72e0a7f93a9ce545f55d2b08ea9529d2fbdbf64f4649",
+        "http_status": 200,
+        "feature_count": 39,
+        "geometry_type": "Polygon",
+        "zone_field": "Num_zone",
+        "zone_distinct": 37,
+        "zone_maxlen": 6,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 18.303347087209964,
+        "registry_attribution_km": 0.34370517815895324,
+        "nearest_registre_muni": "saint-bernard-de-michaudville"
+      },
+      "lot_zone_mismatch_pct_post_depot": 2.18
+    },
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-12/arcgis/rest/services/570_LaValleeDuRichelieu/57057_SaintCharlesSurRichelieu_public/MapServer/444/query?where=1%3D1&outFields=No_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T12:26:02.721Z",
+        "sha256": "sha256:ee3da026677d69bfc641c9df831b900c589ad8425343629c620a61f5846f9020",
+        "http_status": 200,
+        "feature_count": 64,
+        "geometry_type": "Polygon",
+        "zone_field": "No_zone",
+        "zone_distinct": 62,
+        "zone_maxlen": 5,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 17.524207410595963,
+        "registry_attribution_km": 0.06998802042238875,
+        "nearest_registre_muni": "saint-charles-sur-richelieu"
+      },
+      "lot_zone_mismatch_pct_post_depot": 4.97
+    },
+    {
+      "slug": "saint-dominique",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54060_SaintDominique/MapServer/141/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T12:26:53.965Z",
+        "sha256": "sha256:6063c4e2e6e736580813330ab530e3c936c7fe6a95d4337d73a7f6f686c02c28",
+        "http_status": 200,
+        "feature_count": 62,
+        "geometry_type": "Polygon",
+        "zone_field": "Num_zone",
+        "zone_distinct": 62,
+        "zone_maxlen": 4,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 18.76497724770672,
+        "registry_attribution_km": 0.8385905768431886,
+        "nearest_registre_muni": "saint-dominique"
+      },
+      "lot_zone_mismatch_pct_post_depot": 3.37
+    },
+    {
+      "slug": "saint-michel",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68050_SaintMichel68050_public/MapServer/103/query?where=1%3D1&outFields=ZONAGE&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T12:31:05.836Z",
+        "sha256": "sha256:87891eb638d25f60738d0143979ce09bc6a43eccbde769e24959484bac039fe3",
+        "http_status": 200,
+        "feature_count": 62,
+        "geometry_type": "Polygon",
+        "zone_field": "ZONAGE",
+        "zone_distinct": 62,
+        "zone_maxlen": 5,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 18.053983638006308,
+        "registry_attribution_km": 0.37199394315081447,
+        "nearest_registre_muni": "saint-michel"
+      },
+      "lot_zone_mismatch_pct_post_depot": null
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-07/arcgis/rest/services/680_LesJardinsDeNapierville/68025_SaintPatriceDeSherrington/MapServer/146/query?where=1%3D1&outFields=Zonage&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T12:31:56.225Z",
+        "sha256": "sha256:efcb366c068630c22d2aa0f3f3a8e2259bdb0cd161e62e1bb6143e216ad48b22",
+        "http_status": 200,
+        "feature_count": 45,
+        "geometry_type": "Polygon",
+        "zone_field": "Zonage",
+        "zone_distinct": 33,
+        "zone_maxlen": 5,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 18.22047093630074,
+        "registry_attribution_km": 1.016707384837339,
+        "nearest_registre_muni": "saint-patrice-de-sherrington"
+      },
+      "lot_zone_mismatch_pct_post_depot": null
+    },
+    {
+      "slug": "saint-pie",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54008_SaintPie/MapServer/169/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T13:07:40.282Z",
+        "sha256": "sha256:33fe9d1f1c468ae828ec40a8ba710ff372b8a0b220b19aeaddb29b38eeccdd1a",
+        "http_status": 200,
+        "feature_count": 136,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "Num_zone",
+        "zone_distinct": 106,
+        "zone_maxlen": 10,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 19.53330543377193,
+        "registry_attribution_km": 1.7217636398170335,
+        "nearest_registre_muni": "saint-pie"
+      },
+      "lot_zone_mismatch_pct_post_depot": 4.46
+    },
+    {
+      "slug": "saint-jude",
+      "verdict": "PASS-BANC",
+      "motif": "capture v2 vecteur natif réelle, intègre, non contaminée",
+      "gates": {
+        "capture_reelle": "PASS",
+        "integrite_preuve_v2": "PASS",
+        "anti_invention": "PASS",
+        "non_contamination": "PASS"
+      },
+      "metrics": {
+        "source_url": "https://www.goazimut.com/container/resource-proxy/proxy.jsp?https://www.goazimut.com/gis109-08/arcgis/rest/services/540_LesMaskoutains/54110_SaintJude/MapServer/152/query?where=1%3D1&outFields=Num_zone&returnGeometry=true&outSR=4326&returnZ=false&returnM=false&geometryPrecision=6&resultRecordCount=6000&f=geojson",
+        "retrieved_at": "2026-08-03T13:09:54.987Z",
+        "sha256": "sha256:dcf66e10548bf62deaee90b2feee3d96b753b26164bbc9e3a36531ea242ff297",
+        "http_status": 200,
+        "feature_count": 43,
+        "geometry_type": "MultiPolygon",
+        "zone_field": "Num_zone",
+        "zone_distinct": 43,
+        "zone_maxlen": 6,
+        "zone_nonnull_pct": 100,
+        "bbox_diag": 17.888862183385037,
+        "registry_attribution_km": 0.6371391349783031,
+        "nearest_registre_muni": "saint-jude"
+      },
+      "lot_zone_mismatch_pct_post_depot": 1.82
+    }
+  ],
+  "source_manifest": {
+    "ref": "lane/zones@89a17ea7:work/coverage/zones-vecteur-natif-manifest-20260803.json",
+    "contract": "zones-vecteur-natif-capture-manifest/v1",
+    "sha256": "sha256:30393e889bdff7e98af8cefbd55015bb236dc1ddd39680f613dd31c0b4bca272"
+  }
+}

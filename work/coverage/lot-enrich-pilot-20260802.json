@@ -1,0 +1,220 @@
+{
+  "contract": "lot-enrich-pilot/v1",
+  "as_of": "2026-08-02",
+  "scope": {
+    "municipalities": 8,
+    "max_lots": 15000,
+    "province": false,
+    "laval": false,
+    "selection_rule": "assignment matrix complete + folded-normes low + served norms parquet + outside zones re-capture lists"
+  },
+  "source_matrices": [
+    "work/coverage/immo-lot-zone-assignment-matrix-20260802.json",
+    "work/coverage/immo-folded-normes-city-matrix-20260802.json",
+    "work/coverage/zones-reacquire.json"
+  ],
+  "anti_invention": {
+    "address_rule": "adresse absente du rôle joint par lot = null; aucune adresse n'est déduite",
+    "structural_nulls": "Les nulls adresse sont comptés comme structurels et ne sont pas un gain.",
+    "stamp_rule": "zone_source_url et zone_source_level lus sur la collection zonage servie avant/après"
+  },
+  "pilot": [
+    {
+      "slug": "chesterville",
+      "lots": 1022,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 1022/1022 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 3/1022 served lots with folded-normes."
+      },
+      "folded_normes_avant": { "lots": 3, "pct": 0.29 },
+      "folded_normes_apres": { "lots": 860, "pct": 84.15 },
+      "folded_normes_gain": 857,
+      "adresse_avant": { "lots": 936, "pct": 91.59, "null_structurel": 86 },
+      "adresse_apres": { "lots": 936, "pct": 91.59, "null_structurel": 86 },
+      "adresse_gain": 0,
+      "join": { "required": true, "executed": true, "probe": "JOIN-REJOUABLE — 860 lots matchables (dépôt périmé)." },
+      "backup_ok": true,
+      "backup_ts": "2026-08-02T221355357ZZ",
+      "mirror_ok": true,
+      "stamp_preserved": true,
+      "stamp_before": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3" },
+      "stamp_after": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://geo.victoriaville.ca/arcgis/rest/services/IntranetMRC/ZonageMunicipal/MapServer/3" },
+      "verify": { "flat_features": 1022, "nested_features": 1022, "flat_with_code_zone": 1022, "nested_with_code_zone": 1022 }
+    },
+    {
+      "slug": "saint-zephirin-de-courval",
+      "lots": 715,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 715/715 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 0/715 served lots with folded-normes."
+      },
+      "folded_normes_avant": { "lots": 0, "pct": 0 },
+      "folded_normes_apres": { "lots": 593, "pct": 82.94 },
+      "folded_normes_gain": 593,
+      "adresse_avant": { "lots": 660, "pct": 92.31, "null_structurel": 55 },
+      "adresse_apres": { "lots": 660, "pct": 92.31, "null_structurel": 55 },
+      "adresse_gain": 0,
+      "join": { "required": true, "executed": true, "probe": "JOIN-REJOUABLE — 593 lots matchables (dépôt périmé)." },
+      "backup_ok": true,
+      "backup_ts": "2026-08-02T221458314ZZ",
+      "mirror_ok": true,
+      "stamp_preserved": true,
+      "stamp_before": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50090_SaintZephirinDeCourval/MapServer/184" },
+      "stamp_after": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://www.goazimut.com/gis109-11/arcgis/rest/services/500_NicoletYamaska/50090_SaintZephirinDeCourval/MapServer/184" },
+      "verify": { "flat_features": 715, "nested_features": 715, "flat_with_code_zone": 715, "nested_with_code_zone": 715 }
+    },
+    {
+      "slug": "sainte-francoise--les-basques",
+      "lots": 843,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 843/843 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 0/843 served lots with folded-normes."
+      },
+      "folded_normes_avant": { "lots": 63, "pct": 7.47 },
+      "folded_normes_apres": { "lots": 63, "pct": 7.47 },
+      "folded_normes_gain": 0,
+      "adresse_avant": { "lots": 761, "pct": 90.27, "null_structurel": 82 },
+      "adresse_apres": { "lots": 761, "pct": 90.27, "null_structurel": 82 },
+      "adresse_gain": 0,
+      "join": { "required": false, "executed": false, "probe": "JOIN-REJOUABLE — 63 lots matchables; current served count already equals probe." },
+      "backup_ok": true,
+      "backup_ts": "2026-08-02T221553700ZZ",
+      "mirror_ok": true,
+      "stamp_preserved": true,
+      "stamp_before": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/110_LesBasques/11030_SainteFrancoise/MapServer/157" },
+      "stamp_after": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://www.goazimut.com/gis109-16/arcgis/rest/services/110_LesBasques/11030_SainteFrancoise/MapServer/157" },
+      "verify": { "flat_features": 843, "nested_features": 843, "flat_with_code_zone": 843, "nested_with_code_zone": 843 }
+    },
+    {
+      "slug": "duhamel-ouest",
+      "lots": 973,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 973/973 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 2/973 served lots with folded-normes."
+      },
+      "folded_normes_avant": { "lots": 2, "pct": 0.21 },
+      "folded_normes_apres": { "lots": 2, "pct": 0.21 },
+      "folded_normes_gain": 0,
+      "adresse_avant": { "lots": 919, "pct": 94.45, "null_structurel": 54 },
+      "adresse_apres": { "lots": 919, "pct": 94.45, "null_structurel": 54 },
+      "adresse_gain": 0,
+      "join": { "required": false, "executed": false, "probe": "JOIN-REJOUABLE — 2 lots matchables; current served count already equals probe." },
+      "backup_ok": true,
+      "backup_ts": "2026-08-02T221634212ZZ",
+      "mirror_ok": true,
+      "stamp_preserved": true,
+      "stamp_before": { "status": "STAMPED_NULL", "level": "historical-verified", "url": null },
+      "stamp_after": { "status": "STAMPED_NULL", "level": "historical-verified", "url": null },
+      "verify": { "flat_features": 973, "nested_features": 973, "flat_with_code_zone": 973, "nested_with_code_zone": 973 }
+    },
+    {
+      "slug": "saint-ours",
+      "lots": 1293,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 1293/1293 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 8/1293 served lots with folded-normes."
+      },
+      "folded_normes_avant": { "lots": 8, "pct": 0.62 },
+      "folded_normes_apres": { "lots": 8, "pct": 0.62 },
+      "folded_normes_gain": 0,
+      "adresse_avant": { "lots": 1278, "pct": 98.84, "null_structurel": 15 },
+      "adresse_apres": { "lots": 1278, "pct": 98.84, "null_structurel": 15 },
+      "adresse_gain": 0,
+      "join": { "required": false, "executed": false, "probe": "JOIN-REJOUABLE — 8 lots matchables; current served count already equals probe." },
+      "backup_ok": true,
+      "backup_ts": "2026-08-02T221721000ZZ",
+      "mirror_ok": true,
+      "stamp_preserved": true,
+      "stamp_before": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53032_SaintOurs/MapServer/169" },
+      "stamp_after": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://www.goazimut.com/gis109-03/arcgis/rest/services/530_PierreDeSaurel/53032_SaintOurs/MapServer/169" },
+      "verify": { "flat_features": 1293, "nested_features": 1293, "flat_with_code_zone": 1293, "nested_with_code_zone": 1293 }
+    },
+    {
+      "slug": "dupuy",
+      "lots": 936,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 936/936 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 7/936 served lots with folded-normes."
+      },
+      "folded_normes_avant": { "lots": 7, "pct": 0.75 },
+      "folded_normes_apres": { "lots": 7, "pct": 0.75 },
+      "folded_normes_gain": 0,
+      "adresse_avant": { "lots": 936, "pct": 100, "null_structurel": 0 },
+      "adresse_apres": { "lots": 936, "pct": 100, "null_structurel": 0 },
+      "adresse_gain": 0,
+      "join": { "required": false, "executed": false, "probe": "JOIN-REJOUABLE — 7 lots matchables; current served count already equals probe." },
+      "backup_ok": true,
+      "backup_ts": "2026-08-02T221809043ZZ",
+      "mirror_ok": true,
+      "stamp_preserved": true,
+      "stamp_before": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87085_Dupuy/MapServer/157" },
+      "stamp_after": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://www.goazimut.com/gis109-14/arcgis/rest/services/870_AbitibiOuest/87085_Dupuy/MapServer/157" },
+      "verify": { "flat_features": 936, "nested_features": 936, "flat_with_code_zone": 936, "nested_with_code_zone": 936 }
+    },
+    {
+      "slug": "ormstown",
+      "lots": 2421,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 2421/2421 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 31/2421 served lots with folded-normes."
+      },
+      "folded_normes_avant": { "lots": 62, "pct": 2.56 },
+      "folded_normes_apres": { "lots": 62, "pct": 2.56 },
+      "folded_normes_gain": 0,
+      "adresse_avant": { "lots": 2401, "pct": 99.17, "null_structurel": 20 },
+      "adresse_apres": { "lots": 2401, "pct": 99.17, "null_structurel": 20 },
+      "adresse_gain": 0,
+      "join": { "required": false, "executed": false, "probe": "JOIN-REJOUABLE — 62 lots matchables; current served count already equals probe." },
+      "backup_ok": true,
+      "backup_ts": "2026-08-02T221853442ZZ",
+      "mirror_ok": true,
+      "stamp_preserved": true,
+      "stamp_before": { "status": "STAMPED", "level": "documented", "url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2769037%27" },
+      "stamp_after": { "status": "STAMPED", "level": "documented", "url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2769037%27" },
+      "verify": { "flat_features": 2421, "nested_features": 2421, "flat_with_code_zone": 2421, "nested_with_code_zone": 2421 }
+    },
+    {
+      "slug": "havelock",
+      "lots": 566,
+      "matrix": {
+        "assignment_reason": "Served flat sidecar reports 566/566 lots with non-null code_zone.",
+        "normes_reason": "Committed Immo stats report 12/566 served lots with folded-normes."
+      },
+      "folded_normes_avant": { "lots": 12, "pct": 2.12 },
+      "folded_normes_apres": { "lots": 12, "pct": 2.12 },
+      "folded_normes_gain": 0,
+      "adresse_avant": { "lots": 564, "pct": 99.65, "null_structurel": 2 },
+      "adresse_apres": { "lots": 564, "pct": 99.65, "null_structurel": 2 },
+      "adresse_gain": 0,
+      "join": { "required": false, "executed": false, "probe": "JOIN-REJOUABLE — 12 lots matchables; current served count already equals probe." },
+      "backup_ok": true,
+      "backup_ts": "2026-08-02T221949857ZZ",
+      "mirror_ok": true,
+      "stamp_preserved": true,
+      "stamp_before": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69005]" },
+      "stamp_after": { "status": "STAMPED", "level": "legacy-traceable", "url": "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69005]" },
+      "verify": { "flat_features": 566, "nested_features": 566, "flat_with_code_zone": 566, "nested_with_code_zone": 566 }
+    }
+  ],
+  "summary": {
+    "lots": 8769,
+    "folded_normes_avant": 157,
+    "folded_normes_apres": 1607,
+    "folded_normes_gain": 1450,
+    "folded_normes_pct_avant": 1.79,
+    "folded_normes_pct_apres": 18.33,
+    "adresse_avant": 8455,
+    "adresse_apres": 8455,
+    "adresse_gain": 0,
+    "adresse_null_structurel": 314,
+    "backup_ok": true,
+    "mirror_ok": true,
+    "stamp_preserved_all": true,
+    "double_key_verify_all": true,
+    "committed_kpi_context": "52/1100 before this pilot; +1450 folded-normes lots in this bounded run"
+  },
+  "preflight_excluded_and_restored": [
+    { "slug": "ham-nord", "reason": "CODES-DISJOINTS; exploratory backup/run restored before final pilot" },
+    { "slug": "abercorn", "reason": "already 81/455 on live sidecar, while matrix said 0/455; backup restored without forcing a possible regression" }
+  ]
+}
