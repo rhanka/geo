@@ -1,0 +1,142 @@
+[
+  {
+    "slug": "vaudreuil-dorion",
+    "status": "rien",
+    "reason": "no-vector. Zonage publie en PDF (Reglement de zonage no 1872, ville.vaudreuil-dorion.qc.ca/uploads/.../1_Reglement_no_1872.pdf). La carte interactive (ville.vaudreuil-dorion.qc.ca/fr/carte-interactive) est une SPA dont le backend n'expose aucun endpoint REST/WFS vecteur public decouvrable. Aucune org AGOL de la Ville: geomatique.cldvs (CLD Vaudreuil-Soulanges) ne publie que des StoryMaps + un CSV 'Entreprise'; l'org AliciaLapointe (services7/Xc4E7bEL2c5SQBaD) est un consultant en inspection (Survey123 pour VD et Dorval), pas de zonage. Recherche AGOL 'zonage vaudreuil' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "varennes",
+    "status": "rien",
+    "reason": "MRC de Marguerite-D'Youville. Meme constat que vercheres (lot2): carte de la MRC = widget touristique; le service de geomatique detient le zonage mais ne le publie pas en couche vecteur decouvrable. Recherche AGOL 'zonage Varennes' = 0. Aucune org AGOL diffusant une grille de zonage vecteur de Varennes. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "vercheres",
+    "status": "rien",
+    "reason": "MRC de Marguerite-D'Youville. Verdict RIEN reconduit de lot2 (carte MRC = widget touristique publidata.ca; geomatique detient le zonage sans le publier en vecteur), re-verifie: recherche AGOL 'zonage' pour Vercheres/MDY = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "pointe-claire",
+    "status": "rien",
+    "reason": "no-vector. Ville reconstituee de l'agglomeration de Montreal. Aucune org AGOL de la Ville de Pointe-Claire; l'org Ville de Montreal (services2/Hc1GO2uRPLk6Rkn0) ne publie que l'AFFECTATION (PU 2015) + la zone agricole permanente CPTAQ (zonage_p) et ne couvre pas les villes reconstituees. La carte interactive (pointe-claire.ca/en/.../interactive-map) est une SPA sans backend REST vecteur public decouvrable. Recherche AGOL 'zonage'/app Pointe-Claire = 0 (seuls hits = cartes perso d'un particulier). Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "dorval",
+    "status": "rien",
+    "reason": "no-vector. Cite de Dorval, agglomeration de Montreal. Page Cartographie (ville.dorval.qc.ca) = SPA (arrondissements electoraux, parcs, services) sans backend REST vecteur public decouvrable. Aucune org AGOL de la Cite: seuls items lies = Survey123 d'inspection du consultant AliciaLapointe. L'org Ville de Montreal ne couvre pas Dorval. Recherche AGOL 'Dorval zonage' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "sainte-anne-de-bellevue",
+    "status": "rien",
+    "reason": "no-vector. Ville reconstituee de l'agglomeration de Montreal. Aucune org AGOL de la Ville; l'org Ville de Montreal ne couvre pas les villes reconstituees (affectation + CPTAQ seulement). Recherche AGOL 'zonage Bellevue' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-basile-le-grand",
+    "status": "rien",
+    "reason": "MRC de La Vallee-du-Richelieu (org services8/jryHBP52Ub6tFsaW). Verdict RIEN reconduit de lot2: la seule grille de zonage municipal publiee par l'org est 'zonageSAR' = Saint-Antoine-sur-Richelieu (pas SBLG); le reste est MRC-wide (affectations, RCI, contraintes). La carte villesblg.ca est une carte d'equipements. Aucune source vecteur de zonage verifiee pour SBLG.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-hippolyte",
+    "status": "found",
+    "reason": "LBP evaluateurs (ArcGIS Enterprise), hub MRC de La Riviere-du-Nord. App portail 'd50660bb...' titre '75045 - Saint-Hippolyte' -> webmap a2eaf91c... -> service 75045_PUBLIC/MapServer. Legende publique: layer 142 = 'Zonage municipal (sans valeur legale)', polygone. Champ REGLEMENT_ = code Lettre-Num (C-134, H-122, C-125). Note: couche 'sans valeur legale' mais grille de zonage native a vrais codes. Identite = Saint-Hippolyte confirmee par le titre de l'app.",
+    "service_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75045_PUBLIC/MapServer/142",
+    "query_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75045_PUBLIC/MapServer/142/query?where=1%3D1&outFields=*&f=geojson",
+    "code_field": "REGLEMENT_",
+    "feature_count": 112,
+    "geometry_type": "Polygon"
+  },
+  {
+    "slug": "sainte-julienne",
+    "status": "rien",
+    "reason": "MRC de Montcalm. Verdict RIEN reconduit de lot2: geomatique/amenagement de la MRC ne diffuse que des PDF (grandes affectations, cartes), pas de service vecteur; carte interactive MRC = widget touristique. Aucune grille de zonage vecteur sur AGOL. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-philippe",
+    "status": "rien",
+    "reason": "no-vector. MRC de Roussillon. La page geomatique de la MRC (roussillon.ca) ne documente aucun service vecteur (SADR/PDF); la carte 'roussillon.ca/prosperer/carte' est un outil de developpement economique (mobilite, zones commerciales/industrielles), pas une grille de zonage municipale a codes Lettre-Num. Recherche AGOL 'zonage Saint-Philippe' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "oka",
+    "status": "rien",
+    "reason": "MRC de Deux-Montagnes. Verdict RIEN reconduit de lot1/lot2: le prestataire Geo_ECL (y9EASLisYHhvZ7vM) ne publie pour Oka que limites_oka et donnees_collines_Oka + de l'AFFECTATION MRC2M, pas de grille de zonage a codes Lettre-Num. Portail mrc2m.qc.ca = SPA igo/carto. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "hudson",
+    "status": "rien",
+    "reason": "MRC de Vaudreuil-Soulanges. Verdict RIEN reconduit de lot2: la MRC fait l'evaluation fonciere (matrice graphique = role/cadastre) mais la page Maps mrcvs.ca est 'under construction' et ne publie pas de grille de zonage vecteur. Aucune org AGOL de la MRCVS diffusant du zonage vecteur. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "rosemere",
+    "status": "rien",
+    "reason": "no-vector. Ville de Rosemere (MRC Therese-De Blainville). La 'Carte du territoire' (ville.rosemere.qc.ca/carte-du-territoire) est une carte HTML a marqueurs (JS ActiveMarker), pas un SIG vecteur; la 'Carte de zonage' est une page informative et la reglementation d'urbanisme n'est fournie que sur demande par courriel (permis.inspections@ville.rosemere.qc.ca) -> pas de couche vecteur interrogeable. Aucune org AGOL ni app zonage de Rosemere (recherche AGOL = 0). Aucune source vecteur de zonage verifiee. (Geometrie servie actuelle INCOMPLETE -> pas de complet vecteur trouve.)",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-lin-laurentides",
+    "status": "found",
+    "reason": "Org AGOL propre de la Ville: 'GeomatiqueSLL' (services8/PF86XLgxesdAEe8M, geomatiquesll.maps.arcgis.com). App officielle 'URB_Cartographie du zonage' (appid 4e303b3b...) -> webmap 9716282a... -> couche operationnelle = service Zonage/FeatureServer, layer 0 'Zonage' (polygone). Champ CodeZone = code Lettre-Num (M-18, H1-14, H1-9); champ NUMERO redondant. Identite = Saint-Lin-Laurentides (geocode 63048) confirmee par l'org et le service 63048_SAINT_LIN_LAURENTIDES. Grille complete (139 zones). (Geometrie servie actuelle INCOMPLETE -> complet vecteur TROUVE, haute valeur.)",
+    "service_url": "https://services8.arcgis.com/PF86XLgxesdAEe8M/arcgis/rest/services/Zonage/FeatureServer/0",
+    "query_url": "https://services8.arcgis.com/PF86XLgxesdAEe8M/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+    "code_field": "CodeZone",
+    "feature_count": 139,
+    "geometry_type": "Polygon"
+  }
+]

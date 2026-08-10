@@ -1,0 +1,2133 @@
+{
+ "contract": "zones-vnatif-deposit-record-agol/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md + SPEC_ZONE_GEOMETRY_GRAIN.md + SPEC_ACQUISITION_METHODES_PAR_SOURCE.md §12 ; réplique dépôt victoriaville 5564b2f5 / altus 0b343380",
+ "decision": "CLEAN-UPGRADE batch AGOL (legacy-traceable/candidate→documented v2), sources ArcGIS Online hosted FeatureServer, f=geojson, topologie MIXTE (per-muni where=1=1 OU couche MRC partagée filtrée F=v résolue par nom+recouvrement+anti-homonyme), champ code-zone résolu par recouvrement ≥90% avec le servi, zone_code brut",
+ "mode": "commit",
+ "run_stamp": "20260810T210000Z",
+ "worklist": "work/coverage/zones-vnatif-capture-worklist-agol-20260810.json",
+ "proof_intended": {
+  "type": "agol",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (discriminateur = preuve v2 par-feature) + geometry_grain + anti-troncature ArcGIS (returnCountOnly[MÊME where]==features & !exceededTransferLimit)",
+ "summary": {
+  "total": 14,
+  "deposited": 14,
+  "skipped": 0,
+  "other": 0
+ },
+ "cities": [
+  {
+   "slug": "saint-francois-xavier-de-brompton",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Saint-Fran%C3%A7ois-Xavier-de-Brompton%27&outFields=*&f=geojson",
+   "count_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN%3D%27Saint-Fran%C3%A7ois-Xavier-de-Brompton%27&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-0-f0d098bb-40cd-4aa5-ad9e-48abe242dc8c",
+   "http_status": 200,
+   "sha256": "sha256:441c7e9cc7723de22193db83303ad8425f73cc28210c4dcf1400e5f9bb79cc38",
+   "retrieved_at": "2026-08-10T17:51:24.243Z",
+   "storage_key": "raw/zones-vnatif/cas/441c7e9cc7723de22193db83303ad8425f73cc28210c4dcf1400e5f9bb79cc38.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 114,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-francois-xavier-de-brompton",
+   "registry_attribution_km": 1.2,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-francois-xavier-de-brompton.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 114,
+   "served_distinct_codes": 112,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Sect_label",
+     "distinct": 112,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Sect",
+     "distinct": 112,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "ZONE_",
+     "distinct": 13,
+     "null_count": 0,
+     "overlap_pct": 0.9
+    },
+    {
+     "field": "NUMERO",
+     "distinct": 26,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE",
+     "distinct": 13,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Sect",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 112,
+   "sample_codes": [
+    {
+     "code_field_value": "AF 1",
+     "zone_code": "AF 1"
+    },
+    {
+     "code_field_value": "AF 10",
+     "zone_code": "AF 10"
+    },
+    {
+     "code_field_value": "AF 11",
+     "zone_code": "AF 11"
+    },
+    {
+     "code_field_value": "AF 2",
+     "zone_code": "AF 2"
+    },
+    {
+     "code_field_value": "AF 3",
+     "zone_code": "AF 3"
+    },
+    {
+     "code_field_value": "AF 4",
+     "zone_code": "AF 4"
+    },
+    {
+     "code_field_value": "AF 5",
+     "zone_code": "AF 5"
+    },
+    {
+     "code_field_value": "AF 6",
+     "zone_code": "AF 6"
+    }
+   ],
+   "served_codes_covered": 112,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 114,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(114) == features(114)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-francois-xavier-de-brompton__flat.2026-08-10T1752Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-francois-xavier-de-brompton__flat.2026-08-10T1752Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-francois-xavier-de-brompton.geojson",
+     "served_features": 114,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Saint-Fran%C3%A7ois-Xavier-de-Brompton%27&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:441c7e9cc7723de22193db83303ad8425f73cc28210c4dcf1400e5f9bb79cc38",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:24.243Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Saint-Fran%C3%A7ois-Xavier-de-Brompton%27&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Sect brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-honore-de-temiscouata",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13090&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN%3D13090&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-1-818b2b5e-f623-4457-8e80-b6d0925c9670",
+   "http_status": 200,
+   "sha256": "sha256:bf2c05af82bad3e5806e06034b47fe80a37d1e4fcfa70a2d3817ed0351c4d904",
+   "retrieved_at": "2026-08-10T17:51:21.592Z",
+   "storage_key": "raw/zones-vnatif/cas/bf2c05af82bad3e5806e06034b47fe80a37d1e4fcfa70a2d3817ed0351c4d904.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 50,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-honore-de-temiscouata",
+   "registry_attribution_km": 0.95,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-honore-de-temiscouata.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 50,
+   "served_distinct_codes": 48,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "ZONE",
+     "distinct": 48,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 9,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE",
+     "distinct": 0,
+     "null_count": 50,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 48,
+   "sample_codes": [
+    {
+     "code_field_value": "EAF-11",
+     "zone_code": "EAF-11"
+    },
+    {
+     "code_field_value": "EAF-2",
+     "zone_code": "EAF-2"
+    },
+    {
+     "code_field_value": "EAF-7",
+     "zone_code": "EAF-7"
+    },
+    {
+     "code_field_value": "EAF-8",
+     "zone_code": "EAF-8"
+    },
+    {
+     "code_field_value": "EAF-4",
+     "zone_code": "EAF-4"
+    },
+    {
+     "code_field_value": "EAF-6",
+     "zone_code": "EAF-6"
+    },
+    {
+     "code_field_value": "EF-1",
+     "zone_code": "EF-1"
+    },
+    {
+     "code_field_value": "M-1",
+     "zone_code": "M-1"
+    }
+   ],
+   "served_codes_covered": 48,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 50,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(50) == features(50)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-honore-de-temiscouata__flat.2026-08-10T1752Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-honore-de-temiscouata__flat.2026-08-10T1752Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-honore-de-temiscouata.geojson",
+     "served_features": 50,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13090&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:bf2c05af82bad3e5806e06034b47fe80a37d1e4fcfa70a2d3817ed0351c4d904",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:21.592Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13090&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-jean-de-la-lande",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13010&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN%3D13010&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-2-763679d9-c0ef-44df-810b-466ab85c01f2",
+   "http_status": 200,
+   "sha256": "sha256:a692d83ead84581b2f6a2133061bcfa61011916482bcd5c130d3a2be7a4adcdb",
+   "retrieved_at": "2026-08-10T17:51:21.207Z",
+   "storage_key": "raw/zones-vnatif/cas/a692d83ead84581b2f6a2133061bcfa61011916482bcd5c130d3a2be7a4adcdb.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 22,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-jean-de-la-lande",
+   "registry_attribution_km": 0.92,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-jean-de-la-lande.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 22,
+   "served_distinct_codes": 22,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "ZONE",
+     "distinct": 22,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 5,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE",
+     "distinct": 2,
+     "null_count": 8,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 22,
+   "sample_codes": [
+    {
+     "code_field_value": "EAF-2",
+     "zone_code": "EAF-2"
+    },
+    {
+     "code_field_value": "EAF-3",
+     "zone_code": "EAF-3"
+    },
+    {
+     "code_field_value": "EAF-1",
+     "zone_code": "EAF-1"
+    },
+    {
+     "code_field_value": "M-1",
+     "zone_code": "M-1"
+    },
+    {
+     "code_field_value": "V-1",
+     "zone_code": "V-1"
+    },
+    {
+     "code_field_value": "V-2",
+     "zone_code": "V-2"
+    },
+    {
+     "code_field_value": "V-3",
+     "zone_code": "V-3"
+    },
+    {
+     "code_field_value": "V-4",
+     "zone_code": "V-4"
+    }
+   ],
+   "served_codes_covered": 22,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 22,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(22) == features(22)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jean-de-la-lande__flat.2026-08-10T1752Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jean-de-la-lande__flat.2026-08-10T1752Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-jean-de-la-lande.geojson",
+     "served_features": 22,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13010&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:a692d83ead84581b2f6a2133061bcfa61011916482bcd5c130d3a2be7a4adcdb",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:21.207Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13010&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-jean-de-lile-dorleans",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4/query?where=1%3D1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-3-3b81c50a-5859-47d4-9748-281acb690725",
+   "http_status": 200,
+   "sha256": "sha256:db4080ed901d4187fc4e6e582904644977d2f29ae86626f976025fec77946e24",
+   "retrieved_at": "2026-08-10T17:51:21.249Z",
+   "storage_key": "raw/zones-vnatif/cas/db4080ed901d4187fc4e6e582904644977d2f29ae86626f976025fec77946e24.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 62,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-jean-de-lile-dorleans",
+   "registry_attribution_km": 0.43,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-jean-de-lile-dorleans.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 62,
+   "served_distinct_codes": 61,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Usage",
+     "distinct": 61,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "NUM_ZONE",
+     "distinct": 18,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 7,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "SECTEURS",
+     "distinct": 0,
+     "null_count": 62,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Usage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 61,
+   "sample_codes": [
+    {
+     "code_field_value": "M-403",
+     "zone_code": "M-403"
+    },
+    {
+     "code_field_value": "M-402",
+     "zone_code": "M-402"
+    },
+    {
+     "code_field_value": "M-401",
+     "zone_code": "M-401"
+    },
+    {
+     "code_field_value": "CM-401",
+     "zone_code": "CM-401"
+    },
+    {
+     "code_field_value": "CM-402",
+     "zone_code": "CM-402"
+    },
+    {
+     "code_field_value": "R-413",
+     "zone_code": "R-413"
+    },
+    {
+     "code_field_value": "M-405",
+     "zone_code": "M-405"
+    },
+    {
+     "code_field_value": "R-411",
+     "zone_code": "R-411"
+    }
+   ],
+   "served_codes_covered": 61,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 62,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(62) == features(62)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jean-de-lile-dorleans__flat.2026-08-10T1753Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jean-de-lile-dorleans__flat.2026-08-10T1753Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-jean-de-lile-dorleans.geojson",
+     "served_features": 62,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4/query?where=1=1&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:db4080ed901d4187fc4e6e582904644977d2f29ae86626f976025fec77946e24",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:21.249Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services8.arcgis.com/GbbSwEysvC2sv6Y6/arcgis/rest/services/Limite_du_zonage/FeatureServer/4/query?where=1=1&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Usage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-juste-du-lac",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13040&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN%3D13040&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-4-9d6977aa-d453-4d85-94b0-b753f8120a73",
+   "http_status": 200,
+   "sha256": "sha256:d09e263a712290c7f4fc4a018515e889bdab0593873d635b8f8668f2b3aabe06",
+   "retrieved_at": "2026-08-10T17:51:21.674Z",
+   "storage_key": "raw/zones-vnatif/cas/d09e263a712290c7f4fc4a018515e889bdab0593873d635b8f8668f2b3aabe06.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 34,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-juste-du-lac",
+   "registry_attribution_km": 4.82,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-juste-du-lac.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 34,
+   "served_distinct_codes": 30,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "ZONE",
+     "distinct": 30,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 10,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE",
+     "distinct": 2,
+     "null_count": 26,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 30,
+   "sample_codes": [
+    {
+     "code_field_value": "EAF-1",
+     "zone_code": "EAF-1"
+    },
+    {
+     "code_field_value": "EAF-1",
+     "zone_code": "EAF-1"
+    },
+    {
+     "code_field_value": "EAF-2",
+     "zone_code": "EAF-2"
+    },
+    {
+     "code_field_value": "EAF-4",
+     "zone_code": "EAF-4"
+    },
+    {
+     "code_field_value": "EAF-3",
+     "zone_code": "EAF-3"
+    },
+    {
+     "code_field_value": "EAF-5",
+     "zone_code": "EAF-5"
+    },
+    {
+     "code_field_value": "EAF-6",
+     "zone_code": "EAF-6"
+    },
+    {
+     "code_field_value": "EF-1",
+     "zone_code": "EF-1"
+    }
+   ],
+   "served_codes_covered": 30,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 34,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(34) == features(34)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-juste-du-lac__flat.2026-08-10T1753Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-juste-du-lac__flat.2026-08-10T1753Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-juste-du-lac.geojson",
+     "served_features": 34,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13040&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:d09e263a712290c7f4fc4a018515e889bdab0593873d635b8f8668f2b3aabe06",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:21.674Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13040&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-louis-du-ha-ha",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13080&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN%3D13080&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-5-fd198172-524d-4584-9ac0-f2b9ae4e6fbb",
+   "http_status": 200,
+   "sha256": "sha256:5448fec80de1bc81aeee640b291f34cacba77a045a13456dba8056bf17619ddd",
+   "retrieved_at": "2026-08-10T17:51:39.859Z",
+   "storage_key": "raw/zones-vnatif/cas/5448fec80de1bc81aeee640b291f34cacba77a045a13456dba8056bf17619ddd.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 68,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-louis-du-ha-ha",
+   "registry_attribution_km": 0.89,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-louis-du-ha-ha.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 68,
+   "served_distinct_codes": 64,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "ZONE",
+     "distinct": 64,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 10,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE",
+     "distinct": 3,
+     "null_count": 41,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 64,
+   "sample_codes": [
+    {
+     "code_field_value": "T-1",
+     "zone_code": "T-1"
+    },
+    {
+     "code_field_value": "T-2",
+     "zone_code": "T-2"
+    },
+    {
+     "code_field_value": "EAF-15",
+     "zone_code": "EAF-15"
+    },
+    {
+     "code_field_value": "EAF-14",
+     "zone_code": "EAF-14"
+    },
+    {
+     "code_field_value": "EAF-4",
+     "zone_code": "EAF-4"
+    },
+    {
+     "code_field_value": "EAF-5",
+     "zone_code": "EAF-5"
+    },
+    {
+     "code_field_value": "EAF-6",
+     "zone_code": "EAF-6"
+    },
+    {
+     "code_field_value": "EAF-7",
+     "zone_code": "EAF-7"
+    }
+   ],
+   "served_codes_covered": 64,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 68,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(68) == features(68)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-louis-du-ha-ha__flat.2026-08-10T1753Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-louis-du-ha-ha__flat.2026-08-10T1753Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-louis-du-ha-ha.geojson",
+     "served_features": 68,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13080&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:5448fec80de1bc81aeee640b291f34cacba77a045a13456dba8056bf17619ddd",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:39.859Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13080&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-marc-du-lac-long",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13020&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN%3D13020&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-6-455ad3bf-b11f-4276-a775-42603fcfca8e",
+   "http_status": 200,
+   "sha256": "sha256:c78fd760096e7ae01418c7e66f809702ece1598929ae9d4e0e45ac28bc50cef9",
+   "retrieved_at": "2026-08-10T17:51:20.854Z",
+   "storage_key": "raw/zones-vnatif/cas/c78fd760096e7ae01418c7e66f809702ece1598929ae9d4e0e45ac28bc50cef9.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 49,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-marc-du-lac-long",
+   "registry_attribution_km": 1.57,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-marc-du-lac-long.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 49,
+   "served_distinct_codes": 49,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "ZONE",
+     "distinct": 49,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE",
+     "distinct": 11,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 8,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 49,
+   "sample_codes": [
+    {
+     "code_field_value": "EAF-1",
+     "zone_code": "EAF-1"
+    },
+    {
+     "code_field_value": "EAF-2",
+     "zone_code": "EAF-2"
+    },
+    {
+     "code_field_value": "EAF-3",
+     "zone_code": "EAF-3"
+    },
+    {
+     "code_field_value": "EF-1",
+     "zone_code": "EF-1"
+    },
+    {
+     "code_field_value": "MA-6",
+     "zone_code": "MA-6"
+    },
+    {
+     "code_field_value": "RA-7",
+     "zone_code": "RA-7"
+    },
+    {
+     "code_field_value": "RA-1",
+     "zone_code": "RA-1"
+    },
+    {
+     "code_field_value": "RA-3",
+     "zone_code": "RA-3"
+    }
+   ],
+   "served_codes_covered": 49,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 49,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(49) == features(49)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-marc-du-lac-long__flat.2026-08-10T1753Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-marc-du-lac-long__flat.2026-08-10T1753Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-marc-du-lac-long.geojson",
+     "served_features": 49,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13020&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:c78fd760096e7ae01418c7e66f809702ece1598929ae9d4e0e45ac28bc50cef9",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:20.854Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13020&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-michel-du-squatec",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13065&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN%3D13065&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-7-2d32ed37-b9a2-4437-a178-1128821baa47",
+   "http_status": 200,
+   "sha256": "sha256:5fa809f12fc4fddeeaf6e2080917f468e4ab15133edbb64d42651fbbac2c4d48",
+   "retrieved_at": "2026-08-10T17:51:52.460Z",
+   "storage_key": "raw/zones-vnatif/cas/5fa809f12fc4fddeeaf6e2080917f468e4ab15133edbb64d42651fbbac2c4d48.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 84,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-michel-du-squatec",
+   "registry_attribution_km": 3.69,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-michel-du-squatec.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 84,
+   "served_distinct_codes": 72,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "ZONE",
+     "distinct": 72,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 11,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE",
+     "distinct": 0,
+     "null_count": 84,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 72,
+   "sample_codes": [
+    {
+     "code_field_value": "EAA-7",
+     "zone_code": "EAA-7"
+    },
+    {
+     "code_field_value": "EAB-7",
+     "zone_code": "EAB-7"
+    },
+    {
+     "code_field_value": "EAB-5",
+     "zone_code": "EAB-5"
+    },
+    {
+     "code_field_value": "EAB-4",
+     "zone_code": "EAB-4"
+    },
+    {
+     "code_field_value": "EAF-1",
+     "zone_code": "EAF-1"
+    },
+    {
+     "code_field_value": "V-3",
+     "zone_code": "V-3"
+    },
+    {
+     "code_field_value": "EAF-7",
+     "zone_code": "EAF-7"
+    },
+    {
+     "code_field_value": "EAF-6",
+     "zone_code": "EAF-6"
+    }
+   ],
+   "served_codes_covered": 72,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 84,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(84) == features(84)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-michel-du-squatec__flat.2026-08-10T1753Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-michel-du-squatec__flat.2026-08-10T1753Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-michel-du-squatec.geojson",
+     "served_features": 84,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13065&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:5fa809f12fc4fddeeaf6e2080917f468e4ab15133edbb64d42651fbbac2c4d48",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:52.460Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13065&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-pierre-de-lamy",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13075&outFields=*&f=geojson",
+   "count_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN%3D13075&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-8-c6e950ea-2d5c-450a-8e41-1b700d6b17b2",
+   "http_status": 200,
+   "sha256": "sha256:cb315c2c5c9e4e9195ae640aa51078174a31d75f04158b5fd04f80053f7b3647",
+   "retrieved_at": "2026-08-10T17:51:37.172Z",
+   "storage_key": "raw/zones-vnatif/cas/cb315c2c5c9e4e9195ae640aa51078174a31d75f04158b5fd04f80053f7b3647.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 17,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-pierre-de-lamy",
+   "registry_attribution_km": 0.59,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-lamy.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 17,
+   "served_distinct_codes": 17,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "ZONE",
+     "distinct": 17,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE_ZONE",
+     "distinct": 9,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE",
+     "distinct": 6,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 17,
+   "sample_codes": [
+    {
+     "code_field_value": "EAF-1",
+     "zone_code": "EAF-1"
+    },
+    {
+     "code_field_value": "EAF-2",
+     "zone_code": "EAF-2"
+    },
+    {
+     "code_field_value": "EF-1",
+     "zone_code": "EF-1"
+    },
+    {
+     "code_field_value": "EF-2",
+     "zone_code": "EF-2"
+    },
+    {
+     "code_field_value": "I-1",
+     "zone_code": "I-1"
+    },
+    {
+     "code_field_value": "M-1",
+     "zone_code": "M-1"
+    },
+    {
+     "code_field_value": "P-1",
+     "zone_code": "P-1"
+    },
+    {
+     "code_field_value": "M-2",
+     "zone_code": "M-2"
+    }
+   ],
+   "served_codes_covered": 17,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 17,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(17) == features(17)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre-de-lamy__flat.2026-08-10T1753Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre-de-lamy__flat.2026-08-10T1753Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-lamy.geojson",
+     "served_features": 17,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13075&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:cb315c2c5c9e4e9195ae640aa51078174a31d75f04158b5fd04f80053f7b3647",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:37.172Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services.arcgis.com/aaWqU4clL4fblaWE/arcgis/rest/services/Zonage_MRC_T%C3%A9miscouata_vue/FeatureServer/0/query?where=CODE_MUN=13075&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-romain",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-Romain%27&outFields=*&f=geojson",
+   "count_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI%3D%27Saint-Romain%27&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-9-6dd73a1d-c6e1-4535-b09c-ed11be321bbd",
+   "http_status": 200,
+   "sha256": "sha256:ee15614d328c3d73b6477581ad372005674bd17808c5b34147a7f9241c40c643",
+   "retrieved_at": "2026-08-10T17:51:35.741Z",
+   "storage_key": "raw/zones-vnatif/cas/ee15614d328c3d73b6477581ad372005674bd17808c5b34147a7f9241c40c643.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 100,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-romain",
+   "registry_attribution_km": 0.96,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-romain.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 100,
+   "served_distinct_codes": 94,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "NO_ZONE",
+     "distinct": 94,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE",
+     "distinct": 11,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "ZONE",
+     "distinct": 2,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "NO_ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 94,
+   "sample_codes": [
+    {
+     "code_field_value": "A-4",
+     "zone_code": "A-4"
+    },
+    {
+     "code_field_value": "A-3",
+     "zone_code": "A-3"
+    },
+    {
+     "code_field_value": "RUx-1",
+     "zone_code": "RUx-1"
+    },
+    {
+     "code_field_value": "RU-20",
+     "zone_code": "RU-20"
+    },
+    {
+     "code_field_value": "I-3",
+     "zone_code": "I-3"
+    },
+    {
+     "code_field_value": "RU-4",
+     "zone_code": "RU-4"
+    },
+    {
+     "code_field_value": "R-1",
+     "zone_code": "R-1"
+    },
+    {
+     "code_field_value": "RU-3",
+     "zone_code": "RU-3"
+    }
+   ],
+   "served_codes_covered": 94,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 100,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(100) == features(100)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-romain__flat.2026-08-10T1753Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-romain__flat.2026-08-10T1753Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-romain.geojson",
+     "served_features": 100,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-Romain%27&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:ee15614d328c3d73b6477581ad372005674bd17808c5b34147a7f9241c40c643",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:35.741Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-Romain%27&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = NO_ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-sebastien--le-granit",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-S%C3%A9bastien%27&outFields=*&f=geojson",
+   "count_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI%3D%27Saint-S%C3%A9bastien%27&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-10-0c48c621-8aed-4e12-bd14-946a0d136bc6",
+   "http_status": 200,
+   "sha256": "sha256:f2abb9c61237db3cdb7f7d1c5ef0074140d3666fe63898cc1e93621ef4521eda",
+   "retrieved_at": "2026-08-10T17:51:37.073Z",
+   "storage_key": "raw/zones-vnatif/cas/f2abb9c61237db3cdb7f7d1c5ef0074140d3666fe63898cc1e93621ef4521eda.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 44,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-sebastien--le-granit",
+   "registry_attribution_km": 1.04,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-sebastien--le-granit.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 44,
+   "served_distinct_codes": 41,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "NO_ZONE",
+     "distinct": 41,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE",
+     "distinct": 10,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "ZONE",
+     "distinct": 2,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "NO_ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 41,
+   "sample_codes": [
+    {
+     "code_field_value": "I-1",
+     "zone_code": "I-1"
+    },
+    {
+     "code_field_value": "REC-1",
+     "zone_code": "REC-1"
+    },
+    {
+     "code_field_value": "IL-71",
+     "zone_code": "IL-71"
+    },
+    {
+     "code_field_value": "IL-70",
+     "zone_code": "IL-70"
+    },
+    {
+     "code_field_value": "IL-69",
+     "zone_code": "IL-69"
+    },
+    {
+     "code_field_value": "M-1",
+     "zone_code": "M-1"
+    },
+    {
+     "code_field_value": "A-12",
+     "zone_code": "A-12"
+    },
+    {
+     "code_field_value": "AFT1-7",
+     "zone_code": "AFT1-7"
+    }
+   ],
+   "served_codes_covered": 41,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 44,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(44) == features(44)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-sebastien--le-granit__flat.2026-08-10T1754Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-sebastien--le-granit__flat.2026-08-10T1754Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-sebastien--le-granit.geojson",
+     "served_features": 44,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-S%C3%A9bastien%27&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:f2abb9c61237db3cdb7f7d1c5ef0074140d3666fe63898cc1e93621ef4521eda",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:37.073Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-S%C3%A9bastien%27&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = NO_ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "stornoway",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Stornoway%27&outFields=*&f=geojson",
+   "count_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI%3D%27Stornoway%27&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-11-e80ad339-3d20-4f74-b13a-af3f4d9a8ffa",
+   "http_status": 200,
+   "sha256": "sha256:2ff1e4dd611eb93cc1452645a6353ce932441caa4487c3241538b8cf9911fe20",
+   "retrieved_at": "2026-08-10T17:51:37.760Z",
+   "storage_key": "raw/zones-vnatif/cas/2ff1e4dd611eb93cc1452645a6353ce932441caa4487c3241538b8cf9911fe20.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 63,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "stornoway",
+   "registry_attribution_km": 1.83,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-stornoway.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 63,
+   "served_distinct_codes": 63,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "NO_ZONE",
+     "distinct": 63,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE",
+     "distinct": 10,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "ZONE",
+     "distinct": 2,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "NO_ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 63,
+   "sample_codes": [
+    {
+     "code_field_value": "A-13",
+     "zone_code": "A-13"
+    },
+    {
+     "code_field_value": "I-1",
+     "zone_code": "I-1"
+    },
+    {
+     "code_field_value": "RU-9",
+     "zone_code": "RU-9"
+    },
+    {
+     "code_field_value": "IL-80",
+     "zone_code": "IL-80"
+    },
+    {
+     "code_field_value": "IL-84",
+     "zone_code": "IL-84"
+    },
+    {
+     "code_field_value": "IL-81",
+     "zone_code": "IL-81"
+    },
+    {
+     "code_field_value": "IL-82",
+     "zone_code": "IL-82"
+    },
+    {
+     "code_field_value": "IL-83",
+     "zone_code": "IL-83"
+    }
+   ],
+   "served_codes_covered": 63,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 63,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(63) == features(63)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-stornoway__flat.2026-08-10T1754Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-stornoway__flat.2026-08-10T1754Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-stornoway.geojson",
+     "served_features": 63,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Stornoway%27&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:2ff1e4dd611eb93cc1452645a6353ce932441caa4487c3241538b8cf9911fe20",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:37.760Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Stornoway%27&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = NO_ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "ulverton",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Ulverton%27&outFields=*&f=geojson",
+   "count_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN%3D%27Ulverton%27&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-0-f0d098bb-40cd-4aa5-ad9e-48abe242dc8c",
+   "http_status": 200,
+   "sha256": "sha256:c231191f80ce11b006416843dc323e5a5a0a99b0a6bc3be38059f6f1142f1ce1",
+   "retrieved_at": "2026-08-10T17:51:27.732Z",
+   "storage_key": "raw/zones-vnatif/cas/c231191f80ce11b006416843dc323e5a5a0a99b0a6bc3be38059f6f1142f1ce1.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 56,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "ulverton",
+   "registry_attribution_km": 0.75,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-ulverton.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 56,
+   "served_distinct_codes": 56,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "Sect",
+     "distinct": 56,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "Sect_label",
+     "distinct": 56,
+     "null_count": 0,
+     "overlap_pct": 96.4
+    },
+    {
+     "field": "NUMERO",
+     "distinct": 16,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "TYPE",
+     "distinct": 11,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "ZONE_",
+     "distinct": 11,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "Sect",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 56,
+   "sample_codes": [
+    {
+     "code_field_value": "AG-1",
+     "zone_code": "AG-1"
+    },
+    {
+     "code_field_value": "AG-2",
+     "zone_code": "AG-2"
+    },
+    {
+     "code_field_value": "AG-3",
+     "zone_code": "AG-3"
+    },
+    {
+     "code_field_value": "AG-4",
+     "zone_code": "AG-4"
+    },
+    {
+     "code_field_value": "AG-5",
+     "zone_code": "AG-5"
+    },
+    {
+     "code_field_value": "AG-6",
+     "zone_code": "AG-6"
+    },
+    {
+     "code_field_value": "AG-7",
+     "zone_code": "AG-7"
+    },
+    {
+     "code_field_value": "AG-8",
+     "zone_code": "AG-8"
+    }
+   ],
+   "served_codes_covered": 56,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 56,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(56) == features(56)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-ulverton__flat.2026-08-10T1754Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-ulverton__flat.2026-08-10T1754Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-ulverton.geojson",
+     "served_features": 56,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Ulverton%27&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:c231191f80ce11b006416843dc323e5a5a0a99b0a6bc3be38059f6f1142f1ce1",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:27.732Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services8.arcgis.com/RT1BkiMAAZM2yTCt/arcgis/rest/services/Intranet_Municipal/FeatureServer/8/query?where=MUN=%27Ulverton%27&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = Sect brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "val-racine",
+   "run_stamp": "20260810T210000Z",
+   "source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Val-Racine%27&outFields=*&f=geojson",
+   "count_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI%3D%27Val-Racine%27&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260810T210000Z-1-818b2b5e-f623-4457-8e80-b6d0925c9670",
+   "http_status": 200,
+   "sha256": "sha256:587319a9739deecf1bc7f3cf8e8ef891b4d7fe698d0760a2a894d5cad5028b2b",
+   "retrieved_at": "2026-08-10T17:51:24.743Z",
+   "storage_key": "raw/zones-vnatif/cas/587319a9739deecf1bc7f3cf8e8ef891b4d7fe698d0760a2a894d5cad5028b2b.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 36,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "val-racine",
+   "registry_attribution_km": 2.53,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-val-racine.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 36,
+   "served_distinct_codes": 34,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "NO_ZONE",
+     "distinct": 34,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "TYPE",
+     "distinct": 10,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "ZONE",
+     "distinct": 2,
+     "null_count": 0,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "NO_ZONE",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 34,
+   "sample_codes": [
+    {
+     "code_field_value": "A-1",
+     "zone_code": "A-1"
+    },
+    {
+     "code_field_value": "CONS-1",
+     "zone_code": "CONS-1"
+    },
+    {
+     "code_field_value": "REC2-1",
+     "zone_code": "REC2-1"
+    },
+    {
+     "code_field_value": "M-2",
+     "zone_code": "M-2"
+    },
+    {
+     "code_field_value": "IL-6",
+     "zone_code": "IL-6"
+    },
+    {
+     "code_field_value": "IL-7",
+     "zone_code": "IL-7"
+    },
+    {
+     "code_field_value": "AFT1-4",
+     "zone_code": "AFT1-4"
+    },
+    {
+     "code_field_value": "REC-1",
+     "zone_code": "REC-1"
+    }
+   ],
+   "served_codes_covered": 34,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 36,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(36) == features(36)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-val-racine__flat.2026-08-10T1754Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-val-racine__flat.2026-08-10T1754Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-val-racine.geojson",
+     "served_features": 36,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Val-Racine%27&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:587319a9739deecf1bc7f3cf8e8ef891b4d7fe698d0760a2a894d5cad5028b2b",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T17:51:24.743Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Val-Racine%27&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = NO_ZONE brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  }
+ ]
+}
