@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  CapturedNormesCampaignEntrySchema,
+  CapturedNormesCampaignPlanSchema,
   CapturedNormesExtractionReceiptSchema,
   CapturedNormesDiscoveryReceiptSchema,
   CapturedNormesDiscoveryRunReceiptSchema,
@@ -112,6 +114,40 @@ describe("CapturedNormesDiscoveryRunReceiptSchema", () => {
     });
     expect(receipt.status).toBe("refused");
     expect(CapturedNormesDiscoveryRunReceiptSchema.safeParse({ ...receipt, refusal: null }).success).toBe(false);
+  });
+});
+
+describe("CapturedNormesCampaignPlanSchema", () => {
+  const city = (slug: string) => ({
+    slug,
+    outcome: "no-grid" as const,
+    discovery_run_receipt_key: `registry/normes-captured-discovery-run-receipts/run/${slug}.json`,
+    extraction_receipt_keys: [],
+  });
+
+  it("requires exactly ten unique city outcomes", () => {
+    const plan = {
+      campaign: "normes-col3-20260810",
+      closed_at: "2026-08-10T01:02:00.000Z",
+      cities: Array.from({ length: 10 }, (_value, index) => city(`city-${index}`)),
+    };
+    expect(CapturedNormesCampaignPlanSchema.safeParse(plan).success).toBe(true);
+    expect(CapturedNormesCampaignPlanSchema.safeParse({
+      ...plan,
+      cities: [...plan.cities.slice(0, 9), city("city-0")],
+    }).success).toBe(false);
+  });
+
+  it("requires a Mistral receipt only for a below-gate outcome", () => {
+    const base = city("city-0");
+    expect(CapturedNormesCampaignEntrySchema.safeParse({
+      ...base,
+      outcome: "mistral-below-gate",
+    }).success).toBe(false);
+    expect(CapturedNormesCampaignEntrySchema.safeParse({
+      ...base,
+      extraction_receipt_keys: ["registry/normes-captured-receipts/abcdef.json"],
+    }).success).toBe(false);
   });
 });
 
