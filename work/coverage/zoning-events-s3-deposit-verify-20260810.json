@@ -1,0 +1,35 @@
+{
+  "contract": "zoning-events-s3-deposit-verify/20260810",
+  "generated_at": "2026-08-10T00:00:00Z",
+  "purpose": "Vérification INDÉPENDANTE (HEAD S3 + OGC geo-api) du dépôt qc-zoning-events col-20 attesté par work/coverage/zoning-events-col20-serve-prod-000.json (dry_run:false, emitted:true, 2026-08-08).",
+  "measurement_source": "work/coverage/zoning-events-col20-167-fresh-geofix-20260807.json (commit b16d7947, recall directionnel immo→geo 62/68=91.2% là où geo émet)",
+  "emission_source": "work/coverage/qc-zoning-events-dryrun-action-grain-20260803/documents.json (provenance RÉELLE: url_pdf + extrait_brut verbatim + source_url par event; mode générateur = dry-run-no-s3-put)",
+  "s3_head": {
+    "control_qc_zonage": {
+      "key": "normalized/ca-qc-zonage/qc-zonage-saint-eustache.geojson",
+      "exists": true,
+      "bytes": 1331190,
+      "note": "contrôle creds/bucket = la cible servie est bien lue"
+    },
+    "qc_zoning_events": [
+      { "slug": "saint-eustache", "key": "normalized/ca-qc-zoning-events/qc-zoning-events-saint-eustache.geojson", "exists": true, "bytes": 1703747, "last_modified": "2026-08-08T16:16:12.000Z", "etag": "4f9bc846bf89c783ec602788c5b3f564" },
+      { "slug": "saint-eustache", "key": "normalized/ca-qc-zoning-events/qc-zoning-events-saint-eustache/qc-zoning-events-saint-eustache.geojson", "exists": true, "bytes": 1703747, "last_modified": "2026-08-08T16:16:12.000Z", "etag": "4f9bc846bf89c783ec602788c5b3f564" },
+      { "slug": "saint-mathieu-de-beloeil", "key": "normalized/ca-qc-zoning-events/qc-zoning-events-saint-mathieu-de-beloeil.geojson", "exists": true, "bytes": 146513, "last_modified": "2026-08-08T16:16:10.000Z", "etag": "332c1192c3d8db863e56ddc6c27e75fd" },
+      { "slug": "saint-mathieu-de-beloeil", "key": "normalized/ca-qc-zoning-events/qc-zoning-events-saint-mathieu-de-beloeil/qc-zoning-events-saint-mathieu-de-beloeil.geojson", "exists": true, "bytes": 146513, "last_modified": "2026-08-08T16:16:11.000Z", "etag": "332c1192c3d8db863e56ddc6c27e75fd" }
+    ]
+  },
+  "ogc_geo_api": {
+    "base": "https://api.geo.sent-tech.ca",
+    "control_qc_zonage_saint_eustache_items": { "http": 200, "numberMatched": 321 },
+    "qc_zoning_events_saint_eustache_items": { "http": 404 },
+    "qc_zoning_events_saint_mathieu_items": { "http": 404 },
+    "collections_index": "aucune collection qc-zoning-events-* listée (~500 collections: qc-zonage-*, qc-mrc, qc-municipalites, qc-regions…)"
+  },
+  "verdict": {
+    "s3_deposit": "LIVE — les 4 clés (2 munis × flat+sous-dossier) présentes, octets conformes à l'attestation serve-prod du 2026-08-08.",
+    "ogc_exposure": "MANQUANTE — geo-api n'expose pas la famille qc-zoning-events; immo NE PEUT PAS consommer la collection via OGC.",
+    "root_cause_hypothesis": "geo-api ne scanne/ne sert PAS le préfixe normalized/ca-qc-zoning-events/ (allowlist de familles de collections côté geo-api, ou re-scan/redeploy requis). C'est un gap geo-api/infra, hors lane jointures.",
+    "reproducibility_gap": "Le runner de dépôt acquisition/src/zoning-events-col20-serve.ts et le manifeste serve-prod-*.json ne sont PAS committés (WIP d'une session concurrente) — la LOGIQUE de dépôt n'est pas encore capitalisée (principe fondateur). À committer→PR→merge par la session propriétaire."
+  },
+  "escalation": "geo-cond/owner: exposer la famille qc-zoning-events via geo-api (scan du préfixe normalized/ca-qc-zoning-events/ comme ca-qc-zonage). Sans quoi le dépôt Aug-8 reste invisible pour immo malgré des octets réels et une preuve de provenance réelle."
+}
