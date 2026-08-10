@@ -1,0 +1,57 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-promotion/v2",
+  "as_of": "2026-08-10T06:34:27.801Z",
+  "scope": "palier-167 / beaconsfield / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": { "state": "incomplete", "declared": "complete", "proven": "unknown" },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown"
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "complete",
+      "declared": "complete",
+      "proven": "complete",
+      "rule": "Le PDF vivant du domaine municipal imprime dès p.1 « VILLE DE BEACONSFIELD — Règlement de zonage no 720 »; son reçu CAS est attachable au reglement_url exact."
+    },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown",
+    "norms": {
+      "key": "normalized/qc-zonage-norms/qc-zonage-norms-beaconsfield.geojson",
+      "features": 77,
+      "reglement_numero": "720",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.beaconsfield.ca/storage/app/media/services/urbanisme-et-permis/trouvez-votre-zonage/zonage-2025-FR.pdf",
+      "readback": "S3 relu après publication: les champs de règlement sont exactement ceux du registre."
+    },
+    "zonage_polygons": { "state": "not served", "fold": "SKIP beaconsfield (polygone qc-zonage non servi)" }
+  },
+  "evidence": {
+    "official_municipal_pdf": {
+      "url": "https://www.beaconsfield.ca/storage/app/media/services/urbanisme-et-permis/trouvez-votre-zonage/zonage-2025-FR.pdf",
+      "retrieved_at": "2026-08-10T06:34:27.801Z",
+      "sha256": "sha256:e6f04cbdc6b25daf774b17f10d8630300066bcab2e2504646291476166e28f44",
+      "storage_key": "raw/reglement-official/cas/e6f04cbdc6b25daf774b17f10d8630300066bcab2e2504646291476166e28f44.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T063600Z-0-e30cca28-6785-4d9a-958d-517bdc9b9f6c/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "GRILLE DE SPÉCIFICATIONS — VILLE DE BEACONSFIELD — Règlement de zonage no 720."
+    },
+    "publication": {
+      "result": "OK features=77 cellsChanged=462 reglement=720",
+      "readback": "77 features dans normalized/qc-zonage-norms/qc-zonage-norms-beaconsfield.geojson."
+    },
+    "matrix_recalculation": {
+      "method": "import build('20260810') from scripts/palier-matrix-report.mjs in memory",
+      "expected_result": "reglement=complete; prov_qualite=unknown; prov_v2=unknown; prov_url_servie=unknown."
+    }
+  },
+  "anti_invention": {
+    "limited_claim": "Les mentions 720-XX et Juin 2011 sont des amendements; aucun millésime du règlement de base n’est fabriqué.",
+    "strict_proof_v2": "Aucun polygone servi ne permet de créer ou de déduire zone_proof_version=v2; la col. 10 reste unknown.",
+    "served_url": "Aucune zone_source_url n’est créée ni substituée au reglement_url; la col. 11 reste unknown.",
+    "storage": "Le PDF source est seulement dans le CAS S3; aucun octet source local."
+  }
+}
