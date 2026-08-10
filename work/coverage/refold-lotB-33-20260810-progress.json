@@ -1,0 +1,2688 @@
+{
+  "generated_at": "2026-08-10T16:42:21.391Z",
+  "simplify_zones_m": 0,
+  "entries": [
+    {
+      "slug": "lanoraie",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 3591,
+        "assigned": 3590,
+        "matched": 3321,
+        "misassigned": 169,
+        "outside_all": 100,
+        "unassigned": 1,
+        "mismatch_pct": 7.49
+      },
+      "after": {
+        "lots": 3591,
+        "assigned": 3490,
+        "matched": 3321,
+        "misassigned": 169,
+        "outside_all": 0,
+        "unassigned": 101,
+        "mismatch_pct": 4.84
+      },
+      "backup_ts": "2026-08-10T162516541ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK lanoraie lots=3591 assigned=97.19% multi=5.57% match=22.09% without_norms=77.91% verify parquet=Y stats=Y rows=3591",
+      "enrich_summary": "OK lanoraie lots=3591 zone_code=97.19% norms=21.47% surface=100% code_postal=100%(RTA) adresse=97.61%(code=52017) tod=n/a deposit=Y bytes=7097857",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-lanoraie.stats.json",
+        "num_lots": 3591,
+        "num_with_norms": 807,
+        "num_with_code_zone": 3590,
+        "num_with_adresse": 3505
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-lanoraie.stats.json",
+        "num_lots": 3591,
+        "num_with_norms": 771,
+        "num_with_code_zone": 3490,
+        "num_with_adresse": 3505
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-lanoraie.stats.json",
+        "num_lots": 3591,
+        "num_with_norms": 771,
+        "num_with_code_zone": 3490,
+        "num_with_adresse": 3505
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 807->771, code_zone 3590->3490",
+        "lots_to_unknown": 100,
+        "norms_to_unknown": 36,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ",
+        "dropped_codes": [
+          {
+            "code": "I24",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ"
+          },
+          {
+            "code": "A2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ"
+          },
+          {
+            "code": "A41",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ"
+          },
+          {
+            "code": "R1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ"
+          },
+          {
+            "code": "R5",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ"
+          },
+          {
+            "code": "P2-1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ"
+          },
+          {
+            "code": "R1-10",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ"
+          },
+          {
+            "code": "R2-5",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ"
+          },
+          {
+            "code": "C1-4",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lanoraie.geojson.2026-08-10T162516541ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:25:15.841Z",
+      "finished_at": "2026-08-10T16:25:53.260Z"
+    },
+    {
+      "slug": "launay",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 327,
+        "assigned": 327,
+        "matched": 320,
+        "misassigned": 7,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 2.14
+      },
+      "after": {
+        "lots": 327,
+        "assigned": 327,
+        "matched": 320,
+        "misassigned": 7,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 2.14
+      },
+      "backup_ts": "2026-08-10T162553833ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK launay lots=327 assigned=100% multi=4.28% match=0% without_norms=100% verify parquet=Y stats=Y rows=327",
+      "enrich_summary": "OK launay lots=327 zone_code=100% norms=0% surface=100% code_postal=100%(RTA) adresse=83.79%(code=88080) tod=n/a deposit=Y bytes=1031098",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-launay.stats.json",
+        "num_lots": 327,
+        "num_with_norms": 0,
+        "num_with_code_zone": 327,
+        "num_with_adresse": 274
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-launay.stats.json",
+        "num_lots": 327,
+        "num_with_norms": 0,
+        "num_with_code_zone": 327,
+        "num_with_adresse": 274
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-launay.stats.json",
+        "num_lots": 327,
+        "num_with_norms": 0,
+        "num_with_code_zone": 327,
+        "num_with_adresse": 274
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:25:53.261Z",
+      "finished_at": "2026-08-10T16:26:07.458Z"
+    },
+    {
+      "slug": "lavaltrie",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 7190,
+        "assigned": 7183,
+        "matched": 6975,
+        "misassigned": 188,
+        "outside_all": 20,
+        "unassigned": 7,
+        "mismatch_pct": 2.9
+      },
+      "after": {
+        "lots": 7190,
+        "assigned": 7163,
+        "matched": 6975,
+        "misassigned": 188,
+        "outside_all": 0,
+        "unassigned": 27,
+        "mismatch_pct": 2.62
+      },
+      "backup_ts": "2026-08-10T162608713ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK lavaltrie lots=7190 assigned=99.62% multi=1.82% match=97.82% without_norms=2.18% verify parquet=Y stats=Y rows=7190",
+      "enrich_summary": "OK lavaltrie lots=7190 zone_code=99.62% norms=97.45% surface=100% code_postal=100%(RTA) adresse=98.9%(code=52007) tod=n/a deposit=Y bytes=22213716",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-lavaltrie.stats.json",
+        "num_lots": 7190,
+        "num_with_norms": 7027,
+        "num_with_code_zone": 7183,
+        "num_with_adresse": 7111
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-lavaltrie.stats.json",
+        "num_lots": 7190,
+        "num_with_norms": 7007,
+        "num_with_code_zone": 7163,
+        "num_with_adresse": 7111
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-lavaltrie.stats.json",
+        "num_lots": 7190,
+        "num_with_norms": 7007,
+        "num_with_code_zone": 7163,
+        "num_with_adresse": 7111
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 7027->7007, code_zone 7183->7163",
+        "lots_to_unknown": 20,
+        "norms_to_unknown": 20,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-lavaltrie.geojson.2026-08-10T162608713ZZ",
+        "dropped_codes": [
+          {
+            "code": "R-3",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lavaltrie.geojson.2026-08-10T162608713ZZ"
+          },
+          {
+            "code": "A-46",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lavaltrie.geojson.2026-08-10T162608713ZZ"
+          },
+          {
+            "code": "R-149",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lavaltrie.geojson.2026-08-10T162608713ZZ"
+          },
+          {
+            "code": "A-148",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lavaltrie.geojson.2026-08-10T162608713ZZ"
+          },
+          {
+            "code": "R-146",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lavaltrie.geojson.2026-08-10T162608713ZZ"
+          },
+          {
+            "code": "R-138",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lavaltrie.geojson.2026-08-10T162608713ZZ"
+          },
+          {
+            "code": "R-131",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lavaltrie.geojson.2026-08-10T162608713ZZ"
+          },
+          {
+            "code": "R-132",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-lavaltrie.geojson.2026-08-10T162608713ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:26:07.458Z",
+      "finished_at": "2026-08-10T16:27:20.636Z"
+    },
+    {
+      "slug": "mandeville",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 1964,
+        "assigned": 1779,
+        "matched": 1775,
+        "misassigned": 4,
+        "outside_all": 0,
+        "unassigned": 185,
+        "mismatch_pct": 0.22
+      },
+      "after": {
+        "lots": 1964,
+        "assigned": 1779,
+        "matched": 1775,
+        "misassigned": 4,
+        "outside_all": 0,
+        "unassigned": 185,
+        "mismatch_pct": 0.22
+      },
+      "backup_ts": "2026-08-10T162721390ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK mandeville lots=1964 assigned=90.58% multi=0.41% match=17.99% without_norms=82.01% verify parquet=Y stats=Y rows=1964",
+      "enrich_summary": "OK mandeville lots=1964 zone_code=90.58% norms=16.29% surface=100% code_postal=100%(RTA) adresse=98.17%(code=52095) tod=n/a deposit=Y bytes=8824864",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-mandeville.stats.json",
+        "num_lots": 1964,
+        "num_with_norms": 320,
+        "num_with_code_zone": 1779,
+        "num_with_adresse": 1928
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-mandeville.stats.json",
+        "num_lots": 1964,
+        "num_with_norms": 320,
+        "num_with_code_zone": 1779,
+        "num_with_adresse": 1928
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-mandeville.stats.json",
+        "num_lots": 1964,
+        "num_with_norms": 320,
+        "num_with_code_zone": 1779,
+        "num_with_adresse": 1928
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:27:20.637Z",
+      "finished_at": "2026-08-10T16:27:53.614Z"
+    },
+    {
+      "slug": "mont-joli",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 3343,
+        "assigned": 3329,
+        "matched": 3152,
+        "misassigned": 163,
+        "outside_all": 14,
+        "unassigned": 14,
+        "mismatch_pct": 5.32
+      },
+      "after": {
+        "lots": 3343,
+        "assigned": 3315,
+        "matched": 3152,
+        "misassigned": 163,
+        "outside_all": 0,
+        "unassigned": 28,
+        "mismatch_pct": 4.92
+      },
+      "backup_ts": "2026-08-10T162754542ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK mont-joli lots=3343 assigned=99.16% multi=4.88% match=67.42% without_norms=32.58% verify parquet=Y stats=Y rows=3343",
+      "enrich_summary": "OK mont-joli lots=3343 zone_code=99.16% norms=66.86% surface=100% code_postal=100%(RTA) adresse=90.58%(code=09077) tod=n/a deposit=Y bytes=8409380",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-mont-joli.stats.json",
+        "num_lots": 3343,
+        "num_with_norms": 2246,
+        "num_with_code_zone": 3329,
+        "num_with_adresse": 3028
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-mont-joli.stats.json",
+        "num_lots": 3343,
+        "num_with_norms": 2235,
+        "num_with_code_zone": 3315,
+        "num_with_adresse": 3028
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-mont-joli.stats.json",
+        "num_lots": 3343,
+        "num_with_norms": 2235,
+        "num_with_code_zone": 3315,
+        "num_with_adresse": 3028
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 2246->2235, code_zone 3329->3315",
+        "lots_to_unknown": 14,
+        "norms_to_unknown": 11,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ",
+        "dropped_codes": [
+          {
+            "code": "319 (HFD)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "302 (VLG)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "521 (ILG)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "322 (AGC)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "534 (AGC)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "529 (HMD)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "522 (CMC)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "623 (AGC)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "128 (HBF)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "105 (CMC)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "214 (ILG)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          },
+          {
+            "code": "348 (MTF)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-mont-joli.geojson.2026-08-10T162754542ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:27:53.615Z",
+      "finished_at": "2026-08-10T16:28:28.578Z"
+    },
+    {
+      "slug": "montmagny",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 6626,
+        "assigned": 6626,
+        "matched": 6145,
+        "misassigned": 479,
+        "outside_all": 2,
+        "unassigned": 0,
+        "mismatch_pct": 7.26
+      },
+      "after": {
+        "lots": 6626,
+        "assigned": 6624,
+        "matched": 6145,
+        "misassigned": 479,
+        "outside_all": 0,
+        "unassigned": 2,
+        "mismatch_pct": 7.23
+      },
+      "backup_ts": "2026-08-10T162829415ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK montmagny lots=6626 assigned=99.97% multi=6.61% match=2.67% without_norms=97.33% verify parquet=Y stats=Y rows=6626",
+      "enrich_summary": "OK montmagny lots=6626 zone_code=99.97% norms=2.67% surface=100% code_postal=100%(RTA) adresse=91.44%(code=18050) tod=n/a deposit=Y bytes=12984495",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-montmagny.stats.json",
+        "num_lots": 6626,
+        "num_with_norms": 177,
+        "num_with_code_zone": 6626,
+        "num_with_adresse": 6059
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-montmagny.stats.json",
+        "num_lots": 6626,
+        "num_with_norms": 177,
+        "num_with_code_zone": 6624,
+        "num_with_adresse": 6059
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-montmagny.stats.json",
+        "num_lots": 6626,
+        "num_with_norms": 177,
+        "num_with_code_zone": 6624,
+        "num_with_adresse": 6059
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "code_zone 6626->6624",
+        "lots_to_unknown": 2,
+        "norms_to_unknown": 0,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-montmagny.geojson.2026-08-10T162829415ZZ",
+        "dropped_codes": [
+          {
+            "code": "Fc - 2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-montmagny.geojson.2026-08-10T162829415ZZ"
+          },
+          {
+            "code": "RcM - 48",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-montmagny.geojson.2026-08-10T162829415ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:28:28.578Z",
+      "finished_at": "2026-08-10T16:29:35.229Z"
+    },
+    {
+      "slug": "morin-heights",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 5535,
+        "assigned": 5534,
+        "matched": 5427,
+        "misassigned": 103,
+        "outside_all": 4,
+        "unassigned": 1,
+        "mismatch_pct": 1.93
+      },
+      "after": {
+        "lots": 5535,
+        "assigned": 5530,
+        "matched": 5427,
+        "misassigned": 103,
+        "outside_all": 0,
+        "unassigned": 5,
+        "mismatch_pct": 1.86
+      },
+      "backup_ts": "2026-08-10T162936375ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK morin-heights lots=5535 assigned=99.91% multi=2.46% match=17.65% without_norms=82.35% verify parquet=Y stats=Y rows=5535",
+      "enrich_summary": "OK morin-heights lots=5535 zone_code=99.91% norms=17.63% surface=100% code_postal=100%(RTA) adresse=99.1%(code=77050) tod=n/a deposit=Y bytes=24663347",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-morin-heights.stats.json",
+        "num_lots": 5535,
+        "num_with_norms": 976,
+        "num_with_code_zone": 5534,
+        "num_with_adresse": 5485
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-morin-heights.stats.json",
+        "num_lots": 5535,
+        "num_with_norms": 976,
+        "num_with_code_zone": 5530,
+        "num_with_adresse": 5485
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-morin-heights.stats.json",
+        "num_lots": 5535,
+        "num_with_norms": 976,
+        "num_with_code_zone": 5530,
+        "num_with_adresse": 5485
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "code_zone 5534->5530",
+        "lots_to_unknown": 4,
+        "norms_to_unknown": 0,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-morin-heights.geojson.2026-08-10T162936375ZZ",
+        "dropped_codes": [
+          {
+            "code": "RV-23",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-morin-heights.geojson.2026-08-10T162936375ZZ"
+          },
+          {
+            "code": "RV-28",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-morin-heights.geojson.2026-08-10T162936375ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:29:35.229Z",
+      "finished_at": "2026-08-10T16:31:09.189Z"
+    },
+    {
+      "slug": "notre-dame-des-prairies",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 4342,
+        "assigned": 4272,
+        "matched": 4067,
+        "misassigned": 198,
+        "outside_all": 7,
+        "unassigned": 70,
+        "mismatch_pct": 4.8
+      },
+      "after": {
+        "lots": 4342,
+        "assigned": 4265,
+        "matched": 4067,
+        "misassigned": 198,
+        "outside_all": 0,
+        "unassigned": 77,
+        "mismatch_pct": 4.64
+      },
+      "backup_ts": "2026-08-10T163110026ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK notre-dame-des-prairies lots=4342 assigned=98.23% multi=2.76% match=36.93% without_norms=63.07% verify parquet=Y stats=Y rows=4342",
+      "enrich_summary": "OK notre-dame-des-prairies lots=4342 zone_code=98.23% norms=36.27% surface=100% code_postal=100%(RTA) adresse=97.6%(code=61030) tod=n/a deposit=Y bytes=12314211",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-notre-dame-des-prairies.stats.json",
+        "num_lots": 4342,
+        "num_with_norms": 1577,
+        "num_with_code_zone": 4272,
+        "num_with_adresse": 4238
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-notre-dame-des-prairies.stats.json",
+        "num_lots": 4342,
+        "num_with_norms": 1575,
+        "num_with_code_zone": 4265,
+        "num_with_adresse": 4238
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-notre-dame-des-prairies.stats.json",
+        "num_lots": 4342,
+        "num_with_norms": 1575,
+        "num_with_code_zone": 4265,
+        "num_with_adresse": 4238
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 1577->1575, code_zone 4272->4265",
+        "lots_to_unknown": 7,
+        "norms_to_unknown": 2,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-notre-dame-des-prairies.geojson.2026-08-10T163110026ZZ",
+        "dropped_codes": [
+          {
+            "code": "R-1 332",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-notre-dame-des-prairies.geojson.2026-08-10T163110026ZZ"
+          },
+          {
+            "code": "R-1 290",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-notre-dame-des-prairies.geojson.2026-08-10T163110026ZZ"
+          },
+          {
+            "code": "R-1 262-1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-notre-dame-des-prairies.geojson.2026-08-10T163110026ZZ"
+          },
+          {
+            "code": "R-1 219",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-notre-dame-des-prairies.geojson.2026-08-10T163110026ZZ"
+          },
+          {
+            "code": "R-1 253",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-notre-dame-des-prairies.geojson.2026-08-10T163110026ZZ"
+          },
+          {
+            "code": "VILL 104",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-notre-dame-des-prairies.geojson.2026-08-10T163110026ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:31:09.190Z",
+      "finished_at": "2026-08-10T16:31:46.009Z"
+    },
+    {
+      "slug": "piedmont",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 2665,
+        "assigned": 2664,
+        "matched": 2529,
+        "misassigned": 126,
+        "outside_all": 9,
+        "unassigned": 1,
+        "mismatch_pct": 5.07
+      },
+      "after": {
+        "lots": 2665,
+        "assigned": 2655,
+        "matched": 2529,
+        "misassigned": 126,
+        "outside_all": 0,
+        "unassigned": 10,
+        "mismatch_pct": 4.75
+      },
+      "backup_ts": "2026-08-10T163147077ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK piedmont lots=2665 assigned=99.62% multi=2.29% match=15.93% without_norms=84.07% verify parquet=Y stats=Y rows=2665",
+      "enrich_summary": "OK piedmont lots=2665 zone_code=99.62% norms=15.87% surface=100% code_postal=100%(RTA) adresse=94.82%(code=77030) tod=n/a deposit=Y bytes=8947134",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-piedmont.stats.json",
+        "num_lots": 2665,
+        "num_with_norms": 425,
+        "num_with_code_zone": 2664,
+        "num_with_adresse": 2527
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-piedmont.stats.json",
+        "num_lots": 2665,
+        "num_with_norms": 423,
+        "num_with_code_zone": 2655,
+        "num_with_adresse": 2527
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-piedmont.stats.json",
+        "num_lots": 2665,
+        "num_with_norms": 423,
+        "num_with_code_zone": 2655,
+        "num_with_adresse": 2527
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 425->423, code_zone 2664->2655",
+        "lots_to_unknown": 9,
+        "norms_to_unknown": 2,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-piedmont.geojson.2026-08-10T163147077ZZ",
+        "dropped_codes": [
+          {
+            "code": "COR-161",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-piedmont.geojson.2026-08-10T163147077ZZ"
+          },
+          {
+            "code": "RV-100",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-piedmont.geojson.2026-08-10T163147077ZZ"
+          },
+          {
+            "code": "RV-104",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-piedmont.geojson.2026-08-10T163147077ZZ"
+          },
+          {
+            "code": "R-205",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-piedmont.geojson.2026-08-10T163147077ZZ"
+          },
+          {
+            "code": "COR-111",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-piedmont.geojson.2026-08-10T163147077ZZ"
+          },
+          {
+            "code": "R-232",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-piedmont.geojson.2026-08-10T163147077ZZ"
+          },
+          {
+            "code": "R-237",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-piedmont.geojson.2026-08-10T163147077ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:31:46.010Z",
+      "finished_at": "2026-08-10T16:32:35.318Z"
+    },
+    {
+      "slug": "pointe-lebel",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 1325,
+        "assigned": 1325,
+        "matched": 1303,
+        "misassigned": 19,
+        "outside_all": 3,
+        "unassigned": 0,
+        "mismatch_pct": 1.66
+      },
+      "after": {
+        "lots": 1325,
+        "assigned": 1322,
+        "matched": 1303,
+        "misassigned": 19,
+        "outside_all": 0,
+        "unassigned": 3,
+        "mismatch_pct": 1.44
+      },
+      "backup_ts": "2026-08-10T163235763ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK pointe-lebel lots=1325 assigned=99.77% multi=3.02% match=33.66% without_norms=66.34% verify parquet=Y stats=Y rows=1325",
+      "enrich_summary": "OK pointe-lebel lots=1325 zone_code=99.77% norms=33.58% surface=100% code_postal=100%(RTA) adresse=96%(code=96025) tod=n/a deposit=Y bytes=2959069",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-pointe-lebel.stats.json",
+        "num_lots": 1325,
+        "num_with_norms": 446,
+        "num_with_code_zone": 1325,
+        "num_with_adresse": 1272
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-pointe-lebel.stats.json",
+        "num_lots": 1325,
+        "num_with_norms": 445,
+        "num_with_code_zone": 1322,
+        "num_with_adresse": 1272
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-pointe-lebel.stats.json",
+        "num_lots": 1325,
+        "num_with_norms": 445,
+        "num_with_code_zone": 1322,
+        "num_with_adresse": 1272
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 446->445, code_zone 1325->1322",
+        "lots_to_unknown": 3,
+        "norms_to_unknown": 1,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-lebel.geojson.2026-08-10T163235763ZZ",
+        "dropped_codes": [
+          {
+            "code": "RT68",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-lebel.geojson.2026-08-10T163235763ZZ"
+          },
+          {
+            "code": "H30",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-lebel.geojson.2026-08-10T163235763ZZ"
+          },
+          {
+            "code": "H24",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-lebel.geojson.2026-08-10T163235763ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:32:35.319Z",
+      "finished_at": "2026-08-10T16:33:04.846Z"
+    },
+    {
+      "slug": "price",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 809,
+        "assigned": 809,
+        "matched": 778,
+        "misassigned": 29,
+        "outside_all": 2,
+        "unassigned": 0,
+        "mismatch_pct": 3.83
+      },
+      "after": {
+        "lots": 809,
+        "assigned": 807,
+        "matched": 778,
+        "misassigned": 29,
+        "outside_all": 0,
+        "unassigned": 2,
+        "mismatch_pct": 3.59
+      },
+      "backup_ts": "2026-08-10T163305350ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK price lots=809 assigned=99.75% multi=1.11% match=51.92% without_norms=48.08% verify parquet=Y stats=Y rows=809",
+      "enrich_summary": "OK price lots=809 zone_code=99.75% norms=51.79% surface=100% code_postal=100%(RTA) adresse=100%(code=09065) tod=n/a deposit=Y bytes=1836628",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-price.stats.json",
+        "num_lots": 809,
+        "num_with_norms": 421,
+        "num_with_code_zone": 809,
+        "num_with_adresse": 809
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-price.stats.json",
+        "num_lots": 809,
+        "num_with_norms": 419,
+        "num_with_code_zone": 807,
+        "num_with_adresse": 809
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-price.stats.json",
+        "num_lots": 809,
+        "num_with_norms": 419,
+        "num_with_code_zone": 807,
+        "num_with_adresse": 809
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 421->419, code_zone 809->807",
+        "lots_to_unknown": 2,
+        "norms_to_unknown": 2,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-price.geojson.2026-08-10T163305350ZZ",
+        "dropped_codes": [
+          {
+            "code": "17 (HBF)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-price.geojson.2026-08-10T163305350ZZ"
+          },
+          {
+            "code": "18 (HBF)",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-price.geojson.2026-08-10T163305350ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:33:04.846Z",
+      "finished_at": "2026-08-10T16:33:34.608Z"
+    },
+    {
+      "slug": "ragueneau",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 675,
+        "assigned": 675,
+        "matched": 648,
+        "misassigned": 17,
+        "outside_all": 10,
+        "unassigned": 0,
+        "mismatch_pct": 4
+      },
+      "after": {
+        "lots": 675,
+        "assigned": 665,
+        "matched": 648,
+        "misassigned": 17,
+        "outside_all": 0,
+        "unassigned": 10,
+        "mismatch_pct": 2.56
+      },
+      "backup_ts": "2026-08-10T163335234ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK ragueneau lots=675 assigned=98.52% multi=9.04% match=97.29% without_norms=2.71% verify parquet=Y stats=Y rows=675",
+      "enrich_summary": "OK ragueneau lots=675 zone_code=98.52% norms=95.85% surface=100% code_postal=100%(RTA) adresse=92.3%(code=96040) tod=n/a deposit=Y bytes=2604108",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-ragueneau.stats.json",
+        "num_lots": 675,
+        "num_with_norms": 657,
+        "num_with_code_zone": 675,
+        "num_with_adresse": 623
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-ragueneau.stats.json",
+        "num_lots": 675,
+        "num_with_norms": 647,
+        "num_with_code_zone": 665,
+        "num_with_adresse": 623
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-ragueneau.stats.json",
+        "num_lots": 675,
+        "num_with_norms": 647,
+        "num_with_code_zone": 665,
+        "num_with_adresse": 623
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 657->647, code_zone 675->665",
+        "lots_to_unknown": 10,
+        "norms_to_unknown": 10,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-ragueneau.geojson.2026-08-10T163335234ZZ",
+        "dropped_codes": [
+          {
+            "code": "H34",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-ragueneau.geojson.2026-08-10T163335234ZZ"
+          },
+          {
+            "code": "H29",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-ragueneau.geojson.2026-08-10T163335234ZZ"
+          },
+          {
+            "code": "H40",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-ragueneau.geojson.2026-08-10T163335234ZZ"
+          },
+          {
+            "code": "H18",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-ragueneau.geojson.2026-08-10T163335234ZZ"
+          },
+          {
+            "code": "H33",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-ragueneau.geojson.2026-08-10T163335234ZZ"
+          },
+          {
+            "code": "CH14",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-ragueneau.geojson.2026-08-10T163335234ZZ"
+          },
+          {
+            "code": "H32",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-ragueneau.geojson.2026-08-10T163335234ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:33:34.609Z",
+      "finished_at": "2026-08-10T16:33:50.191Z"
+    },
+    {
+      "slug": "sacre-coeur-de-jesus",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 818,
+        "assigned": 0,
+        "matched": 0,
+        "misassigned": 0,
+        "outside_all": 0,
+        "unassigned": 818,
+        "mismatch_pct": 0
+      },
+      "after": {
+        "lots": 818,
+        "assigned": 799,
+        "matched": 778,
+        "misassigned": 21,
+        "outside_all": 0,
+        "unassigned": 19,
+        "mismatch_pct": 2.63
+      },
+      "backup_ts": "2026-08-10T163350656ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK sacre-coeur-de-jesus lots=818 assigned=97.68% multi=3.91% match=0% without_norms=100% verify parquet=Y stats=Y rows=818",
+      "enrich_summary": "OK sacre-coeur-de-jesus lots=818 zone_code=97.68% norms=0% surface=100% code_postal=100%(RTA) adresse=97.68%(code=31130) tod=n/a deposit=Y bytes=2445570",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-sacre-coeur-de-jesus.stats.json",
+        "num_lots": 818,
+        "num_with_norms": 0,
+        "num_with_code_zone": 0,
+        "num_with_adresse": 799
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-sacre-coeur-de-jesus.stats.json",
+        "num_lots": 818,
+        "num_with_norms": 0,
+        "num_with_code_zone": 799,
+        "num_with_adresse": 799
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-sacre-coeur-de-jesus.stats.json",
+        "num_lots": 818,
+        "num_with_norms": 0,
+        "num_with_code_zone": 799,
+        "num_with_adresse": 799
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:33:50.192Z",
+      "finished_at": "2026-08-10T16:34:06.350Z"
+    },
+    {
+      "slug": "saint-adolphe-dhoward",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 9398,
+        "assigned": 9398,
+        "matched": 9281,
+        "misassigned": 113,
+        "outside_all": 4,
+        "unassigned": 0,
+        "mismatch_pct": 1.24
+      },
+      "after": {
+        "lots": 9398,
+        "assigned": 9394,
+        "matched": 9281,
+        "misassigned": 113,
+        "outside_all": 0,
+        "unassigned": 4,
+        "mismatch_pct": 1.2
+      },
+      "backup_ts": "2026-08-10T163407761ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-adolphe-dhoward lots=9398 assigned=99.96% multi=1.01% match=63.32% without_norms=36.68% verify parquet=Y stats=Y rows=9398",
+      "enrich_summary": "OK saint-adolphe-dhoward lots=9398 zone_code=99.96% norms=63.29% surface=100% code_postal=100%(RTA) adresse=98.04%(code=77065) tod=n/a deposit=Y bytes=33108283",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-adolphe-dhoward.stats.json",
+        "num_lots": 9398,
+        "num_with_norms": 5950,
+        "num_with_code_zone": 9398,
+        "num_with_adresse": 9214
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-adolphe-dhoward.stats.json",
+        "num_lots": 9398,
+        "num_with_norms": 5948,
+        "num_with_code_zone": 9394,
+        "num_with_adresse": 9214
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-adolphe-dhoward.stats.json",
+        "num_lots": 9398,
+        "num_with_norms": 5948,
+        "num_with_code_zone": 9394,
+        "num_with_adresse": 9214
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 5950->5948, code_zone 9398->9394",
+        "lots_to_unknown": 4,
+        "norms_to_unknown": 2,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adolphe-dhoward.geojson.2026-08-10T163407761ZZ",
+        "dropped_codes": [
+          {
+            "code": "H-089",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adolphe-dhoward.geojson.2026-08-10T163407761ZZ"
+          },
+          {
+            "code": "H-023",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adolphe-dhoward.geojson.2026-08-10T163407761ZZ"
+          },
+          {
+            "code": "H-014",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adolphe-dhoward.geojson.2026-08-10T163407761ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:34:06.350Z",
+      "finished_at": "2026-08-10T16:35:33.147Z"
+    },
+    {
+      "slug": "saint-adrien",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 610,
+        "assigned": 605,
+        "matched": 581,
+        "misassigned": 18,
+        "outside_all": 6,
+        "unassigned": 5,
+        "mismatch_pct": 3.97
+      },
+      "after": {
+        "lots": 610,
+        "assigned": 599,
+        "matched": 581,
+        "misassigned": 18,
+        "outside_all": 0,
+        "unassigned": 11,
+        "mismatch_pct": 3.01
+      },
+      "backup_ts": "2026-08-10T163533698ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-adrien lots=610 assigned=98.2% multi=4.59% match=62.27% without_norms=37.73% verify parquet=Y stats=Y rows=610",
+      "enrich_summary": "OK saint-adrien lots=610 zone_code=98.2% norms=61.15% surface=100% code_postal=100%(RTA) adresse=98.03%(code=40010) tod=n/a deposit=Y bytes=2965929",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-adrien.stats.json",
+        "num_lots": 610,
+        "num_with_norms": 377,
+        "num_with_code_zone": 605,
+        "num_with_adresse": 598
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-adrien.stats.json",
+        "num_lots": 610,
+        "num_with_norms": 373,
+        "num_with_code_zone": 599,
+        "num_with_adresse": 598
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-adrien.stats.json",
+        "num_lots": 610,
+        "num_with_norms": 373,
+        "num_with_code_zone": 599,
+        "num_with_adresse": 598
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 377->373, code_zone 605->599",
+        "lots_to_unknown": 6,
+        "norms_to_unknown": 4,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien.geojson.2026-08-10T163533698ZZ",
+        "dropped_codes": [
+          {
+            "code": "A-26",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien.geojson.2026-08-10T163533698ZZ"
+          },
+          {
+            "code": "A-35",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien.geojson.2026-08-10T163533698ZZ"
+          },
+          {
+            "code": "AFB-24",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien.geojson.2026-08-10T163533698ZZ"
+          },
+          {
+            "code": "AFV-23",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien.geojson.2026-08-10T163533698ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:35:33.147Z",
+      "finished_at": "2026-08-10T16:35:49.819Z"
+    },
+    {
+      "slug": "saint-adrien-dirlande",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 513,
+        "assigned": 510,
+        "matched": 492,
+        "misassigned": 14,
+        "outside_all": 4,
+        "unassigned": 3,
+        "mismatch_pct": 3.53
+      },
+      "after": {
+        "lots": 513,
+        "assigned": 506,
+        "matched": 492,
+        "misassigned": 14,
+        "outside_all": 0,
+        "unassigned": 7,
+        "mismatch_pct": 2.77
+      },
+      "backup_ts": "2026-08-10T163550373ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-adrien-dirlande lots=513 assigned=98.64% multi=7.41% match=0% without_norms=100% verify parquet=Y stats=Y rows=513",
+      "enrich_summary": "OK saint-adrien-dirlande lots=513 zone_code=98.64% norms=0% surface=100% code_postal=100%(RTA) adresse=99.03%(code=31095) tod=n/a deposit=Y bytes=1826376",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-adrien-dirlande.stats.json",
+        "num_lots": 513,
+        "num_with_norms": 0,
+        "num_with_code_zone": 510,
+        "num_with_adresse": 508
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-adrien-dirlande.stats.json",
+        "num_lots": 513,
+        "num_with_norms": 0,
+        "num_with_code_zone": 506,
+        "num_with_adresse": 508
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-adrien-dirlande.stats.json",
+        "num_lots": 513,
+        "num_with_norms": 0,
+        "num_with_code_zone": 506,
+        "num_with_adresse": 508
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "code_zone 510->506",
+        "lots_to_unknown": 4,
+        "norms_to_unknown": 0,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien-dirlande.geojson.2026-08-10T163550373ZZ",
+        "dropped_codes": [
+          {
+            "code": "ID 8",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien-dirlande.geojson.2026-08-10T163550373ZZ"
+          },
+          {
+            "code": "ID 5",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien-dirlande.geojson.2026-08-10T163550373ZZ"
+          },
+          {
+            "code": "AD 5",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien-dirlande.geojson.2026-08-10T163550373ZZ"
+          },
+          {
+            "code": "AFA 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-adrien-dirlande.geojson.2026-08-10T163550373ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:35:49.819Z",
+      "finished_at": "2026-08-10T16:36:03.389Z"
+    },
+    {
+      "slug": "saint-alexandre-des-lacs",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 515,
+        "assigned": 515,
+        "matched": 502,
+        "misassigned": 12,
+        "outside_all": 1,
+        "unassigned": 0,
+        "mismatch_pct": 2.52
+      },
+      "after": {
+        "lots": 515,
+        "assigned": 514,
+        "matched": 502,
+        "misassigned": 12,
+        "outside_all": 0,
+        "unassigned": 1,
+        "mismatch_pct": 2.33
+      },
+      "backup_ts": "2026-08-10T163604119ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-alexandre-des-lacs lots=515 assigned=99.81% multi=4.85% match=100% without_norms=0% verify parquet=Y stats=Y rows=515",
+      "enrich_summary": "OK saint-alexandre-des-lacs lots=515 zone_code=99.81% norms=99.81% surface=100% code_postal=100%(RTA) adresse=86.41%(code=07065) tod=n/a deposit=Y bytes=3139885",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-alexandre-des-lacs.stats.json",
+        "num_lots": 515,
+        "num_with_norms": 515,
+        "num_with_code_zone": 515,
+        "num_with_adresse": 445
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-alexandre-des-lacs.stats.json",
+        "num_lots": 515,
+        "num_with_norms": 514,
+        "num_with_code_zone": 514,
+        "num_with_adresse": 445
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-alexandre-des-lacs.stats.json",
+        "num_lots": 515,
+        "num_with_norms": 514,
+        "num_with_code_zone": 514,
+        "num_with_adresse": 445
+      },
+      "complete_before": true,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 515->514, code_zone 515->514",
+        "lots_to_unknown": 1,
+        "norms_to_unknown": 1,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-alexandre-des-lacs.geojson.2026-08-10T163604119ZZ",
+        "dropped_codes": [
+          {
+            "code": "26 Af",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-alexandre-des-lacs.geojson.2026-08-10T163604119ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:36:03.390Z",
+      "finished_at": "2026-08-10T16:36:20.804Z"
+    },
+    {
+      "slug": "saint-alfred",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 817,
+        "assigned": 813,
+        "matched": 794,
+        "misassigned": 14,
+        "outside_all": 5,
+        "unassigned": 4,
+        "mismatch_pct": 2.34
+      },
+      "after": {
+        "lots": 817,
+        "assigned": 808,
+        "matched": 794,
+        "misassigned": 14,
+        "outside_all": 0,
+        "unassigned": 9,
+        "mismatch_pct": 1.73
+      },
+      "backup_ts": "2026-08-10T163621240ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-alfred lots=817 assigned=98.9% multi=4.04% match=100% without_norms=0% verify parquet=Y stats=Y rows=817",
+      "enrich_summary": "OK saint-alfred lots=817 zone_code=98.9% norms=98.9% surface=100% code_postal=100%(RTA) adresse=98.9%(code=27015) tod=n/a deposit=Y bytes=2696968",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-alfred.stats.json",
+        "num_lots": 817,
+        "num_with_norms": 813,
+        "num_with_code_zone": 813,
+        "num_with_adresse": 808
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-alfred.stats.json",
+        "num_lots": 817,
+        "num_with_norms": 808,
+        "num_with_code_zone": 808,
+        "num_with_adresse": 808
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-alfred.stats.json",
+        "num_lots": 817,
+        "num_with_norms": 808,
+        "num_with_code_zone": 808,
+        "num_with_adresse": 808
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 813->808, code_zone 813->808",
+        "lots_to_unknown": 5,
+        "norms_to_unknown": 5,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-alfred.geojson.2026-08-10T163621240ZZ",
+        "dropped_codes": [
+          {
+            "code": "V-40",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-alfred.geojson.2026-08-10T163621240ZZ"
+          },
+          {
+            "code": "F-32",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-alfred.geojson.2026-08-10T163621240ZZ"
+          },
+          {
+            "code": "R-50",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-alfred.geojson.2026-08-10T163621240ZZ"
+          },
+          {
+            "code": "A-14",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-alfred.geojson.2026-08-10T163621240ZZ"
+          },
+          {
+            "code": "AF-23",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-alfred.geojson.2026-08-10T163621240ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:36:20.805Z",
+      "finished_at": "2026-08-10T16:36:35.853Z"
+    },
+    {
+      "slug": "saint-anicet",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 2874,
+        "assigned": 2870,
+        "matched": 2814,
+        "misassigned": 39,
+        "outside_all": 17,
+        "unassigned": 4,
+        "mismatch_pct": 1.95
+      },
+      "after": {
+        "lots": 2874,
+        "assigned": 2853,
+        "matched": 2814,
+        "misassigned": 39,
+        "outside_all": 0,
+        "unassigned": 21,
+        "mismatch_pct": 1.37
+      },
+      "backup_ts": "2026-08-10T163636696ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-anicet lots=2874 assigned=99.27% multi=2.61% match=21.66% without_norms=78.34% verify parquet=Y stats=Y rows=2874",
+      "enrich_summary": "OK saint-anicet lots=2874 zone_code=99.27% norms=21.5% surface=100% code_postal=100%(RTA) adresse=96.35%(code=69070) tod=n/a deposit=Y bytes=6604199",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-anicet.stats.json",
+        "num_lots": 2874,
+        "num_with_norms": 628,
+        "num_with_code_zone": 2870,
+        "num_with_adresse": 2769
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-anicet.stats.json",
+        "num_lots": 2874,
+        "num_with_norms": 618,
+        "num_with_code_zone": 2853,
+        "num_with_adresse": 2769
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-anicet.stats.json",
+        "num_lots": 2874,
+        "num_with_norms": 618,
+        "num_with_code_zone": 2853,
+        "num_with_adresse": 2769
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 628->618, code_zone 2870->2853",
+        "lots_to_unknown": 17,
+        "norms_to_unknown": 10,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-anicet.geojson.2026-08-10T163636696ZZ",
+        "dropped_codes": [
+          {
+            "code": "V-5",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-anicet.geojson.2026-08-10T163636696ZZ"
+          },
+          {
+            "code": "V-4",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-anicet.geojson.2026-08-10T163636696ZZ"
+          },
+          {
+            "code": "V-7",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-anicet.geojson.2026-08-10T163636696ZZ"
+          },
+          {
+            "code": "V-6",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-anicet.geojson.2026-08-10T163636696ZZ"
+          },
+          {
+            "code": "AD-3",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-anicet.geojson.2026-08-10T163636696ZZ"
+          },
+          {
+            "code": "V-9",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-anicet.geojson.2026-08-10T163636696ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:36:35.854Z",
+      "finished_at": "2026-08-10T16:37:25.400Z"
+    },
+    {
+      "slug": "saint-antoine-de-lisle-aux-grues",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 396,
+        "assigned": 396,
+        "matched": 392,
+        "misassigned": 4,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 1.01
+      },
+      "after": {
+        "lots": 396,
+        "assigned": 396,
+        "matched": 392,
+        "misassigned": 4,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 1.01
+      },
+      "backup_ts": "2026-08-10T163725822ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-antoine-de-lisle-aux-grues lots=396 assigned=100% multi=5.56% match=0% without_norms=100% verify parquet=Y stats=Y rows=396",
+      "enrich_summary": "OK saint-antoine-de-lisle-aux-grues lots=396 zone_code=100% norms=0% surface=100% code_postal=100%(RTA) adresse=90.91%(code=18070) tod=n/a deposit=Y bytes=930389",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-antoine-de-lisle-aux-grues.stats.json",
+        "num_lots": 396,
+        "num_with_norms": 0,
+        "num_with_code_zone": 396,
+        "num_with_adresse": 360
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-antoine-de-lisle-aux-grues.stats.json",
+        "num_lots": 396,
+        "num_with_norms": 0,
+        "num_with_code_zone": 396,
+        "num_with_adresse": 360
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-antoine-de-lisle-aux-grues.stats.json",
+        "num_lots": 396,
+        "num_with_norms": 0,
+        "num_with_code_zone": 396,
+        "num_with_adresse": 360
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:37:25.400Z",
+      "finished_at": "2026-08-10T16:37:46.678Z"
+    },
+    {
+      "slug": "saint-barthelemy",
+      "deposited": false,
+      "skipped_reason": "geometry-suspect (outside_all=25/40 mismatch, mismatch_pct=1.94%) — ne dépose pas",
+      "before": {
+        "lots": 2066,
+        "assigned": 2064,
+        "matched": 2024,
+        "misassigned": 15,
+        "outside_all": 25,
+        "unassigned": 2,
+        "mismatch_pct": 1.94
+      },
+      "after": null,
+      "backup_ts": null,
+      "mirror": null,
+      "join_summary": null,
+      "enrich_summary": null,
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-barthelemy.stats.json",
+        "num_lots": 2066,
+        "num_with_norms": 2064,
+        "num_with_code_zone": 2064,
+        "num_with_adresse": 2054
+      },
+      "lot_metrics_after": null,
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-barthelemy.stats.json",
+        "num_lots": 2066,
+        "num_with_norms": 2064,
+        "num_with_code_zone": 2064,
+        "num_with_adresse": 2054
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:37:46.679Z",
+      "finished_at": "2026-08-10T16:37:47.423Z"
+    },
+    {
+      "slug": "saint-camille",
+      "deposited": false,
+      "skipped_reason": "geometry-suspect (outside_all=6/8 mismatch, mismatch_pct=1.46%) — ne dépose pas",
+      "before": {
+        "lots": 549,
+        "assigned": 549,
+        "matched": 541,
+        "misassigned": 2,
+        "outside_all": 6,
+        "unassigned": 0,
+        "mismatch_pct": 1.46
+      },
+      "after": null,
+      "backup_ts": null,
+      "mirror": null,
+      "join_summary": null,
+      "enrich_summary": null,
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-camille.stats.json",
+        "num_lots": 549,
+        "num_with_norms": 549,
+        "num_with_code_zone": 549,
+        "num_with_adresse": 543
+      },
+      "lot_metrics_after": null,
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-camille.stats.json",
+        "num_lots": 549,
+        "num_with_norms": 549,
+        "num_with_code_zone": 549,
+        "num_with_adresse": 543
+      },
+      "complete_before": true,
+      "complete_after": false,
+      "complete_final": true,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:37:47.424Z",
+      "finished_at": "2026-08-10T16:37:47.969Z"
+    },
+    {
+      "slug": "saint-charles-borromee",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 5120,
+        "assigned": 5107,
+        "matched": 4991,
+        "misassigned": 103,
+        "outside_all": 13,
+        "unassigned": 13,
+        "mismatch_pct": 2.27
+      },
+      "after": {
+        "lots": 5120,
+        "assigned": 5094,
+        "matched": 4991,
+        "misassigned": 103,
+        "outside_all": 0,
+        "unassigned": 26,
+        "mismatch_pct": 2.02
+      },
+      "backup_ts": "2026-08-10T163749222ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-charles-borromee lots=5120 assigned=99.49% multi=2.36% match=27.72% without_norms=72.28% verify parquet=Y stats=Y rows=5120",
+      "enrich_summary": "OK saint-charles-borromee lots=5120 zone_code=99.49% norms=27.58% surface=100% code_postal=100%(RTA) adresse=98.07%(code=61035) tod=n/a deposit=Y bytes=13202574",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-charles-borromee.stats.json",
+        "num_lots": 5120,
+        "num_with_norms": 1416,
+        "num_with_code_zone": 5107,
+        "num_with_adresse": 5021
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-charles-borromee.stats.json",
+        "num_lots": 5120,
+        "num_with_norms": 1412,
+        "num_with_code_zone": 5094,
+        "num_with_adresse": 5021
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-charles-borromee.stats.json",
+        "num_lots": 5120,
+        "num_with_norms": 1412,
+        "num_with_code_zone": 5094,
+        "num_with_adresse": 5021
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 1416->1412, code_zone 5107->5094",
+        "lots_to_unknown": 13,
+        "norms_to_unknown": 4,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ",
+        "dropped_codes": [
+          {
+            "code": "A94",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          },
+          {
+            "code": "H106",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          },
+          {
+            "code": "H76",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          },
+          {
+            "code": "H93",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          },
+          {
+            "code": "P92",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          },
+          {
+            "code": "H96",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          },
+          {
+            "code": "S18\\",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          },
+          {
+            "code": "H7",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          },
+          {
+            "code": "H63",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          },
+          {
+            "code": "P57",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-charles-borromee.geojson.2026-08-10T163749222ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:37:47.970Z",
+      "finished_at": "2026-08-10T16:38:30.994Z"
+    },
+    {
+      "slug": "saint-chrysostome",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 1740,
+        "assigned": 1736,
+        "matched": 1692,
+        "misassigned": 39,
+        "outside_all": 5,
+        "unassigned": 4,
+        "mismatch_pct": 2.53
+      },
+      "after": {
+        "lots": 1740,
+        "assigned": 1731,
+        "matched": 1692,
+        "misassigned": 39,
+        "outside_all": 0,
+        "unassigned": 9,
+        "mismatch_pct": 2.25
+      },
+      "backup_ts": "2026-08-10T163831614ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-chrysostome lots=1740 assigned=99.48% multi=2.82% match=0% without_norms=100% verify parquet=Y stats=Y rows=1740",
+      "enrich_summary": "OK saint-chrysostome lots=1740 zone_code=99.48% norms=0% surface=100% code_postal=100%(RTA) adresse=99.02%(code=69017) tod=n/a deposit=Y bytes=3173343",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-chrysostome.stats.json",
+        "num_lots": 1740,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1736,
+        "num_with_adresse": 1723
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-chrysostome.stats.json",
+        "num_lots": 1740,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1731,
+        "num_with_adresse": 1723
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-chrysostome.stats.json",
+        "num_lots": 1740,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1731,
+        "num_with_adresse": 1723
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "code_zone 1736->1731",
+        "lots_to_unknown": 5,
+        "norms_to_unknown": 0,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-chrysostome.geojson.2026-08-10T163831614ZZ",
+        "dropped_codes": [
+          {
+            "code": "ADR-15",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-chrysostome.geojson.2026-08-10T163831614ZZ"
+          },
+          {
+            "code": "AGF-2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-chrysostome.geojson.2026-08-10T163831614ZZ"
+          },
+          {
+            "code": "A-3",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-chrysostome.geojson.2026-08-10T163831614ZZ"
+          },
+          {
+            "code": "AD-4",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-chrysostome.geojson.2026-08-10T163831614ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:38:30.994Z",
+      "finished_at": "2026-08-10T16:38:57.927Z"
+    },
+    {
+      "slug": "saint-cleophas",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 494,
+        "assigned": 492,
+        "matched": 480,
+        "misassigned": 8,
+        "outside_all": 4,
+        "unassigned": 2,
+        "mismatch_pct": 2.44
+      },
+      "after": {
+        "lots": 494,
+        "assigned": 488,
+        "matched": 480,
+        "misassigned": 8,
+        "outside_all": 0,
+        "unassigned": 6,
+        "mismatch_pct": 1.64
+      },
+      "backup_ts": "2026-08-10T163858682ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-cleophas lots=494 assigned=98.79% multi=2.83% match=100% without_norms=0% verify parquet=Y stats=Y rows=494",
+      "enrich_summary": "OK saint-cleophas lots=494 zone_code=98.79% norms=98.79% surface=100% code_postal=100%(RTA) adresse=86.84%(code=07090) tod=n/a deposit=Y bytes=1698802",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cleophas.stats.json",
+        "num_lots": 494,
+        "num_with_norms": 492,
+        "num_with_code_zone": 492,
+        "num_with_adresse": 429
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cleophas.stats.json",
+        "num_lots": 494,
+        "num_with_norms": 488,
+        "num_with_code_zone": 488,
+        "num_with_adresse": 429
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cleophas.stats.json",
+        "num_lots": 494,
+        "num_with_norms": 488,
+        "num_with_code_zone": 488,
+        "num_with_adresse": 429
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 492->488, code_zone 492->488",
+        "lots_to_unknown": 4,
+        "norms_to_unknown": 4,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-cleophas.geojson.2026-08-10T163858682ZZ",
+        "dropped_codes": [
+          {
+            "code": "2 Af",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-cleophas.geojson.2026-08-10T163858682ZZ"
+          },
+          {
+            "code": "19 Av",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-cleophas.geojson.2026-08-10T163858682ZZ"
+          },
+          {
+            "code": "4 Af",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-cleophas.geojson.2026-08-10T163858682ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:38:57.928Z",
+      "finished_at": "2026-08-10T16:39:14.052Z"
+    },
+    {
+      "slug": "saint-cleophas-de-brandon",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 222,
+        "assigned": 222,
+        "matched": 220,
+        "misassigned": 1,
+        "outside_all": 1,
+        "unassigned": 0,
+        "mismatch_pct": 0.9
+      },
+      "after": {
+        "lots": 222,
+        "assigned": 221,
+        "matched": 220,
+        "misassigned": 1,
+        "outside_all": 0,
+        "unassigned": 1,
+        "mismatch_pct": 0.45
+      },
+      "backup_ts": "2026-08-10T163914453ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-cleophas-de-brandon lots=222 assigned=99.55% multi=2.25% match=0% without_norms=100% verify parquet=Y stats=Y rows=222",
+      "enrich_summary": "OK saint-cleophas-de-brandon lots=222 zone_code=99.55% norms=0% surface=100% code_postal=100%(RTA) adresse=100%(code=52075) tod=n/a deposit=Y bytes=636780",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cleophas-de-brandon.stats.json",
+        "num_lots": 222,
+        "num_with_norms": 0,
+        "num_with_code_zone": 222,
+        "num_with_adresse": 222
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cleophas-de-brandon.stats.json",
+        "num_lots": 222,
+        "num_with_norms": 0,
+        "num_with_code_zone": 221,
+        "num_with_adresse": 222
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cleophas-de-brandon.stats.json",
+        "num_lots": 222,
+        "num_with_norms": 0,
+        "num_with_code_zone": 221,
+        "num_with_adresse": 222
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "code_zone 222->221",
+        "lots_to_unknown": 1,
+        "norms_to_unknown": 0,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-cleophas-de-brandon.geojson.2026-08-10T163914453ZZ",
+        "dropped_codes": [
+          {
+            "code": "RES I",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-cleophas-de-brandon.geojson.2026-08-10T163914453ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:39:14.053Z",
+      "finished_at": "2026-08-10T16:39:24.113Z"
+    },
+    {
+      "slug": "saint-cuthbert",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 1985,
+        "assigned": 1985,
+        "matched": 1971,
+        "misassigned": 14,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 0.71
+      },
+      "after": {
+        "lots": 1985,
+        "assigned": 1985,
+        "matched": 1971,
+        "misassigned": 14,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 0.71
+      },
+      "backup_ts": "2026-08-10T163924857ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-cuthbert lots=1985 assigned=100% multi=1.66% match=12.7% without_norms=87.3% verify parquet=Y stats=Y rows=1985",
+      "enrich_summary": "OK saint-cuthbert lots=1985 zone_code=100% norms=12.7% surface=100% code_postal=100%(RTA) adresse=99.14%(code=52062) tod=n/a deposit=Y bytes=4457233",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cuthbert.stats.json",
+        "num_lots": 1985,
+        "num_with_norms": 252,
+        "num_with_code_zone": 1985,
+        "num_with_adresse": 1968
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cuthbert.stats.json",
+        "num_lots": 1985,
+        "num_with_norms": 252,
+        "num_with_code_zone": 1985,
+        "num_with_adresse": 1968
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cuthbert.stats.json",
+        "num_lots": 1985,
+        "num_with_norms": 252,
+        "num_with_code_zone": 1985,
+        "num_with_adresse": 1968
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:39:24.114Z",
+      "finished_at": "2026-08-10T16:40:18.520Z"
+    },
+    {
+      "slug": "saint-cyrille-de-lessard",
+      "deposited": false,
+      "skipped_reason": "geometry-suspect (outside_all=3/3 mismatch, mismatch_pct=100%) — ne dépose pas",
+      "before": {
+        "lots": 1246,
+        "assigned": 3,
+        "matched": 0,
+        "misassigned": 0,
+        "outside_all": 3,
+        "unassigned": 1243,
+        "mismatch_pct": 100
+      },
+      "after": null,
+      "backup_ts": null,
+      "mirror": null,
+      "join_summary": null,
+      "enrich_summary": null,
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cyrille-de-lessard.stats.json",
+        "num_lots": 1246,
+        "num_with_norms": 0,
+        "num_with_code_zone": 3,
+        "num_with_adresse": 1161
+      },
+      "lot_metrics_after": null,
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-cyrille-de-lessard.stats.json",
+        "num_lots": 1246,
+        "num_with_norms": 0,
+        "num_with_code_zone": 3,
+        "num_with_adresse": 1161
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:40:18.521Z",
+      "finished_at": "2026-08-10T16:40:19.577Z"
+    },
+    {
+      "slug": "saint-damase--la-matapedia",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 925,
+        "assigned": 924,
+        "matched": 892,
+        "misassigned": 25,
+        "outside_all": 7,
+        "unassigned": 1,
+        "mismatch_pct": 3.46
+      },
+      "after": {
+        "lots": 925,
+        "assigned": 917,
+        "matched": 892,
+        "misassigned": 25,
+        "outside_all": 0,
+        "unassigned": 8,
+        "mismatch_pct": 2.73
+      },
+      "backup_ts": "2026-08-10T164020185ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-damase--la-matapedia lots=925 assigned=99.14% multi=3.57% match=100% without_norms=0% verify parquet=Y stats=Y rows=925",
+      "enrich_summary": "OK saint-damase--la-matapedia lots=925 zone_code=99.14% norms=99.14% surface=100% code_postal=100%(RTA) adresse=88.54%(code=07105) tod=n/a deposit=Y bytes=5834446",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-damase--la-matapedia.stats.json",
+        "num_lots": 925,
+        "num_with_norms": 924,
+        "num_with_code_zone": 924,
+        "num_with_adresse": 819
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-damase--la-matapedia.stats.json",
+        "num_lots": 925,
+        "num_with_norms": 917,
+        "num_with_code_zone": 917,
+        "num_with_adresse": 819
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-damase--la-matapedia.stats.json",
+        "num_lots": 925,
+        "num_with_norms": 917,
+        "num_with_code_zone": 917,
+        "num_with_adresse": 819
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 924->917, code_zone 924->917",
+        "lots_to_unknown": 7,
+        "norms_to_unknown": 7,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-damase--la-matapedia.geojson.2026-08-10T164020185ZZ",
+        "dropped_codes": [
+          {
+            "code": "24 Av",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-damase--la-matapedia.geojson.2026-08-10T164020185ZZ"
+          },
+          {
+            "code": "9 Av",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-damase--la-matapedia.geojson.2026-08-10T164020185ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:40:19.578Z",
+      "finished_at": "2026-08-10T16:40:47.702Z"
+    },
+    {
+      "slug": "saint-didace",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 1277,
+        "assigned": 1277,
+        "matched": 1256,
+        "misassigned": 17,
+        "outside_all": 4,
+        "unassigned": 0,
+        "mismatch_pct": 1.64
+      },
+      "after": {
+        "lots": 1277,
+        "assigned": 1273,
+        "matched": 1256,
+        "misassigned": 17,
+        "outside_all": 0,
+        "unassigned": 4,
+        "mismatch_pct": 1.34
+      },
+      "backup_ts": "2026-08-10T164048811ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-didace lots=1277 assigned=99.69% multi=3.29% match=100% without_norms=0% verify parquet=Y stats=Y rows=1277",
+      "enrich_summary": "OK saint-didace lots=1277 zone_code=99.69% norms=99.69% surface=100% code_postal=100%(RTA) adresse=99.69%(code=52090) tod=n/a deposit=Y bytes=6072432",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-didace.stats.json",
+        "num_lots": 1277,
+        "num_with_norms": 1277,
+        "num_with_code_zone": 1277,
+        "num_with_adresse": 1273
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-didace.stats.json",
+        "num_lots": 1277,
+        "num_with_norms": 1273,
+        "num_with_code_zone": 1273,
+        "num_with_adresse": 1273
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-didace.stats.json",
+        "num_lots": 1277,
+        "num_with_norms": 1273,
+        "num_with_code_zone": 1273,
+        "num_with_adresse": 1273
+      },
+      "complete_before": true,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 1277->1273, code_zone 1277->1273",
+        "lots_to_unknown": 4,
+        "norms_to_unknown": 4,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-didace.geojson.2026-08-10T164048811ZZ",
+        "dropped_codes": [
+          {
+            "code": "FE",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-didace.geojson.2026-08-10T164048811ZZ"
+          },
+          {
+            "code": "FF",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-didace.geojson.2026-08-10T164048811ZZ"
+          },
+          {
+            "code": "AF",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-didace.geojson.2026-08-10T164048811ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:40:47.703Z",
+      "finished_at": "2026-08-10T16:41:24.714Z"
+    },
+    {
+      "slug": "saint-dominique-du-rosaire",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 85,
+        "assigned": 85,
+        "matched": 84,
+        "misassigned": 1,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 1.18
+      },
+      "after": {
+        "lots": 85,
+        "assigned": 85,
+        "matched": 84,
+        "misassigned": 1,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 1.18
+      },
+      "backup_ts": "2026-08-10T164125580ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-dominique-du-rosaire lots=85 assigned=100% multi=0% match=100% without_norms=0% verify parquet=Y stats=Y rows=85",
+      "enrich_summary": "OK saint-dominique-du-rosaire lots=85 zone_code=100% norms=100% surface=100% code_postal=100%(RTA) adresse=81.18%(code=88065) tod=n/a deposit=Y bytes=518013",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-dominique-du-rosaire.stats.json",
+        "num_lots": 85,
+        "num_with_norms": 85,
+        "num_with_code_zone": 85,
+        "num_with_adresse": 69
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-dominique-du-rosaire.stats.json",
+        "num_lots": 85,
+        "num_with_norms": 85,
+        "num_with_code_zone": 85,
+        "num_with_adresse": 69
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-dominique-du-rosaire.stats.json",
+        "num_lots": 85,
+        "num_with_norms": 85,
+        "num_with_code_zone": 85,
+        "num_with_adresse": 69
+      },
+      "complete_before": true,
+      "complete_after": true,
+      "complete_final": true,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:41:24.715Z",
+      "finished_at": "2026-08-10T16:41:37.408Z"
+    },
+    {
+      "slug": "saint-fabien-de-panet",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 1378,
+        "assigned": 1378,
+        "matched": 1359,
+        "misassigned": 19,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 1.38
+      },
+      "after": {
+        "lots": 1378,
+        "assigned": 1378,
+        "matched": 1359,
+        "misassigned": 19,
+        "outside_all": 0,
+        "unassigned": 0,
+        "mismatch_pct": 1.38
+      },
+      "backup_ts": "2026-08-10T164138057ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-fabien-de-panet lots=1378 assigned=100% multi=4.14% match=0% without_norms=100% verify parquet=Y stats=Y rows=1378",
+      "enrich_summary": "OK saint-fabien-de-panet lots=1378 zone_code=100% norms=0% surface=100% code_postal=100%(RTA) adresse=91.07%(code=18015) tod=n/a deposit=Y bytes=3010623",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-fabien-de-panet.stats.json",
+        "num_lots": 1378,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1378,
+        "num_with_adresse": 1255
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-fabien-de-panet.stats.json",
+        "num_lots": 1378,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1378,
+        "num_with_adresse": 1255
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-fabien-de-panet.stats.json",
+        "num_lots": 1378,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1378,
+        "num_with_adresse": 1255
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T16:41:37.409Z",
+      "finished_at": "2026-08-10T16:42:06.759Z"
+    },
+    {
+      "slug": "saint-fortunat",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 525,
+        "assigned": 519,
+        "matched": 508,
+        "misassigned": 9,
+        "outside_all": 2,
+        "unassigned": 6,
+        "mismatch_pct": 2.12
+      },
+      "after": {
+        "lots": 525,
+        "assigned": 517,
+        "matched": 508,
+        "misassigned": 9,
+        "outside_all": 0,
+        "unassigned": 8,
+        "mismatch_pct": 1.74
+      },
+      "backup_ts": "2026-08-10T164207371ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-fortunat lots=525 assigned=98.48% multi=4.38% match=0% without_norms=100% verify parquet=Y stats=Y rows=525",
+      "enrich_summary": "OK saint-fortunat lots=525 zone_code=98.48% norms=0% surface=100% code_postal=100%(RTA) adresse=98.67%(code=31030) tod=n/a deposit=Y bytes=1783758",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-fortunat.stats.json",
+        "num_lots": 525,
+        "num_with_norms": 0,
+        "num_with_code_zone": 519,
+        "num_with_adresse": 518
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-fortunat.stats.json",
+        "num_lots": 525,
+        "num_with_norms": 0,
+        "num_with_code_zone": 517,
+        "num_with_adresse": 518
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-fortunat.stats.json",
+        "num_lots": 525,
+        "num_with_norms": 0,
+        "num_with_code_zone": 517,
+        "num_with_adresse": 518
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "code_zone 519->517",
+        "lots_to_unknown": 2,
+        "norms_to_unknown": 0,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-fortunat.geojson.2026-08-10T164207371ZZ",
+        "dropped_codes": [
+          {
+            "code": "AG 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-fortunat.geojson.2026-08-10T164207371ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:42:06.760Z",
+      "finished_at": "2026-08-10T16:42:21.391Z"
+    }
+  ]
+}
