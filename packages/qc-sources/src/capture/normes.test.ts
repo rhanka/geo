@@ -12,6 +12,7 @@ import {
   selectNormesPdfCandidates,
   selectNormesSubpages,
 } from "./normes.js";
+import type { CapturedNormesExtractionReceipt } from "./normes.js";
 import { parseCaptureWorklist } from "./worklist.js";
 
 const RUN = "normes-20260810T011257Z-0-example";
@@ -203,7 +204,7 @@ describe("CapturedNormesCampaignPlanSchema", () => {
       status: "deposited" as const,
       parquet_key: "registry/qc-zonage-norms/qc-zonage-norms-saint-roch-de-lachigan.parquet",
       refusal: null,
-    };
+    } satisfies CapturedNormesExtractionReceipt;
     expect(() => assertCapturedNormesCampaignEvidence(entry, discovery, [{ receipt, selection }])).not.toThrow();
   });
 
@@ -244,7 +245,7 @@ describe("CapturedNormesCampaignPlanSchema", () => {
       status: "deposited" as const,
       parquet_key: "registry/qc-zonage-norms/qc-zonage-norms-saint-roch-de-lachigan.parquet",
       refusal: null,
-    };
+    } satisfies CapturedNormesExtractionReceipt;
     expect(() => assertCapturedNormesCampaignEvidence(entry, discovery, [{ receipt, selection }])).not.toThrow();
   });
 });
