@@ -1,0 +1,48 @@
+{
+  "contract": "capture-city-wall-report/v1",
+  "generated_at": "2026-08-10T00:45:06.386Z",
+  "read_only_s3": true,
+  "complete": true,
+  "worklist": "deploy/capture-job/worklists/zones-proof-v2-albanel-20260809.json",
+  "run_stamp": "20260810T004157Z",
+  "run_ids": [
+    "zones-20260810T004157Z-0-22386002-3cfc-40f1-943d-1e1c862039bd"
+  ],
+  "cities": [
+    {
+      "slug": "albanel",
+      "source": "zones-v1-proof-url",
+      "observations": [
+        {
+          "run_id": "zones-20260810T004157Z-0-22386002-3cfc-40f1-943d-1e1c862039bd",
+          "url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/920_MariaChapdelaine/92030_Albanel/MapServer/197/query?where=1%3D1&outFields=*&f=geojson",
+          "http_status": 404,
+          "retrieved_at": null,
+          "sha256": null,
+          "storage_key": null,
+          "error": "HTTP 404",
+          "outcome": "wall-http-404"
+        },
+        {
+          "run_id": "zones-20260810T004157Z-0-22386002-3cfc-40f1-943d-1e1c862039bd",
+          "url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/920_MariaChapdelaine/92030_Albanel/MapServer/197/query?where=1%3D1&outFields=*&f=json",
+          "http_status": 404,
+          "retrieved_at": null,
+          "sha256": null,
+          "storage_key": null,
+          "error": "HTTP 404",
+          "outcome": "wall-http-404"
+        }
+      ],
+      "outcome": "wall-http-404"
+    }
+  ],
+  "partition": {
+    "captured-v2-input": 0,
+    "wall-http-404": 1,
+    "wall-http": 0,
+    "wall-transport": 0,
+    "total": 1,
+    "closed": true
+  }
+}
