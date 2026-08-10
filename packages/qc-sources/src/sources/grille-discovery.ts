@@ -341,7 +341,7 @@ export function extractInternalSubpages(
     // Skip the page we are already on (self-link) and document links (those are
     // grille candidates, handled by discoverGrillesInHtml, not sub-page hops).
     if (abs === pageUrl) continue;
-    if (/\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(abs)) continue;
+    if (/\.(?:pdf|docx?|odt|xlsx?|csv|zip|mp4|mpe?g|mov|avi|mp3|wav)(?:[?#].*)?$/i.test(abs)) continue;
 
     const hay = fold(`${anchor} ${abs}`);
     if (SUBPAGE_SKIP_RE.test(hay)) continue;
