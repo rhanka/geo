@@ -1,0 +1,200 @@
+[
+  {
+    "slug": "lacolle",
+    "status": "rien",
+    "reason": "MRC du Haut-Richelieu. Le hub geomatique de la MRC (geomatique-mrchr.hub.arcgis.com, catalogue DCAT complet enumere) ne publie que 'Matrices graphiques' (role d'evaluation, distribution = simple page Hub /pages/676749915e..., aucun service REST interrogeable), des couches securite incendie (SUMI/desincarceration/feux) et 'Cartes thematiques' (raster). AUCUNE couche de zonage municipal a codes Lettre-Num. Recherche AGOL 'zonage lacolle' / 'zonage haut-richelieu' = 0. Zonage municipal en reglement PDF. Aucune source vecteur de zonage verifiee.",
+    "service_url": "https://geomatique-mrchr.hub.arcgis.com/api/feed/dcat-us/1.1.json",
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "lepiphanie",
+    "status": "rien",
+    "reason": "L'Epiphanie (geocode 60037), MRC de L'Assomption, Lanaudiere. LBP evaluateurs (arcgis.lbpevaluateurs.ca): le repertoire REST racine expose un DOSSIER '60037' mais son listing ET les services candidats (60037/60037_PUBLIC/MapServer/legend, 60037_PUBLIC/MapServer/legend) renvoient tous {code:499,'Token Required'} — service token-gated, non servable (anti-invention: auth-required = RIEN). Test de controle: 75045_PUBLIC/MapServer/legend (Saint-Hippolyte) reste PUBLIC, donc la methode est valide et le 499 est reel. La carte municipale (lepiphanie.ca/cartographie) = matrice graphique GeoCentralis (role d'evaluation), pas une grille de zonage vecteur. Recherche AGOL 'zonage saint-sulpice/l'epiphanie' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/60037",
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "montreal-ouest",
+    "status": "rien",
+    "reason": "Montreal-Ouest / Montreal West, ville reconstituee de l'agglomeration de Montreal. Zonage publie en PDF (montreal-ouest.ca/wp-content/uploads/2018/10/2010-002-zonage-refonte.pdf, avec plan de zonage Annexe 1 + grilles de specifications Annexe 2). Contrairement au cas hampstead (servi depuis PDF, pas de matrice vecteur native), aucune couche matrice-graphique AGOL a code de zone trouvee. L'org AGOL 'Ville de Montreal' ne couvre pas les villes reconstituees (affectation PU + CPTAQ seulement). Recherche AGOL 'zonage montreal-ouest/montreal west' = 0 (hits = Argenteuil, arrondissement Verdun). Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "notre-dame-de-stanbridge",
+    "status": "rien",
+    "reason": "MRC de Brome-Missisquoi (codemun 46100). Meme constat que farnham (lot4): la geomatique de la MRC = plateforme cartobm.com exposant la MATRICE GRAPHIQUE (cartobm.com/gestion_db/content/public/matrice/index.php?codemun=46100 = dimensions/no de lot/no de role/localisation = role d'evaluation + cadastre), PAS une grille de zonage codifiee en vecteur; backend non inspectable en lecture seule (aucun endpoint WFS/OWS/GeoJSON public). Zonage municipal en reglement PDF. Recherche AGOL 'zonage stanbridge' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-alexandre",
+    "status": "rien",
+    "reason": "Saint-Alexandre (Iberville), MRC du Haut-Richelieu, Monteregie (homonyme distinct de Saint-Alexandre-de-Kamouraska). Idem lacolle: le hub geomatique-mrchr.hub.arcgis.com (DCAT enumere) ne publie que 'Matrices graphiques' (role, page Hub non-REST) + securite incendie + cartes thematiques raster; aucune grille de zonage municipal. Recherche AGOL 'zonage saint-alexandre' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-barnabe-sud",
+    "status": "rien",
+    "reason": "MRC des Maskoutains. Idem saint-damase/saint-dominique (lot4): le zonage des municipalites (hors Saint-Hyacinthe) est diffuse via la plateforme proprietaire Geocentriq (CIMFQM) qui n'expose AUCUN endpoint geospatial public (pas de WFS/WMS/GeoJSON/ArcGIS REST). L'org AGOL de la MRC ne publie de zonage que pour Saint-Hyacinthe. Recherche AGOL 'zonage saint-barnabe' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-bernard-de-lacolle",
+    "status": "rien",
+    "reason": "MRC du Haut-Richelieu. Idem lacolle/saint-alexandre: hub geomatique-mrchr = 'Matrices graphiques' (role) + securite incendie + cartes thematiques, aucune couche de zonage municipal vecteur. Recherche AGOL 'zonage lacolle/haut-richelieu' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-bernard-de-michaudville",
+    "status": "rien",
+    "reason": "MRC des Maskoutains. Idem saint-barnabe-sud: zonage diffuse via Geocentriq (proprietaire CIMFQM, aucun endpoint geospatial public) et absent de l'org AGOL de la MRC (zonage AGOL = Saint-Hyacinthe seulement). Recherche AGOL 'zonage michaudville' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-chrysostome",
+    "status": "rien",
+    "reason": "MRC du Haut-Saint-Laurent (org AGOL services3/rItOZ3qY0IdTdzZR). Recherche org-scoped (orgid:rItOZ3qY0IdTdzZR, chrysostome OR zonage) = seulement Hinchinbrooke (Zonage_ajuste_2025 / Zonage_2017) + 'Projet de Zonage Ormstown' (token-gated). AUCUNE couche pour Saint-Chrysostome; l'org ne publie sinon que l'affectation MRC. Recherche AGOL 'zonage chrysostome' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-etienne-de-beauharnois",
+    "status": "rien",
+    "reason": "MRC de Beauharnois-Salaberry. La carte interactive de la MRC (mrcbhs) = inventaire du PATRIMOINE (500+ elements, 'Carte du patrimoine'), pas de grille de zonage municipal. La page amenagement-du-territoire de la MRC = HTTP 403 (aucun service vecteur decouvrable); la carte interactive de Salaberry-de-Valleyfield concerne une autre ville. Recherche AGOL 'zonage beauharnois/saint-etienne' = 0. Zonage municipal en reglement PDF. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-liguori",
+    "status": "rien",
+    "reason": "Saint-Liguori (geocode 63065), MRC de Montcalm, Lanaudiere. Non servi par LBP evaluateurs (le repertoire REST racine arcgis.lbpevaluateurs.ca n'expose aucun dossier/service 63065 — seuls 60037, 62020-62085, 75/76/82/83; la region 63 n'est pas couverte). Idem sainte-julienne (lot2/3): la MRC de Montcalm ne diffuse que des PDF (affectations, cartes), pas de service vecteur; carte interactive MRC = widget touristique. Recherche AGOL 'zonage saint-liguori' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-mathieu",
+    "status": "rien",
+    "reason": "Saint-Mathieu, MRC de Roussillon, Monteregie. PIEGE HOMONYME ecarte: la couche AGOL publique 'MRC Roussillon _ Zonage' (services1/4tUa5jV5OimGjA0s/MRC_Roussillon___Zonage/FeatureServer/0, owner Martin_Lessard0) n'est PAS une grille de zonage urbain — c'est une couche de milieux humides / pression anthropique (champs Pression_A=TRANSPORT/AGRICULTURE/RESIDENTIEL, Classifi_1=Marais/Eau peu profonde) dont le champ nomme 'ZONE' contient le NOM DE MUNICIPALITE (CHATEAUGUAY, ST-CONSTANT, ST-REGIS), pas un code de zone Lettre-Num. Anti-invention: pas de vrais codes de zonage = RIEN. Idem saint-philippe (lot3): Roussillon = pas de grille de zonage vecteur publique. Recherche AGOL 'zonage saint-mathieu' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": "https://services1.arcgis.com/4tUa5jV5OimGjA0s/arcgis/rest/services/MRC_Roussillon___Zonage/FeatureServer/0",
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-mathieu-de-beloeil",
+    "status": "rien",
+    "reason": "MRC de La Vallee-du-Richelieu (org services8/jryHBP52Ub6tFsaW). Recherche org-scoped (orgid:jryHBP52Ub6tFsaW zonage) = seulement 'zonageSAR' (Saint-Antoine-sur-Richelieu) + 'Grandes affectations du territoire de la MRC'. AUCUNE couche pour Saint-Mathieu-de-Beloeil. La carte interactive municipale (stmathieudebeloeil.ca/carte-interactive) est un widget JS de recherche par adresse/matricule (placeholders {{address}}/{{phone_number}} = outil matrice graphique/role), sans endpoint de zonage vecteur public decouvrable; recherche AGOL 'beloeil' = uniquement items ville de Beloeil (locaux vacants, agrile, eclairage), aucun zonage. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-paul",
+    "status": "rien",
+    "reason": "Saint-Paul (geocode 61005), MRC de Joliette, Lanaudiere. Non servi par LBP evaluateurs (repertoire REST racine = aucun dossier/service 61005; region 61 non couverte). Carte municipale = PDF (saintpaul.quebec/.../carte-municipale-2021.pdf). Recherche AGOL 'zonage saint-paul joliette' = 0 (seul hit = 'Saint-Paul-en-Jarez', PLU France). Aucune org AGOL de la municipalite diffusant une grille de zonage vecteur. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-sulpice",
+    "status": "rien",
+    "reason": "Saint-Sulpice (geocode 60020), MRC de L'Assomption, Lanaudiere. Non servi par LBP evaluateurs: le repertoire REST racine arcgis.lbpevaluateurs.ca n'expose aucun dossier/service 60020 (seuls 60037, 62020-62085, 75/76/82/83), et 60020_PUBLIC/MapServer renvoie {code:499,'Token Required'} (service inexistant/non partage). Recherche AGOL 'zonage saint-sulpice' = 0. Zonage municipal en reglement PDF. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "sainte-clotilde",
+    "status": "rien",
+    "reason": "Sainte-Clotilde, MRC des Jardins-de-Napierville, Monteregie (homonyme distinct de Sainte-Clotilde-de-Horton). L'org/hub AGOL de la MRC ne diffuse publiquement que des StoryMaps (attraits patrimoniaux) et de l'affectation, pas de grille de zonage municipal vecteur. Recherche AGOL 'zonage clotilde/napierville' = 0 (hits = wetlands Roussillon homonyme + France). Zonage municipal en reglement PDF (site ste-clotilde.ca). Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "sainte-madeleine",
+    "status": "rien",
+    "reason": "Sainte-Madeleine (village), MRC des Maskoutains (distinct de Sainte-Marie-Madeleine, paroisse voisine). Idem groupe Maskoutains: zonage diffuse via Geocentriq (proprietaire CIMFQM, aucun endpoint geospatial public) et absent de l'org AGOL de la MRC (zonage AGOL = Saint-Hyacinthe seulement). Recherche AGOL 'zonage madeleine' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "sainte-marie-madeleine",
+    "status": "rien",
+    "reason": "Sainte-Marie-Madeleine (paroisse), MRC des Maskoutains (distinct de Sainte-Madeleine, village voisin). Idem groupe Maskoutains: zonage diffuse via Geocentriq (proprietaire CIMFQM, aucun endpoint geospatial public) et absent de l'org AGOL de la MRC (zonage AGOL = Saint-Hyacinthe seulement). Recherche AGOL 'zonage madeleine' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  }
+]
