@@ -33,6 +33,7 @@
  * / poppler dependency. The API key is read at call-time and NEVER logged.
  */
 import { readFile } from "node:fs/promises";
+import { z } from "zod";
 
 import {
   FIELD_SPECS,
@@ -60,6 +61,9 @@ export const SCHEMA_METHODE = "ocr/mistral-schema";
 export const MISTRAL_SCHEMA_USD_PER_PAGE = 0.003;
 /** `document_annotation` is capped at 8 pages per `/v1/ocr` request → chunk. */
 export const SCHEMA_MAX_PAGES_PER_REQUEST = 8;
+const MISTRAL_SCHEMA_PROVIDER = "mistral-ocr";
+const MISTRAL_SCHEMA_API_BASE = "https://api.mistral.ai";
+const MISTRAL_SCHEMA_API_PATH = "/v1/ocr";
 
 // ───────────────────────────────────────────────────────────────────────────
 //  JSON schema — one array of zones; one property per FROZEN norm field. Built
@@ -139,6 +143,39 @@ export function buildAnnotationSchema(): Record<string, unknown> {
   };
 }
 
+/** Runtime counterpart of the JSON schema sent to Mistral. */
+function annotationResponseSchema(): z.ZodType<unknown> {
+  const fields: Record<string, z.ZodTypeAny> = { zone_code: z.string() };
+  for (const spec of FIELD_SPECS) {
+    fields[spec.id] = z.string().nullable();
+    fields[`${spec.id}__libelle`] = z.string().nullable();
+    fields[`${spec.id}__colonnes`] = z.string().nullable();
+  }
+  return z.object({ zones: z.array(z.object(fields).strict()) }).strict();
+}
+
+/** Reject a malformed provider annotation before a guarded mapper sees it. */
+export function parseMistralSchemaAnnotation(raw: unknown): unknown {
+  const result = annotationResponseSchema().safeParse(raw);
+  if (!result.success) {
+    throw new Error(`mistral-schema annotation invalid: ${result.error.issues[0]?.message ?? "unknown schema error"}`);
+  }
+  return result.data;
+}
+
+/** This route must never inherit a generic or self-hosted OCR provider override. */
+export function assertMistralSchemaConfig(config: OcrProviderConfig): void {
+  if (config.provider !== MISTRAL_SCHEMA_PROVIDER) {
+    throw new Error(`mistral-schema requires provider ${MISTRAL_SCHEMA_PROVIDER}, got ${config.provider}`);
+  }
+  if (config.apiBase !== MISTRAL_SCHEMA_API_BASE || config.apiPath !== MISTRAL_SCHEMA_API_PATH) {
+    throw new Error(`mistral-schema requires ${MISTRAL_SCHEMA_API_BASE}${MISTRAL_SCHEMA_API_PATH}`);
+  }
+  if (!/^mistral-ocr(?:-|$)/.test(config.model)) {
+    throw new Error(`mistral-schema requires a Mistral OCR model, got ${config.model}`);
+  }
+}
+
 // ───────────────────────────────────────────────────────────────────────────
 //  Annotation → ClaudeRawExtraction (verbatim-or-null). Reuses the SAME shape the
 //  guarded mapper consumes, so anti-invention is inherited whole.
@@ -206,6 +243,7 @@ export function createMistralSchemaAnnotateCall(
   config: OcrProviderConfig = resolveOcrConfig(),
   fetchImpl: typeof fetch = fetch,
 ): SchemaAnnotateCall {
+  assertMistralSchemaConfig(config);
   const schema = buildAnnotationSchema();
   return async (slicePath: string, pageIdxs: number[]): Promise<SchemaAnnotateResult> => {
     if (!config.apiKey) {
@@ -247,7 +285,7 @@ export function createMistralSchemaAnnotateCall(
     }
     const json = (await res.json()) as Record<string, unknown>;
     const da = json["document_annotation"];
-    const annotation = typeof da === "string" ? JSON.parse(da) : da;
+    const annotation = parseMistralSchemaAnnotation(typeof da === "string" ? JSON.parse(da) : da);
     const pagesProcessed =
       (json["usage_info"] as { pages_processed?: number } | undefined)?.pages_processed ??
       pageIdxs.length;
@@ -320,7 +358,7 @@ export async function extractGrilleSchemaFromPdf(
       const pageIdxs = chunk.map((_, k) => k);
       const { annotation, pagesProcessed: pp } = await annotate(sliced.path, pageIdxs);
       pagesProcessed += pp;
-      const extraction = extractionFromAnnotationZones(annotation);
+      const extraction = extractionFromAnnotationZones(parseMistralSchemaAnnotation(annotation));
       // Provenance page anchor = the chunk's first real (1-based) PDF page.
       zones.push(
         ...mapClaudeExtractionToZones(extraction, chunk[0]!, {
