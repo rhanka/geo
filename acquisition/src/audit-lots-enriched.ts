@@ -11,6 +11,11 @@
  *     centroïde hors polygone, RTA manquante). Rapporte aussi la complétude du
  *     dataset FSA (fsa_count vs fsa_expected) et l'index chargé.
  *
+ *   --mode enriched [--slugs a,b] [--limit N]
+ *     Lit les sidecars `qc-lots` dans l'ordre de service (sous-dossier puis
+ *     clé plate) et rapporte, par muni, les normes pliées et les adresses.
+ *     Les nulls restent des nulls structurels : aucune adresse n'est déduite.
+ *
  *   --mode voie [--slugs a,b] [--limit N]
  *     Télécharge le XML du rôle MAMH de chaque muni (code_geo lu dans le sidecar
  *     stats.json, sinon résolu via l'index) et énumère les codes de générique de
@@ -28,7 +33,7 @@ import { XMLParser } from "fast-xml-parser";
 
 import { fetchIndex, VOIE_GENERIC } from "./role-foncier.js";
 import { FSA_KEY, loadFsaIndex } from "./lib/fsa-geocode.js";
-import { getJson, listSlugs, s3Client } from "./lib/s3.js";
+import { exists, getJson, listSlugs, s3Client } from "./lib/s3.js";
 
 const OUT_PREFIX = "normalized/qc-lots/";
 const STATS_KEY = FSA_KEY.replace(/\.geojson$/, ".stats.json");
@@ -37,18 +42,21 @@ const ROLE_XML_URL = (code: string, m: number) =>
   `https://donneesouvertes.affmunqc.net/role/RL${code}_${m}.xml`;
 
 interface Args {
-  mode: "postal" | "voie";
+  mode: "postal" | "voie" | "enriched";
   slugs: string[];
   limit: number;
 }
 
 function parseArgs(argv: string[]): Args {
-  let mode: "postal" | "voie" = "postal";
+  let mode: "postal" | "voie" | "enriched" = "postal";
   const slugs: string[] = [];
   let limit = 60;
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i]!;
-    if (a === "--mode") mode = String(argv[++i] ?? "postal") === "voie" ? "voie" : "postal";
+    if (a === "--mode") {
+      const value = String(argv[++i] ?? "postal");
+      mode = value === "voie" || value === "enriched" ? value : "postal";
+    }
     else if (a === "--slugs") slugs.push(...String(argv[++i] ?? "").split(",").filter(Boolean));
     else if (a === "--limit") limit = Math.max(1, parseInt(String(argv[++i] ?? ""), 10) || 60);
     else throw new Error(`unknown argument: ${a}`);
@@ -64,6 +72,18 @@ interface LotsStats {
   warnings?: string[];
 }
 
+interface EnrichedStats {
+  slug: string;
+  num_lots: number;
+  num_with_norms?: number;
+  role?: {
+    code_geo?: string | null;
+    num_with_adresse?: number;
+    note?: string | null;
+  } | null;
+  warnings?: string[];
+}
+
 async function enumerateServedSlugs(s3: ReturnType<typeof s3Client>): Promise<string[]> {
   return (await listSlugs(s3, OUT_PREFIX, ".geojson", true))
     .filter((s) => s.startsWith("qc-lots-"))
@@ -76,6 +96,51 @@ async function readStats(s3: ReturnType<typeof s3Client>, slug: string): Promise
     return await getJson<LotsStats>(s3, `${OUT_PREFIX}qc-lots-${slug}.stats.json`);
   } catch {
     return null;
+  }
+}
+
+/** geo-api serves the nested layout first when both layouts exist. */
+async function readEnrichedStats(
+  s3: ReturnType<typeof s3Client>,
+  slug: string,
+): Promise<{ key: string; stats: EnrichedStats } | null> {
+  const keys = [
+    `${OUT_PREFIX}qc-lots-${slug}/qc-lots-${slug}.stats.json`,
+    `${OUT_PREFIX}qc-lots-${slug}.stats.json`,
+  ];
+  for (const key of keys) {
+    if (!(await exists(s3, key))) continue;
+    return { key, stats: await getJson<EnrichedStats>(s3, key) };
+  }
+  return null;
+}
+
+async function runEnrichedAudit(args: Args): Promise<void> {
+  const s3 = s3Client();
+  let slugs = args.slugs.length ? args.slugs : await enumerateServedSlugs(s3);
+  slugs = slugs.slice(0, args.limit);
+  for (const slug of slugs) {
+    const result = await readEnrichedStats(s3, slug);
+    if (!result) {
+      console.log(`SKIP ${slug} (sidecar qc-lots absent)`);
+      continue;
+    }
+    const { stats } = result;
+    const lots = Number.isFinite(stats.num_lots) ? stats.num_lots : 0;
+    const folded = Number.isFinite(stats.num_with_norms) ? stats.num_with_norms! : 0;
+    const addresses = Number.isFinite(stats.role?.num_with_adresse)
+      ? stats.role!.num_with_adresse!
+      : 0;
+    const pct = (n: number): number => lots > 0 ? Math.round((10000 * n) / lots) / 100 : 0;
+    console.log(
+      `ENRICHED ${slug} key=${result.key} lots=${lots} ` +
+      `folded_normes=${folded}/${lots}(${pct(folded)}%) ` +
+      `adresse=${addresses}/${lots}(${pct(addresses)}%) ` +
+      `adresse_null_structurel=${Math.max(0, lots - addresses)} ` +
+      `code_geo=${stats.role?.code_geo ?? "null"}`,
+    );
+    if (stats.role?.note) console.log(`NOTE ${slug} ${stats.role.note}`);
+    for (const warning of stats.warnings ?? []) console.log(`WARN ${slug} ${warning}`);
   }
 }
 
@@ -225,7 +290,8 @@ async function runVoieAudit(args: Args): Promise<void> {
 
 async function main(): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
-  if (args.mode === "voie") await runVoieAudit(args);
+  if (args.mode === "enriched") await runEnrichedAudit(args);
+  else if (args.mode === "voie") await runVoieAudit(args);
   else await runPostalAudit();
 }
 
