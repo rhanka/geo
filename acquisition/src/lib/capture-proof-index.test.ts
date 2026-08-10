@@ -1,9 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import type { CaptureManifestLine } from "../../../packages/qc-sources/src/capture/index.js";
+import { serializeManifestLine, type CaptureManifestLine } from "../../../packages/qc-sources/src/capture/index.js";
 import {
   captureProofIndexEntryFromManifest,
   hasCaptureProof,
+  materializeCaptureProofIndex,
   parseCaptureProofIndex,
   serializeCaptureProofIndex,
 } from "./capture-proof-index.js";
@@ -72,5 +73,27 @@ describe("capture proof index", () => {
       storage_key: entry.storage_key,
     };
     expect(() => parseCaptureProofIndex(Buffer.from(`${JSON.stringify(reordered)}\n`))).toThrow(/not canonical/);
+  });
+
+  it("reconstructs a deterministic index from durable manifests only", async () => {
+    const firstKey = "capture/_runs/zones-20260810T020304Z-a/manifest.jsonl";
+    const secondKey = "capture/_runs/zones-20260810T020304Z-z/manifest.jsonl";
+    const first = line({ run_id: "zones-20260810T020304Z-a" });
+    const second = line({ run_id: "zones-20260810T020304Z-z" });
+    const bytes = await materializeCaptureProofIndex({
+      // Deliberately reverse the listing: the projection must choose `firstKey`.
+      listManifestKeys: async () => [secondKey, firstKey],
+      getBytes: async (key) => Buffer.from(`${serializeManifestLine(key === firstKey ? first : second)}\n`),
+    });
+    expect(parseCaptureProofIndex(Buffer.from(bytes))).toEqual([
+      expect.objectContaining({ manifest_key: firstKey, run_id: first.run_id, url, sha256 }),
+    ]);
+  });
+
+  it("fails closed on a manifest outside the durable run namespace", async () => {
+    await expect(materializeCaptureProofIndex({
+      listManifestKeys: async () => ["work/manifest.jsonl"],
+      getBytes: async () => Buffer.from(""),
+    })).rejects.toThrow(/unexpected manifest key/);
   });
 });
