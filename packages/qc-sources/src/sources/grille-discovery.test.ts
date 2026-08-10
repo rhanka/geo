@@ -76,6 +76,15 @@ describe("classifyGrilleLink", () => {
     expect(c.score).toBeLessThan(GRILLE_SCORE_THRESHOLD);
   });
 
+  it("does not treat a codified traffic by-law as a zoning grid", () => {
+    const c = classifyGrilleLink(
+      "Codification administrative du règlement relatif à la circulation et au stationnement",
+      "https://x.qc.ca/reglement-circulation-stationnement.pdf",
+    );
+    expect(c.matched).toContain("codification administrative");
+    expect(c.score).toBeLessThan(GRILLE_SCORE_THRESHOLD);
+  });
+
   it("penalises a PV so it does not masquerade as a grille", () => {
     const c = classifyGrilleLink(
       "Procès-verbal séance ordinaire",
