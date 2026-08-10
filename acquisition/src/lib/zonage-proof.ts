@@ -42,6 +42,24 @@ export interface ZoneSourceStamp { url: string | null; level: ZoneSourceLevel }
 export const ZONE_SOURCE_URL_FIELD = "zone_source_url";
 export const ZONE_SOURCE_LEVEL_FIELD = "zone_source_level";
 
+/**
+ * GRAIN DE LA GÉOMÉTRIE SERVIE (SPEC_ZONE_GEOMETRY_GRAIN.md §2, SHA 7c7f6731).
+ * Vocabulaire FERMÉ, frère de `zone_source_url` / `zone_source_level` : il décrit
+ * la NATURE de la couche source dont la géométrie est servie — pas une valeur
+ * inventée, mais un fait constaté sur la couche amont.
+ *   - "zone-polygon"    : polygones de zonage NATIFS de la source (method=natif),
+ *                         servis octet-pour-octet.
+ *   - "evaluation-unit" : parcelles / unités d'évaluation (UEV) estampillées d'un
+ *                         `zone_code` (grain fin, ex. matrice graphique).
+ *   - "dissolved-zone"  : géométrie DÉRIVÉE par dissolution des UEV — RÉSERVÉ, hors
+ *                         contrat courant ; à n'estampiller sur RIEN pour l'instant.
+ */
+export type GeometryGrain = "zone-polygon" | "evaluation-unit" | "dissolved-zone";
+export const GEOMETRY_GRAINS: ReadonlySet<GeometryGrain> = new Set<GeometryGrain>([
+  "zone-polygon", "evaluation-unit", "dissolved-zone",
+]);
+export const GEOMETRY_GRAIN_FIELD = "geometry_grain";
+
 const SOURCE_TYPES = new Set<GeometrySourceType>(["wfs", "arcgis", "agol", "geonet", "jmap", "geojson-officiel", "pdf-zonage"]);
 const METHODS = new Set<GeometryMethod>(["natif", "georeference"]);
 const RELIABILITIES = new Set<GeometryReliability>(["directe", "georeferencee"]);
@@ -341,6 +359,9 @@ export const PROVENANCE_PROP_WHITELIST: ReadonlySet<string> = new Set<string>([
   "zone_geometry_flagged",
   "zone_source_url",
   "zone_source_level",
+  // Grain de la géométrie servie (frère de zone_source_url/level ; enum fermé
+  // GEOMETRY_GRAINS). Additif pur : jamais la géométrie ni le bloc proof.
+  "geometry_grain",
   "hauteur_min_value",
   "hauteur_min_unit",
   "hauteur_max_value",
