@@ -1,0 +1,56 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-promotion/v2",
+  "as_of": "2026-08-10T07:27:44.897Z",
+  "scope": "palier-167 / richelieu / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "unknown"
+    },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown"
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "complete",
+      "declared": "complete",
+      "proven": "complete",
+      "rule": "L’index municipal vivant relie le numéro déclaré 14-R-186 au PDF municipal exact; le corps confirme l’objet réglementaire et la base R-186."
+    },
+    "col_9_prov_qualite": "unknown",
+    "col_10_prov_v2": "unknown",
+    "col_11_prov_url_servie": "unknown",
+    "zonage_polygons": "not used for c5; aucune URL géométrique ni preuve v2 ajoutée."
+  },
+  "evidence": {
+    "official_municipal_index": {
+      "url": "https://ville.richelieu.qc.ca/reglements/",
+      "final_url": "https://ville.richelieu.qc.ca/a-propos/administration-municipale/reglements/",
+      "retrieved_at": "2026-08-10T07:27:44.897Z",
+      "sha256": "sha256:fa680253b6fbcb8e58477e4b120875d2beb951b06970099d19fbcfde74ae66b5",
+      "storage_key": "raw/reglement-discovery/cas/fa680253b6fbcb8e58477e4b120875d2beb951b06970099d19fbcfde74ae66b5.html",
+      "manifest_key": "capture/_runs/reglement-20260810T072400Z-0-8fbf961b-f056-4f96-8681-bdc65426cc89/manifest.jsonl",
+      "line_index": 1,
+      "attestation": "14-R-186 | RÈGLEMENT D’URBANISME (ZONAGE)",
+      "href": "https://ville.richelieu.qc.ca/wp-content/uploads/2025/04/Reglement-urbanisme-14-R-186-complet.pdf"
+    },
+    "official_municipal_pdf": {
+      "url": "https://ville.richelieu.qc.ca/wp-content/uploads/2025/04/Reglement-urbanisme-14-R-186-complet.pdf",
+      "retrieved_at": "2026-08-10T07:19:32.578Z",
+      "sha256": "sha256:36af043b52a038a5d5cce51c288342481732e1b535d37238c0054ddd761f6de2",
+      "storage_key": "raw/reglement-official/cas/36af043b52a038a5d5cce51c288342481732e1b535d37238c0054ddd761f6de2.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T072000Z-0-4162f400-8994-4bb3-b3df-41efcc3ec516/manifest.jsonl",
+      "line_index": 1,
+      "body_attestation": "Ville de Richelieu; le règlement contrôle le zonage, le lotissement et la construction; sa série d’amendements atteste la base R-186."
+    },
+    "matrix_recalculation": "build('20260810') en mémoire après mise à jour: reglement=complete; cols 9-11=unknown."
+  },
+  "anti_invention": {
+    "number": "Le corps ne porte pas textuellement 14-R-186; le numéro n’est promu que parce que l’index municipal capturé relie ce libellé à l’URL exacte du corps.",
+    "strict_proof_v2": "Aucune preuve v2 n’est créée ou déduite du règlement; la colonne 10 demeure unknown.",
+    "served_url": "reglement_url ne remplace jamais zone_source_url; la colonne 11 demeure unknown.",
+    "storage": "Index HTML et PDF uniquement en CAS S3; aucun octet source local."
+  }
+}
