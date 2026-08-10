@@ -1,0 +1,115 @@
+{
+  "$schema": "col17-unknown-triage/v1",
+  "as_of": "20260803",
+  "read_only": true,
+  "_rule": {
+    "question": "Of the col-17 (Immo civic address) unknowns on priorityRank<=167, which are convertible to complete by a geo-side fold, and which are gated upstream on the col-14 served qc-lots deposit (immo)?",
+    "geo_side_convertible": "A city is convertible by a geo-side re-fold only when the col-17 matrix classifies it foldable (a served lot has a non-null MAMH role address not yet folded). foldable=0 on the subset means no unknown is convertible geo-side.",
+    "absent_served_collection": "col-17 unknown whose col-14 dump present:false: no qc-lots is served in either layout, so there is no served lot to attach an address to. Resolution is an immo qc-lots deposit (col 14), not a geo-side fold.",
+    "served_but_unresolved": "col-17 unknown whose col-14 dump present:true: a served collection exists but the anti-invention gate refused a classification. Population vs served-feature count is surfaced to expose an identity/contamination defect in the served collection.",
+    "anti_invention": "No unknown is relabelled complete or N/A here. This triage only partitions unknowns by their upstream blocker; it writes nothing to S3."
+  },
+  "sources": [
+    {
+      "role": "col17_adresse_matrix",
+      "path": "work/coverage/immo-adresse-completion-matrix-20260802.json",
+      "sha256": "b9351d17b4e881028d4f6c0e174be6693b79641b5ce4082c92077e0080a385f0"
+    },
+    {
+      "role": "col14_qc_lots_dump",
+      "path": "work/coverage/qc-lots-coverage-dump-167-20260803.json",
+      "sha256": "0b3140c798350c56dab02c988a68df1113f25a00974afe8dd5cc3777671920df"
+    },
+    {
+      "role": "municipality_registry",
+      "path": "packages/qc-sources/src/geo/municipalities.qc.json",
+      "sha256": "7569b3ae83b61a589ccef3aa20b08747370904eba82b0c8c63792d28c5f966ef"
+    }
+  ],
+  "subset_167_col17_states": {
+    "complete": 116,
+    "foldable": 0,
+    "unknown": 51,
+    "N/A": 0
+  },
+  "resolved_167": 116,
+  "unknown_167": 51,
+  "geo_side_convertible_now": 0,
+  "gated_on_col14_immo": {
+    "total": 51,
+    "absent_served_collection": {
+      "count": 50,
+      "slugs": [
+        "beloeil",
+        "henryville",
+        "lery",
+        "les-cedres",
+        "lile-cadieux",
+        "lile-dorval",
+        "lile-perrot",
+        "lorraine",
+        "marieville",
+        "mascouche",
+        "mcmasterville",
+        "mercier",
+        "mont-saint-gregoire",
+        "napierville",
+        "noyan",
+        "pincourt",
+        "pointe-calumet",
+        "pointe-des-cascades",
+        "richelieu",
+        "saint-blaise-sur-richelieu",
+        "saint-cesaire",
+        "saint-cyprien-de-napierville",
+        "saint-edouard",
+        "saint-isidore--roussillon",
+        "saint-jacques-le-mineur",
+        "saint-jean-sur-richelieu",
+        "saint-joseph-du-lac",
+        "saint-louis-de-gonzague--beauharnois-salaberry",
+        "saint-marc-sur-richelieu",
+        "saint-michel",
+        "saint-patrice-de-sherrington",
+        "saint-paul-dabbotsford",
+        "saint-paul-de-lile-aux-noix",
+        "saint-placide",
+        "saint-remi",
+        "saint-roch-de-lachigan",
+        "saint-roch-de-richelieu",
+        "saint-sebastien--le-haut-richelieu",
+        "saint-urbain-premier",
+        "saint-valentin",
+        "sainte-angele-de-monnoir",
+        "sainte-anne-des-plaines",
+        "sainte-marthe-sur-le-lac",
+        "sainte-martine",
+        "sainte-sabine--brome-missisquoi",
+        "sainte-therese",
+        "senneville",
+        "terrasse-vaudreuil",
+        "terrebonne",
+        "vaudreuil-sur-le-lac"
+      ],
+      "resolution": "immo deposits qc-lots for these municipalities (col 14); col-17 re-runs then reclassify."
+    },
+    "served_but_unresolved": {
+      "count": 1,
+      "cities": [
+        {
+          "slug": "saint-pierre",
+          "name": "Saint-Pierre",
+          "population": 291,
+          "served_layout": "flat",
+          "served_geojson_key": "normalized/qc-lots/qc-lots-saint-pierre.geojson",
+          "lots_served": 21322,
+          "lots_per_capita": 73.3,
+          "matrix_reason": "MAMH role overlap too low (best code=61020, matched=238, minimum=639).",
+          "identity_anomaly": "Served feature count is grossly disproportionate to municipal population — probable served-collection identity/contamination defect (col-14 serving).",
+          "gated_on": "col-14 (immo): served qc-lots collection must be corrected/re-identified before col-17 can classify."
+        }
+      ],
+      "resolution": "immo corrects/re-identifies the served qc-lots collection (col 14); col-17 re-runs then reclassify."
+    }
+  }
+}
