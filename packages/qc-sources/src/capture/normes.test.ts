@@ -7,10 +7,12 @@ import {
   CapturedNormesDiscoveryReceiptSchema,
   CapturedNormesDiscoveryRunReceiptSchema,
   assertCapturedNormesReference,
+  assertCapturedNormesCampaignEvidence,
   selectionIncludesPdfCaptureUrl,
   selectNormesPdfCandidates,
   selectNormesSubpages,
 } from "./normes.js";
+import type { CapturedNormesExtractionReceipt } from "./normes.js";
 import { parseCaptureWorklist } from "./worklist.js";
 
 const RUN = "normes-20260810T011257Z-0-example";
@@ -151,7 +153,7 @@ describe("CapturedNormesCampaignPlanSchema", () => {
     }).success).toBe(false);
   });
 
-  it("requires a Mistral receipt only for a below-gate outcome", () => {
+  it("requires a Mistral receipt for below-gate and deposited outcomes", () => {
     const base = city("city-0");
     expect(CapturedNormesCampaignEntrySchema.safeParse({
       ...base,
@@ -159,8 +161,92 @@ describe("CapturedNormesCampaignPlanSchema", () => {
     }).success).toBe(false);
     expect(CapturedNormesCampaignEntrySchema.safeParse({
       ...base,
+      outcome: "mistral-deposited",
+    }).success).toBe(false);
+    expect(CapturedNormesCampaignEntrySchema.safeParse({
+      ...base,
       extraction_receipt_keys: ["registry/normes-captured-receipts/abcdef.json"],
     }).success).toBe(false);
+  });
+
+  it("accepts a deposited Mistral receipt tied to its discovery PDF selection", () => {
+    const entry = {
+      ...city(reference.slug),
+      outcome: "mistral-deposited" as const,
+      extraction_receipt_keys: ["registry/normes-captured-receipts/abcdef.json"],
+    };
+    const discovery = {
+      contract: "captured-normes-discovery-run-receipt/v1",
+      generated_at: "2026-08-10T01:02:00.000Z",
+      run_id: RUN,
+      manifest_key: MANIFEST,
+      slug: reference.slug,
+      attempts: [],
+      page_receipt_keys: ["registry/normes-captured-discovery-receipts/run/1.json"],
+      candidate_count: 1,
+      status: "candidates",
+      refusal: null,
+    };
+    const selection = {
+      contract: "captured-normes-pdf-selection/v1",
+      generated_at: reference.retrieved_at,
+      source_capture: reference,
+      candidates: [{ slug: reference.slug, pdf_url: reference.url, titre: "Grille", score_classif: 6, matched: ["grille"] }],
+    };
+    const receipt = {
+      contract: "captured-normes-extraction-receipt/v1",
+      generated_at: "2026-08-10T01:02:00.000Z",
+      capture: reference,
+      engine: "mistral-schema",
+      methode: "ocr/mistral-schema",
+      pages: [1],
+      budget_usd: 1,
+      status: "deposited" as const,
+      parquet_key: "registry/qc-zonage-norms/qc-zonage-norms-saint-roch-de-lachigan.parquet",
+      refusal: null,
+    } satisfies CapturedNormesExtractionReceipt;
+    expect(() => assertCapturedNormesCampaignEvidence(entry, discovery, [{ receipt, selection }])).not.toThrow();
+  });
+
+  it("accepts a deposited PDF that was a verbatim direct subpage link", () => {
+    const directUrl = "https://sra.quebec/reglements/zonage";
+    const directCapture = { ...reference, url: directUrl, final_url: `${directUrl}.pdf` };
+    const entry = {
+      ...city(reference.slug),
+      outcome: "mistral-deposited" as const,
+      extraction_receipt_keys: ["registry/normes-captured-receipts/abcdef.json"],
+    };
+    const discovery = {
+      contract: "captured-normes-discovery-run-receipt/v1",
+      generated_at: "2026-08-10T01:02:00.000Z",
+      run_id: RUN,
+      manifest_key: MANIFEST,
+      slug: reference.slug,
+      attempts: [],
+      page_receipt_keys: ["registry/normes-captured-discovery-receipts/run/1.json"],
+      candidate_count: 0,
+      status: "refused",
+      refusal: "no classified grille PDF candidate in eligible captured HTML",
+    };
+    const selection = {
+      contract: "captured-normes-subpage-selection/v1",
+      generated_at: reference.retrieved_at,
+      source_capture: reference,
+      subpages: [{ url: directUrl, anchor: "Règlement de zonage" }],
+    };
+    const receipt = {
+      contract: "captured-normes-extraction-receipt/v1",
+      generated_at: "2026-08-10T01:02:00.000Z",
+      capture: directCapture,
+      engine: "mistral-schema",
+      methode: "ocr/mistral-schema",
+      pages: [1],
+      budget_usd: 1,
+      status: "deposited" as const,
+      parquet_key: "registry/qc-zonage-norms/qc-zonage-norms-saint-roch-de-lachigan.parquet",
+      refusal: null,
+    } satisfies CapturedNormesExtractionReceipt;
+    expect(() => assertCapturedNormesCampaignEvidence(entry, discovery, [{ receipt, selection }])).not.toThrow();
   });
 });
 
