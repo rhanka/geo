@@ -1,0 +1,2298 @@
+{
+ "contract": "zones-vnatif-deposit-record-geocentralis-lotD/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md@64f82eae/65d4c637 + SPEC_ZONE_GEOMETRY_GRAIN.md@7c7f6731 + SPEC_ACQUISITION_METHODES_PAR_SOURCE.md@47fc8104 §12",
+ "decision": "CLEAN-UPGRADE lot-D géoCentralis WFS (legacy-traceable/candidate→documented v2), source-identity WFS, zone_code brut du champ-code (réplique pilote 05de001a/cd363a04 + lot-A 656eb46d + lot-B dd7e4cf9 + lot-C bf4afa98)",
+ "mode": "dry-run",
+ "run_stamp": "20260810T180000Z",
+ "worklist": "work/coverage/zones-vnatif-capture-worklist-geocentralis-lotD-20260810.json",
+ "proof_intended": {
+  "type": "wfs",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (discriminateur = preuve v2 par-feature) + geometry_grain",
+ "summary": {
+  "total": 24,
+  "deposited": 0,
+  "skipped": 1,
+  "other": 23
+ },
+ "cities": [
+  {
+   "slug": "otterburn-park",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2757030%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-0-88777e73-11ca-45a3-9faf-85655069bb24",
+   "http_status": 200,
+   "sha256": "sha256:6c37e4f8ede7c6a3cabb4db8267101dfec0386a6f88b82396cd8411ebc449728",
+   "retrieved_at": "2026-08-10T16:38:48.426Z",
+   "storage_key": "raw/zones-vnatif/cas/6c37e4f8ede7c6a3cabb4db8267101dfec0386a6f88b82396cd8411ebc449728.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 103,
+   "wfs_number_matched": 103,
+   "wfs_number_returned": 103,
+   "wfs_total_features": 103,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "otterburn-park",
+   "registry_attribution_km": 0.13,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 103,
+   "sample_codes": [
+    {
+     "code_field_value": "PV-20",
+     "zone_code": "PV-20"
+    },
+    {
+     "code_field_value": "PV-98",
+     "zone_code": "PV-98"
+    },
+    {
+     "code_field_value": "H-50",
+     "zone_code": "H-50"
+    },
+    {
+     "code_field_value": "H-73",
+     "zone_code": "H-73"
+    },
+    {
+     "code_field_value": "PV-51",
+     "zone_code": "PV-51"
+    },
+    {
+     "code_field_value": "P-38",
+     "zone_code": "P-38"
+    },
+    {
+     "code_field_value": "HC-16",
+     "zone_code": "HC-16"
+    },
+    {
+     "code_field_value": "P-17",
+     "zone_code": "P-17"
+    }
+   ],
+   "live_number_matched": 103,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(103)==numberMatched(103)==features(103) && live numberMatched(103)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-otterburn-park/qc-zonage-otterburn-park.geojson"
+   ],
+   "served_layout": "nested",
+   "served_features": 98,
+   "served_distinct_codes": 98,
+   "served_levels": [
+    "candidate"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=57030"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 85,
+   "served_codes_uncovered": 13,
+   "uncovered_codes": [
+    "C68",
+    "H56",
+    "H57",
+    "H58",
+    "H59",
+    "H60",
+    "H61",
+    "H62",
+    "H63",
+    "H69",
+    "H70",
+    "P88",
+    "PV71"
+   ],
+   "overlap_ratio_pct": 86.7,
+   "guard_blocks": [
+    "source-identity overlap 86.7% < 90% → SKIP (HOLD, mauvaise-couche/ambigu)"
+   ],
+   "statut": "SKIP",
+   "raison": "source-identity overlap 86.7% < 90% → SKIP (HOLD, mauvaise-couche/ambigu)"
+  },
+  {
+   "slug": "saint-denis-sur-richelieu",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2757068%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-1-23128856-5083-4b1f-88c7-f122a74177cb",
+   "http_status": 200,
+   "sha256": "sha256:a99b1b16ede976f167d68b692f3489aa8c23b2144f785d58d0080f0fdb6e655c",
+   "retrieved_at": "2026-08-10T16:38:45.780Z",
+   "storage_key": "raw/zones-vnatif/cas/a99b1b16ede976f167d68b692f3489aa8c23b2144f785d58d0080f0fdb6e655c.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 70,
+   "wfs_number_matched": 70,
+   "wfs_number_returned": 70,
+   "wfs_total_features": 70,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-denis-sur-richelieu",
+   "registry_attribution_km": 0.57,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 70,
+   "sample_codes": [
+    {
+     "code_field_value": "AP-52",
+     "zone_code": "AP-52"
+    },
+    {
+     "code_field_value": "A-25",
+     "zone_code": "A-25"
+    },
+    {
+     "code_field_value": "AP-42",
+     "zone_code": "AP-42"
+    },
+    {
+     "code_field_value": "AP-39",
+     "zone_code": "AP-39"
+    },
+    {
+     "code_field_value": "P-132",
+     "zone_code": "P-132"
+    },
+    {
+     "code_field_value": "A-26",
+     "zone_code": "A-26"
+    },
+    {
+     "code_field_value": "AP-55",
+     "zone_code": "AP-55"
+    },
+    {
+     "code_field_value": "A-22",
+     "zone_code": "A-22"
+    }
+   ],
+   "live_number_matched": 70,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(70)==numberMatched(70)==features(70) && live numberMatched(70)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-denis-sur-richelieu/qc-zonage-saint-denis-sur-richelieu.geojson"
+   ],
+   "served_layout": "nested",
+   "served_features": 70,
+   "served_distinct_codes": 70,
+   "served_levels": [
+    "candidate"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=57068"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 69,
+   "served_codes_uncovered": 1,
+   "uncovered_codes": [
+    "A56"
+   ],
+   "overlap_ratio_pct": 98.6,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 98.6%, 1 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sainte-gertrude-manneville",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788085%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-2-5cf72ee8-e49b-4d4b-b84e-d9e7332e9c82",
+   "http_status": 200,
+   "sha256": "sha256:95385f0908ec67145e87a7357dab016fc97eeea80d7b732184cab26d25e36acf",
+   "retrieved_at": "2026-08-10T16:38:44.856Z",
+   "storage_key": "raw/zones-vnatif/cas/95385f0908ec67145e87a7357dab016fc97eeea80d7b732184cab26d25e36acf.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 30,
+   "wfs_number_matched": 30,
+   "wfs_number_returned": 30,
+   "wfs_total_features": 30,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-gertrude-manneville",
+   "registry_attribution_km": 0.95,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 29,
+   "sample_codes": [
+    {
+     "code_field_value": "FO-1",
+     "zone_code": "FO-1"
+    },
+    {
+     "code_field_value": "FO-4",
+     "zone_code": "FO-4"
+    },
+    {
+     "code_field_value": "FO-3",
+     "zone_code": "FO-3"
+    },
+    {
+     "code_field_value": "CO-1",
+     "zone_code": "CO-1"
+    },
+    {
+     "code_field_value": "CO-2",
+     "zone_code": "CO-2"
+    },
+    {
+     "code_field_value": "AF-2",
+     "zone_code": "AF-2"
+    },
+    {
+     "code_field_value": "AF-3",
+     "zone_code": "AF-3"
+    },
+    {
+     "code_field_value": "AF-4",
+     "zone_code": "AF-4"
+    }
+   ],
+   "live_number_matched": 30,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(30)==numberMatched(30)==features(30) && live numberMatched(30)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-gertrude-manneville.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 30,
+   "served_distinct_codes": 29,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88085]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 29,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sainte-irene",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707040%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-3-e11b531d-b3f0-4e9e-ad36-46e4afda20e1",
+   "http_status": 200,
+   "sha256": "sha256:7ca7ed64aa2c02af7ff78877d797027d8b9a9ca44bafabbadd48260a09eb57b1",
+   "retrieved_at": "2026-08-10T16:38:45.644Z",
+   "storage_key": "raw/zones-vnatif/cas/7ca7ed64aa2c02af7ff78877d797027d8b9a9ca44bafabbadd48260a09eb57b1.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 72,
+   "wfs_number_matched": 72,
+   "wfs_number_returned": 72,
+   "wfs_total_features": 72,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-irene",
+   "registry_attribution_km": 0.69,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 72,
+   "sample_codes": [
+    {
+     "code_field_value": "14 Cp",
+     "zone_code": "14 Cp"
+    },
+    {
+     "code_field_value": "16 P",
+     "zone_code": "16 P"
+    },
+    {
+     "code_field_value": "17 Cp",
+     "zone_code": "17 Cp"
+    },
+    {
+     "code_field_value": "1 Cp",
+     "zone_code": "1 Cp"
+    },
+    {
+     "code_field_value": "20 Ha",
+     "zone_code": "20 Ha"
+    },
+    {
+     "code_field_value": "81 Ha",
+     "zone_code": "81 Ha"
+    },
+    {
+     "code_field_value": "11 Af",
+     "zone_code": "11 Af"
+    },
+    {
+     "code_field_value": "19 I",
+     "zone_code": "19 I"
+    }
+   ],
+   "live_number_matched": 72,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(72)==numberMatched(72)==features(72) && live numberMatched(72)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-irene.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 72,
+   "served_distinct_codes": 72,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07040]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 72,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sainte-luce",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709092%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-4-a432f63d-b554-4048-81eb-25c9071b2a38",
+   "http_status": 200,
+   "sha256": "sha256:ca821e198ba0c93a80897b6d9c7b62324b7f029939f36f8a5a1114d1f847ec64",
+   "retrieved_at": "2026-08-10T16:39:02.479Z",
+   "storage_key": "raw/zones-vnatif/cas/ca821e198ba0c93a80897b6d9c7b62324b7f029939f36f8a5a1114d1f847ec64.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 104,
+   "wfs_number_matched": 104,
+   "wfs_number_returned": 104,
+   "wfs_total_features": 104,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-luce",
+   "registry_attribution_km": 0.25,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 104,
+   "sample_codes": [
+    {
+     "code_field_value": "104 (AGF)",
+     "zone_code": "104 (AGF)"
+    },
+    {
+     "code_field_value": "105 (HMM)",
+     "zone_code": "105 (HMM)"
+    },
+    {
+     "code_field_value": "115 (RCT)",
+     "zone_code": "115 (RCT)"
+    },
+    {
+     "code_field_value": "131 (MTF)",
+     "zone_code": "131 (MTF)"
+    },
+    {
+     "code_field_value": "126 (IST)",
+     "zone_code": "126 (IST)"
+    },
+    {
+     "code_field_value": "124 (HFD)",
+     "zone_code": "124 (HFD)"
+    },
+    {
+     "code_field_value": "154 (HBF)",
+     "zone_code": "154 (HBF)"
+    },
+    {
+     "code_field_value": "121 (CMC)",
+     "zone_code": "121 (CMC)"
+    }
+   ],
+   "live_number_matched": 104,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(104)==numberMatched(104)==features(104) && live numberMatched(104)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-luce.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 104,
+   "served_distinct_codes": 104,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09092]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 104,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sainte-lucie-de-beauregard",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18020",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-5-5205062c-8139-4974-9d2d-6f105e7e52d5",
+   "http_status": 200,
+   "sha256": "sha256:c1c8abcd381d6bdd1b8ecdee0be36714b76c0a3d6d19041672daaa243e01ffb3",
+   "retrieved_at": "2026-08-10T16:38:45.465Z",
+   "storage_key": "raw/zones-vnatif/cas/c1c8abcd381d6bdd1b8ecdee0be36714b76c0a3d6d19041672daaa243e01ffb3.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 41,
+   "wfs_number_matched": 41,
+   "wfs_number_returned": 41,
+   "wfs_total_features": 41,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-lucie-de-beauregard",
+   "registry_attribution_km": 2.65,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 40,
+   "sample_codes": [
+    {
+     "code_field_value": "Fb.1",
+     "zone_code": "Fb.1"
+    },
+    {
+     "code_field_value": "IcM.2",
+     "zone_code": "IcM.2"
+    },
+    {
+     "code_field_value": "RdM.4",
+     "zone_code": "RdM.4"
+    },
+    {
+     "code_field_value": "RdM.5",
+     "zone_code": "RdM.5"
+    },
+    {
+     "code_field_value": "CbM.2",
+     "zone_code": "CbM.2"
+    },
+    {
+     "code_field_value": "CbM.1",
+     "zone_code": "CbM.1"
+    },
+    {
+     "code_field_value": "Ac.1",
+     "zone_code": "Ac.1"
+    },
+    {
+     "code_field_value": "Ac.2",
+     "zone_code": "Ac.2"
+    }
+   ],
+   "live_number_matched": 41,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(41)==numberMatched(41)==features(41) && live numberMatched(41)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-lucie-de-beauregard.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 41,
+   "served_distinct_codes": 40,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18020]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 40,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sainte-marguerite-du-lac-masson",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77012",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-6-0ecdc27e-170a-455a-b00b-49c4d9402764",
+   "http_status": 200,
+   "sha256": "sha256:a76649f6a77bee85998bd9d517d1596ca825e38180c0a347bee023ac2c75912a",
+   "retrieved_at": "2026-08-10T16:38:45.923Z",
+   "storage_key": "raw/zones-vnatif/cas/a76649f6a77bee85998bd9d517d1596ca825e38180c0a347bee023ac2c75912a.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 66,
+   "wfs_number_matched": 66,
+   "wfs_number_returned": 66,
+   "wfs_total_features": 66,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-marguerite-du-lac-masson",
+   "registry_attribution_km": 0.75,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 64,
+   "sample_codes": [
+    {
+     "code_field_value": "V-62",
+     "zone_code": "V-62"
+    },
+    {
+     "code_field_value": "V-47",
+     "zone_code": "V-47"
+    },
+    {
+     "code_field_value": "R-57",
+     "zone_code": "R-57"
+    },
+    {
+     "code_field_value": "V-1",
+     "zone_code": "V-1"
+    },
+    {
+     "code_field_value": "V-56",
+     "zone_code": "V-56"
+    },
+    {
+     "code_field_value": "C-6",
+     "zone_code": "C-6"
+    },
+    {
+     "code_field_value": "R-45",
+     "zone_code": "R-45"
+    },
+    {
+     "code_field_value": "C-22",
+     "zone_code": "C-22"
+    }
+   ],
+   "live_number_matched": 66,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(66)==numberMatched(66)==features(66) && live numberMatched(66)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-marguerite-du-lac-masson.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 64,
+   "served_distinct_codes": 64,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77012]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 64,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sainte-marguerite-marie",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707005%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-7-ec761028-4dd9-45f7-840e-61671c9fac50",
+   "http_status": 200,
+   "sha256": "sha256:5be2d978fdf0272bc9054cdd94c8b2915fe0848ed250e0a7df1e38096600a3bd",
+   "retrieved_at": "2026-08-10T16:39:06.133Z",
+   "storage_key": "raw/zones-vnatif/cas/5be2d978fdf0272bc9054cdd94c8b2915fe0848ed250e0a7df1e38096600a3bd.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 35,
+   "wfs_number_matched": 35,
+   "wfs_number_returned": 35,
+   "wfs_total_features": 35,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-marguerite-marie",
+   "registry_attribution_km": 0.11,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 35,
+   "sample_codes": [
+    {
+     "code_field_value": "48 Ha",
+     "zone_code": "48 Ha"
+    },
+    {
+     "code_field_value": "11 Av",
+     "zone_code": "11 Av"
+    },
+    {
+     "code_field_value": "13 F",
+     "zone_code": "13 F"
+    },
+    {
+     "code_field_value": "9 Af",
+     "zone_code": "9 Af"
+    },
+    {
+     "code_field_value": "12 Af",
+     "zone_code": "12 Af"
+    },
+    {
+     "code_field_value": "38 Ha",
+     "zone_code": "38 Ha"
+    },
+    {
+     "code_field_value": "31 Ha",
+     "zone_code": "31 Ha"
+    },
+    {
+     "code_field_value": "39 Ha",
+     "zone_code": "39 Ha"
+    }
+   ],
+   "live_number_matched": 35,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(35)==numberMatched(35)==features(35) && live numberMatched(35)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-marguerite-marie.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 35,
+   "served_distinct_codes": 35,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07005]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 35,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sainte-melanie",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761050%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-8-914686b7-36fa-4a12-809a-d562fb28667d",
+   "http_status": 200,
+   "sha256": "sha256:7513c555cc9531a9c591252715a3807065311715eb25862dab33afbdc91d1cd6",
+   "retrieved_at": "2026-08-10T16:39:05.237Z",
+   "storage_key": "raw/zones-vnatif/cas/7513c555cc9531a9c591252715a3807065311715eb25862dab33afbdc91d1cd6.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 74,
+   "wfs_number_matched": 74,
+   "wfs_number_returned": 74,
+   "wfs_total_features": 74,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-melanie",
+   "registry_attribution_km": 0.65,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 73,
+   "sample_codes": [
+    {
+     "code_field_value": "P-39",
+     "zone_code": "P-39"
+    },
+    {
+     "code_field_value": "C-33-3",
+     "zone_code": "C-33-3"
+    },
+    {
+     "code_field_value": "CI-36",
+     "zone_code": "CI-36"
+    },
+    {
+     "code_field_value": "CI-27",
+     "zone_code": "CI-27"
+    },
+    {
+     "code_field_value": "R-47",
+     "zone_code": "R-47"
+    },
+    {
+     "code_field_value": "P-41",
+     "zone_code": "P-41"
+    },
+    {
+     "code_field_value": "P-38",
+     "zone_code": "P-38"
+    },
+    {
+     "code_field_value": "R-61",
+     "zone_code": "R-61"
+    }
+   ],
+   "live_number_matched": 74,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(74)==numberMatched(74)==features(74) && live numberMatched(74)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-melanie.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 74,
+   "served_distinct_codes": 73,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61050]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 73,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sainte-praxede",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=31050",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-9-acf77d2a-d854-4a89-bb0b-b11dcf019cfa",
+   "http_status": 200,
+   "sha256": "sha256:3be0af9a8e8da39536582dfbc3dce68869963eddcd7fa4d6228d61f15949995f",
+   "retrieved_at": "2026-08-10T16:39:05.613Z",
+   "storage_key": "raw/zones-vnatif/cas/3be0af9a8e8da39536582dfbc3dce68869963eddcd7fa4d6228d61f15949995f.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 42,
+   "wfs_number_matched": 42,
+   "wfs_number_returned": 42,
+   "wfs_total_features": 42,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-praxede",
+   "registry_attribution_km": 1.96,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 42,
+   "sample_codes": [
+    {
+     "code_field_value": "Ve 1",
+     "zone_code": "Ve 1"
+    },
+    {
+     "code_field_value": "REC 2",
+     "zone_code": "REC 2"
+    },
+    {
+     "code_field_value": "Va 6",
+     "zone_code": "Va 6"
+    },
+    {
+     "code_field_value": "AFa 7",
+     "zone_code": "AFa 7"
+    },
+    {
+     "code_field_value": "FOa 1",
+     "zone_code": "FOa 1"
+    },
+    {
+     "code_field_value": "AFa 4",
+     "zone_code": "AFa 4"
+    },
+    {
+     "code_field_value": "AFa 3",
+     "zone_code": "AFa 3"
+    },
+    {
+     "code_field_value": "AFa 8",
+     "zone_code": "AFa 8"
+    }
+   ],
+   "live_number_matched": 42,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(42)==numberMatched(42)==features(42) && live numberMatched(42)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-praxede.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 42,
+   "served_distinct_codes": 42,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=31050]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 42,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "schefferville",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2797040%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-10-f659a2a5-9d66-443c-b2e2-4707237cb87e",
+   "http_status": 200,
+   "sha256": "sha256:097bee71a86c655c2789212b73cefa64269d967bcf42873dbf297245a583a516",
+   "retrieved_at": "2026-08-10T16:39:06.101Z",
+   "storage_key": "raw/zones-vnatif/cas/097bee71a86c655c2789212b73cefa64269d967bcf42873dbf297245a583a516.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 56,
+   "wfs_number_matched": 56,
+   "wfs_number_returned": 56,
+   "wfs_total_features": 56,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "schefferville",
+   "registry_attribution_km": 0.44,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 53,
+   "sample_codes": [
+    {
+     "code_field_value": "Pc/a.4",
+     "zone_code": "Pc/a.4"
+    },
+    {
+     "code_field_value": "Ca.6",
+     "zone_code": "Ca.6"
+    },
+    {
+     "code_field_value": "Rb.5",
+     "zone_code": "Rb.5"
+    },
+    {
+     "code_field_value": "CV.1",
+     "zone_code": "CV.1"
+    },
+    {
+     "code_field_value": "Réserve",
+     "zone_code": "Réserve"
+    },
+    {
+     "code_field_value": "Rb.3",
+     "zone_code": "Rb.3"
+    },
+    {
+     "code_field_value": "Rb.2",
+     "zone_code": "Rb.2"
+    },
+    {
+     "code_field_value": "Er/a.1",
+     "zone_code": "Er/a.1"
+    }
+   ],
+   "live_number_matched": 56,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(56)==numberMatched(56)==features(56) && live numberMatched(56)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-schefferville.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 56,
+   "served_distinct_codes": 53,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=97040]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 53,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "senneterre--la-vallee-de-lor",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2789040%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-11-efb44324-bff7-4351-9512-783042c1d06c",
+   "http_status": 200,
+   "sha256": "sha256:b671170d37d228ba61707a7c3c80bc520761653aa6da0788e4b6af5a8756ed0d",
+   "retrieved_at": "2026-08-10T16:39:14.014Z",
+   "storage_key": "raw/zones-vnatif/cas/b671170d37d228ba61707a7c3c80bc520761653aa6da0788e4b6af5a8756ed0d.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 124,
+   "wfs_number_matched": 124,
+   "wfs_number_returned": 124,
+   "wfs_total_features": 124,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "senneterre--la-vallee-de-lor",
+   "registry_attribution_km": 62.47,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 124,
+   "sample_codes": [
+    {
+     "code_field_value": "PUm-3",
+     "zone_code": "PUm-3"
+    },
+    {
+     "code_field_value": "REC-19",
+     "zone_code": "REC-19"
+    },
+    {
+     "code_field_value": "PUc-3",
+     "zone_code": "PUc-3"
+    },
+    {
+     "code_field_value": "Pc-7",
+     "zone_code": "Pc-7"
+    },
+    {
+     "code_field_value": "Rb-2",
+     "zone_code": "Rb-2"
+    },
+    {
+     "code_field_value": "Cb-4",
+     "zone_code": "Cb-4"
+    },
+    {
+     "code_field_value": "RU-1",
+     "zone_code": "RU-1"
+    },
+    {
+     "code_field_value": "PUm-2",
+     "zone_code": "PUm-2"
+    }
+   ],
+   "live_number_matched": 124,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(124)==numberMatched(124)==features(124) && live numberMatched(124)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-senneterre--la-vallee-de-lor.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 124,
+   "served_distinct_codes": 124,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=89040]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 124,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sept-iles",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=97007",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-0-88777e73-11ca-45a3-9faf-85655069bb24",
+   "http_status": 200,
+   "sha256": "sha256:1da08cce69c08d9881b48b5236a841cca288cb833cca89c4ed357581dc8fd855",
+   "retrieved_at": "2026-08-10T16:38:51.943Z",
+   "storage_key": "raw/zones-vnatif/cas/1da08cce69c08d9881b48b5236a841cca288cb833cca89c4ed357581dc8fd855.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 670,
+   "wfs_number_matched": 670,
+   "wfs_number_returned": 670,
+   "wfs_total_features": 670,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sept-iles",
+   "registry_attribution_km": 5.01,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 667,
+   "sample_codes": [
+    {
+     "code_field_value": "1005-8 REC",
+     "zone_code": "1005-8 REC"
+    },
+    {
+     "code_field_value": "1030-8 REC",
+     "zone_code": "1030-8 REC"
+    },
+    {
+     "code_field_value": "104 REC",
+     "zone_code": "104 REC"
+    },
+    {
+     "code_field_value": "111 REC",
+     "zone_code": "111 REC"
+    },
+    {
+     "code_field_value": "1202 REC",
+     "zone_code": "1202 REC"
+    },
+    {
+     "code_field_value": "1209-REC",
+     "zone_code": "1209-REC"
+    },
+    {
+     "code_field_value": "175  REC",
+     "zone_code": "175  REC"
+    },
+    {
+     "code_field_value": "2010 REC",
+     "zone_code": "2010 REC"
+    }
+   ],
+   "live_number_matched": 670,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(670)==numberMatched(670)==features(670) && live numberMatched(670)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sept-iles.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 670,
+   "served_distinct_codes": 667,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=97007]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 667,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "sorel-tracy",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2753052%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-1-23128856-5083-4b1f-88c7-f122a74177cb",
+   "http_status": 200,
+   "sha256": "sha256:4d483257ef09054892844f37ffe83db67b2afebcfcc2ae74708a749ae71dea44",
+   "retrieved_at": "2026-08-10T16:38:49.089Z",
+   "storage_key": "raw/zones-vnatif/cas/4d483257ef09054892844f37ffe83db67b2afebcfcc2ae74708a749ae71dea44.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 728,
+   "wfs_number_matched": 728,
+   "wfs_number_returned": 728,
+   "wfs_total_features": 728,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sorel-tracy",
+   "registry_attribution_km": 1.38,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 728,
+   "sample_codes": [
+    {
+     "code_field_value": "H-02-466",
+     "zone_code": "H-02-466"
+    },
+    {
+     "code_field_value": "H-01-212",
+     "zone_code": "H-01-212"
+    },
+    {
+     "code_field_value": "H-01-276",
+     "zone_code": "H-01-276"
+    },
+    {
+     "code_field_value": "C-01-274",
+     "zone_code": "C-01-274"
+    },
+    {
+     "code_field_value": "I-01-114",
+     "zone_code": "I-01-114"
+    },
+    {
+     "code_field_value": "I-01-93",
+     "zone_code": "I-01-93"
+    },
+    {
+     "code_field_value": "I-01-91",
+     "zone_code": "I-01-91"
+    },
+    {
+     "code_field_value": "I-01-14",
+     "zone_code": "I-01-14"
+    }
+   ],
+   "live_number_matched": 728,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(728)==numberMatched(728)==features(728) && live numberMatched(728)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sorel-tracy.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 728,
+   "served_distinct_codes": 728,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 728,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "thetford-mines",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731084%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-2-5cf72ee8-e49b-4d4b-b84e-d9e7332e9c82",
+   "http_status": 200,
+   "sha256": "sha256:0826272fd41195d1b546c50e56471035dd8f899778edf796b8695e6b7c09640c",
+   "retrieved_at": "2026-08-10T16:38:47.826Z",
+   "storage_key": "raw/zones-vnatif/cas/0826272fd41195d1b546c50e56471035dd8f899778edf796b8695e6b7c09640c.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 543,
+   "wfs_number_matched": 543,
+   "wfs_number_returned": 543,
+   "wfs_total_features": 543,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "thetford-mines",
+   "registry_attribution_km": 0.85,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 537,
+   "sample_codes": [
+    {
+     "code_field_value": "2550 L",
+     "zone_code": "2550 L"
+    },
+    {
+     "code_field_value": "5040 AF",
+     "zone_code": "5040 AF"
+    },
+    {
+     "code_field_value": "4008 L",
+     "zone_code": "4008 L"
+    },
+    {
+     "code_field_value": "4005 C",
+     "zone_code": "4005 C"
+    },
+    {
+     "code_field_value": "4050 I",
+     "zone_code": "4050 I"
+    },
+    {
+     "code_field_value": "3205 R",
+     "zone_code": "3205 R"
+    },
+    {
+     "code_field_value": "2524 C",
+     "zone_code": "2524 C"
+    },
+    {
+     "code_field_value": "2102 I",
+     "zone_code": "2102 I"
+    }
+   ],
+   "live_number_matched": 543,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(543)==numberMatched(543)==features(543) && live numberMatched(543)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-thetford-mines.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 543,
+   "served_distinct_codes": 537,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31084]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 537,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "trecesson",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788075%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-3-e11b531d-b3f0-4e9e-ad36-46e4afda20e1",
+   "http_status": 200,
+   "sha256": "sha256:1ea8439fe3c658d5525f136820030cbc13e2086c0d979756d39cc7ab030beab3",
+   "retrieved_at": "2026-08-10T16:38:48.273Z",
+   "storage_key": "raw/zones-vnatif/cas/1ea8439fe3c658d5525f136820030cbc13e2086c0d979756d39cc7ab030beab3.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 63,
+   "wfs_number_matched": 63,
+   "wfs_number_returned": 63,
+   "wfs_total_features": 63,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "trecesson",
+   "registry_attribution_km": 3.5,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 62,
+   "sample_codes": [
+    {
+     "code_field_value": "AF-4",
+     "zone_code": "AF-4"
+    },
+    {
+     "code_field_value": "PC-3",
+     "zone_code": "PC-3"
+    },
+    {
+     "code_field_value": "MX-1",
+     "zone_code": "MX-1"
+    },
+    {
+     "code_field_value": "Ra-1",
+     "zone_code": "Ra-1"
+    },
+    {
+     "code_field_value": "AF-6",
+     "zone_code": "AF-6"
+    },
+    {
+     "code_field_value": "FO-5",
+     "zone_code": "FO-5"
+    },
+    {
+     "code_field_value": "FO-7",
+     "zone_code": "FO-7"
+    },
+    {
+     "code_field_value": "CO-4",
+     "zone_code": "CO-4"
+    }
+   ],
+   "live_number_matched": 63,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(63)==numberMatched(63)==features(63) && live numberMatched(63)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-trecesson.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 63,
+   "served_distinct_codes": 62,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88075]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 62,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "tres-saint-sacrement",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769030%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-4-a432f63d-b554-4048-81eb-25c9071b2a38",
+   "http_status": 200,
+   "sha256": "sha256:ac2c876eb18a73873cbbf83475e1403b5f00c35950e2f6dc756416d0b76872a2",
+   "retrieved_at": "2026-08-10T16:39:05.386Z",
+   "storage_key": "raw/zones-vnatif/cas/ac2c876eb18a73873cbbf83475e1403b5f00c35950e2f6dc756416d0b76872a2.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 33,
+   "wfs_number_matched": 33,
+   "wfs_number_returned": 33,
+   "wfs_total_features": 33,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "tres-saint-sacrement",
+   "registry_attribution_km": 0.45,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 33,
+   "sample_codes": [
+    {
+     "code_field_value": "R-2",
+     "zone_code": "R-2"
+    },
+    {
+     "code_field_value": "R-3",
+     "zone_code": "R-3"
+    },
+    {
+     "code_field_value": "C-1",
+     "zone_code": "C-1"
+    },
+    {
+     "code_field_value": "AG-2",
+     "zone_code": "AG-2"
+    },
+    {
+     "code_field_value": "H-1",
+     "zone_code": "H-1"
+    },
+    {
+     "code_field_value": "R-1",
+     "zone_code": "R-1"
+    },
+    {
+     "code_field_value": "A-2",
+     "zone_code": "A-2"
+    },
+    {
+     "code_field_value": "A-9",
+     "zone_code": "A-9"
+    }
+   ],
+   "live_number_matched": 33,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(33)==numberMatched(33)==features(33) && live numberMatched(33)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-tres-saint-sacrement.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 33,
+   "served_distinct_codes": 33,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69030]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 33,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "tring-jonction",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727060%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-5-5205062c-8139-4974-9d2d-6f105e7e52d5",
+   "http_status": 200,
+   "sha256": "sha256:9be25daed5badbbcd97570f55fe25182ea1760fd31b3bc7235ef8db3e7300fbb",
+   "retrieved_at": "2026-08-10T16:38:48.612Z",
+   "storage_key": "raw/zones-vnatif/cas/9be25daed5badbbcd97570f55fe25182ea1760fd31b3bc7235ef8db3e7300fbb.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 46,
+   "wfs_number_matched": 46,
+   "wfs_number_returned": 46,
+   "wfs_total_features": 46,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "tring-jonction",
+   "registry_attribution_km": 0.1,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 46,
+   "sample_codes": [
+    {
+     "code_field_value": "A-10",
+     "zone_code": "A-10"
+    },
+    {
+     "code_field_value": "I-85",
+     "zone_code": "I-85"
+    },
+    {
+     "code_field_value": "F-20",
+     "zone_code": "F-20"
+    },
+    {
+     "code_field_value": "A-13",
+     "zone_code": "A-13"
+    },
+    {
+     "code_field_value": "Rf-49",
+     "zone_code": "Rf-49"
+    },
+    {
+     "code_field_value": "Rf-48",
+     "zone_code": "Rf-48"
+    },
+    {
+     "code_field_value": "M-70",
+     "zone_code": "M-70"
+    },
+    {
+     "code_field_value": "Rf-40",
+     "zone_code": "Rf-40"
+    }
+   ],
+   "live_number_matched": 46,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(46)==numberMatched(46)==features(46) && live numberMatched(46)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-tring-jonction.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 46,
+   "served_distinct_codes": 46,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=27060]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 46,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "val-brillant",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707080%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-6-0ecdc27e-170a-455a-b00b-49c4d9402764",
+   "http_status": 200,
+   "sha256": "sha256:6d49025415787156daf349b306689f3669dbaa78e696b092e01ea833cf728f46",
+   "retrieved_at": "2026-08-10T16:38:49.444Z",
+   "storage_key": "raw/zones-vnatif/cas/6d49025415787156daf349b306689f3669dbaa78e696b092e01ea833cf728f46.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 90,
+   "wfs_number_matched": 90,
+   "wfs_number_returned": 90,
+   "wfs_total_features": 90,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "val-brillant",
+   "registry_attribution_km": 0.74,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 90,
+   "sample_codes": [
+    {
+     "code_field_value": "57 Ha",
+     "zone_code": "57 Ha"
+    },
+    {
+     "code_field_value": "61 Ha",
+     "zone_code": "61 Ha"
+    },
+    {
+     "code_field_value": "44 Ha",
+     "zone_code": "44 Ha"
+    },
+    {
+     "code_field_value": "48 R",
+     "zone_code": "48 R"
+    },
+    {
+     "code_field_value": "53 Cc",
+     "zone_code": "53 Cc"
+    },
+    {
+     "code_field_value": "78 Cc",
+     "zone_code": "78 Cc"
+    },
+    {
+     "code_field_value": "59 Cc",
+     "zone_code": "59 Cc"
+    },
+    {
+     "code_field_value": "77 Cp",
+     "zone_code": "77 Cp"
+    }
+   ],
+   "live_number_matched": 90,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(90)==numberMatched(90)==features(90) && live numberMatched(90)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-val-brillant.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 90,
+   "served_distinct_codes": 90,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07080]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 90,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "val-des-sources",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=40043",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-7-ec761028-4dd9-45f7-840e-61671c9fac50",
+   "http_status": 200,
+   "sha256": "sha256:0f997eb87df7b1a76a175fc857a46db1d1a32b59c186183535da580324c99691",
+   "retrieved_at": "2026-08-10T16:39:09.610Z",
+   "storage_key": "raw/zones-vnatif/cas/0f997eb87df7b1a76a175fc857a46db1d1a32b59c186183535da580324c99691.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 154,
+   "wfs_number_matched": 154,
+   "wfs_number_returned": 154,
+   "wfs_total_features": 154,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "val-des-sources",
+   "registry_attribution_km": 0.16,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 154,
+   "sample_codes": [
+    {
+     "code_field_value": "402-P",
+     "zone_code": "402-P"
+    },
+    {
+     "code_field_value": "264-PAE",
+     "zone_code": "264-PAE"
+    },
+    {
+     "code_field_value": "51-P",
+     "zone_code": "51-P"
+    },
+    {
+     "code_field_value": "119-RM",
+     "zone_code": "119-RM"
+    },
+    {
+     "code_field_value": "105-R",
+     "zone_code": "105-R"
+    },
+    {
+     "code_field_value": "34-R",
+     "zone_code": "34-R"
+    },
+    {
+     "code_field_value": "111-R",
+     "zone_code": "111-R"
+    },
+    {
+     "code_field_value": "108-PAE",
+     "zone_code": "108-PAE"
+    }
+   ],
+   "live_number_matched": 154,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(154)==numberMatched(154)==features(154) && live numberMatched(154)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-val-des-sources.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 154,
+   "served_distinct_codes": 154,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=40043]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 154,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "vaudreuil-dorion",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2771083%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-8-914686b7-36fa-4a12-809a-d562fb28667d",
+   "http_status": 200,
+   "sha256": "sha256:8b222da0f058f17d0f14b313e18c0bbb69d843724fc7632a09caa503b0eb99b1",
+   "retrieved_at": "2026-08-10T16:39:07.921Z",
+   "storage_key": "raw/zones-vnatif/cas/8b222da0f058f17d0f14b313e18c0bbb69d843724fc7632a09caa503b0eb99b1.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 279,
+   "wfs_number_matched": 279,
+   "wfs_number_returned": 279,
+   "wfs_total_features": 279,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "vaudreuil-dorion",
+   "registry_attribution_km": 2.66,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 279,
+   "sample_codes": [
+    {
+     "code_field_value": "HFA-229",
+     "zone_code": "HFA-229"
+    },
+    {
+     "code_field_value": "HFA-231",
+     "zone_code": "HFA-231"
+    },
+    {
+     "code_field_value": "CLO-235",
+     "zone_code": "CLO-235"
+    },
+    {
+     "code_field_value": "HFA-238",
+     "zone_code": "HFA-238"
+    },
+    {
+     "code_field_value": "HFA-241",
+     "zone_code": "HFA-241"
+    },
+    {
+     "code_field_value": "INS-244",
+     "zone_code": "INS-244"
+    },
+    {
+     "code_field_value": "HMF-304",
+     "zone_code": "HMF-304"
+    },
+    {
+     "code_field_value": "HFA-311",
+     "zone_code": "HFA-311"
+    }
+   ],
+   "live_number_matched": 279,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(279)==numberMatched(279)==features(279) && live numberMatched(279)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-vaudreuil-dorion.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 279,
+   "served_distinct_codes": 279,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=71083]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 279,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "warwick",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2739077%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-9-acf77d2a-d854-4a89-bb0b-b11dcf019cfa",
+   "http_status": 200,
+   "sha256": "sha256:d3d70a542b237f99beecdd3d134c0468e7e1543887493ef993a637812108d784",
+   "retrieved_at": "2026-08-10T16:39:09.183Z",
+   "storage_key": "raw/zones-vnatif/cas/d3d70a542b237f99beecdd3d134c0468e7e1543887493ef993a637812108d784.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 123,
+   "wfs_number_matched": 123,
+   "wfs_number_returned": 123,
+   "wfs_total_features": 123,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "warwick",
+   "registry_attribution_km": 0.74,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 123,
+   "sample_codes": [
+    {
+     "code_field_value": "P-2",
+     "zone_code": "P-2"
+    },
+    {
+     "code_field_value": "C-1",
+     "zone_code": "C-1"
+    },
+    {
+     "code_field_value": "A-1",
+     "zone_code": "A-1"
+    },
+    {
+     "code_field_value": "RU-12",
+     "zone_code": "RU-12"
+    },
+    {
+     "code_field_value": "I-3",
+     "zone_code": "I-3"
+    },
+    {
+     "code_field_value": "C-11",
+     "zone_code": "C-11"
+    },
+    {
+     "code_field_value": "I-8",
+     "zone_code": "I-8"
+    },
+    {
+     "code_field_value": "I-4",
+     "zone_code": "I-4"
+    }
+   ],
+   "live_number_matched": 123,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(123)==numberMatched(123)==features(123) && live numberMatched(123)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-warwick.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 123,
+   "served_distinct_codes": 123,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=39077]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 123,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "wentworth-nord",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77060",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-10-f659a2a5-9d66-443c-b2e2-4707237cb87e",
+   "http_status": 200,
+   "sha256": "sha256:9ef285cd332c5f1e1fe463fccb9b5c43a9d2b6fb8b1b11d00da88f55dd48ffd1",
+   "retrieved_at": "2026-08-10T16:39:09.095Z",
+   "storage_key": "raw/zones-vnatif/cas/9ef285cd332c5f1e1fe463fccb9b5c43a9d2b6fb8b1b11d00da88f55dd48ffd1.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 145,
+   "wfs_number_matched": 145,
+   "wfs_number_returned": 145,
+   "wfs_total_features": 145,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "wentworth-nord",
+   "registry_attribution_km": 1.71,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 145,
+   "sample_codes": [
+    {
+     "code_field_value": "H-59",
+     "zone_code": "H-59"
+    },
+    {
+     "code_field_value": "H-66",
+     "zone_code": "H-66"
+    },
+    {
+     "code_field_value": "H-33",
+     "zone_code": "H-33"
+    },
+    {
+     "code_field_value": "H-60",
+     "zone_code": "H-60"
+    },
+    {
+     "code_field_value": "REC-08",
+     "zone_code": "REC-08"
+    },
+    {
+     "code_field_value": "H-48",
+     "zone_code": "H-48"
+    },
+    {
+     "code_field_value": "H-62",
+     "zone_code": "H-62"
+    },
+    {
+     "code_field_value": "H-63",
+     "zone_code": "H-63"
+    }
+   ],
+   "live_number_matched": 145,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(145)==numberMatched(145)==features(145) && live numberMatched(145)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-wentworth-nord.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 145,
+   "served_distinct_codes": 145,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77060]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 145,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  },
+  {
+   "slug": "wotton",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T180000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=40017",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T180000Z-11-efb44324-bff7-4351-9512-783042c1d06c",
+   "http_status": 200,
+   "sha256": "sha256:9c5e4af67c96ee712f971627a1b5c0acabf198d0054ca38712b98201bc9531bd",
+   "retrieved_at": "2026-08-10T16:39:18.019Z",
+   "storage_key": "raw/zones-vnatif/cas/9c5e4af67c96ee712f971627a1b5c0acabf198d0054ca38712b98201bc9531bd.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 58,
+   "wfs_number_matched": 58,
+   "wfs_number_returned": 58,
+   "wfs_total_features": 58,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "wotton",
+   "registry_attribution_km": 0.24,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 58,
+   "sample_codes": [
+    {
+     "code_field_value": "M-5",
+     "zone_code": "M-5"
+    },
+    {
+     "code_field_value": "A-1",
+     "zone_code": "A-1"
+    },
+    {
+     "code_field_value": "id-11",
+     "zone_code": "id-11"
+    },
+    {
+     "code_field_value": "A-2",
+     "zone_code": "A-2"
+    },
+    {
+     "code_field_value": "AF-3",
+     "zone_code": "AF-3"
+    },
+    {
+     "code_field_value": "id-5",
+     "zone_code": "id-5"
+    },
+    {
+     "code_field_value": "id-17",
+     "zone_code": "id-17"
+    },
+    {
+     "code_field_value": "id-8",
+     "zone_code": "id-8"
+    }
+   ],
+   "live_number_matched": 58,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(58)==numberMatched(58)==features(58) && live numberMatched(58)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-wotton.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 58,
+   "served_distinct_codes": 58,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=40017]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 58,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "statut": "DRY-RUN-OK",
+   "raison": "toutes gardes OK — prêt au dépôt candidate→documented (overlap 100%, 0 code(s) servi-seulement→UNKNOWN) (relancer avec --commit)"
+  }
+ ]
+}
