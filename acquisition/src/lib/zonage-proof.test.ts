@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
-import { assertGeometryProof, assertServedZoneGeojson, attachGeometryProof, carryForwardServedZoneProperties, isRealGeometryUrl, isServedZoneKey, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson, putServedZoneGeojsonIfMatch, sameGeometryProof } from "./zonage-proof.js";
+import { assertGeometryProof, assertServedZoneGeojson, attachGeometryProof, carryForwardServedZoneProperties, featureHasV2Proof, isRealGeometryUrl, isServedZoneKey, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson, putServedZoneGeojsonIfMatch, sameGeometryProof } from "./zonage-proof.js";
 import { copyObject, putBytes } from "./s3.js";
 
 describe("served zonage geometry proof", () => {
@@ -215,6 +215,55 @@ describe("served zonage geometry proof", () => {
       .map((file) => relative(root, file).replaceAll("\\", "/"))
       .sort();
     expect(users).toEqual(["lib/s3.ts", "lib/zonage-proof.ts"]);
+  });
+});
+
+// featureHasV2Proof est le discriminateur du gate d'identité (SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md,
+// SHA 65d4c637), promu depuis zones-obscura-run.ts (dédup CLAUDE.md). Il partage désormais UNE
+// SEULE définition des validateurs (isIsoTimestamp + PROOF_SHA256_RE) avec le chemin de dépôt.
+// Ces cas verrouillent le comportement inchangé octet-pour-octet du prédicat inliné.
+describe("featureHasV2Proof (v2 identity-gate discriminator)", () => {
+  const VALID_SHA = `sha256:${"a".repeat(64)}`;
+  const VALID_AT = "2026-07-22T12:00:00Z";
+
+  it("(a) is true for a well-formed per-feature geometry_source proof", () => {
+    // Built the real way, via attachGeometryProof — the only sanctioned v2 stamper.
+    const p = proofFromFetched({ url: "https://data.example.org/zones.geojson", type: "geojson-officiel", method: "natif", reliability: "directe", bytes: "x", retrievedAt: VALID_AT });
+    const fc: any = attachGeometryProof({ type: "FeatureCollection", features: [{ properties: { zone_code: "R-1" } }] }, p);
+    expect(featureHasV2Proof(fc.features[0])).toBe(true);
+    // And directly, from an explicit valid (sha256:64hex + ISO retrieved_at) tuple.
+    expect(featureHasV2Proof({ properties: { proof: { schema_version: "2.0", geometry_source: { sha256: VALID_SHA, retrieved_at: VALID_AT } } } } as any)).toBe(true);
+  });
+
+  it("(b) is false for an explicit null zone_source_url with no proof block", () => {
+    expect(featureHasV2Proof({ properties: { zone_source_url: null, zone_source_level: "orphan" } } as any)).toBe(false);
+  });
+
+  it("(c) is false for a real declarative http(s) URL carrying NO proof block", () => {
+    // THE point of the refinement: a candidate with a declarative, un-captured URL is
+    // NOT proven — a real zone_source_url is necessary but not sufficient.
+    expect(isRealGeometryUrl("https://ville.example.org/zonage")).toBe(true);
+    expect(featureHasV2Proof({ properties: { zone_source_url: "https://ville.example.org/zonage", zone_source_level: "candidate" } } as any)).toBe(false);
+  });
+
+  it("(d) is false for a malformed sha256 (wrong length, missing prefix, or non [a-f0-9] hex)", () => {
+    expect(featureHasV2Proof({ properties: { proof: { geometry_source: { sha256: `sha256:${"a".repeat(63)}`, retrieved_at: VALID_AT } } } } as any)).toBe(false);
+    expect(featureHasV2Proof({ properties: { proof: { geometry_source: { sha256: "a".repeat(64), retrieved_at: VALID_AT } } } } as any)).toBe(false);
+    // Uppercase hex is rejected: the shared regex is /^sha256:[a-f0-9]{64}$/ (preserved).
+    expect(featureHasV2Proof({ properties: { proof: { geometry_source: { sha256: `sha256:${"A".repeat(64)}`, retrieved_at: VALID_AT } } } } as any)).toBe(false);
+  });
+
+  it("(e) is false when retrieved_at is missing or not an ISO timestamp", () => {
+    expect(featureHasV2Proof({ properties: { proof: { geometry_source: { sha256: VALID_SHA } } } } as any)).toBe(false);
+    expect(featureHasV2Proof({ properties: { proof: { geometry_source: { sha256: VALID_SHA, retrieved_at: "2026-07-22" } } } } as any)).toBe(false);
+    expect(featureHasV2Proof({ properties: { proof: { geometry_source: { sha256: VALID_SHA, retrieved_at: "not-a-date" } } } } as any)).toBe(false);
+  });
+
+  it("(f) is false when properties, proof, or geometry_source are absent", () => {
+    expect(featureHasV2Proof({} as any)).toBe(false);
+    expect(featureHasV2Proof({ properties: null } as any)).toBe(false);
+    expect(featureHasV2Proof({ properties: {} } as any)).toBe(false);
+    expect(featureHasV2Proof({ properties: { proof: { schema_version: "2.0" } } } as any)).toBe(false);
   });
 });
 
@@ -690,6 +739,69 @@ describe("additive served-zone provenance write", () => {
       await expect(putServedZoneAdditive(s3, KEY, incoming, {
         allowProofCaptureAttestation: [{ artifactUri: HTTPS, sha256: PROOF_SHA256, retrievedAt: AT }],
       })).rejects.toThrow();
+      expect(sent.some((command) => command.name === PUT)).toBe(false);
+    });
+  });
+
+  describe("exact v1 envelope promotion to served v2", () => {
+    const source = {
+      url: PUBLIC_ARTIFACT_URL,
+      type: "arcgis" as const,
+      method: "natif" as const,
+      reliability: "directe" as const,
+      retrieved_at: "2026-07-28T12:00:00.000Z",
+      sha256: PROOF_SHA256,
+    };
+    const legacy = () => ({
+      schema_version: "1.0",
+      status: "complete",
+      sources: {
+        geometry: { status: "available", artifact_uri: PUBLIC_ARTIFACT_URL, sha256: PROOF_SHA256 },
+        regulation: { status: "unavailable", artifact_uri: null },
+      },
+      gaps: ["regulation_source_unavailable"],
+    });
+
+    it("promotes only the capture-attested geometry envelope while preserving legacy evidence", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = legacy();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      incoming.proof = { schema_version: "2.0", geometry_source: source };
+      for (const feature of incoming.features) {
+        feature.properties.proof = { ...feature.properties.proof, schema_version: "2.0", geometry_source: source };
+        feature.properties.zone_source_url = source.url;
+        feature.properties.zone_source_level = "documented";
+      }
+
+      await putServedZoneAdditive(s3, KEY, incoming, {
+        allowedProps: ["zone_source_url", "zone_source_level"],
+        allowProofV2Promotion: [{ geometrySource: source }],
+      });
+      const body = JSON.parse(sent.find((command) => command.name === PUT)!.input.Body);
+      expect(body.features.map((feature: any) => feature.geometry)).toEqual(served.features.map((feature: any) => feature.geometry));
+      expect(body.features[0].properties.proof.sources).toEqual(served.features[0].properties.proof.sources);
+      expect(body.proof).toEqual({ schema_version: "2.0", geometry_source: source });
+      expect(() => assertServedZoneGeojson(KEY, body)).not.toThrow();
+    });
+
+    it("refuses a promotion that edits a legacy proof member", async () => {
+      const served: any = clone(twoFeatures());
+      for (const feature of served.features) feature.properties.proof = legacy();
+      const { s3, sent } = fakeS3(served);
+      const incoming: any = clone(served);
+      incoming.proof = { schema_version: "2.0", geometry_source: source };
+      for (const feature of incoming.features) {
+        feature.properties.proof = { ...feature.properties.proof, schema_version: "2.0", geometry_source: source };
+        feature.properties.proof.sources.regulation.status = "available";
+        feature.properties.zone_source_url = source.url;
+        feature.properties.zone_source_level = "documented";
+      }
+
+      await expect(putServedZoneAdditive(s3, KEY, incoming, {
+        allowedProps: ["zone_source_url", "zone_source_level"],
+        allowProofV2Promotion: [{ geometrySource: source }],
+      })).rejects.toThrow(/non-provenance property "proof"/);
       expect(sent.some((command) => command.name === PUT)).toBe(false);
     });
   });

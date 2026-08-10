@@ -1,0 +1,212 @@
+{
+  "contract": "zones-v2-upgrade-yield-verify/v1",
+  "generated_at": "2026-08-10",
+  "read_only": true,
+  "method": {
+    "goal": "Convert the '388 UPGRADABLE (upper bound 376)' scoping ESTIMATE into a REAL-YIELD estimate by empirically testing whether the recorded per-muni zone_source_url endpoints actually serve queryable per-muni zone GeoJSON with a real zone-code field (source-identity candidate -> documented capturable).",
+    "input": "work/coverage/zones-v2-upgrade-scoping-20260810.json (commit 570ee0d7), upgradable_list (388 entries).",
+    "probe": "READ-ONLY WebFetch against the ACTUAL recorded zone_source_url per sample slug. ArcGIS: .../query?where=1=1&outFields=*&resultRecordCount=3&f=geojson. GeoServer WFS: /geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=<layer>&outputFormat=application/json&count=3&CQL_FILTER=id_municipalite=<id>. No capture, no deposit, no S3 write except this committed record.",
+    "verdict_rule": "AUTOMATABLE only if a live sample actually returned a GeoJSON FeatureCollection of Polygon/MultiPolygon WITH a real zone-code attribute. NOT-AUTOMATABLE if the recorded URL does not resolve to a live queryable service. Extrapolation within a cluster is labelled an estimate.",
+    "anti_invention": "Yield is grounded in the samples that actually returned data. goAzimut is scored 0 because ALL sampled recorded URLs failed to resolve to a live ArcGIS REST service (see cluster note), not from a URL-pattern guess."
+  },
+  "clusters": [
+    {
+      "cluster": "geoCentralis WFS",
+      "host": "geoserver.geocentralis.com",
+      "endpoint_class": "geoserver-wfs",
+      "cluster_size": 147,
+      "shape": "SHARED GeoServer WFS. TWO shared layers observed: evb:zonage_municipal and evb:siadmin_pzon_99_s, both filtered by id_municipalite (encoded in the recorded URL fragment). One endpoint (/geoserver/ows) serves all municipalities.",
+      "samples": [
+        {
+          "slug": "adstock",
+          "layer": "evb:zonage_municipal",
+          "id_municipalite": "31056",
+          "liveness": "200 OK",
+          "geojson": true,
+          "geometry": "MultiPolygon",
+          "features_matched": 174,
+          "zone_code_field": "no_zonage_municipal (e.g. 'M2.3-1'); + id_type_zonage_municipal, description='Agroforestier de type 1', hyperlien_grille_specification (real reglement PDF page anchor)"
+        },
+        {
+          "slug": "baie-comeau",
+          "layer": "evb:siadmin_pzon_99_s",
+          "id_municipalite": "96020",
+          "liveness": "200 OK",
+          "geojson": true,
+          "geometry": "MultiPolygon",
+          "features_matched": 238,
+          "zone_code_field": "etiquette_1 (e.g. '281 R'); + etiquette_2='Résidentiel', description='zonage'"
+        }
+      ],
+      "verdict": "AUTOMATABLE",
+      "estimated_capturable": 147,
+      "confidence": "high",
+      "notes": "Both shared layers return per-muni Polygon geometry as application/json with a real zone-code field via CQL_FILTER on id_municipalite. Whole cluster is batch-capturable from ONE endpoint. CAVEAT: some recorded ids carry a leading zero (e.g. albertville 07025); id_municipalite is numeric in zonage_municipal but string-typed in siadmin_pzon_99_s, so the CQL literal may need to be unquoted (7025) or quoted ('07025') per layer — a trivial capture-time detail, not a blocker."
+    },
+    {
+      "cluster": "goAzimut MapServer",
+      "host": "www.goazimut.com",
+      "endpoint_class": "arcgis-rest",
+      "cluster_size": 184,
+      "shape": "Per-muni ArcGIS MapServer, path gis109-XX/arcgis/rest/services/<MRC>/<muni>/MapServer/<layerid>.",
+      "samples": [
+        {
+          "slug": "albanel",
+          "recorded_url": "https://www.goazimut.com/gis109-04/arcgis/rest/services/920_MariaChapdelaine/92030_Albanel/MapServer/197",
+          "liveness": "www host 302 -> https://www2.goazimut.com//gis109-04/... ; www2 single-slash path = 404 Not Found ; www2 double-slash path = goAzimut MARKETING HOMEPAGE (SPA fallthrough), not ArcGIS. MapServer service root and /query both 404 on single-slash.",
+          "geojson": false
+        },
+        {
+          "slug": "baie-saint-paul",
+          "recorded_url": "https://www.goazimut.com/gis109-02/arcgis/rest/services/160_Charlevoix/16013_BaieSaintPaul/MapServer/177",
+          "liveness": "same pattern: 302 -> www2 double-slash -> marketing homepage",
+          "geojson": false
+        },
+        {
+          "slug": "bedford--brome-missisquoi--2",
+          "recorded_url": "https://www.goazimut.com/gis109-10/arcgis/rest/services/460_BromeMissisquoi/46035_Bedford/MapServer/133",
+          "liveness": "www2 single-slash /query = 404 Not Found",
+          "geojson": false
+        }
+      ],
+      "verdict": "NOT-AUTOMATABLE",
+      "estimated_capturable": 0,
+      "confidence": "high (3 distinct instances gis109-02/04/10 all fail identically)",
+      "reason": "The recorded ArcGIS REST paths do NOT resolve to a live service. www.goazimut.com 302-redirects every path to www2.goazimut.com with a literal double-slash; the double-slash path is served by the goAzimut marketing SPA (homepage HTML), and the single-slash deep ArcGIS paths (service root, layer, /query) return 404. There is no publicly reachable ArcGIS REST at the recorded zone_source_url, so f=geojson support is moot. The GIS appears to be fronted by the goAzimut viewer app rather than direct REST exposure.",
+      "notes": "This drives the entire yield collapse: goAzimut is 184/388 = 47% of the UPGRADABLE pool. Reaching it would require RE-DISCOVERING the live (likely session/token-proxied) endpoint — that is source re-discovery, not source-identity replay of the recorded URL, so it is out of the source-identity method as defined. Read-only WebFetch verdict; a real browser/app context (playwright) MIGHT reach a proxied backend but was out of scope and would not be the recorded URL."
+    },
+    {
+      "cluster": "altusquebec MapServer",
+      "host": "gis.altusquebec.com",
+      "endpoint_class": "arcgis-rest",
+      "cluster_size": 12,
+      "shape": "Per-muni ArcGIS MapServer, path MRC0XX/0XXXX_Publique/MapServer/<layerid> ('_Publique' = public).",
+      "samples": [
+        {
+          "slug": "(MRC030/03005_Publique/MapServer/20)",
+          "liveness": "200 OK",
+          "geojson": true,
+          "geometry": "Polygon",
+          "zone_code_field": "Zone (e.g. 'A-123'); + No_zone='123', Nom_zone='A', Type_zone='Agricole'"
+        }
+      ],
+      "verdict": "AUTOMATABLE",
+      "estimated_capturable": 12,
+      "confidence": "medium-high (1 sample verified; consistent public _Publique pattern across the 12)",
+      "notes": "MapServer here DOES honour f=geojson and returns Polygon geometry with a real zone code. exceededTransferLimit=true on the 3-row sample (normal; full pull uses paging/resultOffset)."
+    },
+    {
+      "cluster": "victoriaville MapServer (shared MRC)",
+      "host": "geo.victoriaville.ca",
+      "endpoint_class": "arcgis-rest",
+      "cluster_size": 12,
+      "shape": "SHARED MRC MapServer: all 12 slugs point to the SAME URL IntranetMRC/ZonageMunicipal/MapServer/3, filtered per-muni by Code_mun. Despite 'Intranet' in the path it is publicly queryable.",
+      "samples": [
+        {
+          "slug": "(IntranetMRC/ZonageMunicipal/MapServer/3, first row Notre-Dame-de-Ham Code_mun 39015)",
+          "liveness": "200 OK (no token required)",
+          "geojson": true,
+          "geometry": "Polygon",
+          "zone_code_field": "Disposition_spéciale (e.g. 'AF8'); + GROUPEUSAGE='AF', Code_mun (per-muni filter), Municipalite"
+        }
+      ],
+      "verdict": "AUTOMATABLE",
+      "estimated_capturable": 12,
+      "confidence": "medium-high (endpoint live + geojson + per-muni Code_mun filter present)",
+      "notes": "One endpoint serves all 12 via Code_mun. Zone-code field is Disposition_spéciale ('AF8'); GROUPEUSAGE is the usage group — confirm at capture time that Disposition_spéciale is the intended zone identifier rather than a special-disposition flag."
+    },
+    {
+      "cluster": "AGOL hosted FeatureServers",
+      "host": "services*.arcgis.com (services / services6 / services8 / services9)",
+      "endpoint_class": "arcgis-rest",
+      "cluster_size": 19,
+      "shape": "Esri ArcGIS Online hosted feature layers. Some per-muni (Zonage/FeatureServer/N), some shared MRC layers filtered by CODE_MUN/MUN.",
+      "samples": [
+        {
+          "slug": "beaupre",
+          "url": "services6.arcgis.com/osUKB2jztkflrQhx/.../Zonage/FeatureServer/17",
+          "liveness": "200 OK",
+          "geojson": true,
+          "geometry": "Polygon",
+          "zone_code_field": "ZONE_ (e.g. '68-Ri2'); + Dom='Ri', LéGENDE, Reglementa (reglement URL)"
+        },
+        {
+          "slug": "(temiscouata shared MRC)",
+          "url": "services.arcgis.com/aaWqU4clL4fblaWE/.../Zonage_MRC_Temiscouata_vue/FeatureServer/0",
+          "liveness": "200 OK",
+          "geojson": true,
+          "geometry": "Polygon",
+          "zone_code_field": "ZONE (e.g. 'EAA-3'); + TYPE_ZONE, CODE_MUN (per-muni filter)"
+        },
+        {
+          "slug": "(services8 Intranet_Municipal - token-risk case)",
+          "url": "services8.arcgis.com/RT1BkiMAAZM2yTCt/.../Intranet_Municipal/FeatureServer/8",
+          "liveness": "200 OK (NO token required despite 'Intranet' name)",
+          "geojson": true,
+          "geometry": "Polygon",
+          "zone_code_field": "Sect (e.g. 'R-4'); + ZONE_='R', TYPE, MUN='Bonsecours'"
+        },
+        {
+          "slug": "(services8 Limite_du_zonage)",
+          "url": "services8.arcgis.com/GbbSwEysvC2sv6Y6/.../Limite_du_zonage/FeatureServer/4",
+          "liveness": "200 OK",
+          "geojson": true,
+          "geometry": "Polygon",
+          "zone_code_field": "NUM_ZONE (e.g. '403') + TYPE_ZONE='M' -> Usage='M-403'; MUN='20015'"
+        },
+        {
+          "slug": "(services6 qVhfI6 shared Zonage)",
+          "url": "services6.arcgis.com/qVhfI6UTbRNL5Gfd/.../Zonage/FeatureServer/5",
+          "liveness": "200 OK",
+          "geojson": true,
+          "geometry": "Polygon",
+          "zone_code_field": "NO_ZONE (e.g. 'A-19'); + TYPE='Agricole', MUNI='Lambton'"
+        }
+      ],
+      "verdict": "AUTOMATABLE",
+      "estimated_capturable": 19,
+      "confidence": "high (5/5 AGOL feature services tested returned public GeoJSON with a zone-code field; f=geojson is native to Esri hosted feature layers)",
+      "notes": "Covers services.arcgis.com (7), services6 (6), services8 (3), services9 (1), www.arcgis.com (2). The 2 www.arcgis.com entries are portal item URLs (not directly a FeatureServer) and would need item->service resolution; counted inside the 19 but flagged as needing one resolution step."
+    }
+  ],
+  "untested_small_hosts": {
+    "note": "Not sampled (budget: 3-5 per cluster). Endpoint-class pattern given; yield UNCERTAIN, excluded from the confirmed floor and only partially credited in the upper of the realistic range.",
+    "hosts": {
+      "sig.mrcal.ca": {"count": 3, "class": "likely arcgis-rest", "assessment": "plausible-automatable, untested"},
+      "portneuf.blob.core.windows.net": {"count": 3, "class": "azure blob (static file)", "assessment": "possibly a static geojson/file capture, untested"},
+      "geo.ville.alma.qc.ca": {"count": 1, "class": "custom REST v2.0", "assessment": "custom API, untested"},
+      "carte.rouyn-noranda.ca": {"count": 1, "class": "custom/arcgis?", "assessment": "untested"},
+      "www.chelsea.ca": {"count": 1, "class": "other-http", "assessment": "untested"},
+      "www.villagedehemmingford.ca": {"count": 1, "class": "other-http", "assessment": "likely file/pdf, untested"},
+      "preissac.com": {"count": 1, "class": "other-http", "assessment": "untested"},
+      "st-amable.qc.ca": {"count": 1, "class": "other-http", "assessment": "untested"},
+      "www.municipalite.saint-armand.qc.ca": {"count": 1, "class": "other-http", "assessment": "untested"},
+      "stepetronille.com": {"count": 1, "class": "other-http", "assessment": "untested"}
+    },
+    "total_untested": 14,
+    "reminder": "6 of the 388 are pdf-plan (georeference, NOT source-identity) per the scoping; some of the other-http single hosts above overlap that category."
+  },
+  "consolidated_yield": {
+    "scoping_upper_bound_source_identity": 376,
+    "scoping_upgradable_total": 388,
+    "confirmed_automatable_floor": 190,
+    "confirmed_automatable_breakdown": {
+      "geoCentralis_wfs": 147,
+      "altusquebec": 12,
+      "victoriaville": 12,
+      "agol_services_star": 19
+    },
+    "confirmed_not_automatable": {"goAzimut": 184},
+    "realistic_yield_range": "185 - 205",
+    "realistic_yield_point_estimate": 195,
+    "yield_vs_upper_bound_pct": "~50% of the 376 upper bound",
+    "interpretation": "REAL yield is roughly HALF the 376 upper bound. The collapse is driven almost entirely by goAzimut (184 slugs = 47% of the pool) whose recorded ArcGIS REST URLs do not resolve to a live queryable service. The remaining big cluster, geoCentralis WFS (147), is cleanly batch-capturable from one endpoint, and every other tested cluster (altusquebec, victoriaville, AGOL) is automatable. The floor of ~190 is verified-by-sample; the upper of ~205 credits the ~14 untested small hosts partially (some are custom/pdf/blob and may not be source-identity-capturable)."
+  },
+  "caveats": [
+    "READ-ONLY WebFetch probing. WebFetch upgrades http->https and hands back cross-host redirects; it is not a full browser. goAzimut's NOT-AUTOMATABLE verdict is for the RECORDED zone_source_url replayed as-is (the source-identity contract); a session/token-proxied backend reachable only via the goAzimut app was not probed and would be re-discovery, not source-identity.",
+    "Per-cluster verdicts rest on 1-5 samples each; single-sample clusters (altusquebec, victoriaville) are labelled medium-high confidence and extrapolate a consistent URL/platform pattern.",
+    "geoCentralis leading-zero id_municipalite may need string-quoted vs unquoted CQL depending on the layer's field type (numeric in zonage_municipal, string in siadmin_pzon_99_s).",
+    "exceededTransferLimit=true appears on the 3-row samples (expected); full per-muni capture uses paging (resultOffset/resultRecordCount) — not a blocker.",
+    "The 14 untested small hosts are excluded from the confirmed floor; only partially credited in the upper bound of the realistic range."
+  ]
+}
