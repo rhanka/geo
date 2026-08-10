@@ -82,11 +82,10 @@ const GRILLE_SIGNALS: readonly KeywordSignal[] = [
   { re: /grilles?[-_\s]*(de[-_\s]*)?zonage/, weight: 5, label: "grille de zonage" },
   { re: /reglement\s+de\s+zonage/, weight: 5, label: "règlement de zonage" },
   { re: /usages?\s+et\s+normes?/, weight: 4, label: "usages et normes" },
-  // Base-codification preference (rerank fix): the codified BASE règlement de zonage
-  // is the one that actually carries the grille — prefer it over the amendments that
-  // merely "modify" it. A "codification administrative" / "à jour au" / "refondu(e)"
-  // title is the base; this boost lifts it above same-named amendments at eval time.
-  { re: /codification\s+administrative/, weight: 4, label: "codification administrative" },
+  // A codification is useful only as a tie-breaker *after* an actual zoning
+  // signal. Municipal sites also codify traffic, animals and borrowing by-laws;
+  // accepting it on its own turned those unrelated PDFs into false grids.
+  { re: /codification\s+administrative/, weight: 1, label: "codification administrative" },
   { re: /\ba\s+jour\s+au\b|consolidation|consolide|refondue?/, weight: 2, label: "codification/à jour" },
   // Medium markers — meaningful but appear in many municipal docs.
   { re: /\bgrilles?\b/, weight: 3, label: "grille" },
@@ -169,6 +168,25 @@ export function classifyGrilleLink(title: string, url: string): GrilleClassifica
   return { score, matched, penalised };
 }
 
+/**
+ * An amending by-law can name zoning and one affected zone while containing no
+ * usable grid. Keep only a consolidated/base version when an amendment marker
+ * is present. This is stricter than score subtraction: "règlement de zonage"
+ * otherwise still clears the threshold after the amendment penalty.
+ */
+function isStandaloneAmendment(classification: GrilleClassification): boolean {
+  const amendment = classification.penalised.some((label) =>
+    label === "modifiant (amendement)" ||
+    label === "amendement" ||
+    label === "projet de règlement" ||
+    label === "avis de motion",
+  );
+  const consolidated = classification.matched.some((label) =>
+    label === "codification administrative" || label === "codification/à jour",
+  );
+  return amendment && !consolidated;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Candidate model
 // ─────────────────────────────────────────────────────────────────────────────
@@ -224,6 +242,7 @@ export function discoverGrillesInHtml(
     if (!/\.pdf(?:[?#].*)?$/i.test(link.url)) continue;
     const cls = classifyGrilleLink(link.title, link.url);
     if (cls.score < threshold) continue;
+    if (isStandaloneAmendment(cls)) continue;
     candidates.push({
       slug,
       sourceUrl: pageUrl,
@@ -341,7 +360,7 @@ export function extractInternalSubpages(
     // Skip the page we are already on (self-link) and document links (those are
     // grille candidates, handled by discoverGrillesInHtml, not sub-page hops).
     if (abs === pageUrl) continue;
-    if (/\.(?:pdf|docx?|odt)(?:[?#].*)?$/i.test(abs)) continue;
+    if (/\.(?:pdf|docx?|odt|xlsx?|csv|zip|mp4|mpe?g|mov|avi|mp3|wav)(?:[?#].*)?$/i.test(abs)) continue;
 
     const hay = fold(`${anchor} ${abs}`);
     if (SUBPAGE_SKIP_RE.test(hay)) continue;
