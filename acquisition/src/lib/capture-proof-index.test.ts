@@ -47,7 +47,8 @@ describe("capture proof index", () => {
     expect(entry).toMatchObject({ url, sha256, manifest_line: 4, run_id: "zones-20260810T020304Z-audet" });
     const bytes = serializeCaptureProofIndex([entry!]);
     expect(parseCaptureProofIndex(Buffer.from(bytes))).toEqual([entry]);
-    expect(hasCaptureProof([entry!], { url, sha256 })).toBe(true);
+    expect(hasCaptureProof([entry!], { url, retrieved_at: entry!.retrieved_at, sha256 })).toBe(true);
+    expect(hasCaptureProof([entry!], { url, retrieved_at: "2026-08-10T02:03:06.000Z", sha256 })).toBe(false);
   });
 
   it("does not index failures, redactions, non-CAS rows, or malformed source receipts", () => {
