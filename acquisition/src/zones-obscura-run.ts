@@ -61,6 +61,7 @@ import { reapplyServedZonageEnrichment } from "./lib/reapply-zonage-enrichment.j
 import {
   attachGeometryProof,
   carryForwardServedZoneProperties,
+  featureHasV2Proof,
   GEOMETRY_GRAIN_FIELD,
   type GeometryGrain,
   type GeometrySourceProof,
@@ -938,33 +939,6 @@ export function normalize(features: GeoFeature[], zoneField: string, serviceUrl:
 
 function canonicalZoneCode(value: unknown): string {
   return String(value ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "");
-}
-
-/** ISO-8601 timestamp shape (frère de `zonage-proof.ts`) — pour valider `retrieved_at`. */
-const ISO_TS_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
-
-/**
- * Un feature servi est V2-PROUVÉ ssi il porte un vrai bloc de preuve géométrique
- * PAR-FEATURE : `proof.geometry_source` avec un `sha256:<64hex>` bien formé ET un
- * `retrieved_at` ISO (SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md, SHA 65d4c637). C'est le
- * discriminateur ROBUSTE du gate d'identité : une `zone_source_url` http(s) réelle est
- * NÉCESSAIRE mais NON SUFFISANTE — un `candidate` à URL *déclarative* sans capture ne
- * porte AUCUN bloc de preuve, donc N'EST PAS prouvé. Seul un vrai dépôt v2
- * (`attachGeometryProof`, zonage-proof.ts) estampille ce bloc ; `zone_source_level`
- * ("documented"/"historical-verified") ne le corrobore qu'accessoirement — la preuve
- * elle-même reste le juge. Tester le bloc plutôt que l'URL ne peut rendre QUE PLUS de
- * codes non-prouvés (jamais moins), donc strictement plus sûr.
- */
-function featureHasV2Proof(feature: GeoFeature): boolean {
-  const proof = feature.properties?.["proof"] as
-    | { geometry_source?: { sha256?: unknown; retrieved_at?: unknown } }
-    | null
-    | undefined;
-  const gs = proof?.geometry_source;
-  if (!gs) return false;
-  const shaOk = typeof gs.sha256 === "string" && /^sha256:[a-f0-9]{64}$/.test(gs.sha256);
-  const retrievedOk = typeof gs.retrieved_at === "string" && ISO_TS_RE.test(gs.retrieved_at) && !Number.isNaN(Date.parse(gs.retrieved_at));
-  return shaOk && retrievedOk;
 }
 
 function auditServed(key: string, features: GeoFeature[]): ServedAudit {
