@@ -4,7 +4,8 @@ import { describe, it, expect } from "vitest";
 // matrices de complétion committées (sources réelles) ; ce test verrouille les
 // INVARIANTS (anti-invention, fermeture, présence, pending, gaps) plutôt qu'une
 // valeur mouvante — les comptes évoluent avec les dépôts, la STRUCTURE non.
-const mod = await import("../../scripts/palier-matrix-report.mjs");
+const palierMatrixReportScript = "../../scripts/palier-matrix-report.mjs";
+const mod = await import(palierMatrixReportScript);
 const payload = mod.build("20260803");
 
 describe("palier-matrix contract", () => {

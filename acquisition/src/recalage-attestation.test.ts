@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 
-const mod = await import("../../scripts/recalage-attestation.mjs");
+const recalageAttestationScript = "../../scripts/recalage-attestation.mjs";
+const mod = await import(recalageAttestationScript);
 const { attestFromMetrics, BANC } = mod as any;
 
 // Métriques d'un recalage sain (belcourt-like) : residual < 30, marge large,
