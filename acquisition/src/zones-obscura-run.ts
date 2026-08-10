@@ -64,7 +64,6 @@ import {
   GEOMETRY_GRAIN_FIELD,
   type GeometryGrain,
   type GeometrySourceProof,
-  isRealGeometryUrl,
   proofFromCaptureEntry,
   putServedZoneAdditive,
   putServedZoneGeojson,
@@ -941,6 +940,33 @@ function canonicalZoneCode(value: unknown): string {
   return String(value ?? "").toUpperCase().replace(/[^A-Z0-9]/g, "");
 }
 
+/** ISO-8601 timestamp shape (frère de `zonage-proof.ts`) — pour valider `retrieved_at`. */
+const ISO_TS_RE = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2})$/;
+
+/**
+ * Un feature servi est V2-PROUVÉ ssi il porte un vrai bloc de preuve géométrique
+ * PAR-FEATURE : `proof.geometry_source` avec un `sha256:<64hex>` bien formé ET un
+ * `retrieved_at` ISO (SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md, SHA 65d4c637). C'est le
+ * discriminateur ROBUSTE du gate d'identité : une `zone_source_url` http(s) réelle est
+ * NÉCESSAIRE mais NON SUFFISANTE — un `candidate` à URL *déclarative* sans capture ne
+ * porte AUCUN bloc de preuve, donc N'EST PAS prouvé. Seul un vrai dépôt v2
+ * (`attachGeometryProof`, zonage-proof.ts) estampille ce bloc ; `zone_source_level`
+ * ("documented"/"historical-verified") ne le corrobore qu'accessoirement — la preuve
+ * elle-même reste le juge. Tester le bloc plutôt que l'URL ne peut rendre QUE PLUS de
+ * codes non-prouvés (jamais moins), donc strictement plus sûr.
+ */
+function featureHasV2Proof(feature: GeoFeature): boolean {
+  const proof = feature.properties?.["proof"] as
+    | { geometry_source?: { sha256?: unknown; retrieved_at?: unknown } }
+    | null
+    | undefined;
+  const gs = proof?.geometry_source;
+  if (!gs) return false;
+  const shaOk = typeof gs.sha256 === "string" && /^sha256:[a-f0-9]{64}$/.test(gs.sha256);
+  const retrievedOk = typeof gs.retrieved_at === "string" && ISO_TS_RE.test(gs.retrieved_at) && !Number.isNaN(Date.parse(gs.retrieved_at));
+  return shaOk && retrievedOk;
+}
+
 function auditServed(key: string, features: GeoFeature[]): ServedAudit {
   const propertyKeys = new Set<string>();
   const zoneSourceUrls = new Set<string>();
@@ -1032,31 +1058,34 @@ export async function depositCapturedZones(
   const incomingCodes = new Set(norm.map((f) => canonicalZoneCode(f.properties?.["zone_code"])).filter(Boolean));
   const uncovered = [...servedCodes].filter((code) => !incomingCodes.has(code));
 
-  // PROVENANCE-AWARE identity gate (SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md §2-3, SHA 64f82eae).
-  // Per served-only code, `zone_source_url === null` (no live http(s) URL) is THE
-  // discriminator: a code that was NEVER proven in v2 does not block a verified-complete
-  // v2 capture — it passes as a DOCUMENTED DIVERGENCE (recorded here, backed up
-  // byte-for-byte under _replaced/ below). A served code carrying a live http(s)
-  // zone_source_url is PROVEN, so the strict superset STILL holds for it: a proven code
-  // may not be silently dropped (its removal needs a reproducible per-code absence proof).
-  const provenanceByCode = new Map<string, { levels: Set<string>; provenUrls: Set<string> }>();
+  // PROVENANCE-AWARE identity gate (SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md §2-3, SHA 65d4c637).
+  // Per served-only code, the discriminator is whether the code is genuinely V2-PROVEN:
+  // at least one of its served features carries a per-feature `proof.geometry_source`
+  // block (real sha256 + retrieved_at — see featureHasV2Proof). A real http(s)
+  // `zone_source_url` is NECESSARY but NOT SUFFICIENT: a `candidate` with a *declarative*
+  // URL and no capture carries NO proof block, so it is NOT proven — it does not block a
+  // verified-complete v2 capture and passes as a DOCUMENTED DIVERGENCE (recorded here,
+  // backed up byte-for-byte under _replaced/ below). A served code that IS v2-proven still
+  // blocks: the strict superset holds for it — a proven code may not be silently dropped
+  // (its removal needs a reproducible per-code absence proof). Testing the proof block
+  // rather than the URL can only make MORE codes unproven, never fewer — strictly SAFER.
+  const provenanceByCode = new Map<string, { levels: Set<string>; hasV2Proof: boolean }>();
   for (const { features } of present) {
     for (const f of features) {
       const code = canonicalZoneCode(f.properties?.["zone_code"]);
       if (!code) continue;
-      const entry = provenanceByCode.get(code) ?? { levels: new Set<string>(), provenUrls: new Set<string>() };
+      const entry = provenanceByCode.get(code) ?? { levels: new Set<string>(), hasV2Proof: false };
       const level = f.properties?.["zone_source_level"];
       if (typeof level === "string") entry.levels.add(level);
-      const url = f.properties?.["zone_source_url"];
-      if (isRealGeometryUrl(url)) entry.provenUrls.add(url);
+      if (featureHasV2Proof(f)) entry.hasV2Proof = true;
       provenanceByCode.set(code, entry);
     }
   }
-  const isProven = (code: string): boolean => (provenanceByCode.get(code)?.provenUrls.size ?? 0) > 0;
+  const isProven = (code: string): boolean => provenanceByCode.get(code)?.hasV2Proof === true;
   const uncoveredProven = uncovered.filter(isProven).sort();
   if (uncoveredProven.length > 0) {
     throw new Error(
-      `identity gate (provenance-aware): ${uncoveredProven.length} code(s) servi(s) PROUVÉ(s) (zone_source_url live http(s)) absent(s) de la couche amont (${uncoveredProven.join(",")}); un code prouvé ne se droppe pas sans preuve d'absence reproductible; aucun dépôt`,
+      `identity gate (provenance-aware): ${uncoveredProven.length} code(s) servi(s) PROUVÉ(s) (preuve v2 par feature: proof.geometry_source sha256+retrieved_at) absent(s) de la couche amont (${uncoveredProven.join(",")}); un code prouvé ne se droppe pas sans preuve d'absence reproductible; aucun dépôt`,
     );
   }
   const droppedDivergence: DroppedServedCode[] = uncovered
