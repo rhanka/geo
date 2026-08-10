@@ -9,14 +9,23 @@ aujourd'hui une vraie preuve v2. CLAUDE.md : « le rapport mesure présence ET
 provenance/qualité — sinon la ré-acquisition et le stampage sont invisibles ».
 Ce scan **re-mesure** l'état COURANT des 119 orphan+candidate (read-only, aucun write).
 
-## Résultat (`_col9-orphan-freshness-scan.ts`, 119 entrées scannées)
+## Résultat (`_col9-orphan-freshness-scan.ts`, 120 entrées : orphan+candidate + l'unique unknown-servi)
 
 | classe | n | sens |
 | --- | ---: | --- |
 | `proof_present_stamped` | **8** | matrice PÉRIMÉE — preuve v2 réelle + stamp déjà présents → reclassables ≥documented, **aucun write** |
 | `proof_present_unstamped` | 0 | preuve présente mais stamp incomplet (restampable additif) — aucun cas |
-| `no_proof` | **111** | orphan RÉEL — campagne capture↔servi (lane **zones**, gated g-cond) |
+| `no_proof` | **112** | gap RÉEL (111 orphan/candidate + `les-cedres` unknown-servi) — campagne capture↔servi (lane **zones**, gated g-cond) |
 | `unavailable` | 0 | objet servi illisible/absent — aucun |
+
+**LEVIER-3 (col-89 triage) est AUSSI infondé.** L'unique ville `unknown` avec
+jointure exacte est **`les-cedres`** : `zone_source_url=null` dans l'objet servi
+courant → aucune preuve à normaliser, **non restampable par jointures**. C'est un
+item capture-zones, pas un rattrapage jointures. Les trois « leviers jointure
+lane » du triage `col89-provenance-triage-20260807` (LEVIER-1 orphan, -2
+candidate, -3 unknown) sont donc **tous infondés** : il n'existe AUCUN rattrapage
+provenance exécutable depuis la lane jointures. Tout le gap col-8/9 est soit
+déjà-réparé-par-zones (8, re-mesure), soit campagne-capture-zones (112).
 
 ## Les 8 orphan périmés (déjà améliorés par la ré-acquisition zones)
 
@@ -39,9 +48,10 @@ octet-servi, **rien de deviné**. (Recoupement : `saint-charles-sur-richelieu` e
    par jointures. LEVIER-1 du triage `col89-provenance-triage-20260807` (restamp
    orphan depuis jointures) est **infondé** : il n'existe pas de rattrapage
    jointures ici.
-3. **Le vrai gap = 111 orphan réels** (no_proof) → campagne **capture↔servi de
-   la lane zones** (cf mémoire `zones-v2-upgrade-opportunity`, gated g-cond).
-   Hors lane jointures.
+3. **Le vrai gap = 112** (no_proof : 111 orphan/candidate + `les-cedres`
+   unknown-servi) → campagne **capture↔servi de la lane zones** (cf mémoire
+   `zones-v2-upgrade-opportunity`, campagne EN COURS, gated g-cond). Hors lane
+   jointures — AUCUN des 3 leviers jointure du triage col-89 n'est exécutable.
 
 ## Suites
 
