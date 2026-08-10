@@ -11,8 +11,8 @@ import { pathToFileURL } from "node:url";
 import {
   CapturedNormesCampaignPlanSchema,
   CapturedNormesCampaignReceiptSchema,
-  CapturedNormesDiscoveryRunReceiptSchema,
   CapturedNormesExtractionReceiptSchema,
+  assertCapturedNormesCampaignEvidence,
   type CapturedNormesCampaignEntry,
 } from "../../packages/qc-sources/src/capture/index.js";
 import { getBytes, putBytesIfAbsentOrEqual, s3Client } from "./lib/s3.js";
@@ -37,29 +37,19 @@ export function campaignReceiptKey(campaign: string): string {
 
 async function assertClosedCity(entry: CapturedNormesCampaignEntry): Promise<void> {
   const s3 = s3Client();
-  const discovery = CapturedNormesDiscoveryRunReceiptSchema.parse(
-    JSON.parse((await getBytes(s3, entry.discovery_run_receipt_key)).toString("utf8")),
-  );
-  if (discovery.slug !== entry.slug || discovery.status !== "refused") {
-    throw new Error(`${entry.slug}: discovery receipt does not close a refused city`);
-  }
-  if (entry.outcome === "no-grid" && discovery.refusal !== "no classified grille PDF candidate in eligible captured HTML") {
-    throw new Error(`${entry.slug}: no-grid requires an eligible HTML no-grid refusal`);
-  }
-  if (entry.outcome === "unreachable" && discovery.attempts.some((attempt) => attempt.http_status === 200)) {
-    throw new Error(`${entry.slug}: unreachable receipt contains an HTTP 200 attempt`);
-  }
-  if (entry.outcome === "http-forbidden" && !discovery.attempts.some((attempt) => attempt.http_status === 403)) {
-    throw new Error(`${entry.slug}: http-forbidden requires an HTTP 403 attempt`);
-  }
+  const discovery = JSON.parse((await getBytes(s3, entry.discovery_run_receipt_key)).toString("utf8")) as unknown;
+  const evidence = [];
   for (const key of entry.extraction_receipt_keys) {
     const extraction = CapturedNormesExtractionReceiptSchema.parse(
       JSON.parse((await getBytes(s3, key)).toString("utf8")),
     );
-    if (extraction.capture.slug !== entry.slug || extraction.status !== "refused" || !extraction.refusal?.startsWith("below deposit gate:")) {
-      throw new Error(`${entry.slug}: extraction receipt is not a below-gate refusal`);
-    }
+    if (extraction.capture.selection_key === null) throw new Error(`${entry.slug}: extraction receipt lacks selection key`);
+    evidence.push({
+      receipt: extraction,
+      selection: JSON.parse((await getBytes(s3, extraction.capture.selection_key)).toString("utf8")) as unknown,
+    });
   }
+  assertCapturedNormesCampaignEvidence(entry, discovery, evidence);
 }
 
 export async function closeCapturedNormesCampaign(planPath: string): Promise<{ key: string; upload: "created" | "existing-equal" }> {
