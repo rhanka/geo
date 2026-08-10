@@ -30,6 +30,13 @@ import { fileURLToPath } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 
+import {
+  capturedFetch,
+  CapturedFetchError,
+  NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+  type CaptureRun,
+} from "../../packages/qc-sources/src/capture/index.js";
+import { openCaptureRun } from "./lib/capture-s3.js";
 import { DEFAULT_MILLESIME, fetchIndex, parseRole, type IndexEntry, type RoleAttrs } from "./role-foncier.js";
 import { getBytes, objectHead, s3Client } from "./lib/s3.js";
 
@@ -41,6 +48,8 @@ const DEFAULT_MAX_SECONDS = 55;
 const DEFAULT_MAX_MB = 1024;
 const MAX_ROLE_MB = 512;
 const ROLE_URL = (codeGeo: string) => `https://donneesouvertes.affmunqc.net/role/RL${codeGeo}_${DEFAULT_MILLESIME}.xml`;
+/** UA that the naked global `fetch` already sent before this call was captured. */
+const NODE_FETCH_USER_AGENT = "undici";
 const FIELDS = ["lot", "adresse", "code_postal", "surface"] as const;
 const FEATURES_TOKEN = Buffer.from('"features"');
 const UNIT_OPEN = Buffer.from("<RLUEx");
@@ -329,18 +338,36 @@ async function getS3BytesWithinDeadline(s3: S3Client, key: string, deadline: num
   }
 }
 
-async function getRoleWithinDeadline(codeGeo: string, deadline: number, maxBytes: number): Promise<Buffer | null> {
+async function getRoleWithinDeadline(codeGeo: string, slug: string, run: CaptureRun, deadline: number, maxBytes: number): Promise<Buffer | null> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), timeRemaining(deadline));
   try {
-    const response = await fetch(ROLE_URL(codeGeo), { signal: controller.signal });
-    if (response.status === 403 || response.status === 404) return null;
-    if (!response.ok) throw new Error(`MAMH role HTTP ${response.status}`);
-    const declaredLength = Number(response.headers.get("content-length"));
-    if (Number.isFinite(declaredLength) && declaredLength > maxBytes) {
-      throw new Error(`MAMH role ${declaredLength} bytes exceeds --max-mb guard ${maxBytes} bytes`);
+    // The MAMH role fetch goes through the capture chokepoint: the deadline
+    // AbortController still governs the timeout (chokepoint timer disabled), and
+    // the `--max-mb` cap is enforced by `maxBytes`. `store: false` journals the
+    // manifest proof (url, http_status, retrieved_at, sha256, bytes) without
+    // depositing the raw role XML, keeping this an analysis-only reader.
+    const captured = await capturedFetch(
+      ROLE_URL(codeGeo),
+      { signal: controller.signal },
+      {
+        run,
+        lane: "cadastre",
+        source: "cadastre-role-absence-attestation",
+        slugs: [slug],
+        timeoutMs: null,
+        maxBytes,
+        maxRedirects: NODE_FETCH_DEFAULT_MAX_REDIRECTS,
+        store: false,
+      },
+    );
+    const status = captured.response?.status;
+    if (status === 403 || status === 404) return null;
+    if (!captured.ok || captured.bytes === null) {
+      if (captured.response !== null) throw new Error(`MAMH role HTTP ${captured.response.status}`);
+      throw new CapturedFetchError(captured.line);
     }
-    const body = Buffer.from(await response.arrayBuffer());
+    const body = Buffer.from(captured.bytes);
     if (body.length > maxBytes) throw new Error(`MAMH role ${body.length} bytes exceeds --max-mb guard ${maxBytes} bytes`);
     return body;
   } catch (error) {
@@ -527,6 +554,7 @@ async function resolveRole(
   name: string,
   allLotKeys: ReadonlySet<string>,
   roleByName: ReadonlyMap<string, readonly string[]>,
+  run: CaptureRun,
   deadline: number,
   maxBytes: number,
 ): Promise<{ resolution: RoleResolution | null; state: string }> {
@@ -540,7 +568,7 @@ async function resolveRole(
     timeRemaining(deadline);
     let xml: Buffer | null;
     try {
-      xml = await getRoleWithinDeadline(codeGeo, deadline, maxBytes);
+      xml = await getRoleWithinDeadline(codeGeo, slug, run, deadline, maxBytes);
     } catch (error) {
       if (error instanceof TimeboxExceeded) throw error;
       failures.push(`${codeGeo}:${error instanceof Error ? error.message : String(error)}`);
@@ -827,16 +855,28 @@ async function runAttestation(args: AttestationArgs): Promise<void> {
       saved.set(attestationKey(attestation), attestation);
     }
   } else {
+    const run = openCaptureRun({ lane: "cadastre", userAgent: NODE_FETCH_USER_AGENT });
     let resolved: { resolution: RoleResolution | null; state: string };
+    let exitCode = 1;
+    let timedOut = false;
     try {
       const index = await fetchIndex(DEFAULT_MILLESIME);
-      resolved = await resolveRole(args.slug, municipality.name, served.allLotKeys, roleIndexByName(index), deadline, Math.min(Math.floor(args.maxMb * 1024 * 1024), MAX_ROLE_MB * 1024 * 1024));
+      resolved = await resolveRole(args.slug, municipality.name, served.allLotKeys, roleIndexByName(index), run, deadline, Math.min(Math.floor(args.maxMb * 1024 * 1024), MAX_ROLE_MB * 1024 * 1024));
+      exitCode = 0;
     } catch (error) {
       if (error instanceof TimeboxExceeded) {
-        console.log(JSON.stringify({ complete: false, checkpoint: relative(ROOT, args.checkpoint), resume: "--resume" }));
-        return;
+        timedOut = true;
+        resolved = { resolution: null, state: "timebox" };
+      } else {
+        resolved = { resolution: null, state: `mamh-role-read-failed:${error instanceof Error ? error.message : String(error)}` };
+        exitCode = 0;
       }
-      resolved = { resolution: null, state: `mamh-role-read-failed:${error instanceof Error ? error.message : String(error)}` };
+    } finally {
+      await run.finish(exitCode);
+    }
+    if (timedOut) {
+      console.log(JSON.stringify({ complete: false, checkpoint: relative(ROOT, args.checkpoint), resume: "--resume" }));
+      return;
     }
     for (const { lot, field } of expected) {
       const attestation = attestField(args.date, lot, field, served, resolved.resolution, resolved.state);
