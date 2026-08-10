@@ -1,0 +1,72 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-promotion/v2",
+  "as_of": "2026-08-10T05:05:09.663Z",
+  "scope": "palier-167 / montreal-ouest / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "incomplete",
+      "reason": "Le règlement 2020-002 était déclaré, mais la source c5 par-ville n’avait aucune capture vivante attachée à son reglement_url servi exact."
+    },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "incomplete",
+    "norms": {
+      "features": 30,
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": "https://montreal-west.ca/wp-content/uploads/2024/12/Final-Grilles-modifiees-FRA.pdf"
+    }
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "complete",
+      "declared": "complete",
+      "proven": "complete",
+      "rule": "Le PDF municipal vivant est attachable au reglement_url servi littéral, avec SHA-256, CAS S3 et manifeste Kubernetes."
+    },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "incomplete",
+    "norms": {
+      "features": 30,
+      "reglement_numero": "2020-002",
+      "reglement_millesime": "2020",
+      "reglement_page_source": 1,
+      "reglement_url": "https://montreal-ouest.ca/wp-content/uploads/2026/07/1-R-amendant-le-r-de-zonage_FRA-Consolide-2026.pdf"
+    },
+    "zonage_polygons": {
+      "features": 50,
+      "reglement_numero": "2020-002",
+      "reglement_millesime": "2020",
+      "reglement_page_source": 1,
+      "reglement_url": "https://montreal-ouest.ca/wp-content/uploads/2026/07/1-R-amendant-le-r-de-zonage_FRA-Consolide-2026.pdf",
+      "zone_source_url": null,
+      "zone_source_level": "legacy-traceable",
+      "fold_cells_changed": 0
+    }
+  },
+  "evidence": {
+    "official_zoning_by_law": {
+      "url": "https://montreal-ouest.ca/wp-content/uploads/2026/07/1-R-amendant-le-r-de-zonage_FRA-Consolide-2026.pdf",
+      "retrieved_at": "2026-08-10T05:05:09.663Z",
+      "sha256": "sha256:128490ba5472c4daebf6f7935c9c3918be4de0d0fb559b17eba20137c326bfc7",
+      "storage_key": "raw/reglement-official/cas/128490ba5472c4daebf6f7935c9c3918be4de0d0fb559b17eba20137c326bfc7.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T051000Z-0-c51454a6-77e5-4c4f-853b-99c02b58cfc4/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "VILLE DE MONTRÉAL-OUEST — RÈGLEMENT NO 2020-002 — REFONTE DU RÈGLEMENT DE ZONAGE.",
+      "page_3": "AVIS DE MOTION 24 FÉVRIER 2020 ; ADOPTION 30 MARS 2020 ; ENTRÉE EN VIGUEUR 8 AVRIL 2020."
+    },
+    "matrix_recalculation": {
+      "method": "import build('20260810') from scripts/palier-matrix-report.mjs in memory",
+      "result": "reglement=complete, details.reglement.declared=complete, details.reglement.proven=complete, prov_qualite=complete, prov_v2=incomplete, prov_url_servie=incomplete, validation.closed=true"
+    }
+  },
+  "strict_proof_gate": {
+    "col_10": "Les polygones ne portent aucune zone_proof_version=v2. Le PDF de règlement ne constitue pas une preuve exacte de géométrie.",
+    "col_11": "Le readback des polygones sert zone_source_url=null; le PDF de règlement est conservé dans reglement_url et n’est pas substitué à une URL de source géométrique."
+  },
+  "storage": "Les octets source sont uniquement dans le CAS S3 avec manifeste de capture cluster ; aucune copie locale de PDF n’est créée."
+}
