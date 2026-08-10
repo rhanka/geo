@@ -1,0 +1,109 @@
+{
+  "contract": "lot-refold-contrecoeur-v2/1",
+  "generated_at": "2026-08-03T19:54:16.037Z",
+  "scope": {
+    "slugs": [
+      "contrecoeur"
+    ],
+    "operation": "re-fold lot-zone contre la geometrie zonage v2 servie actuelle",
+    "geometry_control": {
+      "qa_attestation": "0dcb5482",
+      "zone_record": "ca58a4f9",
+      "before": "1/1 STAMPED, 0 unstamped, 0 read_error",
+      "after": "1/1 STAMPED, 0 unstamped, 0 read_error",
+      "stamp_readback_diff": "empty",
+      "control_scripts": [
+        "acquisition/src/s3-key-probe.ts",
+        "acquisition/src/_zonage-served-s3-check.ts",
+        "acquisition/src/_zone-source-readback-audit.ts"
+      ]
+    },
+    "chain": [
+      "acquisition/src/_lot-zone-refold-s3.ts (backup/report/verify)",
+      "acquisition/src/lot-zone-consistency-audit.ts (mesure avant/apres)",
+      "acquisition/src/lot-zone-join-run.ts",
+      "acquisition/src/lots-enriched-run.ts",
+      "acquisition/src/audit-lots-enriched.ts",
+      "acquisition/src/_lot-zone-refold-s3.ts (readback plat/mirror)"
+    ],
+    "s3_prefixes": [
+      "NODE_OPTIONS=--dns-result-order=ipv4first",
+      "AWS_MAX_ATTEMPTS=10"
+    ],
+    "simplify_zones_m": 0,
+    "memory": "une municipalite a la fois"
+  },
+  "entries": [
+    {
+      "slug": "contrecoeur",
+      "code_zone_avant": {
+        "lots": 4654,
+        "assigned": 4653,
+        "pct": 99.98
+      },
+      "code_zone_apres": {
+        "lots": 4654,
+        "assigned": 4653,
+        "pct": 99.98
+      },
+      "mismatch_avant": {
+        "lots": 4654,
+        "assigned": 4653,
+        "matched": 4425,
+        "misassigned": 219,
+        "outside_all": 9,
+        "unassigned": 1,
+        "pct": 4.9
+      },
+      "mismatch_apres": {
+        "lots": 4654,
+        "assigned": 4653,
+        "matched": 4425,
+        "misassigned": 219,
+        "outside_all": 9,
+        "unassigned": 1,
+        "pct": 4.9
+      },
+      "lots": {
+        "avant": 4654,
+        "apres": 4654,
+        "served_after": 4654
+      },
+      "backup": {
+        "status": "OK",
+        "timestamp": "2026-08-03T195315089ZZ",
+        "objects": 4
+      },
+      "deposit": {
+        "plate": "OK",
+        "features": 4654,
+        "with_code_zone": 4653,
+        "stats": "OK",
+        "join_parquet": "OK"
+      },
+      "mirror": {
+        "status": "OK",
+        "layout": "flat-only",
+        "required": false,
+        "subdir_before": false,
+        "subdir_after": false
+      },
+      "stamp": {
+        "status": "OK",
+        "intact": true,
+        "before": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-contrecoeur/qc-zonage-contrecoeur.geojson",
+          "features": 164,
+          "level": "documented",
+          "source_url": "https://services3.arcgis.com/D6yGeV5bY0BWDvJi/arcgis/rest/services/Zonage___Contrec%C5%93ur_WFL1/FeatureServer/2/query?where=1%3D1&outFields=nom_zone&outSR=4326&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        },
+        "after": {
+          "key": "normalized/ca-qc-zonage/qc-zonage-contrecoeur/qc-zonage-contrecoeur.geojson",
+          "features": 164,
+          "level": "documented",
+          "source_url": "https://services3.arcgis.com/D6yGeV5bY0BWDvJi/arcgis/rest/services/Zonage___Contrec%C5%93ur_WFL1/FeatureServer/2/query?where=1%3D1&outFields=nom_zone&outSR=4326&geometryPrecision=6&resultRecordCount=6000&f=geojson"
+        }
+      }
+    }
+  ]
+}
