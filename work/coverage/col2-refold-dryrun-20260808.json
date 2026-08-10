@@ -1,0 +1,243 @@
+{
+  "$meta": {
+    "generated_at": "2026-08-08T12:37:52.802Z",
+    "method": "Centroid strict -> point-in-polygon contre qc-zonage servi; par ville, mismatch classé en reassignable/coverage-gap/ambiguous",
+    "dry_run": true,
+    "no_writes": true,
+    "no_data_written": {
+      "s3": true,
+      "qc_lots": true,
+      "qc_zones": true,
+      "qc_contract": true,
+      "reason": "aucune opération write / serve / commit-side-effect sur qc-lots ni qc-zonage"
+    },
+    "source_shas": {
+      "diagnostic_commit": "8a3aa91d",
+      "verify_commit": "6cd3dd30",
+      "consistency_base_commit": "9995acf1",
+      "label": "lot-zone-consistency-scale-20260725.json"
+    },
+    "crs_validation": {
+      "expected": "EPSG:4326",
+      "point_in_polygon": "strict centroid",
+      "handling": "si détection d'écart de CRS -> city=crs_artifact owner=zones; aucune correction calculée",
+      "sample_rule": "si lots_total > 25000, échantillon de 2000 lots assignés avec centroïde valide; extrapolation linéaire marquée 'estimé sur échantillon'"
+    }
+  },
+  "cities": [
+    {
+      "slug": "varennes",
+      "lots_total": 8287,
+      "mismatch_total": 413,
+      "reassignable_jointures_count": 404,
+      "coverage_gap_zones_count": 9,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "full",
+      "reassign_pct": 97.8,
+      "owner": "jointures"
+    },
+    {
+      "slug": "amherst",
+      "lots_total": 1833,
+      "mismatch_total": 1749,
+      "reassignable_jointures_count": 1132,
+      "coverage_gap_zones_count": 617,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "full",
+      "reassign_pct": 64.7,
+      "owner": "jointures"
+    },
+    {
+      "slug": "ormstown",
+      "lots_total": 2421,
+      "mismatch_total": 68,
+      "reassignable_jointures_count": 64,
+      "coverage_gap_zones_count": 4,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "full",
+      "reassign_pct": 94.1,
+      "owner": "jointures"
+    },
+    {
+      "slug": "laval",
+      "lots_total": 401594,
+      "mismatch_total": 7479,
+      "reassignable_jointures_count": 7339,
+      "coverage_gap_zones_count": 140,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "sampled",
+      "sample_size": 2000,
+      "reassign_pct": 98.1,
+      "owner": "jointures",
+      "note": "estimé sur échantillon"
+    },
+    {
+      "slug": "longueuil",
+      "lots_total": 67010,
+      "mismatch_total": 4018,
+      "reassignable_jointures_count": 4018,
+      "coverage_gap_zones_count": 0,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "sampled",
+      "sample_size": 2000,
+      "reassign_pct": 100,
+      "owner": "jointures",
+      "note": "estimé sur échantillon"
+    },
+    {
+      "slug": "quebec",
+      "lots_total": 66054,
+      "mismatch_total": 3331,
+      "reassignable_jointures_count": 3298,
+      "coverage_gap_zones_count": 33,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "sampled",
+      "sample_size": 2000,
+      "reassign_pct": 99,
+      "owner": "jointures",
+      "note": "estimé sur échantillon"
+    },
+    {
+      "slug": "cowansville",
+      "lots_total": 6820,
+      "mismatch_total": 263,
+      "reassignable_jointures_count": 246,
+      "coverage_gap_zones_count": 17,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "full",
+      "reassign_pct": 93.5,
+      "owner": "jointures"
+    },
+    {
+      "slug": "granby",
+      "lots_total": 25947,
+      "mismatch_total": 1531,
+      "reassignable_jointures_count": 1453,
+      "coverage_gap_zones_count": 78,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "sampled",
+      "sample_size": 2000,
+      "reassign_pct": 94.9,
+      "owner": "jointures",
+      "note": "estimé sur échantillon"
+    },
+    {
+      "slug": "brossard",
+      "lots_total": 24823,
+      "mismatch_total": 1662,
+      "reassignable_jointures_count": 1513,
+      "coverage_gap_zones_count": 149,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "full",
+      "reassign_pct": 91,
+      "owner": "jointures"
+    },
+    {
+      "slug": "drummondville",
+      "lots_total": 30722,
+      "mismatch_total": 1828,
+      "reassignable_jointures_count": 1828,
+      "coverage_gap_zones_count": 0,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "sampled",
+      "sample_size": 2000,
+      "reassign_pct": 100,
+      "owner": "jointures",
+      "note": "estimé sur échantillon"
+    },
+    {
+      "slug": "montreal",
+      "lots_total": 680087,
+      "mismatch_total": 1312,
+      "reassignable_jointures_count": 1258,
+      "coverage_gap_zones_count": 54,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "sampled",
+      "sample_size": 2000,
+      "reassign_pct": 95.9,
+      "owner": "jointures",
+      "note": "estimé sur échantillon"
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "lots_total": 19379,
+      "mismatch_total": 1271,
+      "reassignable_jointures_count": 1245,
+      "coverage_gap_zones_count": 8,
+      "ambiguous_overlap_count": 18,
+      "crs_aligned": true,
+      "mode": "full",
+      "reassign_pct": 98,
+      "owner": "jointures"
+    },
+    {
+      "slug": "boucherville",
+      "lots_total": 16269,
+      "mismatch_total": 987,
+      "reassignable_jointures_count": 942,
+      "coverage_gap_zones_count": 45,
+      "ambiguous_overlap_count": 0,
+      "crs_aligned": true,
+      "mode": "full",
+      "reassign_pct": 95.4,
+      "owner": "jointures"
+    },
+    {
+      "slug": "sorel-tracy",
+      "lots_total": 16736,
+      "mismatch_total": 892,
+      "reassignable_jointures_count": 840,
+      "coverage_gap_zones_count": 51,
+      "ambiguous_overlap_count": 1,
+      "crs_aligned": true,
+      "mode": "full",
+      "reassign_pct": 94.2,
+      "owner": "jointures"
+    }
+  ],
+  "summary": {
+    "total_lots": 1367982,
+    "total_mismatch": 26804,
+    "reassignable_jointures_total": 25580,
+    "coverage_gap_zones_total": 1205,
+    "ambiguous_overlap_total": 19,
+    "reassign_pct_alerts": {
+      "level": "reassign_pct > 50%",
+      "cities": [
+        "varennes",
+        "amherst",
+        "ormstown",
+        "laval",
+        "longueuil",
+        "quebec",
+        "cowansville",
+        "granby",
+        "brossard",
+        "drummondville",
+        "montreal",
+        "saint-hyacinthe",
+        "boucherville",
+        "sorel-tracy"
+      ]
+    },
+    "sampled_cities": [
+      "laval",
+      "longueuil",
+      "quebec",
+      "granby",
+      "drummondville",
+      "montreal"
+    ]
+  }
+}
