@@ -1,0 +1,44 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-retention/v1",
+  "as_of": "2026-08-10T05:46:44.046Z",
+  "scope": "palier-167 / saint-basile-le-grand / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": { "state": "incomplete", "declared": "complete", "proven": "incomplete" },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "incomplete"
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "incomplete",
+      "reason": "La capture cluster respecte robots.txt : le PDF U-220-1 est robots-disallowed, sans octets, received_at, SHA-256 ou objet CAS."
+    },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "incomplete",
+    "publish_reglement_provenance": "Non exécuté : le dry-run aurait modifié 156 cellules de 26 normes avec un règlement non prouvé live."
+  },
+  "evidence": {
+    "capture_attempt": {
+      "url": "https://www.villesblg.ca/wp-content/uploads/2025/10/U-220-1-Declaratoires.pdf",
+      "result": "robots-disallowed",
+      "requested_at": "2026-08-10T05:46:44.046Z",
+      "manifest_key": "capture/_runs/reglement-20260810T055000Z-0-927ad878-afc0-4a72-acd2-7838f42f816c/manifest.jsonl",
+      "line_index": 1,
+      "raw_receipt": null
+    },
+    "robots": {
+      "url": "https://www.villesblg.ca/robots.txt",
+      "retrieved_at": "2026-08-10T05:46:44.339Z",
+      "sha256": "sha256:79ca265e9fb2e883e5729f0a41e93ae92b5dda02333dd3bc98ec6c6fc2f4d934",
+      "storage_key": "raw/robots-txt/cas/79ca265e9fb2e883e5729f0a41e93ae92b5dda02333dd3bc98ec6c6fc2f4d934.txt"
+    }
+  },
+  "anti_invention": {
+    "not_dead": "Ce refus robots n’est pas une URL morte ; aucune archive CDX/Wayback n’est inventée comme preuve du PDF actuel.",
+    "strict_proof_v2": "Aucun champ de qualité, preuve v2 ou URL de source géométrique n’est changé.",
+    "storage": "Aucun PDF source n’est écrit localement ; seul robots.txt est stocké dans le CAS S3."
+  }
+}
