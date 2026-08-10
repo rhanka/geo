@@ -89,6 +89,7 @@ interface Args {
   onlyErrors: string | null;
   merge: string | null;
   out: string | null;
+  date: string | null;
   concurrency: number;
   limit: number | null;
   slugs: string[] | null;
@@ -370,6 +371,7 @@ function parseArgs(argv: string[]): Args {
   let onlyErrors: string | null = null;
   let merge: string | null = null;
   let out: string | null = null;
+  let date: string | null = null;
   let concurrency = 16;
   let limit: number | null = null;
   let slugs: string[] | null = null;
@@ -385,6 +387,13 @@ function parseArgs(argv: string[]): Args {
     if (arg === "--only-errors") onlyErrors = next();
     else if (arg === "--merge") merge = next();
     else if (arg === "--out") out = next();
+    else if (arg.startsWith("--out=")) {
+      out = arg.slice("--out=".length);
+      if (!out) fail("--out requires a path");
+    } else if (arg.startsWith("--date=")) {
+      date = arg.slice("--date=".length);
+      if (!/^\d{8}$/.test(date)) fail("--date must use YYYYMMDD format");
+    }
     else if (arg === "--concurrency") concurrency = Number(next());
     else if (arg === "--limit") limit = Number(next());
     else if (arg === "--slugs") slugs = next().split(",").map((slug) => slug.trim()).filter(Boolean);
@@ -397,7 +406,7 @@ function parseArgs(argv: string[]): Args {
   if (onlyErrors && slugs) fail("pass either --only-errors or --slugs, not both");
   if (onlyErrors && merge) fail("pass either --only-errors or --merge, not both");
   if (dropSlugs && !merge) fail("--drop-slugs requires --merge <path> naming the report to clean");
-  return { onlyErrors, merge, out, concurrency, limit, slugs, discoverOnly, dropSlugs };
+  return { onlyErrors, merge, out, date, concurrency, limit, slugs, discoverOnly, dropSlugs };
 }
 
 /** `--drop-slugs` against `--merge <path>`: pure JSON surgery, no S3 read. */
@@ -475,6 +484,8 @@ async function main(): Promise<void> {
   const report = buildReport(allDetails);
   const outPath = args.out
     ? resolve(ROOT, args.out)
+    : args.date
+      ? resolve(ROOT, "work", "coverage", `zone-source-readback-audit-${args.date}.json`)
     : args.onlyErrors
       ? resolve(ROOT, args.onlyErrors)
       : args.merge

@@ -23,6 +23,8 @@ set -euo pipefail
 
 ts() { date -u +%H:%M:%S; }
 MODE="${MODE:-extract}"
+export NODE_OPTIONS="--dns-result-order=ipv4first"
+export AWS_MAX_ATTEMPTS="10"
 echo "[$(ts)] normes-job MODE=$MODE node=$(node -v) pdftoppm=$(pdftoppm -v 2>&1 | head -1)"
 # Presence-only checks — NEVER echo a secret value.
 for v in S3_ENDPOINT S3_BUCKET S3_REGION S3_ACCESS_KEY S3_SECRET_KEY; do
@@ -33,7 +35,26 @@ done
 
 cd /geo/acquisition
 
-if [ "$MODE" = "full" ]; then
+if [ "$MODE" = "captured" ]; then
+  : "${NORMS_CAPTURE_REFERENCE_KEY:?NORMS_CAPTURE_REFERENCE_KEY is required for MODE=captured}"
+  export GEO_NORMES_CAPTURED_EXECUTION="remote"
+  echo "[$(ts)] captured CAS → Mistral strict schema (reference=$NORMS_CAPTURE_REFERENCE_KEY)"
+  if tsx src/captured-normes-extract.ts \
+    --reference-key "$NORMS_CAPTURE_REFERENCE_KEY" \
+    --budget-usd "${NORMS_BUDGET_USD:-5}"; then
+    exit 0
+  else
+    bridge_status=$?
+    # Exit 2 means the bridge successfully wrote an immutable `refused` S3
+    # receipt. A refusal closes the city attempt; it is not a transient Pod
+    # failure for Kubernetes to retry or operators to mistake for missing data.
+    if [ "$bridge_status" -eq 2 ]; then
+      echo "[$(ts)] captured extraction refused with durable S3 receipt"
+      exit 0
+    fi
+    exit "$bridge_status"
+  fi
+elif [ "$MODE" = "full" ]; then
   # FULL: province-wide (or LIMIT-capped) discovery + download + route-guess.
   # robots ON by default; politeness delay honoured. Writes work/zonage-norms/
   # discovered.json + the per-slug grille.pdf the batch consumes.
