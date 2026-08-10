@@ -1,0 +1,91 @@
+{
+  "contract": "zones-identity-analysis-mirabel/20260810",
+  "read_only": true,
+  "slug": "mirabel",
+  "decision": "ALREADY-DOCUMENTED",
+  "decision_branch": "HELD/no-worklist (served carries real v2 proof — replace-policy precondition served-UNPROVEN NOT met)",
+  "worklist_emitted": false,
+  "summary": "mirabel is NOT a candidate to upgrade: its served collection is ALREADY a clean documented v2 deposit (712/712 featureHasV2Proof, zone_source_level=documented, collection proof present) captured 2026-08-02 from its OWN identity-clean source, the AGOL Zonage_s_mirabel (Zonage/FeatureServer/0) which IS the served zone_source_url. The composite code contents-contents1 is 100% faithful (both real source fields) and the source is verifiable-complete (712==712==712, no UEV => zone-polygon). The prior HOLD (\"composite code contents+contents1\") is evidentially CLEARED. No re-deposit warranted; no worklist emitted.",
+  "served": {
+    "keys": ["normalized/ca-qc-zonage/qc-zonage-mirabel.geojson"],
+    "nested_present": false,
+    "feature_count": 712,
+    "geometry_types": ["MultiPolygon", "Polygon"],
+    "distinct_zone_code_canon": 711,
+    "zone_code_format": "contents + \"-\" + contents1 (e.g. H-7-3, CO-10-61, RU-2-40, ZOP-2-27)",
+    "sample_zone_codes": ["H-7-3","P-10-13","P-7-6","CO-10-61","H-7-148","H-12-28","RU-2-40","C-8-19","REC-2-36","E-2-3","ZOP-2-27"],
+    "num_zone_field_on_features": null,
+    "property_keys": ["affectation","confidence","kind","num_zone","proof","reglement_millesime","reglement_numero","reglement_page_source","reglement_url","source","usage_dominant","usage_dominant_source","zone_code","zone_source_level","zone_source_url"],
+    "uev_fields_present": [],
+    "provenance": {
+      "zone_source_url": "https://services9.arcgis.com/y9EASLisYHhvZ7vM/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "zone_source_url_uniform": true,
+      "zone_source_url_count": 712,
+      "zone_source_level": "documented",
+      "zone_source_level_count": 712,
+      "features_with_v2_proof": 712,
+      "features_total": 712,
+      "unproven": false,
+      "geometry_grain_field": "absent (optional additive field never stamped)",
+      "collection_level_proof": {
+        "schema_version": "2.0",
+        "geometry_source": {
+          "url": "https://services9.arcgis.com/y9EASLisYHhvZ7vM/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+          "type": "arcgis",
+          "method": "natif",
+          "reliability": "directe",
+          "retrieved_at": "2026-08-02T22:08:23.766Z",
+          "sha256": "sha256:48c92b70c21b3030fe8ebdc181cc83de47de4cb5e3f97f16b191cbe8dc7b2e3e"
+        }
+      }
+    }
+  },
+  "candidate_sources": [
+    {
+      "id": "served-own-zone_source_url == discovered-AGOL (SAME layer)",
+      "base": "https://services9.arcgis.com/y9EASLisYHhvZ7vM/arcgis/rest/services/Zonage/FeatureServer/0",
+      "geojson_query": "https://services9.arcgis.com/y9EASLisYHhvZ7vM/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+      "agol_org": "y9EASLisYHhvZ7vM (Geo_ECL)",
+      "layer_name": "Zonage_s_mirabel",
+      "geometry_type": "esriGeometryPolygon",
+      "max_record_count": 2000,
+      "public_no_token": true,
+      "fields": ["FID","FeatId","contents","contents1","nom","Shape__Area","Shape__Length"],
+      "uev_fields_present": [],
+      "grain": "zone-polygon",
+      "return_count_only": 712,
+      "live_feature_count": 712,
+      "exceeded_transfer_limit": false,
+      "identity_note": "This candidate is IDENTICAL to the served zone_source_url — mirabel's discovered AGOL is its own identity-clean source (unlike saint-hyacinthe, where the discovered AGOL was the wrong layer)."
+    }
+  ],
+  "overlap_matrix": {
+    "served_distinct_codes": 711,
+    "derivations": {
+      "contents_dash_contents1": {
+        "formula": "contents + \"-\" + contents1",
+        "distinct": 711,
+        "overlap_served_into_deriv_pct": 100,
+        "overlap_deriv_into_served_pct": 100,
+        "served_only": 0,
+        "deriv_only": 0,
+        "verdict": "PERFECT — reproduces every served code, both real source fields, no invention"
+      },
+      "contents_only": { "formula": "contents", "distinct": 9, "overlap_served_into_deriv_pct": 0, "note": "letter prefix only (H P C CO RU E REC ZOP ...) — not a per-zone code" },
+      "contents1_only": { "formula": "contents1", "distinct": 687, "overlap_served_into_deriv_pct": 0, "note": "numeric part only — not a per-zone code" }
+    }
+  },
+  "completeness": {
+    "capture_served_count": 712,
+    "live_feature_count": 712,
+    "return_count_only": 712,
+    "exceeded_transfer_limit": false,
+    "verifiable_complete": true,
+    "geometry_grain": "zone-polygon"
+  },
+  "cross_references": {
+    "served_deposit_capture": "zones-v2mass-worklist-capture-20260802T220000Z.json (run 20260802T22, retrieved_at 2026-08-02T22:08:23.766Z)",
+    "prior_discovery": "work/coverage/zones-vnatif-discovery-20260810.json (mirabel VECTEUR_TROUVE, AGOL Zonage_s_mirabel, contents/contents1)",
+    "method_mirror": "work/coverage/zones-identity-analysis-saint-hyacinthe-20260810.md (identity-clean == served zone_source_url)"
+  }
+}

@@ -1,0 +1,326 @@
+{
+  "generated_at": "2026-08-10T13:45:46.769Z",
+  "simplify_zones_m": 0,
+  "entries": [
+    {
+      "slug": "saint-hippolyte",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 9846,
+        "assigned": 5089,
+        "matched": 130,
+        "misassigned": 4953,
+        "outside_all": 6,
+        "unassigned": 4757,
+        "mismatch_pct": 97.45
+      },
+      "after": {
+        "lots": 9846,
+        "assigned": 9841,
+        "matched": 9770,
+        "misassigned": 62,
+        "outside_all": 9,
+        "unassigned": 5,
+        "mismatch_pct": 0.72
+      },
+      "backup_ts": "2026-08-10T133926415ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-hippolyte lots=9846 assigned=99.95% multi=0.66% match=8.09% without_norms=91.91% verify parquet=Y stats=Y rows=9846",
+      "enrich_summary": "OK saint-hippolyte lots=9846 zone_code=99.95% norms=8.08% surface=100% code_postal=100%(RTA) adresse=98.14%(code=75045) tod=n/a deposit=Y bytes=32754566",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-hippolyte.stats.json",
+        "num_lots": 9846,
+        "num_with_norms": 890,
+        "num_with_code_zone": 5089,
+        "num_with_adresse": 9663
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-hippolyte.stats.json",
+        "num_lots": 9846,
+        "num_with_norms": 796,
+        "num_with_code_zone": 9841,
+        "num_with_adresse": 9663
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-hippolyte.stats.json",
+        "num_lots": 9846,
+        "num_with_norms": 796,
+        "num_with_code_zone": 9841,
+        "num_with_adresse": 9663
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 890->796",
+        "lots_to_unknown": 0,
+        "norms_to_unknown": 94,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-hippolyte.geojson.2026-08-10T133926415ZZ",
+        "dropped_codes": [
+          {
+            "code": "H-117",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-hippolyte.geojson.2026-08-10T133926415ZZ"
+          },
+          {
+            "code": "C-115",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-hippolyte.geojson.2026-08-10T133926415ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T13:39:23.833Z",
+      "finished_at": "2026-08-10T13:41:35.408Z"
+    },
+    {
+      "slug": "saint-colomban",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 10729,
+        "assigned": 10729,
+        "matched": 5991,
+        "misassigned": 4574,
+        "outside_all": 164,
+        "unassigned": 0,
+        "mismatch_pct": 44.16
+      },
+      "after": {
+        "lots": 10729,
+        "assigned": 10609,
+        "matched": 10470,
+        "misassigned": 95,
+        "outside_all": 44,
+        "unassigned": 120,
+        "mismatch_pct": 1.31
+      },
+      "backup_ts": "2026-08-10T134137412ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-colomban lots=10729 assigned=98.88% multi=1.79% match=0% without_norms=100% verify parquet=Y stats=Y rows=10729",
+      "enrich_summary": "OK saint-colomban lots=10729 zone_code=98.88% norms=0% surface=100% code_postal=100%(RTA) adresse=98.16%(code=75005) tod=n/a deposit=Y bytes=31051552",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-colomban.stats.json",
+        "num_lots": 10729,
+        "num_with_norms": 0,
+        "num_with_code_zone": 10729,
+        "num_with_adresse": 10532
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-colomban.stats.json",
+        "num_lots": 10729,
+        "num_with_norms": 0,
+        "num_with_code_zone": 10609,
+        "num_with_adresse": 10532
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-colomban.stats.json",
+        "num_lots": 10729,
+        "num_with_norms": 0,
+        "num_with_code_zone": 10609,
+        "num_with_adresse": 10532
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "code_zone 10729->10609",
+        "lots_to_unknown": 120,
+        "norms_to_unknown": 0,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ",
+        "dropped_codes": [
+          {
+            "code": "N1-106",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "N1-103",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "N1-102",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-003",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-004",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-161",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-160",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "C3-093",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-092",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-094",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-066",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-011",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-026",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "C2-024",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-028",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-019",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "H1-125",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          },
+          {
+            "code": "A2-137",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-colomban.geojson.2026-08-10T134137412ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T13:41:35.409Z",
+      "finished_at": "2026-08-10T13:43:23.773Z"
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 19379,
+        "assigned": 19379,
+        "matched": 18122,
+        "misassigned": 1249,
+        "outside_all": 8,
+        "unassigned": 0,
+        "mismatch_pct": 6.49
+      },
+      "after": {
+        "lots": 19379,
+        "assigned": 19379,
+        "matched": 18125,
+        "misassigned": 1246,
+        "outside_all": 8,
+        "unassigned": 0,
+        "mismatch_pct": 6.47
+      },
+      "backup_ts": "2026-08-10T134325942ZZ",
+      "mirror": "mirrored",
+      "join_summary": "OK saint-hyacinthe lots=19379 assigned=100% multi=4.54% match=57.73% without_norms=42.27% verify parquet=Y stats=Y rows=19379",
+      "enrich_summary": "OK saint-hyacinthe lots=19379 zone_code=100% norms=57.73% surface=100% code_postal=100%(RTA) adresse=90.25%(code=54048) tod=n/a deposit=Y bytes=49181704",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-hyacinthe/qc-lots-saint-hyacinthe.stats.json",
+        "num_lots": 19379,
+        "num_with_norms": 11188,
+        "num_with_code_zone": 19379,
+        "num_with_adresse": 17489
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-hyacinthe/qc-lots-saint-hyacinthe.stats.json",
+        "num_lots": 19379,
+        "num_with_norms": 11188,
+        "num_with_code_zone": 19379,
+        "num_with_adresse": 17489
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-hyacinthe/qc-lots-saint-hyacinthe.stats.json",
+        "num_lots": 19379,
+        "num_with_norms": 11188,
+        "num_with_code_zone": 19379,
+        "num_with_adresse": 17489
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T13:43:23.773Z",
+      "finished_at": "2026-08-10T13:45:46.769Z"
+    }
+  ]
+}
