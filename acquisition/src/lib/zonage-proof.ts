@@ -269,6 +269,40 @@ export async function putServedZoneGeojson(s3: S3Client, key: string, fc: Served
 }
 
 /**
+ * Replacement-only served write guarded by the ETag read during its preflight.
+ *
+ * `putServedZoneGeojson` remains the route for a first deposit, where no prior
+ * object exists.  A replacement must instead call this function with the
+ * current ETag and use {@link copyObjectIfMatch} for its immutable backup.  The
+ * second HEAD is an early diagnostic; the `IfMatch` on the write is the actual
+ * compare-and-swap and closes the race between validation and publication.
+ */
+export async function putServedZoneGeojsonIfMatch(
+  s3: S3Client,
+  key: string,
+  fc: ServedZoneGeoJson,
+  priorEtag: string,
+): Promise<void> {
+  if (!priorEtag) throw new Error(`served qc-zonage replacement refused: missing preflight ETag (${key})`);
+  assertServedZoneGeojson(key, fc);
+  const current = await objectHead(s3, key);
+  if (!current.exists || !current.etag) {
+    throw new Error(`served qc-zonage replacement refused: preflight object absent or lacks ETag (${key})`);
+  }
+  if (current.etag !== priorEtag) {
+    throw new Error(`served qc-zonage replacement refused: ETag changed before validation (${key})`);
+  }
+  await assertNoServedPropertyKeysLost(s3, key, fc);
+  await s3.send(new PutObjectCommand({
+    Bucket: BUCKET,
+    Key: key,
+    Body: JSON.stringify(fc),
+    ContentType: "application/geo+json",
+    IfMatch: priorEtag,
+  }));
+}
+
+/**
  * A geometry replacement must never silently turn a served collection into a
  * poorer schema.  The incoming source is allowed to refresh values and geometry,
  * but every property key that was already served must still be represented after
