@@ -35,3 +35,23 @@ Le reçu conclut `candidate_count: 0` et `status: refused` avec
 pas l'absence de tout règlement municipal. Elle ne fournit toutefois aucun
 règlement-base, annexe ou légende reliant `A-*`, `H-*` ou `HC-*` à une catégorie
 de dominance. Le statut `usage_dominant` reste donc **unknown**.
+
+## Recherche documentaire dérivée et capturée
+
+Le HTML S3 de la page de règlements expose littéralement le champ de recherche
+`name="q"` et son URL de recherche. La worklist committée
+`acquisition/config/usage-dominant-capture-20260810-grand-saint-esprit-document-search-zonage.json`
+en a dérivé une seule requête officielle : `q=zonage`.
+
+Le cluster OVH l'a capturée sous le run
+`usage-dominant-20260810T080500Z-0-2d2bd93a-39d6-4425-9a70-3847558ae381` :
+
+- HTTP 200, robots `allowed`, 55 896 octets;
+- CAS S3 :
+  `raw/usage-dominant-regulations-search/cas/393eec36d9512e422998d316be069fb875dfc544bd18e0b730037aefd7c11230.html`;
+- réponse verbatim : « Aucun résultat ne correspond à votre recherche. »
+
+Cette conclusion est volontairement étroite : elle refuse seulement de tirer
+une légende de la recherche officielle `zonage` à cet instant. Elle ne prétend
+ni qu'aucun règlement n'existe, ni qu'un préfixe de zone indique une dominance.
+La carte reste donc absente.
