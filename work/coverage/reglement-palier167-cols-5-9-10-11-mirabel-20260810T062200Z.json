@@ -1,0 +1,76 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-promotion/v2",
+  "as_of": "2026-08-10T06:20:53.710Z",
+  "scope": "palier-167 / mirabel / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "incomplete"
+    },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "complete",
+    "col_11_prov_url_servie": "complete"
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "complete",
+      "declared": "complete",
+      "proven": "complete",
+      "rule": "La table de dispositions vivante du domaine municipal cite textuellement le règlement de zonage U-2300; reçu CAS et manifeste Kubernetes sont attachables à l’URL exacte du registre."
+    },
+    "col_9_prov_qualite": {
+      "state": "complete",
+      "gate": "quality_status=v2 explicite dans la matrice de qualité"
+    },
+    "col_10_prov_v2": {
+      "state": "complete",
+      "gate": "quality_status=v2 explicite; aucune réécriture de preuve géométrique dans ce lot"
+    },
+    "col_11_prov_url_servie": {
+      "state": "complete",
+      "gate": "readback servi status=STAMPED, 712 entités",
+      "zone_source_url": "https://services9.arcgis.com/y9EASLisYHhvZ7vM/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson"
+    },
+    "zonage_polygons": {
+      "key": "normalized/ca-qc-zonage/qc-zonage-mirabel.geojson",
+      "features": 712,
+      "reglement_numero": "U-2300",
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": "https://mirabel.ca/uploads/2._Ville/2.5_Reglements/2025/1.1_-_TABLEAUX_DES_DISPOSITIONS_U-2300_(U-2679_11_septembre_2025).pdf",
+      "fold_cells_changed": 0,
+      "readback": "Le premier polygone S3 relu après pliage porte exactement les champs de règlement déclarés."
+    },
+    "norms": {
+      "state": "not served",
+      "publication": "SKIP mirabel (grille non servie)"
+    }
+  },
+  "evidence": {
+    "official_municipal_pdf": {
+      "url": "https://mirabel.ca/uploads/2._Ville/2.5_Reglements/2025/1.1_-_TABLEAUX_DES_DISPOSITIONS_U-2300_(U-2679_11_septembre_2025).pdf",
+      "retrieved_at": "2026-08-10T06:20:53.710Z",
+      "sha256": "sha256:b7495680e144513dab3b17775877178611e2a2d4d85f38e689b437a931153d38",
+      "storage_key": "raw/reglement-official/cas/b7495680e144513dab3b17775877178611e2a2d4d85f38e689b437a931153d38.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T062200Z-0-592e6ada-a612-4b78-8da2-ee9f0be48642/manifest.jsonl",
+      "line_index": 1,
+      "document_fact": "Le tableau des dispositions spécifiques, zone RU 3-8, indique : « selon les dispositions de l’article 10.2.19 du règlement de zonage U-2300 ».",
+      "limits": "Aucune page-titre ni année de base n’est imprimée : reglement_page_source et reglement_millesime restent null. U-2679 / 11 septembre 2025 dans le nom de fichier est un amendement/version, non le numéro de base."
+    },
+    "served_gates": {
+      "quality_matrix": "quality_status=v2, collection_key=normalized/ca-qc-zonage/qc-zonage-mirabel.geojson",
+      "readback": "status=STAMPED, features=712, source URL ArcGIS documentée"
+    },
+    "matrix_recalculation": {
+      "method": "import build('20260810') from scripts/palier-matrix-report.mjs in memory",
+      "expected_result": "reglement=complete; prov_qualite=complete; prov_v2=complete; prov_url_servie=complete."
+    }
+  },
+  "anti_invention": {
+    "limited_regulation_claim": "La preuve ne transforme pas le tableau en page-titre : elle atteste seulement la relation explicitement imprimée au règlement parent U-2300; aucune année ou page n’est fabriquée.",
+    "strict_proof_v2": "La col. 10 est conservée complete par son gate autoritaire quality_status=v2, jamais par la preuve de règlement ni par le nombre de polygones.",
+    "served_url": "La col. 11 est conservée complete par le readback STAMPED de zone_source_url, jamais par reglement_url.",
+    "storage": "Le PDF source est uniquement dans le CAS S3 avec son reçu de capture; aucun octet source n’est créé localement."
+  }
+}

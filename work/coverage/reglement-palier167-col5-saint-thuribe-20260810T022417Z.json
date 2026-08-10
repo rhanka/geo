@@ -1,0 +1,32 @@
+{
+  "contract": "reglement-palier167-col5-retention/v1",
+  "as_of": "2026-08-10T02:24:32.804Z",
+  "scope": "palier-167 / saint-thuribe / col-5 reglement_declared",
+  "before": {
+    "state": "incomplete",
+    "reason": "L'URL municipale était auparavant inaccessible depuis l'environnement de capture; aucun numéro vérifiable n'était disponible."
+  },
+  "after": {
+    "state": "incomplete",
+    "reason": "L'URL est de nouveau accessible et le PDF confirme l'adoption du 13 janvier 2014, mais la page de protocole imprime littéralement « RÈGLEMENT DE ZONAGE NUMÉRO ____ »; aucun numéro ne peut être déclaré sans invention."
+  },
+  "evidence": {
+    "zoning_regulation": {
+      "url": "https://municipalites-du-quebec.ca/st-thuribe/custom/zonage.pdf",
+      "retrieved_at": "2026-08-10T02:24:32.804Z",
+      "sha256": "sha256:81b88fa5864ad6a4273dbd57faa2559a2b1d4b2caf69d9771be250ab9384b6de",
+      "storage_key": "raw/reglement-official/cas/81b88fa5864ad6a4273dbd57faa2559a2b1d4b2caf69d9771be250ab9384b6de.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T022417Z-0-be266f94-83b6-466d-8b8c-b86e25e97b6a/manifest.jsonl",
+      "line_index": 1,
+      "page_4": {
+        "number": "RÈGLEMENT DE ZONAGE NUMÉRO ____",
+        "adoption": "13 janvier 2014"
+      }
+    }
+  },
+  "anti_invention": {
+    "scope": "Le champ vide est un fait du PDF officiel. Les numéros d'amendements 179 et 196 et le numéro 178 mentionné par une source secondaire ne constituent pas une attestation verbatim du numéro de base dans cette preuve; ils ne sont donc pas promus.",
+    "storage": "Les octets sont uniquement dans le CAS S3, liés au manifeste de capture cluster; aucun PDF n'est enregistré dans le worktree.",
+    "served_columns": "Aucun gain col-5/9/10/11; aucun pliage servi n'est exécuté."
+  }
+}

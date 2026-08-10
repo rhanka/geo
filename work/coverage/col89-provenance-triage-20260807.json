@@ -1,0 +1,222 @@
+{
+  "$meta": {
+    "contract": "col89-provenance-triage/v1",
+    "generated_at": "2026-08-07T00:00:00.000Z",
+    "generated_by": "COL89-PROVENANCE-TRIAGE (lane/jointures, worker Claude Sonnet 4.6)",
+    "sources": [
+      {
+        "role": "zone-provenance-quality-matrix (col-8 + col-9)",
+        "path": "work/coverage/zone-provenance-quality-matrix-20260726T130555Z-8c02991472f0e3a0.json",
+        "as_of": "2026-07-26T13:05:55.718Z",
+        "partial_hash_from_filename": "8c02991472f0e3a0"
+      },
+      {
+        "role": "lot-zone-consistency-scale (context lots/zones servis)",
+        "path": "work/coverage/lot-zone-consistency-scale-20260725.json",
+        "as_of": "2026-07-25T20:19:03.459Z"
+      }
+    ]
+  },
+
+  "col8_summary": {
+    "kpi": "Provenance zones — jointure exacte",
+    "spec_source": "validation.city_identity de zone-provenance-quality-matrix",
+    "universe": 1106,
+    "exact_joins": 868,
+    "sans_jointure": 238,
+
+    "partition_sans_jointure": {
+      "zone_servie_sans_jointure": 0,
+      "zone_non_servie": 238,
+      "note": "Toutes les 238 villes sans jointure exacte ont quality_status=unknown et reason=no-served-collection : aucune zone n'est servie sous leur slug canonique. Il n'existe pas de cas 'zone servie mais slug différent' parmi les 238."
+    },
+
+    "unlinked_zone_rows": {
+      "count": 3,
+      "slugs": ["l-assomption", "l-epiphanie", "sainte-christine-d-auvergne"],
+      "interpretation": "Ces 3 collections de zones existent en S3 mais ne correspondent à aucun slug canonique du catalogue 1106 villes. Elles ne représentent PAS des villes avec zones servies sous un slug différent — les villes canoniques correspondant à ces municipalités (ex. sainte-christine-dauvergne sans tiret) ont leur propre collection trouvée par jointure exacte. Ces 3 rows sont hors-univers canonique et n'ont aucun crédit de complétion."
+    },
+
+    "cas_particulier_unknown_avec_jointure": {
+      "count": 1,
+      "description": "1 ville présente une jointure exacte (incluse dans les 868) mais quality_status=unknown. L'écart 239 unknowns − 238 sans_jointure = 1 explique ce cas : la collection est servie mais le source_level est absent/invalide/non-uniforme à travers les features.",
+      "levier_jointure_lane": true,
+      "action": "Identifier et normaliser le source_level de cette collection pour la faire sortir de unknown vers orphan/candidate/acceptable."
+    }
+  },
+
+  "col9_summary": {
+    "kpi": "Provenance zones — qualité retained",
+    "spec_source": "validation.quality_status_partition de zone-provenance-quality-matrix",
+    "universe": 1106,
+    "counts": {
+      "acceptable": 706,
+      "candidate": 37,
+      "orphan": 82,
+      "unknown": 239,
+      "v2": 42
+    },
+    "total_check": "706 + 37 + 82 + 42 + 239 = 1106",
+    "feature_counts": {
+      "acceptable": 77794,
+      "candidate": 2580,
+      "orphan": 11150,
+      "v2": 3549,
+      "unknown": 0
+    },
+
+    "orphan_detail": {
+      "count": 82,
+      "features": 11150,
+      "collection_key_non_null": true,
+      "reason_predominant": "no-geometry-proof",
+      "meaning": "Zone servie en S3, slug canonique trouvé, mais aucune preuve v2 (url+retrieved_at+sha256) ni capture manifeste rattachable. Le source_level est 'orphan' : provenance intraçable.",
+      "levier": "Rattacher une capture validée depuis les 110 manifestes de capture valides disponibles en S3 (run 2026-07-26). Si la capture existe pour ce slug, re-stamper la collection → upgrade orphan → v2."
+    },
+
+    "candidate_detail": {
+      "count": 37,
+      "features": 2580,
+      "reason_predominant": "no-geometry-proof",
+      "meaning": "Zone servie, source_level='candidate' : provenance probable mais non confirmée par preuve v2 complète.",
+      "levier": "Confirmer la provenance (identifier l'URL source probable et l'attacher comme preuve v2) → upgrade candidate → acceptable ou v2."
+    },
+
+    "acceptable_detail": {
+      "count": 706,
+      "features": 77794,
+      "meaning": "Preuve historique documentée, legacy-traceable ou vérifié. Stable mais non v2. Hors portée immédiate pour la lane jointures (qualité suffisante)."
+    },
+
+    "v2_detail": {
+      "count": 42,
+      "features": 3549,
+      "meaning": "Preuve v2 exacte : tuple url/retrieved_at/sha256 vérifié, octets CAS re-hashés, sidecar non-backfillé. Objectif cible pour toutes les villes.",
+      "capture_context": "115 manifestes de capture scannés, 110 valides (5 avec erreurs), 24 vérifications CAS effectuées et toutes passées. Les 42 v2 sont issus de ces captures."
+    }
+  },
+
+  "leviers_jointure_lane": [
+    {
+      "id": "LEVIER-1-ORPHAN-RESTAMPAGE",
+      "priorite": 1,
+      "titre": "Restampage v2 des 82 villes orphan",
+      "perimetre": "82 villes, 11150 features",
+      "condition": "Capture S3 disponible pour le slug de la ville (run 2026-07-26, 110 manifestes valides)",
+      "action": "Pour chaque ville orphan : rechercher dans les manifestes de capture un tuple url/retrieved_at/sha256 correspondant à la collection servie → appeler putServedZoneGeojson avec preuve v2 → re-stamper zone_source_url + zone_source_level",
+      "gain_potentiel": "Jusqu'à 82 villes orphan → v2 (si capture disponible pour chacune). Gain col-9 : orphan↓82, v2↑≤82.",
+      "prerequis": "Accès S3 (lectures manifestes). Runner acquisition/src/_restamp-served-from-proof.ts ou équivalent."
+    },
+    {
+      "id": "LEVIER-2-CANDIDATE-CONFIRMATION",
+      "priorite": 2,
+      "titre": "Confirmation provenance des 37 villes candidate",
+      "perimetre": "37 villes, 2580 features",
+      "action": "Pour chaque ville candidate : identifier l'URL source probable (source_level='candidate' indique une provenance plausible mais non formellement prouvée) → collecter une capture v2 → re-stamper → upgrade candidate → acceptable ou v2",
+      "gain_potentiel": "37 villes candidate → acceptable ou v2. Gain col-9 : candidate↓37.",
+      "prerequis": "Identification de l'URL source (analyse du contenu servi vs sources connues). Peut nécessiter une capture fraîche si URL non encore dans les manifestes."
+    },
+    {
+      "id": "LEVIER-3-UNKNOWN-SOURCE-LEVEL",
+      "priorite": 3,
+      "titre": "Normalisation source_level de la 1 ville unknown avec jointure exacte",
+      "perimetre": "1 ville (jointure exacte mais source_level absent/invalide/non-uniforme)",
+      "action": "Identifier la ville (quality_status=unknown parmi les 868 avec jointure exacte) → inspecter la collection servie → normaliser le source_level → selon le résultat : upgrade unknown → orphan/candidate/acceptable",
+      "gain_potentiel": "1 ville → sortie du unknown. Gain col-8 : unknowns↓1, col-9 : unknown↓1.",
+      "prerequis": "Lecture de la collection servie pour identifier le(s) feature(s) au source_level non conforme."
+    },
+    {
+      "id": "HORS-PORTEE-COL8",
+      "priorite": null,
+      "titre": "238 villes sans jointure exacte — hors portée lane jointures",
+      "perimetre": "238 villes, reason=no-served-collection",
+      "action": "AUCUNE. Ces villes n'ont pas de collection de zones servie en S3. Elles relèvent de la lane d'acquisition (fetch + dépôt de la zone), pas de la lane jointures.",
+      "gain_potentiel": "0 depuis la lane jointures seule.",
+      "prerequis": "N/A — remonter à la lane acquisition."
+    }
+  ],
+
+  "villes_orphan_sample": {
+    "note": "Échantillon de 10 villes orphan rencontrées lors de la lecture du fichier source (non exhaustif, non classé par feature_count total). Toutes ont reason=no-geometry-proof, proof=null, capture=null.",
+    "cities": [
+      {
+        "city_slug": "boisbriand",
+        "city_name": "Boisbriand",
+        "feature_count": 302,
+        "selected_layout": "flat",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-boisbriand.geojson"
+      },
+      {
+        "city_slug": "brownsburg-chatham",
+        "city_name": "Brownsburg-Chatham",
+        "feature_count": 238,
+        "selected_layout": "nested",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-brownsburg-chatham/qc-zonage-brownsburg-chatham.geojson"
+      },
+      {
+        "city_slug": "sainte-christine-dauvergne",
+        "city_name": "Sainte-Christine-d'Auvergne",
+        "feature_count": 72,
+        "selected_layout": "flat",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-christine-dauvergne.geojson",
+        "note": "City slug sans tiret avant 'auvergne'. La zone non-liée 'sainte-christine-d-auvergne' (avec tiret) est une collection distincte hors-univers."
+      },
+      {
+        "city_slug": "stratford",
+        "city_name": "Stratford",
+        "feature_count": 50,
+        "selected_layout": "flat",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-stratford.geojson"
+      },
+      {
+        "city_slug": "sainte-claire",
+        "city_name": "Sainte-Claire",
+        "feature_count": 49,
+        "selected_layout": "nested",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-sainte-claire/qc-zonage-sainte-claire.geojson"
+      },
+      {
+        "city_slug": "saint-hermenegilde",
+        "city_name": "Saint-Herménégilde",
+        "feature_count": 44,
+        "selected_layout": "nested",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-hermenegilde/qc-zonage-saint-hermenegilde.geojson"
+      },
+      {
+        "city_slug": "martinville",
+        "city_name": "Martinville",
+        "feature_count": 43,
+        "selected_layout": "nested",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-martinville/qc-zonage-martinville.geojson"
+      },
+      {
+        "city_slug": "east-hereford",
+        "city_name": "East Hereford",
+        "feature_count": 40,
+        "selected_layout": "nested",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-east-hereford/qc-zonage-east-hereford.geojson"
+      },
+      {
+        "city_slug": "peribonka",
+        "city_name": "Péribonka",
+        "feature_count": 25,
+        "selected_layout": "flat",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-peribonka.geojson"
+      },
+      {
+        "city_slug": "saint-aubert",
+        "city_name": "Saint-Aubert",
+        "feature_count": 18,
+        "selected_layout": "flat",
+        "collection_key": "normalized/ca-qc-zonage/qc-zonage-saint-aubert.geojson"
+      }
+    ]
+  },
+
+  "synthesis": {
+    "col8_scope_jointure_lane": "MINIMAL — Les 238 villes sans jointure exacte sont toutes 'no-served-collection' : hors portée de la lane jointures. Seul 1 cas potentiel (ville avec jointure exacte mais source_level non-uniforme → unknown).",
+    "col9_scope_jointure_lane": "SUBSTANTIEL — 82 orphan (11 150 features) + 37 candidate (2 580 features) = 119 villes, 13 730 features. Ces villes ont des zones servies mais avec provenance intraçable ou non confirmée. La lane jointures est le levier direct.",
+    "priorite_recommandee": "LEVIER-1 (restampage orphan) en premier : impact maximal (82 villes, 11 150 features) si les captures S3 sont disponibles. LEVIER-2 (confirmation candidate) en second. LEVIER-3 (1 ville unknown) en bonus.",
+    "prerequis_global": "Accès S3 en lecture sur s3://sentropic-geo/capture/_runs/ pour identifier les manifestes correspondant aux slugs orphan. Aucun accès réseau externe requis (les captures sont déjà en S3 depuis le run 2026-07-26)."
+  }
+}

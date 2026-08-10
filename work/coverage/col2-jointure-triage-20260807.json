@@ -1,0 +1,1140 @@
+{
+  "$meta": {
+    "contract": "COL2-JOINTURE-TRIAGE-v1",
+    "generated_at": "2026-08-07T00:00:00Z",
+    "source": "work/coverage/lot-zone-consistency-scale-20260725.json",
+    "source_commit": "9995acf1",
+    "method": {
+      "kpi_threshold": "mismatch_pct >= 5% => incomplete col-2",
+      "classification_rules": {
+        "trivial_sample": "assigned <= 5 lots — bruit statistique, conclusion fragile",
+        "misassigned_dominant": "misassigned/outside_all >= 3 OU outside_all=0 — lot dans autre zone — revision jointure ou zones chevauchantes — levier: jointure-lane",
+        "outside_all_dominant": "misassigned/outside_all <= 0.33 OU misassigned=0 — lot hors toute zone — probleme geometrie/CRS/offset — levier: jointure-lane",
+        "mixed": "ratio misassigned/outside_all entre 0.33 et 3 — cause mixte — levier: jointure-lane"
+      },
+      "prioritaire_selection": "Top 31 par mismatch_volume (misassigned+outside_all absolus) parmi villes avec assigned >= 100 et categorie != trivial_sample",
+      "levier_jointure_lane_actions": [
+        "correction geometrie zones incorrecte",
+        "correction CRS mismatch",
+        "correction offset geographique",
+        "revision jointure lot-zone (zones chevauchantes)",
+        "revision classification code_zone"
+      ]
+    }
+  },
+  "summary": {
+    "total_incomplete": 121,
+    "prioritaire_count": 31,
+    "autres_count": 90,
+    "selection_basis": "top 31 par volume de lots en mismatch (misassigned + outside_all), assigned >= 100",
+    "partition_by_categorie_all_121": {
+      "mixed": 23,
+      "trivial_sample": 6,
+      "outside_all_dominant": 19,
+      "misassigned_dominant": 73
+    },
+    "partition_by_categorie_prioritaires_31": {
+      "mixed": 4,
+      "misassigned_dominant": 27
+    },
+    "partition_by_categorie_autres_90": {
+      "trivial_sample": 6,
+      "outside_all_dominant": 19,
+      "mixed": 19,
+      "misassigned_dominant": 46
+    }
+  },
+  "cities_prioritaires": [
+    {
+      "slug": "amherst",
+      "mismatch_pct": 100,
+      "assigned": 1749,
+      "misassigned": 1132,
+      "outside_all": 617,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "varennes",
+      "mismatch_pct": 98.68,
+      "assigned": 3268,
+      "misassigned": 3223,
+      "outside_all": 2,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "ormstown",
+      "mismatch_pct": 95.58,
+      "assigned": 2397,
+      "misassigned": 2288,
+      "outside_all": 3,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "notre-dame-de-lourdes--joliette",
+      "mismatch_pct": 65.74,
+      "assigned": 1687,
+      "misassigned": 1096,
+      "outside_all": 13,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-raphael",
+      "mismatch_pct": 28.52,
+      "assigned": 2637,
+      "misassigned": 748,
+      "outside_all": 4,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "cowansville",
+      "mismatch_pct": 27.96,
+      "assigned": 6816,
+      "misassigned": 1889,
+      "outside_all": 17,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-amable",
+      "mismatch_pct": 12.08,
+      "assigned": 4154,
+      "misassigned": 359,
+      "outside_all": 143,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "montreal",
+      "mismatch_pct": 11.81,
+      "assigned": 10800,
+      "misassigned": 1215,
+      "outside_all": 60,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "westmount",
+      "mismatch_pct": 10.99,
+      "assigned": 5013,
+      "misassigned": 506,
+      "outside_all": 45,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "mismatch_pct": 10.74,
+      "assigned": 4200,
+      "misassigned": 181,
+      "outside_all": 270,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "la-prairie",
+      "mismatch_pct": 8.55,
+      "assigned": 9399,
+      "misassigned": 766,
+      "outside_all": 38,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "candiac",
+      "mismatch_pct": 8.52,
+      "assigned": 7725,
+      "misassigned": 613,
+      "outside_all": 45,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "montmagny",
+      "mismatch_pct": 7.26,
+      "assigned": 6626,
+      "misassigned": 479,
+      "outside_all": 2,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "alma",
+      "mismatch_pct": 6.7,
+      "assigned": 11679,
+      "misassigned": 586,
+      "outside_all": 197,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "brossard",
+      "mismatch_pct": 6.7,
+      "assigned": 24793,
+      "misassigned": 1513,
+      "outside_all": 147,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "mismatch_pct": 6.47,
+      "assigned": 19379,
+      "misassigned": 1246,
+      "outside_all": 8,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "granby",
+      "mismatch_pct": 6.4,
+      "assigned": 25946,
+      "misassigned": 1587,
+      "outside_all": 74,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "rimouski",
+      "mismatch_pct": 6.18,
+      "assigned": 9701,
+      "misassigned": 543,
+      "outside_all": 57,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sainte-catherine",
+      "mismatch_pct": 6.11,
+      "assigned": 5746,
+      "misassigned": 332,
+      "outside_all": 19,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "boucherville",
+      "mismatch_pct": 6.07,
+      "assigned": 16242,
+      "misassigned": 942,
+      "outside_all": 44,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "bromont",
+      "mismatch_pct": 5.69,
+      "assigned": 7309,
+      "misassigned": 380,
+      "outside_all": 36,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "longueuil",
+      "mismatch_pct": 5.62,
+      "assigned": 66975,
+      "misassigned": 3740,
+      "outside_all": 27,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "quebec",
+      "mismatch_pct": 5.44,
+      "assigned": 65961,
+      "misassigned": 3516,
+      "outside_all": 69,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sorel-tracy",
+      "mismatch_pct": 5.34,
+      "assigned": 16701,
+      "misassigned": 840,
+      "outside_all": 51,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "laval",
+      "mismatch_pct": 5.29,
+      "assigned": 139794,
+      "misassigned": 7261,
+      "outside_all": 135,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "joliette",
+      "mismatch_pct": 5.26,
+      "assigned": 7193,
+      "misassigned": 349,
+      "outside_all": 29,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "lassomption",
+      "mismatch_pct": 5.23,
+      "assigned": 9389,
+      "misassigned": 480,
+      "outside_all": 11,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "chambly",
+      "mismatch_pct": 5.21,
+      "assigned": 12018,
+      "misassigned": 590,
+      "outside_all": 36,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "mismatch_pct": 5.04,
+      "assigned": 15510,
+      "misassigned": 748,
+      "outside_all": 33,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "drummondville",
+      "mismatch_pct": 5,
+      "assigned": 30721,
+      "misassigned": 1512,
+      "outside_all": 24,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "mirabel",
+      "mismatch_pct": 5,
+      "assigned": 7746,
+      "misassigned": 384,
+      "outside_all": 3,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    }
+  ],
+  "cities_autres": [
+    {
+      "slug": "baie-des-sables",
+      "mismatch_pct": 100,
+      "assigned": 1,
+      "misassigned": 0,
+      "outside_all": 1,
+      "categorie": "trivial_sample",
+      "levier": "bruit_statistique"
+    },
+    {
+      "slug": "hatley-township-municipality",
+      "mismatch_pct": 100,
+      "assigned": 2,
+      "misassigned": 0,
+      "outside_all": 2,
+      "categorie": "trivial_sample",
+      "levier": "bruit_statistique"
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "mismatch_pct": 100,
+      "assigned": 1,
+      "misassigned": 0,
+      "outside_all": 1,
+      "categorie": "trivial_sample",
+      "levier": "bruit_statistique"
+    },
+    {
+      "slug": "saint-camille-de-lellis",
+      "mismatch_pct": 100,
+      "assigned": 1,
+      "misassigned": 0,
+      "outside_all": 1,
+      "categorie": "trivial_sample",
+      "levier": "bruit_statistique"
+    },
+    {
+      "slug": "saint-cyprien--les-etchemins",
+      "mismatch_pct": 100,
+      "assigned": 18,
+      "misassigned": 0,
+      "outside_all": 18,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-cyrille-de-lessard",
+      "mismatch_pct": 100,
+      "assigned": 3,
+      "misassigned": 0,
+      "outside_all": 3,
+      "categorie": "trivial_sample",
+      "levier": "bruit_statistique"
+    },
+    {
+      "slug": "saint-marcellin",
+      "mismatch_pct": 100,
+      "assigned": 3,
+      "misassigned": 0,
+      "outside_all": 3,
+      "categorie": "trivial_sample",
+      "levier": "bruit_statistique"
+    },
+    {
+      "slug": "bedford--brome-missisquoi--2",
+      "mismatch_pct": 91.67,
+      "assigned": 36,
+      "misassigned": 1,
+      "outside_all": 32,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville",
+      "mismatch_pct": 90,
+      "assigned": 20,
+      "misassigned": 0,
+      "outside_all": 18,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "disraeli--les-appalaches",
+      "mismatch_pct": 83.33,
+      "assigned": 36,
+      "misassigned": 0,
+      "outside_all": 30,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-celestin--nicolet-yamaska",
+      "mismatch_pct": 68.75,
+      "assigned": 16,
+      "misassigned": 0,
+      "outside_all": 11,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "amos",
+      "mismatch_pct": 53.85,
+      "assigned": 13,
+      "misassigned": 0,
+      "outside_all": 7,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "val-dor",
+      "mismatch_pct": 50,
+      "assigned": 18,
+      "misassigned": 0,
+      "outside_all": 9,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "mismatch_pct": 28.73,
+      "assigned": 181,
+      "misassigned": 0,
+      "outside_all": 52,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "berthierville",
+      "mismatch_pct": 17.09,
+      "assigned": 1984,
+      "misassigned": 149,
+      "outside_all": 190,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "plaisance",
+      "mismatch_pct": 14.17,
+      "assigned": 833,
+      "misassigned": 21,
+      "outside_all": 97,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "schefferville",
+      "mismatch_pct": 13.07,
+      "assigned": 482,
+      "misassigned": 55,
+      "outside_all": 8,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-pierre",
+      "mismatch_pct": 12.69,
+      "assigned": 268,
+      "misassigned": 3,
+      "outside_all": 31,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "hampstead",
+      "mismatch_pct": 11.88,
+      "assigned": 1861,
+      "misassigned": 40,
+      "outside_all": 181,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "franquelin",
+      "mismatch_pct": 11.63,
+      "assigned": 43,
+      "misassigned": 5,
+      "outside_all": 0,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "temiscaming",
+      "mismatch_pct": 11.43,
+      "assigned": 245,
+      "misassigned": 26,
+      "outside_all": 2,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sainte-famille-de-lile-dorleans",
+      "mismatch_pct": 11.14,
+      "assigned": 664,
+      "misassigned": 73,
+      "outside_all": 1,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "lac-superieur",
+      "mismatch_pct": 10.61,
+      "assigned": 66,
+      "misassigned": 6,
+      "outside_all": 1,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "beaulac-garthby",
+      "mismatch_pct": 10.37,
+      "assigned": 2074,
+      "misassigned": 56,
+      "outside_all": 159,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "esterel",
+      "mismatch_pct": 9.8,
+      "assigned": 898,
+      "misassigned": 21,
+      "outside_all": 67,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-maxime-du-mont-louis",
+      "mismatch_pct": 9.67,
+      "assigned": 486,
+      "misassigned": 7,
+      "outside_all": 40,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "notre-dame-du-nord",
+      "mismatch_pct": 9.56,
+      "assigned": 1130,
+      "misassigned": 35,
+      "outside_all": 73,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "montreal-ouest",
+      "mismatch_pct": 8.99,
+      "assigned": 1601,
+      "misassigned": 131,
+      "outside_all": 13,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "lisle-aux-coudres",
+      "mismatch_pct": 8.69,
+      "assigned": 2084,
+      "misassigned": 181,
+      "outside_all": 0,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "hemmingford--les-jardins-de-napierville--2",
+      "mismatch_pct": 8.38,
+      "assigned": 537,
+      "misassigned": 44,
+      "outside_all": 1,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-joseph-de-sorel",
+      "mismatch_pct": 8.26,
+      "assigned": 678,
+      "misassigned": 53,
+      "outside_all": 3,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "berthier-sur-mer",
+      "mismatch_pct": 7.91,
+      "assigned": 1467,
+      "misassigned": 111,
+      "outside_all": 5,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "papineauville",
+      "mismatch_pct": 7.55,
+      "assigned": 1801,
+      "misassigned": 28,
+      "outside_all": 108,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "baie-comeau",
+      "mismatch_pct": 7.49,
+      "assigned": 2443,
+      "misassigned": 183,
+      "outside_all": 0,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "lanoraie",
+      "mismatch_pct": 7.49,
+      "assigned": 3590,
+      "misassigned": 169,
+      "outside_all": 100,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "rosemere",
+      "mismatch_pct": 7.47,
+      "assigned": 4246,
+      "misassigned": 40,
+      "outside_all": 277,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "notre-dame-de-bonsecours",
+      "mismatch_pct": 7.41,
+      "assigned": 54,
+      "misassigned": 0,
+      "outside_all": 4,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-antoine-sur-richelieu",
+      "mismatch_pct": 7.04,
+      "assigned": 1307,
+      "misassigned": 56,
+      "outside_all": 36,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "peribonka",
+      "mismatch_pct": 6.99,
+      "assigned": 529,
+      "misassigned": 11,
+      "outside_all": 26,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "barkmere",
+      "mismatch_pct": 6.92,
+      "assigned": 549,
+      "misassigned": 15,
+      "outside_all": 23,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "montreal-est",
+      "mismatch_pct": 6.91,
+      "assigned": 1678,
+      "misassigned": 94,
+      "outside_all": 22,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "mismatch_pct": 6.91,
+      "assigned": 1622,
+      "misassigned": 9,
+      "outside_all": 103,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sainte-cecile-de-milton",
+      "mismatch_pct": 6.89,
+      "assigned": 1219,
+      "misassigned": 17,
+      "outside_all": 67,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sainte-flavie",
+      "mismatch_pct": 6.76,
+      "assigned": 1094,
+      "misassigned": 44,
+      "outside_all": 30,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "cote-saint-luc",
+      "mismatch_pct": 6.69,
+      "assigned": 4890,
+      "misassigned": 277,
+      "outside_all": 50,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "kingsbury",
+      "mismatch_pct": 6.67,
+      "assigned": 165,
+      "misassigned": 8,
+      "outside_all": 3,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "donnacona",
+      "mismatch_pct": 6.65,
+      "assigned": 3608,
+      "misassigned": 237,
+      "outside_all": 3,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "temiscouata-sur-le-lac",
+      "mismatch_pct": 6.61,
+      "assigned": 3933,
+      "misassigned": 208,
+      "outside_all": 52,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "huntingdon",
+      "mismatch_pct": 6.48,
+      "assigned": 1820,
+      "misassigned": 96,
+      "outside_all": 22,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "ville-marie",
+      "mismatch_pct": 6.47,
+      "assigned": 1515,
+      "misassigned": 88,
+      "outside_all": 10,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sainte-cecile-de-levrard",
+      "mismatch_pct": 6.36,
+      "assigned": 393,
+      "misassigned": 11,
+      "outside_all": 14,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "murdochville",
+      "mismatch_pct": 6.22,
+      "assigned": 691,
+      "misassigned": 30,
+      "outside_all": 13,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "disraeli--les-appalaches--2",
+      "mismatch_pct": 6.11,
+      "assigned": 1474,
+      "misassigned": 51,
+      "outside_all": 39,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "mismatch_pct": 6.04,
+      "assigned": 1737,
+      "misassigned": 101,
+      "outside_all": 4,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "beaupre",
+      "mismatch_pct": 6.01,
+      "assigned": 2929,
+      "misassigned": 148,
+      "outside_all": 28,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "petit-saguenay",
+      "mismatch_pct": 6,
+      "assigned": 683,
+      "misassigned": 28,
+      "outside_all": 13,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-felix-de-dalquier",
+      "mismatch_pct": 6,
+      "assigned": 834,
+      "misassigned": 17,
+      "outside_all": 33,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sainte-anne-de-la-rochelle",
+      "mismatch_pct": 5.98,
+      "assigned": 769,
+      "misassigned": 41,
+      "outside_all": 5,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "plessisville",
+      "mismatch_pct": 5.95,
+      "assigned": 3074,
+      "misassigned": 113,
+      "outside_all": 70,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "grand-metis",
+      "mismatch_pct": 5.88,
+      "assigned": 561,
+      "misassigned": 14,
+      "outside_all": 19,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "ulverton",
+      "mismatch_pct": 5.81,
+      "assigned": 551,
+      "misassigned": 32,
+      "outside_all": 0,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "delson",
+      "mismatch_pct": 5.77,
+      "assigned": 3330,
+      "misassigned": 161,
+      "outside_all": 31,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "belleterre",
+      "mismatch_pct": 5.76,
+      "assigned": 295,
+      "misassigned": 17,
+      "outside_all": 0,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "farnham",
+      "mismatch_pct": 5.72,
+      "assigned": 4950,
+      "misassigned": 275,
+      "outside_all": 8,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sainte-anne-des-monts",
+      "mismatch_pct": 5.7,
+      "assigned": 3615,
+      "misassigned": 181,
+      "outside_all": 25,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sainte-luce",
+      "mismatch_pct": 5.64,
+      "assigned": 2466,
+      "misassigned": 107,
+      "outside_all": 32,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-jean-de-lile-dorleans",
+      "mismatch_pct": 5.61,
+      "assigned": 1070,
+      "misassigned": 46,
+      "outside_all": 14,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "mismatch_pct": 5.6,
+      "assigned": 2340,
+      "misassigned": 110,
+      "outside_all": 21,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "lac-des-seize-iles",
+      "mismatch_pct": 5.53,
+      "assigned": 705,
+      "misassigned": 29,
+      "outside_all": 10,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "abercorn",
+      "mismatch_pct": 5.49,
+      "assigned": 455,
+      "misassigned": 22,
+      "outside_all": 3,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "trois-pistoles",
+      "mismatch_pct": 5.43,
+      "assigned": 1731,
+      "misassigned": 72,
+      "outside_all": 22,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "notre-dame-des-pins",
+      "mismatch_pct": 5.41,
+      "assigned": 1294,
+      "misassigned": 63,
+      "outside_all": 7,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-ambroise",
+      "mismatch_pct": 5.4,
+      "assigned": 2705,
+      "misassigned": 134,
+      "outside_all": 12,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "val-des-sources",
+      "mismatch_pct": 5.38,
+      "assigned": 3739,
+      "misassigned": 177,
+      "outside_all": 24,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "saint-jacques-de-leeds",
+      "mismatch_pct": 5.33,
+      "assigned": 788,
+      "misassigned": 35,
+      "outside_all": 7,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "duparquet",
+      "mismatch_pct": 5.32,
+      "assigned": 470,
+      "misassigned": 22,
+      "outside_all": 3,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "mont-joli",
+      "mismatch_pct": 5.32,
+      "assigned": 3329,
+      "misassigned": 163,
+      "outside_all": 14,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "scott",
+      "mismatch_pct": 5.31,
+      "assigned": 1770,
+      "misassigned": 90,
+      "outside_all": 4,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "lefebvre",
+      "mismatch_pct": 5.26,
+      "assigned": 722,
+      "misassigned": 22,
+      "outside_all": 16,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "val-saint-gilles",
+      "mismatch_pct": 5.26,
+      "assigned": 228,
+      "misassigned": 10,
+      "outside_all": 2,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "lac-sergent",
+      "mismatch_pct": 5.25,
+      "assigned": 724,
+      "misassigned": 8,
+      "outside_all": 30,
+      "categorie": "outside_all_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "kamouraska",
+      "mismatch_pct": 5.24,
+      "assigned": 858,
+      "misassigned": 44,
+      "outside_all": 1,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "normetal",
+      "mismatch_pct": 5.21,
+      "assigned": 653,
+      "misassigned": 32,
+      "outside_all": 2,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "sainte-anne-de-la-perade",
+      "mismatch_pct": 5.13,
+      "assigned": 2164,
+      "misassigned": 84,
+      "outside_all": 27,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "clermont--charlevoix-est",
+      "mismatch_pct": 5.12,
+      "assigned": 1992,
+      "misassigned": 100,
+      "outside_all": 2,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "martinville",
+      "mismatch_pct": 5.12,
+      "assigned": 410,
+      "misassigned": 20,
+      "outside_all": 1,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "chute-aux-outardes",
+      "mismatch_pct": 5.1,
+      "assigned": 764,
+      "misassigned": 38,
+      "outside_all": 1,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "amqui",
+      "mismatch_pct": 5.08,
+      "assigned": 4191,
+      "misassigned": 207,
+      "outside_all": 6,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "piedmont",
+      "mismatch_pct": 5.07,
+      "assigned": 2664,
+      "misassigned": 126,
+      "outside_all": 9,
+      "categorie": "misassigned_dominant",
+      "levier": "jointure-lane"
+    },
+    {
+      "slug": "lac-delage",
+      "mismatch_pct": 5.05,
+      "assigned": 436,
+      "misassigned": 13,
+      "outside_all": 9,
+      "categorie": "mixed",
+      "levier": "jointure-lane"
+    }
+  ]
+}

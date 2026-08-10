@@ -26,6 +26,11 @@ export const CaptureWorklistTargetSchema = z.object({
   slug: z.string().regex(SLUG_RE),
   source: z.string().regex(SOURCE_RE),
   urls: z.array(z.string().refine(isHttpUrl, "URL http(s) requise")).min(1),
+  /** Immutable S3 control record that justified a derived capture target. */
+  derivation: z.object({
+    kind: z.enum(["captured-normes-subpages/v1", "captured-normes-pdf-selection/v1"]),
+    selection_key: z.string().min(1),
+  }).strict().optional(),
 }).strict();
 export type CaptureWorklistTarget = z.infer<typeof CaptureWorklistTargetSchema>;
 

@@ -1,0 +1,1244 @@
+{
+  "$meta": {
+    "generated_at": "2026-08-08T11:53:38.747Z",
+    "generated_for": "COL2-ROOTCAUSE-ROUTING",
+    "date": "2026-08-08",
+    "method": {
+      "scope": "top-15 priorisées par volume (misassigned + outside_all)",
+      "note": "sample up to 80 mismatches par ville (centroïdes), lecture S3 seule",
+      "sample_limit": 80,
+      "sample_minimum": 12,
+      "anti_invention": "Si métrique ambiguë ou preuve faible => insufficient_data"
+    },
+    "sources": {
+      "triage": "work/coverage/col2-jointure-triage-20260807.json",
+      "consistency": "work/coverage/lot-zone-consistency-scale-20260725.json"
+    },
+    "sources_sha": {
+      "triage": "31c9af61",
+      "consistency": "9995acf1"
+    },
+    "dry_run": true,
+    "s3_env_required": [
+      "NODE_OPTIONS=--dns-result-order=ipv4first",
+      "AWS_MAX_ATTEMPTS=10"
+    ],
+    "note_anti_invention": "verdict=preuve échantillonnée"
+  },
+  "summary": {
+    "zones": 0,
+    "jointures": 14,
+    "insufficient": 1
+  },
+  "cities": [
+    {
+      "slug": "varennes",
+      "mismatch_pct": 98.68,
+      "assigned": 3268,
+      "misassigned": 3223,
+      "outside_all": 2,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 249.23,
+        "offset_std_m": 444.86,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 97.5,
+        "percent_outside": 2.5,
+        "percent_outside_code_not_drawn": 0,
+        "provenance_flags": [
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2759020%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=59020]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2759020%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=59020]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2759020%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=59020]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2759020%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=59020]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2759020%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=59020]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2759020%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=59020]"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "H-621",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H-623",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 44.32
+          },
+          {
+            "assignedCode": "H-415",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H-416",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 310.64
+          },
+          {
+            "assignedCode": "H-459",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "P-430",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 223.06
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "amherst",
+      "mismatch_pct": 100,
+      "assigned": 1749,
+      "misassigned": 1132,
+      "outside_all": 617,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 1040.74,
+        "offset_std_m": 923.68,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 67.5,
+        "percent_outside": 32.5,
+        "percent_outside_code_not_drawn": 32.5,
+        "provenance_flags": [
+          {
+            "zone_source_url": null,
+            "zone_source_level": "candidate",
+            "source": "t2-vision-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "candidate",
+            "source": "t2-vision-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "candidate",
+            "source": "t2-vision-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "candidate",
+            "source": "t2-vision-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "candidate",
+            "source": "t2-vision-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "candidate",
+            "source": "t2-vision-gcp"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "32F",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "35-V",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 230.71
+          },
+          {
+            "assignedCode": "4 942 238",
+            "outside": true,
+            "overlap": false,
+            "expectedCode": "38-M",
+            "nearestCode": "38-M",
+            "nearestDistM": 3239.28,
+            "offsetM": 3239.28
+          },
+          {
+            "assignedCode": "33V",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "95-R",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 561.74
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "ormstown",
+      "mismatch_pct": 95.58,
+      "assigned": 2397,
+      "misassigned": 2288,
+      "outside_all": 3,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 68,
+        "offset_mean_m": 564.62,
+        "offset_std_m": 764.12,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 94.12,
+        "percent_outside": 5.88,
+        "percent_outside_code_not_drawn": 0,
+        "provenance_flags": [
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2769037%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69037]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2769037%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69037]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2769037%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69037]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2769037%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69037]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2769037%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69037]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2769037%27",
+            "zone_source_level": "documented",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69037]"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "R-3",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "R-4",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 70.73
+          },
+          {
+            "assignedCode": "R-6",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "P-2",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 95.02
+          },
+          {
+            "assignedCode": "AD-3",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "R-14",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 120.26
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 68
+    },
+    {
+      "slug": "laval",
+      "mismatch_pct": 5.29,
+      "assigned": 139794,
+      "misassigned": 7261,
+      "outside_all": 135,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 338.93,
+        "offset_std_m": 531.31,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 97.5,
+        "percent_outside": 2.5,
+        "percent_outside_code_not_drawn": 0,
+        "provenance_flags": [
+          {
+            "zone_source_url": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6"
+          },
+          {
+            "zone_source_url": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6"
+          },
+          {
+            "zone_source_url": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6"
+          },
+          {
+            "zone_source_url": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6"
+          },
+          {
+            "zone_source_url": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6"
+          },
+          {
+            "zone_source_url": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://gis.laval.ca/arcgis/rest/services/urba/zonage_type_milieu/MapServer/6"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "T3.3-4060",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "ZI.1-4087",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 542.47
+          },
+          {
+            "assignedCode": "T3.3-7009",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "T4.4-7127",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 135.37
+          },
+          {
+            "assignedCode": "T3.3-5002",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "CI.2-5174",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 123.1
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "longueuil",
+      "mismatch_pct": 5.62,
+      "assigned": 66975,
+      "misassigned": 3740,
+      "outside_all": 27,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 181.9,
+        "offset_std_m": 171.04,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 97.5,
+        "percent_outside": 2.5,
+        "percent_outside_code_not_drawn": 1.25,
+        "provenance_flags": [
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "P33-063 (VLO)",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H33-049 (VLO)",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 58.16
+          },
+          {
+            "assignedCode": "H14-012 (STH)",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H14-011 (STH)",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 118.9
+          },
+          {
+            "assignedCode": "H12-027 (STH)",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H12-009 (STH)",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 137.59
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "quebec",
+      "mismatch_pct": 5.44,
+      "assigned": 65961,
+      "misassigned": 3516,
+      "outside_all": 69,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 1564.58,
+        "offset_std_m": 9719.32,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 95,
+        "percent_outside": 5,
+        "percent_outside_code_not_drawn": 0,
+        "provenance_flags": [
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "donneesquebec.ca/dataset/vque_56 Ville de Quebec CC-BY 4.0 Zonage municipal Zones"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "donneesquebec.ca/dataset/vque_56 Ville de Quebec CC-BY 4.0 Zonage municipal Zones"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "donneesquebec.ca/dataset/vque_56 Ville de Quebec CC-BY 4.0 Zonage municipal Zones"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "donneesquebec.ca/dataset/vque_56 Ville de Quebec CC-BY 4.0 Zonage municipal Zones"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "donneesquebec.ca/dataset/vque_56 Ville de Quebec CC-BY 4.0 Zonage municipal Zones"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "donneesquebec.ca/dataset/vque_56 Ville de Quebec CC-BY 4.0 Zonage municipal Zones"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "23318Mb",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "23310Hb",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 139.13
+          },
+          {
+            "assignedCode": "63111Fa",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "63125Fa",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 59.74
+          },
+          {
+            "assignedCode": "63323Ha",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "63310Ha",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 68.87
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "cowansville",
+      "mismatch_pct": 27.96,
+      "assigned": 6816,
+      "misassigned": 1889,
+      "outside_all": 17,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 194.15,
+        "offset_std_m": 195.58,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 97.5,
+        "percent_outside": 2.5,
+        "percent_outside_code_not_drawn": 0,
+        "provenance_flags": [
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "RECB-10",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "RB-8",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 82.11
+          },
+          {
+            "assignedCode": "RC-22",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "RECB-10",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 60.78
+          },
+          {
+            "assignedCode": "AIRE-29",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "AIRE-27",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 461.35
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "granby",
+      "mismatch_pct": 6.4,
+      "assigned": 25946,
+      "misassigned": 1587,
+      "outside_all": 74,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 392.43,
+        "offset_std_m": 1296.14,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 97.5,
+        "percent_outside": 2.5,
+        "percent_outside_code_not_drawn": 0,
+        "provenance_flags": [
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "geopdf-esri"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "FM01R",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "FO01A",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 1887.32
+          },
+          {
+            "assignedCode": "IL07R",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "JK02R",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 422.95
+          },
+          {
+            "assignedCode": "GH04R",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "GH05R",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 70.1
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "brossard",
+      "mismatch_pct": 6.7,
+      "assigned": 24793,
+      "misassigned": 1513,
+      "outside_all": 147,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 972.1,
+        "offset_std_m": 6560.34,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 96.25,
+        "percent_outside": 3.75,
+        "percent_outside_code_not_drawn": 1.25,
+        "provenance_flags": [
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autonomous-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autonomous-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autonomous-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autonomous-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autonomous-gcp"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autonomous-gcp"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "Hr-497",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "Pr-486",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 210.94
+          },
+          {
+            "assignedCode": "Hm-363",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "Pb-169",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 81.41
+          },
+          {
+            "assignedCode": "Cs-424",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "Ps-430",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 168.71
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "drummondville",
+      "mismatch_pct": 5,
+      "assigned": 30721,
+      "misassigned": 1512,
+      "outside_all": 24,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 189.31,
+        "offset_std_m": 227.93,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 100,
+        "percent_outside": 0,
+        "percent_outside_code_not_drawn": 0,
+        "provenance_flags": [
+          {
+            "zone_source_url": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/KA7KPpSUStuHLY6U/arcgis/rest/services/Zonage_municipal/FeatureServer/1"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "H-428",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H-415",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 75.09
+          },
+          {
+            "assignedCode": "H-1187",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H-1186",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 210.3
+          },
+          {
+            "assignedCode": "H-410",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H-417",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 169.31
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "montreal",
+      "mismatch_pct": 11.81,
+      "assigned": 10800,
+      "misassigned": 1215,
+      "outside_all": 60,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 220.4,
+        "offset_std_m": 352.26,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 93.75,
+        "percent_outside": 6.25,
+        "percent_outside_code_not_drawn": 0,
+        "provenance_flags": [
+          {
+            "zone_source_url": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0"
+          },
+          {
+            "zone_source_url": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+            "zone_source_level": "documented",
+            "source": "https://services2.arcgis.com/lU30gRuw5GC93TLI/arcgis/rest/services/Zonage_vue_publique/FeatureServer/0"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "H03-49",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H03-46",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 57.89
+          },
+          {
+            "assignedCode": "H03-111",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H03-95",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 38.31
+          },
+          {
+            "assignedCode": "H03-115",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H03-116",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 73.11
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "mismatch_pct": 6.47,
+      "assigned": 19379,
+      "misassigned": 1246,
+      "outside_all": 8,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 309.95,
+        "offset_std_m": 1163.11,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 98.75,
+        "percent_outside": 1.25,
+        "percent_outside_code_not_drawn": 0,
+        "provenance_flags": [
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "arcgis.st-hyacinthe.ca ISOGEO_SigimProd_Features/FeatureServer/13 (NUM_ZONE-GROUPE_USAGE_DOM, Regl.350)"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "arcgis.st-hyacinthe.ca ISOGEO_SigimProd_Features/FeatureServer/13 (NUM_ZONE-GROUPE_USAGE_DOM, Regl.350)"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "arcgis.st-hyacinthe.ca ISOGEO_SigimProd_Features/FeatureServer/13 (NUM_ZONE-GROUPE_USAGE_DOM, Regl.350)"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "arcgis.st-hyacinthe.ca ISOGEO_SigimProd_Features/FeatureServer/13 (NUM_ZONE-GROUPE_USAGE_DOM, Regl.350)"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "arcgis.st-hyacinthe.ca ISOGEO_SigimProd_Features/FeatureServer/13 (NUM_ZONE-GROUPE_USAGE_DOM, Regl.350)"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "arcgis.st-hyacinthe.ca ISOGEO_SigimProd_Features/FeatureServer/13 (NUM_ZONE-GROUPE_USAGE_DOM, Regl.350)"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "10008-H",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "10026-M",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 71.62
+          },
+          {
+            "assignedCode": "4063-H",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "4037-H",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 114.4
+          },
+          {
+            "assignedCode": "8056-M",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "8023-H",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 157.68
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "notre-dame-de-lourdes--joliette",
+      "mismatch_pct": 65.74,
+      "assigned": 1687,
+      "misassigned": 1096,
+      "outside_all": 13,
+      "root_cause": "insufficient_data",
+      "owner": "unknown",
+      "evidence": {
+        "sample_size": 28,
+        "offset_mean_m": 513.89,
+        "offset_std_m": 283.16,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 46.43,
+        "percent_outside": 53.57,
+        "percent_outside_code_not_drawn": 3.57,
+        "provenance_flags": [
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "vision-read"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "vision-read"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "vision-read"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "vision-read"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "vision-read"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "vision-read"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "H-17",
+            "outside": true,
+            "overlap": false,
+            "expectedCode": "H-17",
+            "nearestCode": "H-17",
+            "nearestDistM": 500.55,
+            "offsetM": 500.55
+          },
+          {
+            "assignedCode": "U-42",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "U-43",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 1013.32
+          },
+          {
+            "assignedCode": "H-18",
+            "outside": true,
+            "overlap": false,
+            "expectedCode": "H-18",
+            "nearestCode": "H-18",
+            "nearestDistM": 436.95,
+            "offsetM": 436.95
+          }
+        ]
+      },
+      "action_concrete": "Manuel: verdict non tranché avec preuve échantillonnée actuelle.",
+      "sample_size": 28
+    },
+    {
+      "slug": "boucherville",
+      "mismatch_pct": 6.07,
+      "assigned": 16242,
+      "misassigned": 942,
+      "outside_all": 44,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 804.41,
+        "offset_std_m": 3674.12,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 92.5,
+        "percent_outside": 7.5,
+        "percent_outside_code_not_drawn": 2.5,
+        "provenance_flags": [
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autogcp-vision"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autogcp-vision"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autogcp-vision"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autogcp-vision"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autogcp-vision"
+          },
+          {
+            "zone_source_url": null,
+            "zone_source_level": "legacy-traceable",
+            "source": "t2-autogcp-vision"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "I-1205",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "I-1206",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 218.5
+          },
+          {
+            "assignedCode": "A-2009",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "A-2007",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 450.1
+          },
+          {
+            "assignedCode": "P-16V",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "P-21V",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 389.86
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    },
+    {
+      "slug": "sorel-tracy",
+      "mismatch_pct": 5.34,
+      "assigned": 16701,
+      "misassigned": 840,
+      "outside_all": 51,
+      "root_cause": "code_zone_label_mismatch",
+      "owner": "jointures",
+      "evidence": {
+        "sample_size": 80,
+        "offset_mean_m": 307.26,
+        "offset_std_m": 1445.78,
+        "percent_overlap": 0,
+        "percent_label_mismatch": 87.5,
+        "percent_outside": 12.5,
+        "percent_outside_code_not_drawn": 5,
+        "provenance_flags": [
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]",
+            "zone_source_level": "legacy-traceable",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]",
+            "zone_source_level": "legacy-traceable",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]",
+            "zone_source_level": "legacy-traceable",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]",
+            "zone_source_level": "legacy-traceable",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]",
+            "zone_source_level": "legacy-traceable",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]"
+          },
+          {
+            "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]",
+            "zone_source_level": "legacy-traceable",
+            "source": "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=53052]"
+          }
+        ],
+        "sample_debug": [
+          {
+            "assignedCode": "C-03-730",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H-03-732",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 152.48
+          },
+          {
+            "assignedCode": "H-03-922",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H-03-916",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 64.06
+          },
+          {
+            "assignedCode": "H-03-971",
+            "outside": false,
+            "overlap": false,
+            "expectedCode": "H-03-970",
+            "nearestCode": null,
+            "nearestDistM": null,
+            "offsetM": 60.36
+          }
+        ]
+      },
+      "action_concrete": "Fix lane jointures: reclassement `code_zone` du lot selon zone géométriquement contenante unique sans modifier qc-zonage.",
+      "sample_size": 80
+    }
+  ]
+}

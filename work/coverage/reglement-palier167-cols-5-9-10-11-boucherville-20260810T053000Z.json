@@ -1,0 +1,107 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-promotion/v2",
+  "as_of": "2026-08-10T05:23:02.847Z",
+  "scope": "palier-167 / boucherville / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "incomplete",
+      "reason": "Le règlement 2018-290 était déclaré, mais le reglement_url historique servait HTTP 404 et aucune capture vivante n’était attachable."
+    },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "incomplete",
+    "norms": {
+      "features": 80,
+      "reglement_url": "https://www.boucherville.ca/wp-content/uploads/2018/11/Reglement-zonage-2018-290.pdf"
+    },
+    "zonage_polygons": {
+      "features": 386,
+      "reglement_url": "https://www.boucherville.ca/wp-content/uploads/2018/11/Reglement-zonage-2018-290.pdf",
+      "zone_source_url": null,
+      "zone_source_level": "legacy-traceable"
+    }
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "complete",
+      "declared": "complete",
+      "proven": "complete",
+      "rule": "Le chapitre administratif municipal vivant est attachable au nouveau reglement_url servi exact, avec reçu CAS et manifeste Kubernetes."
+    },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "incomplete",
+    "norms": {
+      "features": 80,
+      "reglement_numero": "2018-290",
+      "reglement_millesime": "2018",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.boucherville.ca/wp-content/uploads/2018/01/2018-290-zonage-chap2-dispo-administratives.pdf"
+    },
+    "zonage_polygons": {
+      "features": 386,
+      "reglement_numero": "2018-290",
+      "reglement_millesime": "2018",
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.boucherville.ca/wp-content/uploads/2018/01/2018-290-zonage-chap2-dispo-administratives.pdf",
+      "zone_source_url": null,
+      "zone_source_level": "legacy-traceable",
+      "fold_cells_changed": 386
+    }
+  },
+  "evidence": {
+    "dead_urls": [
+      {
+        "url": "https://www.boucherville.ca/wp-content/uploads/2018/11/Reglement-zonage-2018-290.pdf",
+        "http_status": 404,
+        "manifest_key": "capture/_runs/reglement-20260810T052000Z-0-46842b9d-88e7-47b8-91d7-61a4a6581fa7/manifest.jsonl",
+        "line_index": 1
+      },
+      {
+        "url": "https://www.boucherville.ca/wp-content/uploads/2018/11/2018-290-zonage.pdf",
+        "http_status": 404,
+        "manifest_key": "capture/_runs/reglement-20260810T052400Z-0-acec26e2-0ec4-431c-94c9-67a1daf8215e/manifest.jsonl",
+        "line_index": 1
+      }
+    ],
+    "cdx_domain_query": {
+      "url": "http://web.archive.org/cdx/search/cdx?url=http%3A%2F%2Fwww.boucherville.ca%2F*&matchType=domain&output=json&filter=statuscode%3A200&filter=mimetype%3Aapplication%2Fpdf&fl=timestamp%2Coriginal%2Cstatuscode%2Cmimetype%2Cdigest&collapse=digest",
+      "retrieved_at": "2026-08-10T05:18:47.343Z",
+      "sha256": "sha256:1415363a5e3fa87115971c00d0f03ee21a4badef053841008c6308a48e2350c6",
+      "storage_key": "raw/reglement-wayback-cdx/cas/1415363a5e3fa87115971c00d0f03ee21a4badef053841008c6308a48e2350c6.json",
+      "manifest_key": "capture/_runs/reglement-20260810T052200Z-0-feadcfd4-86fe-4a4f-a7a9-2329cc858daa/manifest.jsonl",
+      "line_index": 1,
+      "selected_snapshot": "20251121023621"
+    },
+    "wayback_full_regulation": {
+      "url": "https://web.archive.org/web/20251121023621id_/https://www.boucherville.ca/wp-content/uploads/2018/11/2018-290-zonage.pdf",
+      "retrieved_at": "2026-08-10T05:20:53.445Z",
+      "sha256": "sha256:b246f1d37fefe0dc1aea393225e33b653501ddbc4e0a92aaa8378fc2954cb637",
+      "storage_key": "raw/reglement-wayback-cdx/cas/b246f1d37fefe0dc1aea393225e33b653501ddbc4e0a92aaa8378fc2954cb637.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T052600Z-0-ce7e5356-233c-43de-ab41-e2e92c16c744/manifest.jsonl",
+      "line_index": 1,
+      "integrity": "pdftotext succeeds; p1 prints Règlement numéro 2018-290 — RÈGLEMENT DE ZONAGE — Décembre 2018."
+    },
+    "official_current_chapter": {
+      "url": "https://www.boucherville.ca/wp-content/uploads/2018/01/2018-290-zonage-chap2-dispo-administratives.pdf",
+      "retrieved_at": "2026-08-10T05:23:02.847Z",
+      "sha256": "sha256:aae2afd435484afa713ec7ef604bebac97c8da1207212b42edd49bf7b8d4843f",
+      "storage_key": "raw/reglement-official/cas/aae2afd435484afa713ec7ef604bebac97c8da1207212b42edd49bf7b8d4843f.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T053000Z-0-73c53c8c-a6e0-40b9-a55d-5d77a528813e/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "Chapitre 2 — DISPOSITION ADMINISTRATIVE — Règlement numéro 2018-290 — RÈGLEMENT DE ZONAGE.",
+      "page_2": "Ville de Boucherville — Règlement de zonage."
+    },
+    "matrix_recalculation": {
+      "method": "import build('20260810') from scripts/palier-matrix-report.mjs in memory",
+      "expected_result": "reglement=complete; prov_qualite=complete; prov_v2=incomplete; prov_url_servie=incomplete."
+    }
+  },
+  "strict_proof_gate": {
+    "col_10": "Aucun polygone ne porte zone_proof_version=v2 ; la preuve du règlement ne remplace pas une preuve de géométrie.",
+    "col_11": "zone_source_url reste null et n’est pas remplacée par reglement_url, car ce chapitre ne prouve pas l’origine des géométries."
+  },
+  "storage": "Tous les PDF et réponses CDX sont uniquement dans les CAS S3 et manifestes de jobs Kubernetes ; aucun octet de source n’est enregistré localement."
+}

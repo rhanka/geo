@@ -42,6 +42,23 @@ export {
   type NeatlineFrac,
 } from "./gcp.js";
 
+// T1 positioned-text label compute. pdftotext and file access stay in acquisition.
+export {
+  extractLabelsFromWords,
+  filterExtractedLabelsByDict,
+  kindForPrefix,
+  looksLikeZoneCode,
+  normalizeZoneCodeText,
+  splitCode,
+  zoneLabelCandidatesFromWords,
+  type CodePoint,
+  type ExtractLabelsResult,
+  type LabelComputeOptions,
+  type LabelRegionFrac,
+  type RawLabel,
+  type ZoneCodeOptions,
+} from "./labels.js";
+
 // Affine/similarity decomposition + orientation/isotropy/mirror gate: refuse to
 // serve a residual-clean but geometrically-wrong (stretched/mirrored/flipped) fit.
 export {
@@ -54,6 +71,26 @@ export {
   type AffineGateOptions,
   type AffineGateResult,
 } from "./gate.js";
+
+// Pure vector/cadastre auto-GCP discovery: parse SVG vector linework already
+// rendered by the app layer, match it to in-memory WGS84 cadastre, and emit
+// independently-derived GCPs without PDF/OCR/filesystem/network concerns.
+export {
+  buildGcpFileFromMatches,
+  deriveAutoSeedGcpsFromVectors,
+  deriveAutonomousGcpsFromVectors,
+  parseSvgVectorPoints,
+  type AutoGcpFitMode,
+  type AutoGcpMatch,
+  type AutoGcpVectorOptions,
+  type AutoGcpVectorReport,
+  type AutoSeedAttempt,
+  type AutoSeedOrientationCandidate,
+  type AutoSeedVectorOptions,
+  type AutoSeedVectorReport,
+  type ParseSvgVectorPointOptions,
+  type Pt,
+} from "./autogcp.js";
 
 // Orientation-ambiguity + moderate-stretch decisions from cadastre lot-coverage
 // evidence: serve a rotation / confirm an anisotropic fit ONLY when the data is
@@ -69,3 +106,15 @@ export {
   type RotationDecision,
   type RotationDecisionOptions,
 } from "./rotation-disambig.js";
+
+// Pure PGM/gray-image edge, corner, and patch evidence. PDF rendering and
+// cadastre registration orchestration stay in the acquisition app layer.
+export {
+  detectRasterCorners,
+  edgeMaskFromGray,
+  parsePgm,
+  patchEdgeScore,
+  type EdgeImage,
+  type GrayImage,
+  type RasterCorner,
+} from "./raster.js";

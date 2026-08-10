@@ -10,18 +10,15 @@
  * deux sont hors contrat de la worklist minimale de SPEC_CAPTURE_ON_CLUSTER §5.2.
  */
 import { RobotsCache } from "../../packages/qc-sources/src/sources/robots-txt.js";
-import type { PvFetchLike } from "../../packages/qc-sources/src/sources/proces-verbaux-generic.js";
 import { fileURLToPath } from "node:url";
 import {
   CAPTURE_LANES,
-  capturedFetch,
   captureWorklist,
   parseCaptureWorklist,
-  type CaptureFetchLike,
-  type CaptureRun,
   type CaptureLane,
 } from "../../packages/qc-sources/src/capture/index.js";
 import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
+import { capturedRobotsFetch } from "./lib/captured-robots-fetch.js";
 import { getBytes, s3Client } from "./lib/s3.js";
 
 function requireEnv(name: string): string {
@@ -60,53 +57,16 @@ function errorText(error: unknown): string {
   return error instanceof Error ? `${error.name}: ${error.message}` : String(error);
 }
 
-/**
- * `RobotsCache` reste le parseur/cache REP de référence, mais son transport
- * passe lui aussi par le chokepoint. Il n'y a pas de récursion : cette requête
- * `robots.txt` appelle `capturedFetch` SANS gate robots, tandis que les URLs de
- * la worklist lui fournissent ensuite ce cache déjà alimenté.
- */
-export function capturedRobotsFetch(
-  run: CaptureRun,
-  transport: CaptureFetchLike = globalThis.fetch as unknown as CaptureFetchLike,
-): PvFetchLike {
-  return async (url, init) => {
-    const result = await capturedFetch(url, {
-      ...(init?.method !== undefined ? { method: init.method } : {}),
-      ...(init?.headers !== undefined ? { headers: init.headers } : {}),
-      ...(init?.signal !== undefined ? { signal: init.signal } : {}),
-    }, {
-      run,
-      source: "robots-txt",
-      slugs: [],
-      fetchImpl: transport,
-      // RobotsCache doit parser ce petit document après la capture.
-      retainBody: true,
-    });
-    if (result.response !== null) {
-      // capturedFetch a consommé le body 2xx afin de le hasher. RobotsCache doit
-      // le lire une seconde fois pour parser les règles : on lui présente donc
-      // une réponse immuable reconstruite depuis les octets capturés.
-      if (result.bytes !== null) {
-        const snapshot = result.bytes.slice();
-        return {
-          status: result.response.status,
-          ok: result.response.ok,
-          headers: result.response.headers,
-          arrayBuffer: async () =>
-            snapshot.buffer.slice(snapshot.byteOffset, snapshot.byteOffset + snapshot.byteLength) as ArrayBuffer,
-        };
-      }
-      return result.response;
-    }
-    throw new Error(result.line.error ?? "robots.txt sans réponse");
-  };
-}
+export { capturedRobotsFetch } from "./lib/captured-robots-fetch.js";
 
 async function main(): Promise<void> {
   const lane = captureLane(requireEnv("LANE"));
   const worklistKey = requireEnv("WORKLIST");
-  const runId = requireEnv("RUN_ID");
+  // `k8s-capture-run` publishes RUN_STAMP as the immutable, operator-visible
+  // run identity.  Keep RUN_ID as a compatibility override for specialised
+  // runners, but never require an environment variable its standard manifest
+  // does not provide.
+  const runId = process.env["RUN_ID"]?.trim() || requireEnv("RUN_STAMP");
   const shard = nonNegativeInt("SHARD", 0);
   const shards = positiveInt("SHARDS", 1);
   if (shard >= shards) throw new Error(`SHARD=${shard} doit être inférieur à SHARDS=${shards}`);

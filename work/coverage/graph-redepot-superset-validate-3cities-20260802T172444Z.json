@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-08-02T17:24:44.656Z",
+  "scope": "on-disk only; no S3, credentials, or network access",
+  "handoff_dir": "/home/antoinefa/src/radar-immobilier/tmp/handoff/recette-prod-3cities",
+  "results": [
+    {
+      "city": "saint-urbain-premier",
+      "expected_node_count": 47,
+      "node_count_latest": 47,
+      "node_count_subgraph": 47,
+      "expected_edge_count": 52,
+      "edge_count_latest": 52,
+      "subgraph_only_count": 0,
+      "subgraph_only": [],
+      "target_ids": {
+        "present": [],
+        "absent": [
+          "rezonage-R4-H2-2026-03-30",
+          "piia-12-terrasse-vincent-2026-03-09",
+          "piia-213-215-principale-2026",
+          "densification-R4-bifamiliale-2026",
+          "piia-243a-principale-2026-05-04"
+        ]
+      },
+      "verdict": "FAIL",
+      "failure_reasons": [
+        "target ids absent (5/5): rezonage-R4-H2-2026-03-30, piia-12-terrasse-vincent-2026-03-09, piia-213-215-principale-2026, densification-R4-bifamiliale-2026, piia-243a-principale-2026-05-04"
+      ]
+    },
+    {
+      "city": "saint-jean-baptiste",
+      "expected_node_count": 50,
+      "node_count_latest": 50,
+      "node_count_subgraph": 50,
+      "expected_edge_count": 47,
+      "edge_count_latest": 47,
+      "subgraph_only_count": 0,
+      "subgraph_only": [],
+      "target_ids": {
+        "present": [],
+        "absent": [
+          "rezonage-R2-multifamilial-2026-05-05",
+          "modif-lotissement-R2-2026-05-05",
+          "cptaq-1006-26-2026-05-05",
+          "derogation-DPDRL260017-2026-04-07",
+          "piia-projet-integre-2026-02"
+        ]
+      },
+      "verdict": "FAIL",
+      "failure_reasons": [
+        "target ids absent (5/5): rezonage-R2-multifamilial-2026-05-05, modif-lotissement-R2-2026-05-05, cptaq-1006-26-2026-05-05, derogation-DPDRL260017-2026-04-07, piia-projet-integre-2026-02"
+      ]
+    },
+    {
+      "city": "saint-mathieu",
+      "expected_node_count": 40,
+      "node_count_latest": 40,
+      "node_count_subgraph": 40,
+      "expected_edge_count": 51,
+      "edge_count_latest": 51,
+      "subgraph_only_count": 0,
+      "subgraph_only": [],
+      "target_ids": {
+        "present": [],
+        "absent": [
+          "derogation-2025-00034",
+          "derogation-2026-00001",
+          "lotissement-2427246",
+          "modification-zonage-315-2024-01",
+          "derogation-mineure-lotissement"
+        ]
+      },
+      "verdict": "FAIL",
+      "failure_reasons": [
+        "target ids absent (5/5): derogation-2025-00034, derogation-2026-00001, lotissement-2427246, modification-zonage-315-2024-01, derogation-mineure-lotissement"
+      ]
+    }
+  ],
+  "overall_verdict": "FAIL"
+}

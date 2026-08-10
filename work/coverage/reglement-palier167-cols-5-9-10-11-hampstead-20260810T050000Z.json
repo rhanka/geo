@@ -1,0 +1,72 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-promotion/v2",
+  "as_of": "2026-08-10T04:56:56.703Z",
+  "scope": "palier-167 / hampstead / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "incomplete",
+      "reason": "Le règlement 1001 et son URL étaient déjà déclarés, mais la source c5 par-ville ne reliait aucune capture vivante au reglement_url servi exact."
+    },
+    "col_9_prov_qualite": "incomplete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "complete",
+    "norms": {
+      "features": 22,
+      "reglement_numero": "1001",
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url": "https://www.hampstead.qc.ca/wp-content/uploads/2022/05/Consolidation1001_0-18_ENannexes.pdf"
+    }
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "complete",
+      "declared": "complete",
+      "proven": "complete",
+      "rule": "La capture GET 200 est attachable au reglement_url servi littéral et son CAS S3 existe ; la source c5 par-ville est mise à jour uniquement pour Hampstead."
+    },
+    "col_9_prov_qualite": "incomplete",
+    "col_10_prov_v2": "incomplete",
+    "col_11_prov_url_servie": "complete",
+    "norms": {
+      "features": 22,
+      "reglement_numero": "1001",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.hampstead.qc.ca/wp-content/uploads/2022/05/Consolidation1001_0-18_ENannexes.pdf"
+    },
+    "zonage_polygons": {
+      "features": 1869,
+      "reglement_numero": "1001",
+      "reglement_millesime": null,
+      "reglement_page_source": 1,
+      "reglement_url": "https://www.hampstead.qc.ca/wp-content/uploads/2022/05/Consolidation1001_0-18_ENannexes.pdf",
+      "fold_cells_changed": 0
+    }
+  },
+  "evidence": {
+    "official_zoning_by_law": {
+      "url": "https://www.hampstead.qc.ca/wp-content/uploads/2022/05/Consolidation1001_0-18_ENannexes.pdf",
+      "retrieved_at": "2026-08-10T04:56:56.703Z",
+      "sha256": "sha256:04115c587efc5f8f4969b87e5cf4f3ff87082783b8a63e026da63552befa18a8",
+      "storage_key": "raw/reglement-official/cas/04115c587efc5f8f4969b87e5cf4f3ff87082783b8a63e026da63552befa18a8.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T050000Z-0-33273d02-2969-4338-bfa1-61fff8e324e1/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "ZONING BY-LAW / NUMBER 1001 / 04-03-2025 / Version 1.19",
+      "page_2": "Zoning By-law Number 1001 — Amended and consolidated version; the consolidation is not official.",
+      "millesime": "null: 04-03-2025 is the version date and page 2 states the consolidation was compiled on March 05, 2025; neither is invented as the base by-law adoption date."
+    },
+    "matrix_recalculation": {
+      "method": "import build('20260810') from scripts/palier-matrix-report.mjs in memory",
+      "result": "reglement=complete, details.reglement.declared=complete, details.reglement.proven=complete, validation.closed=true"
+    }
+  },
+  "strict_proof_gate": {
+    "col_9": "Aucune zone ne porte zone_provenance_quality ; le règlement PDF ne qualifie pas la provenance des géométries.",
+    "col_10": "Aucune zone ne porte zone_proof_version=v2. La preuve du règlement ne remplace jamais une preuve de géométrie exacte.",
+    "col_11": "Déjà complete avant le lot ; l’URL reste servie sur 22 normes et 1869 polygones."
+  },
+  "storage": "Le PDF source n’existe que dans le CAS S3 et le manifeste de capture Kubernetes ; aucune copie locale du PDF n’est créée."
+}

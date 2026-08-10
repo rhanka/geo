@@ -1,0 +1,91 @@
+{
+  "contract": "palier-column-transition-evidence/v1",
+  "generated_at": "2026-08-09T21:04:00Z",
+  "column": 5,
+  "axis": "reglement",
+  "completion_rule": "complete only when the municipality has a declared non-null reglement_numero and its exact served reglement_url is capture_inchange; URL similarity or a Wayback lead never satisfies this gate.",
+  "before_capture_kpi": "work/coverage/reglement-capture-kpi-20260809-46b5730d6529aaff.json",
+  "after_capture_kpi": "work/coverage/reglement-capture-kpi-20260809-a92de0fcb10ce77c.json",
+  "batch": {
+    "worklist": "acquisition/config/reglement-capture-palier167-20260809-lot-001.json",
+    "run_stamp": "20260809T210500Z",
+    "manifests": [
+      "capture/_runs/reglement-20260809T210500Z-0-bfc24a9a-9f49-4b20-a6f9-d044d9878a5b/manifest.jsonl",
+      "capture/_runs/reglement-20260809T210500Z-1-a7882e00-0807-41f7-8c70-cb954a573927/manifest.jsonl",
+      "capture/_runs/reglement-20260809T210500Z-2-2baaf985-c43f-4380-9c07-baa642e413c3/manifest.jsonl"
+    ]
+  },
+  "verified_transitions": [
+    {
+      "slug": "hampstead",
+      "reglement_numero": "1001",
+      "before": "incomplete",
+      "after": "complete",
+      "proof": {
+        "url": "https://www.hampstead.qc.ca/wp-content/uploads/2022/05/Consolidation1001_0-18_ENannexes.pdf",
+        "retrieved_at": "2026-08-09T21:01:59.822Z",
+        "sha256": "sha256:04115c587efc5f8f4969b87e5cf4f3ff87082783b8a63e026da63552befa18a8",
+        "storage_key": "raw/reglement-served/cas/04115c587efc5f8f4969b87e5cf4f3ff87082783b8a63e026da63552befa18a8.pdf",
+        "manifest_key": "capture/_runs/reglement-20260809T210500Z-1-a7882e00-0807-41f7-8c70-cb954a573927/manifest.jsonl",
+        "line_index": 1
+      }
+    },
+    {
+      "slug": "kirkland",
+      "reglement_numero": "90-58",
+      "before": "incomplete",
+      "after": "complete",
+      "proof": {
+        "url": "https://www.ville.kirkland.qc.ca/client_file/upload/Zonage/Codification_administrative_Zonage_90-58.pdf",
+        "retrieved_at": "2026-08-09T21:02:06.755Z",
+        "sha256": "sha256:0e4c50ea1efe912826d52b5c371a4856ee2bfad5fc25a220cdb04f762aff653a",
+        "storage_key": "raw/reglement-served/cas/0e4c50ea1efe912826d52b5c371a4856ee2bfad5fc25a220cdb04f762aff653a.pdf",
+        "manifest_key": "capture/_runs/reglement-20260809T210500Z-0-bfc24a9a-9f49-4b20-a6f9-d044d9878a5b/manifest.jsonl",
+        "line_index": 3
+      }
+    },
+    {
+      "slug": "mirabel",
+      "reglement_numero": "U-2300",
+      "before": "incomplete",
+      "after": "complete",
+      "proof": {
+        "url": "https://mirabel.ca/uploads/2._Ville/2.5_Reglements/2025/1.1_-_TABLEAUX_DES_DISPOSITIONS_U-2300_(U-2679_11_septembre_2025).pdf",
+        "retrieved_at": "2026-08-09T21:02:08.669Z",
+        "sha256": "sha256:b7495680e144513dab3b17775877178611e2a2d4d85f38e689b437a931153d38",
+        "storage_key": "raw/reglement-served/cas/b7495680e144513dab3b17775877178611e2a2d4d85f38e689b437a931153d38.pdf",
+        "manifest_key": "capture/_runs/reglement-20260809T210500Z-1-a7882e00-0807-41f7-8c70-cb954a573927/manifest.jsonl",
+        "line_index": 3
+      }
+    },
+    {
+      "slug": "montreal-ouest",
+      "reglement_numero": "2020-002",
+      "before": "incomplete",
+      "after": "complete",
+      "proof": {
+        "url": "https://montreal-ouest.ca/wp-content/uploads/2026/07/1-R-amendant-le-r-de-zonage_FRA-Consolide-2026.pdf",
+        "retrieved_at": "2026-08-09T21:02:02.362Z",
+        "sha256": "sha256:128490ba5472c4daebf6f7935c9c3918be4de0d0fb559b17eba20137c326bfc7",
+        "storage_key": "raw/reglement-served/cas/128490ba5472c4daebf6f7935c9c3918be4de0d0fb559b17eba20137c326bfc7.pdf",
+        "manifest_key": "capture/_runs/reglement-20260809T210500Z-2-2baaf985-c43f-4380-9c07-baa642e413c3/manifest.jsonl",
+        "line_index": 3
+      }
+    }
+  ],
+  "remaining_noncomplete": [
+    { "slug": "boucherville", "reason": "exact served URL returned HTTP 404; CDX exact 200 query returned no snapshot" },
+    { "slug": "howick", "reason": "exact served URL remains robots-disallowed; archived PDF was captured under its distinct Wayback URL and is not substituted" },
+    { "slug": "saint-basile-le-grand", "reason": "exact served URL remains robots-disallowed" },
+    { "slug": "saint-bruno-de-montarville", "reason": "exact served URL remains robots-disallowed" },
+    { "slug": "saint-etienne-de-beauharnois", "reason": "exact served URL still fails from the cluster; archived PDF was captured under its distinct Wayback URL and is not substituted" },
+    { "slug": "saint-mathieu", "reason": "exact served URL still fails and the declared number remains null (project/in-force ambiguity)" },
+    { "slug": "varennes", "reason": "exact served URL returned HTTP 404; CDX exact 200 query returned no snapshot" }
+  ],
+  "summary": {
+    "palier_complete_gain": 4,
+    "capture_url_state": { "before_capture_inchange": 546, "after_capture_inchange": 550 },
+    "no_na_created": true,
+    "no_wayback_substitution": true
+  }
+}

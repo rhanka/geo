@@ -1,0 +1,1544 @@
+{
+  "contract": "aboutir-167-counter/v1",
+  "generated_from": "compteur qa (script committé, run local déterministe)",
+  "provenance": {
+    "bprime": "radar feat/set-167-canonical@800ee90 (PREVIEW, PR #436 non mergée)",
+    "cond1_recalage_cond2_preuve": "lane/zones@zones-recalage-status-167-20260802T192614Z (folde recale_status + bucket overlap 5ec1d919)",
+    "cond3_reconcilie": "work/coverage/lot-zone-consistency-scale-20260725.json",
+    "cond4_recette": "INDET (aucune source rejeu 7221 committée)"
+  },
+  "revalidation_pending": "re-valider B′ au merge PR #436 ; câbler cond4 quand rejeu recette-7221 committé",
+  "partition": {
+    "abouti": 0,
+    "recalage-manquant": 150,
+    "preuve-morte": 0,
+    "non-reconcilie": 10,
+    "recette-indetermine": 7,
+    "indetermine-amont": 0,
+    "total": 167
+  },
+  "par_condition": {
+    "cond1": {
+      "pass": 17,
+      "fail": 150
+    },
+    "cond2": {
+      "pass": 19,
+      "fail": 6,
+      "indet": 142
+    },
+    "cond3": {
+      "pass": 75,
+      "fail": 31,
+      "indet": 61
+    },
+    "cond4": {
+      "indet": 167
+    }
+  },
+  "villes": [
+    {
+      "slug": "westmount",
+      "priorityRank": 1,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-lambert",
+      "priorityRank": 2,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "hampstead",
+      "priorityRank": 3,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "mont-royal",
+      "priorityRank": 4,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "montreal-ouest",
+      "priorityRank": 5,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "cote-saint-luc",
+      "priorityRank": 6,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "longueuil",
+      "priorityRank": 7,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "brossard",
+      "priorityRank": 8,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-catherine",
+      "priorityRank": 9,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "la-prairie",
+      "priorityRank": 10,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "delson",
+      "priorityRank": 11,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "candiac",
+      "priorityRank": 12,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "montreal-est",
+      "priorityRank": 13,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "boucherville",
+      "priorityRank": 14,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "dorval",
+      "priorityRank": 15,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "lile-dorval",
+      "priorityRank": 16,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-constant",
+      "priorityRank": 17,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-bruno-de-montarville",
+      "priorityRank": 18,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "carignan",
+      "priorityRank": 19,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "dollard-des-ormeaux",
+      "priorityRank": 20,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "pointe-claire",
+      "priorityRank": 21,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-philippe",
+      "priorityRank": 22,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-mathieu",
+      "priorityRank": 23,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "chateauguay",
+      "priorityRank": 24,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-julie",
+      "priorityRank": 25,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-basile-le-grand",
+      "priorityRank": 26,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "chambly",
+      "priorityRank": 27,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "rosemere",
+      "priorityRank": 28,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "varennes",
+      "priorityRank": 29,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "kirkland",
+      "priorityRank": 30,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "bois-des-filion",
+      "priorityRank": 31,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "beaconsfield",
+      "priorityRank": 33,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "lorraine",
+      "priorityRank": 34,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "lery",
+      "priorityRank": 35,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "mercier",
+      "priorityRank": 36,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "charlemagne",
+      "priorityRank": 37,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "boisbriand",
+      "priorityRank": 38,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "PASS",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "deux-montagnes",
+      "priorityRank": 39,
+      "bucket": "recette-indetermine",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "mcmasterville",
+      "priorityRank": 40,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-therese",
+      "priorityRank": 41,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-mathias-sur-richelieu",
+      "priorityRank": 42,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-mathieu-de-beloeil",
+      "priorityRank": 43,
+      "bucket": "recette-indetermine",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-amable",
+      "priorityRank": 44,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "terrebonne",
+      "priorityRank": 45,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-remi",
+      "priorityRank": 46,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "otterburn-park",
+      "priorityRank": 47,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-jacques-le-mineur",
+      "priorityRank": 48,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "richelieu",
+      "priorityRank": 49,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "beloeil",
+      "priorityRank": 50,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "baie-durfe",
+      "priorityRank": 51,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-marthe-sur-le-lac",
+      "priorityRank": 52,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-jean-sur-richelieu",
+      "priorityRank": 53,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "mascouche",
+      "priorityRank": 54,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-eustache",
+      "priorityRank": 55,
+      "bucket": "recette-indetermine",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "notre-dame-de-lile-perrot",
+      "priorityRank": 56,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "repentigny",
+      "priorityRank": 57,
+      "bucket": "recette-indetermine",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-edouard",
+      "priorityRank": 58,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-anne-de-bellevue",
+      "priorityRank": 59,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-michel",
+      "priorityRank": 60,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "blainville",
+      "priorityRank": 61,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "pointe-calumet",
+      "priorityRank": 62,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "mont-saint-hilaire",
+      "priorityRank": 63,
+      "bucket": "recette-indetermine",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "senneville",
+      "priorityRank": 64,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "marieville",
+      "priorityRank": 65,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "lile-perrot",
+      "priorityRank": 66,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "vercheres",
+      "priorityRank": 67,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "PASS",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-marc-sur-richelieu",
+      "priorityRank": 68,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-martine",
+      "priorityRank": 69,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "beauharnois",
+      "priorityRank": 70,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-anne-des-plaines",
+      "priorityRank": 71,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-urbain-premier",
+      "priorityRank": 72,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "terrasse-vaudreuil",
+      "priorityRank": 73,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-joseph-du-lac",
+      "priorityRank": 74,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-jean-baptiste",
+      "priorityRank": 75,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "pincourt",
+      "priorityRank": 76,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "calixa-lavallee",
+      "priorityRank": 77,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "lile-cadieux",
+      "priorityRank": 78,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "pointe-des-cascades",
+      "priorityRank": 79,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-charles-sur-richelieu",
+      "priorityRank": 80,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "napierville",
+      "priorityRank": 81,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "vaudreuil-sur-le-lac",
+      "priorityRank": 82,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-blaise-sur-richelieu",
+      "priorityRank": 83,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "mont-saint-gregoire",
+      "priorityRank": 84,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-madeleine",
+      "priorityRank": 85,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-cyprien-de-napierville",
+      "priorityRank": 86,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-patrice-de-sherrington",
+      "priorityRank": 87,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-roch-de-lachigan",
+      "priorityRank": 88,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-angele-de-monnoir",
+      "priorityRank": 89,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "lepiphanie",
+      "priorityRank": 90,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "oka",
+      "priorityRank": 91,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-marie-madeleine",
+      "priorityRank": 92,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "priorityRank": 93,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-clotilde",
+      "priorityRank": 94,
+      "bucket": "recette-indetermine",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "vaudreuil-dorion",
+      "priorityRank": 95,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "rougemont",
+      "priorityRank": 96,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-roch-ouest",
+      "priorityRank": 97,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-sulpice",
+      "priorityRank": 98,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "lassomption",
+      "priorityRank": 99,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "howick",
+      "priorityRank": 100,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "mirabel",
+      "priorityRank": 101,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-anne-de-sabrevois",
+      "priorityRank": 102,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-lin-laurentides",
+      "priorityRank": 103,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-antoine-sur-richelieu",
+      "priorityRank": 105,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-denis-sur-richelieu",
+      "priorityRank": 106,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "priorityRank": 107,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "la-presentation",
+      "priorityRank": 108,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-brigide-diberville",
+      "priorityRank": 109,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "les-cedres",
+      "priorityRank": 110,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-esprit",
+      "priorityRank": 111,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-valentin",
+      "priorityRank": 112,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-sophie",
+      "priorityRank": 113,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "hudson",
+      "priorityRank": 114,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-alexandre",
+      "priorityRank": 115,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-chrysostome",
+      "priorityRank": 116,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-cesaire",
+      "priorityRank": 118,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-paul-de-lile-aux-noix",
+      "priorityRank": 119,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "salaberry-de-valleyfield",
+      "priorityRank": 121,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-lazare",
+      "priorityRank": 122,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-bernard-de-lacolle",
+      "priorityRank": 123,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "FAIL",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-alexis",
+      "priorityRank": 124,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-marie-salome",
+      "priorityRank": 125,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "lavaltrie",
+      "priorityRank": 126,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "contrecoeur",
+      "priorityRank": 127,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "henryville",
+      "priorityRank": 128,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-jerome",
+      "priorityRank": 129,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-placide",
+      "priorityRank": 130,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-jacques",
+      "priorityRank": 131,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-colomban",
+      "priorityRank": 133,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-hyacinthe",
+      "priorityRank": 134,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "lacolle",
+      "priorityRank": 135,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-paul",
+      "priorityRank": 137,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-pie",
+      "priorityRank": 138,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "FAIL",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "havelock",
+      "priorityRank": 139,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-bernard-de-michaudville",
+      "priorityRank": 141,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "crabtree",
+      "priorityRank": 142,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "coteau-du-lac",
+      "priorityRank": 143,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-julienne",
+      "priorityRank": 144,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "farnham",
+      "priorityRank": 145,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-paul-dabbotsford",
+      "priorityRank": 146,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-clet",
+      "priorityRank": 147,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-roch-de-richelieu",
+      "priorityRank": 148,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-jude",
+      "priorityRank": 149,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "noyan",
+      "priorityRank": 150,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "ormstown",
+      "priorityRank": 151,
+      "bucket": "non-reconcilie",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "ange-gardien",
+      "priorityRank": 152,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-ours",
+      "priorityRank": 153,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "FAIL",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "prevost",
+      "priorityRank": 154,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-stanislas-de-kostka",
+      "priorityRank": 155,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-calixte",
+      "priorityRank": 156,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "priorityRank": 157,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "notre-dame-de-stanbridge",
+      "priorityRank": 158,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "franklin",
+      "priorityRank": 159,
+      "bucket": "recette-indetermine",
+      "cond1": "PASS",
+      "cond2": "PASS",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-pierre",
+      "priorityRank": 160,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-liguori",
+      "priorityRank": 161,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-hippolyte",
+      "priorityRank": 162,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "venise-en-quebec",
+      "priorityRank": 163,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "clarenceville",
+      "priorityRank": 164,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "joliette",
+      "priorityRank": 165,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "FAIL",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "les-coteaux",
+      "priorityRank": 166,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-dominique",
+      "priorityRank": 167,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "FAIL",
+      "cond3": "PASS",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville",
+      "priorityRank": 9007199254740991,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "FAIL",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "hemmingford-les-jardins-de-napierville-2",
+      "priorityRank": 9007199254740991,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-damase-les-maskoutains",
+      "priorityRank": 9007199254740991,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "FAIL",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-isidore-roussillon",
+      "priorityRank": 9007199254740991,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-louis-de-gonzague-beauharnois-salaberry",
+      "priorityRank": 9007199254740991,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "saint-sebastien-le-haut-richelieu",
+      "priorityRank": 9007199254740991,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    },
+    {
+      "slug": "sainte-sabine-brome-missisquoi",
+      "priorityRank": 9007199254740991,
+      "bucket": "recalage-manquant",
+      "cond1": "FAIL",
+      "cond2": "INDET",
+      "cond3": "INDET",
+      "cond4": "INDET"
+    }
+  ]
+}

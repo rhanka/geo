@@ -76,6 +76,15 @@ describe("classifyGrilleLink", () => {
     expect(c.score).toBeLessThan(GRILLE_SCORE_THRESHOLD);
   });
 
+  it("does not treat a codified traffic by-law as a zoning grid", () => {
+    const c = classifyGrilleLink(
+      "Codification administrative du règlement relatif à la circulation et au stationnement",
+      "https://x.qc.ca/reglement-circulation-stationnement.pdf",
+    );
+    expect(c.matched).toContain("codification administrative");
+    expect(c.score).toBeLessThan(GRILLE_SCORE_THRESHOLD);
+  });
+
   it("penalises a PV so it does not masquerade as a grille", () => {
     const c = classifyGrilleLink(
       "Procès-verbal séance ordinaire",
@@ -156,6 +165,21 @@ describe("discoverGrillesInHtml", () => {
     expect(urls.some((u) => /PV-2026/i.test(u))).toBe(false);
   });
 
+  it("keeps a strong grille anchor on a CMS download endpoint without a .pdf suffix", () => {
+    const { candidates } = discoverGrillesInHtml(
+      `<a href="/download_file/view/13/195">La grille de spécifications</a>
+       <a href="/urbanisme/grille">La grille de spécifications</a>`,
+      "https://alleyn-cawood.ca/fr/amenagement-urbain/zonage",
+      "alleyn-et-cawood",
+    );
+    expect(candidates).toEqual([
+      expect.objectContaining({
+        pdfUrl: "https://alleyn-cawood.ca/download_file/view/13/195",
+        titre: "La grille de spécifications",
+      }),
+    ]);
+  });
+
   it("ranks the strongest grille match first and dedups", () => {
     const { candidates } = discoverGrillesInHtml(
       URBANISME_PAGE_HTML,
@@ -171,6 +195,15 @@ describe("discoverGrillesInHtml", () => {
       expect(c.slug).toBe("exemple");
       expect(c.sourceUrl).toBe("https://exemple.qc.ca/urbanisme/");
     }
+  });
+
+  it("rejects a standalone zoning amendment while keeping a consolidated base", () => {
+    const html = `<a href="/38-41.pdf">Règlement 38-41 modifiant le règlement de zonage dans la zone 404</a>
+      <a href="/zonage-codifie.pdf">Règlement de zonage — codification administrative</a>`;
+    const { candidates } = discoverGrillesInHtml(html, "https://exemple.qc.ca/reglements", "exemple");
+    expect(candidates.map((candidate) => candidate.pdfUrl)).toEqual([
+      "https://exemple.qc.ca/zonage-codifie.pdf",
+    ]);
   });
 
   it("reports JS-rendered pages instead of emitting bogus candidates", () => {

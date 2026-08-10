@@ -1,0 +1,92 @@
+{
+  "contract": "graph-node-pending-resolution/v1",
+  "generatedAt": "2026-08-07",
+  "analyst": "conducteur lane/jointures",
+  "task": "Créer les nœuds graphe manquants pour brossard, kirkland, notre-dame-de-stanbridge",
+  "anti_invention_gate": "Le fold d'entité graphe est admis SEULEMENT si graph/<slug>/latest.json existe sur S3. Les zones Geo seules ne fabriquent jamais un snapshot Immo.",
+  "s3_graph_verification": {
+    "source": "work/coverage/zoning-events-col20-167-fresh-geofix-20260807.audit/gt/_manifest.json",
+    "ref_commit": "7761d6ff (lane/jointures HEAD au moment du triage)",
+    "brossard": {
+      "events": 23,
+      "sourceUrlHttp": 23,
+      "verdict": "PRÉSENT_S3"
+    },
+    "kirkland": {
+      "events": -1,
+      "note": "ABSENT_S3",
+      "verdict": "ABSENT_S3"
+    },
+    "notre-dame-de-stanbridge": {
+      "events": -1,
+      "note": "ABSENT_S3",
+      "verdict": "ABSENT_S3"
+    }
+  },
+  "s3_zones_verification": {
+    "source": "lecture S3 directe 2026-08-07, normalized/ca-qc-zonage/, nested_when_present_else_flat",
+    "brossard": {
+      "zones": "qc-zonage-brossard.geojson",
+      "feature_count": 306,
+      "object_sha256": "sha256:0c1800edc250dde7a408895f4c889df0d6d935abdcec2164111bcf4efa712efd",
+      "quality": "acceptable",
+      "stamp": "STAMPED_NULL",
+      "verdict": "PRÉSENT_S3"
+    },
+    "kirkland": {
+      "zones": "qc-zonage-kirkland.geojson",
+      "feature_count": 81,
+      "object_sha256": "sha256:bbc9985709932dd395715482f0ab7420a3884740402756ef2d97a6c1c51adb2e",
+      "quality": "acceptable",
+      "stamp": "STAMPED_NULL",
+      "verdict": "PRÉSENT_S3"
+    },
+    "notre-dame-de-stanbridge": {
+      "zones": "qc-zonage-notre-dame-de-stanbridge.geojson",
+      "feature_count": 11,
+      "object_sha256": "sha256:6e8b34255412921b3d8b751b5f44275f11a013306b03c2ed42c4ce8ecb5b05e8",
+      "quality": "acceptable",
+      "stamp": "STAMPED_NULL",
+      "verdict": "PRÉSENT_S3"
+    }
+  },
+  "actions_taken": {
+    "brossard": {
+      "status": "RÉSOLU",
+      "action": "Entité déjà présente sur S3, puis TSV set-167-bprime.tsv plié dans radar-immobilier : graph_version=2.3, graph_city_slug=brossard, match=exact",
+      "radar_immobilier_commit": "43c873e0d2cf7acd50e330130fb809c7bf808953",
+      "before": "none\t\tUNMATCHED",
+      "after": "2.3\tbrossard\texact",
+      "cellules_qui_passent_de_unknown_a_valeur_reelle": 13,
+      "colonnes_qui_passent_de_unknown_a_valeur_reelle": [
+        "zones", "coherence_lot_zone", "normes", "pv", "reglement", "usage_dominant",
+        "prov_jointure", "prov_qualite", "prov_v2", "prov_url_servie",
+        "immo_lot_zone", "immo_normes_pliees", "v34_qc_zoning_events"
+      ],
+      "note": "v34=measured-geo-empty/incomplete : GT Brossard=23 événements, geo=0 ; effet_densifiant reste unknown."
+    },
+    "kirkland": {
+      "status": "PENDING — INCHANGÉ",
+      "reason": "ABSENT_S3 : graph/kirkland/latest.json inexistant sur S3. Anti-invention : aucun nœud fabriqué.",
+      "cellules_qui_passent_de_unknown_a_valeur_reelle": 0,
+      "valeurs_deja_verifiees_mais_non_pliees_sans_snapshot_graphe": 12
+    },
+    "notre-dame-de-stanbridge": {
+      "status": "PENDING — INCHANGÉ",
+      "reason": "ABSENT_S3 : graph/notre-dame-de-stanbridge/latest.json inexistant sur S3. Anti-invention : aucun nœud fabriqué.",
+      "cellules_qui_passent_de_unknown_a_valeur_reelle": 0,
+      "valeurs_deja_verifiees_mais_non_pliees_sans_snapshot_graphe": 11
+    }
+  },
+  "gain_reel": {
+    "cellules_immediates": 13,
+    "note": "Gain réel = Brossard seul : 13 cellules passent de unknown à une valeur source (complete ou incomplete). Kirkland et Notre-Dame-de-Stanbridge restent PENDING faute de snapshot graphe S3 ; aucun gain n'est compté pour elles."
+  },
+  "handoff_qa": {
+    "action": "Reconstruire le cohort palier avec le nouveau ref radar-immobilier",
+    "commande": "node scripts/build-palier-cohort-167.mjs --ref=43c873e0d2cf7acd50e330130fb809c7bf808953",
+    "puis": "node scripts/palier-matrix-report.mjs",
+    "attendu": "brossard passe de ⚠ PENDING-GRAPH-NODE à mesuré dans le dénominateur ; graph_matched=true ; 13 cellules auparavant unknown deviennent évaluées (zones déjà présentes S3)",
+    "note_kirkland_stanbridge": "Restent ⚠ PENDING-GRAPH-NODE — nécessitent création graphe côté immo (radar-immobilier) avant déblocage"
+  }
+}

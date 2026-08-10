@@ -1,0 +1,61 @@
+{
+  "contract": "reglement-palier167-real-completion/v1",
+  "as_of": "2026-08-10T03:18:37.458Z",
+  "scope": "palier-167 / saint-louis-de-gonzague--beauharnois-salaberry / cols-5-9-10-11",
+  "transitions": {
+    "col_5_reglement_declared": {
+      "before": "incomplete — le registre curé imposait null; les 66 normes servies affichaient le résidu 16-125/2022 sans preuve de corps règlementaire validée",
+      "after": "complete — le registre curé atteste désormais le règlement de zonage 16-125 depuis le PDF officiel courant; le millésime non attesté reste null"
+    },
+    "col_9_provenance_quality": {
+      "before": "incomplete — zone_quality absent sur 66/66",
+      "after": "incomplete — aucune écriture de qualité; zone_quality reste absent sur 66/66"
+    },
+    "col_10_proof_v2": {
+      "before": "incomplete — zone_proof_version absent sur 66/66",
+      "after": "incomplete — zone_proof_version=v2 sur 0/66; une preuve de règlement ne prouve pas les géométries de zones"
+    },
+    "col_11_source_url_served": {
+      "before": "complete — une URL de codification 2022 était déjà servie sur 66/66",
+      "after": "complete — aucun changement S3 requis; le registre curé référence maintenant la codification officiellement publiée en 2026",
+      "gain": false
+    }
+  },
+  "evidence": {
+    "official_publication_page": {
+      "url": "https://sldg.ca/services-aux-citoyens/urbanisme/reglements-durbanisme/",
+      "retrieved_at": "2026-08-10T03:17:40.155Z",
+      "sha256": "sha256:5381bd6be349cbb58b50f5dc982cc7a94fddec2910c9d62b03b425441fb3fa56",
+      "storage_key": "raw/reglement-discovery/cas/5381bd6be349cbb58b50f5dc982cc7a94fddec2910c9d62b03b425441fb3fa56.html",
+      "manifest_key": "capture/_runs/reglement-20260810T031800Z-0-46a8282e-1f8c-46e8-a3cc-8a770d2c0dc7/manifest.jsonl",
+      "line_index": 1,
+      "published_link": "http://sldg.ca/sldg/wp-content/uploads/2026/04/16-125-Zonage-codification-16-125-12.pdf"
+    },
+    "zoning_regulation": {
+      "url": "http://sldg.ca/sldg/wp-content/uploads/2026/04/16-125-Zonage-codification-16-125-12.pdf",
+      "retrieved_at": "2026-08-10T03:18:37.458Z",
+      "sha256": "sha256:fa60b8e638ed5cd982c1363dd047d334d2b2c6a30b6dd295e9b273539d7696dc",
+      "storage_key": "raw/reglement-official/cas/fa60b8e638ed5cd982c1363dd047d334d2b2c6a30b6dd295e9b273539d7696dc.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T032000Z-0-61c6939d-1e40-48e4-a299-8244c24ee15f/manifest.jsonl",
+      "line_index": 1,
+      "page_1": "Municipalité de Saint-Louis-de-Gonzague — Règlement de zonage — Règlement numéro 16-125 — VERSION EN VIGUEUR EN DATE DU 12 juin 2025",
+      "page_2": "Codification administrative; amendements 16-125-1 à 16-125-12, dont l'entrée en vigueur de 16-125-12 le 15-06-2025",
+      "limitation": "Le document avertit que la codification administrative n'a pas de valeur légale; elle prouve le numéro actuellement publié, pas une année d'adoption du règlement de base."
+    },
+    "served_readback": {
+      "key": "normalized/qc-zonage-norms/qc-zonage-norms-saint-louis-de-gonzague--beauharnois-salaberry.geojson",
+      "features": 66,
+      "legacy_reglement_numero": "16-125",
+      "legacy_reglement_millesime": 2022,
+      "legacy_reglement_page_source": 1,
+      "legacy_reglement_url": "http://sldg.ca/sldg/wp-content/uploads/2022/02/16-125-Zonage-codification-16-125-8VC.pdf",
+      "proof_v2_features": 0,
+      "quality_features": 0
+    }
+  },
+  "anti_invention": {
+    "scope": "Ni le préfixe «16» ni les mentions de mises à jour 2022/2025 ne deviennent un millésime d'adoption. Le millésime est donc maintenu à null dans le registre curé.",
+    "storage": "Les octets des pages et du PDF sont uniquement dans le CAS S3 et leurs manifestes de capture cluster; aucun octet source n'est écrit dans le worktree.",
+    "strict_gate": "Aucune promotion des colonnes 9 ou 10 : la collection servie a 0 zone_quality acceptable et 0 zone_proof_version=v2."
+  }
+}

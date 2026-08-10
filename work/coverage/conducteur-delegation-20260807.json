@@ -1,0 +1,77 @@
+{
+  "contract": "conducteur-delegation/v1",
+  "as_of": "2026-08-07T18:03:00Z",
+  "conductor": "claude:geo-reglement",
+  "session": "sess:d410652b34237d64",
+  "scope": "palier-167 : monter col-5/9/10/11 de incomplete→complete",
+  "mesure_source": {
+    "col5_col10": "work/coverage/completion-regdens-palier167-20260803.json + zone-provenance-quality-matrix-20260807T153631Z",
+    "col9": "zone-provenance-quality-matrix-20260807T153631Z-dee4d811a0881716.json",
+    "col11": "work/coverage/zone-source-readback-audit-20260724.json + commits d3617070 (re-stamp 3 zones)"
+  },
+  "etat_courant": {
+    "col_5_reglement_declaree_preuve": 62,
+    "col_9_provenance_qualite": 25,
+    "col_10_preuve_v2_exacte": 87,
+    "col_11_url_source_servie": 71
+  },
+  "repartition": {
+    "worker_A": {
+      "label": "codex-sparkx-xhigh",
+      "colonnes": ["col-5", "col-10"],
+      "methode": "capture corps règlement + preuve v2 (re-capture ou CDX/Wayback matchType=domain http://)",
+      "priorite_1_col5_declared_incomplete": [
+        "lile-dorval", "saint-mathieu", "mcmasterville", "saint-jacques-le-mineur",
+        "saint-edouard", "saint-michel", "pointe-calumet", "sainte-anne-des-plaines",
+        "terrasse-vaudreuil", "saint-joseph-du-lac",
+        "saint-louis-de-gonzague--beauharnois-salaberry"
+      ],
+      "priorite_1_col5_declared_unknown": [
+        "saint-roch-de-lachigan", "sainte-angele-de-monnoir", "saint-valentin",
+        "saint-paul-de-lile-aux-noix", "henryville", "saint-placide",
+        "sainte-sabine--brome-missisquoi", "saint-paul-dabbotsford", "noyan"
+      ],
+      "priorite_2_col5_proven_incomplete": [
+        "hampstead", "montreal-ouest", "boucherville", "saint-bruno-de-montarville",
+        "saint-basile-le-grand", "varennes", "kirkland",
+        "saint-etienne-de-beauharnois", "howick", "mirabel"
+      ],
+      "priorite_3_col10_proven_unknown_palier167_subset": "voir gaps.reglement_proven.unknown dans completion-regdens-palier167-20260803.json (57 slugs)",
+      "scripts_autorises": [
+        "acquisition/src/_reglement-fetch.ts",
+        "acquisition/src/_diag-fetch-lenient.ts",
+        "acquisition/src/_fetch-wayback-range.ts",
+        "acquisition/src/_reglement-local-probe.ts",
+        "acquisition/src/_restamp-served-from-proof.ts",
+        "acquisition/src/zones-reglement-replace.ts",
+        "scripts/generate-completion-regdens.mjs"
+      ],
+      "regles_cdx": "matchType=domain, http:// (jamais https ni chemin fixe) ; limit=800 ; retenter si 504/ECONNRESET ; si >1MiB → _fetch-wayback-range.ts (Range)",
+      "regles_proof_v2": "url réelle + retrieved_at ISO + sha256 hex (pas backfilled) ; dépôt S3 via putServedZoneGeojson si géométrie neuve, putServedZoneAdditive si stable",
+      "regles_na": "URL morte prouvée (CDX 0 résultat + domain + http://) ET 0 carte géoréf publique → N-A proof dans acquisition/config/palier-na-proofs.json (SPEC §2 KPI 10) ; interdit sans les DEUX traces",
+      "anti_invention": "jamais de preuve fabriquée ; mur documenté dans le commit ; 0 fabrication de sha256"
+    },
+    "worker_B": {
+      "label": "agy-gemini-high",
+      "colonnes": ["col-9", "col-11"],
+      "methode_col9": "quality recovery : orphan→acceptable par re-qualification source_level ; candidate→acceptable par validation preuve",
+      "methode_col11": "re-stamp : pour chaque collection palier-167 stamped_null → récupérer zone_source_url réelle depuis le manifeste de capture, appeler putServedZoneAdditive avec whitelist props",
+      "slug_source_col9": "filtrer zone-provenance-quality-matrix-20260807T153631Z sur cities du palier-167 (work/coverage/palier-cohort-167.json) statut orphan|candidate",
+      "slug_source_col11": "filtrer zone-source-readback-audit-20260724.json slugs stamped_null intersecté avec palier-167",
+      "scripts_autorises": [
+        "acquisition/src/_restamp-served-from-proof.ts",
+        "acquisition/src/zones-provenance-quality-replace.ts",
+        "scripts/generate-zone-source-readback-audit.mjs"
+      ],
+      "anti_invention": "zone_source_url doit être une URL http réelle provenant du manifeste de capture ; pas de null auto-déclaré URL"
+    }
+  },
+  "commit_protocol": "LOTS COURTS — un commit par {muni, colonne, méthode, worker, avant→après VÉRIFIÉ} ; message format : 'fix(palier-167): col-N slug1+slug2 méthode [worker] N→M complete'. Reporte 0 si mur = documenté dans le commit.",
+  "handoff_qa": "après chaque lot : mettre à jour work/coverage/completion-regdens-palier167-*.json via scripts/generate-completion-regdens.mjs et committer le snapshot",
+  "blocages_connus": {
+    "col5_saint_mathieu": "deux numéros (229-2011 en vigueur vs R315-2024 projet) — trancher avec lane ZONES avant de stamper",
+    "col5_saint_edouard": "document PROJET non adopté — version adoptée ou PV d'adoption requis",
+    "col7_effet": "DÉCISION lane archi requise avant N-A (critère proxy densité vs runner EEV dédié)",
+    "capture_cluster": "la capture tourne sur cluster ; agents locaux analysent en lecture seule (CLAUDE.md §principe fondateur)"
+  }
+}

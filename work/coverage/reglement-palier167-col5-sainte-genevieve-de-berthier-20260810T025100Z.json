@@ -1,0 +1,52 @@
+{
+  "contract": "reglement-palier167-col5-retention/v1",
+  "as_of": "2026-08-10T02:50:16.628Z",
+  "scope": "palier-167 / sainte-genevieve-de-berthier / cols-5-9-10-11",
+  "before": {
+    "state": "incomplete",
+    "reason": "Les 30 entités servies n'ont ni numéro, ni millésime, ni page, ni URL de règlement; elles n'ont ni preuve v2 ni qualité acceptable."
+  },
+  "after": {
+    "state": "incomplete",
+    "reason": "La page officielle de règlements est HTTP 404. CDX/Wayback, interrogé en matchType=domain après ce 404, ne contient aucun PDF du règlement de zonage de base; il ne montre que des avis de modifications des règlements 320, 321 et 324. Sans texte consolidé ni rattachement territorial unique, aucun numéro ne peut être déclaré."
+  },
+  "evidence": {
+    "live_source": {
+      "url": "https://municipalites-du-quebec.com/sainte-genevieve-de-berthier/reglements.php",
+      "http_status": 404,
+      "manifest_key": "capture/_runs/reglement-20260810T024900Z-0-f1a3e9f5-9a85-4b44-9ac1-b5fbba16ec9f/manifest.jsonl",
+      "line_index": 1
+    },
+    "cdx_domain_query": {
+      "url": "http://web.archive.org/cdx/search/cdx?url=http%3A%2F%2Fmunicipalites-du-quebec.com%2Fsainte-genevieve-de-berthier%2F*&matchType=domain&output=json&filter=statuscode%3A200&filter=mimetype%3Aapplication%2Fpdf&fl=timestamp%2Coriginal%2Cstatuscode%2Cmimetype%2Cdigest&collapse=digest",
+      "retrieved_at": "2026-08-10T02:50:16.628Z",
+      "sha256": "sha256:f2b23e67c1b7a092b0e06c12c8c7331b76d83cce1d55496ee903930cba4aaa3b",
+      "storage_key": "raw/reglement-wayback-cdx/cas/f2b23e67c1b7a092b0e06c12c8c7331b76d83cce1d55496ee903930cba4aaa3b.json",
+      "manifest_key": "capture/_runs/reglement-20260810T025100Z-0-f1b35476-63ab-4d31-9d8f-bb10376a5e46/manifest.jsonl",
+      "line_index": 1,
+      "city_pdf_records": 141,
+      "base_zoning_regulation_pdf_records": 0,
+      "observed_amendment_notices": [
+        "2022-01-17: avis visant à modifier le règlement de zonage numéro 324",
+        "2022-01-17: avis visant à modifier le règlement de zonage numéro 321",
+        "2022-03-09: avis visant à modifier le règlement de zonage numéro 320"
+      ]
+    },
+    "served_readback": {
+      "key": "normalized/ca-qc-zonage/qc-zonage-sainte-genevieve-de-berthier.geojson",
+      "features": 30,
+      "reglement_numero": null,
+      "reglement_millesime": null,
+      "reglement_page_source": null,
+      "reglement_url_features": 0,
+      "zone_source_level": "legacy-traceable",
+      "proof_v2_features": 0,
+      "quality_features": 0
+    }
+  },
+  "anti_invention": {
+    "scope": "Les numéros 320, 321 et 324 sont cités dans des avis de modification, non dans le règlement de zonage de base. Les choisir ou les réduire à un seul numéro créerait une déclaration non justifiée.",
+    "storage": "Les réponses officielles et CDX sont uniquement dans le CAS S3 avec leurs manifestes de capture cluster; aucun octet de source n'est écrit dans le worktree.",
+    "served_columns": "Aucun gain col-5/9/10/11; aucun pliage n'est exécuté. Le gate strict preuve-v2 reste non satisfait."
+  }
+}

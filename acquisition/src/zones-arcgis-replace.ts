@@ -54,7 +54,7 @@
  */
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { fileURLToPath, pathToFileURL } from "node:url";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 import {
@@ -85,24 +85,31 @@ interface GeoFC { type?: string; features?: GeoFeature[]; proof?: { schema_versi
 
 interface Args { slug: string; layer: string; zoneField: string; zonePrefixField?: string; where: string; km: number; deposit: boolean; allowDeprecated: string[] }
 
+/**
+ * Abort from inside the async runner without bypassing its `catch`/`finally`
+ * closure.  `process.exit()` would tear down an open CaptureRun before its
+ * manifest, run log and run.json are durably finalized.
+ */
+export function abort(message: string): never {
+  console.error(message);
+  throw new Error(message);
+}
+
 function parseArgs(argv: string[]): Args {
   const get = (k: string): string | undefined => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
   const has = (k: string): boolean => argv.includes(`--${k}`);
   const slug = get("slug"); const layer = get("layer"); const zoneField = get("zone-field");
   if (!slug || !layer || !zoneField) {
-    console.error("usage: --slug <s> --layer <FeatureServer/N> --zone-field <field> [--where <clause>] [--zone-prefix-field <f>] [--km 8] [--allow-deprecated A-16,C-6] [--inspect|--deposit]");
-    process.exit(2);
+    abort("usage: --slug <s> --layer <FeatureServer/N> --zone-field <field> [--where <clause>] [--zone-prefix-field <f>] [--km 8] [--allow-deprecated A-16,C-6] [--inspect|--deposit]");
   }
   const rawWhere = get("where");
   if (has("where") && (rawWhere === undefined || rawWhere.startsWith("--"))) {
-    console.error("ABORT arguments: --where requiert une clause non vide");
-    process.exit(2);
+    abort("ABORT arguments: --where requiert une clause non vide");
   }
   let where: string;
   try { where = normalizeArcGisWhere(rawWhere); }
   catch (e) {
-    console.error(`ABORT arguments: ${e instanceof Error ? e.message : String(e)}`);
-    process.exit(2);
+    abort(`ABORT arguments: ${e instanceof Error ? e.message : String(e)}`);
   }
   const zonePrefixField = get("zone-prefix-field");
   const allowDeprecatedRaw = get("allow-deprecated");
@@ -255,7 +262,7 @@ async function main(): Promise<void> {
   const a = parseArgs(process.argv.slice(2));
   const reg = JSON.parse(readFileSync(REG, "utf8")) as MuniEntry[];
   const muni = reg.find((m) => m.slug === a.slug);
-  if (!muni) { console.error(`ABORT: slug "${a.slug}" absent du registre`); process.exit(1); }
+  if (!muni) abort(`ABORT: slug "${a.slug}" absent du registre`);
   const s3 = s3Client();
   const fields = [a.zoneField, ...(a.zonePrefixField ? [a.zonePrefixField] : [])];
 
@@ -268,7 +275,7 @@ async function main(): Promise<void> {
 
   // ── 1. Fetch ArcGIS (via le chokepoint) ─────────────────────────────────────
   const { feats: rawFeats, entries: captureEntries } = await fetchAll(run, a.slug, a.layer, fields, a.where);
-  if (rawFeats.length === 0) { console.error(`ABORT: 0 feature téléchargée`); process.exit(1); }
+  if (rawFeats.length === 0) abort("ABORT: 0 feature téléchargée");
 
   // schéma serving (zone_code EXPLICITE, jamais deviné)
   const norm: GeoFeature[] = rawFeats.map((f) => ({
@@ -287,22 +294,22 @@ async function main(): Promise<void> {
   const nullRatio = 1 - codesAll.length / norm.length;
   console.error(`[arcgis-replace] feats=${norm.length} nonnull=${codesAll.length} distinct=${newCodes.raw.size} withLetter=${(withLetter / codesAll.length).toFixed(2)} pureInt=${(pureInt / codesAll.length).toFixed(2)} maxLen=${maxLen} nullRatio=${nullRatio.toFixed(2)}`);
   console.error(`[arcgis-replace] codes (${codes.length}): ${codes.sort().join(", ")}`);
-  if (newCodes.raw.size < 3) { console.error(`ABORT anti-invention: <3 codes distincts`); process.exit(1); }
-  if (withLetter / codesAll.length < 0.5) { console.error(`ABORT anti-invention: <50% des codes lettrés`); process.exit(1); }
-  if (pureInt / codesAll.length > 0.8) { console.error(`ABORT anti-invention: >80% entiers purs (id séquentiel ?)`); process.exit(1); }
-  if (maxLen > 24) { console.error(`ABORT anti-invention: code trop long (maxLen=${maxLen})`); process.exit(1); }
-  if (nullRatio > 0.5) { console.error(`ABORT anti-invention: trop de null (${nullRatio.toFixed(2)})`); process.exit(1); }
+  if (newCodes.raw.size < 3) abort("ABORT anti-invention: <3 codes distincts");
+  if (withLetter / codesAll.length < 0.5) abort("ABORT anti-invention: <50% des codes lettrés");
+  if (pureInt / codesAll.length > 0.8) abort("ABORT anti-invention: >80% entiers purs (id séquentiel ?)");
+  if (maxLen > 24) abort(`ABORT anti-invention: code trop long (maxLen=${maxLen})`);
+  if (nullRatio > 0.5) abort(`ABORT anti-invention: trop de null (${nullRatio.toFixed(2)})`);
 
   // ── 3. Porte spatiale ───────────────────────────────────────────────────────
   let minx = Infinity, miny = Infinity, maxx = -Infinity, maxy = -Infinity, n = 0;
   for (const f of norm) for (const [x, y] of positions(f.geometry?.coordinates)) { if (!Number.isFinite(x) || !Number.isFinite(y)) continue; minx = Math.min(minx, x); maxx = Math.max(maxx, x); miny = Math.min(miny, y); maxy = Math.max(maxy, y); n++; }
-  if (n === 0) { console.error(`ABORT: aucune position géométrique`); process.exit(1); }
+  if (n === 0) abort("ABORT: aucune position géométrique");
   const cLon = (minx + maxx) / 2, cLat = (miny + maxy) / 2;
   const distKm = haversineKm(cLat, cLon, muni.lat, muni.lon);
   const nearest = reg.map((m) => ({ m, d: haversineKm(cLat, cLon, m.lat, m.lon) })).sort((x, y) => x.d - y.d)[0]!;
   console.error(`[arcgis-replace] bbox centre=[${cLat.toFixed(4)},${cLon.toFixed(4)}] dist(${a.slug})=${distKm.toFixed(2)}km nearest=${nearest.m.slug}@${nearest.d.toFixed(2)}km`);
-  if (distKm > a.km) { console.error(`ABORT spatial: ${distKm.toFixed(2)}km > ${a.km}km`); process.exit(1); }
-  if (nearest.m.slug !== a.slug) { console.error(`ABORT spatial: muni la plus proche = ${nearest.m.slug} ≠ ${a.slug}`); process.exit(1); }
+  if (distKm > a.km) abort(`ABORT spatial: ${distKm.toFixed(2)}km > ${a.km}km`);
+  if (nearest.m.slug !== a.slug) abort(`ABORT spatial: muni la plus proche = ${nearest.m.slug} ≠ ${a.slug}`);
 
   // ── 4. Layout servi + gate de recoupement (UNION plate ∪ sous-dossier) ──────
   const flatKey = `${S3_PREFIX}qc-zonage-${a.slug}.geojson`;
@@ -315,7 +322,7 @@ async function main(): Promise<void> {
     readServed(s3, subKey),
   ]);
   console.error(`[arcgis-replace] layout servi: plate=${flatServed ? `${flatServed.length} feat` : "ABSENT"} sous-dossier=${subServed ? `${subServed.length} feat` : "ABSENT"}`);
-  if (!flatServed && !subServed) { console.error(`ABORT: aucune géométrie qc-zonage-${a.slug} servie — ce runner REMPLACE, il ne CRÉE pas`); process.exit(1); }
+  if (!flatServed && !subServed) abort(`ABORT: aucune géométrie qc-zonage-${a.slug} servie — ce runner REMPLACE, il ne CRÉE pas`);
 
   const servedRaw = new Set<string>(); const servedCanon = new Set<string>();
   let maxServed = 0;
@@ -360,24 +367,24 @@ async function main(): Promise<void> {
     }
     console.error(`ABORT (recoupement): ${blocking.length} code(s) servi(s) ABSENT(s) de la nouvelle couche ET non listé(s) --allow-deprecated: ${blocking.sort().join(", ")}`);
     console.error(`  → la couche ArcGIS ne recoupe pas ces codes servis ; AUCUN dépôt (garde-fou dur).`);
-    process.exit(1);
+    abort("ABORT recoupement: code servi absent de la couche de remplacement");
   }
   if (norm.length < maxServed) {
     console.error(`ABORT (couverture): nouvelle couche ${norm.length} features < max servi ${maxServed} — couverture insuffisante.`);
-    process.exit(1);
+    abort(`ABORT (couverture): nouvelle couche ${norm.length} features < max servi ${maxServed} — couverture insuffisante.`);
   }
 
   // Une preuve v2 doit pointer sur l'URL QUI A RENDU les octets hachés. Une
   // agrégation paginée n'a pas d'URL source unique : refuser avant tout backup.
   if (captureEntries.length !== 1) {
     console.error(`ABORT preuve v2 exacte: ${captureEntries.length} pages capturées; aucune URL unique ne restitue les octets agrégés (aucun dépôt).`);
-    process.exit(1);
+    abort(`ABORT preuve v2 exacte: ${captureEntries.length} pages capturées; aucune URL unique ne restitue les octets agrégés (aucun dépôt).`);
   }
   const soleEntry = captureEntries[0]!;
   const exactCaptureUrl = buildArcGisGeoJsonQueryUrl(a.layer, fields, { where: a.where, resultOffset: 0, resultRecordCount: PAGE });
   if (soleEntry.url !== exactCaptureUrl) {
     console.error(`ABORT preuve v2 exacte: URL de capture inattendue; refus de hasher des octets sous une autre URL.`);
-    process.exit(1);
+    abort("ABORT preuve v2 exacte: URL de capture inattendue; refus de hasher des octets sous une autre URL.");
   }
   const proof = proofFromCaptureEntry(soleEntry, { type: "arcgis", method: "natif", reliability: "directe" });
   console.error(`[arcgis-replace] PREUVE = entrée de capture exacte (run=${run.runId}, url=${proof.url}, cas=s3://${soleEntry.storage_key})`);
@@ -462,14 +469,33 @@ async function main(): Promise<void> {
 /** Clôture le run de capture (`run.json`) quel que soit le sort du runner. */
 async function closeCapture(exitCode: number): Promise<void> {
   if (!CAPTURE) return;
-  try { await CAPTURE.finish(exitCode); }
-  catch (e) { console.error(`[arcgis-replace] WARN clôture capture: ${e instanceof Error ? e.message : String(e)}`); }
+  await CAPTURE.finish(exitCode);
 }
 
-main()
-  .then(async () => { await closeCapture(0); })
-  .catch(async (e: unknown) => {
-    console.error(e instanceof Error ? e.stack : String(e));
-    await closeCapture(1);
-    process.exit(1);
+/**
+ * Execute the replacement and always finalize the CaptureRun before surfacing
+ * the result.  Kept separate from the CLI boundary so every abort path is
+ * testable without a live S3 client.
+ */
+export async function runWithCaptureFinalization<T>(
+  runner: () => Promise<T>,
+  finish: (exitCode: number) => Promise<void>,
+): Promise<T> {
+  let exitCode = 0;
+  try {
+    return await runner();
+  } catch (error) {
+    exitCode = 1;
+    throw error;
+  } finally {
+    await finish(exitCode);
+  }
+}
+
+const invokedDirectly = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
+if (invokedDirectly) {
+  void runWithCaptureFinalization(main, closeCapture).catch((error: unknown) => {
+    console.error(error instanceof Error ? error.stack : String(error));
+    process.exitCode = 1;
   });
+}
