@@ -182,6 +182,15 @@ describe("discoverGrillesInHtml", () => {
     }
   });
 
+  it("rejects a standalone zoning amendment while keeping a consolidated base", () => {
+    const html = `<a href="/38-41.pdf">Règlement 38-41 modifiant le règlement de zonage dans la zone 404</a>
+      <a href="/zonage-codifie.pdf">Règlement de zonage — codification administrative</a>`;
+    const { candidates } = discoverGrillesInHtml(html, "https://exemple.qc.ca/reglements", "exemple");
+    expect(candidates.map((candidate) => candidate.pdfUrl)).toEqual([
+      "https://exemple.qc.ca/zonage-codifie.pdf",
+    ]);
+  });
+
   it("reports JS-rendered pages instead of emitting bogus candidates", () => {
     const js = `<html><body><div id="liste-documents"><!-- injected by scripts.js --></div></body></html>`;
     const { candidates, renderRequiresBrowser } = discoverGrillesInHtml(
