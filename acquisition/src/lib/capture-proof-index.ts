@@ -3,7 +3,11 @@
  * proof.  The index is intentionally a projection of capture manifests: it
  * never accepts a URL/hash supplied by a served writer.
  */
-import type { CaptureManifestLine } from "../../../packages/qc-sources/src/capture/index.js";
+import {
+  CaptureRunHeaderSchema,
+  parseManifestJsonl,
+  type CaptureManifestLine,
+} from "../../../packages/qc-sources/src/capture/index.js";
 import type { GeometrySourceProof } from "./zonage-proof.js";
 
 export const CAPTURE_PROOF_INDEX_KEY = "capture/_index/by-sha256.jsonl";
@@ -16,6 +20,12 @@ export interface CaptureProofIndexEntry {
   manifest_key: string;
   manifest_line: number;
   storage_key: string;
+}
+
+/** Read-only S3 surface used to reconstruct the index from durable manifests. */
+export interface CaptureProofManifestReader {
+  listManifestKeys(): Promise<string[]>;
+  getBytes(key: string): Promise<Buffer>;
 }
 
 const SHA256_RE = /^sha256:[a-f0-9]{64}$/;
@@ -130,7 +140,51 @@ export function parseCaptureProofIndex(bytes: Buffer): CaptureProofIndexEntry[] 
   return entries;
 }
 
-/** Exact pair membership required by C-1/C-2 before a future served write. */
-export function hasCaptureProof(entries: readonly CaptureProofIndexEntry[], proof: Pick<GeometrySourceProof, "url" | "sha256">): boolean {
-  return entries.some((entry) => entry.url === proof.url && entry.sha256 === proof.sha256);
+/**
+ * Reconstruct the complete canonical index from the manifest objects already
+ * persisted by capture jobs.  Sorting keys before projecting makes the winner
+ * for a repeated URL/SHA tuple deterministic; malformed manifests fail closed
+ * instead of silently disappearing from the audit surface.
+ */
+export async function materializeCaptureProofIndex(reader: CaptureProofManifestReader): Promise<string> {
+  const keys = [...new Set(await reader.listManifestKeys())].sort();
+  const entries: CaptureProofIndexEntry[] = [];
+  for (const key of keys) {
+    const match = /^capture\/_runs\/([^/]+)\/manifest\.jsonl$/.exec(key);
+    if (!match) {
+      throw new Error(`capture proof index: unexpected manifest key ${key}`);
+    }
+    const runId = match[1]!;
+    const headerKey = `capture/_runs/${runId}/run.json`;
+    let header: ReturnType<typeof CaptureRunHeaderSchema.parse>;
+    try {
+      header = CaptureRunHeaderSchema.parse(JSON.parse((await reader.getBytes(headerKey)).toString("utf8")));
+    } catch {
+      throw new Error(`capture proof index: invalid run header ${headerKey}`);
+    }
+    if (
+      header.run_id !== runId || header.execution !== "cluster"
+      || header.finished_at === null || header.exit_code !== 0
+    ) {
+      throw new Error(`capture proof index: run is not a completed cluster capture ${runId}`);
+    }
+    const lines = parseManifestJsonl((await reader.getBytes(key)).toString("utf8"));
+    for (const [index, line] of lines.entries()) {
+      const entry = captureProofIndexEntryFromManifest(line, key, index);
+      if (entry !== null) entries.push(entry);
+    }
+  }
+  return serializeCaptureProofIndex(entries);
+}
+
+/** Exact v2 tuple membership required by C-1/C-2 before a future served write. */
+export function hasCaptureProof(
+  entries: readonly CaptureProofIndexEntry[],
+  proof: Pick<GeometrySourceProof, "url" | "retrieved_at" | "sha256">,
+): boolean {
+  return entries.some(
+    (entry) => entry.url === proof.url
+      && entry.retrieved_at === proof.retrieved_at
+      && entry.sha256 === proof.sha256,
+  );
 }
