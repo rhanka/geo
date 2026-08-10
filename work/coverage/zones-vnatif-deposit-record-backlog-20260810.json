@@ -1,0 +1,210 @@
+{
+ "contract": "zones-vnatif-deposit-record-backlog-final/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md + SPEC_ZONE_GEOMETRY_GRAIN.md + SPEC_ACQUISITION_METHODES_PAR_SOURCE.md §12 ; réplique dépôt géoCentralis lot-B dd7e4cf9 / AGOL 5cc7e680",
+ "decision": "CLOSE-OUT BACKLOG campagne upgrade v2 : récupération des faux-négatifs anti-homonyme sur identité forte VÉRIFIÉE (wfs id==mamhCode / agol nom-exact) ; empty-code drops bloqués par coverage-gate anti-perte → documentés ; INVESTIGATE/portails documentés HELD/irrécupérables",
+ "run_stamp": "20260810T220000Z",
+ "capture_job": "geo-capture-zones-20260810t220000z (Complete 11/11 shards, OVH poc-ca)",
+ "empty_drop_max_frac": 0.1,
+ "summary": {
+  "recovered_deposited": 7,
+  "final_skip_empty_anti_loss": 4,
+  "final_skip_documented_residue": 8,
+  "total_final_skip": 12
+ },
+ "recovered_deposited": [
+  {
+   "slug": "pointe-aux-outardes",
+   "platform": "géoCentralis WFS",
+   "proof_type": "wfs",
+   "code_field": "etiquette_1",
+   "overlap_pct": 100,
+   "working_features": 59,
+   "served_features": 59,
+   "identity_override": "wfs-id-verified",
+   "identity_override_basis": "wfs id_municipalite=96030 == mamhCode[pointe-aux-outardes]=96030 ET mamhCode[nearest chute-aux-outardes]=96035 != 96030 → nearest est un muni rural adjacent (faux-négatif centroïde)",
+   "sha256": "sha256:1743aa1aedcfe556e6ddef4e8196819f6b59b70462b4c0390de86b16b788e112",
+   "run_stamp": "20260810T220000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796030%27",
+   "readback_ok": true
+  },
+  {
+   "slug": "saint-anaclet-de-lessard",
+   "platform": "géoCentralis WFS",
+   "proof_type": "wfs",
+   "code_field": "etiquette_1",
+   "overlap_pct": 100,
+   "working_features": 5,
+   "served_features": 5,
+   "identity_override": "wfs-id-verified",
+   "identity_override_basis": "wfs id_municipalite=10030 == mamhCode[saint-anaclet-de-lessard]=10030 ET mamhCode[nearest saint-donat--la-mitis]=09030 != 10030 → nearest est un muni rural adjacent (faux-négatif centroïde)",
+   "sha256": "sha256:3f9e3b8072cf065ff4536478f702b8fc47f3affc5780b79ef52ab51e355ee8cc",
+   "run_stamp": "20260810T220000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2710030%27",
+   "readback_ok": true
+  },
+  {
+   "slug": "saint-camille-de-lellis",
+   "platform": "géoCentralis WFS",
+   "proof_type": "wfs",
+   "code_field": "etiquette_1",
+   "overlap_pct": 100,
+   "working_features": 4,
+   "served_features": 4,
+   "identity_override": "wfs-id-verified",
+   "identity_override_basis": "wfs id_municipalite=28070 == mamhCode[saint-camille-de-lellis]=28070 ET mamhCode[nearest saint-just-de-bretenieres]=18005 != 28070 → nearest est un muni rural adjacent (faux-négatif centroïde)",
+   "sha256": "sha256:ae878bff0f6ef2ed1fd8db9d87b9392a54a04896659cad573016a57e37f7253d",
+   "run_stamp": "20260810T220000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2728070%27",
+   "readback_ok": true
+  },
+  {
+   "slug": "saint-ignace-de-loyola",
+   "platform": "géoCentralis WFS",
+   "proof_type": "wfs",
+   "code_field": "etiquette_1",
+   "overlap_pct": 100,
+   "working_features": 35,
+   "served_features": 35,
+   "identity_override": "wfs-id-verified",
+   "identity_override_basis": "wfs id_municipalite=52045 == mamhCode[saint-ignace-de-loyola]=52045 ET mamhCode[nearest la-visitation-de-lile-dupas]=52050 != 52045 → nearest est un muni rural adjacent (faux-négatif centroïde)",
+   "sha256": "sha256:388dbe70f9a0e4cad1397d62ae456cb95f1e200a9c6fc926e073d5ada07f74bf",
+   "run_stamp": "20260810T220000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752045%27",
+   "readback_ok": true
+  },
+  {
+   "slug": "saint-marcel",
+   "platform": "géoCentralis WFS",
+   "proof_type": "wfs",
+   "code_field": "etiquette_1",
+   "overlap_pct": 100,
+   "working_features": 6,
+   "served_features": 6,
+   "identity_override": "wfs-id-verified",
+   "identity_override_basis": "wfs id_municipalite=17020 == mamhCode[saint-marcel]=17020 ET mamhCode[nearest sainte-apolline-de-patton]=18025 != 17020 → nearest est un muni rural adjacent (faux-négatif centroïde)",
+   "sha256": "sha256:a011b6fc05a53a0a198c163100ee89e302cea60751be709dfdefb8e3b1296643",
+   "run_stamp": "20260810T220000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2717020%27",
+   "readback_ok": true
+  },
+  {
+   "slug": "saint-marcellin",
+   "platform": "géoCentralis WFS",
+   "proof_type": "wfs",
+   "code_field": "etiquette_1",
+   "overlap_pct": 100,
+   "working_features": 3,
+   "served_features": 3,
+   "identity_override": "wfs-id-verified",
+   "identity_override_basis": "wfs id_municipalite=10025 == mamhCode[saint-marcellin]=10025 ET mamhCode[nearest saint-gabriel-de-rimouski]=09025 != 10025 → nearest est un muni rural adjacent (faux-négatif centroïde)",
+   "sha256": "sha256:832cf402d0cadf29b26318c4e7eff71f691f7ae45245701cfe77680991855dc0",
+   "run_stamp": "20260810T220000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2710025%27",
+   "readback_ok": true
+  },
+  {
+   "slug": "saint-ludger",
+   "platform": "AGOL (ArcGIS Online)",
+   "proof_type": "agol",
+   "code_field": "NO_ZONE",
+   "overlap_pct": 100,
+   "working_features": 68,
+   "served_features": 68,
+   "identity_override": "agol-name-match",
+   "identity_override_basis": "agol filtre MUNI='Saint-Ludger' == name[saint-ludger]='Saint-Ludger' (NFD) → identité nom-exact prime le centroïde-nearest (nearest saint-robert-bellarmin = muni rural adjacent)",
+   "sha256": "sha256:5924284567ef980c466f3d8b11e8870aea38721f64abb72c9d41bd089215cdd5",
+   "run_stamp": "20260810T220000Z",
+   "source_url": "https://services6.arcgis.com/qVhfI6UTbRNL5Gfd/arcgis/rest/services/Zonage/FeatureServer/5/query?where=MUNI=%27Saint-Ludger%27&outFields=*&f=geojson",
+   "readback_ok": true
+  }
+ ],
+ "final_skip_attempted": [
+  {
+   "slug": "saint-gabriel",
+   "klass": "empty-code (bloqué anti-perte)",
+   "lot": "backlog-worklist",
+   "served_features": 65,
+   "feature_count": 65,
+   "dropped_empty_code_count": 1,
+   "reason": "empty-drop bloqué par coverage-gate anti-perte: le servi retient 65 features (dont 1 à code vide) ; déposer 64<65 serait une perte de features ; garder la feature vide exigerait un code fabriqué (anti-invention) → irrécupérable"
+  },
+  {
+   "slug": "saint-charles-garnier",
+   "klass": "empty-code (bloqué anti-perte)",
+   "lot": "backlog-worklist",
+   "served_features": 47,
+   "feature_count": 47,
+   "dropped_empty_code_count": 2,
+   "reason": "empty-drop bloqué par coverage-gate anti-perte: le servi retient 47 features (dont 2 à code vide) ; déposer 45<47 serait une perte de features ; garder la feature vide exigerait un code fabriqué (anti-invention) → irrécupérable"
+  },
+  {
+   "slug": "saint-donat--la-mitis",
+   "klass": "empty-code (bloqué anti-perte)",
+   "lot": "backlog-worklist",
+   "served_features": 63,
+   "feature_count": 63,
+   "dropped_empty_code_count": 1,
+   "reason": "empty-drop bloqué par coverage-gate anti-perte: le servi retient 63 features (dont 1 à code vide) ; déposer 62<63 serait une perte de features ; garder la feature vide exigerait un code fabriqué (anti-invention) → irrécupérable"
+  },
+  {
+   "slug": "beaupre",
+   "klass": "empty-code (bloqué anti-perte)",
+   "lot": "backlog-worklist",
+   "served_features": 78,
+   "feature_count": 78,
+   "dropped_empty_code_count": 1,
+   "reason": "empty-drop bloqué par coverage-gate anti-perte: le servi retient 78 features (dont 1 à code vide) ; déposer 77<78 serait une perte de features ; garder la feature vide exigerait un code fabriqué (anti-invention) → irrécupérable"
+  }
+ ],
+ "final_skip_documented": [
+  {
+   "slug": "padoue",
+   "lot": "geocentralis-lotB",
+   "klass": "empty-code (non-minime)",
+   "reason": "6/39 features à code vide (15.4%) > seuil minorité-minime 10% ; drop refusé ; garder=fabriquer un code (anti-invention) → FINAL-SKIP"
+  },
+  {
+   "slug": "saint-joseph-de-lepage",
+   "lot": "geocentralis-lotC",
+   "klass": "empty-code (non-minime)",
+   "reason": "17/54 features à code vide (31.5%) > seuil 10% ; drop refusé ; garder=fabriquer un code (anti-invention) → FINAL-SKIP"
+  },
+  {
+   "slug": "otterburn-park",
+   "lot": "geocentralis-lotD",
+   "klass": "INVESTIGATE→HELD",
+   "reason": "id 57030 = mamhCode ET nearest OK, MAIS siadmin_pzon_99_s overlap 86.7% (<90%) et l'AUTRE couche evb:zonage_municipal rend 0 feature pour cet id (probe live 20260810T220000Z) → aucune couche ≥90% → HELD (pas de source-identity propre)"
+  },
+  {
+   "slug": "matapedia",
+   "lot": "altus",
+   "klass": "INVESTIGATE/RETRY→HELD",
+   "reason": "altus MapServer MRC060/06045_Publique répond 200 mais expose layers:[] (service sans couche — toujours down au retry live 20260810T220000Z) → source indisponible → HELD"
+  },
+  {
+   "slug": "saint-laurent-de-lile-dorleans",
+   "lot": "altus",
+   "klass": "INVESTIGATE→HELD",
+   "reason": "couche Zonage (MRC200/20020/17) = 34 features mais 42 codes servis ⇒ overlap≥90% arithmétiquement impossible (34<37.8) ; aucune autre couche polygonale ne porte de code-zone (hydro/cadastre/UEV) → HELD"
+  },
+  {
+   "slug": "gore",
+   "lot": "agol",
+   "klass": "INVESTIGATE→HELD",
+   "reason": "servi = 840 codes / 932 features (grain cadastral, pas zonage) ; meilleure partition co_mun de la couche partagée services9/Zonage/0 overlap 0% (nearest=lachute) → les codes servis ne reproduisent aucune partition → HELD (source-identity absente ; le servi lui-même est anormal)"
+  },
+  {
+   "slug": "havre-saint-pierre",
+   "lot": "agol",
+   "klass": "UNRECOVERABLE (portal)",
+   "reason": "item portal www.arcgis.com = Web Map ; couche opérationnelle HSP_Ligne = featureCollection EMBARQUÉE (aucune URL FeatureServer re-téléchargeable) ET géométrie LIGNE (pas des polygones de zone) → hors chemin FeatureServer → FINAL-SKIP"
+  },
+  {
+   "slug": "plessisville",
+   "lot": "agol",
+   "klass": "UNRECOVERABLE (portal)",
+   "reason": "item portal www.arcgis.com = Web Map ; couches (ZONAGE, UEV, cadastre) = featureCollections EMBARQUÉES (aucune URL FeatureServer) → hors chemin FeatureServer → FINAL-SKIP"
+  }
+ ]
+}
