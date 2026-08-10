@@ -1,0 +1,236 @@
+[
+  {
+    "slug": "farnham",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC Brome-Missisquoi. Carte interactive ville.farnham.qc.ca embarque uniquement cartobm.com (matrice graphique MRCBM, codemun=46112) = systeme PHP proprietaire de matrice/role (cadastre), pas un endpoint ArcGIS/OGC renvoyant une FeatureCollection de zonage a codes Lettre-Num. Orgs AGOL Brome-Missisquoi trouvees (CartoWeb, tremat) ne publient pas de grille de zonage. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "franklin",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC du Haut-Saint-Laurent. Le portail cartographique de la MRC (mrchsl.com/cartes) ne diffuse que des cartes ArcGIS d'AFFECTATION du territoire, territoires d'interet, secteurs agricoles/forestiers et milieux humides (liens arcg.is) — pas de grille de zonage municipale a codes Lettre-Num. Aucune couche zonage vecteur sur AGOL pour la municipalite. Aucune source vecteur verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "havelock",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC du Haut-Saint-Laurent. Idem franklin: seules cartes MRC d'affectation/secteurs agricoles/milieux humides (arcg.is), pas de grille de zonage a codes Lettre-Num. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "howick",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC du Haut-Saint-Laurent. Idem franklin/havelock: portail MRC = affectation/secteurs (arcg.is), aucune grille de zonage municipale vecteur. Aucune source verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "hudson",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de Vaudreuil-Soulanges. La MRC fait l'evaluation fonciere (matrice graphique = role/cadastre) mais la page Maps mrcvs.ca est 'under construction' et ne publie pas de grille de zonage. Aucune org AGOL de la MRCVS diffusant du zonage vecteur trouvee. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "lacolle",
+    "arcgis_instance": "https://services8.arcgis.com/GWcD3B7VDbCL7X8h/arcgis/rest/services",
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC du Haut-Richelieu (org AGOL GWcD3B7VDbCL7X8h 'MRC du Haut-Richelieu', hub geomatique-mrchr.hub.arcgis.com). Org enumeree (226 items): publie du cadastre par muni (lot56xxx), des unites d'evaluation (uev56xxx), l'AFFECTATION du SADR (sadr_r467_grandes_affectations), perimetres urbains, zones inondables — AUCUNE grille de zonage municipale a codes Lettre-Num. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "lassomption",
+    "arcgis_instance": "https://services9.arcgis.com/hcaJWZHFtN5aFHXa/arcgis/rest/services",
+    "zonage_layer_url": "https://services9.arcgis.com/hcaJWZHFtN5aFHXa/arcgis/rest/services/Zonagev2/FeatureServer/1/query?where=1%3D1&outFields=*&f=geojson",
+    "is_geojson_zonage": true,
+    "feature_count": 361,
+    "identity_note": "AGOL org VilleLAssomption (hcaJWZHFtN5aFHXa), service Zonagev2/FeatureServer, layer 1 'Zonage municipal' (polygon). Champs Zonage='H1-103' + Zone='H1' + num=103 (code Lettre-Num), Categorie='Residentielle', Lien='https://ville.lassomption.qc.ca/geomatique/zonage/H1103.pdf' => identite = Ville de L'Assomption confirmee. FeatureCollection geojson non vide (361 zones). VECTEUR_TROUVE.",
+    "verdict": "VECTEUR_TROUVE"
+  },
+  {
+    "slug": "lepiphanie",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de L'Assomption. La ville voisine L'Assomption publie sur sa propre org AGOL (VilleLAssomption), qui ne couvre pas L'Epiphanie. Aucune org AGOL ni portail cartographique de L'Epiphanie diffusant une grille de zonage vecteur trouvee (recherche AGOL par nom = 0). Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "les-coteaux",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de Vaudreuil-Soulanges. Le zonage n'est diffuse que comme PDF codifie (les-coteaux.qc.ca/.../R19_zonage_codifie_20220926.pdf) — pas de service vecteur. Page Maps de la MRCVS 'under construction'. Aucune couche zonage vecteur sur AGOL (seul hit = 'risque_nr' d'un compte tiers, sans rapport). Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "oka",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de Deux-Montagnes (portail mrc2m.qc.ca = SPA igo/carto). Le prestataire Geo_ECL (y9EASLisYHhvZ7vM) ne publie pour Oka que limites_oka et donnees_collines_Oka + de l'AFFECTATION MRC2M (concorde avec verdict lot1) — pas de grille de zonage a codes Lettre-Num. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "ormstown",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC du Haut-Saint-Laurent. Idem cluster HSL: portail MRC = affectation/secteurs agricoles/milieux humides (arcg.is), pas de grille de zonage municipale vecteur. Aucune source verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "rougemont",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de Rouville. Aucun portail cartographique ni org AGOL de Rougemont/Rouville diffusant une grille de zonage vecteur trouve (recherche AGOL par nom = 0). Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "saint-alexandre",
+    "arcgis_instance": "https://services8.arcgis.com/GWcD3B7VDbCL7X8h/arcgis/rest/services",
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC du Haut-Richelieu (org GWcD3B7VDbCL7X8h). Idem lacolle: l'org ne publie que cadastre (lot56xxx), UEV (uev56xxx), affectation SADR et zones inondables — pas de grille de zonage municipale a codes Lettre-Num. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "saint-basile-le-grand",
+    "arcgis_instance": "https://services8.arcgis.com/jryHBP52Ub6tFsaW/arcgis/rest/services",
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de La Vallee-du-Richelieu (org jryHBP52Ub6tFsaW). Org enumeree (140 items): la seule couche de zonage municipal publiee est 'zonageSAR' = Zonage de Saint-Antoine-sur-Richelieu (snippet de l'item + extent -73.27/-73.14, 45.73/45.86, 68 features) — PAS Saint-Basile-le-Grand. Le reste est MRC-wide (affectations, RCI, contraintes, usages predominants). La carte interactive villesblg.ca est une carte d'equipements (parcs/installations). Aucune source vecteur de zonage verifiee pour SBLG.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "saint-clet",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de Vaudreuil-Soulanges. Idem hudson/les-coteaux: MRC = matrice graphique (role/cadastre), page Maps 'under construction', aucune grille de zonage vecteur sur AGOL. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "saint-colomban",
+    "arcgis_instance": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services",
+    "zonage_layer_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75005_PUBLIC/MapServer/140/query?where=1%3D1&outFields=*&f=geojson",
+    "is_geojson_zonage": true,
+    "feature_count": 199,
+    "identity_note": "Portail ArcGIS Enterprise de l'evaluateur LBP (arcgis.lbpevaluateurs.ca), diffuse via le hub MRC de La Riviere-du-Nord (arcgis.lbpevaluateurs.ca/portal/apps/sites/#/mrc-rdn). App 'Web Mapping Application' titre '75005 - SAINT-COLOMBAN' -> operationalLayer '75005 - SAINT-COLOMBAN' = service 75005_PUBLIC/MapServer. Layer 140 'Zonage municipal' (polygon) : champs COMBINE='H1-009', ORI='H1', NO_ZONE='009' (code Lettre-Num). FeatureCollection geojson non vide (199 zones). Identite = Saint-Colomban confirmee par le titre de l'app/couche. VECTEUR_TROUVE.",
+    "verdict": "VECTEUR_TROUVE"
+  },
+  {
+    "slug": "saint-denis-sur-richelieu",
+    "arcgis_instance": "https://services3.arcgis.com/KHxqinF9QiQAuCwv/arcgis/rest/services",
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC des Maskoutains (org KHxqinF9QiQAuCwv). Org enumeree: la seule grille de zonage municipale est 'Zonage_SHY' (Saint-Hyacinthe, deja capte lot1). Le reste est MRC-wide (affectations, zone agricole, matrice, contraintes). Aucune couche de zonage pour Saint-Denis-sur-Richelieu. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "saint-liguori",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de Montcalm. Le service de geomatique/amenagement de la MRC (mrcmontcalm.com) ne diffuse que des PDF (grandes affectations, cartes 1-68), pas de service vecteur. Carte interactive MRC = widget touristique. Aucune grille de zonage vecteur sur AGOL. Aucune source verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "saint-paul",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "Saint-Paul (Lanaudiere, MRC de Joliette). Aucun portail cartographique ni org AGOL de Saint-Paul diffusant une grille de zonage vecteur trouve (recherche AGOL par nom = 0). Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "saint-sulpice",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de L'Assomption. Aucun portail cartographique ni org AGOL de Saint-Sulpice diffusant une grille de zonage vecteur trouve (l'org VilleLAssomption ne couvre que la ville de L'Assomption ; recherche AGOL par nom = 0). Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "sainte-clotilde",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC des Jardins-de-Napierville (territoire a 97,7% en zone agricole). Aucune carte interactive de zonage ni org AGOL de Sainte-Clotilde/MRC diffusant une grille de zonage vecteur trouvee. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "sainte-julienne",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de Montcalm. Idem saint-liguori: geomatique MRC = PDF (affectations/cartes), pas de service vecteur ; carte interactive MRC = widget touristique. Aucune grille de zonage vecteur sur AGOL. Aucune source verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "sainte-madeleine",
+    "arcgis_instance": "https://services3.arcgis.com/KHxqinF9QiQAuCwv/arcgis/rest/services",
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC des Maskoutains (org KHxqinF9QiQAuCwv). Idem saint-denis-sur-richelieu: seule grille de zonage = Zonage_SHY (Saint-Hyacinthe). Aucune couche de zonage pour Sainte-Madeleine. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "sainte-sophie",
+    "arcgis_instance": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services",
+    "zonage_layer_url": "https://arcgis.lbpevaluateurs.ca/arcgis/rest/services/75028_PUBLIC/MapServer/140/query?where=1%3D1&outFields=*&f=geojson",
+    "is_geojson_zonage": true,
+    "feature_count": 105,
+    "identity_note": "Portail ArcGIS Enterprise de l'evaluateur LBP (arcgis.lbpevaluateurs.ca), hub MRC de La Riviere-du-Nord. App 'Web Mapping Application' titre '75028 - Sainte-Sophie' -> operationalLayer '75028 - SAINTE-SOPHIE' = service 75028_PUBLIC/MapServer. Layer 140 'Zonage municipal' (polygon) : champs Numero='RU-601', TYPE='RU', N0M='RURALE' (code Lettre-Num). FeatureCollection geojson non vide (105 zones). Identite = Sainte-Sophie confirmee par le titre de l'app/couche. VECTEUR_TROUVE.",
+    "verdict": "VECTEUR_TROUVE"
+  },
+  {
+    "slug": "tres-saint-sacrement",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC du Haut-Saint-Laurent. Idem cluster HSL: portail MRC = affectation/secteurs/milieux humides (arcg.is), pas de grille de zonage municipale vecteur. Aucune source verifiee.",
+    "verdict": "RIEN"
+  },
+  {
+    "slug": "vercheres",
+    "arcgis_instance": null,
+    "zonage_layer_url": null,
+    "is_geojson_zonage": false,
+    "feature_count": null,
+    "identity_note": "MRC de Marguerite-D'Youville. La carte interactive de la MRC est un widget touristique (widget.publidata.ca), pas un SIG de zonage ; le service de geomatique detient le zonage mais ne le publie pas en couche vecteur decouvrable. Aucune org AGOL diffusant une grille de zonage vecteur de Vercheres trouvee. Aucune source vecteur de zonage verifiee.",
+    "verdict": "RIEN"
+  }
+]
