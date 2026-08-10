@@ -1,0 +1,82 @@
+{
+  "contract": "reglement-palier167-cols-5-9-10-11-retention/v1",
+  "as_of": "2026-08-10T06:08:04.752Z",
+  "scope": "palier-167 / varennes / cols-5-9-10-11",
+  "before": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "incomplete"
+    },
+    "col_9_prov_qualite": "complete",
+    "col_10_prov_v2": "complete",
+    "col_11_prov_url_servie": "complete"
+  },
+  "after": {
+    "col_5_reglement": {
+      "state": "incomplete",
+      "declared": "complete",
+      "proven": "incomplete",
+      "reason": "La consolidation 707-165 déclarée (12 juin 2026) répond HTTP 404. Le CDX de domaine ne contient aucune capture de ce corps. La version 707-161 récupérable dans Wayback porte explicitement une version administrative au 10 octobre 2025 et ne peut donc pas prouver la consolidation 707-165 plus récente."
+    },
+    "col_9_prov_qualite": {
+      "state": "complete",
+      "gate": "quality_status=v2 explicite dans la matrice de qualité, non une métrique de couverture"
+    },
+    "col_10_prov_v2": {
+      "state": "complete",
+      "gate": "quality_status=v2 explicite; aucune donnée de zonage ni preuve v2 n’est modifiée dans ce lot"
+    },
+    "col_11_prov_url_servie": {
+      "state": "complete",
+      "gate": "readback servi status=STAMPED (249 entités), non déduit de l’URL du règlement",
+      "zone_source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb%3Asiadmin_pzon_99_s&outputFormat=application%2Fjson&srsName=EPSG%3A4326&count=1000&startIndex=0&cql_filter=id_municipalite%3D%2759020%27"
+    }
+  },
+  "evidence": {
+    "declared_current_attempt": {
+      "url": "https://www.ville.varennes.qc.ca/uploads/Services/Urbanisme/zonage_reg707-165_12_juin_2026.pdf",
+      "result": "HTTP 404",
+      "manifest_key": "capture/_runs/reglement-20260810T060000Z-0-be288aca-8bea-4108-a3b3-31afbf98e61a/manifest.jsonl",
+      "line_index": 1,
+      "raw_receipt": null
+    },
+    "cdx_domain_http": {
+      "url": "http://web.archive.org/cdx/search/cdx?url=http%3A%2F%2Fwww.ville.varennes.qc.ca%2F*&matchType=domain&output=json&filter=statuscode%3A200&filter=mimetype%3Aapplication%2Fpdf&fl=timestamp%2Coriginal%2Cstatuscode%2Cmimetype%2Cdigest&collapse=digest",
+      "result": "HTTP 200; aucune entrée pour zonage_reg707-165_12_juin_2026.pdf",
+      "retrieved_at": "2026-08-10T06:06:43.693Z",
+      "sha256": "sha256:7d21166a5cb7d6d8a83846d9f5d6ae3e3fb0fd0e923753da138866b1cb42eadb",
+      "storage_key": "raw/reglement-wayback-cdx/cas/7d21166a5cb7d6d8a83846d9f5d6ae3e3fb0fd0e923753da138866b1cb42eadb.json",
+      "manifest_key": "capture/_runs/reglement-20260810T060200Z-0-7c6781d7-15d3-4628-955c-de7ae418c357/manifest.jsonl",
+      "line_index": 1
+    },
+    "historical_wayback": {
+      "url": "http://web.archive.org/web/20251123154413id_/http://www.ville.varennes.qc.ca/uploads/Services/Urbanisme/zonage_reg707-161_10_octobre_2025.pdf",
+      "result": "HTTP 200; règlement de zonage numéro 707, version administrative incluant les amendements au 10 octobre 2025",
+      "retrieved_at": "2026-08-10T06:08:04.752Z",
+      "sha256": "sha256:394e7c29c3219c2158715927210264c26352bb06289ffacaaace35a81797ef21",
+      "storage_key": "raw/reglement-wayback/cas/394e7c29c3219c2158715927210264c26352bb06289ffacaaace35a81797ef21.pdf",
+      "manifest_key": "capture/_runs/reglement-20260810T060400Z-0-e70b0942-3478-44f9-b051-25f016bb762e/manifest.jsonl",
+      "line_index": 3
+    },
+    "prior_live_url": {
+      "url": "http://www.ville.varennes.qc.ca/uploads/Services/Urbanisme/zonage_reg707-161_10_octobre_2025.pdf",
+      "result": "HTTP 404",
+      "manifest_key": "capture/_runs/reglement-20260810T060400Z-0-e70b0942-3478-44f9-b051-25f016bb762e/manifest.jsonl",
+      "line_index": 1,
+      "raw_receipt": null
+    },
+    "served_readback": {
+      "quality_status": "v2",
+      "readback_status": "STAMPED",
+      "features": 249,
+      "collection_key": "normalized/ca-qc-zonage/qc-zonage-varennes.geojson"
+    }
+  },
+  "anti_invention": {
+    "no_col_5_promotion": "Aucune URL officielle vivante ne fournit la consolidation 707-165; le PDF Wayback de 2025 est conservé comme preuve historique, jamais présenté comme source courante.",
+    "strict_proof_v2": "La col. 10 est conservée complete uniquement parce que la matrice qualité autoritaire porte quality_status=v2; ce lot ne la recalcule pas et ne la déduit pas de la couverture.",
+    "served_url": "La col. 11 s’appuie sur le readback STAMPED de zone_source_url, jamais sur l’URL de règlement 404.",
+    "storage": "Tous les octets de CDX, de Wayback et de robots sont dans le CAS S3; aucun PDF source n’est créé localement."
+  }
+}
