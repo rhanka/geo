@@ -1,0 +1,156 @@
+[
+  {
+    "slug": "farnham",
+    "status": "rien",
+    "reason": "MRC Brome-Missisquoi. La geomatique de la MRC = plateforme custom QGIS 'cartobm.com' (matrice graphique = grain evaluation/role; codemun 46112 pour Farnham, 46085 pour East Farnham). L'outil public expose la matrice graphique (donnees du role d'evaluation) et des contraintes naturelles, PAS une grille de zonage codifiee en vecteur; backend QGIS non inspectable en lecture seule (SPA, aucun endpoint WFS/OWS/GeoJSON public decouvrable). La page ville.farnham.qc.ca/carte-interactive ne renvoie que vers la matrice graphique (bit.ly + cartobm/matrice). Recherche AGOL 'zonage Farnham' = 0. Zonage municipal publie en reglement PDF. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "franklin",
+    "status": "rien",
+    "reason": "MRC du Haut-Saint-Laurent (org AGOL services3.arcgis.com/rItOZ3qY0IdTdzZR, owner JM_Rajotte). L'org ne diffuse publiquement que l'AFFECTATION MRC (webmaps 'Les affectations du territoire de la MRC du Haut-Saint-Laurent', service 'Affectations') + adresses/incendie/hydro, PAS le zonage municipal. Aucun service 'Zonage_Franklin' (recherche org-scoped orgid:rItOZ3qY0IdTdzZR Franklin = 0 pertinent). Recherche AGOL 'zonage' pour la MRC HSL = seulement Ormstown (token-gated) + Hinchinbrooke. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "havelock",
+    "status": "rien",
+    "reason": "MRC du Haut-Saint-Laurent (org services3/rItOZ3qY0IdTdzZR). Recherche org-scoped 'Havelock' = seulement 'Zones_de_repartition_des_appels_Havelock' (securite incendie), pas de couche de zonage. L'org ne publie que l'affectation MRC. Aucun service 'Zonage_Havelock'. Recherche AGOL 'zonage Havelock' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "howick",
+    "status": "rien",
+    "reason": "MRC du Haut-Saint-Laurent (org services3/rItOZ3qY0IdTdzZR). Recherche org-scoped 'Howick' = aucun item de zonage (seuls hits generiques d'adresses). L'org ne diffuse publiquement que l'affectation MRC. Aucun service 'Zonage_Howick'. Recherche AGOL 'zonage Howick' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "ormstown",
+    "status": "rien",
+    "reason": "MRC du Haut-Saint-Laurent (org AGOL services3/rItOZ3qY0IdTdzZR). Une couche de zonage EXISTE — service 'Zonage_Ormstown_29_11_2023/FeatureServer/0', referencee par la webmap publique 'Projet de Zonage Ormstown' (item f983be60dbdd4856aa65f2afcefa27b2, owner JM_Rajotte) — MAIS elle est protegee par token: la racine du FeatureServer ET l'endpoint /query renvoient {code:499, 'Token Required'} (couche non partagee publiquement, non telechargeable en GeoJSON). Anti-invention: auth-required = RIEN. (De plus intitulee 'Projet' = zonage en projet, non l'officiel.)",
+    "service_url": "https://services3.arcgis.com/rItOZ3qY0IdTdzZR/arcgis/rest/services/Zonage_Ormstown_29_11_2023/FeatureServer/0",
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "tres-saint-sacrement",
+    "status": "rien",
+    "reason": "MRC du Haut-Saint-Laurent (org services3/rItOZ3qY0IdTdzZR). Recherche org-scoped 'Sacrement' = 0. Aucun service 'Zonage' pour Tres-Saint-Sacrement; l'org ne publie que l'affectation MRC. Recherche AGOL 'zonage' HSL = seulement Ormstown (token-gated) + Hinchinbrooke. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "les-coteaux",
+    "status": "rien",
+    "reason": "MRC de Vaudreuil-Soulanges. Zonage publie en PDF (les-coteaux.qc.ca/.../R19_zonage_codifie_20220926.pdf). Recherche AGOL 'zonage Vaudreuil-Soulanges' = 0; aucune org AGOL ni WFS public de la Ville. MRCVS = pas de service vecteur de zonage (page Maps 'under construction', cf lot3 Hudson). Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-clet",
+    "status": "rien",
+    "reason": "MRC de Vaudreuil-Soulanges. Zonage regi par reglement d'urbanisme (cadre SADR3, PDF). Recherche AGOL 'zonage Saint-Clet' = 0; aucune org AGOL ni WFS/FeatureServer public de la municipalite. MRCVS ne publie pas de service vecteur de zonage. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "rougemont",
+    "status": "rien",
+    "reason": "MRC de Rouville. Le service de geomatique de la MRC (SIG depuis 2001) ne publie aucun viewer/couche vecteur public (page geomatique sans lien d'application; schema d'amenagement = PDF). Les reglements d'urbanisme de Rougemont (zonage) sont publies en PDF (rougemont.ca/reglements-durbanisme). Recherche AGOL 'zonage Rougemont' = 0; aucune org AGOL de la municipalite. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-charles-sur-richelieu",
+    "status": "rien",
+    "reason": "MRC de La Vallee-du-Richelieu (org AGOL services8.arcgis.com/jryHBP52Ub6tFsaW). L'org ne publie de grille de zonage municipale que pour Saint-Antoine-sur-Richelieu ('zonageSAR'); pour SCR = seulement Affectations / Usage_predominant_2024 / RCI (pas le zonage) + une vue touristique 'Balades_patrimoniales_view_SCR'. Les cartes de zonage de SCR sont en PDF (centre documentaire du site municipal). Recherche AGOL 'zonage Saint-Charles-sur-Richelieu' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-denis-sur-richelieu",
+    "status": "rien",
+    "reason": "MRC de La Vallee-du-Richelieu (org services8/jryHBP52Ub6tFsaW): aucune couche de zonage pour SDR (l'org publie 'zonageSAR' seulement; sinon Affectations/RCI/Usage_predominant + vue touristique 'Balades_patrimoniales_view_SDR'). Reglement de zonage 2011-R-195 publie en PDF (stdenissurrichelieu.com). Recherche AGOL 'zonage Saint-Denis-sur-Richelieu' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-ours",
+    "status": "rien",
+    "reason": "MRC de Pierre-De Saurel (org AGOL mrcpds.maps.arcgis.com, urlKey MRCPDS). La cartographie en ligne de la MRC ne comporte AUCUNE application de zonage (seulement glissements de terrain, peuplements forestiers, milieux naturels, reseau hydrographique, casernes/territoires incendie). Aucun service 'Zonage' pour Saint-Ours. Recherche AGOL 'zonage Saint-Ours' = 0. Reglement de zonage publie en PDF. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-damase--les-maskoutains",
+    "status": "rien",
+    "reason": "MRC des Maskoutains. Le zonage des municipalites (hors Saint-Hyacinthe) est diffuse via la plateforme proprietaire Geocentriq (CIMFQM; app.geocentriq.com/mrc/maskoutains/municipalite/saint-damase) qui n'expose AUCUN endpoint geospatial public (pas de WFS/WMS/GeoJSON/ArcGIS REST; viewer role/cadastre/zonage a usage final seulement, contact info@cimfqm.ca). L'org AGOL de la MRC (owner jdesaulniers@mrcdesmaskoutains) ne publie de zonage que pour Saint-Hyacinthe ('Zonage - Saint-Hyacinthe', experience fec8a0a7..., couche 'Zonage de Saint-Hyacinthe' champs ETQ_ZONE/NO_ZONE). Recherche AGOL 'zonage Saint-Damase' = 0. Page carte du site municipal = PDF (axes routiers). Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  },
+  {
+    "slug": "saint-dominique",
+    "status": "rien",
+    "reason": "MRC des Maskoutains. Idem Saint-Damase: zonage diffuse via Geocentriq (proprietaire CIMFQM, aucun endpoint geospatial public WFS/WMS/GeoJSON/ArcGIS REST) et absent de l'org AGOL de la MRC (zonage AGOL = Saint-Hyacinthe seulement). Recherche AGOL 'zonage Saint-Dominique' = 0. Aucune source vecteur de zonage verifiee.",
+    "service_url": null,
+    "query_url": null,
+    "code_field": null,
+    "geometry_grain": null,
+    "feature_count": null,
+    "geometry_type": null
+  }
+]
