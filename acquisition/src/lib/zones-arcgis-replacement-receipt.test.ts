@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { describe, expect, it } from "vitest";
 
 import { captureRunKeys, serializeManifestLine, type CaptureManifestLine } from "../../../packages/qc-sources/src/capture/index.js";
+import { captureProofIndexEntryFromManifest, captureProofIndexSnapshotKey, serializeCaptureProofIndex } from "./capture-proof-index.js";
 import { parseZonesArcgisReplacementWorklist, serializeZonesArcgisReplacementWorklist } from "./zones-arcgis-replacement-worklist.js";
 import { verifyZonesArcgisReplacementReceipt, type ReplacementReceiptReader } from "./zones-arcgis-replacement-receipt.js";
 
@@ -57,6 +58,11 @@ function targetLine(overrides: Partial<CaptureManifestLine> = {}): CaptureManife
   };
 }
 
+const proofIndexBytes = Buffer.from(serializeCaptureProofIndex([
+  captureProofIndexEntryFromManifest(targetLine(), captureRunKeys(runId).manifest, 0)!,
+]));
+const proofIndexKey = captureProofIndexSnapshotKey(proofIndexBytes);
+
 function reader(overrides: Record<string, Buffer> = {}): ReplacementReceiptReader {
   const keys = captureRunKeys(runId);
   const objects: Record<string, Buffer> = {
@@ -74,6 +80,7 @@ function reader(overrides: Record<string, Buffer> = {}): ReplacementReceiptReade
       sourceUrl: expectedUrl, sha256: digest, fetchedAt: "2026-08-10T02:03:05.000Z", storageKey,
       provenance: { version: "capturedFetch/1", userAgent: "geo-test/1", viaObscura: false },
     })),
+    [proofIndexKey]: proofIndexBytes,
     ...overrides,
   };
   return { getBytes: async (key) => {
@@ -84,7 +91,7 @@ function reader(overrides: Record<string, Buffer> = {}): ReplacementReceiptReade
 }
 
 const input = {
-  runId, worklistKey, worklistSha256, captureGitSha,
+  runId, worklistKey, worklistSha256, proofIndexKey, captureGitSha,
   completedJob: { runId, succeeded: 1, failed: 0, completionTime: "2026-08-10T02:03:06.000Z" },
 };
 
@@ -93,6 +100,7 @@ describe("zones ArcGIS replacement deposit receipt", () => {
     const verified = await verifyZonesArcgisReplacementReceipt(reader(), input);
     expect(verified.proof).toMatchObject({ url: expectedUrl, retrieved_at: "2026-08-10T02:03:05.000Z", sha256: `sha256:${digest}` });
     expect(verified.capture.storage_key).toBe(storageKey);
+    expect(verified.proofIndexKey).toBe(proofIndexKey);
     expect(verified.geojson.features).toHaveLength(1);
   });
 
@@ -108,5 +116,25 @@ describe("zones ArcGIS replacement deposit receipt", () => {
     await expect(verifyZonesArcgisReplacementReceipt(reader(manifest(targetLine({ url: "https://services.example/FeatureServer/0/query?where=1%3D1" }))), input)).rejects.toThrow(/exact successful/);
     await expect(verifyZonesArcgisReplacementReceipt(reader(manifest(targetLine({ robots: "unknown" }))), input)).rejects.toThrow(/exact successful/);
     await expect(verifyZonesArcgisReplacementReceipt(reader({ [storageKey]: Buffer.from("tampered") }), input)).rejects.toThrow(/raw CAS receipt/);
+  });
+
+  it("requires a pinned snapshot whose content and exact manifest row match the receipt", async () => {
+    const aliasKey = `capture/_index/by-sha256/${"f".repeat(64)}.jsonl`;
+    await expect(verifyZonesArcgisReplacementReceipt(reader({ [aliasKey]: proofIndexBytes }), {
+      ...input,
+      proofIndexKey: aliasKey,
+    })).rejects.toThrow(/key does not match its content digest/);
+
+    const different = Buffer.from(serializeCaptureProofIndex([
+      captureProofIndexEntryFromManifest(
+        targetLine({ retrieved_at: "2026-08-10T02:03:07.000Z" }),
+        captureRunKeys(runId).manifest,
+        0,
+      )!,
+    ]));
+    const differentKey = captureProofIndexSnapshotKey(different);
+    await expect(verifyZonesArcgisReplacementReceipt(reader({ [differentKey]: different }), {
+      ...input, proofIndexKey: differentKey,
+    })).rejects.toThrow(/does not attest the exact capture receipt/);
   });
 });
