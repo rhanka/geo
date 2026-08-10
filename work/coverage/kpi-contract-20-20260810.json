@@ -1,0 +1,453 @@
+{
+  "contract": "geo-kpi-contract/v1",
+  "generatedAt": "2026-08-10T08:36:29.834Z",
+  "derivedFrom": "work/coverage/palier-matrix-30x167-20260810.json",
+  "purpose": "Contrat des 20 KPI geo pour la matrice Sources › Console (app) : {id, libellé humain réel, règle de calcul du %, source}. Remplace les libellés génériques 'KPI 0X'. Réponse à conductor env:kpicontract / env:reglurl / env:geostatus (track 01KZMM3PSG7F0KEJS2K7MWM31D).",
+  "cohort": {
+    "name": "set-167-bprime",
+    "source": "radar 43c873e0d2cf7acd50e330130fb809c7bf808953:docs/spec/reports/set-167-bprime.tsv (i-cond, canonique priorityRank<=167 figé 2026-08-02) — slug/priorityRank VERBATIM, graph_matched dérivé de match!=UNMATCHED",
+    "path": "work/coverage/palier-matrix-cohort-167.json",
+    "cities": 167,
+    "graph_matched": 163,
+    "pending_graph_node": 4
+  },
+  "denom_note": "cols 1-13 & 20 : denom=163 (graph_matched) ; cols 14-19 : denom=167 (slug_measured). N-A prouvé compte comme RÉSOLU (pas comme gap).",
+  "missing_dims_serve_status": {
+    "note": "Dims à 0/unknown dans l'app = NON servies par ville OU plafonnées. État par KPI ci-dessous (champ ceiling/gap). Blocages infra: cols capture-bound (5/10 preuve, PV) → cluster+gateway ; col-20 exposition → geo-api rollout restart (qc-zoning-events 404).",
+    "ceiling_bound": [
+      "effet_densifiant (07)",
+      "prov_v2 (10)",
+      "tod_completion (19)",
+      "v34_qc_zoning_events (20)"
+    ],
+    "partial": [
+      "reglement (05)",
+      "usage_dominant (06)",
+      "prov_url_servie (11)",
+      "immo_lot_zone (12)",
+      "immo_normes_pliees (13)"
+    ]
+  },
+  "kpis": [
+    {
+      "id": 1,
+      "key": "zones",
+      "label": "Zones — complétion",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": "work/coverage/completion-1-zones-matrix-20260723.json",
+      "current": {
+        "complete": 109,
+        "incomplete": 13,
+        "unknown": 41,
+        "N-A": 0,
+        "pct_complete": 66.9,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 2,
+      "key": "coherence_lot_zone",
+      "label": "Zones — cohérence lot-zone",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "complete ⟺ mismatch_pct ≤ 5% ET graph_matched=true (sinon unknown si non-graph-matched)",
+      "source_file": "work/coverage/lot-zone-consistency-scale-20260810.json",
+      "current": {
+        "complete": 78,
+        "incomplete": 32,
+        "unknown": 53,
+        "N-A": 0,
+        "pct_complete": 47.9,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 3,
+      "key": "normes",
+      "label": "Normes — complétion",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": "work/coverage/completion-1-normes-matrix-20260723.json",
+      "current": {
+        "complete": 107,
+        "incomplete": 10,
+        "unknown": 46,
+        "N-A": 0,
+        "pct_complete": 65.6,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 4,
+      "key": "pv",
+      "label": "PV — capté (indexé)",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": "work/coverage/pv-couverture-municipale-20260810T013514Z.json",
+      "current": {
+        "complete": 102,
+        "incomplete": 59,
+        "unknown": 2,
+        "N-A": 0,
+        "pct_complete": 62.6,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": true
+    },
+    {
+      "id": 5,
+      "key": "reglement",
+      "label": "Règlement — déclarée+preuve",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": null,
+      "current": {
+        "complete": 94,
+        "incomplete": 51,
+        "unknown": 18,
+        "N-A": 0,
+        "pct_complete": 57.7,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 6,
+      "key": "usage_dominant",
+      "label": "Usage dominant — complétion",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": null,
+      "current": {
+        "complete": 93,
+        "incomplete": 56,
+        "unknown": 14,
+        "N-A": 0,
+        "pct_complete": 57.1,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 7,
+      "key": "effet_densifiant",
+      "label": "Effet densifiant — complétion",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": "work/coverage/completion-regdens-percity-20260810.json",
+      "current": {
+        "complete": 1,
+        "incomplete": 19,
+        "unknown": 143,
+        "N-A": 0,
+        "pct_complete": 0.6,
+        "denom": 163
+      },
+      "ceiling": "plafond DOCUMENTAIRE : l'effet densifiant n'est établi que si le document le porte (amendement ne recouvre pas l'original) — gisement rare ; l'incomplete/unknown est majoritairement NON acquérable à court terme.",
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 8,
+      "key": "prov_jointure",
+      "label": "Provenance — jointure exacte",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": "work/coverage/zone-provenance-quality-matrix-20260810T013417Z-ad1126284740439d.json",
+      "current": {
+        "complete": 111,
+        "incomplete": 0,
+        "unknown": 52,
+        "N-A": 0,
+        "pct_complete": 68.1,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 9,
+      "key": "prov_qualite",
+      "label": "Provenance — qualité retained",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": "work/coverage/zone-provenance-quality-matrix-20260810T013417Z-ad1126284740439d.json",
+      "current": {
+        "complete": 82,
+        "incomplete": 28,
+        "unknown": 53,
+        "N-A": 0,
+        "pct_complete": 50.3,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 10,
+      "key": "prov_v2",
+      "label": "Provenance — PREUVE v2 exacte",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "complete ⟺ preuve v2 EXACTE présente dans l'objet servi (url réelle + retrieved_at + sha256) ; plafond recalage ~52% (≈48% URL mortes)",
+      "source_file": "work/coverage/zone-source-readback-audit-20260810.json",
+      "current": {
+        "complete": 23,
+        "incomplete": 87,
+        "unknown": 53,
+        "N-A": 0,
+        "pct_complete": 14.1,
+        "denom": 163
+      },
+      "ceiling": "plafond RECALAGE : ~48% des URL de preuve sont MORTES ; la re-capture v2 plafonne (~52%). Campagne LONGUE (DANS la gate depuis la révision owner) ; le vecteur natif GOnet/ArcGIS débloque une partie de ce plafond.",
+      "gap": null,
+      "v2_track": true,
+      "presence_strict": false
+    },
+    {
+      "id": 11,
+      "key": "prov_url_servie",
+      "label": "Provenance — URL source servie",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "complete ⟺ zone_source_url servie (readback) non-null et re-téléchargeable",
+      "source_file": "work/coverage/zone-source-readback-audit-20260810.json",
+      "current": {
+        "complete": 47,
+        "incomplete": 61,
+        "unknown": 55,
+        "N-A": 0,
+        "pct_complete": 28.8,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 12,
+      "key": "immo_lot_zone",
+      "label": "Immo — assignation lot-zone",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": "work/coverage/immo-lot-zone-assignment-matrix-20260810.json",
+      "current": {
+        "complete": 24,
+        "incomplete": 93,
+        "unknown": 46,
+        "N-A": 0,
+        "pct_complete": 14.7,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 13,
+      "key": "immo_normes_pliees",
+      "label": "Immo — normes pliées",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": "work/coverage/immo-folded-normes-city-matrix-20260810.json",
+      "current": {
+        "complete": 4,
+        "incomplete": 109,
+        "unknown": 50,
+        "N-A": 0,
+        "pct_complete": 2.5,
+        "denom": 163
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 14,
+      "key": "immo_lots_servis",
+      "label": "Immo — lots servis",
+      "denom_basis": "167 (slug_measured — toutes les villes du cohort)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "complete ⟺ présence lots servis pour la ville (mesure par slug)",
+      "source_file": "work/immo-field-completion-matrices/immo-field-completion-matrix.json",
+      "current": {
+        "complete": 115,
+        "incomplete": 52,
+        "unknown": 0,
+        "N-A": 0,
+        "pct_complete": 68.9,
+        "denom": 167
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 15,
+      "key": "immo_surface",
+      "label": "Immo — surface m²",
+      "denom_basis": "167 (slug_measured — toutes les villes du cohort)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "complete ⟺ champ surface m² présent (mesure par slug)",
+      "source_file": "work/immo-field-completion-matrices/immo-field-completion-matrix.json",
+      "current": {
+        "complete": 115,
+        "incomplete": 0,
+        "unknown": 52,
+        "N-A": 0,
+        "pct_complete": 68.9,
+        "denom": 167
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 16,
+      "key": "immo_code_postal",
+      "label": "Immo — code postal",
+      "denom_basis": "167 (slug_measured — toutes les villes du cohort)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "complete ⟺ champ code postal présent (mesure par slug)",
+      "source_file": "work/immo-field-completion-matrices/immo-field-completion-matrix.json",
+      "current": {
+        "complete": 115,
+        "incomplete": 0,
+        "unknown": 52,
+        "N-A": 0,
+        "pct_complete": 68.9,
+        "denom": 167
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 17,
+      "key": "immo_adresse",
+      "label": "Immo — adresse civique",
+      "denom_basis": "167 (slug_measured — toutes les villes du cohort)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "complete ⟺ champ adresse civique présent (mesure par slug)",
+      "source_file": "work/immo-field-completion-matrices/immo-field-completion-matrix.json",
+      "current": {
+        "complete": 116,
+        "incomplete": 0,
+        "unknown": 51,
+        "N-A": 0,
+        "pct_complete": 69.5,
+        "denom": 167
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 18,
+      "key": "tod_applicabilite",
+      "label": "Immo — applicabilité TOD",
+      "denom_basis": "167 (slug_measured — toutes les villes du cohort)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "N-A ⟺ ville hors périmètre TOD (130 N-A) ; complete ⟺ applicabilité TOD établie",
+      "source_file": null,
+      "current": {
+        "complete": 37,
+        "incomplete": 0,
+        "unknown": 0,
+        "N-A": 130,
+        "pct_complete": 22.2,
+        "denom": 167
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 19,
+      "key": "tod_completion",
+      "label": "Immo — complétion TOD",
+      "denom_basis": "167 (slug_measured — toutes les villes du cohort)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "TODO: seuil exact du statut 'complete' à confirmer dans le générateur du fichier-source (pas d'invention).",
+      "source_file": null,
+      "current": {
+        "complete": 4,
+        "incomplete": 26,
+        "unknown": 7,
+        "N-A": 130,
+        "pct_complete": 2.4,
+        "denom": 167
+      },
+      "ceiling": null,
+      "gap": null,
+      "v2_track": false,
+      "presence_strict": false
+    },
+    {
+      "id": 20,
+      "key": "v34_qc_zoning_events",
+      "label": "Recall+précision v3.4 qc-zoning-events",
+      "denom_basis": "163 (graph_matched — villes rattachées au graphe ; 4 pending_graph_node exclues)",
+      "pct_rule": "% résolu = (complete + N-A_prouvé) / denom ; unknown ≠ complete ; anti-invention: entrée manquante → unknown",
+      "status_rule": "complete ⟺ recall+précision v3.4 (immo→geo) au seuil, LÀ où la GT immo existe ; per-ville uniquement (source b16d7947)",
+      "source_file": "work/coverage/zoning-events-col20-167-fresh-geofix-20260807.json",
+      "current": {
+        "complete": 1,
+        "incomplete": 133,
+        "unknown": 14,
+        "N-A": 15,
+        "pct_complete": 0.6,
+        "denom": 163
+      },
+      "ceiling": "plafond MATURITÉ : recall v3.4 (WP5) MESURABLE seulement là où la GT immo existe — quelques villes à ce jour ; 167 bloqué sur 2 handoffs immo (liste + export 161). DANS la gate ; per-ville dès handoff.",
+      "gap": "PARTIEL: recall v3.4 immo→geo intégré (artefact jointures WP5 par-ville) ; per-ville uniquement là où la GT immo existe — reste unknown ailleurs (167 bloqué sur 2 handoffs immo : liste + export 161)",
+      "v2_track": false,
+      "presence_strict": false
+    }
+  ]
+}
