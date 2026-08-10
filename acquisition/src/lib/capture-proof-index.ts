@@ -26,6 +26,12 @@ export interface CaptureProofIndexEntry {
   storage_key: string;
 }
 
+/** Complete immutable row identity required when a receipt consumes the index. */
+export type CaptureProofIndexRecord = Pick<
+  CaptureProofIndexEntry,
+  "url" | "sha256" | "retrieved_at" | "run_id" | "manifest_key" | "manifest_line" | "storage_key"
+>;
+
 /** Read-only S3 surface used to reconstruct the index from durable manifests. */
 export interface CaptureProofManifestReader {
   listManifestKeys(): Promise<string[]>;
@@ -234,5 +240,25 @@ export function hasCaptureProof(
     (entry) => entry.url === proof.url
       && entry.retrieved_at === proof.retrieved_at
       && entry.sha256 === proof.sha256,
+  );
+}
+
+/**
+ * Stronger than tuple membership: a deposit receipt must find its exact
+ * manifest row and CAS object in the pinned index, not merely another capture
+ * that happened to retrieve identical bytes from the same URL.
+ */
+export function hasCaptureProofRecord(
+  entries: readonly CaptureProofIndexEntry[],
+  expected: CaptureProofIndexRecord,
+): boolean {
+  return entries.some(
+    (entry) => entry.url === expected.url
+      && entry.retrieved_at === expected.retrieved_at
+      && entry.sha256 === expected.sha256
+      && entry.run_id === expected.run_id
+      && entry.manifest_key === expected.manifest_key
+      && entry.manifest_line === expected.manifest_line
+      && entry.storage_key === expected.storage_key,
   );
 }
