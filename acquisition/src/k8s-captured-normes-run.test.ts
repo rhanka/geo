@@ -1,10 +1,14 @@
 import { describe, expect, it } from "vitest";
 
-import { jobManifest, jobName } from "./k8s-captured-normes-run.js";
+import { DEFAULT_IMAGE, jobManifest, jobName } from "./k8s-captured-normes-run.js";
 
 describe("captured normes Mistral job", () => {
   const referenceKey = "registry/normes-captured-references/run-123/1.json";
   const image = "rg.fr-par.scw.cloud/sentropic-geo/normes-job:test";
+
+  it("defaults to the published captured-Mistral bridge image", () => {
+    expect(DEFAULT_IMAGE).toBe("rg.fr-par.scw.cloud/sentropic-geo/normes-job:captured-mistral-ba5b1b69");
+  });
 
   it("derives a stable DNS-safe job name from the exact reference and image", () => {
     expect(jobName(referenceKey, image)).toMatch(/^geo-normes-mistral-[a-f0-9]{20}$/);
