@@ -14,4 +14,13 @@ describe("schemaIngestArgs", () => {
     expect(args.join(" ")).not.toContain("zonage-norms-run.ts");
     expect(args.join(" ")).not.toMatch(/gpt/i);
   });
+
+  it("does not expose a force option that could overwrite an existing parquet", () => {
+    const args = schemaIngestArgs(
+      { slug: "saint-roch-de-lachigan", url: "https://sra.quebec/grille.pdf" },
+      "/geo/work/zonage-norms/saint-roch-de-lachigan/grille.pdf",
+      5,
+    );
+    expect(args).not.toContain("--force");
+  });
 });

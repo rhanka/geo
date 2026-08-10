@@ -15,6 +15,7 @@ import {
 } from "../../packages/qc-sources/src/capture/index.js";
 import { materializeCapturedNormesPdf } from "./capture-cas-materialize.js";
 import { exists, getBytes, putBytesIfAbsentOrEqual, s3Client } from "./lib/s3.js";
+import { normsKey } from "./lib/zonage-norms.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ACQUISITION = resolve(HERE, "..");
@@ -93,6 +94,25 @@ export async function extractCapturedNormes(referenceKey: string, budgetUsd: num
   if (await exists(s3, key)) {
     const receipt = CapturedNormesExtractionReceiptSchema.parse(JSON.parse((await getBytes(s3, key)).toString("utf8")));
     return { receiptKey: key, receipt, upload: "existing-equal" };
+  }
+  // A bridge receipt may be absent for a legacy parquet. Never spend another
+  // paid OCR pass merely to discover that the non-clobbering ingest will skip.
+  const existingParquet = normsKey(reference.slug);
+  if (await exists(s3, existingParquet)) {
+    const receipt = CapturedNormesExtractionReceiptSchema.parse({
+      contract: "captured-normes-extraction-receipt/v1",
+      generated_at: new Date().toISOString(),
+      capture: reference,
+      engine: "mistral-schema",
+      methode: "ocr/mistral-schema",
+      pages: [],
+      budget_usd: budgetUsd,
+      status: "refused",
+      parquet_key: null,
+      refusal: `existing norms parquet without captured bridge receipt: ${existingParquet}`,
+    });
+    const upload = await putBytesIfAbsentOrEqual(s3, key, `${JSON.stringify(receipt, null, 2)}\n`, "application/json");
+    return { receiptKey: key, receipt, upload };
   }
   const pdfDir = join(REPO, "work", "zonage-norms", reference.slug);
   const pdfPath = join(pdfDir, "grille.pdf");
