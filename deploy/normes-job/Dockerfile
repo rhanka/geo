@@ -30,14 +30,17 @@ COPY packages/geo/src/ ./packages/geo/src/
 # Install acquisition deps (tsx, @aws-sdk/client-s3, @dsnp/parquetjs, zod, …)
 # from its committed lockfile, then copy its sources.
 COPY acquisition/package.json acquisition/package-lock.json ./acquisition/
-RUN cd acquisition && npm ci
+RUN cd acquisition && npm ci \
+ && ln -s acquisition/node_modules /geo/node_modules
 COPY acquisition/src/ ./acquisition/src/
 COPY acquisition/tsconfig.json ./acquisition/
 
-# Regression guard for the captured bridge: the previous image omitted the
-# source target of the @sentropic/geo tsconfig path and died before producing a
-# durable S3 receipt. Resolve the exact import during the image build.
-RUN cd acquisition && ./node_modules/.bin/tsx -e 'import { canonicalizeZoneCodeForJoin } from "@sentropic/geo"; if (typeof canonicalizeZoneCodeForJoin !== "function") process.exit(1)'
+# Regression guard for the captured bridge: its TypeScript source reaches both
+# @sentropic/geo (through the acquisition tsconfig paths) and zod (from the
+# sibling qc-sources package). Resolve the actual bridge during image build;
+# the root node_modules symlink makes ESM upward resolution see the lockfile's
+# dependencies from both source trees.
+RUN cd acquisition && ./node_modules/.bin/tsx -e 'import { extractCapturedNormes } from "./src/captured-normes-extract.ts"; if (typeof extractCapturedNormes !== "function") process.exit(1)'
 
 # Entrypoint (materialises s3.env from job ENV, runs pull/discover → batch).
 COPY deploy/normes-job/run-normes-job.sh /usr/local/bin/run-normes-job.sh
