@@ -136,6 +136,9 @@ metadata:
     app: geo-zones-arcgis-replacement-capture
     lane: zones
     geo.city: "${target.slug}"
+    # Le dépôt lit ce label dans l'objet Job avant toute écriture servie :
+    # slug + run-stamp ne suffisent pas à attester qu'il s'agit du même run.
+    geo.run-id: "${runId}"
     geo.run-stamp: "${args.runStamp}"
 spec:
   completions: 1
@@ -150,6 +153,7 @@ spec:
         app: geo-zones-arcgis-replacement-capture
         lane: zones
         geo.city: "${target.slug}"
+        geo.run-id: "${runId}"
         geo.run-stamp: "${args.runStamp}"
     spec:
       restartPolicy: Never
