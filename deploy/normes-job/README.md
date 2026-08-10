@@ -104,6 +104,26 @@ scw jobs run get <run-id>
 
 `job-timeout` wants a Go duration string (`2h`, `30m`) — **not** a bare integer.
 
+### Captured PDF → Mistral schema (cluster)
+
+For a PDF already captured in CAS, publish its exact immutable reference first,
+then submit one bounded cluster Job. The launcher only reads that small reference
+from S3; it never materialises the PDF locally and the pod receives credentials
+only through the `geo-s3-credentials` and `mistral-credentials` SecretRefs.
+
+```sh
+NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
+  npx tsx acquisition/src/k8s-captured-normes-run.ts \
+  --kubeconfig /tmp/ovh.kubeconfig \
+  --reference-key registry/normes-captured-references/<capture-run>/<line>.json \
+  --image rg.fr-par.scw.cloud/sentropic-geo/normes-job:<immutable-tag>
+```
+
+It sets `MODE=captured`, so the only extraction child is
+`zonage-norms-schema-ingest --engine mistral-schema`; it cannot enter `full`
+discovery or the generic multi-engine batch. The bridge writes an immutable
+`registry/normes-captured-receipts/…` result (deposited or refused) to S3.
+
 ### Schedule (optional cron)
 
 ```sh
