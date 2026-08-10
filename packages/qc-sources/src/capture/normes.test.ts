@@ -71,7 +71,7 @@ describe("selectNormesPdfCandidates", () => {
 
   it("keeps a bounded internal urbanisme link without inventing a URL", () => {
     const selected = selectNormesSubpages(
-      '<a href="/services/urbanisme">Service de l’urbanisme</a><a href="https://example.org">Externe</a>',
+      '<a href="/services/urbanisme">Service de l’urbanisme</a><a href="/video/reglement.mp4">Règlement vidéo</a><a href="https://example.org">Externe</a>',
       reference,
     );
     expect(selected.subpages).toEqual([{ url: "https://sra.quebec/services/urbanisme", anchor: "Service de l’urbanisme" }]);
@@ -127,5 +127,18 @@ describe("captured normes derived worklist", () => {
       },
     }]);
     expect(parsed[0]!.derivation?.selection_key).toContain("normes-captured-subpages");
+  });
+
+  it("accepts the immutable PDF selection as the derivation of a PDF capture", () => {
+    const parsed = parseCaptureWorklist([{
+      slug: reference.slug,
+      source: "normes-grille-pdf",
+      urls: [reference.url],
+      derivation: {
+        kind: "captured-normes-pdf-selection/v1",
+        selection_key: "registry/normes-captured-discovery/example/1.json",
+      },
+    }]);
+    expect(parsed[0]!.derivation?.kind).toBe("captured-normes-pdf-selection/v1");
   });
 });
