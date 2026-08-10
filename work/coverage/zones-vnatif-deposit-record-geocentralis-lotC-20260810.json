@@ -1,0 +1,5120 @@
+{
+ "contract": "zones-vnatif-deposit-record-geocentralis-lotC/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md@64f82eae/65d4c637 + SPEC_ZONE_GEOMETRY_GRAIN.md@7c7f6731 + SPEC_ACQUISITION_METHODES_PAR_SOURCE.md@47fc8104 §12",
+ "decision": "CLEAN-UPGRADE lot-C géoCentralis WFS (legacy-traceable/candidate→documented v2), source-identity WFS, zone_code brut du champ-code (réplique pilote 05de001a/cd363a04 + lot-A 656eb46d + lot-B dd7e4cf9)",
+ "mode": "commit",
+ "run_stamp": "20260810T170000Z",
+ "worklist": "work/coverage/zones-vnatif-capture-worklist-geocentralis-lotC-20260810.json",
+ "proof_intended": {
+  "type": "wfs",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (discriminateur = preuve v2 par-feature) + geometry_grain",
+ "summary": {
+  "total": 40,
+  "deposited": 36,
+  "skipped": 4,
+  "other": 0
+ },
+ "cities": [
+  {
+   "slug": "saint-gabriel-de-brandon",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752085%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-0-8da04926-6d18-43fd-a915-69238bc492da",
+   "http_status": 200,
+   "sha256": "sha256:455bc082472bb0d36033f447bec53ee837ac4a7c226d61ab03de3b2d354c2bf5",
+   "retrieved_at": "2026-08-10T16:19:11.097Z",
+   "storage_key": "raw/zones-vnatif/cas/455bc082472bb0d36033f447bec53ee837ac4a7c226d61ab03de3b2d354c2bf5.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 84,
+   "wfs_number_matched": 84,
+   "wfs_number_returned": 84,
+   "wfs_total_features": 84,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-gabriel-de-brandon",
+   "registry_attribution_km": 1.22,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 84,
+   "sample_codes": [
+    {
+     "code_field_value": "171",
+     "zone_code": "171"
+    },
+    {
+     "code_field_value": "554",
+     "zone_code": "554"
+    },
+    {
+     "code_field_value": "206",
+     "zone_code": "206"
+    },
+    {
+     "code_field_value": "402",
+     "zone_code": "402"
+    },
+    {
+     "code_field_value": "152",
+     "zone_code": "152"
+    },
+    {
+     "code_field_value": "517",
+     "zone_code": "517"
+    },
+    {
+     "code_field_value": "113",
+     "zone_code": "113"
+    },
+    {
+     "code_field_value": "191",
+     "zone_code": "191"
+    }
+   ],
+   "live_number_matched": 84,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(84)==numberMatched(84)==features(84) && live numberMatched(84)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-gabriel-de-brandon.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 84,
+   "served_distinct_codes": 84,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52085]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 84,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-gabriel-de-brandon__flat.2026-08-10T1620Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-gabriel-de-brandon__flat.2026-08-10T1620Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-gabriel-de-brandon.geojson",
+     "served_features": 84,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752085%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:455bc082472bb0d36033f447bec53ee837ac4a7c226d61ab03de3b2d354c2bf5",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:11.097Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752085%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-gabriel-de-rimouski",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709025%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-1-2ab5ac60-4801-40af-82bd-77b2b2e3c450",
+   "http_status": 200,
+   "sha256": "sha256:1191fbf6ed5e7d0718eff0fc8c4b911241c32741bbb9b19570006f359120069b",
+   "retrieved_at": "2026-08-10T16:19:08.656Z",
+   "storage_key": "raw/zones-vnatif/cas/1191fbf6ed5e7d0718eff0fc8c4b911241c32741bbb9b19570006f359120069b.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 66,
+   "wfs_number_matched": 66,
+   "wfs_number_returned": 66,
+   "wfs_total_features": 66,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-gabriel-de-rimouski",
+   "registry_attribution_km": 0.52,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 66,
+   "sample_codes": [
+    {
+     "code_field_value": "37 (VLG)",
+     "zone_code": "37 (VLG)"
+    },
+    {
+     "code_field_value": "10 (AGF)",
+     "zone_code": "10 (AGF)"
+    },
+    {
+     "code_field_value": "13 (AGF)",
+     "zone_code": "13 (AGF)"
+    },
+    {
+     "code_field_value": "15 (AGC)",
+     "zone_code": "15 (AGC)"
+    },
+    {
+     "code_field_value": "34 (AGC)",
+     "zone_code": "34 (AGC)"
+    },
+    {
+     "code_field_value": "39 (VLG)",
+     "zone_code": "39 (VLG)"
+    },
+    {
+     "code_field_value": "12 (AGF)",
+     "zone_code": "12 (AGF)"
+    },
+    {
+     "code_field_value": "35 (VLG)",
+     "zone_code": "35 (VLG)"
+    }
+   ],
+   "live_number_matched": 66,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(66)==numberMatched(66)==features(66) && live numberMatched(66)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-gabriel-de-rimouski.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 66,
+   "served_distinct_codes": 66,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09025]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 66,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-gabriel-de-rimouski__flat.2026-08-10T1620Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-gabriel-de-rimouski__flat.2026-08-10T1620Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-gabriel-de-rimouski.geojson",
+     "served_features": 66,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709025%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:1191fbf6ed5e7d0718eff0fc8c4b911241c32741bbb9b19570006f359120069b",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:08.656Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709025%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-georges",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=29073",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-2-11e83dbb-6b9c-4530-9424-0f2fa66377f2",
+   "http_status": 200,
+   "sha256": "sha256:60d61ab6711421cebd4d9a3a4e2d62e8560530da725dcab867d6c33669211bca",
+   "retrieved_at": "2026-08-10T16:19:09.503Z",
+   "storage_key": "raw/zones-vnatif/cas/60d61ab6711421cebd4d9a3a4e2d62e8560530da725dcab867d6c33669211bca.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 583,
+   "wfs_number_matched": 583,
+   "wfs_number_returned": 583,
+   "wfs_total_features": 583,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-georges",
+   "registry_attribution_km": 0.45,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 583,
+   "sample_codes": [
+    {
+     "code_field_value": "RB-142",
+     "zone_code": "RB-142"
+    },
+    {
+     "code_field_value": "RD-393",
+     "zone_code": "RD-393"
+    },
+    {
+     "code_field_value": "RD-777",
+     "zone_code": "RD-777"
+    },
+    {
+     "code_field_value": "PB-778",
+     "zone_code": "PB-778"
+    },
+    {
+     "code_field_value": "PA-760",
+     "zone_code": "PA-760"
+    },
+    {
+     "code_field_value": "CD-740",
+     "zone_code": "CD-740"
+    },
+    {
+     "code_field_value": "RE-311",
+     "zone_code": "RE-311"
+    },
+    {
+     "code_field_value": "RD-354",
+     "zone_code": "RD-354"
+    }
+   ],
+   "live_number_matched": 583,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(583)==numberMatched(583)==features(583) && live numberMatched(583)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-georges.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 583,
+   "served_distinct_codes": 583,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=29073]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 583,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-georges__flat.2026-08-10T1620Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-georges__flat.2026-08-10T1620Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-georges.geojson",
+     "served_features": 583,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=29073",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:60d61ab6711421cebd4d9a3a4e2d62e8560530da725dcab867d6c33669211bca",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:09.503Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=29073"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-georges-de-windsor",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2740032%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-3-b7747688-d30e-460c-9c23-5bdc034aedf4",
+   "http_status": 200,
+   "sha256": "sha256:29d6c780703fc376b93e44e3e76ec7b240666b2df5594c13d0e1cbbc967ecf08",
+   "retrieved_at": "2026-08-10T16:19:28.113Z",
+   "storage_key": "raw/zones-vnatif/cas/29d6c780703fc376b93e44e3e76ec7b240666b2df5594c13d0e1cbbc967ecf08.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 41,
+   "wfs_number_matched": 41,
+   "wfs_number_returned": 41,
+   "wfs_total_features": 41,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-georges-de-windsor",
+   "registry_attribution_km": 0.08,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 41,
+   "sample_codes": [
+    {
+     "code_field_value": "Ab11",
+     "zone_code": "Ab11"
+    },
+    {
+     "code_field_value": "Ru4",
+     "zone_code": "Ru4"
+    },
+    {
+     "code_field_value": "Vi22",
+     "zone_code": "Vi22"
+    },
+    {
+     "code_field_value": "Ab6",
+     "zone_code": "Ab6"
+    },
+    {
+     "code_field_value": "Aa10",
+     "zone_code": "Aa10"
+    },
+    {
+     "code_field_value": "Vi23",
+     "zone_code": "Vi23"
+    },
+    {
+     "code_field_value": "Aa21",
+     "zone_code": "Aa21"
+    },
+    {
+     "code_field_value": "C16",
+     "zone_code": "C16"
+    }
+   ],
+   "live_number_matched": 41,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(41)==numberMatched(41)==features(41) && live numberMatched(41)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-georges-de-windsor.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 41,
+   "served_distinct_codes": 41,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=40032]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 41,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-georges-de-windsor__flat.2026-08-10T1621Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-georges-de-windsor__flat.2026-08-10T1621Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-georges-de-windsor.geojson",
+     "served_features": 41,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2740032%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:29d6c780703fc376b93e44e3e76ec7b240666b2df5594c13d0e1cbbc967ecf08",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:28.113Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2740032%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-ignace-de-loyola",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752045%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-4-08b2303d-b83c-4a9d-81a1-00f28acc130d",
+   "http_status": 200,
+   "sha256": "sha256:09764a9a701404dde3b087eacf8d7fd436dc2e26f8ecb7b26f80211718f6e0d3",
+   "retrieved_at": "2026-08-10T16:19:09.005Z",
+   "storage_key": "raw/zones-vnatif/cas/09764a9a701404dde3b087eacf8d7fd436dc2e26f8ecb7b26f80211718f6e0d3.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 35,
+   "wfs_number_matched": 35,
+   "wfs_number_returned": 35,
+   "wfs_total_features": 35,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "la-visitation-de-lile-dupas",
+   "registry_attribution_km": 3.52,
+   "nearest_matches_slug": false,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 35,
+   "sample_codes": [
+    {
+     "code_field_value": "RA3",
+     "zone_code": "RA3"
+    },
+    {
+     "code_field_value": "PA1",
+     "zone_code": "PA1"
+    },
+    {
+     "code_field_value": "IA1",
+     "zone_code": "IA1"
+    },
+    {
+     "code_field_value": "AD1",
+     "zone_code": "AD1"
+    },
+    {
+     "code_field_value": "PA5",
+     "zone_code": "PA5"
+    },
+    {
+     "code_field_value": "AD6",
+     "zone_code": "AD6"
+    },
+    {
+     "code_field_value": "RB5",
+     "zone_code": "RB5"
+    },
+    {
+     "code_field_value": "NA4",
+     "zone_code": "NA4"
+    }
+   ],
+   "live_number_matched": 35,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(35)==numberMatched(35)==features(35) && live numberMatched(35)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-ignace-de-loyola.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 35,
+   "served_distinct_codes": 35,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52045]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 35,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [
+    "anti-homonyme: nearest=la-visitation-de-lile-dupas != saint-ignace-de-loyola"
+   ],
+   "statut": "SKIP",
+   "raison": "anti-homonyme: nearest=la-visitation-de-lile-dupas != saint-ignace-de-loyola"
+  },
+  {
+   "slug": "saint-jacques-de-leeds",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731140%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-5-a848c6f6-a9a6-4ed4-8513-ad8f43e56fa4",
+   "http_status": 200,
+   "sha256": "sha256:25658f190e96747cef42d03dceaa25efea8fdb3371da778e5dc1ddf807b1d705",
+   "retrieved_at": "2026-08-10T16:19:09.108Z",
+   "storage_key": "raw/zones-vnatif/cas/25658f190e96747cef42d03dceaa25efea8fdb3371da778e5dc1ddf807b1d705.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 45,
+   "wfs_number_matched": 45,
+   "wfs_number_returned": 45,
+   "wfs_total_features": 45,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-jacques-de-leeds",
+   "registry_attribution_km": 0.08,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 45,
+   "sample_codes": [
+    {
+     "code_field_value": "Ra 4",
+     "zone_code": "Ra 4"
+    },
+    {
+     "code_field_value": "ADA 5",
+     "zone_code": "ADA 5"
+    },
+    {
+     "code_field_value": "AFA 5",
+     "zone_code": "AFA 5"
+    },
+    {
+     "code_field_value": "AG 2",
+     "zone_code": "AG 2"
+    },
+    {
+     "code_field_value": "ADA 1",
+     "zone_code": "ADA 1"
+    },
+    {
+     "code_field_value": "Ra 1",
+     "zone_code": "Ra 1"
+    },
+    {
+     "code_field_value": "ADA 2",
+     "zone_code": "ADA 2"
+    },
+    {
+     "code_field_value": "ADA 3",
+     "zone_code": "ADA 3"
+    }
+   ],
+   "live_number_matched": 45,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(45)==numberMatched(45)==features(45) && live numberMatched(45)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-jacques-de-leeds.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 45,
+   "served_distinct_codes": 45,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31140]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 45,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jacques-de-leeds__flat.2026-08-10T1621Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jacques-de-leeds__flat.2026-08-10T1621Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-jacques-de-leeds.geojson",
+     "served_features": 45,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731140%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:25658f190e96747cef42d03dceaa25efea8fdb3371da778e5dc1ddf807b1d705",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:09.108Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731140%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-jacques-le-majeur-de-wolfestown",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731025%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-6-84635770-3411-408d-aff3-04d79b0f6bd1",
+   "http_status": 200,
+   "sha256": "sha256:b9609d5e608ec6e5e6053ac91110c0a15d4c57c4487ea9d4bc5e3626390f2146",
+   "retrieved_at": "2026-08-10T16:19:09.502Z",
+   "storage_key": "raw/zones-vnatif/cas/b9609d5e608ec6e5e6053ac91110c0a15d4c57c4487ea9d4bc5e3626390f2146.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 29,
+   "wfs_number_matched": 29,
+   "wfs_number_returned": 29,
+   "wfs_total_features": 29,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-jacques-le-majeur-de-wolfestown",
+   "registry_attribution_km": 0.26,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 29,
+   "sample_codes": [
+    {
+     "code_field_value": "R�cr�fo 1",
+     "zone_code": "R�cr�fo 1"
+    },
+    {
+     "code_field_value": "AG 4",
+     "zone_code": "AG 4"
+    },
+    {
+     "code_field_value": "IDA 3",
+     "zone_code": "IDA 3"
+    },
+    {
+     "code_field_value": "IDA 5",
+     "zone_code": "IDA 5"
+    },
+    {
+     "code_field_value": "IDA 4",
+     "zone_code": "IDA 4"
+    },
+    {
+     "code_field_value": "AFA 5",
+     "zone_code": "AFA 5"
+    },
+    {
+     "code_field_value": "AFB 2",
+     "zone_code": "AFB 2"
+    },
+    {
+     "code_field_value": "URB 2",
+     "zone_code": "URB 2"
+    }
+   ],
+   "live_number_matched": 29,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(29)==numberMatched(29)==features(29) && live numberMatched(29)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-jacques-le-majeur-de-wolfestown.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 29,
+   "served_distinct_codes": 29,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31025]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 29,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jacques-le-majeur-de-wolfestown__flat.2026-08-10T1621Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jacques-le-majeur-de-wolfestown__flat.2026-08-10T1621Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-jacques-le-majeur-de-wolfestown.geojson",
+     "served_features": 29,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731025%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:b9609d5e608ec6e5e6053ac91110c0a15d4c57c4487ea9d4bc5e3626390f2146",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:09.502Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731025%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-jean-de-brebeuf",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731100%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-7-b835d398-c5e4-4675-8da1-2aa6b981e161",
+   "http_status": 200,
+   "sha256": "sha256:ede796cd98851bfd76e76f68fdc43b48abdf264fc5f8ae8f440db3717144b582",
+   "retrieved_at": "2026-08-10T16:19:30.640Z",
+   "storage_key": "raw/zones-vnatif/cas/ede796cd98851bfd76e76f68fdc43b48abdf264fc5f8ae8f440db3717144b582.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 32,
+   "wfs_number_matched": 32,
+   "wfs_number_returned": 32,
+   "wfs_total_features": 32,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-jean-de-brebeuf",
+   "registry_attribution_km": 0.73,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 32,
+   "sample_codes": [
+    {
+     "code_field_value": "ID 2",
+     "zone_code": "ID 2"
+    },
+    {
+     "code_field_value": "ID 3",
+     "zone_code": "ID 3"
+    },
+    {
+     "code_field_value": "ID 7",
+     "zone_code": "ID 7"
+    },
+    {
+     "code_field_value": "AFA 3",
+     "zone_code": "AFA 3"
+    },
+    {
+     "code_field_value": "AFA 5",
+     "zone_code": "AFA 5"
+    },
+    {
+     "code_field_value": "AFA 6",
+     "zone_code": "AFA 6"
+    },
+    {
+     "code_field_value": "AFB 2",
+     "zone_code": "AFB 2"
+    },
+    {
+     "code_field_value": "URC 1",
+     "zone_code": "URC 1"
+    }
+   ],
+   "live_number_matched": 32,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(32)==numberMatched(32)==features(32) && live numberMatched(32)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-jean-de-brebeuf.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 32,
+   "served_distinct_codes": 32,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31100]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 32,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jean-de-brebeuf__flat.2026-08-10T1621Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jean-de-brebeuf__flat.2026-08-10T1621Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-jean-de-brebeuf.geojson",
+     "served_features": 32,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731100%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:ede796cd98851bfd76e76f68fdc43b48abdf264fc5f8ae8f440db3717144b582",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:30.640Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731100%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-joseph-de-beauce",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=27043",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-8-f50f8afe-0a2b-4e94-a4e2-1f1a79a4fabb",
+   "http_status": 200,
+   "sha256": "sha256:b8422e3331f8043b2fd46e91bb39aac0c95a2959b7f9ab545b402e9d285ecc49",
+   "retrieved_at": "2026-08-10T16:19:32.675Z",
+   "storage_key": "raw/zones-vnatif/cas/b8422e3331f8043b2fd46e91bb39aac0c95a2959b7f9ab545b402e9d285ecc49.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 154,
+   "wfs_number_matched": 154,
+   "wfs_number_returned": 154,
+   "wfs_total_features": 154,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-joseph-de-beauce",
+   "registry_attribution_km": 0.29,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 149,
+   "sample_codes": [
+    {
+     "code_field_value": "H-60",
+     "zone_code": "H-60"
+    },
+    {
+     "code_field_value": "H-62",
+     "zone_code": "H-62"
+    },
+    {
+     "code_field_value": "H-62.1",
+     "zone_code": "H-62.1"
+    },
+    {
+     "code_field_value": "H-65",
+     "zone_code": "H-65"
+    },
+    {
+     "code_field_value": "H-8",
+     "zone_code": "H-8"
+    },
+    {
+     "code_field_value": "I-12",
+     "zone_code": "I-12"
+    },
+    {
+     "code_field_value": "I-68",
+     "zone_code": "I-68"
+    },
+    {
+     "code_field_value": "M-22",
+     "zone_code": "M-22"
+    }
+   ],
+   "live_number_matched": 154,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(154)==numberMatched(154)==features(154) && live numberMatched(154)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-joseph-de-beauce.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 154,
+   "served_distinct_codes": 149,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=27043]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 149,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-joseph-de-beauce__flat.2026-08-10T1621Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-joseph-de-beauce__flat.2026-08-10T1621Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-joseph-de-beauce.geojson",
+     "served_features": 154,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=27043",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:b8422e3331f8043b2fd46e91bb39aac0c95a2959b7f9ab545b402e9d285ecc49",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:32.675Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=27043"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-joseph-de-coleraine",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731045%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-9-f6b4f3dc-de5f-457e-bed7-ebba87091773",
+   "http_status": 200,
+   "sha256": "sha256:6c8204db5613148b0f2b82cadf593bc1defc58a8ceed41037885f3374e49852d",
+   "retrieved_at": "2026-08-10T16:19:38.314Z",
+   "storage_key": "raw/zones-vnatif/cas/6c8204db5613148b0f2b82cadf593bc1defc58a8ceed41037885f3374e49852d.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 103,
+   "wfs_number_matched": 103,
+   "wfs_number_returned": 103,
+   "wfs_total_features": 103,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-joseph-de-coleraine",
+   "registry_attribution_km": 0.88,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 103,
+   "sample_codes": [
+    {
+     "code_field_value": "M 5",
+     "zone_code": "M 5"
+    },
+    {
+     "code_field_value": "MA 1",
+     "zone_code": "MA 1"
+    },
+    {
+     "code_field_value": "MB 1",
+     "zone_code": "MB 1"
+    },
+    {
+     "code_field_value": "MB 2",
+     "zone_code": "MB 2"
+    },
+    {
+     "code_field_value": "MC 1",
+     "zone_code": "MC 1"
+    },
+    {
+     "code_field_value": "MC 2",
+     "zone_code": "MC 2"
+    },
+    {
+     "code_field_value": "ME 1",
+     "zone_code": "ME 1"
+    },
+    {
+     "code_field_value": "ME 2",
+     "zone_code": "ME 2"
+    }
+   ],
+   "live_number_matched": 103,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(103)==numberMatched(103)==features(103) && live numberMatched(103)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-joseph-de-coleraine.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 103,
+   "served_distinct_codes": 103,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31045]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 103,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-joseph-de-coleraine__flat.2026-08-10T1621Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-joseph-de-coleraine__flat.2026-08-10T1621Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-joseph-de-coleraine.geojson",
+     "served_features": 103,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731045%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:6c8204db5613148b0f2b82cadf593bc1defc58a8ceed41037885f3374e49852d",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:38.314Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731045%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-joseph-de-lepage",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709070%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-10-d9c37018-4098-4eaf-bef0-b503f116a55a",
+   "http_status": 200,
+   "sha256": "sha256:44687d79441a5913000011ef7bb4c7aa5015917cc18bb6628165fb7a310e58a4",
+   "retrieved_at": "2026-08-10T16:19:48.166Z",
+   "storage_key": "raw/zones-vnatif/cas/44687d79441a5913000011ef7bb4c7aa5015917cc18bb6628165fb7a310e58a4.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 54,
+   "wfs_number_matched": 54,
+   "wfs_number_returned": 54,
+   "wfs_total_features": 54,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-joseph-de-lepage",
+   "registry_attribution_km": 0.18,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 17,
+   "capture_distinct_codes": 36,
+   "sample_codes": [
+    {
+     "code_field_value": null,
+     "zone_code": null
+    },
+    {
+     "code_field_value": null,
+     "zone_code": null
+    },
+    {
+     "code_field_value": null,
+     "zone_code": null
+    },
+    {
+     "code_field_value": null,
+     "zone_code": null
+    },
+    {
+     "code_field_value": null,
+     "zone_code": null
+    },
+    {
+     "code_field_value": null,
+     "zone_code": null
+    },
+    {
+     "code_field_value": null,
+     "zone_code": null
+    },
+    {
+     "code_field_value": "14 (AGC)",
+     "zone_code": "14 (AGC)"
+    }
+   ],
+   "live_number_matched": 54,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(54)==numberMatched(54)==features(54) && live numberMatched(54)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-joseph-de-lepage.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 54,
+   "served_distinct_codes": 36,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09070]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 36,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [
+    "17 feature(s) sans zone_code (champ etiquette_1 vide) — anti-invention"
+   ],
+   "statut": "SKIP",
+   "raison": "17 feature(s) sans zone_code (champ etiquette_1 vide) — anti-invention"
+  },
+  {
+   "slug": "saint-joseph-des-erables",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727050%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-11-6c21724d-a423-4211-a8f6-2fd9957d41e7",
+   "http_status": 200,
+   "sha256": "sha256:9ba4539788f37d717a5a16e3a1d9735fa6223275378fcfb04515a86b7e1b0819",
+   "retrieved_at": "2026-08-10T16:19:31.909Z",
+   "storage_key": "raw/zones-vnatif/cas/9ba4539788f37d717a5a16e3a1d9735fa6223275378fcfb04515a86b7e1b0819.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 5,
+   "wfs_number_matched": 5,
+   "wfs_number_returned": 5,
+   "wfs_total_features": 5,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-joseph-des-erables",
+   "registry_attribution_km": 1.18,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 5,
+   "sample_codes": [
+    {
+     "code_field_value": "A-2",
+     "zone_code": "A-2"
+    },
+    {
+     "code_field_value": "A-3",
+     "zone_code": "A-3"
+    },
+    {
+     "code_field_value": "A-1",
+     "zone_code": "A-1"
+    },
+    {
+     "code_field_value": "R-1",
+     "zone_code": "R-1"
+    },
+    {
+     "code_field_value": "F-1",
+     "zone_code": "F-1"
+    }
+   ],
+   "live_number_matched": 5,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(5)==numberMatched(5)==features(5) && live numberMatched(5)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-joseph-des-erables.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 5,
+   "served_distinct_codes": 5,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=27050]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 5,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-joseph-des-erables__flat.2026-08-10T1622Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-joseph-des-erables__flat.2026-08-10T1622Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-joseph-des-erables.geojson",
+     "served_features": 5,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727050%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:9ba4539788f37d717a5a16e3a1d9735fa6223275378fcfb04515a86b7e1b0819",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:31.909Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727050%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-jules",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727055%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-12-eef7d79b-5a9d-476e-bd35-e0a1ce15233f",
+   "http_status": 200,
+   "sha256": "sha256:975dd4f66ca98f9efa4f56c87c55b71f33a5c01fb3d67759a0d83aa083732cd5",
+   "retrieved_at": "2026-08-10T16:19:59.354Z",
+   "storage_key": "raw/zones-vnatif/cas/975dd4f66ca98f9efa4f56c87c55b71f33a5c01fb3d67759a0d83aa083732cd5.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 30,
+   "wfs_number_matched": 30,
+   "wfs_number_returned": 30,
+   "wfs_total_features": 30,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-jules",
+   "registry_attribution_km": 0.28,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 30,
+   "sample_codes": [
+    {
+     "code_field_value": "AF-31",
+     "zone_code": "AF-31"
+    },
+    {
+     "code_field_value": "R-53",
+     "zone_code": "R-53"
+    },
+    {
+     "code_field_value": "A-19",
+     "zone_code": "A-19"
+    },
+    {
+     "code_field_value": "AF-33",
+     "zone_code": "AF-33"
+    },
+    {
+     "code_field_value": "R-51",
+     "zone_code": "R-51"
+    },
+    {
+     "code_field_value": "M-61",
+     "zone_code": "M-61"
+    },
+    {
+     "code_field_value": "AF-30",
+     "zone_code": "AF-30"
+    },
+    {
+     "code_field_value": "P-70",
+     "zone_code": "P-70"
+    }
+   ],
+   "live_number_matched": 30,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(30)==numberMatched(30)==features(30) && live numberMatched(30)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-jules.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 30,
+   "served_distinct_codes": 30,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=27055]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 30,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jules__flat.2026-08-10T1622Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-jules__flat.2026-08-10T1622Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-jules.geojson",
+     "served_features": 30,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727055%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:975dd4f66ca98f9efa4f56c87c55b71f33a5c01fb3d67759a0d83aa083732cd5",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:59.354Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727055%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-julien",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731035%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-13-4358a13f-2313-46ac-9245-69e37e1ab5a9",
+   "http_status": 200,
+   "sha256": "sha256:80c2071d68767c9546295fb5cfec1c27c79e80a9275aa49d133d3799bc3bc3a5",
+   "retrieved_at": "2026-08-10T16:20:03.207Z",
+   "storage_key": "raw/zones-vnatif/cas/80c2071d68767c9546295fb5cfec1c27c79e80a9275aa49d133d3799bc3bc3a5.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 34,
+   "wfs_number_matched": 34,
+   "wfs_number_returned": 34,
+   "wfs_total_features": 34,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-julien",
+   "registry_attribution_km": 1.58,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 33,
+   "sample_codes": [
+    {
+     "code_field_value": "AGA 3",
+     "zone_code": "AGA 3"
+    },
+    {
+     "code_field_value": "AFAb 1",
+     "zone_code": "AFAb 1"
+    },
+    {
+     "code_field_value": "AFAa 3",
+     "zone_code": "AFAa 3"
+    },
+    {
+     "code_field_value": "AGA 1",
+     "zone_code": "AGA 1"
+    },
+    {
+     "code_field_value": "AFAa 9",
+     "zone_code": "AFAa 9"
+    },
+    {
+     "code_field_value": "AD 2",
+     "zone_code": "AD 2"
+    },
+    {
+     "code_field_value": "AFAa 4",
+     "zone_code": "AFAa 4"
+    },
+    {
+     "code_field_value": "AFB 2",
+     "zone_code": "AFB 2"
+    }
+   ],
+   "live_number_matched": 34,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(34)==numberMatched(34)==features(34) && live numberMatched(34)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-julien.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 34,
+   "served_distinct_codes": 33,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31035]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 33,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-julien__flat.2026-08-10T1622Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-julien__flat.2026-08-10T1622Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-julien.geojson",
+     "served_features": 34,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731035%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:80c2071d68767c9546295fb5cfec1c27c79e80a9275aa49d133d3799bc3bc3a5",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:20:03.207Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731035%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-just-de-bretenieres",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18005",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-14-e0921a24-85c0-4603-92db-917692ff0588",
+   "http_status": 200,
+   "sha256": "sha256:bdfeb31191f6433853907b9aba7e989eb0d3876a7aa0774533713f8d9b1c1b43",
+   "retrieved_at": "2026-08-10T16:19:31.908Z",
+   "storage_key": "raw/zones-vnatif/cas/bdfeb31191f6433853907b9aba7e989eb0d3876a7aa0774533713f8d9b1c1b43.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 44,
+   "wfs_number_matched": 44,
+   "wfs_number_returned": 44,
+   "wfs_total_features": 44,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-just-de-bretenieres",
+   "registry_attribution_km": 2.14,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 39,
+   "sample_codes": [
+    {
+     "code_field_value": "IcM.5",
+     "zone_code": "IcM.5"
+    },
+    {
+     "code_field_value": "RbM.6",
+     "zone_code": "RbM.6"
+    },
+    {
+     "code_field_value": "Fc.6",
+     "zone_code": "Fc.6"
+    },
+    {
+     "code_field_value": "Rb.3",
+     "zone_code": "Rb.3"
+    },
+    {
+     "code_field_value": "Rb.4",
+     "zone_code": "Rb.4"
+    },
+    {
+     "code_field_value": "IcM.1",
+     "zone_code": "IcM.1"
+    },
+    {
+     "code_field_value": "ReM.1",
+     "zone_code": "ReM.1"
+    },
+    {
+     "code_field_value": "Rb.5",
+     "zone_code": "Rb.5"
+    }
+   ],
+   "live_number_matched": 44,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(44)==numberMatched(44)==features(44) && live numberMatched(44)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-just-de-bretenieres.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 44,
+   "served_distinct_codes": 39,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18005]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 39,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-just-de-bretenieres__flat.2026-08-10T1622Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-just-de-bretenieres__flat.2026-08-10T1622Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-just-de-bretenieres.geojson",
+     "served_features": 44,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18005",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:bdfeb31191f6433853907b9aba7e989eb0d3876a7aa0774533713f8d9b1c1b43",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:31.908Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18005"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-leon-le-grand--la-matapedia",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707030%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-0-8da04926-6d18-43fd-a915-69238bc492da",
+   "http_status": 200,
+   "sha256": "sha256:c28e843394ba03ad66f475e806c9baaa52585a4aa10365adf4246308424dfc21",
+   "retrieved_at": "2026-08-10T16:19:14.428Z",
+   "storage_key": "raw/zones-vnatif/cas/c28e843394ba03ad66f475e806c9baaa52585a4aa10365adf4246308424dfc21.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 70,
+   "wfs_number_matched": 70,
+   "wfs_number_returned": 70,
+   "wfs_total_features": 70,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-leon-le-grand--la-matapedia",
+   "registry_attribution_km": 0.2,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 70,
+   "sample_codes": [
+    {
+     "code_field_value": "52 Ha",
+     "zone_code": "52 Ha"
+    },
+    {
+     "code_field_value": "54 Ha",
+     "zone_code": "54 Ha"
+    },
+    {
+     "code_field_value": "42 P",
+     "zone_code": "42 P"
+    },
+    {
+     "code_field_value": "84 Ha",
+     "zone_code": "84 Ha"
+    },
+    {
+     "code_field_value": "75 Cp",
+     "zone_code": "75 Cp"
+    },
+    {
+     "code_field_value": "53 Cp",
+     "zone_code": "53 Cp"
+    },
+    {
+     "code_field_value": "37 Ha",
+     "zone_code": "37 Ha"
+    },
+    {
+     "code_field_value": "58 Ha",
+     "zone_code": "58 Ha"
+    }
+   ],
+   "live_number_matched": 70,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(70)==numberMatched(70)==features(70) && live numberMatched(70)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-leon-le-grand--la-matapedia.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 70,
+   "served_distinct_codes": 70,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07030]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 70,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-leon-le-grand--la-matapedia__flat.2026-08-10T1622Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-leon-le-grand--la-matapedia__flat.2026-08-10T1622Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-leon-le-grand--la-matapedia.geojson",
+     "served_features": 70,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707030%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:c28e843394ba03ad66f475e806c9baaa52585a4aa10365adf4246308424dfc21",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:14.428Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707030%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-marc-de-figuery",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788040%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-1-2ab5ac60-4801-40af-82bd-77b2b2e3c450",
+   "http_status": 200,
+   "sha256": "sha256:0fb65f98e9b7d84c48dba4f1182a69aea06ce7e3df05d1b19e681295690a526f",
+   "retrieved_at": "2026-08-10T16:19:11.368Z",
+   "storage_key": "raw/zones-vnatif/cas/0fb65f98e9b7d84c48dba4f1182a69aea06ce7e3df05d1b19e681295690a526f.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 47,
+   "wfs_number_matched": 47,
+   "wfs_number_returned": 47,
+   "wfs_total_features": 47,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-marc-de-figuery",
+   "registry_attribution_km": 0.9,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 47,
+   "sample_codes": [
+    {
+     "code_field_value": "VC-17",
+     "zone_code": "VC-17"
+    },
+    {
+     "code_field_value": "VC-1",
+     "zone_code": "VC-1"
+    },
+    {
+     "code_field_value": "VD-2",
+     "zone_code": "VD-2"
+    },
+    {
+     "code_field_value": "AG-3",
+     "zone_code": "AG-3"
+    },
+    {
+     "code_field_value": "VC-9",
+     "zone_code": "VC-9"
+    },
+    {
+     "code_field_value": "Ra-8",
+     "zone_code": "Ra-8"
+    },
+    {
+     "code_field_value": "Ra-7",
+     "zone_code": "Ra-7"
+    },
+    {
+     "code_field_value": "Ra-1",
+     "zone_code": "Ra-1"
+    }
+   ],
+   "live_number_matched": 47,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(47)==numberMatched(47)==features(47) && live numberMatched(47)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-marc-de-figuery.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 47,
+   "served_distinct_codes": 47,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88040]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 47,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-marc-de-figuery__flat.2026-08-10T1622Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-marc-de-figuery__flat.2026-08-10T1622Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-marc-de-figuery.geojson",
+     "served_features": 47,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788040%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:0fb65f98e9b7d84c48dba4f1182a69aea06ce7e3df05d1b19e681295690a526f",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:11.368Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788040%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-marcel",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2717020%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-2-11e83dbb-6b9c-4530-9424-0f2fa66377f2",
+   "http_status": 200,
+   "sha256": "sha256:0c845575c66899c63b9b3478a05148e57849263d37f8ca78793649a69e3da4fa",
+   "retrieved_at": "2026-08-10T16:19:12.617Z",
+   "storage_key": "raw/zones-vnatif/cas/0c845575c66899c63b9b3478a05148e57849263d37f8ca78793649a69e3da4fa.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 6,
+   "wfs_number_matched": 6,
+   "wfs_number_returned": 6,
+   "wfs_total_features": 6,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-apolline-de-patton",
+   "registry_attribution_km": 7.28,
+   "nearest_matches_slug": false,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 5,
+   "sample_codes": [
+    {
+     "code_field_value": "Fc",
+     "zone_code": "Fc"
+    },
+    {
+     "code_field_value": "Fc.8",
+     "zone_code": "Fc.8"
+    },
+    {
+     "code_field_value": "Fc",
+     "zone_code": "Fc"
+    },
+    {
+     "code_field_value": "Fc.3",
+     "zone_code": "Fc.3"
+    },
+    {
+     "code_field_value": "V",
+     "zone_code": "V"
+    },
+    {
+     "code_field_value": "V.2",
+     "zone_code": "V.2"
+    }
+   ],
+   "live_number_matched": 6,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(6)==numberMatched(6)==features(6) && live numberMatched(6)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-marcel.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 6,
+   "served_distinct_codes": 5,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=17020]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 5,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [
+    "anti-homonyme: nearest=sainte-apolline-de-patton != saint-marcel"
+   ],
+   "statut": "SKIP",
+   "raison": "anti-homonyme: nearest=sainte-apolline-de-patton != saint-marcel"
+  },
+  {
+   "slug": "saint-marcellin",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2710025%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-3-b7747688-d30e-460c-9c23-5bdc034aedf4",
+   "http_status": 200,
+   "sha256": "sha256:a8cbeb352a03b66d5eb41ea894e6ee89173702b45693ba476d0ca23df3c2e7b4",
+   "retrieved_at": "2026-08-10T16:19:30.667Z",
+   "storage_key": "raw/zones-vnatif/cas/a8cbeb352a03b66d5eb41ea894e6ee89173702b45693ba476d0ca23df3c2e7b4.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 3,
+   "wfs_number_matched": 3,
+   "wfs_number_returned": 3,
+   "wfs_total_features": 3,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-gabriel-de-rimouski",
+   "registry_attribution_km": 4.41,
+   "nearest_matches_slug": false,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 3,
+   "sample_codes": [
+    {
+     "code_field_value": "18 (AGC)",
+     "zone_code": "18 (AGC)"
+    },
+    {
+     "code_field_value": "16 (AGF)",
+     "zone_code": "16 (AGF)"
+    },
+    {
+     "code_field_value": "06 (FRT)",
+     "zone_code": "06 (FRT)"
+    }
+   ],
+   "live_number_matched": 3,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(3)==numberMatched(3)==features(3) && live numberMatched(3)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-marcellin.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 3,
+   "served_distinct_codes": 3,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=10025]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 3,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [
+    "anti-homonyme: nearest=saint-gabriel-de-rimouski != saint-marcellin"
+   ],
+   "statut": "SKIP",
+   "raison": "anti-homonyme: nearest=saint-gabriel-de-rimouski != saint-marcellin"
+  },
+  {
+   "slug": "saint-mathieu-dharricana",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788050%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-4-08b2303d-b83c-4a9d-81a1-00f28acc130d",
+   "http_status": 200,
+   "sha256": "sha256:eed88b2ec98d57340bafdbaa285af48a94f86bf45f025cb960be4b7d043b7eec",
+   "retrieved_at": "2026-08-10T16:19:11.763Z",
+   "storage_key": "raw/zones-vnatif/cas/eed88b2ec98d57340bafdbaa285af48a94f86bf45f025cb960be4b7d043b7eec.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 47,
+   "wfs_number_matched": 47,
+   "wfs_number_returned": 47,
+   "wfs_total_features": 47,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-mathieu-dharricana",
+   "registry_attribution_km": 1.13,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 47,
+   "sample_codes": [
+    {
+     "code_field_value": "CO-1",
+     "zone_code": "CO-1"
+    },
+    {
+     "code_field_value": "FO-2",
+     "zone_code": "FO-2"
+    },
+    {
+     "code_field_value": "FO-3",
+     "zone_code": "FO-3"
+    },
+    {
+     "code_field_value": "AF-2",
+     "zone_code": "AF-2"
+    },
+    {
+     "code_field_value": "AF-3",
+     "zone_code": "AF-3"
+    },
+    {
+     "code_field_value": "AF-5",
+     "zone_code": "AF-5"
+    },
+    {
+     "code_field_value": "AG-1",
+     "zone_code": "AG-1"
+    },
+    {
+     "code_field_value": "VD-1",
+     "zone_code": "VD-1"
+    }
+   ],
+   "live_number_matched": 47,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(47)==numberMatched(47)==features(47) && live numberMatched(47)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-mathieu-dharricana.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 47,
+   "served_distinct_codes": 47,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88050]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 47,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-mathieu-dharricana__flat.2026-08-10T1622Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-mathieu-dharricana__flat.2026-08-10T1622Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-mathieu-dharricana.geojson",
+     "served_features": 47,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788050%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:eed88b2ec98d57340bafdbaa285af48a94f86bf45f025cb960be4b7d043b7eec",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:11.763Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788050%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-moise",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707095%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-5-a848c6f6-a9a6-4ed4-8513-ad8f43e56fa4",
+   "http_status": 200,
+   "sha256": "sha256:64e800a79bf9b0161edc678ee4c46d641fe905e2946b49b80c55545a721163bc",
+   "retrieved_at": "2026-08-10T16:19:12.698Z",
+   "storage_key": "raw/zones-vnatif/cas/64e800a79bf9b0161edc678ee4c46d641fe905e2946b49b80c55545a721163bc.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 51,
+   "wfs_number_matched": 51,
+   "wfs_number_returned": 51,
+   "wfs_total_features": 51,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-moise",
+   "registry_attribution_km": 1.25,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 51,
+   "sample_codes": [
+    {
+     "code_field_value": "54 Cc",
+     "zone_code": "54 Cc"
+    },
+    {
+     "code_field_value": "53 Cp",
+     "zone_code": "53 Cp"
+    },
+    {
+     "code_field_value": "56 Ha",
+     "zone_code": "56 Ha"
+    },
+    {
+     "code_field_value": "57 Ha",
+     "zone_code": "57 Ha"
+    },
+    {
+     "code_field_value": "58 Ha",
+     "zone_code": "58 Ha"
+    },
+    {
+     "code_field_value": "38 Ha",
+     "zone_code": "38 Ha"
+    },
+    {
+     "code_field_value": "35 Ha",
+     "zone_code": "35 Ha"
+    },
+    {
+     "code_field_value": "59 Ha",
+     "zone_code": "59 Ha"
+    }
+   ],
+   "live_number_matched": 51,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(51)==numberMatched(51)==features(51) && live numberMatched(51)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-moise.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 51,
+   "served_distinct_codes": 51,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07095]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 51,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-moise__flat.2026-08-10T1622Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-moise__flat.2026-08-10T1622Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-moise.geojson",
+     "served_features": 51,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707095%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:64e800a79bf9b0161edc678ee4c46d641fe905e2946b49b80c55545a721163bc",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:12.698Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707095%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-noel",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707100%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-6-84635770-3411-408d-aff3-04d79b0f6bd1",
+   "http_status": 200,
+   "sha256": "sha256:b3e57093a060c2269c382820d749cd3b611905ed33267909da5575935f5844b8",
+   "retrieved_at": "2026-08-10T16:19:12.558Z",
+   "storage_key": "raw/zones-vnatif/cas/b3e57093a060c2269c382820d749cd3b611905ed33267909da5575935f5844b8.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 53,
+   "wfs_number_matched": 53,
+   "wfs_number_returned": 53,
+   "wfs_total_features": 53,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-noel",
+   "registry_attribution_km": 1.11,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 53,
+   "sample_codes": [
+    {
+     "code_field_value": "56 P",
+     "zone_code": "56 P"
+    },
+    {
+     "code_field_value": "53 P",
+     "zone_code": "53 P"
+    },
+    {
+     "code_field_value": "41 P",
+     "zone_code": "41 P"
+    },
+    {
+     "code_field_value": "55 P",
+     "zone_code": "55 P"
+    },
+    {
+     "code_field_value": "50 Cc",
+     "zone_code": "50 Cc"
+    },
+    {
+     "code_field_value": "43 Cc",
+     "zone_code": "43 Cc"
+    },
+    {
+     "code_field_value": "37 Cc",
+     "zone_code": "37 Cc"
+    },
+    {
+     "code_field_value": "51 Cc",
+     "zone_code": "51 Cc"
+    }
+   ],
+   "live_number_matched": 53,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(53)==numberMatched(53)==features(53) && live numberMatched(53)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-noel.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 53,
+   "served_distinct_codes": 53,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07100]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 53,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-noel__flat.2026-08-10T1623Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-noel__flat.2026-08-10T1623Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-noel.geojson",
+     "served_features": 53,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707100%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:b3e57093a060c2269c382820d749cd3b611905ed33267909da5575935f5844b8",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:12.558Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707100%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-octave-de-metis",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709055%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-7-b835d398-c5e4-4675-8da1-2aa6b981e161",
+   "http_status": 200,
+   "sha256": "sha256:f5ad75d3f855a3f48b9065ea1d6dc5de85c8af127fc573dfdb60e373b14d4ef0",
+   "retrieved_at": "2026-08-10T16:19:34.200Z",
+   "storage_key": "raw/zones-vnatif/cas/f5ad75d3f855a3f48b9065ea1d6dc5de85c8af127fc573dfdb60e373b14d4ef0.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 33,
+   "wfs_number_matched": 33,
+   "wfs_number_returned": 33,
+   "wfs_total_features": 33,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-octave-de-metis",
+   "registry_attribution_km": 0.12,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 33,
+   "sample_codes": [
+    {
+     "code_field_value": "16 (HBF)",
+     "zone_code": "16 (HBF)"
+    },
+    {
+     "code_field_value": "09 (AIC)",
+     "zone_code": "09 (AIC)"
+    },
+    {
+     "code_field_value": "19 (MTF)",
+     "zone_code": "19 (MTF)"
+    },
+    {
+     "code_field_value": "20 (MTF)",
+     "zone_code": "20 (MTF)"
+    },
+    {
+     "code_field_value": "34 (VLG)",
+     "zone_code": "34 (VLG)"
+    },
+    {
+     "code_field_value": "30 (MTF)",
+     "zone_code": "30 (MTF)"
+    },
+    {
+     "code_field_value": "22 (MTF)",
+     "zone_code": "22 (MTF)"
+    },
+    {
+     "code_field_value": "25 (ILG)",
+     "zone_code": "25 (ILG)"
+    }
+   ],
+   "live_number_matched": 33,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(33)==numberMatched(33)==features(33) && live numberMatched(33)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-octave-de-metis.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 33,
+   "served_distinct_codes": 33,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09055]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 33,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-octave-de-metis__flat.2026-08-10T1623Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-octave-de-metis__flat.2026-08-10T1623Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-octave-de-metis.geojson",
+     "served_features": 33,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709055%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:f5ad75d3f855a3f48b9065ea1d6dc5de85c8af127fc573dfdb60e373b14d4ef0",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:34.200Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709055%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-paul",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761005%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-8-f50f8afe-0a2b-4e94-a4e2-1f1a79a4fabb",
+   "http_status": 200,
+   "sha256": "sha256:3378b70e719e2b5675b91f2010df4afa657d6893cd56324b317d332de7802ac5",
+   "retrieved_at": "2026-08-10T16:19:36.051Z",
+   "storage_key": "raw/zones-vnatif/cas/3378b70e719e2b5675b91f2010df4afa657d6893cd56324b317d332de7802ac5.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 90,
+   "wfs_number_matched": 90,
+   "wfs_number_returned": 90,
+   "wfs_total_features": 90,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-paul",
+   "registry_attribution_km": 0.44,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 88,
+   "sample_codes": [
+    {
+     "code_field_value": "A110",
+     "zone_code": "A110"
+    },
+    {
+     "code_field_value": "A113",
+     "zone_code": "A113"
+    },
+    {
+     "code_field_value": "H2",
+     "zone_code": "H2"
+    },
+    {
+     "code_field_value": "P4",
+     "zone_code": "P4"
+    },
+    {
+     "code_field_value": "A106",
+     "zone_code": "A106"
+    },
+    {
+     "code_field_value": "H31",
+     "zone_code": "H31"
+    },
+    {
+     "code_field_value": "H16",
+     "zone_code": "H16"
+    },
+    {
+     "code_field_value": "H21A",
+     "zone_code": "H21A"
+    }
+   ],
+   "live_number_matched": 90,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(90)==numberMatched(90)==features(90) && live numberMatched(90)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-paul.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 90,
+   "served_distinct_codes": 88,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61005]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 88,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-paul__flat.2026-08-10T1623Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-paul__flat.2026-08-10T1623Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-paul.geojson",
+     "served_features": 90,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761005%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:3378b70e719e2b5675b91f2010df4afa657d6893cd56324b317d332de7802ac5",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:36.051Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761005%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-pierre",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761020%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-9-f6b4f3dc-de5f-457e-bed7-ebba87091773",
+   "http_status": 200,
+   "sha256": "sha256:ab627c78f949e2deabe22aa06a29a9efb936732e47f973cccc497e984bb92858",
+   "retrieved_at": "2026-08-10T16:19:40.898Z",
+   "storage_key": "raw/zones-vnatif/cas/ab627c78f949e2deabe22aa06a29a9efb936732e47f973cccc497e984bb92858.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 11,
+   "wfs_number_matched": 11,
+   "wfs_number_returned": 11,
+   "wfs_total_features": 11,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-pierre",
+   "registry_attribution_km": 0.09,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 11,
+   "sample_codes": [
+    {
+     "code_field_value": "I-5",
+     "zone_code": "I-5"
+    },
+    {
+     "code_field_value": "I-1",
+     "zone_code": "I-1"
+    },
+    {
+     "code_field_value": "A-1",
+     "zone_code": "A-1"
+    },
+    {
+     "code_field_value": "I-6",
+     "zone_code": "I-6"
+    },
+    {
+     "code_field_value": "I-3",
+     "zone_code": "I-3"
+    },
+    {
+     "code_field_value": "I-4",
+     "zone_code": "I-4"
+    },
+    {
+     "code_field_value": "R-3",
+     "zone_code": "R-3"
+    },
+    {
+     "code_field_value": "R-5",
+     "zone_code": "R-5"
+    }
+   ],
+   "live_number_matched": 11,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(11)==numberMatched(11)==features(11) && live numberMatched(11)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-pierre.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 11,
+   "served_distinct_codes": 11,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61020]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 11,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre__flat.2026-08-10T1623Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre__flat.2026-08-10T1623Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-pierre.geojson",
+     "served_features": 11,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761020%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:ab627c78f949e2deabe22aa06a29a9efb936732e47f973cccc497e984bb92858",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:40.898Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761020%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-pierre-de-broughton",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731135%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-10-d9c37018-4098-4eaf-bef0-b503f116a55a",
+   "http_status": 200,
+   "sha256": "sha256:9324c2548017fb77d34f07434bea23ada13c581695a7bc1a611d810d8c7f6cc3",
+   "retrieved_at": "2026-08-10T16:19:51.435Z",
+   "storage_key": "raw/zones-vnatif/cas/9324c2548017fb77d34f07434bea23ada13c581695a7bc1a611d810d8c7f6cc3.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 92,
+   "wfs_number_matched": 92,
+   "wfs_number_returned": 92,
+   "wfs_total_features": 92,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-pierre-de-broughton",
+   "registry_attribution_km": 1.36,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 92,
+   "sample_codes": [
+    {
+     "code_field_value": "IDA 15",
+     "zone_code": "IDA 15"
+    },
+    {
+     "code_field_value": "IDA 2",
+     "zone_code": "IDA 2"
+    },
+    {
+     "code_field_value": "IDS 5",
+     "zone_code": "IDS 5"
+    },
+    {
+     "code_field_value": "IDA 9",
+     "zone_code": "IDA 9"
+    },
+    {
+     "code_field_value": "URB 3",
+     "zone_code": "URB 3"
+    },
+    {
+     "code_field_value": "IDAras 1",
+     "zone_code": "IDAras 1"
+    },
+    {
+     "code_field_value": "IDA 5",
+     "zone_code": "IDA 5"
+    },
+    {
+     "code_field_value": "AFa 3",
+     "zone_code": "AFa 3"
+    }
+   ],
+   "live_number_matched": 92,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(92)==numberMatched(92)==features(92) && live numberMatched(92)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-broughton.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 92,
+   "served_distinct_codes": 92,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31135]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 92,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre-de-broughton__flat.2026-08-10T1623Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre-de-broughton__flat.2026-08-10T1623Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-broughton.geojson",
+     "served_features": 92,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731135%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:9324c2548017fb77d34f07434bea23ada13c581695a7bc1a611d810d8c7f6cc3",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:51.435Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731135%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-pierre-de-la-riviere-du-sud",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18055",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-11-6c21724d-a423-4211-a8f6-2fd9957d41e7",
+   "http_status": 200,
+   "sha256": "sha256:a9c62c2593fa696112b7637421178ea1441e28a1a1f03eae49e48b1045a06af6",
+   "retrieved_at": "2026-08-10T16:19:34.659Z",
+   "storage_key": "raw/zones-vnatif/cas/a9c62c2593fa696112b7637421178ea1441e28a1a1f03eae49e48b1045a06af6.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 65,
+   "wfs_number_matched": 65,
+   "wfs_number_returned": 65,
+   "wfs_total_features": 65,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-pierre-de-la-riviere-du-sud",
+   "registry_attribution_km": 1.78,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 58,
+   "sample_codes": [
+    {
+     "code_field_value": "Ab.1",
+     "zone_code": "Ab.1"
+    },
+    {
+     "code_field_value": "Ac.5",
+     "zone_code": "Ac.5"
+    },
+    {
+     "code_field_value": "Ib.1",
+     "zone_code": "Ib.1"
+    },
+    {
+     "code_field_value": "Ac.3",
+     "zone_code": "Ac.3"
+    },
+    {
+     "code_field_value": "Fa.2",
+     "zone_code": "Fa.2"
+    },
+    {
+     "code_field_value": "Fa.3",
+     "zone_code": "Fa.3"
+    },
+    {
+     "code_field_value": "Ac.7",
+     "zone_code": "Ac.7"
+    },
+    {
+     "code_field_value": "V.1",
+     "zone_code": "V.1"
+    }
+   ],
+   "live_number_matched": 65,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(65)==numberMatched(65)==features(65) && live numberMatched(65)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-la-riviere-du-sud.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 65,
+   "served_distinct_codes": 58,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18055]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 58,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre-de-la-riviere-du-sud__flat.2026-08-10T1623Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-pierre-de-la-riviere-du-sud__flat.2026-08-10T1623Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-pierre-de-la-riviere-du-sud.geojson",
+     "served_features": 65,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18055",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:a9c62c2593fa696112b7637421178ea1441e28a1a1f03eae49e48b1045a06af6",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:34.659Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18055"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-severin--beauce-centre",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727070%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-12-eef7d79b-5a9d-476e-bd35-e0a1ce15233f",
+   "http_status": 200,
+   "sha256": "sha256:81b160aa4f81863837a8db5507cba3ca1feba1fd3c3af5fdbed6ac9984a4e1a3",
+   "retrieved_at": "2026-08-10T16:20:02.742Z",
+   "storage_key": "raw/zones-vnatif/cas/81b160aa4f81863837a8db5507cba3ca1feba1fd3c3af5fdbed6ac9984a4e1a3.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 29,
+   "wfs_number_matched": 29,
+   "wfs_number_returned": 29,
+   "wfs_total_features": 29,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-severin--beauce-centre",
+   "registry_attribution_km": 0.88,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 29,
+   "sample_codes": [
+    {
+     "code_field_value": "A-17",
+     "zone_code": "A-17"
+    },
+    {
+     "code_field_value": "V-71",
+     "zone_code": "V-71"
+    },
+    {
+     "code_field_value": "L-60",
+     "zone_code": "L-60"
+    },
+    {
+     "code_field_value": "P-50",
+     "zone_code": "P-50"
+    },
+    {
+     "code_field_value": "F-22",
+     "zone_code": "F-22"
+    },
+    {
+     "code_field_value": "R-34",
+     "zone_code": "R-34"
+    },
+    {
+     "code_field_value": "A-14",
+     "zone_code": "A-14"
+    },
+    {
+     "code_field_value": "R-33",
+     "zone_code": "R-33"
+    }
+   ],
+   "live_number_matched": 29,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(29)==numberMatched(29)==features(29) && live numberMatched(29)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-severin--beauce-centre.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 29,
+   "served_distinct_codes": 29,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=27070]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 29,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-severin--beauce-centre__flat.2026-08-10T1623Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-severin--beauce-centre__flat.2026-08-10T1623Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-severin--beauce-centre.geojson",
+     "served_features": 29,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727070%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:81b160aa4f81863837a8db5507cba3ca1feba1fd3c3af5fdbed6ac9984a4e1a3",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:20:02.742Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2727070%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-tharcisius",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707070%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-13-4358a13f-2313-46ac-9245-69e37e1ab5a9",
+   "http_status": 200,
+   "sha256": "sha256:48782fbeae5ae715361054a8a5df3974cae8d6eddcf9ae3904476b50cad3360d",
+   "retrieved_at": "2026-08-10T16:20:06.117Z",
+   "storage_key": "raw/zones-vnatif/cas/48782fbeae5ae715361054a8a5df3974cae8d6eddcf9ae3904476b50cad3360d.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 49,
+   "wfs_number_matched": 49,
+   "wfs_number_returned": 49,
+   "wfs_total_features": 49,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-tharcisius",
+   "registry_attribution_km": 1.01,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 49,
+   "sample_codes": [
+    {
+     "code_field_value": "52 Ha",
+     "zone_code": "52 Ha"
+    },
+    {
+     "code_field_value": "33 Ha",
+     "zone_code": "33 Ha"
+    },
+    {
+     "code_field_value": "59 Ha",
+     "zone_code": "59 Ha"
+    },
+    {
+     "code_field_value": "37 P",
+     "zone_code": "37 P"
+    },
+    {
+     "code_field_value": "47 P",
+     "zone_code": "47 P"
+    },
+    {
+     "code_field_value": "41 P",
+     "zone_code": "41 P"
+    },
+    {
+     "code_field_value": "55 P",
+     "zone_code": "55 P"
+    },
+    {
+     "code_field_value": "43 Cp",
+     "zone_code": "43 Cp"
+    }
+   ],
+   "live_number_matched": 49,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(49)==numberMatched(49)==features(49) && live numberMatched(49)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-tharcisius.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 49,
+   "served_distinct_codes": 49,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07070]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 49,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-tharcisius__flat.2026-08-10T1623Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-tharcisius__flat.2026-08-10T1623Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-tharcisius.geojson",
+     "served_features": 49,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707070%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:48782fbeae5ae715361054a8a5df3974cae8d6eddcf9ae3904476b50cad3360d",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:20:06.117Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707070%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-vianney",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707075%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-14-e0921a24-85c0-4603-92db-917692ff0588",
+   "http_status": 200,
+   "sha256": "sha256:97cce304bfc20e0a64bd64fe81f62ff49ccad8a7ad243501a75f25f0b1494a47",
+   "retrieved_at": "2026-08-10T16:19:35.083Z",
+   "storage_key": "raw/zones-vnatif/cas/97cce304bfc20e0a64bd64fe81f62ff49ccad8a7ad243501a75f25f0b1494a47.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 56,
+   "wfs_number_matched": 56,
+   "wfs_number_returned": 56,
+   "wfs_total_features": 56,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-vianney",
+   "registry_attribution_km": 0.35,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 56,
+   "sample_codes": [
+    {
+     "code_field_value": "39 P",
+     "zone_code": "39 P"
+    },
+    {
+     "code_field_value": "58 I",
+     "zone_code": "58 I"
+    },
+    {
+     "code_field_value": "5 Af",
+     "zone_code": "5 Af"
+    },
+    {
+     "code_field_value": "54 P",
+     "zone_code": "54 P"
+    },
+    {
+     "code_field_value": "46 Cc",
+     "zone_code": "46 Cc"
+    },
+    {
+     "code_field_value": "38 Cc",
+     "zone_code": "38 Cc"
+    },
+    {
+     "code_field_value": "45 Cc",
+     "zone_code": "45 Cc"
+    },
+    {
+     "code_field_value": "35 Cc",
+     "zone_code": "35 Cc"
+    }
+   ],
+   "live_number_matched": 56,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(56)==numberMatched(56)==features(56) && live numberMatched(56)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-vianney.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 56,
+   "served_distinct_codes": 56,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07075]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 56,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-vianney__flat.2026-08-10T1624Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-vianney__flat.2026-08-10T1624Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-vianney.geojson",
+     "served_features": 56,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707075%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:97cce304bfc20e0a64bd64fe81f62ff49ccad8a7ad243501a75f25f0b1494a47",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:35.083Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707075%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "saint-zenon-du-lac-humqui",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707035%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-0-8da04926-6d18-43fd-a915-69238bc492da",
+   "http_status": 200,
+   "sha256": "sha256:52e04dd0cdf255f07efbc6cf0363334885fa7f869b825e2f3b2592c87fea4f38",
+   "retrieved_at": "2026-08-10T16:19:17.015Z",
+   "storage_key": "raw/zones-vnatif/cas/52e04dd0cdf255f07efbc6cf0363334885fa7f869b825e2f3b2592c87fea4f38.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 43,
+   "wfs_number_matched": 43,
+   "wfs_number_returned": 43,
+   "wfs_total_features": 43,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "saint-zenon-du-lac-humqui",
+   "registry_attribution_km": 0.88,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 43,
+   "sample_codes": [
+    {
+     "code_field_value": "11 Af",
+     "zone_code": "11 Af"
+    },
+    {
+     "code_field_value": "35 Ha",
+     "zone_code": "35 Ha"
+    },
+    {
+     "code_field_value": "41 P",
+     "zone_code": "41 P"
+    },
+    {
+     "code_field_value": "38 P",
+     "zone_code": "38 P"
+    },
+    {
+     "code_field_value": "39 Cc",
+     "zone_code": "39 Cc"
+    },
+    {
+     "code_field_value": "33 Cp",
+     "zone_code": "33 Cp"
+    },
+    {
+     "code_field_value": "31 Cp",
+     "zone_code": "31 Cp"
+    },
+    {
+     "code_field_value": "46 Ha",
+     "zone_code": "46 Ha"
+    }
+   ],
+   "live_number_matched": 43,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(43)==numberMatched(43)==features(43) && live numberMatched(43)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-saint-zenon-du-lac-humqui.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 43,
+   "served_distinct_codes": 43,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07035]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 43,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-zenon-du-lac-humqui__flat.2026-08-10T1624Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-zenon-du-lac-humqui__flat.2026-08-10T1624Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-saint-zenon-du-lac-humqui.geojson",
+     "served_features": 43,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707035%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:52e04dd0cdf255f07efbc6cf0363334885fa7f869b825e2f3b2592c87fea4f38",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:17.015Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707035%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-angele-de-merici",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709035%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-1-2ab5ac60-4801-40af-82bd-77b2b2e3c450",
+   "http_status": 200,
+   "sha256": "sha256:2a1c53b69fa8bf2bb470c211a50a9031df4b06a5bdc28750e1d404278cfe605f",
+   "retrieved_at": "2026-08-10T16:19:14.254Z",
+   "storage_key": "raw/zones-vnatif/cas/2a1c53b69fa8bf2bb470c211a50a9031df4b06a5bdc28750e1d404278cfe605f.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 76,
+   "wfs_number_matched": 76,
+   "wfs_number_returned": 76,
+   "wfs_total_features": 76,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-angele-de-merici",
+   "registry_attribution_km": 0.91,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 76,
+   "sample_codes": [
+    {
+     "code_field_value": "65 (FRT)",
+     "zone_code": "65 (FRT)"
+    },
+    {
+     "code_field_value": "74 (AIC)",
+     "zone_code": "74 (AIC)"
+    },
+    {
+     "code_field_value": "84 (AGF)",
+     "zone_code": "84 (AGF)"
+    },
+    {
+     "code_field_value": "76 (AIC)",
+     "zone_code": "76 (AIC)"
+    },
+    {
+     "code_field_value": "66 (AIC)",
+     "zone_code": "66 (AIC)"
+    },
+    {
+     "code_field_value": "61 (RCT)",
+     "zone_code": "61 (RCT)"
+    },
+    {
+     "code_field_value": "06 (CSV)",
+     "zone_code": "06 (CSV)"
+    },
+    {
+     "code_field_value": "08 (AGF)",
+     "zone_code": "08 (AGF)"
+    }
+   ],
+   "live_number_matched": 76,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(76)==numberMatched(76)==features(76) && live numberMatched(76)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-angele-de-merici.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 76,
+   "served_distinct_codes": 76,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09035]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 76,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-angele-de-merici__flat.2026-08-10T1624Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-angele-de-merici__flat.2026-08-10T1624Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-angele-de-merici.geojson",
+     "served_features": 76,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709035%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:2a1c53b69fa8bf2bb470c211a50a9031df4b06a5bdc28750e1d404278cfe605f",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:14.254Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709035%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-anne-des-lacs",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77035",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-2-11e83dbb-6b9c-4530-9424-0f2fa66377f2",
+   "http_status": 200,
+   "sha256": "sha256:caad20c13abe0e8476df88b73e0be835e946a0b08cda83ef5d003d07c4b30a24",
+   "retrieved_at": "2026-08-10T16:19:15.415Z",
+   "storage_key": "raw/zones-vnatif/cas/caad20c13abe0e8476df88b73e0be835e946a0b08cda83ef5d003d07c4b30a24.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 36,
+   "wfs_number_matched": 36,
+   "wfs_number_returned": 36,
+   "wfs_total_features": 36,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-anne-des-lacs",
+   "registry_attribution_km": 0.68,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 36,
+   "sample_codes": [
+    {
+     "code_field_value": "Cons-405",
+     "zone_code": "Cons-405"
+    },
+    {
+     "code_field_value": "Cons-407",
+     "zone_code": "Cons-407"
+    },
+    {
+     "code_field_value": "Cons-501",
+     "zone_code": "Cons-501"
+    },
+    {
+     "code_field_value": "H-203",
+     "zone_code": "H-203"
+    },
+    {
+     "code_field_value": "H-504",
+     "zone_code": "H-504"
+    },
+    {
+     "code_field_value": "PAE-03",
+     "zone_code": "PAE-03"
+    },
+    {
+     "code_field_value": "H-200",
+     "zone_code": "H-200"
+    },
+    {
+     "code_field_value": "PAE-02",
+     "zone_code": "PAE-02"
+    }
+   ],
+   "live_number_matched": 36,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(36)==numberMatched(36)==features(36) && live numberMatched(36)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-anne-des-lacs.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 36,
+   "served_distinct_codes": 36,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77035]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 36,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-anne-des-lacs__flat.2026-08-10T1624Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-anne-des-lacs__flat.2026-08-10T1624Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-anne-des-lacs.geojson",
+     "served_features": 36,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77035",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:caad20c13abe0e8476df88b73e0be835e946a0b08cda83ef5d003d07c4b30a24",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:15.415Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77035"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-apolline-de-patton",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18025",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-3-b7747688-d30e-460c-9c23-5bdc034aedf4",
+   "http_status": 200,
+   "sha256": "sha256:4449422e537012e7dfc87fd18ee96516b52b218c9517eaddcee39fd9727cdfe6",
+   "retrieved_at": "2026-08-10T16:19:33.794Z",
+   "storage_key": "raw/zones-vnatif/cas/4449422e537012e7dfc87fd18ee96516b52b218c9517eaddcee39fd9727cdfe6.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 53,
+   "wfs_number_matched": 53,
+   "wfs_number_returned": 53,
+   "wfs_total_features": 53,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-apolline-de-patton",
+   "registry_attribution_km": 1.93,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 41,
+   "sample_codes": [
+    {
+     "code_field_value": "Fc.14",
+     "zone_code": "Fc.14"
+    },
+    {
+     "code_field_value": "Fc.6",
+     "zone_code": "Fc.6"
+    },
+    {
+     "code_field_value": "V.1",
+     "zone_code": "V.1"
+    },
+    {
+     "code_field_value": "V.3",
+     "zone_code": "V.3"
+    },
+    {
+     "code_field_value": "Fc.7",
+     "zone_code": "Fc.7"
+    },
+    {
+     "code_field_value": "Fc.8",
+     "zone_code": "Fc.8"
+    },
+    {
+     "code_field_value": "Fc.11",
+     "zone_code": "Fc.11"
+    },
+    {
+     "code_field_value": "Fc.9",
+     "zone_code": "Fc.9"
+    }
+   ],
+   "live_number_matched": 53,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(53)==numberMatched(53)==features(53) && live numberMatched(53)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-apolline-de-patton.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 53,
+   "served_distinct_codes": 41,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18025]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 41,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-apolline-de-patton__flat.2026-08-10T1624Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-apolline-de-patton__flat.2026-08-10T1624Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-apolline-de-patton.geojson",
+     "served_features": 53,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18025",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:4449422e537012e7dfc87fd18ee96516b52b218c9517eaddcee39fd9727cdfe6",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:33.794Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18025"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-barbe",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69065",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-4-08b2303d-b83c-4a9d-81a1-00f28acc130d",
+   "http_status": 200,
+   "sha256": "sha256:8cf9ac8366d96708181038f01530ac75104e34fbb7cf48a25355fac8ccec137a",
+   "retrieved_at": "2026-08-10T16:19:15.822Z",
+   "storage_key": "raw/zones-vnatif/cas/8cf9ac8366d96708181038f01530ac75104e34fbb7cf48a25355fac8ccec137a.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 48,
+   "wfs_number_matched": 48,
+   "wfs_number_returned": 48,
+   "wfs_total_features": 48,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-barbe",
+   "registry_attribution_km": 1.54,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 48,
+   "sample_codes": [
+    {
+     "code_field_value": "AGA-1",
+     "zone_code": "AGA-1"
+    },
+    {
+     "code_field_value": "AGD-2",
+     "zone_code": "AGD-2"
+    },
+    {
+     "code_field_value": "HA-4",
+     "zone_code": "HA-4"
+    },
+    {
+     "code_field_value": "HA-3",
+     "zone_code": "HA-3"
+    },
+    {
+     "code_field_value": "HA-1",
+     "zone_code": "HA-1"
+    },
+    {
+     "code_field_value": "VA-7",
+     "zone_code": "VA-7"
+    },
+    {
+     "code_field_value": "VA-13",
+     "zone_code": "VA-13"
+    },
+    {
+     "code_field_value": "AGC-2",
+     "zone_code": "AGC-2"
+    }
+   ],
+   "live_number_matched": 48,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(48)==numberMatched(48)==features(48) && live numberMatched(48)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-barbe.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 48,
+   "served_distinct_codes": 48,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69065]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 48,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-barbe__flat.2026-08-10T1624Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-barbe__flat.2026-08-10T1624Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-barbe.geojson",
+     "served_features": 48,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69065",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:8cf9ac8366d96708181038f01530ac75104e34fbb7cf48a25355fac8ccec137a",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:15.822Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69065"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-clotilde-de-beauce",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731060%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-5-a848c6f6-a9a6-4ed4-8513-ad8f43e56fa4",
+   "http_status": 200,
+   "sha256": "sha256:b4a5753ed4e49846ebe33a560f270072d333c845205d637095e5b5a9de8e8a17",
+   "retrieved_at": "2026-08-10T16:19:15.307Z",
+   "storage_key": "raw/zones-vnatif/cas/b4a5753ed4e49846ebe33a560f270072d333c845205d637095e5b5a9de8e8a17.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 37,
+   "wfs_number_matched": 37,
+   "wfs_number_returned": 37,
+   "wfs_total_features": 37,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-clotilde-de-beauce",
+   "registry_attribution_km": 0.23,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 37,
+   "sample_codes": [
+    {
+     "code_field_value": "C 1",
+     "zone_code": "C 1"
+    },
+    {
+     "code_field_value": "C 2",
+     "zone_code": "C 2"
+    },
+    {
+     "code_field_value": "I 1",
+     "zone_code": "I 1"
+    },
+    {
+     "code_field_value": "I 2",
+     "zone_code": "I 2"
+    },
+    {
+     "code_field_value": "M 1",
+     "zone_code": "M 1"
+    },
+    {
+     "code_field_value": "M 2",
+     "zone_code": "M 2"
+    },
+    {
+     "code_field_value": "MA 1",
+     "zone_code": "MA 1"
+    },
+    {
+     "code_field_value": "M 4",
+     "zone_code": "M 4"
+    }
+   ],
+   "live_number_matched": 37,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(37)==numberMatched(37)==features(37) && live numberMatched(37)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-clotilde-de-beauce.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 37,
+   "served_distinct_codes": 37,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31060]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 37,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-clotilde-de-beauce__flat.2026-08-10T1624Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-clotilde-de-beauce__flat.2026-08-10T1624Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-clotilde-de-beauce.geojson",
+     "served_features": 37,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731060%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:b4a5753ed4e49846ebe33a560f270072d333c845205d637095e5b5a9de8e8a17",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:15.307Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731060%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-euphemie-sur-riviere-du-sud",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18035",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-6-84635770-3411-408d-aff3-04d79b0f6bd1",
+   "http_status": 200,
+   "sha256": "sha256:0642600ba25e1447f3fcd37de3f05406bef5c255b01c72ea0a426a0f4f08b1f4",
+   "retrieved_at": "2026-08-10T16:19:15.144Z",
+   "storage_key": "raw/zones-vnatif/cas/0642600ba25e1447f3fcd37de3f05406bef5c255b01c72ea0a426a0f4f08b1f4.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 38,
+   "wfs_number_matched": 38,
+   "wfs_number_returned": 38,
+   "wfs_total_features": 38,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-euphemie-sur-riviere-du-sud",
+   "registry_attribution_km": 2.92,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 31,
+   "sample_codes": [
+    {
+     "code_field_value": "Ac.2",
+     "zone_code": "Ac.2"
+    },
+    {
+     "code_field_value": "CbM.4",
+     "zone_code": "CbM.4"
+    },
+    {
+     "code_field_value": "RdM.4",
+     "zone_code": "RdM.4"
+    },
+    {
+     "code_field_value": "ScM.2",
+     "zone_code": "ScM.2"
+    },
+    {
+     "code_field_value": "RdM.1",
+     "zone_code": "RdM.1"
+    },
+    {
+     "code_field_value": "Fc.10",
+     "zone_code": "Fc.10"
+    },
+    {
+     "code_field_value": "RdM.3",
+     "zone_code": "RdM.3"
+    },
+    {
+     "code_field_value": "Ac.1",
+     "zone_code": "Ac.1"
+    }
+   ],
+   "live_number_matched": 38,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(38)==numberMatched(38)==features(38) && live numberMatched(38)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-euphemie-sur-riviere-du-sud.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 38,
+   "served_distinct_codes": 31,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18035]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 31,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-euphemie-sur-riviere-du-sud__flat.2026-08-10T1624Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-euphemie-sur-riviere-du-sud__flat.2026-08-10T1624Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-euphemie-sur-riviere-du-sud.geojson",
+     "served_features": 38,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18035",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:0642600ba25e1447f3fcd37de3f05406bef5c255b01c72ea0a426a0f4f08b1f4",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:15.144Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18035"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-flavie",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709085%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-7-b835d398-c5e4-4675-8da1-2aa6b981e161",
+   "http_status": 200,
+   "sha256": "sha256:9575f4a58696b10850decd75357b2bc5d1762cb60e8353dc1d428aa8e1d3a873",
+   "retrieved_at": "2026-08-10T16:19:37.800Z",
+   "storage_key": "raw/zones-vnatif/cas/9575f4a58696b10850decd75357b2bc5d1762cb60e8353dc1d428aa8e1d3a873.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 46,
+   "wfs_number_matched": 46,
+   "wfs_number_returned": 46,
+   "wfs_total_features": 46,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-flavie",
+   "registry_attribution_km": 0.12,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 46,
+   "sample_codes": [
+    {
+     "code_field_value": "03 (CMC)",
+     "zone_code": "03 (CMC)"
+    },
+    {
+     "code_field_value": "05 (HFD)",
+     "zone_code": "05 (HFD)"
+    },
+    {
+     "code_field_value": "40 (HBF)",
+     "zone_code": "40 (HBF)"
+    },
+    {
+     "code_field_value": "07 (HBF)",
+     "zone_code": "07 (HBF)"
+    },
+    {
+     "code_field_value": "06 (EXR)",
+     "zone_code": "06 (EXR)"
+    },
+    {
+     "code_field_value": "29 (ILG)",
+     "zone_code": "29 (ILG)"
+    },
+    {
+     "code_field_value": "41 (ILG)",
+     "zone_code": "41 (ILG)"
+    },
+    {
+     "code_field_value": "44 (AGC)",
+     "zone_code": "44 (AGC)"
+    }
+   ],
+   "live_number_matched": 46,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(46)==numberMatched(46)==features(46) && live numberMatched(46)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-flavie.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 46,
+   "served_distinct_codes": 46,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09085]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 46,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-flavie__flat.2026-08-10T1625Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-flavie__flat.2026-08-10T1625Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-flavie.geojson",
+     "served_features": 46,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709085%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:9575f4a58696b10850decd75357b2bc5d1762cb60e8353dc1d428aa8e1d3a873",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:37.800Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709085%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-florence",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707010%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-8-f50f8afe-0a2b-4e94-a4e2-1f1a79a4fabb",
+   "http_status": 200,
+   "sha256": "sha256:d47613d16a2bfbc8bc1e890a3a35126618920a6b4758298f79bc96bc33c706eb",
+   "retrieved_at": "2026-08-10T16:19:39.603Z",
+   "storage_key": "raw/zones-vnatif/cas/d47613d16a2bfbc8bc1e890a3a35126618920a6b4758298f79bc96bc33c706eb.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 66,
+   "wfs_number_matched": 66,
+   "wfs_number_returned": 66,
+   "wfs_total_features": 66,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-florence",
+   "registry_attribution_km": 0.05,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 66,
+   "sample_codes": [
+    {
+     "code_field_value": "11 Af",
+     "zone_code": "11 Af"
+    },
+    {
+     "code_field_value": "12 Av",
+     "zone_code": "12 Av"
+    },
+    {
+     "code_field_value": "13 Af",
+     "zone_code": "13 Af"
+    },
+    {
+     "code_field_value": "2 Af",
+     "zone_code": "2 Af"
+    },
+    {
+     "code_field_value": "20 Ad",
+     "zone_code": "20 Ad"
+    },
+    {
+     "code_field_value": "22 Av",
+     "zone_code": "22 Av"
+    },
+    {
+     "code_field_value": "23 Ad",
+     "zone_code": "23 Ad"
+    },
+    {
+     "code_field_value": "25 Af",
+     "zone_code": "25 Af"
+    }
+   ],
+   "live_number_matched": 66,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(66)==numberMatched(66)==features(66) && live numberMatched(66)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-florence.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 66,
+   "served_distinct_codes": 66,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07010]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 66,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-florence__flat.2026-08-10T1625Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-florence__flat.2026-08-10T1625Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-florence.geojson",
+     "served_features": 66,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707010%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:d47613d16a2bfbc8bc1e890a3a35126618920a6b4758298f79bc96bc33c706eb",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:39.603Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707010%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "sainte-genevieve-de-berthier",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T170000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752040%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T170000Z-9-f6b4f3dc-de5f-457e-bed7-ebba87091773",
+   "http_status": 200,
+   "sha256": "sha256:c35a353aa4de48289e6711aed16655a1e7053c7c959ed92332c2cca1bf23409f",
+   "retrieved_at": "2026-08-10T16:19:43.681Z",
+   "storage_key": "raw/zones-vnatif/cas/c35a353aa4de48289e6711aed16655a1e7053c7c959ed92332c2cca1bf23409f.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 30,
+   "wfs_number_matched": 30,
+   "wfs_number_returned": 30,
+   "wfs_total_features": 30,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "sainte-genevieve-de-berthier",
+   "registry_attribution_km": 0.91,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 30,
+   "sample_codes": [
+    {
+     "code_field_value": "A15",
+     "zone_code": "A15"
+    },
+    {
+     "code_field_value": "P12",
+     "zone_code": "P12"
+    },
+    {
+     "code_field_value": "A27",
+     "zone_code": "A27"
+    },
+    {
+     "code_field_value": "A17",
+     "zone_code": "A17"
+    },
+    {
+     "code_field_value": "H2",
+     "zone_code": "H2"
+    },
+    {
+     "code_field_value": "I22",
+     "zone_code": "I22"
+    },
+    {
+     "code_field_value": "R14",
+     "zone_code": "R14"
+    },
+    {
+     "code_field_value": "R20",
+     "zone_code": "R20"
+    }
+   ],
+   "live_number_matched": 30,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(30)==numberMatched(30)==features(30) && live numberMatched(30)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-sainte-genevieve-de-berthier.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 30,
+   "served_distinct_codes": 30,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52040]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 30,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-genevieve-de-berthier__flat.2026-08-10T1625Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-sainte-genevieve-de-berthier__flat.2026-08-10T1625Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-sainte-genevieve-de-berthier.geojson",
+     "served_features": 30,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752040%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:c35a353aa4de48289e6711aed16655a1e7053c7c959ed92332c2cca1bf23409f",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T16:19:43.681Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752040%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  }
+ ]
+}
