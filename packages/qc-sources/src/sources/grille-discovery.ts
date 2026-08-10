@@ -168,6 +168,25 @@ export function classifyGrilleLink(title: string, url: string): GrilleClassifica
   return { score, matched, penalised };
 }
 
+/**
+ * An amending by-law can name zoning and one affected zone while containing no
+ * usable grid. Keep only a consolidated/base version when an amendment marker
+ * is present. This is stricter than score subtraction: "règlement de zonage"
+ * otherwise still clears the threshold after the amendment penalty.
+ */
+function isStandaloneAmendment(classification: GrilleClassification): boolean {
+  const amendment = classification.penalised.some((label) =>
+    label === "modifiant (amendement)" ||
+    label === "amendement" ||
+    label === "projet de règlement" ||
+    label === "avis de motion",
+  );
+  const consolidated = classification.matched.some((label) =>
+    label === "codification administrative" || label === "codification/à jour",
+  );
+  return amendment && !consolidated;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Candidate model
 // ─────────────────────────────────────────────────────────────────────────────
@@ -223,6 +242,7 @@ export function discoverGrillesInHtml(
     if (!/\.pdf(?:[?#].*)?$/i.test(link.url)) continue;
     const cls = classifyGrilleLink(link.title, link.url);
     if (cls.score < threshold) continue;
+    if (isStandaloneAmendment(cls)) continue;
     candidates.push({
       slug,
       sourceUrl: pageUrl,
