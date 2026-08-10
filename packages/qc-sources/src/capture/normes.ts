@@ -152,6 +152,55 @@ export const CapturedNormesExtractionReceiptSchema = z.object({
 });
 export type CapturedNormesExtractionReceipt = z.infer<typeof CapturedNormesExtractionReceiptSchema>;
 
+/** Explicit outcome for one city in a bounded captured-normes campaign. */
+export const CapturedNormesCampaignOutcomeSchema = z.enum([
+  "no-grid",
+  "unreachable",
+  "http-forbidden",
+  "mistral-below-gate",
+]);
+
+export const CapturedNormesCampaignEntrySchema = z.object({
+  slug: z.string().regex(SLUG_RE),
+  outcome: CapturedNormesCampaignOutcomeSchema,
+  discovery_run_receipt_key: z.string().regex(/^registry\/normes-captured-discovery-run-receipts\/(?:v\d+\/)?[^/]+\/[^/]+\.json$/),
+  extraction_receipt_keys: z.array(z.string().regex(/^registry\/normes-captured-receipts\/[a-f0-9]+\.json$/)).max(8),
+}).strict().superRefine((value, ctx) => {
+  if (value.outcome === "mistral-below-gate" && value.extraction_receipt_keys.length === 0) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "mistral-below-gate requires extraction receipts" });
+  }
+  if (value.outcome !== "mistral-below-gate" && value.extraction_receipt_keys.length > 0) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: "only mistral-below-gate may carry extraction receipts" });
+  }
+});
+export type CapturedNormesCampaignEntry = z.infer<typeof CapturedNormesCampaignEntrySchema>;
+
+/** Committed input control: one closed, finite city partition. */
+export const CapturedNormesCampaignPlanSchema = z.object({
+  campaign: z.string().regex(/^normes-col\d+-\d{8}$/),
+  closed_at: z.string().datetime(),
+  cities: z.array(CapturedNormesCampaignEntrySchema).length(10),
+}).strict().superRefine((value, ctx) => {
+  const seen = new Set<string>();
+  for (const [index, city] of value.cities.entries()) {
+    if (seen.has(city.slug)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["cities", index, "slug"], message: "city slug must be unique" });
+    }
+    seen.add(city.slug);
+  }
+});
+export type CapturedNormesCampaignPlan = z.infer<typeof CapturedNormesCampaignPlanSchema>;
+
+/** Immutable S3 closure receipt. A closed partition never means city complete. */
+export const CapturedNormesCampaignReceiptSchema = z.object({
+  contract: z.literal("captured-normes-campaign-receipt/v1"),
+  campaign: z.string().regex(/^normes-col\d+-\d{8}$/),
+  closed_at: z.string().datetime(),
+  status: z.literal("closed"),
+  cities: z.array(CapturedNormesCampaignEntrySchema).length(10),
+}).strict();
+export type CapturedNormesCampaignReceipt = z.infer<typeof CapturedNormesCampaignReceiptSchema>;
+
 /**
  * Validates that a reference names one successful cluster NORMES capture line.
  * Byte and sidecar verification remain I/O concerns for the materializer.
