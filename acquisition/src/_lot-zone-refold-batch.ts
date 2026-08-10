@@ -23,6 +23,20 @@
  * (`skipped_reason: "geometry-suspect"`), plutôt que de re-déposer un fold
  * qui resterait faux.
  *
+ * GATE absolue-perte / REVOKED : après dépôt, si le compte ABSOLU de lots
+ * porteurs (`num_with_norms` ou `num_with_code_zone`) DÉCROÎT vs avant, le re-fold
+ * est ROLLBACK (restore backup) et la ville marquée `REVOKED`. C'est le garde-fou
+ * par défaut. Mais `zones` a re-déposé des géométries v2 PROUVÉES qui remplacent
+ * d'anciens servis NON-PROUVÉS (zone_source_url=null) : les codes présents dans
+ * l'ancien servi mais absents de la v2 sont légitimement DROPPÉS, et leurs lots
+ * doivent devenir UNKNOWN-recalage (policy replace-policy ratifiée G3/G4). Le flag
+ * `--allow-loss` lève CE seul gate : quand la seule cause de refus est l'absolue-
+ * perte, il PROCÈDE AU DÉPÔT au lieu de REVOKER, et documente la perte au record
+ * (`allow_loss.dropped_codes` : chaque code-droppé -> UNKNOWN-recalage, url:null,
+ * + backup ; `lots_to_unknown` = décroissance absolue de `num_with_code_zone`).
+ * `--allow-loss` NE lève PAS les autres gates : une ville à la fois geometry-suspect
+ * ET loss exige les DEUX flags.
+ *
  * RETRY : chaque étape réseau (audit S3, backup, join, enrich, mirror) est
  * retentée jusqu'à 2 fois sur ETIMEDOUT. Au-delà, le run entier s'ARRÊTE
  * proprement (journal écrit, message clair villes faites / ville en échec,
@@ -51,6 +65,12 @@
  *   npx tsx acquisition/src/_lot-zone-refold-batch.ts \
  *     --slugs arundel --simplify-zones-m 0 --allow-geometry-suspect \
  *     --out work/coverage/immo-bprime-normes-lots-rematerialization-20260726.json
+ *
+ *   # Re-fold contre une v2 PROUVÉE plus petite : accepter la perte absolue
+ *   # (codes-droppés -> UNKNOWN-recalage) plutôt que de révoquer, en la documentant :
+ *   npx tsx acquisition/src/_lot-zone-refold-batch.ts \
+ *     --slugs saint-hippolyte,saint-colomban --allow-loss \
+ *     --out work/coverage/refold-allowloss-20260810-progress.json
  */
 import { execFileSync } from "node:child_process";
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
@@ -71,6 +91,11 @@ const S3_HELPER = join(HERE, "_lot-zone-refold-s3.ts");
 const MAX_RETRIES = 2;
 const OUTSIDE_ALL_SKIP_FRACTION = 0.5;
 const EXAMPLE_LIMIT = 3;
+// Sous `--allow-loss`, l'audit-before sert à ÉNUMÉRER les codes-droppés (codes
+// assignés dont les lots sortent de toute zone v2). On lève alors le plafond
+// d'exemples pour capturer l'ensemble des codes concernés, pas un échantillon de 3.
+// (borné pour éviter une explosion mémoire sur une grosse ville pathologique.)
+const LOSS_AUDIT_EXAMPLE_LIMIT = 50_000;
 
 // ── erreurs de contrôle ──────────────────────────────────────────────────────
 
@@ -95,6 +120,11 @@ interface Args {
   simplifyZonesM: number;
   /** Materialisation de normes : laisse la garde de compteurs décider du rollback. */
   allowGeometrySuspect: boolean;
+  /**
+   * Lève le SEUL gate absolue-perte : dépose-avec-perte-documentée (codes-droppés
+   * -> UNKNOWN-recalage) au lieu de REVOKER. Ne lève AUCUN autre gate.
+   */
+  allowLoss: boolean;
   /** Évite les audits géométriques hors périmètre quand seuls les compteurs Immo sont requis. */
   metricsOnly: boolean;
   out: string;
@@ -109,6 +139,7 @@ function parseArgs(argv: string[]): Args {
   // à l'identique; l'opt-in explicite reste disponible pour les diagnostics.
   let simplifyZonesM = 0;
   let allowGeometrySuspect = false;
+  let allowLoss = false;
   let metricsOnly = false;
   let out = "";
   for (let i = 0; i < argv.length; i++) {
@@ -124,6 +155,7 @@ function parseArgs(argv: string[]): Args {
     else if (a === "--max-seconds") maxSeconds = Math.max(1, Number(argv[++i] ?? "2400") || 2400);
     else if (a === "--simplify-zones-m") simplifyZonesM = Math.max(0, Number(argv[++i] ?? "1") || 0);
     else if (a === "--allow-geometry-suspect") allowGeometrySuspect = true;
+    else if (a === "--allow-loss") allowLoss = true;
     else if (a === "--metrics-only") metricsOnly = true;
     else if (a === "--out") out = String(argv[++i] ?? "");
     else throw new Error(`unknown argument: ${a}`);
@@ -137,7 +169,7 @@ function parseArgs(argv: string[]): Args {
   const uniqueSlugs = [...new Set(slugs)];
   if (uniqueSlugs.length === 0) throw new Error("pass --slugs a,b,c and/or --slugs-file <path>");
   if (!out) throw new Error("--out <path> required (resume-safe progress journal)");
-  return { slugs: uniqueSlugs, maxSeconds, simplifyZonesM, allowGeometrySuspect, metricsOnly, out };
+  return { slugs: uniqueSlugs, maxSeconds, simplifyZonesM, allowGeometrySuspect, allowLoss, metricsOnly, out };
 }
 
 // ── journal (resume-safe) ────────────────────────────────────────────────────
@@ -167,6 +199,42 @@ interface LotMetrics {
   num_with_adresse: number | null;
 }
 
+/**
+ * Un code présent dans l'ancien servi mais DROPPÉ par la géométrie v2 : ses lots
+ * deviennent UNKNOWN-recalage (JAMAIS N-A, JAMAIS unassigned-silencieux). Aucune
+ * valeur inventée — `prior_level`/`url` sont null tant que l'audit ne les porte pas
+ * (verbatim-ou-null).
+ */
+interface DroppedCode {
+  code: string;
+  /** zone_source_level de l'ancien servi — non porté par l'audit -> null. */
+  prior_level: string | null;
+  /** ancien servi non-prouvé (zone_source_url=null) : recalage requis. */
+  url: null;
+  status: "UNKNOWN-recalage";
+  /** clé S3 du backup horodaté d'où recaler. */
+  backup: string;
+}
+
+/**
+ * Trace du dépôt-avec-perte autorisé par `--allow-loss`. Renseigné UNIQUEMENT quand
+ * le flag a levé le gate absolue-perte ; `null` sur tout autre dépôt/skip.
+ */
+interface AllowLoss {
+  applied: true;
+  /** motif absolue-perte mesuré (regressionReason). */
+  regression: string;
+  /** décroissance absolue de num_with_code_zone = volume de lots -> UNKNOWN (autoritaire). */
+  lots_to_unknown: number;
+  /** décroissance absolue de num_with_norms (perte de normes associée). */
+  norms_to_unknown: number;
+  /** clé S3 du backup horodaté du produit servi qc-lots. */
+  backup: string;
+  dropped_codes: DroppedCode[];
+  /** d'où vient l'énumération dropped_codes (honnêteté sur ce qui est compté). */
+  dropped_codes_basis: string;
+}
+
 interface JournalEntry {
   slug: string;
   deposited: boolean;
@@ -185,6 +253,11 @@ interface JournalEntry {
   complete_before: boolean;
   complete_after: boolean;
   complete_final: boolean;
+  /**
+   * Dépôt-avec-perte-documentée : non-null UNIQUEMENT quand `--allow-loss` a levé
+   * la révocation absolue-perte. Documente les codes-droppés (-> UNKNOWN-recalage).
+   */
+  allow_loss: AllowLoss | null;
   started_at: string;
   finished_at: string;
 }
@@ -284,6 +357,61 @@ function regressionReason(before: LotMetrics, after: LotMetrics): string | null 
     losses.push(`code_zone ${before.num_with_code_zone}->${after.num_with_code_zone}`);
   }
   return losses.length ? losses.join(", ") : null;
+}
+
+/** `dir/base.ext` -> `dir/_replaced/base.ext.<ts>` (même idiome que `_lot-zone-refold-s3.ts`). */
+function backupKeyFor(key: string, ts: string): string {
+  const slash = key.lastIndexOf("/");
+  return `${key.slice(0, slash)}/_replaced/${key.slice(slash + 1)}.${ts}`;
+}
+
+/**
+ * Construit la trace `allow_loss` d'un dépôt-avec-perte (flag `--allow-loss`).
+ *
+ * Anti-invention : AUCUN réseau-fetch neuf, aucune valeur fabriquée. Tout dérive de
+ * ce que l'audit et les compteurs absolus ont DÉJÀ mesuré :
+ *   - `lots_to_unknown` = décroissance absolue de num_with_code_zone (volume exact
+ *     de lots qui perdent leur code -> UNKNOWN-recalage) ; mesure AUTORITAIRE.
+ *   - `dropped_codes` = codes assignés dont le centroïde sort de TOUTE zone servie v2
+ *     (`outside_all`, `actual` vide) dans l'audit-before. Ce sont précisément les lots
+ *     que le re-fold (aire-majorité) laissera sans code : leur code d'origine est
+ *     DROPPÉ par la v2. On EXCLUT les `misassigned` (leur code peut encore exister ;
+ *     l'inclure fabriquerait un code-droppé). `prior_level`/`url` restent null.
+ */
+function buildAllowLoss(
+  regression: string,
+  before: CityReport | null,
+  metricsBefore: LotMetrics,
+  metricsAfter: LotMetrics,
+  slug: string,
+  ts: string,
+): AllowLoss {
+  const backup = backupKeyFor(`normalized/qc-lots/qc-lots-${slug}.geojson`, ts);
+  const dropped = new Map<string, DroppedCode>();
+  for (const ex of before?.examples ?? []) {
+    if (ex.actual.length === 0 && ex.assigned && !dropped.has(ex.assigned)) {
+      dropped.set(ex.assigned, {
+        code: ex.assigned,
+        prior_level: null,
+        url: null,
+        status: "UNKNOWN-recalage",
+        backup,
+      });
+    }
+  }
+  return {
+    applied: true,
+    regression,
+    lots_to_unknown: Math.max(0, metricsBefore.num_with_code_zone - metricsAfter.num_with_code_zone),
+    norms_to_unknown: Math.max(0, metricsBefore.num_with_norms - metricsAfter.num_with_norms),
+    backup,
+    dropped_codes: [...dropped.values()],
+    dropped_codes_basis: before
+      ? `codes assignés outside_all de l'audit-before (échantillon jusqu'à ${LOSS_AUDIT_EXAMPLE_LIMIT} exemples); ` +
+        "lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      : "audit-before indisponible (metrics-only): dropped_codes non énumérables; " +
+        "lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)",
+  };
 }
 
 // ── helpers ──────────────────────────────────────────────────────────────────
@@ -399,6 +527,7 @@ async function processSlug(
       complete_before: isComplete(metricsBefore),
       complete_after: isComplete(metricsAfter),
       complete_final: isComplete(finalMetrics),
+      allow_loss: null,
       started_at: startedAt,
       finished_at: new Date().toISOString(),
     };
@@ -409,7 +538,10 @@ async function processSlug(
 
   try {
     if (!args.metricsOnly) {
-      before = await withRetry(`audit-before ${slug}`, () => auditCity(s3, slug, EXAMPLE_LIMIT));
+      // Sous --allow-loss, l'audit-before énumère les codes-droppés : on lève le
+      // plafond d'exemples pour tous les capturer (sinon échantillon de 3).
+      const beforeExampleLimit = args.allowLoss ? LOSS_AUDIT_EXAMPLE_LIMIT : EXAMPLE_LIMIT;
+      before = await withRetry(`audit-before ${slug}`, () => auditCity(s3, slug, beforeExampleLimit));
       if (before.note) {
         finalizeSkip(`not-served: ${before.note}`);
         return;
@@ -485,7 +617,7 @@ async function processSlug(
     }
 
     const regression = regressionReason(metricsBefore, metricsAfter);
-    if (regression) {
+    if (regression && !args.allowLoss) {
       console.error(`[refold-batch] ${slug}: ROLLBACK requis — perte absolue ${regression}`);
       await withRetry(`rollback ${slug}`, () => runChildSync("rollback", S3_HELPER, ["--slug", slug, "--mode", "restore", "--ts", ts!]));
       const restored = await withRetry(`metrics-restored ${slug}`, () => readLotMetrics(s3, slug));
@@ -510,6 +642,7 @@ async function processSlug(
         complete_before: isComplete(metricsBefore),
         complete_after: isComplete(metricsAfter),
         complete_final: isComplete(restored),
+        allow_loss: null,
         started_at: startedAt,
         finished_at: new Date().toISOString(),
       };
@@ -517,6 +650,19 @@ async function processSlug(
       saveJournal(args.out, journalMap, args.simplifyZonesM);
       console.log(`REVOKED ${slug}: ${regression}`);
       return;
+    }
+
+    // --allow-loss : la perte absolue est ADMISE (codes-droppés -> UNKNOWN-recalage).
+    // On NE rollback PAS ; on garde l'état re-foldé et on documente la perte au record.
+    const allowLoss = regression
+      ? buildAllowLoss(regression, before, metricsBefore, metricsAfter, slug, ts!)
+      : null;
+    if (allowLoss) {
+      console.log(
+        `[refold-batch] ${slug}: ALLOW-LOSS dépôt-avec-perte — ${regression} ` +
+          `(lots_to_unknown=${allowLoss.lots_to_unknown} dropped_codes=${allowLoss.dropped_codes.length} ` +
+          `[${allowLoss.dropped_codes.map((d) => d.code).join(",") || "aucun énuméré"}])`,
+      );
     }
 
     const entry: JournalEntry = {
@@ -535,6 +681,7 @@ async function processSlug(
       complete_before: isComplete(metricsBefore),
       complete_after: isComplete(metricsAfter),
       complete_final: isComplete(metricsAfter),
+      allow_loss: allowLoss,
       started_at: startedAt,
       finished_at: new Date().toISOString(),
     };
@@ -543,7 +690,7 @@ async function processSlug(
     console.log(
       `OK ${slug}: ` +
         (before && after ? `mismatch ${before.mismatch_pct}% -> ${after.mismatch_pct}% ` : "métriques absolues vérifiées ") +
-        "(deposited=true)",
+        (allowLoss ? `(deposited=true, allow-loss lots_to_unknown=${allowLoss.lots_to_unknown}) ` : "(deposited=true)"),
     );
   } catch (e) {
     if (e instanceof ExhaustedTimeoutError) {
@@ -563,6 +710,7 @@ async function processSlug(
         complete_before: isComplete(metricsBefore),
         complete_after: isComplete(metricsAfter),
         complete_final: isComplete(metricsBefore),
+        allow_loss: null,
         started_at: startedAt,
         finished_at: new Date().toISOString(),
       };
@@ -587,7 +735,8 @@ async function main(): Promise<void> {
   console.log(
       `[refold-batch] slugs=${args.slugs.length} pending=${pending.length} ` +
       `max_seconds=${args.maxSeconds} simplify_zones_m=${args.simplifyZonesM} ` +
-      `allow_geometry_suspect=${args.allowGeometrySuspect} metrics_only=${args.metricsOnly} out=${args.out}`,
+      `allow_geometry_suspect=${args.allowGeometrySuspect} allow_loss=${args.allowLoss} ` +
+      `metrics_only=${args.metricsOnly} out=${args.out}`,
   );
 
   const doneThisRun: string[] = [];
