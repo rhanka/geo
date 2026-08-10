@@ -187,6 +187,21 @@ function isStandaloneAmendment(classification: GrilleClassification): boolean {
   return amendment && !consolidated;
 }
 
+/**
+ * A few municipal CMSes expose a file through a stable download controller
+ * rather than a URL ending in `.pdf` (for example `/download_file/view/13/195`).
+ * Keep that exception deliberately narrow: an ordinary HTML navigation link is
+ * never a document candidate, even when its anchor happens to say "grille".
+ * The capture/reference gate remains responsible for proving PDF magic bytes.
+ */
+function isExplicitCmsDownloadEndpoint(url: string): boolean {
+  try {
+    return /^\/(?:download(?:_file)?|documents?)(?:\/|$)/i.test(new URL(url).pathname);
+  } catch {
+    return false;
+  }
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Candidate model
 // ─────────────────────────────────────────────────────────────────────────────
@@ -220,9 +235,10 @@ export interface GrilleCandidate {
  * Extract grille-PDF candidates from ONE already-fetched page's HTML.
  *
  * Reuses `parsePvIndex` to surface every document link, then keeps only PDF
- * links whose classifier score clears `threshold`. JS-rendered pages (whose
- * static HTML carries no link) are reported via `renderRequiresBrowser` so the
- * caller can route them out honestly rather than trust an empty parse.
+ * links — plus strong anchors on explicit CMS download endpoints — whose
+ * classifier score clears `threshold`. JS-rendered pages (whose static HTML
+ * carries no link) are reported via `renderRequiresBrowser` so the caller can
+ * route them out honestly rather than trust an empty parse.
  */
 export function discoverGrillesInHtml(
   html: string,
@@ -238,9 +254,13 @@ export function discoverGrillesInHtml(
   const links: PvIndexItemT[] = parsePvIndex(html, pageUrl);
   const candidates: GrilleCandidate[] = [];
   for (const link of links) {
-    // Only PDF links are grille candidates (the normes pipeline ingests PDFs).
-    if (!/\.pdf(?:[?#].*)?$/i.test(link.url)) continue;
     const cls = classifyGrilleLink(link.title, link.url);
+    const isPdfUrl = /\.pdf(?:[?#].*)?$/i.test(link.url);
+    // A controller route without a suffix is admitted only with an unambiguous
+    // grille score. The downstream capture reference rejects non-PDF bytes.
+    const isStrongCmsDownload =
+      isExplicitCmsDownloadEndpoint(link.url) && cls.score >= Math.max(threshold, 6);
+    if (!isPdfUrl && !isStrongCmsDownload) continue;
     if (cls.score < threshold) continue;
     if (isStandaloneAmendment(cls)) continue;
     candidates.push({
