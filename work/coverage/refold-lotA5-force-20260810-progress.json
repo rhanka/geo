@@ -1,0 +1,692 @@
+{
+  "generated_at": "2026-08-10T16:46:20.142Z",
+  "simplify_zones_m": 0,
+  "entries": [
+    {
+      "slug": "beaulac-garthby",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 2084,
+        "assigned": 2074,
+        "matched": 1859,
+        "misassigned": 56,
+        "outside_all": 159,
+        "unassigned": 10,
+        "mismatch_pct": 10.37
+      },
+      "after": {
+        "lots": 2084,
+        "assigned": 1915,
+        "matched": 1859,
+        "misassigned": 56,
+        "outside_all": 0,
+        "unassigned": 169,
+        "mismatch_pct": 2.92
+      },
+      "backup_ts": "2026-08-10T164332447ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK beaulac-garthby lots=2084 assigned=91.89% multi=4.51% match=13.16% without_norms=86.84% verify parquet=Y stats=Y rows=2084",
+      "enrich_summary": "OK beaulac-garthby lots=2084 zone_code=91.89% norms=12.09% surface=100% code_postal=100%(RTA) adresse=98.9%(code=31008) tod=n/a deposit=Y bytes=5563487",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-beaulac-garthby.stats.json",
+        "num_lots": 2084,
+        "num_with_norms": 264,
+        "num_with_code_zone": 2074,
+        "num_with_adresse": 2061
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-beaulac-garthby.stats.json",
+        "num_lots": 2084,
+        "num_with_norms": 252,
+        "num_with_code_zone": 1915,
+        "num_with_adresse": 2061
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-beaulac-garthby.stats.json",
+        "num_lots": 2084,
+        "num_with_norms": 252,
+        "num_with_code_zone": 1915,
+        "num_with_adresse": 2061
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 264->252, code_zone 2074->1915",
+        "lots_to_unknown": 159,
+        "norms_to_unknown": 12,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ",
+        "dropped_codes": [
+          {
+            "code": "V 6",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "VB 4",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "ID - A 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "RC 2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "VB 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "V 5",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "VB 2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "REC-P 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "V 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "VC 2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "V 9",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "V 2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "V 8",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "VB 3",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "FOR 6",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          },
+          {
+            "code": "VA 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-beaulac-garthby.geojson.2026-08-10T164332447ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:43:31.502Z",
+      "finished_at": "2026-08-10T16:43:58.973Z"
+    },
+    {
+      "slug": "berthierville",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 1987,
+        "assigned": 1984,
+        "matched": 1645,
+        "misassigned": 149,
+        "outside_all": 190,
+        "unassigned": 3,
+        "mismatch_pct": 17.09
+      },
+      "after": {
+        "lots": 1987,
+        "assigned": 1794,
+        "matched": 1645,
+        "misassigned": 149,
+        "outside_all": 0,
+        "unassigned": 193,
+        "mismatch_pct": 8.31
+      },
+      "backup_ts": "2026-08-10T164359620ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK berthierville lots=1987 assigned=90.29% multi=5.54% match=3.73% without_norms=96.27% verify parquet=Y stats=Y rows=1987",
+      "enrich_summary": "OK berthierville lots=1987 zone_code=90.29% norms=3.37% surface=100% code_postal=100%(RTA) adresse=98.74%(code=52035) tod=n/a deposit=Y bytes=3228275",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-berthierville.stats.json",
+        "num_lots": 1987,
+        "num_with_norms": 68,
+        "num_with_code_zone": 1984,
+        "num_with_adresse": 1962
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-berthierville.stats.json",
+        "num_lots": 1987,
+        "num_with_norms": 67,
+        "num_with_code_zone": 1794,
+        "num_with_adresse": 1962
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-berthierville.stats.json",
+        "num_lots": 1987,
+        "num_with_norms": 67,
+        "num_with_code_zone": 1794,
+        "num_with_adresse": 1962
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 68->67, code_zone 1984->1794",
+        "lots_to_unknown": 190,
+        "norms_to_unknown": 1,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ",
+        "dropped_codes": [
+          {
+            "code": "2-I-01",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "1-C-23",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "4-C-53",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "4-R-45",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "4-C-42",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "4-P-05",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "4-R-46",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "4-R-34",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "4-R-32",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "4-C-47",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "4-C-48",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "3-R-25",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "3-P-42",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          },
+          {
+            "code": "3-R-21",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-berthierville.geojson.2026-08-10T164359620ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:43:58.974Z",
+      "finished_at": "2026-08-10T16:44:21.480Z"
+    },
+    {
+      "slug": "esterel",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 905,
+        "assigned": 898,
+        "matched": 810,
+        "misassigned": 21,
+        "outside_all": 67,
+        "unassigned": 7,
+        "mismatch_pct": 9.8
+      },
+      "after": {
+        "lots": 905,
+        "assigned": 831,
+        "matched": 810,
+        "misassigned": 21,
+        "outside_all": 0,
+        "unassigned": 74,
+        "mismatch_pct": 2.53
+      },
+      "backup_ts": "2026-08-10T164422321ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK esterel lots=905 assigned=91.82% multi=3.09% match=1.93% without_norms=98.07% verify parquet=Y stats=Y rows=905",
+      "enrich_summary": "OK esterel lots=905 zone_code=91.82% norms=1.77% surface=100% code_postal=100%(RTA) adresse=98.9%(code=77011) tod=n/a deposit=Y bytes=5307150",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-esterel.stats.json",
+        "num_lots": 905,
+        "num_with_norms": 19,
+        "num_with_code_zone": 898,
+        "num_with_adresse": 895
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-esterel.stats.json",
+        "num_lots": 905,
+        "num_with_norms": 16,
+        "num_with_code_zone": 831,
+        "num_with_adresse": 895
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-esterel.stats.json",
+        "num_lots": 905,
+        "num_with_norms": 16,
+        "num_with_code_zone": 831,
+        "num_with_adresse": 895
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 19->16, code_zone 898->831",
+        "lots_to_unknown": 67,
+        "norms_to_unknown": 3,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ",
+        "dropped_codes": [
+          {
+            "code": "R 3",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "PC-34",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "C 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "PR c-1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "R 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "PC-42",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "R 9",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "REC",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "PC-22",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "R 2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "R 7",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "PC-15",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          },
+          {
+            "code": "P 1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-esterel.geojson.2026-08-10T164422321ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:44:21.481Z",
+      "finished_at": "2026-08-10T16:45:51.978Z"
+    },
+    {
+      "slug": "godmanchester",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 813,
+        "assigned": 813,
+        "matched": 797,
+        "misassigned": 7,
+        "outside_all": 9,
+        "unassigned": 0,
+        "mismatch_pct": 1.97
+      },
+      "after": {
+        "lots": 813,
+        "assigned": 804,
+        "matched": 797,
+        "misassigned": 7,
+        "outside_all": 0,
+        "unassigned": 9,
+        "mismatch_pct": 0.87
+      },
+      "backup_ts": "2026-08-10T164552420ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK godmanchester lots=813 assigned=98.89% multi=7.63% match=45.02% without_norms=54.98% verify parquet=Y stats=Y rows=813",
+      "enrich_summary": "OK godmanchester lots=813 zone_code=98.89% norms=44.53% surface=100% code_postal=100%(RTA) adresse=98.52%(code=69060) tod=n/a deposit=Y bytes=2061189",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-godmanchester.stats.json",
+        "num_lots": 813,
+        "num_with_norms": 364,
+        "num_with_code_zone": 813,
+        "num_with_adresse": 801
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-godmanchester.stats.json",
+        "num_lots": 813,
+        "num_with_norms": 362,
+        "num_with_code_zone": 804,
+        "num_with_adresse": 801
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-godmanchester.stats.json",
+        "num_lots": 813,
+        "num_with_norms": 362,
+        "num_with_code_zone": 804,
+        "num_with_adresse": 801
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 364->362, code_zone 813->804",
+        "lots_to_unknown": 9,
+        "norms_to_unknown": 2,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-godmanchester.geojson.2026-08-10T164552420ZZ",
+        "dropped_codes": [
+          {
+            "code": "A-2-3-1",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-godmanchester.geojson.2026-08-10T164552420ZZ"
+          },
+          {
+            "code": "A-1-2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-godmanchester.geojson.2026-08-10T164552420ZZ"
+          },
+          {
+            "code": "ID-5",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-godmanchester.geojson.2026-08-10T164552420ZZ"
+          },
+          {
+            "code": "A-2-3-2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-godmanchester.geojson.2026-08-10T164552420ZZ"
+          },
+          {
+            "code": "A-2-3-3",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-godmanchester.geojson.2026-08-10T164552420ZZ"
+          },
+          {
+            "code": "R-3",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-godmanchester.geojson.2026-08-10T164552420ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:45:51.979Z",
+      "finished_at": "2026-08-10T16:46:07.032Z"
+    },
+    {
+      "slug": "la-visitation-de-lile-dupas",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 843,
+        "assigned": 836,
+        "matched": 816,
+        "misassigned": 9,
+        "outside_all": 11,
+        "unassigned": 7,
+        "mismatch_pct": 2.39
+      },
+      "after": {
+        "lots": 843,
+        "assigned": 825,
+        "matched": 816,
+        "misassigned": 9,
+        "outside_all": 0,
+        "unassigned": 18,
+        "mismatch_pct": 1.09
+      },
+      "backup_ts": "2026-08-10T164607482ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK la-visitation-de-lile-dupas lots=843 assigned=97.86% multi=1.54% match=0% without_norms=100% verify parquet=Y stats=Y rows=843",
+      "enrich_summary": "OK la-visitation-de-lile-dupas lots=843 zone_code=97.86% norms=0% surface=100% code_postal=100%(RTA) adresse=96.09%(code=52050) tod=n/a deposit=Y bytes=1403639",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-la-visitation-de-lile-dupas.stats.json",
+        "num_lots": 843,
+        "num_with_norms": 0,
+        "num_with_code_zone": 836,
+        "num_with_adresse": 810
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-la-visitation-de-lile-dupas.stats.json",
+        "num_lots": 843,
+        "num_with_norms": 0,
+        "num_with_code_zone": 825,
+        "num_with_adresse": 810
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-la-visitation-de-lile-dupas.stats.json",
+        "num_lots": 843,
+        "num_with_norms": 0,
+        "num_with_code_zone": 825,
+        "num_with_adresse": 810
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "code_zone 836->825",
+        "lots_to_unknown": 11,
+        "norms_to_unknown": 0,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-la-visitation-de-lile-dupas.geojson.2026-08-10T164607482ZZ",
+        "dropped_codes": [
+          {
+            "code": "AA",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-la-visitation-de-lile-dupas.geojson.2026-08-10T164607482ZZ"
+          },
+          {
+            "code": "NB",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-la-visitation-de-lile-dupas.geojson.2026-08-10T164607482ZZ"
+          },
+          {
+            "code": "AE",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-la-visitation-de-lile-dupas.geojson.2026-08-10T164607482ZZ"
+          },
+          {
+            "code": "AB",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-la-visitation-de-lile-dupas.geojson.2026-08-10T164607482ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T16:46:07.033Z",
+      "finished_at": "2026-08-10T16:46:20.142Z"
+    }
+  ]
+}
