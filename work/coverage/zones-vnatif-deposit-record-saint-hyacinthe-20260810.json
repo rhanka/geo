@@ -1,0 +1,212 @@
+{
+ "contract": "zones-vnatif-deposit-record-saint-hyacinthe/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md@64f82eae/65d4c637 + SPEC_ZONE_GEOMETRY_GRAIN.md@7c7f6731",
+ "decision": "CLEAN-UPGRADE (candidate→documented, même couche-identité ISOGEO/13, zone_code servi reproduit 99.9%)",
+ "mode": "commit",
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (discriminateur = preuve v2 par-feature) + geometry_grain",
+ "proof_intended": {
+  "type": "arcgis",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "taxonomy_refinement_note_for_archi": "La source expose désormais GROUPE_USAGE_DOM='classe-NN' (ex 'C-03') et la grille canonique 'NUM-classe-NN' (GRILLE_URL/ETIQUETTE, ex '4052-C-03'). Ce dépôt REPRODUIT le code servi 'NUM-classe' (ex '4052-C', overlap 99.9%) pour un upgrade 0-perte préservant l'enrichissement. Adopter le code raffiné 'NUM-classe-NN' serait un EVOLUTION-REPLACE re-keyant ~toute la collection (0% overlap sur le code entier) et vidant l'enrichissement (bloqué par le gate anti-appauvrissement) — à traiter comme un RECALAGE séparé si archi le décide.",
+ "city": {
+  "slug": "saint-hyacinthe",
+  "run_stamp": "20260810T130000Z",
+  "source_url": "https://arcgis.st-hyacinthe.ca/server/rest/services/ISOGEO_SigimProd_Features/FeatureServer/13/query?where=1%3D1&outFields=*&f=geojson",
+  "layer_id": "13",
+  "expected_geometry_grain": "zone-polygon",
+  "zone_code_derivation": "NUM_ZONE + \"-\" + head(GROUPE_USAGE_DOM before first \"-\")",
+  "capture_run_id": "zones-20260810T130000Z-0-564c3c54-8ee3-44aa-8906-cabaa4f9ef26",
+  "http_status": 200,
+  "sha256": "sha256:cb322ad84822ed09d7b95298bffecfb57349d2a94b368b3a6a33d52bb29c93cf",
+  "retrieved_at": "2026-08-10T13:02:28.279Z",
+  "storage_key": "raw/zones-vnatif/cas/cb322ad84822ed09d7b95298bffecfb57349d2a94b368b3a6a33d52bb29c93cf.bin",
+  "rehash_ok": true,
+  "cas_key_matches": true,
+  "raw_capture_verified": true,
+  "raw_capture_reason": null,
+  "is_featurecollection": true,
+  "feature_count": 1091,
+  "exceeded_transfer_limit": false,
+  "geometry_types": [
+   "Polygon"
+  ],
+  "all_polygonal": true,
+  "nearest_registre_muni": "saint-hyacinthe",
+  "registry_attribution_km": 0.27,
+  "nearest_matches_slug": true,
+  "uev_fields_present": [],
+  "geometry_grain_classified": "zone-polygon",
+  "grain_matches_expected": true,
+  "derived_null_count": 0,
+  "capture_distinct_derived_codes": 1089,
+  "capture_distinct_num_zone": 1087,
+  "sample_derivations": [
+   {
+    "num": "4052",
+    "groupe": "C-03",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleC-03/4052-C-03.pdf",
+    "etiquette": "4052  C03",
+    "derived_zone_code": "4052-C"
+   },
+   {
+    "num": "4129",
+    "groupe": "P-05",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleP-05/4129-P-05.pdf",
+    "etiquette": "4129 P05",
+    "derived_zone_code": "4129-P"
+   },
+   {
+    "num": "4216",
+    "groupe": "H-23",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleH-23/4216-H-23.pdf",
+    "etiquette": "4216 H23",
+    "derived_zone_code": "4216-H"
+   },
+   {
+    "num": "3080",
+    "groupe": "H-24",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleH-24/3080-H-24.pdf",
+    "etiquette": "3080 H24",
+    "derived_zone_code": "3080-H"
+   },
+   {
+    "num": "3083",
+    "groupe": "H-16",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleH-16/3083-H-16.pdf",
+    "etiquette": "3083 H16",
+    "derived_zone_code": "3083-H"
+   },
+   {
+    "num": "4116",
+    "groupe": "P-04",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleP-04/4116-P-04.pdf",
+    "etiquette": "4116  P04",
+    "derived_zone_code": "4116-P"
+   },
+   {
+    "num": "4117",
+    "groupe": "H-11",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleH-11/4117-H-11.pdf",
+    "etiquette": "4117 H11",
+    "derived_zone_code": "4117-H"
+   },
+   {
+    "num": "4118",
+    "groupe": "H-03",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleH-03/4118-H-03.pdf",
+    "etiquette": "4118  H03",
+    "derived_zone_code": "4118-H"
+   },
+   {
+    "num": "4119",
+    "groupe": "P-05",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleP-05/4119-P-05.pdf",
+    "etiquette": "4119  P05",
+    "derived_zone_code": "4119-P"
+   },
+   {
+    "num": "4121",
+    "groupe": "R-03",
+    "grille": "https://www.ville.st-hyacinthe.qc.ca/REGL/Regl350/GrilleR-03/4121-R-03.pdf",
+    "etiquette": "4121 R03",
+    "derived_zone_code": "4121-R"
+   }
+  ],
+  "source_count": 1091,
+  "source_layer_name": "dbo.V_ZON_ZONAGE_S",
+  "count_query": "https://arcgis.st-hyacinthe.ca/server/rest/services/ISOGEO_SigimProd_Features/FeatureServer/13/query?where=1%3D1&returnCountOnly=true&f=json",
+  "source_enum_error": null,
+  "count_complete": true,
+  "count_complete_basis": "feature_count(1091) == source_count(1091) && exceededTransferLimit=false",
+  "served_keys": [
+   "normalized/ca-qc-zonage/qc-zonage-saint-hyacinthe.geojson"
+  ],
+  "served_layout": "flat",
+  "served_features": 1091,
+  "served_distinct_codes": 1089,
+  "served_levels": [
+   "candidate"
+  ],
+  "served_source_urls": [
+   "https://arcgis.st-hyacinthe.ca/server/rest/services/ISOGEO_SigimProd_Features/FeatureServer/13"
+  ],
+  "served_has_collection_v2": false,
+  "served_has_real_v2_proof_block": false,
+  "served_all_url_null": false,
+  "served_candidate_declarative": true,
+  "num_zone_overlap": {
+   "served_nums": 1087,
+   "capture_nums": 1087,
+   "intersection": 1087,
+   "served_into_capture_pct": 100
+  },
+  "served_codes_covered": 1088,
+  "served_codes_uncovered": 1,
+  "uncovered_codes": [
+   "3083X"
+  ],
+  "overlap_ratio_pct": 99.9,
+  "expected_dropped": [
+   "3083X"
+  ],
+  "dropped_matches_expected": true,
+  "guard_blocks": [],
+  "deposited": true,
+  "replaced_backups": [
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-hyacinthe__flat.2026-08-10T1318Z.geojson"
+  ],
+  "dropped_divergence": [
+   {
+    "code": "3083X",
+    "prior_levels": [
+     "candidate"
+    ],
+    "zone_source_url": null,
+    "status": "UNKNOWN",
+    "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+   }
+  ],
+  "dropped_codes": [
+   "3083X"
+  ],
+  "dropped_count": 1,
+  "dropped_matches_expected_after_deposit": true,
+  "replaced_backups_listed": [
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-saint-hyacinthe__flat.2026-08-10T1318Z.geojson"
+  ],
+  "readback": [
+   {
+    "key": "normalized/ca-qc-zonage/qc-zonage-saint-hyacinthe.geojson",
+    "served_features": 1091,
+    "feature_count_matches_capture": true,
+    "geometry_digest_byte_exact": true,
+    "zone_code_present_all": true,
+    "proof_url": "https://arcgis.st-hyacinthe.ca/server/rest/services/ISOGEO_SigimProd_Features/FeatureServer/13/query?where=1%3D1&outFields=*&f=geojson",
+    "proof_url_matches": true,
+    "proof_sha256": "sha256:cb322ad84822ed09d7b95298bffecfb57349d2a94b368b3a6a33d52bb29c93cf",
+    "proof_sha_matches_capture": true,
+    "proof_retrieved_at": "2026-08-10T13:02:28.279Z",
+    "carries_capture_sha256": true,
+    "zone_source_levels": [
+     "documented"
+    ],
+    "zone_source_urls": [
+     "https://arcgis.st-hyacinthe.ca/server/rest/services/ISOGEO_SigimProd_Features/FeatureServer/13/query?where=1%3D1&outFields=*&f=geojson"
+    ],
+    "level_documented": true,
+    "url_all_proof": true,
+    "geometry_grain": [
+     "zone-polygon"
+    ],
+    "grain_uniform_expected": true
+   }
+  ],
+  "readback_ok": true,
+  "statut": "DEPOSITED",
+  "raison": "upgrade candidate→documented v2 byte-exact ; zone_code faithful (NUM_ZONE-classe) ; grain=zone-polygon ; 1 code droppé documenté→UNKNOWN ; backup _replaced/ présent"
+ }
+}

@@ -1,0 +1,5442 @@
+{
+ "contract": "zones-vnatif-deposit-record-geocentralis-lotA/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md@64f82eae/65d4c637 + SPEC_ZONE_GEOMETRY_GRAIN.md@7c7f6731 + SPEC_ACQUISITION_METHODES_PAR_SOURCE.md@47fc8104 §12",
+ "decision": "CLEAN-UPGRADE lot-A géoCentralis WFS (legacy-traceable→documented v2), source-identity WFS, zone_code brut du champ-code (réplique pilote 05de001a/cd363a04)",
+ "mode": "commit",
+ "run_stamp": "20260810T150000Z",
+ "worklist": "work/coverage/zones-vnatif-capture-worklist-geocentralis-lotA-20260810.json",
+ "proof_intended": {
+  "type": "wfs",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (discriminateur = preuve v2 par-feature) + geometry_grain",
+ "summary": {
+  "total": 40,
+  "deposited": 40,
+  "skipped": 0,
+  "other": 0
+ },
+ "cities": [
+  {
+   "slug": "albertville",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707025%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-0-94e5643b-d7af-400d-bca3-3da3f5b9b089",
+   "http_status": 200,
+   "sha256": "sha256:e24dec5b8d88cacab9b3d076ec99867ec94713e221e31e5da356a7e08347781a",
+   "retrieved_at": "2026-08-10T15:36:24.107Z",
+   "storage_key": "raw/zones-vnatif/cas/e24dec5b8d88cacab9b3d076ec99867ec94713e221e31e5da356a7e08347781a.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 45,
+   "wfs_number_matched": 45,
+   "wfs_number_returned": 45,
+   "wfs_total_features": 45,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "albertville",
+   "registry_attribution_km": 0.05,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 45,
+   "sample_codes": [
+    {
+     "code_field_value": "16 Cc",
+     "zone_code": "16 Cc"
+    },
+    {
+     "code_field_value": "21 Cc",
+     "zone_code": "21 Cc"
+    },
+    {
+     "code_field_value": "2 Cp",
+     "zone_code": "2 Cp"
+    },
+    {
+     "code_field_value": "9 P",
+     "zone_code": "9 P"
+    },
+    {
+     "code_field_value": "13 P",
+     "zone_code": "13 P"
+    },
+    {
+     "code_field_value": "18 P",
+     "zone_code": "18 P"
+    },
+    {
+     "code_field_value": "22 Cp",
+     "zone_code": "22 Cp"
+    },
+    {
+     "code_field_value": "23 Ha",
+     "zone_code": "23 Ha"
+    }
+   ],
+   "live_number_matched": 45,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(45)==numberMatched(45)==features(45) && live numberMatched(45)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-albertville.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 45,
+   "served_distinct_codes": 45,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07025]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 45,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-albertville__flat.2026-08-10T1542Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-albertville__flat.2026-08-10T1542Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-albertville.geojson",
+     "served_features": 45,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707025%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:e24dec5b8d88cacab9b3d076ec99867ec94713e221e31e5da356a7e08347781a",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:24.107Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707025%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "amqui",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707047%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-1-6d6a27cc-83e0-409a-a1c9-33ebb886783c",
+   "http_status": 200,
+   "sha256": "sha256:95134a931c5e84e4862b66a4708fbd07d37ae2ec823e3fef4409460ba111dfee",
+   "retrieved_at": "2026-08-10T15:36:22.257Z",
+   "storage_key": "raw/zones-vnatif/cas/95134a931c5e84e4862b66a4708fbd07d37ae2ec823e3fef4409460ba111dfee.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 227,
+   "wfs_number_matched": 227,
+   "wfs_number_returned": 227,
+   "wfs_total_features": 227,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "amqui",
+   "registry_attribution_km": 0.89,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 226,
+   "sample_codes": [
+    {
+     "code_field_value": "308 P",
+     "zone_code": "308 P"
+    },
+    {
+     "code_field_value": "5 R",
+     "zone_code": "5 R"
+    },
+    {
+     "code_field_value": "43 R",
+     "zone_code": "43 R"
+    },
+    {
+     "code_field_value": "8 Ad",
+     "zone_code": "8 Ad"
+    },
+    {
+     "code_field_value": "119 P",
+     "zone_code": "119 P"
+    },
+    {
+     "code_field_value": "20 Ad",
+     "zone_code": "20 Ad"
+    },
+    {
+     "code_field_value": "4 Ad",
+     "zone_code": "4 Ad"
+    },
+    {
+     "code_field_value": "21 Ad",
+     "zone_code": "21 Ad"
+    }
+   ],
+   "live_number_matched": 227,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(227)==numberMatched(227)==features(227) && live numberMatched(227)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-amqui.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 226,
+   "served_distinct_codes": 225,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07047]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 225,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-amqui__flat.2026-08-10T1543Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-amqui__flat.2026-08-10T1543Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-amqui.geojson",
+     "served_features": 227,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707047%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:95134a931c5e84e4862b66a4708fbd07d37ae2ec823e3fef4409460ba111dfee",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:22.257Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707047%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "baie-trinite",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796005%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-2-502f7dba-d8ce-4ece-955b-7c842ab69327",
+   "http_status": 200,
+   "sha256": "sha256:50ba549e1ddaa6af3ed4df7a8fc3ba14c44219b66ce8025db0f3071f5caf5d57",
+   "retrieved_at": "2026-08-10T15:36:21.707Z",
+   "storage_key": "raw/zones-vnatif/cas/50ba549e1ddaa6af3ed4df7a8fc3ba14c44219b66ce8025db0f3071f5caf5d57.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 54,
+   "wfs_number_matched": 54,
+   "wfs_number_returned": 54,
+   "wfs_total_features": 54,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "baie-trinite",
+   "registry_attribution_km": 2.11,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 54,
+   "sample_codes": [
+    {
+     "code_field_value": "I-32",
+     "zone_code": "I-32"
+    },
+    {
+     "code_field_value": "CO-26",
+     "zone_code": "CO-26"
+    },
+    {
+     "code_field_value": "A-12",
+     "zone_code": "A-12"
+    },
+    {
+     "code_field_value": "A-04",
+     "zone_code": "A-04"
+    },
+    {
+     "code_field_value": "F-10",
+     "zone_code": "F-10"
+    },
+    {
+     "code_field_value": "P-23",
+     "zone_code": "P-23"
+    },
+    {
+     "code_field_value": "REC-07",
+     "zone_code": "REC-07"
+    },
+    {
+     "code_field_value": "A-06",
+     "zone_code": "A-06"
+    }
+   ],
+   "live_number_matched": 54,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(54)==numberMatched(54)==features(54) && live numberMatched(54)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-baie-trinite.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 54,
+   "served_distinct_codes": 54,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96005]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 54,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-trinite__flat.2026-08-10T1543Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-trinite__flat.2026-08-10T1543Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-baie-trinite.geojson",
+     "served_features": 54,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796005%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:50ba549e1ddaa6af3ed4df7a8fc3ba14c44219b66ce8025db0f3071f5caf5d57",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:21.707Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796005%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "barraute",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788022%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-3-eb46b764-cb73-4a27-adcf-a3eccbae746e",
+   "http_status": 200,
+   "sha256": "sha256:9b7376da7b6ed593d426a403d3cafc5b0d22db108dae6b9d24d28053fc0a06e9",
+   "retrieved_at": "2026-08-10T15:36:21.689Z",
+   "storage_key": "raw/zones-vnatif/cas/9b7376da7b6ed593d426a403d3cafc5b0d22db108dae6b9d24d28053fc0a06e9.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 78,
+   "wfs_number_matched": 78,
+   "wfs_number_returned": 78,
+   "wfs_total_features": 78,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "barraute",
+   "registry_attribution_km": 0.19,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 78,
+   "sample_codes": [
+    {
+     "code_field_value": "AF-1",
+     "zone_code": "AF-1"
+    },
+    {
+     "code_field_value": "VC-5",
+     "zone_code": "VC-5"
+    },
+    {
+     "code_field_value": "PAE-1",
+     "zone_code": "PAE-1"
+    },
+    {
+     "code_field_value": "FO-1",
+     "zone_code": "FO-1"
+    },
+    {
+     "code_field_value": "VC-4",
+     "zone_code": "VC-4"
+    },
+    {
+     "code_field_value": "Ib-5",
+     "zone_code": "Ib-5"
+    },
+    {
+     "code_field_value": "AG-1",
+     "zone_code": "AG-1"
+    },
+    {
+     "code_field_value": "AF-3",
+     "zone_code": "AF-3"
+    }
+   ],
+   "live_number_matched": 78,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(78)==numberMatched(78)==features(78) && live numberMatched(78)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-barraute.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 78,
+   "served_distinct_codes": 78,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88022]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 78,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-barraute__flat.2026-08-10T1543Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-barraute__flat.2026-08-10T1543Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-barraute.geojson",
+     "served_features": 78,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788022%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:9b7376da7b6ed593d426a403d3cafc5b0d22db108dae6b9d24d28053fc0a06e9",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:21.689Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788022%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "beaulac-garthby",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731008%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-4-c23b34e2-17f1-4b0b-bec0-5325647264ef",
+   "http_status": 200,
+   "sha256": "sha256:09939b1657326df3df8d504969ff5e74a08e4d16dabfa13fce8b50857dbe7586",
+   "retrieved_at": "2026-08-10T15:36:41.380Z",
+   "storage_key": "raw/zones-vnatif/cas/09939b1657326df3df8d504969ff5e74a08e4d16dabfa13fce8b50857dbe7586.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 91,
+   "wfs_number_matched": 91,
+   "wfs_number_returned": 91,
+   "wfs_total_features": 91,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "beaulac-garthby",
+   "registry_attribution_km": 0.39,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 91,
+   "sample_codes": [
+    {
+     "code_field_value": "AD 1",
+     "zone_code": "AD 1"
+    },
+    {
+     "code_field_value": "AG 7",
+     "zone_code": "AG 7"
+    },
+    {
+     "code_field_value": "AFA 1",
+     "zone_code": "AFA 1"
+    },
+    {
+     "code_field_value": "I 1",
+     "zone_code": "I 1"
+    },
+    {
+     "code_field_value": "AFB 1",
+     "zone_code": "AFB 1"
+    },
+    {
+     "code_field_value": "AFA 5",
+     "zone_code": "AFA 5"
+    },
+    {
+     "code_field_value": "AG 1",
+     "zone_code": "AG 1"
+    },
+    {
+     "code_field_value": "AG 2",
+     "zone_code": "AG 2"
+    }
+   ],
+   "live_number_matched": 91,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(91)==numberMatched(91)==features(91) && live numberMatched(91)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-beaulac-garthby.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 91,
+   "served_distinct_codes": 91,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31008]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 91,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-beaulac-garthby__flat.2026-08-10T1543Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-beaulac-garthby__flat.2026-08-10T1543Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-beaulac-garthby.geojson",
+     "served_features": 91,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731008%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:09939b1657326df3df8d504969ff5e74a08e4d16dabfa13fce8b50857dbe7586",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:41.380Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731008%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "berry",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=88070",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-5-168784cf-279d-44a6-8817-dd711c5bfade",
+   "http_status": 200,
+   "sha256": "sha256:f9ad2330e3daee996eb36153e6f6158f2f8dcb1f3faca849e990b97996e3436a",
+   "retrieved_at": "2026-08-10T15:36:21.777Z",
+   "storage_key": "raw/zones-vnatif/cas/f9ad2330e3daee996eb36153e6f6158f2f8dcb1f3faca849e990b97996e3436a.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 34,
+   "wfs_number_matched": 34,
+   "wfs_number_returned": 34,
+   "wfs_total_features": 34,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "berry",
+   "registry_attribution_km": 0.62,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 34,
+   "sample_codes": [
+    {
+     "code_field_value": "MX-2",
+     "zone_code": "MX-2"
+    },
+    {
+     "code_field_value": "PC-2",
+     "zone_code": "PC-2"
+    },
+    {
+     "code_field_value": "Ra-1",
+     "zone_code": "Ra-1"
+    },
+    {
+     "code_field_value": "AG-2",
+     "zone_code": "AG-2"
+    },
+    {
+     "code_field_value": "AG-1",
+     "zone_code": "AG-1"
+    },
+    {
+     "code_field_value": "EV-1",
+     "zone_code": "EV-1"
+    },
+    {
+     "code_field_value": "VC-1",
+     "zone_code": "VC-1"
+    },
+    {
+     "code_field_value": "VC-7",
+     "zone_code": "VC-7"
+    }
+   ],
+   "live_number_matched": 34,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(34)==numberMatched(34)==features(34) && live numberMatched(34)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-berry.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 34,
+   "served_distinct_codes": 34,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=88070]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 34,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-berry__flat.2026-08-10T1543Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-berry__flat.2026-08-10T1543Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-berry.geojson",
+     "served_features": 34,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=88070",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:f9ad2330e3daee996eb36153e6f6158f2f8dcb1f3faca849e990b97996e3436a",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:21.777Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=88070"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "berthier-sur-mer",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18065",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-6-d6d4e947-f15e-487c-8a31-c5fb10bb1527",
+   "http_status": 200,
+   "sha256": "sha256:d8600b9970a8ecee88e1d22b207e0b7c15af26398729ee3c38baf629fefbca57",
+   "retrieved_at": "2026-08-10T15:36:21.291Z",
+   "storage_key": "raw/zones-vnatif/cas/d8600b9970a8ecee88e1d22b207e0b7c15af26398729ee3c38baf629fefbca57.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 137,
+   "wfs_number_matched": 137,
+   "wfs_number_returned": 137,
+   "wfs_total_features": 137,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "berthier-sur-mer",
+   "registry_attribution_km": 0.32,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 134,
+   "sample_codes": [
+    {
+     "code_field_value": "Va.4",
+     "zone_code": "Va.4"
+    },
+    {
+     "code_field_value": "Aa.5",
+     "zone_code": "Aa.5"
+    },
+    {
+     "code_field_value": "Rb.10",
+     "zone_code": "Rb.10"
+    },
+    {
+     "code_field_value": "RbM.3",
+     "zone_code": "RbM.3"
+    },
+    {
+     "code_field_value": "Rb.3",
+     "zone_code": "Rb.3"
+    },
+    {
+     "code_field_value": "Pb.1",
+     "zone_code": "Pb.1"
+    },
+    {
+     "code_field_value": "CbMP.1",
+     "zone_code": "CbMP.1"
+    },
+    {
+     "code_field_value": "CcM.1",
+     "zone_code": "CcM.1"
+    }
+   ],
+   "live_number_matched": 137,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(137)==numberMatched(137)==features(137) && live numberMatched(137)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-berthier-sur-mer.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 137,
+   "served_distinct_codes": 134,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18065]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 134,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-berthier-sur-mer__flat.2026-08-10T1543Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-berthier-sur-mer__flat.2026-08-10T1543Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-berthier-sur-mer.geojson",
+     "served_features": 137,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18065",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:d8600b9970a8ecee88e1d22b207e0b7c15af26398729ee3c38baf629fefbca57",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:21.291Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18065"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "berthierville",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752035%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-7-5c448caf-cd77-4fed-a148-c2c9dba83504",
+   "http_status": 200,
+   "sha256": "sha256:4a089fdd700fbbd194557fe41b05634a0ecdf227e23a94f9fe65ae8944be4add",
+   "retrieved_at": "2026-08-10T15:36:43.908Z",
+   "storage_key": "raw/zones-vnatif/cas/4a089fdd700fbbd194557fe41b05634a0ecdf227e23a94f9fe65ae8944be4add.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 154,
+   "wfs_number_matched": 154,
+   "wfs_number_returned": 154,
+   "wfs_total_features": 154,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "berthierville",
+   "registry_attribution_km": 0.26,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 154,
+   "sample_codes": [
+    {
+     "code_field_value": "3-P-02",
+     "zone_code": "3-P-02"
+    },
+    {
+     "code_field_value": "4-P-56",
+     "zone_code": "4-P-56"
+    },
+    {
+     "code_field_value": "2-C-21",
+     "zone_code": "2-C-21"
+    },
+    {
+     "code_field_value": "3-R-29",
+     "zone_code": "3-R-29"
+    },
+    {
+     "code_field_value": "2-R-24",
+     "zone_code": "2-R-24"
+    },
+    {
+     "code_field_value": "4-C-63",
+     "zone_code": "4-C-63"
+    },
+    {
+     "code_field_value": "2-C-26",
+     "zone_code": "2-C-26"
+    },
+    {
+     "code_field_value": "3-P-28",
+     "zone_code": "3-P-28"
+    }
+   ],
+   "live_number_matched": 154,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(154)==numberMatched(154)==features(154) && live numberMatched(154)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-berthierville.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 154,
+   "served_distinct_codes": 154,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52035]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 154,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-berthierville__flat.2026-08-10T1544Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-berthierville__flat.2026-08-10T1544Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-berthierville.geojson",
+     "served_features": 154,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752035%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:4a089fdd700fbbd194557fe41b05634a0ecdf227e23a94f9fe65ae8944be4add",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:43.908Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752035%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "cap-saint-ignace",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18045",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-8-0be0d35e-ec2e-419a-af6b-958371d66d6b",
+   "http_status": 200,
+   "sha256": "sha256:70f9cafa4815268c1316d9fb8241948f4cbe823908031e44745d63278009a7b9",
+   "retrieved_at": "2026-08-10T15:37:00.345Z",
+   "storage_key": "raw/zones-vnatif/cas/70f9cafa4815268c1316d9fb8241948f4cbe823908031e44745d63278009a7b9.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 77,
+   "wfs_number_matched": 77,
+   "wfs_number_returned": 77,
+   "wfs_total_features": 77,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "cap-saint-ignace",
+   "registry_attribution_km": 0.38,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 76,
+   "sample_codes": [
+    {
+     "code_field_value": "Ac.1",
+     "zone_code": "Ac.1"
+    },
+    {
+     "code_field_value": "Fc.1",
+     "zone_code": "Fc.1"
+    },
+    {
+     "code_field_value": "Aa.1",
+     "zone_code": "Aa.1"
+    },
+    {
+     "code_field_value": "Fc.3",
+     "zone_code": "Fc.3"
+    },
+    {
+     "code_field_value": "Fc.4",
+     "zone_code": "Fc.4"
+    },
+    {
+     "code_field_value": "Fc.5",
+     "zone_code": "Fc.5"
+    },
+    {
+     "code_field_value": "Fc.6",
+     "zone_code": "Fc.6"
+    },
+    {
+     "code_field_value": "Rb.7",
+     "zone_code": "Rb.7"
+    }
+   ],
+   "live_number_matched": 77,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(77)==numberMatched(77)==features(77) && live numberMatched(77)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-cap-saint-ignace.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 77,
+   "served_distinct_codes": 76,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18045]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 76,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-cap-saint-ignace__flat.2026-08-10T1544Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-cap-saint-ignace__flat.2026-08-10T1544Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-cap-saint-ignace.geojson",
+     "served_features": 77,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18045",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:70f9cafa4815268c1316d9fb8241948f4cbe823908031e44745d63278009a7b9",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:37:00.345Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18045"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "causapscal",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707018%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-9-baf986dc-cedf-496c-864c-b3c8a46bb46e",
+   "http_status": 200,
+   "sha256": "sha256:aaaf76d70afe1fed9a1828a826d1cdf3c2850f543e8edd38a3e802f3147594dc",
+   "retrieved_at": "2026-08-10T15:36:49.543Z",
+   "storage_key": "raw/zones-vnatif/cas/aaaf76d70afe1fed9a1828a826d1cdf3c2850f543e8edd38a3e802f3147594dc.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 164,
+   "wfs_number_matched": 164,
+   "wfs_number_returned": 164,
+   "wfs_total_features": 164,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "causapscal",
+   "registry_attribution_km": 0.7,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 159,
+   "sample_codes": [
+    {
+     "code_field_value": "301 Hb",
+     "zone_code": "301 Hb"
+    },
+    {
+     "code_field_value": "302 Hb",
+     "zone_code": "302 Hb"
+    },
+    {
+     "code_field_value": "303 Hb",
+     "zone_code": "303 Hb"
+    },
+    {
+     "code_field_value": "141 R",
+     "zone_code": "141 R"
+    },
+    {
+     "code_field_value": "304 Hb",
+     "zone_code": "304 Hb"
+    },
+    {
+     "code_field_value": "305 Hb",
+     "zone_code": "305 Hb"
+    },
+    {
+     "code_field_value": "307 Hb",
+     "zone_code": "307 Hb"
+    },
+    {
+     "code_field_value": "308 Hb",
+     "zone_code": "308 Hb"
+    }
+   ],
+   "live_number_matched": 164,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(164)==numberMatched(164)==features(164) && live numberMatched(164)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-causapscal.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 164,
+   "served_distinct_codes": 159,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07018]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 159,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-causapscal__flat.2026-08-10T1544Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-causapscal__flat.2026-08-10T1544Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-causapscal.geojson",
+     "served_features": 164,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707018%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:aaaf76d70afe1fed9a1828a826d1cdf3c2850f543e8edd38a3e802f3147594dc",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:49.543Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707018%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "champneuf",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788005%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-10-3b6851a7-679b-41fa-b3fb-449f024e3346",
+   "http_status": 200,
+   "sha256": "sha256:56582a13bd5f79eef61482ec361b928b04f8a5577e9c85640de8d5ea72cd10a1",
+   "retrieved_at": "2026-08-10T15:36:43.950Z",
+   "storage_key": "raw/zones-vnatif/cas/56582a13bd5f79eef61482ec361b928b04f8a5577e9c85640de8d5ea72cd10a1.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 13,
+   "wfs_number_matched": 13,
+   "wfs_number_returned": 13,
+   "wfs_total_features": 13,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "champneuf",
+   "registry_attribution_km": 0.5,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 13,
+   "sample_codes": [
+    {
+     "code_field_value": "Ib-1",
+     "zone_code": "Ib-1"
+    },
+    {
+     "code_field_value": "FO-1",
+     "zone_code": "FO-1"
+    },
+    {
+     "code_field_value": "PC-1",
+     "zone_code": "PC-1"
+    },
+    {
+     "code_field_value": "AF-1",
+     "zone_code": "AF-1"
+    },
+    {
+     "code_field_value": "Ra-1",
+     "zone_code": "Ra-1"
+    },
+    {
+     "code_field_value": "CO-1",
+     "zone_code": "CO-1"
+    },
+    {
+     "code_field_value": "FO-2",
+     "zone_code": "FO-2"
+    },
+    {
+     "code_field_value": "FO-4",
+     "zone_code": "FO-4"
+    }
+   ],
+   "live_number_matched": 13,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(13)==numberMatched(13)==features(13) && live numberMatched(13)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-champneuf.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 13,
+   "served_distinct_codes": 13,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88005]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 13,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-champneuf__flat.2026-08-10T1544Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-champneuf__flat.2026-08-10T1544Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-champneuf.geojson",
+     "served_features": 13,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788005%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:56582a13bd5f79eef61482ec361b928b04f8a5577e9c85640de8d5ea72cd10a1",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:43.950Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788005%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "chateauguay",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2767050%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-11-59ad7f58-7198-4cac-97b9-c08b4d054055",
+   "http_status": 200,
+   "sha256": "sha256:ea78f1084ab33bd2e9054b8296c3aed2dc87bd7b49bc5b423879f1d74d7301aa",
+   "retrieved_at": "2026-08-10T15:36:44.113Z",
+   "storage_key": "raw/zones-vnatif/cas/ea78f1084ab33bd2e9054b8296c3aed2dc87bd7b49bc5b423879f1d74d7301aa.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 319,
+   "wfs_number_matched": 319,
+   "wfs_number_returned": 319,
+   "wfs_total_features": 319,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "chateauguay",
+   "registry_attribution_km": 1.21,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 319,
+   "sample_codes": [
+    {
+     "code_field_value": "C-504",
+     "zone_code": "C-504"
+    },
+    {
+     "code_field_value": "H-751",
+     "zone_code": "H-751"
+    },
+    {
+     "code_field_value": "H-312",
+     "zone_code": "H-312"
+    },
+    {
+     "code_field_value": "H-138",
+     "zone_code": "H-138"
+    },
+    {
+     "code_field_value": "H-626",
+     "zone_code": "H-626"
+    },
+    {
+     "code_field_value": "P-749",
+     "zone_code": "P-749"
+    },
+    {
+     "code_field_value": "H-203",
+     "zone_code": "H-203"
+    },
+    {
+     "code_field_value": "H-611",
+     "zone_code": "H-611"
+    }
+   ],
+   "live_number_matched": 319,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(319)==numberMatched(319)==features(319) && live numberMatched(319)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-chateauguay.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 133,
+   "served_distinct_codes": 133,
+   "served_levels": [
+    "candidate"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=67050"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 124,
+   "served_codes_uncovered": 9,
+   "uncovered_codes": [
+    "A768",
+    "C233",
+    "C765",
+    "C766",
+    "H627",
+    "H761",
+    "I3",
+    "P5",
+    "P767"
+   ],
+   "overlap_ratio_pct": 93.2,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-chateauguay__flat.2026-08-10T1544Z.geojson"
+   ],
+   "dropped_divergence": [
+    {
+     "code": "A768",
+     "prior_levels": [
+      "candidate"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "C233",
+     "prior_levels": [
+      "candidate"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "C765",
+     "prior_levels": [
+      "candidate"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "C766",
+     "prior_levels": [
+      "candidate"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "H627",
+     "prior_levels": [
+      "candidate"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "H761",
+     "prior_levels": [
+      "candidate"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "I3",
+     "prior_levels": [
+      "candidate"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "P5",
+     "prior_levels": [
+      "candidate"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "P767",
+     "prior_levels": [
+      "candidate"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    }
+   ],
+   "dropped_codes": [
+    "A768",
+    "C233",
+    "C765",
+    "C766",
+    "H627",
+    "H761",
+    "I3",
+    "P5",
+    "P767"
+   ],
+   "dropped_count": 9,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-chateauguay__flat.2026-08-10T1544Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-chateauguay.geojson",
+     "served_features": 319,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2767050%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:ea78f1084ab33bd2e9054b8296c3aed2dc87bd7b49bc5b423879f1d74d7301aa",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:44.113Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2767050%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 93.2%) ; grain=zone-polygon ; 9 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "chute-aux-outardes",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796035%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-12-88593473-7cf3-440a-8b36-b850b3a43e15",
+   "http_status": 200,
+   "sha256": "sha256:765bc019a4d252d4864025bf71907bedca548f71855d9cb91d2c64ea154b93b3",
+   "retrieved_at": "2026-08-10T15:37:11.356Z",
+   "storage_key": "raw/zones-vnatif/cas/765bc019a4d252d4864025bf71907bedca548f71855d9cb91d2c64ea154b93b3.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 79,
+   "wfs_number_matched": 79,
+   "wfs_number_returned": 79,
+   "wfs_total_features": 79,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "chute-aux-outardes",
+   "registry_attribution_km": 0.25,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 79,
+   "sample_codes": [
+    {
+     "code_field_value": "H25",
+     "zone_code": "H25"
+    },
+    {
+     "code_field_value": "M76",
+     "zone_code": "M76"
+    },
+    {
+     "code_field_value": "C9",
+     "zone_code": "C9"
+    },
+    {
+     "code_field_value": "H32",
+     "zone_code": "H32"
+    },
+    {
+     "code_field_value": "H37",
+     "zone_code": "H37"
+    },
+    {
+     "code_field_value": "H55",
+     "zone_code": "H55"
+    },
+    {
+     "code_field_value": "H34",
+     "zone_code": "H34"
+    },
+    {
+     "code_field_value": "P3",
+     "zone_code": "P3"
+    }
+   ],
+   "live_number_matched": 79,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(79)==numberMatched(79)==features(79) && live numberMatched(79)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-chute-aux-outardes.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 79,
+   "served_distinct_codes": 79,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96035]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 79,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-chute-aux-outardes__flat.2026-08-10T1544Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-chute-aux-outardes__flat.2026-08-10T1544Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-chute-aux-outardes.geojson",
+     "served_features": 79,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796035%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:765bc019a4d252d4864025bf71907bedca548f71855d9cb91d2c64ea154b93b3",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:37:11.356Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796035%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "crabtree",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761013%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-13-c1395026-91f3-4ea3-b4c2-202bf6f702cf",
+   "http_status": 200,
+   "sha256": "sha256:eb4ea10d1de93ee2a9eb970c71571f8255dd187fa81850a2c87417a83af886a6",
+   "retrieved_at": "2026-08-10T15:37:10.610Z",
+   "storage_key": "raw/zones-vnatif/cas/eb4ea10d1de93ee2a9eb970c71571f8255dd187fa81850a2c87417a83af886a6.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 64,
+   "wfs_number_matched": 64,
+   "wfs_number_returned": 64,
+   "wfs_total_features": 64,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "crabtree",
+   "registry_attribution_km": 0.33,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 64,
+   "sample_codes": [
+    {
+     "code_field_value": "Ca-1",
+     "zone_code": "Ca-1"
+    },
+    {
+     "code_field_value": "M-1",
+     "zone_code": "M-1"
+    },
+    {
+     "code_field_value": "P-2",
+     "zone_code": "P-2"
+    },
+    {
+     "code_field_value": "Rb-1",
+     "zone_code": "Rb-1"
+    },
+    {
+     "code_field_value": "E-8",
+     "zone_code": "E-8"
+    },
+    {
+     "code_field_value": "I-2",
+     "zone_code": "I-2"
+    },
+    {
+     "code_field_value": "E-2",
+     "zone_code": "E-2"
+    },
+    {
+     "code_field_value": "E-5",
+     "zone_code": "E-5"
+    }
+   ],
+   "live_number_matched": 64,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(64)==numberMatched(64)==features(64) && live numberMatched(64)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-crabtree.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 64,
+   "served_distinct_codes": 64,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61013]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 64,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-crabtree__flat.2026-08-10T1544Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-crabtree__flat.2026-08-10T1544Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-crabtree.geojson",
+     "served_features": 64,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761013%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:eb4ea10d1de93ee2a9eb970c71571f8255dd187fa81850a2c87417a83af886a6",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:37:10.610Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761013%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "danville",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=40047",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-14-8ffc0838-02a6-4984-b41a-56a60dd75d48",
+   "http_status": 200,
+   "sha256": "sha256:0ba62b4944e358b6fe236fcec7724f714f7bef421c6e741e20a98eeda951e111",
+   "retrieved_at": "2026-08-10T15:36:43.892Z",
+   "storage_key": "raw/zones-vnatif/cas/0ba62b4944e358b6fe236fcec7724f714f7bef421c6e741e20a98eeda951e111.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 132,
+   "wfs_number_matched": 132,
+   "wfs_number_returned": 132,
+   "wfs_total_features": 132,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "danville",
+   "registry_attribution_km": 0.95,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 130,
+   "sample_codes": [
+    {
+     "code_field_value": "ID-27",
+     "zone_code": "ID-27"
+    },
+    {
+     "code_field_value": "A-6",
+     "zone_code": "A-6"
+    },
+    {
+     "code_field_value": "A-3",
+     "zone_code": "A-3"
+    },
+    {
+     "code_field_value": "A-9",
+     "zone_code": "A-9"
+    },
+    {
+     "code_field_value": "ID-32",
+     "zone_code": "ID-32"
+    },
+    {
+     "code_field_value": "AF-1",
+     "zone_code": "AF-1"
+    },
+    {
+     "code_field_value": "AF-2",
+     "zone_code": "AF-2"
+    },
+    {
+     "code_field_value": "AF-3",
+     "zone_code": "AF-3"
+    }
+   ],
+   "live_number_matched": 132,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(132)==numberMatched(132)==features(132) && live numberMatched(132)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-danville.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 129,
+   "served_distinct_codes": 127,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=40047]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 127,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-danville__flat.2026-08-10T1545Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-danville__flat.2026-08-10T1545Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-danville.geojson",
+     "served_features": 132,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=40047",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:0ba62b4944e358b6fe236fcec7724f714f7bef421c6e741e20a98eeda951e111",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:43.892Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=40047"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "disraeli--les-appalaches--2",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=31015",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-0-94e5643b-d7af-400d-bca3-3da3f5b9b089",
+   "http_status": 200,
+   "sha256": "sha256:bc6aaee77f90bcf030870d16402f9477ee397de8d81bd5b9eda47f01eb51f026",
+   "retrieved_at": "2026-08-10T15:36:27.235Z",
+   "storage_key": "raw/zones-vnatif/cas/bc6aaee77f90bcf030870d16402f9477ee397de8d81bd5b9eda47f01eb51f026.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 83,
+   "wfs_number_matched": 83,
+   "wfs_number_returned": 83,
+   "wfs_total_features": 83,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "disraeli--les-appalaches--2",
+   "registry_attribution_km": 0.11,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 82,
+   "sample_codes": [
+    {
+     "code_field_value": "48 - R",
+     "zone_code": "48 - R"
+    },
+    {
+     "code_field_value": "72 - R",
+     "zone_code": "72 - R"
+    },
+    {
+     "code_field_value": "76 - R",
+     "zone_code": "76 - R"
+    },
+    {
+     "code_field_value": "9 - IP",
+     "zone_code": "9 - IP"
+    },
+    {
+     "code_field_value": "21 - ZP",
+     "zone_code": "21 - ZP"
+    },
+    {
+     "code_field_value": "74-ZR",
+     "zone_code": "74-ZR"
+    },
+    {
+     "code_field_value": "30 - R",
+     "zone_code": "30 - R"
+    },
+    {
+     "code_field_value": "43 - IP",
+     "zone_code": "43 - IP"
+    }
+   ],
+   "live_number_matched": 83,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(83)==numberMatched(83)==features(83) && live numberMatched(83)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-disraeli--les-appalaches--2.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 83,
+   "served_distinct_codes": 82,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=31015]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 82,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-disraeli--les-appalaches--2__flat.2026-08-10T1545Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-disraeli--les-appalaches--2__flat.2026-08-10T1545Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-disraeli--les-appalaches--2.geojson",
+     "served_features": 83,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=31015",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:bc6aaee77f90bcf030870d16402f9477ee397de8d81bd5b9eda47f01eb51f026",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:27.235Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=31015"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "dundee",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769075%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-1-6d6a27cc-83e0-409a-a1c9-33ebb886783c",
+   "http_status": 200,
+   "sha256": "sha256:89364a41d5e2f765d7fa91ee9350e1d4e718b962be4366ca5154805bd6a43bb4",
+   "retrieved_at": "2026-08-10T15:36:24.838Z",
+   "storage_key": "raw/zones-vnatif/cas/89364a41d5e2f765d7fa91ee9350e1d4e718b962be4366ca5154805bd6a43bb4.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 48,
+   "wfs_number_matched": 48,
+   "wfs_number_returned": 48,
+   "wfs_total_features": 48,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "dundee",
+   "registry_attribution_km": 1.39,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 47,
+   "sample_codes": [
+    {
+     "code_field_value": "RÉ-2",
+     "zone_code": "RÉ-2"
+    },
+    {
+     "code_field_value": "V-9",
+     "zone_code": "V-9"
+    },
+    {
+     "code_field_value": "CO-3",
+     "zone_code": "CO-3"
+    },
+    {
+     "code_field_value": "RÉ-3",
+     "zone_code": "RÉ-3"
+    },
+    {
+     "code_field_value": "A-2",
+     "zone_code": "A-2"
+    },
+    {
+     "code_field_value": "RÉ-4",
+     "zone_code": "RÉ-4"
+    },
+    {
+     "code_field_value": "RÉ-1",
+     "zone_code": "RÉ-1"
+    },
+    {
+     "code_field_value": "CO-2",
+     "zone_code": "CO-2"
+    }
+   ],
+   "live_number_matched": 48,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(48)==numberMatched(48)==features(48) && live numberMatched(48)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-dundee.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 48,
+   "served_distinct_codes": 47,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69075]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 47,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-dundee__flat.2026-08-10T1545Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-dundee__flat.2026-08-10T1545Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-dundee.geojson",
+     "served_features": 48,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769075%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:89364a41d5e2f765d7fa91ee9350e1d4e718b962be4366ca5154805bd6a43bb4",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:24.838Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769075%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "east-broughton",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731122%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-2-502f7dba-d8ce-4ece-955b-7c842ab69327",
+   "http_status": 200,
+   "sha256": "sha256:66c871d26f385f4fc58c76a3616a58634cc7fa94af0df08dfeba254db5410a6d",
+   "retrieved_at": "2026-08-10T15:36:24.302Z",
+   "storage_key": "raw/zones-vnatif/cas/66c871d26f385f4fc58c76a3616a58634cc7fa94af0df08dfeba254db5410a6d.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 78,
+   "wfs_number_matched": 78,
+   "wfs_number_returned": 78,
+   "wfs_total_features": 78,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "east-broughton",
+   "registry_attribution_km": 0.01,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 78,
+   "sample_codes": [
+    {
+     "code_field_value": "RESE 1",
+     "zone_code": "RESE 1"
+    },
+    {
+     "code_field_value": "Rb 9",
+     "zone_code": "Rb 9"
+    },
+    {
+     "code_field_value": "Pa 5",
+     "zone_code": "Pa 5"
+    },
+    {
+     "code_field_value": "Pb 1",
+     "zone_code": "Pb 1"
+    },
+    {
+     "code_field_value": "Mc 8",
+     "zone_code": "Mc 8"
+    },
+    {
+     "code_field_value": "Rb 10",
+     "zone_code": "Rb 10"
+    },
+    {
+     "code_field_value": "RESE 9",
+     "zone_code": "RESE 9"
+    },
+    {
+     "code_field_value": "Mh 1",
+     "zone_code": "Mh 1"
+    }
+   ],
+   "live_number_matched": 78,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(78)==numberMatched(78)==features(78) && live numberMatched(78)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-east-broughton.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 78,
+   "served_distinct_codes": 78,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31122]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 78,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-east-broughton__flat.2026-08-10T1545Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-east-broughton__flat.2026-08-10T1545Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-east-broughton.geojson",
+     "served_features": 78,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731122%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:66c871d26f385f4fc58c76a3616a58634cc7fa94af0df08dfeba254db5410a6d",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:24.302Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731122%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "elgin",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69050",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-3-eb46b764-cb73-4a27-adcf-a3eccbae746e",
+   "http_status": 200,
+   "sha256": "sha256:ef7cad6479b09207d6b8e7303f4bde0a41619be43f2cbf33554de150c865027c",
+   "retrieved_at": "2026-08-10T15:36:24.707Z",
+   "storage_key": "raw/zones-vnatif/cas/ef7cad6479b09207d6b8e7303f4bde0a41619be43f2cbf33554de150c865027c.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 26,
+   "wfs_number_matched": 26,
+   "wfs_number_returned": 26,
+   "wfs_total_features": 26,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "elgin",
+   "registry_attribution_km": 1.87,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 26,
+   "sample_codes": [
+    {
+     "code_field_value": "AR-1",
+     "zone_code": "AR-1"
+    },
+    {
+     "code_field_value": "AG-5",
+     "zone_code": "AG-5"
+    },
+    {
+     "code_field_value": "AR-5",
+     "zone_code": "AR-5"
+    },
+    {
+     "code_field_value": "A-1",
+     "zone_code": "A-1"
+    },
+    {
+     "code_field_value": "ID-1",
+     "zone_code": "ID-1"
+    },
+    {
+     "code_field_value": "AR-6",
+     "zone_code": "AR-6"
+    },
+    {
+     "code_field_value": "AG-7",
+     "zone_code": "AG-7"
+    },
+    {
+     "code_field_value": "ID-2",
+     "zone_code": "ID-2"
+    }
+   ],
+   "live_number_matched": 26,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(26)==numberMatched(26)==features(26) && live numberMatched(26)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-elgin.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 26,
+   "served_distinct_codes": 26,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69050]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 26,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-elgin__flat.2026-08-10T1545Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-elgin__flat.2026-08-10T1545Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-elgin.geojson",
+     "served_features": 26,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69050",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:ef7cad6479b09207d6b8e7303f4bde0a41619be43f2cbf33554de150c865027c",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:24.707Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69050"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "esterel",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77011",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-4-c23b34e2-17f1-4b0b-bec0-5325647264ef",
+   "http_status": 200,
+   "sha256": "sha256:d2f6eea7e4d2db5f92881b9aac4cd8b9465df1e2327f3e0285e6886b47b58988",
+   "retrieved_at": "2026-08-10T15:36:44.208Z",
+   "storage_key": "raw/zones-vnatif/cas/d2f6eea7e4d2db5f92881b9aac4cd8b9465df1e2327f3e0285e6886b47b58988.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 131,
+   "wfs_number_matched": 131,
+   "wfs_number_returned": 131,
+   "wfs_total_features": 131,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "esterel",
+   "registry_attribution_km": 0.38,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 66,
+   "sample_codes": [
+    {
+     "code_field_value": "R 1",
+     "zone_code": "R 1"
+    },
+    {
+     "code_field_value": "R 1",
+     "zone_code": "R 1"
+    },
+    {
+     "code_field_value": "R 2",
+     "zone_code": "R 2"
+    },
+    {
+     "code_field_value": "R 2",
+     "zone_code": "R 2"
+    },
+    {
+     "code_field_value": "R 2",
+     "zone_code": "R 2"
+    },
+    {
+     "code_field_value": "PR c-1",
+     "zone_code": "PR c-1"
+    },
+    {
+     "code_field_value": "PR c-1",
+     "zone_code": "PR c-1"
+    },
+    {
+     "code_field_value": "R 1",
+     "zone_code": "R 1"
+    }
+   ],
+   "live_number_matched": 131,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(131)==numberMatched(131)==features(131) && live numberMatched(131)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-esterel.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 131,
+   "served_distinct_codes": 66,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77011]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 66,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-esterel__flat.2026-08-10T1545Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-esterel__flat.2026-08-10T1545Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-esterel.geojson",
+     "served_features": 131,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77011",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:d2f6eea7e4d2db5f92881b9aac4cd8b9465df1e2327f3e0285e6886b47b58988",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:44.208Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77011"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "farnham",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2746112%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-5-168784cf-279d-44a6-8817-dd711c5bfade",
+   "http_status": 200,
+   "sha256": "sha256:92e5fe2cd752d8ff973624179508839275ec2d4ac46f3307b2e05f3e59654d09",
+   "retrieved_at": "2026-08-10T15:36:24.845Z",
+   "storage_key": "raw/zones-vnatif/cas/92e5fe2cd752d8ff973624179508839275ec2d4ac46f3307b2e05f3e59654d09.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 559,
+   "wfs_number_matched": 559,
+   "wfs_number_returned": 559,
+   "wfs_total_features": 559,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "farnham",
+   "registry_attribution_km": 0.57,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 299,
+   "sample_codes": [
+    {
+     "code_field_value": "P1-002",
+     "zone_code": "P1-002"
+    },
+    {
+     "code_field_value": "H1-126",
+     "zone_code": "H1-126"
+    },
+    {
+     "code_field_value": "H3-167",
+     "zone_code": "H3-167"
+    },
+    {
+     "code_field_value": "AH-018",
+     "zone_code": "AH-018"
+    },
+    {
+     "code_field_value": "A-007",
+     "zone_code": "A-007"
+    },
+    {
+     "code_field_value": "P1-012",
+     "zone_code": "P1-012"
+    },
+    {
+     "code_field_value": "AH-005",
+     "zone_code": "AH-005"
+    },
+    {
+     "code_field_value": "AH-015",
+     "zone_code": "AH-015"
+    }
+   ],
+   "live_number_matched": 559,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(559)==numberMatched(559)==features(559) && live numberMatched(559)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-farnham.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 559,
+   "served_distinct_codes": 299,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=46112]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 299,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-farnham__flat.2026-08-10T1545Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-farnham__flat.2026-08-10T1545Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-farnham.geojson",
+     "served_features": 559,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2746112%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:92e5fe2cd752d8ff973624179508839275ec2d4ac46f3307b2e05f3e59654d09",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:24.845Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2746112%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "fermont",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2797035%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-6-d6d4e947-f15e-487c-8a31-c5fb10bb1527",
+   "http_status": 200,
+   "sha256": "sha256:ef337975aa4c2ef19fb39ef2d7e24b43c12c3dcbd64d99791ccdb0ee885895be",
+   "retrieved_at": "2026-08-10T15:36:24.068Z",
+   "storage_key": "raw/zones-vnatif/cas/ef337975aa4c2ef19fb39ef2d7e24b43c12c3dcbd64d99791ccdb0ee885895be.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 80,
+   "wfs_number_matched": 80,
+   "wfs_number_returned": 80,
+   "wfs_total_features": 80,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "fermont",
+   "registry_attribution_km": 2.14,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 80,
+   "sample_codes": [
+    {
+     "code_field_value": "R02-063",
+     "zone_code": "R02-063"
+    },
+    {
+     "code_field_value": "R02-058",
+     "zone_code": "R02-058"
+    },
+    {
+     "code_field_value": "H01-039",
+     "zone_code": "H01-039"
+    },
+    {
+     "code_field_value": "P01-040",
+     "zone_code": "P01-040"
+    },
+    {
+     "code_field_value": "H01-041",
+     "zone_code": "H01-041"
+    },
+    {
+     "code_field_value": "P01-036",
+     "zone_code": "P01-036"
+    },
+    {
+     "code_field_value": "P01-020",
+     "zone_code": "P01-020"
+    },
+    {
+     "code_field_value": "H01-073",
+     "zone_code": "H01-073"
+    }
+   ],
+   "live_number_matched": 80,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(80)==numberMatched(80)==features(80) && live numberMatched(80)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-fermont.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 80,
+   "served_distinct_codes": 80,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=97035]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 80,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-fermont__flat.2026-08-10T1546Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-fermont__flat.2026-08-10T1546Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-fermont.geojson",
+     "served_features": 80,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2797035%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:ef337975aa4c2ef19fb39ef2d7e24b43c12c3dcbd64d99791ccdb0ee885895be",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:24.068Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2797035%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "franquelin",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796015%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-7-5c448caf-cd77-4fed-a148-c2c9dba83504",
+   "http_status": 200,
+   "sha256": "sha256:9c07a2f939bd652fc70522e7a53e98f85108f56df59f0c164882a8adda520e91",
+   "retrieved_at": "2026-08-10T15:36:46.575Z",
+   "storage_key": "raw/zones-vnatif/cas/9c07a2f939bd652fc70522e7a53e98f85108f56df59f0c164882a8adda520e91.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 36,
+   "wfs_number_matched": 36,
+   "wfs_number_returned": 36,
+   "wfs_total_features": 36,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "franquelin",
+   "registry_attribution_km": 1.04,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 36,
+   "sample_codes": [
+    {
+     "code_field_value": "R-19",
+     "zone_code": "R-19"
+    },
+    {
+     "code_field_value": "CO-34",
+     "zone_code": "CO-34"
+    },
+    {
+     "code_field_value": "V-30",
+     "zone_code": "V-30"
+    },
+    {
+     "code_field_value": "V-06",
+     "zone_code": "V-06"
+    },
+    {
+     "code_field_value": "R-01",
+     "zone_code": "R-01"
+    },
+    {
+     "code_field_value": "R-35",
+     "zone_code": "R-35"
+    },
+    {
+     "code_field_value": "V-07",
+     "zone_code": "V-07"
+    },
+    {
+     "code_field_value": "R-10",
+     "zone_code": "R-10"
+    }
+   ],
+   "live_number_matched": 36,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(36)==numberMatched(36)==features(36) && live numberMatched(36)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-franquelin.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 36,
+   "served_distinct_codes": 36,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=96015]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 36,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-franquelin__flat.2026-08-10T1546Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-franquelin__flat.2026-08-10T1546Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-franquelin.geojson",
+     "served_features": 36,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796015%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:9c07a2f939bd652fc70522e7a53e98f85108f56df59f0c164882a8adda520e91",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:46.575Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2796015%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "gatineau",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2781017%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-8-0be0d35e-ec2e-419a-af6b-958371d66d6b",
+   "http_status": 200,
+   "sha256": "sha256:cd3a9f3001d30d7b56155f4a3a70326b055f7b942ef802601f5aaf23caca46f5",
+   "retrieved_at": "2026-08-10T15:37:03.886Z",
+   "storage_key": "raw/zones-vnatif/cas/cd3a9f3001d30d7b56155f4a3a70326b055f7b942ef802601f5aaf23caca46f5.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 1871,
+   "wfs_number_matched": 1871,
+   "wfs_number_returned": 1871,
+   "wfs_total_features": 1871,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "gatineau",
+   "registry_attribution_km": 2.56,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 1871,
+   "sample_codes": [
+    {
+     "code_field_value": "Co-17-021",
+     "zone_code": "Co-17-021"
+    },
+    {
+     "code_field_value": "Ha-05-021",
+     "zone_code": "Ha-05-021"
+    },
+    {
+     "code_field_value": "Co-03-006",
+     "zone_code": "Co-03-006"
+    },
+    {
+     "code_field_value": "Pu-01-137",
+     "zone_code": "Pu-01-137"
+    },
+    {
+     "code_field_value": "Co-05-016",
+     "zone_code": "Co-05-016"
+    },
+    {
+     "code_field_value": "Co-04-118",
+     "zone_code": "Co-04-118"
+    },
+    {
+     "code_field_value": "Pu-08-250",
+     "zone_code": "Pu-08-250"
+    },
+    {
+     "code_field_value": "Co-18-036",
+     "zone_code": "Co-18-036"
+    }
+   ],
+   "live_number_matched": 1871,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(1871)==numberMatched(1871)==features(1871) && live numberMatched(1871)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-gatineau.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 1871,
+   "served_distinct_codes": 1871,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=81017]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 1871,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-gatineau__flat.2026-08-10T1546Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-gatineau__flat.2026-08-10T1546Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-gatineau.geojson",
+     "served_features": 1871,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2781017%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:cd3a9f3001d30d7b56155f4a3a70326b055f7b942ef802601f5aaf23caca46f5",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:37:03.886Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2781017%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "godmanchester",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769060%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-9-baf986dc-cedf-496c-864c-b3c8a46bb46e",
+   "http_status": 200,
+   "sha256": "sha256:155988f09786f0bd02fa1af59c4c8befb070118058f39341f8d4c9692c18d2fd",
+   "retrieved_at": "2026-08-10T15:36:52.438Z",
+   "storage_key": "raw/zones-vnatif/cas/155988f09786f0bd02fa1af59c4c8befb070118058f39341f8d4c9692c18d2fd.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 36,
+   "wfs_number_matched": 36,
+   "wfs_number_returned": 36,
+   "wfs_total_features": 36,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "godmanchester",
+   "registry_attribution_km": 0.98,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 35,
+   "sample_codes": [
+    {
+     "code_field_value": "R-2",
+     "zone_code": "R-2"
+    },
+    {
+     "code_field_value": "ID-11",
+     "zone_code": "ID-11"
+    },
+    {
+     "code_field_value": "ID-10",
+     "zone_code": "ID-10"
+    },
+    {
+     "code_field_value": "CU-2",
+     "zone_code": "CU-2"
+    },
+    {
+     "code_field_value": "A-2-3",
+     "zone_code": "A-2-3"
+    },
+    {
+     "code_field_value": "CU-3",
+     "zone_code": "CU-3"
+    },
+    {
+     "code_field_value": "ID-1",
+     "zone_code": "ID-1"
+    },
+    {
+     "code_field_value": "ID-7",
+     "zone_code": "ID-7"
+    }
+   ],
+   "live_number_matched": 36,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(36)==numberMatched(36)==features(36) && live numberMatched(36)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-godmanchester.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 36,
+   "served_distinct_codes": 35,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69060]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 35,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-godmanchester__flat.2026-08-10T1546Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-godmanchester__flat.2026-08-10T1546Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-godmanchester.geojson",
+     "served_features": 36,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769060%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:155988f09786f0bd02fa1af59c4c8befb070118058f39341f8d4c9692c18d2fd",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:52.438Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769060%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "havelock",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69005",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-10-3b6851a7-679b-41fa-b3fb-449f024e3346",
+   "http_status": 200,
+   "sha256": "sha256:779614dcadf4621c99a2668377e43fd51b3982573f1f532074b42bc918e29b3a",
+   "retrieved_at": "2026-08-10T15:36:47.343Z",
+   "storage_key": "raw/zones-vnatif/cas/779614dcadf4621c99a2668377e43fd51b3982573f1f532074b42bc918e29b3a.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 11,
+   "wfs_number_matched": 11,
+   "wfs_number_returned": 11,
+   "wfs_total_features": 11,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "havelock",
+   "registry_attribution_km": 1.93,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 11,
+   "sample_codes": [
+    {
+     "code_field_value": "I-105",
+     "zone_code": "I-105"
+    },
+    {
+     "code_field_value": "H-101",
+     "zone_code": "H-101"
+    },
+    {
+     "code_field_value": "AF-108-2",
+     "zone_code": "AF-108-2"
+    },
+    {
+     "code_field_value": "C-104",
+     "zone_code": "C-104"
+    },
+    {
+     "code_field_value": "AF-108-1",
+     "zone_code": "AF-108-1"
+    },
+    {
+     "code_field_value": "H-102",
+     "zone_code": "H-102"
+    },
+    {
+     "code_field_value": "H-103",
+     "zone_code": "H-103"
+    },
+    {
+     "code_field_value": "AF-108",
+     "zone_code": "AF-108"
+    }
+   ],
+   "live_number_matched": 11,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(11)==numberMatched(11)==features(11) && live numberMatched(11)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-havelock.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 11,
+   "served_distinct_codes": 11,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69005]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 11,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-havelock__flat.2026-08-10T1546Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-havelock__flat.2026-08-10T1546Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-havelock.geojson",
+     "served_features": 11,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69005",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:779614dcadf4621c99a2668377e43fd51b3982573f1f532074b42bc918e29b3a",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:47.343Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69005"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "hinchinbrooke",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69045",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-11-59ad7f58-7198-4cac-97b9-c08b4d054055",
+   "http_status": 200,
+   "sha256": "sha256:e239c8aa6f01f1cfba62e59aee5d779d3f48a186c0936f625c5f486c30bc5fb8",
+   "retrieved_at": "2026-08-10T15:36:46.635Z",
+   "storage_key": "raw/zones-vnatif/cas/e239c8aa6f01f1cfba62e59aee5d779d3f48a186c0936f625c5f486c30bc5fb8.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 82,
+   "wfs_number_matched": 82,
+   "wfs_number_returned": 82,
+   "wfs_total_features": 82,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "hinchinbrooke",
+   "registry_attribution_km": 1.25,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 73,
+   "sample_codes": [
+    {
+     "code_field_value": "Rv-1",
+     "zone_code": "Rv-1"
+    },
+    {
+     "code_field_value": "Rv-3",
+     "zone_code": "Rv-3"
+    },
+    {
+     "code_field_value": "Cb-2",
+     "zone_code": "Cb-2"
+    },
+    {
+     "code_field_value": "Rv-4",
+     "zone_code": "Rv-4"
+    },
+    {
+     "code_field_value": "Ar-1",
+     "zone_code": "Ar-1"
+    },
+    {
+     "code_field_value": "Ra-13",
+     "zone_code": "Ra-13"
+    },
+    {
+     "code_field_value": "Co-1",
+     "zone_code": "Co-1"
+    },
+    {
+     "code_field_value": "Af-9-1",
+     "zone_code": "Af-9-1"
+    }
+   ],
+   "live_number_matched": 82,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(82)==numberMatched(82)==features(82) && live numberMatched(82)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-hinchinbrooke.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 82,
+   "served_distinct_codes": 73,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69045]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 73,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-hinchinbrooke__flat.2026-08-10T1546Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-hinchinbrooke__flat.2026-08-10T1546Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-hinchinbrooke.geojson",
+     "served_features": 82,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69045",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:e239c8aa6f01f1cfba62e59aee5d779d3f48a186c0936f625c5f486c30bc5fb8",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:46.635Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69045"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "howick",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769025%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-12-88593473-7cf3-440a-8b36-b850b3a43e15",
+   "http_status": 200,
+   "sha256": "sha256:aecd90395fb151f492f2701d68aeb8f1a594944a74a7d737a355ead441b593dd",
+   "retrieved_at": "2026-08-10T15:37:13.939Z",
+   "storage_key": "raw/zones-vnatif/cas/aecd90395fb151f492f2701d68aeb8f1a594944a74a7d737a355ead441b593dd.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 43,
+   "wfs_number_matched": 43,
+   "wfs_number_returned": 43,
+   "wfs_total_features": 43,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "howick",
+   "registry_attribution_km": 0.11,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 42,
+   "sample_codes": [
+    {
+     "code_field_value": "Ra-9",
+     "zone_code": "Ra-9"
+    },
+    {
+     "code_field_value": "Pu-2",
+     "zone_code": "Pu-2"
+    },
+    {
+     "code_field_value": "Rb-2",
+     "zone_code": "Rb-2"
+    },
+    {
+     "code_field_value": "Cm-3",
+     "zone_code": "Cm-3"
+    },
+    {
+     "code_field_value": "Cm-2",
+     "zone_code": "Cm-2"
+    },
+    {
+     "code_field_value": "Rx-2",
+     "zone_code": "Rx-2"
+    },
+    {
+     "code_field_value": "Pu-10",
+     "zone_code": "Pu-10"
+    },
+    {
+     "code_field_value": "Rm-1",
+     "zone_code": "Rm-1"
+    }
+   ],
+   "live_number_matched": 43,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(43)==numberMatched(43)==features(43) && live numberMatched(43)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-howick.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 43,
+   "served_distinct_codes": 42,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=69025]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 42,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-howick__flat.2026-08-10T1547Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-howick__flat.2026-08-10T1547Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-howick.geojson",
+     "served_features": 43,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769025%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:aecd90395fb151f492f2701d68aeb8f1a594944a74a7d737a355ead441b593dd",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:37:13.939Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2769025%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "huntingdon",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69055",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-13-c1395026-91f3-4ea3-b4c2-202bf6f702cf",
+   "http_status": 200,
+   "sha256": "sha256:fa69494fa323e8effd5bc0418217c427b4b96a7717bcf2cd15a76962ee2ed23f",
+   "retrieved_at": "2026-08-10T15:37:15.054Z",
+   "storage_key": "raw/zones-vnatif/cas/fa69494fa323e8effd5bc0418217c427b4b96a7717bcf2cd15a76962ee2ed23f.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 76,
+   "wfs_number_matched": 76,
+   "wfs_number_returned": 76,
+   "wfs_total_features": 76,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "huntingdon",
+   "registry_attribution_km": 0.08,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 75,
+   "sample_codes": [
+    {
+     "code_field_value": "CO-1",
+     "zone_code": "CO-1"
+    },
+    {
+     "code_field_value": "CO-5",
+     "zone_code": "CO-5"
+    },
+    {
+     "code_field_value": "HD-6",
+     "zone_code": "HD-6"
+    },
+    {
+     "code_field_value": "HD-4",
+     "zone_code": "HD-4"
+    },
+    {
+     "code_field_value": "PA-4",
+     "zone_code": "PA-4"
+    },
+    {
+     "code_field_value": "CO-3",
+     "zone_code": "CO-3"
+    },
+    {
+     "code_field_value": "MH-1",
+     "zone_code": "MH-1"
+    },
+    {
+     "code_field_value": "HB-12",
+     "zone_code": "HB-12"
+    }
+   ],
+   "live_number_matched": 76,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(76)==numberMatched(76)==features(76) && live numberMatched(76)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-huntingdon.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 69,
+   "served_distinct_codes": 68,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=69055]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 65,
+   "served_codes_uncovered": 3,
+   "uncovered_codes": [
+    "IN1",
+    "IN4",
+    "PA1"
+   ],
+   "overlap_ratio_pct": 95.6,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-huntingdon__flat.2026-08-10T1547Z.geojson"
+   ],
+   "dropped_divergence": [
+    {
+     "code": "IN1",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "IN4",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    },
+    {
+     "code": "PA1",
+     "prior_levels": [
+      "legacy-traceable"
+     ],
+     "zone_source_url": null,
+     "status": "UNKNOWN",
+     "reason": "présent dans un servi NON-PROUVÉ (zone_source_url=null), absent d'une capture v2 vérifiée-complète (count==source); divergence documentée + backup _replaced/; recalage-flagged; NON N-A (le remplacement n'atteste pas l'abolition)"
+    }
+   ],
+   "dropped_codes": [
+    "IN1",
+    "IN4",
+    "PA1"
+   ],
+   "dropped_count": 3,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-huntingdon__flat.2026-08-10T1547Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-huntingdon.geojson",
+     "served_features": 76,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69055",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:fa69494fa323e8effd5bc0418217c427b4b96a7717bcf2cd15a76962ee2ed23f",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:37:15.054Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=69055"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 95.6%) ; grain=zone-polygon ; 3 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "irlande",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731040%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-14-8ffc0838-02a6-4984-b41a-56a60dd75d48",
+   "http_status": 200,
+   "sha256": "sha256:129e20acb781a83076b3aff4b983ac1df4905bfd2003cb12f4a47dc62c8a5852",
+   "retrieved_at": "2026-08-10T15:36:47.331Z",
+   "storage_key": "raw/zones-vnatif/cas/129e20acb781a83076b3aff4b983ac1df4905bfd2003cb12f4a47dc62c8a5852.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 51,
+   "wfs_number_matched": 51,
+   "wfs_number_returned": 51,
+   "wfs_total_features": 51,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "irlande",
+   "registry_attribution_km": 0.35,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 51,
+   "sample_codes": [
+    {
+     "code_field_value": "ID 2",
+     "zone_code": "ID 2"
+    },
+    {
+     "code_field_value": "AD 9",
+     "zone_code": "AD 9"
+    },
+    {
+     "code_field_value": "AD 4",
+     "zone_code": "AD 4"
+    },
+    {
+     "code_field_value": "AD 3",
+     "zone_code": "AD 3"
+    },
+    {
+     "code_field_value": "AD 1",
+     "zone_code": "AD 1"
+    },
+    {
+     "code_field_value": "AD 6",
+     "zone_code": "AD 6"
+    },
+    {
+     "code_field_value": "AFa 2",
+     "zone_code": "AFa 2"
+    },
+    {
+     "code_field_value": "AD 8",
+     "zone_code": "AD 8"
+    }
+   ],
+   "live_number_matched": 51,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(51)==numberMatched(51)==features(51) && live numberMatched(51)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-irlande.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 51,
+   "served_distinct_codes": 51,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31040]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 51,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-irlande__flat.2026-08-10T1547Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-irlande__flat.2026-08-10T1547Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-irlande.geojson",
+     "served_features": 51,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731040%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:129e20acb781a83076b3aff4b983ac1df4905bfd2003cb12f4a47dc62c8a5852",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:47.331Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731040%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "joliette",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761025%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-0-94e5643b-d7af-400d-bca3-3da3f5b9b089",
+   "http_status": 200,
+   "sha256": "sha256:7dabf9b3088a343aa6c403a764ba8a8386e5f8cc5e00f6f98861b76d8c2ba0f1",
+   "retrieved_at": "2026-08-10T15:36:30.142Z",
+   "storage_key": "raw/zones-vnatif/cas/7dabf9b3088a343aa6c403a764ba8a8386e5f8cc5e00f6f98861b76d8c2ba0f1.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 364,
+   "wfs_number_matched": 364,
+   "wfs_number_returned": 364,
+   "wfs_total_features": 364,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "joliette",
+   "registry_attribution_km": 0.3,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 364,
+   "sample_codes": [
+    {
+     "code_field_value": "H01-021",
+     "zone_code": "H01-021"
+    },
+    {
+     "code_field_value": "C02-024",
+     "zone_code": "C02-024"
+    },
+    {
+     "code_field_value": "I04-065",
+     "zone_code": "I04-065"
+    },
+    {
+     "code_field_value": "P01-055",
+     "zone_code": "P01-055"
+    },
+    {
+     "code_field_value": "C01-052",
+     "zone_code": "C01-052"
+    },
+    {
+     "code_field_value": "H04-074",
+     "zone_code": "H04-074"
+    },
+    {
+     "code_field_value": "P02-028",
+     "zone_code": "P02-028"
+    },
+    {
+     "code_field_value": "H03-066",
+     "zone_code": "H03-066"
+    }
+   ],
+   "live_number_matched": 364,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(364)==numberMatched(364)==features(364) && live numberMatched(364)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-joliette.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 364,
+   "served_distinct_codes": 364,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=61025]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 364,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-joliette__flat.2026-08-10T1547Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-joliette__flat.2026-08-10T1547Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-joliette.geojson",
+     "served_features": 364,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761025%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:7dabf9b3088a343aa6c403a764ba8a8386e5f8cc5e00f6f98861b76d8c2ba0f1",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:30.142Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2761025%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "kinnears-mills",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731105%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-1-6d6a27cc-83e0-409a-a1c9-33ebb886783c",
+   "http_status": 200,
+   "sha256": "sha256:e68a54a75378997bfcf55eecf0177465487ed0341e9031afcdf14a23b5939f51",
+   "retrieved_at": "2026-08-10T15:36:28.051Z",
+   "storage_key": "raw/zones-vnatif/cas/e68a54a75378997bfcf55eecf0177465487ed0341e9031afcdf14a23b5939f51.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 67,
+   "wfs_number_matched": 67,
+   "wfs_number_returned": 67,
+   "wfs_total_features": 67,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "kinnears-mills",
+   "registry_attribution_km": 0.43,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 67,
+   "sample_codes": [
+    {
+     "code_field_value": "Rb 1",
+     "zone_code": "Rb 1"
+    },
+    {
+     "code_field_value": "AR 1",
+     "zone_code": "AR 1"
+    },
+    {
+     "code_field_value": "IDAa 3",
+     "zone_code": "IDAa 3"
+    },
+    {
+     "code_field_value": "Ra 7",
+     "zone_code": "Ra 7"
+    },
+    {
+     "code_field_value": "Ra 4",
+     "zone_code": "Ra 4"
+    },
+    {
+     "code_field_value": "AF2a 1",
+     "zone_code": "AF2a 1"
+    },
+    {
+     "code_field_value": "IDAa 8",
+     "zone_code": "IDAa 8"
+    },
+    {
+     "code_field_value": "IDAb 1",
+     "zone_code": "IDAb 1"
+    }
+   ],
+   "live_number_matched": 67,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(67)==numberMatched(67)==features(67) && live numberMatched(67)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-kinnears-mills.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 67,
+   "served_distinct_codes": 67,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=31105]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 67,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-kinnears-mills__flat.2026-08-10T1547Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-kinnears-mills__flat.2026-08-10T1547Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-kinnears-mills.geojson",
+     "served_features": 67,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731105%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:e68a54a75378997bfcf55eecf0177465487ed0341e9031afcdf14a23b5939f51",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:28.051Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2731105%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "la-corne",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=88030",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-2-502f7dba-d8ce-4ece-955b-7c842ab69327",
+   "http_status": 200,
+   "sha256": "sha256:42e6aeba9019ebe2e4db9f5f4bc854e25365c386afdf93d40b0cf163954af007",
+   "retrieved_at": "2026-08-10T15:36:27.320Z",
+   "storage_key": "raw/zones-vnatif/cas/42e6aeba9019ebe2e4db9f5f4bc854e25365c386afdf93d40b0cf163954af007.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 57,
+   "wfs_number_matched": 57,
+   "wfs_number_returned": 57,
+   "wfs_total_features": 57,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "la-corne",
+   "registry_attribution_km": 1.11,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 57,
+   "sample_codes": [
+    {
+     "code_field_value": "REC-3",
+     "zone_code": "REC-3"
+    },
+    {
+     "code_field_value": "RR-1",
+     "zone_code": "RR-1"
+    },
+    {
+     "code_field_value": "RR-2",
+     "zone_code": "RR-2"
+    },
+    {
+     "code_field_value": "RR-3",
+     "zone_code": "RR-3"
+    },
+    {
+     "code_field_value": "RR-5",
+     "zone_code": "RR-5"
+    },
+    {
+     "code_field_value": "RR-6",
+     "zone_code": "RR-6"
+    },
+    {
+     "code_field_value": "RR-7",
+     "zone_code": "RR-7"
+    },
+    {
+     "code_field_value": "RR-8",
+     "zone_code": "RR-8"
+    }
+   ],
+   "live_number_matched": 57,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(57)==numberMatched(57)==features(57) && live numberMatched(57)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-la-corne.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 57,
+   "served_distinct_codes": 57,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=88030]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 57,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-la-corne__flat.2026-08-10T1547Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-la-corne__flat.2026-08-10T1547Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-la-corne.geojson",
+     "served_features": 57,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=88030",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:42e6aeba9019ebe2e4db9f5f4bc854e25365c386afdf93d40b0cf163954af007",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:27.320Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=88030"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "la-motte",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788045%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-3-eb46b764-cb73-4a27-adcf-a3eccbae746e",
+   "http_status": 200,
+   "sha256": "sha256:579d5114ea9797c56f8f71b42a812fb1211253e6bc75e0dc70d7cfe1dc0d6f98",
+   "retrieved_at": "2026-08-10T15:36:27.778Z",
+   "storage_key": "raw/zones-vnatif/cas/579d5114ea9797c56f8f71b42a812fb1211253e6bc75e0dc70d7cfe1dc0d6f98.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 47,
+   "wfs_number_matched": 47,
+   "wfs_number_returned": 47,
+   "wfs_total_features": 47,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "la-motte",
+   "registry_attribution_km": 0.57,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 46,
+   "sample_codes": [
+    {
+     "code_field_value": "Ra-2",
+     "zone_code": "Ra-2"
+    },
+    {
+     "code_field_value": "MX-5",
+     "zone_code": "MX-5"
+    },
+    {
+     "code_field_value": "PC-6",
+     "zone_code": "PC-6"
+    },
+    {
+     "code_field_value": "Rb-3",
+     "zone_code": "Rb-3"
+    },
+    {
+     "code_field_value": "EV-1",
+     "zone_code": "EV-1"
+    },
+    {
+     "code_field_value": "PC-7",
+     "zone_code": "PC-7"
+    },
+    {
+     "code_field_value": "PC-5",
+     "zone_code": "PC-5"
+    },
+    {
+     "code_field_value": "AG-4",
+     "zone_code": "AG-4"
+    }
+   ],
+   "live_number_matched": 47,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(47)==numberMatched(47)==features(47) && live numberMatched(47)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-la-motte.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 47,
+   "served_distinct_codes": 46,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88045]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 46,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-la-motte__flat.2026-08-10T1547Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-la-motte__flat.2026-08-10T1547Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-la-motte.geojson",
+     "served_features": 47,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788045%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:579d5114ea9797c56f8f71b42a812fb1211253e6bc75e0dc70d7cfe1dc0d6f98",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:27.778Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788045%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "la-redemption",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709005%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-4-c23b34e2-17f1-4b0b-bec0-5325647264ef",
+   "http_status": 200,
+   "sha256": "sha256:7f2dd3b5e9b0853fd90dcd68d043fd889f2a08028b06795791aac65df6944c3f",
+   "retrieved_at": "2026-08-10T15:36:46.988Z",
+   "storage_key": "raw/zones-vnatif/cas/7f2dd3b5e9b0853fd90dcd68d043fd889f2a08028b06795791aac65df6944c3f.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 53,
+   "wfs_number_matched": 53,
+   "wfs_number_returned": 53,
+   "wfs_total_features": 53,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "la-redemption",
+   "registry_attribution_km": 9.82,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 49,
+   "sample_codes": [
+    {
+     "code_field_value": "17 (VLG)",
+     "zone_code": "17 (VLG)"
+    },
+    {
+     "code_field_value": "03 (RCT)",
+     "zone_code": "03 (RCT)"
+    },
+    {
+     "code_field_value": "27 (RCT)",
+     "zone_code": "27 (RCT)"
+    },
+    {
+     "code_field_value": "04 (VLG)",
+     "zone_code": "04 (VLG)"
+    },
+    {
+     "code_field_value": "42 (ILD)",
+     "zone_code": "42 (ILD)"
+    },
+    {
+     "code_field_value": "21 (AGF)",
+     "zone_code": "21 (AGF)"
+    },
+    {
+     "code_field_value": "38 (MTF)",
+     "zone_code": "38 (MTF)"
+    },
+    {
+     "code_field_value": "31 (MTF)",
+     "zone_code": "31 (MTF)"
+    }
+   ],
+   "live_number_matched": 53,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(53)==numberMatched(53)==features(53) && live numberMatched(53)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-la-redemption.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 53,
+   "served_distinct_codes": 49,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=09005]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 49,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-la-redemption__flat.2026-08-10T1548Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-la-redemption__flat.2026-08-10T1548Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-la-redemption.geojson",
+     "served_features": 53,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709005%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:7f2dd3b5e9b0853fd90dcd68d043fd889f2a08028b06795791aac65df6944c3f",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:46.988Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2709005%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "la-visitation-de-lile-dupas",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752050%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-5-168784cf-279d-44a6-8817-dd711c5bfade",
+   "http_status": 200,
+   "sha256": "sha256:f3539cd2621c670f96d90e91ded12590deb06717987979f436b0fcf1e5577921",
+   "retrieved_at": "2026-08-10T15:36:27.467Z",
+   "storage_key": "raw/zones-vnatif/cas/f3539cd2621c670f96d90e91ded12590deb06717987979f436b0fcf1e5577921.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 10,
+   "wfs_number_matched": 10,
+   "wfs_number_returned": 10,
+   "wfs_total_features": 10,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "la-visitation-de-lile-dupas",
+   "registry_attribution_km": 1.47,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 10,
+   "sample_codes": [
+    {
+     "code_field_value": "NC",
+     "zone_code": "NC"
+    },
+    {
+     "code_field_value": "AB",
+     "zone_code": "AB"
+    },
+    {
+     "code_field_value": "AC",
+     "zone_code": "AC"
+    },
+    {
+     "code_field_value": "AA",
+     "zone_code": "AA"
+    },
+    {
+     "code_field_value": "NB",
+     "zone_code": "NB"
+    },
+    {
+     "code_field_value": "RC",
+     "zone_code": "RC"
+    },
+    {
+     "code_field_value": "NA",
+     "zone_code": "NA"
+    },
+    {
+     "code_field_value": "AD",
+     "zone_code": "AD"
+    }
+   ],
+   "live_number_matched": 10,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(10)==numberMatched(10)==features(10) && live numberMatched(10)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-la-visitation-de-lile-dupas.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 10,
+   "served_distinct_codes": 10,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=52050]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 10,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-la-visitation-de-lile-dupas__flat.2026-08-10T1548Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-la-visitation-de-lile-dupas__flat.2026-08-10T1548Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-la-visitation-de-lile-dupas.geojson",
+     "served_features": 10,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752050%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:f3539cd2621c670f96d90e91ded12590deb06717987979f436b0fcf1e5577921",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:27.467Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2752050%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "lac-au-saumon",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707057%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-6-d6d4e947-f15e-487c-8a31-c5fb10bb1527",
+   "http_status": 200,
+   "sha256": "sha256:916579a7dfd92c308c42b0dca7f5650e8614182af7ee68582c7774747905f7be",
+   "retrieved_at": "2026-08-10T15:36:27.358Z",
+   "storage_key": "raw/zones-vnatif/cas/916579a7dfd92c308c42b0dca7f5650e8614182af7ee68582c7774747905f7be.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 138,
+   "wfs_number_matched": 138,
+   "wfs_number_returned": 138,
+   "wfs_total_features": 138,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "lac-au-saumon",
+   "registry_attribution_km": 0.61,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 138,
+   "sample_codes": [
+    {
+     "code_field_value": "49 P",
+     "zone_code": "49 P"
+    },
+    {
+     "code_field_value": "39 P",
+     "zone_code": "39 P"
+    },
+    {
+     "code_field_value": "35 P",
+     "zone_code": "35 P"
+    },
+    {
+     "code_field_value": "34 P",
+     "zone_code": "34 P"
+    },
+    {
+     "code_field_value": "33 P",
+     "zone_code": "33 P"
+    },
+    {
+     "code_field_value": "25 P",
+     "zone_code": "25 P"
+    },
+    {
+     "code_field_value": "73 Ib",
+     "zone_code": "73 Ib"
+    },
+    {
+     "code_field_value": "7 Ia",
+     "zone_code": "7 Ia"
+    }
+   ],
+   "live_number_matched": 138,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(138)==numberMatched(138)==features(138) && live numberMatched(138)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-lac-au-saumon.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 138,
+   "served_distinct_codes": 138,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=07057]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 138,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lac-au-saumon__flat.2026-08-10T1548Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lac-au-saumon__flat.2026-08-10T1548Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-lac-au-saumon.geojson",
+     "served_features": 138,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707057%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:916579a7dfd92c308c42b0dca7f5650e8614182af7ee68582c7774747905f7be",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:27.358Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=%2707057%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "lac-des-seize-iles",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77055",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-7-5c448caf-cd77-4fed-a148-c2c9dba83504",
+   "http_status": 200,
+   "sha256": "sha256:854ef8c58d31f2a3138c0d320e05fb8b465a66fa1e47bf98a128caea4593e1c9",
+   "retrieved_at": "2026-08-10T15:36:49.138Z",
+   "storage_key": "raw/zones-vnatif/cas/854ef8c58d31f2a3138c0d320e05fb8b465a66fa1e47bf98a128caea4593e1c9.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 44,
+   "wfs_number_matched": 44,
+   "wfs_number_returned": 44,
+   "wfs_total_features": 44,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "lac-des-seize-iles",
+   "registry_attribution_km": 0.16,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 23,
+   "sample_codes": [
+    {
+     "code_field_value": "RC-2",
+     "zone_code": "RC-2"
+    },
+    {
+     "code_field_value": "RV-1",
+     "zone_code": "RV-1"
+    },
+    {
+     "code_field_value": "RV-1",
+     "zone_code": "RV-1"
+    },
+    {
+     "code_field_value": "RV-10",
+     "zone_code": "RV-10"
+    },
+    {
+     "code_field_value": "V-4",
+     "zone_code": "V-4"
+    },
+    {
+     "code_field_value": "RV-12",
+     "zone_code": "RV-12"
+    },
+    {
+     "code_field_value": "RV-2",
+     "zone_code": "RV-2"
+    },
+    {
+     "code_field_value": "RV-2",
+     "zone_code": "RV-2"
+    }
+   ],
+   "live_number_matched": 44,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(44)==numberMatched(44)==features(44) && live numberMatched(44)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-lac-des-seize-iles.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 44,
+   "served_distinct_codes": 23,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=77055]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 23,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lac-des-seize-iles__flat.2026-08-10T1548Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lac-des-seize-iles__flat.2026-08-10T1548Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-lac-des-seize-iles.geojson",
+     "served_features": 44,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77055",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:854ef8c58d31f2a3138c0d320e05fb8b465a66fa1e47bf98a128caea4593e1c9",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:49.138Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=77055"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "lac-frontiere",
+   "layer": "evb:zonage_municipal",
+   "code_field": "no_zonage_municipal",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18010",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS no_zonage_municipal (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-8-0be0d35e-ec2e-419a-af6b-958371d66d6b",
+   "http_status": 200,
+   "sha256": "sha256:e6501c952ebe2082a952fc75ea5d7c685833121cedaab67e7f516b078a0fdb85",
+   "retrieved_at": "2026-08-10T15:37:06.698Z",
+   "storage_key": "raw/zones-vnatif/cas/e6501c952ebe2082a952fc75ea5d7c685833121cedaab67e7f516b078a0fdb85.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 28,
+   "wfs_number_matched": 28,
+   "wfs_number_returned": 28,
+   "wfs_total_features": 28,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "lac-frontiere",
+   "registry_attribution_km": 0.25,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 25,
+   "sample_codes": [
+    {
+     "code_field_value": "Fc.5",
+     "zone_code": "Fc.5"
+    },
+    {
+     "code_field_value": "RdM.9",
+     "zone_code": "RdM.9"
+    },
+    {
+     "code_field_value": "VM.4",
+     "zone_code": "VM.4"
+    },
+    {
+     "code_field_value": "RdM.5",
+     "zone_code": "RdM.5"
+    },
+    {
+     "code_field_value": "ScM.2",
+     "zone_code": "ScM.2"
+    },
+    {
+     "code_field_value": "RdM.4",
+     "zone_code": "RdM.4"
+    },
+    {
+     "code_field_value": "VM.3",
+     "zone_code": "VM.3"
+    },
+    {
+     "code_field_value": "Fb.1",
+     "zone_code": "Fb.1"
+    }
+   ],
+   "live_number_matched": 28,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(28)==numberMatched(28)==features(28) && live numberMatched(28)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-lac-frontiere.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 28,
+   "served_distinct_codes": 25,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:zonage_municipal[id_municipalite=18010]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 25,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lac-frontiere__flat.2026-08-10T1548Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lac-frontiere__flat.2026-08-10T1548Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-lac-frontiere.geojson",
+     "served_features": 28,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18010",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:e6501c952ebe2082a952fc75ea5d7c685833121cedaab67e7f516b078a0fdb85",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:37:06.698Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:zonage_municipal&outputFormat=application/json&CQL_FILTER=id_municipalite=18010"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = no_zonage_municipal brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "landrienne",
+   "layer": "evb:siadmin_pzon_99_s",
+   "code_field": "etiquette_1",
+   "run_stamp": "20260810T150000Z",
+   "source_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788035%27",
+   "expected_geometry_grain": "zone-polygon",
+   "zone_code_source": "WFS etiquette_1 (valeur brute)",
+   "capture_run_id": "zones-20260810T150000Z-9-baf986dc-cedf-496c-864c-b3c8a46bb46e",
+   "http_status": 200,
+   "sha256": "sha256:1c2af2d172edcc54a6832abda5b038236728ddbd17aa08b49339156835742911",
+   "retrieved_at": "2026-08-10T15:36:55.151Z",
+   "storage_key": "raw/zones-vnatif/cas/1c2af2d172edcc54a6832abda5b038236728ddbd17aa08b49339156835742911.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 41,
+   "wfs_number_matched": 41,
+   "wfs_number_returned": 41,
+   "wfs_total_features": 41,
+   "geometry_types": [
+    "MultiPolygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "landrienne",
+   "registry_attribution_km": 6.22,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 41,
+   "sample_codes": [
+    {
+     "code_field_value": "CO-1",
+     "zone_code": "CO-1"
+    },
+    {
+     "code_field_value": "AF-1",
+     "zone_code": "AF-1"
+    },
+    {
+     "code_field_value": "FO-1",
+     "zone_code": "FO-1"
+    },
+    {
+     "code_field_value": "FO-2",
+     "zone_code": "FO-2"
+    },
+    {
+     "code_field_value": "Ra-8",
+     "zone_code": "Ra-8"
+    },
+    {
+     "code_field_value": "Ra-5",
+     "zone_code": "Ra-5"
+    },
+    {
+     "code_field_value": "Ra-7",
+     "zone_code": "Ra-7"
+    },
+    {
+     "code_field_value": "Ra-6",
+     "zone_code": "Ra-6"
+    }
+   ],
+   "live_number_matched": 41,
+   "live_enum_error": null,
+   "count_complete": true,
+   "count_complete_basis": "capture numberReturned(41)==numberMatched(41)==features(41) && live numberMatched(41)==features",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-landrienne.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 41,
+   "served_distinct_codes": 41,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://geoserver.geocentralis.com/geoserver/ows#evb:siadmin_pzon_99_s[id_municipalite=88035]"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_codes_covered": 41,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-landrienne__flat.2026-08-10T1548Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-landrienne__flat.2026-08-10T1548Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-landrienne.geojson",
+     "served_features": 41,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788035%27",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:1c2af2d172edcc54a6832abda5b038236728ddbd17aa08b49339156835742911",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-10T15:36:55.151Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://geoserver.geocentralis.com/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature&typeNames=evb:siadmin_pzon_99_s&outputFormat=application/json&CQL_FILTER=id_municipalite=%2788035%27"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = etiquette_1 brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  }
+ ]
+}

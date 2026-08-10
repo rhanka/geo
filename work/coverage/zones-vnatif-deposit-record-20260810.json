@@ -1,0 +1,92 @@
+{
+ "contract": "zones-vnatif-deposit-record/v1",
+ "date": "2026-08-10",
+ "capture_run_stamp": "20260810T100500Z",
+ "capture_job": "geo-capture-zones-20260810t100500z",
+ "capture_job_status": "Complete 5/5",
+ "deposit_path": {
+  "manifest_builder": "acquisition/src/zones-vecteur-natif-manifest-run.ts",
+  "deposit_runner": "acquisition/src/zones-vecteur-natif-deposit-run.ts",
+  "manifest": "work/coverage/zones-vecteur-natif-manifest-20260810.json",
+  "direct_input": "work/coverage/zones-vnatif-direct-20260810.json",
+  "resolve_probe": "acquisition/src/_zones-vnatif-resolve-20260810.ts",
+  "verify_probe": "acquisition/src/_zones-vnatif-verify-20260810.ts"
+ },
+ "proof": { "type": "arcgis", "method": "natif", "reliability": "directe", "schema_version": "2.0" },
+ "deposited": 3,
+ "skipped": 2,
+ "cities": [
+  {
+   "slug": "longueuil",
+   "statut": "DEPOSE",
+   "layer_url": "https://services2.arcgis.com/h4XWvDXfYYyD6jNu/arcgis/rest/services/DO_Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "Zonage",
+   "feature_count": 1927,
+   "sha256": "sha256:79eccff2eddc6c30d68327a8641d2001e43af9f7e58e406f8de9536fcfedb088",
+   "retrieved_at": "2026-08-10T10:07:11.312Z",
+   "capture_run_id": "zones-20260810T100500Z-0-2089cf81-ea89-4b09-bc5e-839d0bd53b69",
+   "served_key": "normalized/ca-qc-zonage/qc-zonage-longueuil/qc-zonage-longueuil.geojson",
+   "level_before": "candidate",
+   "level_after": "documented",
+   "backup": "normalized/ca-qc-zonage/_replaced/qc-zonage-longueuil__nested.2026-08-10T1017Z.geojson",
+   "verify": "VERIFIED"
+  },
+  {
+   "slug": "saint-hyacinthe",
+   "statut": "SKIP",
+   "raison": "identity gate anti-regression: 852 code(s) servi(s) absent(s) de la couche amont capturee. Le servi (1091 feat, level=candidate, source arcgis.st-hyacinthe.ca ISOGEO SigimProd FeatureServer/13) code NO_ZONE+affectation (ex 5048H) ; la capture Zonage_SHY porte ETQ_ZONE (ex 5048-R). Conventions de code differentes -> non-recouvrement. HELD, pas de depot force (a reconcilier, cf bernard/jude 20260803).",
+   "layer_url": "https://services3.arcgis.com/KHxqinF9QiQAuCwv/arcgis/rest/services/Zonage_SHY/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "ETQ_ZONE",
+   "feature_count": 1066,
+   "sha256": "sha256:599f769e04873a4dbb43b7131d08d23beb5e1e06dac59c4a1b404c00c5a97729",
+   "retrieved_at": "2026-08-10T10:07:07.819Z",
+   "capture_run_id": "zones-20260810T100500Z-1-d0d75012-cc49-43a3-ad6f-e5c78de19cef",
+   "capture_valid": true,
+   "served_key": null
+  },
+  {
+   "slug": "salaberry-de-valleyfield",
+   "statut": "DEPOSE",
+   "layer_url": "https://services5.arcgis.com/8TXm0JD0A0eOyxy5/arcgis/rest/services/SdV__Zonage_Reglement150/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "ZONE",
+   "feature_count": 645,
+   "sha256": "sha256:80b2c47ca50f3977ddc4d4498d2322966dddb6baf8eb072720b16b4c1e6cbb67",
+   "retrieved_at": "2026-08-10T10:07:10.328Z",
+   "capture_run_id": "zones-20260810T100500Z-2-ab99d7b6-e9f7-49a9-b303-8dec596624f6",
+   "served_key": "normalized/ca-qc-zonage/qc-zonage-salaberry-de-valleyfield/qc-zonage-salaberry-de-valleyfield.geojson",
+   "level_before": "orphan",
+   "level_after": "documented",
+   "backup": "normalized/ca-qc-zonage/_replaced/qc-zonage-salaberry-de-valleyfield__nested.2026-08-10T1017Z.geojson",
+   "verify": "VERIFIED"
+  },
+  {
+   "slug": "mirabel",
+   "statut": "SKIP",
+   "raison": "code de zone COMPOSITE non representable par le chemin de depot single-field. Le code reel = contents (classe, ex 'H', 9 distinct) + contents1 (ex '7-3', 711 distinct) => 'H 7-3'. Aucun champ unique ne porte le code complet ; 'nom' = affectation ('Urbain'/'Parc', 9 distinct). Deposer contents1 seul amputerait la classe (anti-invention). A traiter par un chemin composite dedie (hors scope de ce depot).",
+   "layer_url": "https://services9.arcgis.com/y9EASLisYHhvZ7vM/arcgis/rest/services/Zonage/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "contents+contents1",
+   "feature_count": 712,
+   "sha256": "sha256:48c92b70c21b3030fe8ebdc181cc83de47de4cb5e3f97f16b191cbe8dc7b2e3e",
+   "retrieved_at": "2026-08-10T10:07:07.714Z",
+   "capture_run_id": "zones-20260810T100500Z-3-5571c8e6-f760-4d00-a253-ba4bd8ffc6fe",
+   "capture_valid": true,
+   "served_key": null
+  },
+  {
+   "slug": "westmount",
+   "statut": "DEPOSE",
+   "layer_url": "https://cartes.westmount.org/server/rest/services/Zonage_/FeatureServer/0/query?where=1%3D1&outFields=*&f=geojson",
+   "zone_field": "ZoneNumber",
+   "feature_count": 159,
+   "sha256": "sha256:81a349ef5c0ff87b35bb7c766e80de4675e10e2bd3816ccd7a8335e3b650b0e3",
+   "retrieved_at": "2026-08-10T10:07:07.648Z",
+   "capture_run_id": "zones-20260810T100500Z-4-345d4abc-564b-4963-aea3-b7001007a239",
+   "served_key": "normalized/ca-qc-zonage/qc-zonage-westmount/qc-zonage-westmount.geojson",
+   "level_before": "documented",
+   "level_after": "documented",
+   "note": "re-depose avec la couche complete (outFields=*) ; preuve precedente = outFields=ZoneNumber tronquee",
+   "backup": "normalized/ca-qc-zonage/_replaced/qc-zonage-westmount__nested.2026-08-10T1017Z.geojson",
+   "verify": "VERIFIED"
+  }
+ ]
+}
