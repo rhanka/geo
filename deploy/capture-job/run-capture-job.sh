@@ -30,6 +30,17 @@ required LANE
 required WORKLIST
 export NODE_OPTIONS="${NODE_OPTIONS:+${NODE_OPTIONS} }--dns-result-order=ipv4first"
 export AWS_MAX_ATTEMPTS="${AWS_MAX_ATTEMPTS:-10}"
+CAPTURE_RUNNER="${CAPTURE_RUNNER:-src/capture-worklist-run.ts}"
+# Le seul autre runner admis est le contrat mono-ville de remplacement ArcGIS.
+# Ne jamais évaluer une commande reçue de l'environnement : ce garde conserve
+# l'image de capture GET-only et empêche un Job de contourner C-5 par `tsx`.
+case "$CAPTURE_RUNNER" in
+  src/capture-worklist-run.ts|src/zones-arcgis-replacement-capture-run.ts) ;;
+  *)
+    echo "[$(clock)] FATAL: CAPTURE_RUNNER is not an approved capture-only entrypoint" >&2
+    exit 2
+    ;;
+esac
 SHARD="${SHARD:-0}"
 SHARDS="${SHARDS:-1}"
 RUN_STAMP="${RUN_STAMP:-$(stamp)}"
@@ -55,7 +66,7 @@ done
 # Ne pas utiliser tee : un log brut ne doit pas sortir durablement. L'uploader TS
 # applique la rédaction C-6 avant l'écriture de capture/_runs/.../run.log.
 set +e
-tsx src/capture-worklist-run.ts >>"$RUN_LOG_PATH" 2>&1
+tsx "$CAPTURE_RUNNER" >>"$RUN_LOG_PATH" 2>&1
 RUNNER_STATUS=$?
 set -e
 
