@@ -1,0 +1,213 @@
+{
+  "$meta": {
+    "contract": "triage-unknown-col20/20260807",
+    "generated_from": [
+      "work/coverage/lot-zone-consistency-scale-20260725.json",
+      "work/coverage/coverage-matrix.json",
+      "work/coverage/zoning-events-col20-167-fresh-geofix-20260807.json"
+    ],
+    "generated_at": "2026-08-07T00:00:00.000Z",
+    "verdict_taxonomy": {
+      "geo_zones_servies_emission_absente": "zones ARE served in S3 → geo-zones should emit → escalade geo-zones",
+      "pas_de_zones_servies": "no zones in S3 → potential N-A → soumettre recette",
+      "donnee_insuffisante": "données locales ambiguës ou insuffisantes → unknown reste unknown → vérification manuelle"
+    },
+    "anti_invention_note": "N-A ne peut pas être inféré d'un GT vide. Seule la recette peut attester N-A. Le verdict pas_de_zones_servies soumet à recette, il ne déclare pas N-A.",
+    "sources_dates": {
+      "lot_zone_consistency": "2026-07-25",
+      "coverage_matrix": "2026-06-23",
+      "col20": "2026-08-07"
+    },
+    "source_hierarchy": "lot-zone-consistency est la source définitive pour l'état servi S3 (mesure en lecture seule des collections S3 réelles). coverage-matrix est supplémentaire (état pipeline acquisition, pas garantie S3). Les entrées LC et CM peuvent diverger — LC prime."
+  },
+  "summary": {
+    "total": 14,
+    "geo_zones_servies_emission_absente": 5,
+    "pas_de_zones_servies": 5,
+    "donnee_insuffisante": 4
+  },
+  "cities": [
+    {
+      "slug": "saint-isidore--roussillon",
+      "col20_rank": 32,
+      "gt_immo_events": 0,
+      "zones_servies_s3": null,
+      "lot_zone_consistency_status": "absent de lots_without_zonage_slugs ; absent de inconclusive_zero_assigned_slugs ; non trouvé dans les données measured scannées",
+      "coverage_matrix_zones_status": "done",
+      "coverage_matrix_zones_done_track": "disaggregation",
+      "coverage_matrix_zones_note": "désagrégée d'une collection MRC/agrégée (confidence disaggregated-from:*)",
+      "verdict": "donnee_insuffisante",
+      "motif": "CM indique zones.done/disaggregation mais beauharnois a le pattern CM identique et ses zones sont absentes de S3 (LC:lots_without_zonage). La LC confirme l'absence des lots_without_zonage_slugs (signe positif) mais ne confirme pas la présence dans auditable_both_served. L'entrée n'a pas été trouvée dans le scan du tableau cities LC. Signal ambigu : ni preuve d'absence ni preuve de présence de zones en S3 — données insuffisantes pour trancher.",
+      "levier": "verification-manuelle"
+    },
+    {
+      "slug": "notre-dame-de-lile-perrot",
+      "col20_rank": 56,
+      "gt_immo_events": 0,
+      "zones_servies_s3": null,
+      "lot_zone_consistency_status": "absent de lots_without_zonage_slugs ; absent de inconclusive_zero_assigned_slugs ; non trouvé dans les données measured scannées",
+      "coverage_matrix_zones_status": "done",
+      "coverage_matrix_zones_done_track": "disaggregation",
+      "coverage_matrix_zones_note": "désagrégée d'une collection MRC/agrégée (confidence disaggregated-from:*)",
+      "verdict": "donnee_insuffisante",
+      "motif": "Même pattern CM que saint-isidore--roussillon (disaggregation, identique à beauharnois). Absente de lots_without_zonage_slugs et inconclusive_zero_assigned. Non trouvée dans le scan du tableau cities LC. Impossible de confirmer auditable_both_served vs portfolio_without_zonage_or_lots avec les artefacts locaux.",
+      "levier": "verification-manuelle"
+    },
+    {
+      "slug": "beauharnois",
+      "col20_rank": 70,
+      "gt_immo_events": 0,
+      "zones_servies_s3": false,
+      "lot_zone_consistency_status": "PRÉSENTE dans lots_without_zonage_slugs (30 villes avec lots S3 mais SANS zones S3)",
+      "coverage_matrix_zones_status": "done",
+      "coverage_matrix_zones_done_track": "disaggregation",
+      "coverage_matrix_zones_note": "désagrégée d'une collection MRC/agrégée (confidence disaggregated-from:*)",
+      "verdict": "pas_de_zones_servies",
+      "motif": "LC (2026-07-25) place beauharnois dans lots_without_zonage_slugs : la ville a des lots servis en S3 mais AUCUNE zone servie. Le CM indique zones.done/disaggregation mais cela ne garantit pas la présence S3 (la LC est la source définitive). Pas de collection qc-zonage-beauharnois confirmée.",
+      "levier": "soumettre-recette"
+    },
+    {
+      "slug": "napierville",
+      "col20_rank": 81,
+      "gt_immo_events": 0,
+      "zones_servies_s3": null,
+      "lot_zone_consistency_status": "absent de lots_without_zonage_slugs ; absent de inconclusive_zero_assigned_slugs ; non trouvé dans les données measured scannées",
+      "coverage_matrix_zones_status": "done",
+      "coverage_matrix_zones_done_track": "disaggregation",
+      "coverage_matrix_zones_note": "désagrégée d'une collection MRC/agrégée (confidence disaggregated-from:*)",
+      "verdict": "donnee_insuffisante",
+      "motif": "Pattern CM identique aux autres villes disaggregation-incertaines (saint-isidore--roussillon, notre-dame-de-lile-perrot, saint-cyprien-de-napierville). Absente des listes LC négatives mais non confirmée dans auditable_both_served. Contre-exemple beauharnois rend la disaggregation CM non fiable comme preuve S3.",
+      "levier": "verification-manuelle"
+    },
+    {
+      "slug": "sainte-madeleine",
+      "col20_rank": 85,
+      "gt_immo_events": 0,
+      "zones_servies_s3": true,
+      "lot_zone_consistency_status": "PRÉSENTE dans inconclusive_zero_assigned_slugs (lots=947, unassigned=947) — auditable_both_served confirmé : zones ET lots servis en S3, mais 0 lot assigné (dénominateur=0)",
+      "coverage_matrix_zones_status": "done",
+      "coverage_matrix_zones_done_track": "disaggregation",
+      "coverage_matrix_zones_note": "désagrégée d'une collection MRC/agrégée (confidence disaggregated-from:*)",
+      "verdict": "geo_zones_servies_emission_absente",
+      "motif": "LC confirme la ville dans inconclusive_zero_assigned_slugs → zones ET lots sont servis en S3 (auditable_both_served). Tous les lots ont unassigned=947 (zone_code non assigné), d'où l'inconclusion LC. Les zones géo existent en S3 mais le col-20 est à 0 événement : geo-zones doit émettre.",
+      "levier": "escalade-geo-zones"
+    },
+    {
+      "slug": "saint-cyprien-de-napierville",
+      "col20_rank": 86,
+      "gt_immo_events": 0,
+      "zones_servies_s3": null,
+      "lot_zone_consistency_status": "absent de lots_without_zonage_slugs ; absent de inconclusive_zero_assigned_slugs ; non trouvé dans les données measured scannées",
+      "coverage_matrix_zones_status": "done",
+      "coverage_matrix_zones_done_track": "disaggregation",
+      "coverage_matrix_zones_note": "désagrégée d'une collection MRC/agrégée (confidence disaggregated-from:*)",
+      "verdict": "donnee_insuffisante",
+      "motif": "Même situation que napierville : pattern CM disaggregation identique à beauharnois (qui n'a pas de zones S3). Absente des listes négatives LC mais présence dans auditable_both_served non confirmée. Données insuffisantes.",
+      "levier": "verification-manuelle"
+    },
+    {
+      "slug": "sainte-marie-madeleine",
+      "col20_rank": 92,
+      "gt_immo_events": 0,
+      "zones_servies_s3": true,
+      "lot_zone_consistency_status": "absente de lots_without_zonage_slugs ; absente de inconclusive_zero_assigned_slugs (donc dans auditable_both_served avec assigned>0)",
+      "coverage_matrix_zones_status": "done",
+      "coverage_matrix_zones_done_track": "qc-zonage-sainte-marie-madeleine",
+      "coverage_matrix_zones_note": "S3 validated: qc-zonage-sainte-marie-madeleine, 85 features, zone_code 100% filled",
+      "verdict": "geo_zones_servies_emission_absente",
+      "motif": "CM (2026-06-23) contient une validation S3 explicite : 'S3 validated: qc-zonage-sainte-marie-madeleine, 85 features, zone_code 100% filled'. Collection spécifique confirmée. LC ne contredit pas (absente de lots_without_zonage). Les zones existent en S3 mais le col-20 est à 0 événement : geo-zones doit émettre.",
+      "levier": "escalade-geo-zones"
+    },
+    {
+      "slug": "saint-etienne-de-beauharnois",
+      "col20_rank": 93,
+      "gt_immo_events": 0,
+      "zones_servies_s3": false,
+      "lot_zone_consistency_status": "non présente dans lots_without_zonage_slugs ni inconclusive_zero_assigned (cohérent avec zones absentes — ville hors auditable_both_served)",
+      "coverage_matrix_zones_status": "to-research",
+      "coverage_matrix_zones_done_track": null,
+      "coverage_matrix_zones_note": "lot60-classification: no S3 arcgis/disagg collection found; platform=unknown via MAMH site; no verified PDF markers available. Candidate: no-source-ouverte.",
+      "verdict": "pas_de_zones_servies",
+      "motif": "CM: zones.status='to-research', aucun doneTrack, note explicite 'no S3 arcgis/disagg collection found'. Pas de collection qc-zonage-saint-etienne-de-beauharnois identifiée. LC n'indique pas de zones servies.",
+      "levier": "soumettre-recette"
+    },
+    {
+      "slug": "tres-saint-sacrement",
+      "col20_rank": 107,
+      "gt_immo_events": 0,
+      "zones_servies_s3": true,
+      "lot_zone_consistency_status": "absente de lots_without_zonage_slugs ; absente de inconclusive_zero_assigned_slugs (donc dans auditable_both_served avec assigned>0)",
+      "coverage_matrix_zones_status": "done",
+      "coverage_matrix_zones_done_track": "qc-zonage-tres-saint-sacrement",
+      "coverage_matrix_zones_note": "lot60-classification: no S3 arcgis/disagg collection found (découverte automatique échouée) — mais doneTrack='qc-zonage-tres-saint-sacrement' indique une collection S3 spécifique créée (source manuelle ou non-standard)",
+      "verdict": "geo_zones_servies_emission_absente",
+      "motif": "CM: doneTrack='qc-zonage-tres-saint-sacrement' (slug de collection S3 spécifique, pas 'disaggregation'). LC: absente de lots_without_zonage_slugs (30 villes sans zones S3) et de inconclusive_zero_assigned. La présence dans auditable_both_served est déduite. Zones en S3 mais col-20 à 0 événement : geo-zones doit émettre. Note : la découverte automatique avait échoué (no S3 arcgis/disagg) mais cela reflète le parcours source, pas le statut final S3.",
+      "levier": "escalade-geo-zones"
+    },
+    {
+      "slug": "saint-lazare",
+      "col20_rank": 122,
+      "gt_immo_events": 0,
+      "zones_servies_s3": true,
+      "lot_zone_consistency_status": "absente de lots_without_zonage_slugs ; absente de inconclusive_zero_assigned_slugs (donc dans auditable_both_served avec assigned>0)",
+      "coverage_matrix_zones_status": "done",
+      "coverage_matrix_zones_done_track": "qc-zonage-saint-lazare",
+      "coverage_matrix_zones_note": "lot60-classification: no S3 arcgis/disagg collection found (découverte automatique échouée) — mais doneTrack='qc-zonage-saint-lazare' indique une collection S3 spécifique créée",
+      "verdict": "geo_zones_servies_emission_absente",
+      "motif": "CM: doneTrack='qc-zonage-saint-lazare' (slug de collection S3 spécifique, même pattern que tres-saint-sacrement et sainte-marie-madeleine). LC: absente de lots_without_zonage_slugs et de inconclusive_zero_assigned. Zones en S3 mais col-20 à 0 événement : geo-zones doit émettre.",
+      "levier": "escalade-geo-zones"
+    },
+    {
+      "slug": "saint-placide",
+      "col20_rank": 130,
+      "gt_immo_events": 0,
+      "zones_servies_s3": false,
+      "lot_zone_consistency_status": "non présente dans lots_without_zonage_slugs ni inconclusive_zero_assigned (cohérent avec zones absentes)",
+      "coverage_matrix_zones_status": "to-research",
+      "coverage_matrix_zones_done_track": null,
+      "coverage_matrix_zones_note": "lot60-classification: no S3 arcgis/disagg collection found; platform=unknown via MAMH site; no verified PDF markers available. Candidate: no-source-ouverte. Note: non-crawle: slug absent du registre ALL_PV_CITIES.",
+      "verdict": "pas_de_zones_servies",
+      "motif": "CM: zones.status='to-research', aucun doneTrack, note 'no S3 arcgis/disagg collection found'. Pas de collection qc-zonage-saint-placide. LC n'indique pas de zones servies.",
+      "levier": "soumettre-recette"
+    },
+    {
+      "slug": "saint-clet",
+      "col20_rank": 147,
+      "gt_immo_events": 0,
+      "zones_servies_s3": false,
+      "lot_zone_consistency_status": "non présente dans lots_without_zonage_slugs ni inconclusive_zero_assigned (cohérent avec zones absentes)",
+      "coverage_matrix_zones_status": "to-research",
+      "coverage_matrix_zones_done_track": null,
+      "coverage_matrix_zones_note": "lot60-classification: no S3 arcgis/disagg collection found; platform=unknown via MAMH site; no verified PDF markers available. Note: non-crawle: slug absent du registre ALL_PV_CITIES. PAS un pas-de-pdf verifie.",
+      "verdict": "pas_de_zones_servies",
+      "motif": "CM: zones.status='to-research', aucun doneTrack, note 'no S3 arcgis/disagg collection found'. Normes done (qc-zonage-norms-saint-clet) mais zones géo absentes. Pas de collection qc-zonage-saint-clet.",
+      "levier": "soumettre-recette"
+    },
+    {
+      "slug": "noyan",
+      "col20_rank": 150,
+      "gt_immo_events": 0,
+      "zones_servies_s3": false,
+      "lot_zone_consistency_status": "non présente dans lots_without_zonage_slugs ni inconclusive_zero_assigned (cohérent avec zones absentes)",
+      "coverage_matrix_zones_status": "to-research",
+      "coverage_matrix_zones_done_track": null,
+      "coverage_matrix_zones_note": "lot60-classification: no S3 arcgis/disagg collection found; platform=unknown via MAMH site; no verified PDF markers available. Note: non-crawle: slug absent du registre ALL_PV_CITIES. PAS un pas-de-pdf verifie.",
+      "verdict": "pas_de_zones_servies",
+      "motif": "CM: zones.status='to-research', aucun doneTrack, note 'no S3 arcgis/disagg collection found'. PV done (qc-pv-noyan) mais zones géo absentes.",
+      "levier": "soumettre-recette"
+    },
+    {
+      "slug": "saint-barnabe-sud",
+      "col20_rank": 157,
+      "gt_immo_events": 0,
+      "zones_servies_s3": true,
+      "lot_zone_consistency_status": "PRÉSENTE dans le tableau cities LC (status=measured, mismatch_pct=100%, lots=681, assigned=1, outside_all=1) — auditable_both_served confirmé : zones ET lots servis en S3",
+      "coverage_matrix_zones_status": "non lu (LC seule suffit)",
+      "coverage_matrix_zones_done_track": null,
+      "coverage_matrix_zones_note": "non lu — confirmation LC directe jugée suffisante",
+      "verdict": "geo_zones_servies_emission_absente",
+      "motif": "LC confirme la ville dans le tableau cities avec status=measured : zones ET lots sont servis en S3. mismatch_pct=100% sur 1 lot assigné (outside_all=1) → problème d'alignement géographique mais les zones existent. Col-20 est à 0 événement : geo-zones doit émettre. Le mismatch 100% est un signal de désalignement spatial à corriger en parallèle.",
+      "levier": "escalade-geo-zones"
+    }
+  ]
+}
