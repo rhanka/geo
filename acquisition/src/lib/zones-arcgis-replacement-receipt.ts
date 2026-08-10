@@ -14,6 +14,11 @@ import {
   type CaptureManifestLine,
   type CaptureRunHeader,
 } from "../../../packages/qc-sources/src/capture/index.js";
+import {
+  captureProofIndexSnapshotKey,
+  hasCaptureProofRecord,
+  parseCaptureProofIndex,
+} from "./capture-proof-index.js";
 import { verifyRawCapturePayload } from "./zone-provenance-raw-capture.js";
 import { captureReceiptFromManifest, type CaptureReceipt } from "./zone-provenance-quality.js";
 import { proofFromCaptureEntry, type GeometrySourceProof } from "./zonage-proof.js";
@@ -49,6 +54,8 @@ export interface VerifyReplacementReceiptInput {
   runId: string;
   worklistKey: string;
   worklistSha256: `sha256:${string}`;
+  /** Content-addressed immutable capture-proof index pinned by the deposit job. */
+  proofIndexKey: string;
   captureGitSha: string;
   completedJob: CompletedCaptureJob;
 }
@@ -62,6 +69,7 @@ export interface VerifiedReplacementReceipt {
   bytes: Buffer;
   geojson: { type: "FeatureCollection"; features: unknown[] };
   runKeys: ReturnType<typeof captureRunKeys>;
+  proofIndexKey: string;
 }
 
 function digest(bytes: Uint8Array): `sha256:${string}` {
@@ -197,5 +205,24 @@ export async function verifyZonesArcgisReplacementReceipt(
   if (!raw.verified) throw new Error(`deposit refused: raw CAS receipt failed verification (${raw.reason ?? "unknown"})`);
 
   const proof = proofFromCaptureEntry(line, { type: "arcgis", method: "natif", reliability: "directe" });
-  return { worklist, target, header, capture, proof, bytes, geojson: parseFeatureCollection(bytes), runKeys };
+  const proofIndexBytes = await reader.getBytes(input.proofIndexKey);
+  if (captureProofIndexSnapshotKey(proofIndexBytes) !== input.proofIndexKey) {
+    throw new Error("deposit refused: proof index key does not match its content digest");
+  }
+  const proofIndex = parseCaptureProofIndex(proofIndexBytes);
+  if (!hasCaptureProofRecord(proofIndex, {
+    url: proof.url,
+    retrieved_at: proof.retrieved_at,
+    sha256: proof.sha256,
+    run_id: input.runId,
+    manifest_key: capture.manifest_key,
+    manifest_line: capture.line_index,
+    storage_key: capture.storage_key,
+  })) {
+    throw new Error("deposit refused: pinned proof index does not attest the exact capture receipt");
+  }
+  return {
+    worklist, target, header, capture, proof, bytes, geojson: parseFeatureCollection(bytes), runKeys,
+    proofIndexKey: input.proofIndexKey,
+  };
 }
