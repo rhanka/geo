@@ -1,0 +1,423 @@
+{
+  "generated_at": "2026-08-10T18:48:26.606Z",
+  "simplify_zones_m": 0,
+  "entries": [
+    {
+      "slug": "pointe-aux-outardes",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 1102,
+        "assigned": 1100,
+        "matched": 1070,
+        "misassigned": 19,
+        "outside_all": 11,
+        "unassigned": 2,
+        "mismatch_pct": 2.73
+      },
+      "after": {
+        "lots": 1102,
+        "assigned": 1089,
+        "matched": 1070,
+        "misassigned": 19,
+        "outside_all": 0,
+        "unassigned": 13,
+        "mismatch_pct": 1.74
+      },
+      "backup_ts": "2026-08-10T184619916ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK pointe-aux-outardes lots=1102 assigned=98.82% multi=3.99% match=0% without_norms=100% verify parquet=Y stats=Y rows=1102",
+      "enrich_summary": "OK pointe-aux-outardes lots=1102 zone_code=98.82% norms=0% surface=100% code_postal=100%(RTA) adresse=92.29%(code=96030) tod=n/a deposit=Y bytes=2822260",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-pointe-aux-outardes.stats.json",
+        "num_lots": 1102,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1100,
+        "num_with_adresse": 1017
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-pointe-aux-outardes.stats.json",
+        "num_lots": 1102,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1089,
+        "num_with_adresse": 1017
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-pointe-aux-outardes.stats.json",
+        "num_lots": 1102,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1089,
+        "num_with_adresse": 1017
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "code_zone 1100->1089",
+        "lots_to_unknown": 11,
+        "norms_to_unknown": 0,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-aux-outardes.geojson.2026-08-10T184619916ZZ",
+        "dropped_codes": [
+          {
+            "code": "2-Cn",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-aux-outardes.geojson.2026-08-10T184619916ZZ"
+          },
+          {
+            "code": "3-Res",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-aux-outardes.geojson.2026-08-10T184619916ZZ"
+          },
+          {
+            "code": "5-Res",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-aux-outardes.geojson.2026-08-10T184619916ZZ"
+          },
+          {
+            "code": "8-Res",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-aux-outardes.geojson.2026-08-10T184619916ZZ"
+          },
+          {
+            "code": "2-F",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-aux-outardes.geojson.2026-08-10T184619916ZZ"
+          },
+          {
+            "code": "1-Cn",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-pointe-aux-outardes.geojson.2026-08-10T184619916ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T18:46:18.520Z",
+      "finished_at": "2026-08-10T18:46:50.478Z"
+    },
+    {
+      "slug": "saint-anaclet-de-lessard",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 2310,
+        "assigned": 0,
+        "matched": 0,
+        "misassigned": 0,
+        "outside_all": 0,
+        "unassigned": 2310,
+        "mismatch_pct": 0
+      },
+      "after": {
+        "lots": 2310,
+        "assigned": 1,
+        "matched": 1,
+        "misassigned": 0,
+        "outside_all": 0,
+        "unassigned": 2309,
+        "mismatch_pct": 0
+      },
+      "backup_ts": "2026-08-10T184651542ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-anaclet-de-lessard lots=2310 assigned=0.04% multi=0% match=0% without_norms=100% verify parquet=Y stats=Y rows=2310",
+      "enrich_summary": "OK saint-anaclet-de-lessard lots=2310 zone_code=0.04% norms=0% surface=100% code_postal=100%(RTA) adresse=92.51%(code=10030) tod=n/a deposit=Y bytes=4231190",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-anaclet-de-lessard.stats.json",
+        "num_lots": 2310,
+        "num_with_norms": 0,
+        "num_with_code_zone": 0,
+        "num_with_adresse": 2137
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-anaclet-de-lessard.stats.json",
+        "num_lots": 2310,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1,
+        "num_with_adresse": 2137
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-anaclet-de-lessard.stats.json",
+        "num_lots": 2310,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1,
+        "num_with_adresse": 2137
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T18:46:50.479Z",
+      "finished_at": "2026-08-10T18:47:02.643Z"
+    },
+    {
+      "slug": "saint-camille-de-lellis",
+      "deposited": false,
+      "skipped_reason": "geometry-suspect (outside_all=1/1 mismatch, mismatch_pct=100%) — ne dépose pas",
+      "before": {
+        "lots": 930,
+        "assigned": 1,
+        "matched": 0,
+        "misassigned": 0,
+        "outside_all": 1,
+        "unassigned": 929,
+        "mismatch_pct": 100
+      },
+      "after": null,
+      "backup_ts": null,
+      "mirror": null,
+      "join_summary": null,
+      "enrich_summary": null,
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-camille-de-lellis.stats.json",
+        "num_lots": 930,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1,
+        "num_with_adresse": 859
+      },
+      "lot_metrics_after": null,
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-camille-de-lellis.stats.json",
+        "num_lots": 930,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1,
+        "num_with_adresse": 859
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T18:47:02.643Z",
+      "finished_at": "2026-08-10T18:47:03.227Z"
+    },
+    {
+      "slug": "saint-ignace-de-loyola",
+      "deposited": false,
+      "skipped_reason": "geometry-suspect (outside_all=63/83 mismatch, mismatch_pct=4.91%) — ne dépose pas",
+      "before": {
+        "lots": 1694,
+        "assigned": 1690,
+        "matched": 1607,
+        "misassigned": 20,
+        "outside_all": 63,
+        "unassigned": 4,
+        "mismatch_pct": 4.91
+      },
+      "after": null,
+      "backup_ts": null,
+      "mirror": null,
+      "join_summary": null,
+      "enrich_summary": null,
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-ignace-de-loyola.stats.json",
+        "num_lots": 1694,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1690,
+        "num_with_adresse": 1681
+      },
+      "lot_metrics_after": null,
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-ignace-de-loyola.stats.json",
+        "num_lots": 1694,
+        "num_with_norms": 0,
+        "num_with_code_zone": 1690,
+        "num_with_adresse": 1681
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T18:47:03.227Z",
+      "finished_at": "2026-08-10T18:47:04.175Z"
+    },
+    {
+      "slug": "saint-marcel",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 907,
+        "assigned": 0,
+        "matched": 0,
+        "misassigned": 0,
+        "outside_all": 0,
+        "unassigned": 907,
+        "mismatch_pct": 0
+      },
+      "after": {
+        "lots": 907,
+        "assigned": 0,
+        "matched": 0,
+        "misassigned": 0,
+        "outside_all": 0,
+        "unassigned": 907,
+        "mismatch_pct": 0
+      },
+      "backup_ts": "2026-08-10T184704709ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-marcel lots=907 assigned=0% multi=0% match=0% without_norms=0% verify parquet=Y stats=Y rows=907",
+      "enrich_summary": "OK saint-marcel lots=907 zone_code=0% norms=0% surface=100% code_postal=100%(RTA) adresse=92.5%(code=17020) tod=n/a deposit=Y bytes=3344888",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-marcel.stats.json",
+        "num_lots": 907,
+        "num_with_norms": 0,
+        "num_with_code_zone": 0,
+        "num_with_adresse": 839
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-marcel.stats.json",
+        "num_lots": 907,
+        "num_with_norms": 0,
+        "num_with_code_zone": 0,
+        "num_with_adresse": 839
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-marcel.stats.json",
+        "num_lots": 907,
+        "num_with_norms": 0,
+        "num_with_code_zone": 0,
+        "num_with_adresse": 839
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T18:47:04.175Z",
+      "finished_at": "2026-08-10T18:47:15.657Z"
+    },
+    {
+      "slug": "saint-marcellin",
+      "deposited": false,
+      "skipped_reason": "geometry-suspect (outside_all=3/3 mismatch, mismatch_pct=100%) — ne dépose pas",
+      "before": {
+        "lots": 1008,
+        "assigned": 3,
+        "matched": 0,
+        "misassigned": 0,
+        "outside_all": 3,
+        "unassigned": 1005,
+        "mismatch_pct": 100
+      },
+      "after": null,
+      "backup_ts": null,
+      "mirror": null,
+      "join_summary": null,
+      "enrich_summary": null,
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-marcellin.stats.json",
+        "num_lots": 1008,
+        "num_with_norms": 0,
+        "num_with_code_zone": 3,
+        "num_with_adresse": 919
+      },
+      "lot_metrics_after": null,
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-marcellin.stats.json",
+        "num_lots": 1008,
+        "num_with_norms": 0,
+        "num_with_code_zone": 3,
+        "num_with_adresse": 919
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": null,
+      "started_at": "2026-08-10T18:47:15.658Z",
+      "finished_at": "2026-08-10T18:47:16.215Z"
+    },
+    {
+      "slug": "saint-ludger",
+      "deposited": true,
+      "skipped_reason": null,
+      "before": {
+        "lots": 1174,
+        "assigned": 1174,
+        "matched": 1136,
+        "misassigned": 34,
+        "outside_all": 4,
+        "unassigned": 0,
+        "mismatch_pct": 3.24
+      },
+      "after": {
+        "lots": 1174,
+        "assigned": 1170,
+        "matched": 1136,
+        "misassigned": 34,
+        "outside_all": 0,
+        "unassigned": 4,
+        "mismatch_pct": 2.91
+      },
+      "backup_ts": "2026-08-10T184716918ZZ",
+      "mirror": "flat-only",
+      "join_summary": "OK saint-ludger lots=1174 assigned=99.66% multi=3.92% match=99.91% without_norms=0.09% verify parquet=Y stats=Y rows=1174",
+      "enrich_summary": "OK saint-ludger lots=1174 zone_code=99.66% norms=99.57% surface=100% code_postal=100%(RTA) adresse=89.35%(code=30072) tod=n/a deposit=Y bytes=4464378",
+      "lot_metrics_before": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-ludger.stats.json",
+        "num_lots": 1174,
+        "num_with_norms": 1173,
+        "num_with_code_zone": 1174,
+        "num_with_adresse": 1049
+      },
+      "lot_metrics_after": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-ludger.stats.json",
+        "num_lots": 1174,
+        "num_with_norms": 1169,
+        "num_with_code_zone": 1170,
+        "num_with_adresse": 1049
+      },
+      "lot_metrics_final": {
+        "stats_key": "normalized/qc-lots/qc-lots-saint-ludger.stats.json",
+        "num_lots": 1174,
+        "num_with_norms": 1169,
+        "num_with_code_zone": 1170,
+        "num_with_adresse": 1049
+      },
+      "complete_before": false,
+      "complete_after": false,
+      "complete_final": false,
+      "allow_loss": {
+        "applied": true,
+        "regression": "normes 1173->1169, code_zone 1174->1170",
+        "lots_to_unknown": 4,
+        "norms_to_unknown": 4,
+        "backup": "normalized/qc-lots/_replaced/qc-lots-saint-ludger.geojson.2026-08-10T184716918ZZ",
+        "dropped_codes": [
+          {
+            "code": "AFT1-10",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-ludger.geojson.2026-08-10T184716918ZZ"
+          },
+          {
+            "code": "A-2",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-ludger.geojson.2026-08-10T184716918ZZ"
+          },
+          {
+            "code": "AFT1-6",
+            "prior_level": null,
+            "url": null,
+            "status": "UNKNOWN-recalage",
+            "backup": "normalized/qc-lots/_replaced/qc-lots-saint-ludger.geojson.2026-08-10T184716918ZZ"
+          }
+        ],
+        "dropped_codes_basis": "codes assignés outside_all de l'audit-before (échantillon jusqu'à 50000 exemples); lots_to_unknown = décroissance absolue num_with_code_zone (volume perdu autoritaire)"
+      },
+      "started_at": "2026-08-10T18:47:16.216Z",
+      "finished_at": "2026-08-10T18:48:26.606Z"
+    }
+  ]
+}
