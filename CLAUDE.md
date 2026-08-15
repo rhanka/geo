@@ -79,6 +79,23 @@ Concrètement, avant de considérer un travail comme fait :
 - geo-api sert le **sous-dossier** quand plat ET sous-dossier coexistent — stamper/déposer
   sur les **deux** layouts.
 
+## Moteur d'extraction — `mistral-medium-latest` BANNI (ADR-0024)
+
+> **`mistral-medium-latest` (vision-chat Mistral) est BANNI. Il n'a jamais fonctionné
+> et a causé une facture Mistral.ai de 480 € (319 munis en `mistral-vision`). Le SEUL
+> usage Mistral sanctionné est l'OCR `/v1/ocr` (`mistral-ocr-latest`).**
+
+- **Aucun code ne résout un modèle vision-chat Mistral** (`mistral-medium-*`, `pixtral-*`).
+  Garde gravée : `packages/qc-sources/src/sources/vision-engine-policy.ts`
+  (`assertVisionModelAllowed`), appelée par les 3 constructeurs vision ; test/CI
+  `vision-engine-policy.test.ts` **échoue** si le ban est contourné. Le défaut a été
+  **supprimé** : un modèle vision doit être **explicite et sanctionné**.
+- **La route vision est inopérante (échec dur) tant que le remplaçant n'est pas ratifié.**
+  Remplaçant = modèle vision fort derrière la gateway (a priori `gpt-5.6-terra`/`luna` xhigh,
+  prompt JSON strict par cellule + gardes anti-décalage conservés), choisi par **double-consensus**
+  (benchmark sur grilles déjà extraites, sans re-payer Mistral) + **ratification geo-archi**.
+  `voxtral-*` (audio) et `/v1/ocr` (OCR) ne sont pas concernés. Voir `docs/decisions.md` ADR-0024.
+
 ## Opérationnel
 
 - **Runs S3** : préfixer `NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10`.
