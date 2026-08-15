@@ -478,6 +478,32 @@ PV** (wp4) ; immo reste **consommateur** du graphe (jamais écrivain de son grap
 scoring, app, priorisation villes) demeure chez immo. Conforme à la réalité mesurée : 5 492 PV indexés,
 couverture 640/1 106.
 
+## ADR-0024 — **`mistral-medium-latest` (Mistral vision-chat) BANNI** ; seul `/v1/ocr` sanctionné · accepted · 2026-08-14
+
+**Contexte.** Une facture **Mistral.ai de 480 €** est apparue. La lane normes/grilles a extrait
+**319 municipalités** via la route vision `mistral-medium-latest` (2 passes/page, le chemin le plus
+cher) — preuve `work/coverage/normes-provenance.json` (méthode `"mistral-vision"` ×319). Ce modèle était
+codé **en dur comme défaut** des 3 classes vision (`grille-vision-extractor.ts`, `-multizone.ts`,
+`-zoneheader.ts`). ADR-0013/décision 4 (`normes-reglements-decisions.md`) n'avait sanctionné que
+l'**OCR bon marché** `/v1/ocr` (`mistral-ocr-latest`, ~1 $/1000 pages) en 2ᵉ passe — **jamais** le
+vision-chat. Le passage au vision-chat par défaut est une **dérive de code** au-delà du décidé, et le
+modèle « n'a jamais fonctionné » (propriétaire, erreur récurrente).
+
+**Décision (propriétaire, 2026-08-14).** `mistral-medium-latest` (et la lignée vision-chat Mistral :
+`pixtral-*`) est **BANNI**. Aucun chemin de code ne peut résoudre un modèle vision-chat Mistral. Le
+défaut est **supprimé** ; un modèle vision doit être **explicite et sanctionné**. Garde gravée dans la
+lib : `packages/qc-sources/src/sources/vision-engine-policy.ts` (`assertVisionModelAllowed`,
+`BANNED_VISION_MODEL_PATTERN = /mistral-medium|pixtral/i`) appelée par les 3 constructeurs ; test/CI
+`vision-engine-policy.test.ts` **échoue** si le ban est contourné. Seul `/v1/ocr` (`mistral-ocr`) reste
+sanctionné pour Mistral ; `voxtral-*` (audio) inchangé.
+
+**Conséquence.** La route vision est **intentionnellement inopérante** (échec dur, « vert par omission
+= rouge ») tant qu'un **moteur de remplacement** n'est pas choisi. Le remplaçant (un modèle vision plus
+fort derrière la gateway — a priori `gpt-5.6-terra`/`luna` xhigh, le prompt JSON strict par cellule +
+gardes anti-décalage conservés) est **en cours de double-consensus** (fable5 + codex), **benchmarké sur
+des grilles déjà extraites** (vérité terrain, sans re-payer Mistral), à **ratifier par geo-archi** — ADR
+de suivi à venir. Les routes native/OCR ne sont pas affectées.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
