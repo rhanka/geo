@@ -70,6 +70,8 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { promisify } from "node:util";
 
+import { assertVisionModelAllowed } from "./vision-engine-policy.js";
+
 import {
   PUBLISH_THRESHOLD,
   ZoneNorms,
@@ -344,8 +346,9 @@ export class MistralVisionGrille {
 
   constructor(opts: { apiBase?: string; model?: string } = {}) {
     this.apiBase = opts.apiBase ?? "https://api.mistral.ai";
-    // Mistral Medium 3.x is the current vision flagship (pixtral-* is retired).
-    this.model = opts.model ?? "mistral-medium-latest";
+    // BANNED: mistral-medium-latest (ADR-0024). No default — the model must be an
+    // explicit sanctioned engine; the guard hard-fails the banned vision-chat lineage.
+    this.model = assertVisionModelAllowed(opts.model);
   }
 
   readonly extract: VisionCallImpl = async (
