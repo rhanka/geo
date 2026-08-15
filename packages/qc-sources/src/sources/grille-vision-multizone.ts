@@ -33,6 +33,8 @@
  */
 import { readFile } from "node:fs/promises";
 
+import { assertVisionModelAllowed } from "./vision-engine-policy.js";
+
 import {
   FIELD_SPECS,
   buildVisionField,
@@ -145,7 +147,8 @@ export class MistralVisionMultiZone {
 
   constructor(opts: { apiBase?: string; model?: string } = {}) {
     this.apiBase = opts.apiBase ?? "https://api.mistral.ai";
-    this.model = opts.model ?? "mistral-medium-latest";
+    // BANNED: mistral-medium-latest (ADR-0024) — no default, guard hard-fails it.
+    this.model = assertVisionModelAllowed(opts.model);
   }
 
   readonly extract: MultiZoneVisionCallImpl = async (imagePath, pass) => {
