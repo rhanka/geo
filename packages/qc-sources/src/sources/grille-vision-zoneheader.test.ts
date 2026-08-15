@@ -56,8 +56,13 @@ describe("grille-vision-zoneheader — scan fallback wiring", () => {
     expect(zn.marges.avant_min!.value).toBe(10);
   });
 
-  it("exposes a VisionCallImpl-shaped extract on the production class", () => {
-    const m = new MistralVisionZoneHeader();
+  it("BANS the mistral-medium-latest default (ADR-0024) yet still exposes extract on a sanctioned model", () => {
+    // Owner ban 2026-08-14: no vision path may resolve a Mistral vision-chat model.
+    // The old no-arg default was mistral-medium-latest → constructing with no model throws.
+    expect(() => new MistralVisionZoneHeader()).toThrow(/BANNED/);
+    expect(() => new MistralVisionZoneHeader({ model: "mistral-medium-latest" })).toThrow(/BANNED/);
+    // An explicit sanctioned (non-banned) model is accepted and still exposes extract.
+    const m = new MistralVisionZoneHeader({ model: "gpt-5.6-terra" });
     expect(typeof m.extract).toBe("function");
   });
 });
