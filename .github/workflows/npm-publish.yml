@@ -94,7 +94,10 @@ jobs:
   publish:
     needs: release-guard
     runs-on: ubuntu-latest
-    # npm Trusted Publishing (OIDC): no NODE_AUTH_TOKEN / NPM_TOKEN needed.
+    # 5 packages via npm Trusted Publishing (OIDC, no token). geo-map-engine is a
+    # NEW package: OIDC cannot create it (a trusted publisher only configures on an
+    # existing package), so its FIRST publish uses NPM_TOKEN, then reverts to OIDC
+    # once it exists (the secret is removed after the first publish).
     permissions:
       contents: read
       id-token: write
@@ -117,13 +120,23 @@ jobs:
           npm ci
           npm run build
 
-      - name: Publish packages (dependency order)
+      - name: Publish OIDC packages (trusted publishing, dependency order)
         run: |
-          # Public @sentropic/geo-* packages only, in dependency order (ADR-0017).
+          # 5 public @sentropic/geo-* packages via OIDC, in dependency order (ADR-0017).
+          # geo-map-engine is published in the NEXT step (token, first publish).
           # @sentropic/geo-site (apps/site) is private and not published.
           npm publish --workspace @sentropic/geo-core             --access public --provenance
           npm publish --workspace @sentropic/geo                  --access public --provenance
           npm publish --workspace @sentropic/geo-sources-americas --access public --provenance
           npm publish --workspace @sentropic/geo-sources-europe   --access public --provenance
           npm publish --workspace @sentropic/geo-ui-svelte        --access public --provenance
+
+      # geo-map-engine n'a jamais été publié : l'OIDC Trusted Publishing ne peut PAS
+      # créer un package neuf. 1re publication via NPM_TOKEN ; les runs suivants
+      # repassent en OIDC (secret retiré après). Provenance conservée (id-token: write).
+      # Ordre de dépendance : geo-core (step ci-dessus) est publié AVANT geo-map-engine.
+      - name: Publish geo-map-engine (token, première publication)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
           npm publish --workspace @sentropic/geo-map-engine       --access public --provenance
