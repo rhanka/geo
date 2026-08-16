@@ -19,3 +19,4 @@ export * from "./layers.js";
 export * from "./viewport.js";
 export * from "./surface.js";
 export * from "./tool-context.js";
+export { mount } from "./mount.js";

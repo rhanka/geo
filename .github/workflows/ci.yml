@@ -38,3 +38,7 @@ jobs:
         run: node scripts/run-workspaces.mjs check
       - name: Test
         run: npm test
+      - name: Install Chromium for MapLibre mount e2e
+        run: npx playwright install --with-deps chromium
+      - name: Mount e2e (real MapLibre and Chromium)
+        run: npm run test:mount-e2e --workspace @sentropic/geo-map-engine
