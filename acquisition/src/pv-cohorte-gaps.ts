@@ -72,6 +72,46 @@ function coveredSlugs(path: string): Set<string> {
   return new Set(slugs.map((s) => String(s.slug)).filter((s) => SLUG_RE.test(s)));
 }
 
+/** Slugs du référentiel municipal (municipalities.qc.json : tableau de {slug}). */
+function referenceSlugs(path: string): Set<string> {
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as unknown;
+  if (!Array.isArray(parsed)) throw new Error("--reference: tableau municipal attendu");
+  return new Set(parsed.map((m) => String((m as { slug?: unknown }).slug)).filter((s) => SLUG_RE.test(s)));
+}
+
+const collapseDashes = (slug: string): string => slug.replace(/-+/gu, "-");
+
+/**
+ * Réconcilie une liste de slugs de cohorte contre le référentiel : un slug non
+ * présent tel quel mais dont la forme « tirets collapsés » correspond de façon
+ * UNIQUE à un slug référentiel est re-mappé (ex. liste canonique qa en tiret
+ * simple `sainte-sabine-brome-missisquoi` → référentiel double `sainte-sabine--brome-missisquoi`).
+ * Sans correspondance unique, le slug est conservé tel quel (aucune invention).
+ */
+function reconcileToReference(
+  cohort: readonly string[],
+  reference: ReadonlySet<string>,
+): { resolved: string[]; remaps: Array<{ from: string; to: string }> } {
+  const byCollapsed = new Map<string, string[]>();
+  for (const ref of reference) {
+    const key = collapseDashes(ref);
+    const list = byCollapsed.get(key) ?? [];
+    list.push(ref);
+    byCollapsed.set(key, list);
+  }
+  const remaps: Array<{ from: string; to: string }> = [];
+  const resolved = cohort.map((slug) => {
+    if (reference.has(slug)) return slug;
+    const candidates = byCollapsed.get(collapseDashes(slug)) ?? [];
+    if (candidates.length === 1 && candidates[0] !== slug) {
+      remaps.push({ from: slug, to: candidates[0]! });
+      return candidates[0]!;
+    }
+    return slug;
+  });
+  return { resolved, remaps };
+}
+
 function main(): void {
   const tsv = arg("cohort-tsv");
   const json = arg("cohort-json");
@@ -87,8 +127,15 @@ function main(): void {
   const cohort = [...new Set(cohortList)];
   const covered = coveredSlugs(insideRepo(coveragePath, "coverage"));
 
-  const inCohortCovered = cohort.filter((s) => covered.has(s)).sort();
-  const inCohortGaps = cohort.filter((s) => !covered.has(s)).sort();
+  // Réconciliation optionnelle des slugs cohorte contre le référentiel municipal
+  // (corrige un mismatch de normalisation tirets simple/double sans rien inventer).
+  const referencePath = arg("reference");
+  const { resolved: cohortResolved, remaps } = referencePath !== undefined
+    ? reconcileToReference(cohort, referenceSlugs(insideRepo(referencePath, "reference")))
+    : { resolved: cohort, remaps: [] as Array<{ from: string; to: string }> };
+
+  const inCohortCovered = cohortResolved.filter((s) => covered.has(s)).sort();
+  const inCohortGaps = cohortResolved.filter((s) => !covered.has(s)).sort();
 
   const report = {
     contract: "pv-cohorte-gaps/v1",
@@ -96,7 +143,9 @@ function main(): void {
     read_only: true,
     cohort_source: tsv ?? json,
     coverage_source: coveragePath,
-    cohort_size: cohort.length,
+    reference_source: referencePath ?? null,
+    slug_remaps: remaps.sort((a, b) => a.from.localeCompare(b.from)),
+    cohort_size: cohortResolved.length,
     in_cohort_covered: inCohortCovered.length,
     in_cohort_gaps: inCohortGaps.length,
     gaps: inCohortGaps,
