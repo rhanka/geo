@@ -30,11 +30,19 @@ export interface MaplibreLayerDefinition {
  * definition used by `addLayer`; `structure` must exclude `paint` and source
  * data so that those changes do not force a recreation.
  */
-export interface MaplibreLayerProjection {
+export interface MaplibreSubLayer {
   readonly layer: MaplibreLayerDefinition;
   readonly structure: unknown;
   readonly paint: Readonly<Record<string, unknown>>;
   readonly data: LayerData;
+}
+
+/**
+ * One neutral layer can materialize as several ordered MapLibre layers. The
+ * order is the renderer stack order and is preserved by the reconciler.
+ */
+export interface MaplibreLayerProjection {
+  readonly layers: readonly MaplibreSubLayer[];
 }
 
 export interface DeclarativeLayerReconcilerOptions {
@@ -53,7 +61,7 @@ export class DeclarativeLayerReconciler {
   readonly #map: MaplibreLayerTarget;
   readonly #layerIdPrefix: string;
   readonly #project: (layer: GeoLayerSpec) => MaplibreLayerProjection;
-  #layers = new Map<string, MaplibreLayerProjection>();
+  #layers = new Map<string, MaplibreSubLayer>();
 
   constructor(map: MaplibreLayerTarget, options: DeclarativeLayerReconcilerOptions) {
     if (options.layerIdPrefix.length === 0) {
@@ -90,26 +98,34 @@ export class DeclarativeLayerReconciler {
     this.#layers = next;
   }
 
-  #materialize(layers: readonly GeoLayerSpec[]): Map<string, MaplibreLayerProjection> {
-    const next = new Map<string, MaplibreLayerProjection>();
+  #materialize(layers: readonly GeoLayerSpec[]): Map<string, MaplibreSubLayer> {
+    const next = new Map<string, MaplibreSubLayer>();
+    const declarativeIds = new Set<string>();
 
     for (const layer of layers) {
       if (!layer.id.startsWith(this.#layerIdPrefix)) continue;
-      if (next.has(layer.id)) {
+      if (declarativeIds.has(layer.id)) {
         throw new Error(`Duplicate declarative layer id: ${layer.id}`);
       }
+      declarativeIds.add(layer.id);
 
       const projection = this.#project(layer);
-      if (projection.layer.id !== layer.id) {
-        throw new Error(`Projected layer id must match declarative layer id: ${layer.id}`);
+      for (const subLayer of projection.layers) {
+        const id = subLayer.layer.id;
+        if (!isDerivedLayerId(layer.id, id)) {
+          throw new Error(`Projected layer id must stay within declarative layer id: ${layer.id}`);
+        }
+        if (next.has(id)) {
+          throw new Error(`Duplicate projected layer id: ${id}`);
+        }
+        next.set(id, subLayer);
       }
-      next.set(layer.id, projection);
     }
 
     return next;
   }
 
-  #add(id: string, layer: MaplibreLayerProjection): void {
+  #add(id: string, layer: MaplibreSubLayer): void {
     if (this.#map.getLayer(id) === undefined) {
       this.#map.addLayer(layer.layer);
       return;
@@ -124,15 +140,15 @@ export class DeclarativeLayerReconciler {
     if (this.#map.getLayer(id) !== undefined) this.#map.removeLayer(id);
   }
 
-  #replace(id: string, layer: MaplibreLayerProjection): void {
+  #replace(id: string, layer: MaplibreSubLayer): void {
     if (this.#map.getLayer(id) !== undefined) this.#map.removeLayer(id);
     this.#map.addLayer(layer.layer);
   }
 
   #update(
     id: string,
-    previousLayer: MaplibreLayerProjection,
-    nextLayer: MaplibreLayerProjection,
+    previousLayer: MaplibreSubLayer,
+    nextLayer: MaplibreSubLayer,
   ): void {
     if (!hasDynamicChange(previousLayer, nextLayer)) return;
 
@@ -148,8 +164,8 @@ export class DeclarativeLayerReconciler {
 
   #applyDataAndPaint(
     id: string,
-    previousLayer: MaplibreLayerProjection | undefined,
-    nextLayer: MaplibreLayerProjection,
+    previousLayer: MaplibreSubLayer | undefined,
+    nextLayer: MaplibreSubLayer,
   ): void {
     if (!previousLayer || !sameValue(previousLayer.data, nextLayer.data)) {
       this.#map.setData(id, nextLayer.data);
@@ -171,13 +187,18 @@ export class DeclarativeLayerReconciler {
 }
 
 function hasDynamicChange(
-  previousLayer: MaplibreLayerProjection,
-  nextLayer: MaplibreLayerProjection,
+  previousLayer: MaplibreSubLayer,
+  nextLayer: MaplibreSubLayer,
 ): boolean {
   return (
     !sameValue(previousLayer.data, nextLayer.data) ||
     !sameValue(previousLayer.paint, nextLayer.paint)
   );
+}
+
+/** A generated layer is either the parent or explicitly scoped beneath it. */
+function isDerivedLayerId(parentId: string, id: string): boolean {
+  return id === parentId || id.startsWith(`${parentId}::`);
 }
 
 /** GeoLayerSpec and MapLibre paint projections are JSON-shaped values. */
