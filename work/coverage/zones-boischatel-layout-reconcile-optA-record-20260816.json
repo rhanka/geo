@@ -1,0 +1,96 @@
+{
+ "contract": "zones-boischatel-layout-reconcile-optA/v1",
+ "date": "2026-08-16",
+ "mode": "commit",
+ "decision": "OPTION A — geo-cond a LEVÉ « pas de delete-only » pour CE cas scopé (nested-affectation-null-prouvé-bug, backup réversible). Backup vérifié du nested puis suppression; geo-api retombe sur le flat. Flat NON touché; aucune preuve v2 fabriquée.",
+ "flat_key": "normalized/ca-qc-zonage/qc-zonage-boischatel.geojson",
+ "nested_key": "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.geojson",
+ "generated_at_utc": "2026-08-16T05:03:54.758Z",
+ "flat_exists_before": true,
+ "nested_exists_before": true,
+ "flat_before": {
+  "feature_count": 55,
+  "distinct_zone_code_canon": 55,
+  "empty_zone_code_features": 0,
+  "has_affectatio_field": false
+ },
+ "nested_before": {
+  "feature_count": 17,
+  "distinct_zone_code_canon": 0,
+  "empty_zone_code_features": 17,
+  "has_affectatio_field": true
+ },
+ "target_flat_is_55_real": true,
+ "target_nested_is_affectation_null": true,
+ "nested_prefix_objects_before": [
+  "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.geojson",
+  "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.meta.json"
+ ],
+ "backup_key": "normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.geojson",
+ "backup_plan": [
+  {
+   "src": "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.geojson",
+   "dest": "normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.geojson",
+   "is_served_geojson": true
+  },
+  {
+   "src": "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.meta.json",
+   "dest": "normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.meta.json",
+   "is_served_geojson": false
+  }
+ ],
+ "backups": [
+  {
+   "src": "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.geojson",
+   "dest": "normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.geojson",
+   "is_served_geojson": true,
+   "exists": true,
+   "bytes_len": 154523,
+   "parse_ok": true,
+   "summary": {
+    "feature_count": 17,
+    "distinct_zone_code_canon": 0,
+    "empty_zone_code_features": 17,
+    "has_affectatio_field": true
+   },
+   "verified": true
+  },
+  {
+   "src": "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.meta.json",
+   "dest": "normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.meta.json",
+   "is_served_geojson": false,
+   "exists": true,
+   "bytes_len": 805,
+   "parse_ok": true,
+   "summary": null,
+   "verified": true
+  }
+ ],
+ "backup_verified": true,
+ "backup_exists": true,
+ "backup_bytes_len": 154523,
+ "backup_summary": {
+  "feature_count": 17,
+  "distinct_zone_code_canon": 0,
+  "empty_zone_code_features": 17,
+  "has_affectatio_field": true
+ },
+ "deleted": true,
+ "deleted_keys": [
+  "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.geojson",
+  "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.meta.json"
+ ],
+ "nested_exists_after": false,
+ "flat_exists_after": true,
+ "flat_after": {
+  "feature_count": 55,
+  "distinct_zone_code_canon": 55,
+  "empty_zone_code_features": 0,
+  "has_affectatio_field": false
+ },
+ "nested_prefix_objects_after": [],
+ "flat_intact_55_zones": true,
+ "readback_ok": true,
+ "statut": "EXECUTED-option-A",
+ "raison": "OPTION A exécutée : dossier nested (2 objet(s)) backupé sous _replaced/ (stamp 2026-08-16T0503Z) + supprimé ; préfixe nested vide ; flat intact (55 zones réelles) ; geo-api sert désormais le flat (layout unique, comme amherst). Aucune preuve v2 fabriquée."
+}

@@ -1,8 +1,26 @@
 {
  "contract": "zones-boischatel-layout-reconcile/v1",
  "date": "2026-08-16",
- "status": "BLOCKED-STOP (no S3 write performed)",
- "mode": "CAPTURE-FREE served-layout reconcile attempt. Read-only S3 inspection only; NO deposit, NO delete, NO copy, NO backup taken (nothing overwritten).",
+ "status": "EXECUTED-option-A (2026-08-16T0503Z) — nested backed up + DELETED; geo-api now serves the flat. Was BLOCKED-STOP until geo-cond lifted 'NOT delete-only' for this scoped case.",
+ "resolution": {
+  "verdict": "OPTION A EXECUTED. geo-cond a levé « pas de delete-only » POUR CE CAS PRÉCIS (nested-affectation-null-prouvé-bug, backup réversible, scopé).",
+  "reconcile_script": "acquisition/src/_zones-boischatel-layout-reconcile-optA-20260816.ts (--commit)",
+  "reconcile_record": "work/coverage/zones-boischatel-layout-reconcile-optA-record-20260816.json",
+  "backup_verified_then_deleted": "Whole nested folder (2 objects) backed up to _replaced/ under stamp 2026-08-16T0503Z, EACH backup verified (exists + non-empty + JSON.parse OK; served geojson = 17 feat affectation) BEFORE any delete.",
+  "backups": [
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.geojson (154523 bytes, 17 feat affectation)",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.meta.json (805 bytes)"
+  ],
+  "deleted_keys": [
+   "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.meta.json"
+  ],
+  "post_delete_verified": "nested prefix empty (exists==false); FLAT present + intact (55 feat / 55 real codes / 0 empty). geo-api now serves the flat (single flat layout, like amherst).",
+  "flat_touched": false,
+  "v2_proof_fabricated": false,
+  "note": "Anti-invention preserved: NO v2 proof minted. boischatel flat provenance stays legacy-traceable (v2-proof deferred to recalage — separate KPI). Reversible via the _replaced/ backups."
+ },
+ "mode": "CAPTURE-FREE served-layout reconcile. Inspection read-only; then (after geo-cond GO for option A) verified backup + delete of the nested folder. Flat untouched; no v2 proof fabricated.",
  "objective": "Fix the geo-api served-layout-authority bug for boischatel: geo-api serves the NESTED layout when both flat+nested exist; the nested is a mis-deposited MRC-affectation layer (17 feat, 0 real codes) while the real municipal zoning (55 feat, 55 codes, georeferenced t2-gcp3) lives in the FLAT. Intended fix (per meta-conductor): deposit the flat's 55-zone content INTO the nested so nested==flat, keep both layouts correct, re-stamp provenance on both. NOT delete-only.",
  "inputs": {
   "triage_record": "work/coverage/zones-col2-source-triage-20260816.json (commit 2c741540)",
@@ -63,10 +81,12 @@
   "guardrail_invoked": "Step 2: 'If the only correct primitive would force fabricating a proof or a code, STOP and report the blocker instead.' Also: 'if a guardrail can't be met safely, STOP and report rather than force.'"
  },
  "actions_taken": {
-  "s3_writes": "NONE",
-  "s3_deletes": "NONE",
-  "backups_taken": "NONE (no overwrite to protect against)",
-  "state_change": "NONE — served objects are byte-unchanged; the bug is unmodified and fully reversible-by-inaction."
+  "phase1_inspection": "read-only S3 inspection, no writes (verified target).",
+  "phase2_after_geocond_GO_optionA": "verified backup of the whole nested folder to _replaced/ (2 objects, stamp 2026-08-16T0503Z), then deleteObject on both nested keys.",
+  "s3_writes": "2 copyObject (backups to _replaced/); FLAT untouched",
+  "s3_deletes": "2 (nested served geojson + its .meta.json)",
+  "backups_taken": "2 (verified before delete; hard guard)",
+  "state_change": "nested folder removed; geo-api now serves the FLAT real 55-zone zoning. Reversible via _replaced/ backups."
  },
  "options_for_conductor": [
   "OPTION A (capture-free, needs conductor's explicit lift of the 'NOT delete-only' constraint): DELETE the nested affectation key so geo-api falls back to serving the FLAT real 55-zone zoning. Resolves the 4072 hors-zone by construction; nested-only layout gone (single flat layout, like amherst). Reversible via a pre-delete backup to _replaced/. This is the only capture-free fix current primitives permit, but it yields ONE correct layout (flat), not two.",
