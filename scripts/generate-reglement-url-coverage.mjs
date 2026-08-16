@@ -47,7 +47,11 @@ function isHttpUrl(value) {
   if (typeof value !== "string" || value.length === 0) return false;
   try {
     const parsed = new URL(value);
-    return (parsed.protocol === "http:" || parsed.protocol === "https:") && parsed.hostname.length > 0;
+    // Dotted hostname required: a placeholder sentinel like `https://non-disponible`
+    // parses as a URL but its dotless host is not a real reglement source. Reject
+    // it so a placeholder never counts as a served/registry URL (anti-invention).
+    return (parsed.protocol === "http:" || parsed.protocol === "https:")
+      && parsed.hostname.includes(".");
   } catch {
     return false;
   }
@@ -105,6 +109,8 @@ for (const row of servedAudit.data.slugs) {
   invariant(typeof row.grille_served === "boolean", `served-audit/${slug} has non-boolean grille_served`);
   invariant(Number.isInteger(row.features_with_http_reglement_url),
     `served-audit/${slug} has non-integer features_with_http_reglement_url`);
+  invariant(Number.isInteger(row.features_with_http_source_url),
+    `served-audit/${slug} lacks features_with_http_source_url (re-run the extended audit)`);
   invariant(!servedBySlug.has(slug), `served-audit has duplicate slug ${slug}`);
   servedBySlug.set(slug, row);
 }
@@ -157,18 +163,26 @@ function bucketForCity(geoSlug) {
   const audit = servedBySlug.get(geoSlug);
   const grilleServed = audit !== undefined && audit.grille_served === true;
   const servedUrl = audit !== undefined && audit.features_with_http_reglement_url > 0;
+  // Diagnostic only: the served grille carries a raw http _source_url. This is
+  // NOT a curable signal — that _source_url can be a dead/404 link or a sentinel
+  // the curated registry already adjudicated to null (e.g. saint-patrice-de-
+  // sherrington: _note documents the pdf returns 404, url deliberately null). The
+  // curated registry is the ONLY authority for reglement_url; never fold a raw
+  // grille _source_url over a documented null (« ne jamais servir une preuve morte »).
+  const mineableSourceUrl = audit !== undefined && !servedUrl && audit.features_with_http_source_url > 0;
   const detail = {
     numero_present: numero,
     served_url: servedUrl,
     grille_served: grilleServed,
+    mineable_source_url_diag: mineableSourceUrl,
     registry_url_http: registryUrlHttp,
     registry_url_placeholder: registryUrlPlaceholder,
   };
   if (!numero) return { bucket: "no-numero", ...detail };
   if (servedUrl) return { bucket: "complete", ...detail };
-  // Registry holds a real http URL (an existing proof) but the served grille
-  // does not carry it: pure additive fold IF the grille is served (my lever),
-  // otherwise blocked on the norms grille being served at all.
+  // Registry holds a real, CURATED http URL but the served grille does not carry
+  // it: pure additive fold IF the grille is served (my lever), otherwise blocked
+  // on the norms grille being served at all.
   if (registryUrlHttp && grilleServed) return { bucket: "curable-fold", ...detail };
   if (registryUrlHttp && !grilleServed) return { bucket: "grille-unserved", ...detail };
   return { bucket: "capture-bound", ...detail };
@@ -216,7 +230,7 @@ const report = {
   },
   bucket_semantics: {
     complete: "numéro présent ET URL servie sur la grille de normes (reglement_url http)",
-    "curable-fold": "numéro + URL http au registre, grille servie mais URL non stampée → fold additif publish-reglement-provenance SANS capture (levier LOCAL)",
+    "curable-fold": "numéro + URL http CURÉE au registre, grille servie mais URL non stampée → fold additif publish-reglement-provenance SANS capture (levier LOCAL)",
     "grille-unserved": "numéro + URL http au registre mais grille de normes NON servie → dépend du serving de la grille (zones/serving)",
     "capture-bound": "numéro présent, aucune URL http nulle part (registre null/placeholder ET non servie) → capture cluster (socle)",
     "no-numero": "numéro absent (gap de déclaration amont; URL sans objet)",
