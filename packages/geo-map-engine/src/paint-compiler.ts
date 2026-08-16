@@ -8,7 +8,11 @@
 
 import type { ColorEncoding, NumberEncoding, TokenMap, TokenRole } from "./encodings.js";
 import type { GeoLayerSpec, LayerData } from "./layers.js";
-import type { MaplibreLayerDefinition, MaplibreLayerProjection } from "./layer-reconciler.js";
+import type {
+  MaplibreLayerDefinition,
+  MaplibreLayerProjection,
+  MaplibreSubLayer,
+} from "./layer-reconciler.js";
 
 /** Compile a neutral colour channel to a concrete MapLibre paint value. */
 export function compileColorEncoding(encoding: ColorEncoding, tokens: TokenMap): unknown {
@@ -235,7 +239,7 @@ function makeProjection(
     ...(resolvedLayout ? { layout: resolvedLayout } : {}),
     paint,
   };
-  return {
+  const subLayer: MaplibreSubLayer = {
     layer: definition,
     structure: {
       type,
@@ -245,6 +249,7 @@ function makeProjection(
     paint,
     data: layer.data,
   };
+  return { layers: [subLayer] };
 }
 
 function opacityPaint(property: string, encoding: NumberEncoding | undefined): Record<string, unknown> {
