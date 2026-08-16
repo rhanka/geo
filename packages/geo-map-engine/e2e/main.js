@@ -58,6 +58,22 @@ const layers = [
   },
 ];
 
+const syncLayers = [{
+  id: "sync/alerts",
+  kind: "points",
+  data: {
+    type: "FeatureCollection",
+    features: [{
+      type: "Feature",
+      properties: { alertId: "alert-1", severity: "high" },
+      geometry: { type: "Point", coordinates: [-71.52, 46.82] },
+    }],
+  },
+  color: { by: "constant", token: "category3" },
+  radius: { by: "constant", value: 10 },
+  interactivity: { hover: true, select: true, idField: "alertId" },
+}];
+
 const observedRenderedLayerIds = [];
 const observedHoverHits = [];
 const observedSelectHits = [];
@@ -104,4 +120,8 @@ window.__mountE2e = {
   observedHoverHits,
   observedSelectHits,
   observedRenderedLayerIds,
+  syncAndReconcile: () => {
+    handle.syncLayers(syncLayers);
+    handle.setLayers([layers[0]]);
+  },
 };
