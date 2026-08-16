@@ -1,13 +1,16 @@
 /**
- * Sonde READ-ONLY : le qc-zonage servi d'amherst a-t-il flat == nested ?
+ * Sonde READ-ONLY : le qc-zonage servi d'un slug a-t-il flat == nested ?
  * Décisif avant re-fold : lot-zone-join-run lit resolveZonesKey [flat, nested]
  * (FLAT d'abord), or geo-zones exige le NESTED (autoritaire). Si flat≠nested,
  * le re-fold utiliserait le flat périmé → il faut d'abord fixer l'ordre/synchro.
+ * Usage : npx tsx acquisition/src/_amherst-zone-layout-check.ts --slug beaupre
  */
 import { objectHead, getBytes, s3Client } from "./lib/s3.js";
 
-const FLAT = "normalized/ca-qc-zonage/qc-zonage-amherst.geojson";
-const NESTED = "normalized/ca-qc-zonage/qc-zonage-amherst/qc-zonage-amherst.geojson";
+const slugArg = process.argv.indexOf("--slug");
+const SLUG = slugArg >= 0 && process.argv[slugArg + 1] ? process.argv[slugArg + 1]! : "amherst";
+const FLAT = `normalized/ca-qc-zonage/qc-zonage-${SLUG}.geojson`;
+const NESTED = `normalized/ca-qc-zonage/qc-zonage-${SLUG}/qc-zonage-${SLUG}.geojson`;
 
 function codeSet(buf: Buffer): Set<string> {
   const fc = JSON.parse(buf.toString("utf8")) as { features?: Array<{ properties?: Record<string, unknown> }> };
