@@ -1,0 +1,80 @@
+{
+ "contract": "zones-boischatel-layout-reconcile/v1",
+ "date": "2026-08-16",
+ "status": "BLOCKED-STOP (no S3 write performed)",
+ "mode": "CAPTURE-FREE served-layout reconcile attempt. Read-only S3 inspection only; NO deposit, NO delete, NO copy, NO backup taken (nothing overwritten).",
+ "objective": "Fix the geo-api served-layout-authority bug for boischatel: geo-api serves the NESTED layout when both flat+nested exist; the nested is a mis-deposited MRC-affectation layer (17 feat, 0 real codes) while the real municipal zoning (55 feat, 55 codes, georeferenced t2-gcp3) lives in the FLAT. Intended fix (per meta-conductor): deposit the flat's 55-zone content INTO the nested so nested==flat, keep both layouts correct, re-stamp provenance on both. NOT delete-only.",
+ "inputs": {
+  "triage_record": "work/coverage/zones-col2-source-triage-20260816.json (commit 2c741540)",
+  "layout_authority_scan": "work/coverage/zones-layout-authority-scan-20260816.json (commit 3d1b3353)",
+  "inspection_probe": "acquisition/src/_zones-col2-source-triage-20260816.ts (read-only S3)",
+  "inspection_ran": "NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx acquisition/src/_zones-col2-source-triage-20260816.ts (EXIT 0, boischatel status=OK, generated_at_utc 2026-08-16T04:51:21Z)",
+  "beaupre_precedent": "acquisition/src/_zones-col2-reacq-deposit-20260816.ts + work/coverage/zones-col2-reacq-deposit-record-20260816.md (commit cea1a7c7)"
+ },
+ "step1_inspection_verified": {
+  "note": "Target VERIFIED on live S3 (not trusted from records). Matches the expected mis-deposit signature exactly: FLAT=55 real-code zoning covering the muni bbox; NESTED=17-feat affectation-null layer. No surprise (nested does NOT already carry real codes; flat is not empty/offset).",
+  "flat": {
+   "key": "normalized/ca-qc-zonage/qc-zonage-boischatel.geojson",
+   "feature_count": 55,
+   "geometry_types": ["MultiPolygon"],
+   "distinct_zone_code": 55,
+   "empty_zone_code_features": 0,
+   "sample_zone_codes": ["Cn1-105", "V1-106", "V2-108", "Rf1-107", "Dd-008", "H1-007", "P3-112"],
+   "zone_source_url": "null (∅null on all 55 features)",
+   "zone_source_level": "legacy-traceable (all 55)",
+   "geometry_grain": "absent (all 55)",
+   "features_with_v2_proof": 0,
+   "collection_level_proof": null,
+   "feature_proof_shape": "legacy schema_version 1.0; sources.geometry.artifact_uri = s3://sentropic-geo/normalized/ca-qc-zonage/qc-zonage-boischatel.geojson (SELF-REFERENTIAL object-storage URI, NOT a real upstream), upstream_uri null, NO sha256",
+   "internal_source_tag": "source=t2-gcp3, confidence=contour-manual-gcp (georeferenced from PDF plan, manual GCPs)",
+   "bbox": {"min_lon": -71.19250704728223, "min_lat": 46.88281435457238, "max_lon": -71.10865303812822, "max_lat": 46.951893272825465, "coord_pairs": 35011},
+   "bbox_covers_municipality": true
+  },
+  "nested": {
+   "key": "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.geojson",
+   "feature_count": 17,
+   "geometry_types": ["MultiPolygon", "Polygon"],
+   "distinct_zone_code": 0,
+   "empty_zone_code_features": 17,
+   "content": "MRC affectation layer: Affectatio field (Foret et recreation, Recreation intensive 2, Conservation, ...); source=ca-qc-zonage-claudialarrotamrccdb-arcgis; confidence=disaggregated-from:ca-qc-zonage-claudialarrotamrccdb-arcgis; Categorie=Affectations_forestier_recreation_conservation_MAJ062023.shp",
+   "zone_code": "null on all 17",
+   "zone_source_url": "null (all 17)",
+   "zone_source_level": "legacy-traceable (all 17)",
+   "features_with_v2_proof": 0,
+   "collection_level_proof": null,
+   "bbox": {"min_lon": -71.1927251603849, "min_lat": 46.8847099161658, "max_lon": -71.1080005612237, "max_lat": 46.9519030765432, "coord_pairs": 3564}
+  },
+  "geo_api_serves": "NESTED (affectation-null) => 4072 lots fall hors-zone"
+ },
+ "step2_provenance_decision": {
+  "branch": "FLAT does NOT carry a v2 proof (features_with_v2_proof=0, collection proof=null, zone_source_url=null, level=legacy-traceable).",
+  "intended_handling": "Propagate flat content + provenance faithfully to nested, byte-preserve geometry, re-stamp zone_source_url=null / zone_source_level=legacy-traceable on both layouts (honest null; the flat's real source is a georeferenced-from-PDF recalage with NO re-downloadable vector URL). Achieved proof level would remain legacy-traceable (NOT documented/v2 — no fabrication)."
+ },
+ "blocker": {
+  "verdict": "HARD BLOCKER — the capture-free reconcile as specified (deposit flat content onto the nested served key so nested==flat) cannot be performed with any sanctioned lib primitive without fabricating a v2 proof.",
+  "why": "Making nested==flat requires introducing NEW geometry onto the nested served key (17 affectation features -> 55 zoning features, entirely different geometry). The served-key write surface has exactly two sanctioned primitives, plus raw writes that are guarded off:",
+  "primitive_analysis": [
+   "putServedZoneGeojson(nested, flatFc): assertServedZoneGeojson HARD-REQUIRES fc.proof.schema_version==2.0 + a valid geometry_source (real http(s) URL + sha256 + ISO retrieved_at) + per-feature v2 proof. The flat has collection proof=null and feature proofs at legacy schema 1.0 => REFUSED. To pass, a v2 geometry_source proof would have to be FABRICATED. There is no live vector source (MRC Cote-de-Beaupre publishes no per-municipality vector zoning; PDF-only), and this pass is capture-free (no cluster/fetch), so no capture-manifest line and no honest bytes+sha exist to build a proof. FORBIDDEN by step 2 ('DO NOT fabricate one') and by assertGeometryProof (rejects s3:// / null / object-storage URLs).",
+   "putServedZoneAdditive(nested, flatFc): requires target-exists (ok) AND same feature count/order (17 vs 55 => REFUSED 'feature count changed') AND byte-identical geometry per feature (REFUSED). This path is designed to be geometry-immutable; it cannot introduce the 55-feature zoning over the 17-feature affectation. The allowProofV2Promotion route is also inapplicable: the flat's legacy v1 geometry proof has an s3:// artifact_uri (assertGeometryProof rejects) and NO sha256.",
+   "raw writes (putBytes/putStream/copyObject/putBytesIfMatch/putBytesIfAbsent): all guard isServedZoneKey and REFUSE served-zone destination keys (s3.ts lines 323/372/437/497/527).",
+   "deleteObject(nested): the ONLY ungated path to change what geo-api serves capture-free — but that is DELETE-ONLY, which the meta-conductor EXPLICITLY excluded ('NOT a delete-only')."
+  ],
+  "no_honest_v2_proof_possible": "A georeference-method proof (type=pdf-zonage, method=georeference) would still require fetching+hashing the by-law PDF (a capture, forbidden here) and would misrepresent provenance — the 55-polygon GeoJSON was manually GCP-georeferenced from a raster plan, not byte-derived from the PDF via a reproducible pipeline. Minting such a proof = fabrication.",
+  "guardrail_invoked": "Step 2: 'If the only correct primitive would force fabricating a proof or a code, STOP and report the blocker instead.' Also: 'if a guardrail can't be met safely, STOP and report rather than force.'"
+ },
+ "actions_taken": {
+  "s3_writes": "NONE",
+  "s3_deletes": "NONE",
+  "backups_taken": "NONE (no overwrite to protect against)",
+  "state_change": "NONE — served objects are byte-unchanged; the bug is unmodified and fully reversible-by-inaction."
+ },
+ "options_for_conductor": [
+  "OPTION A (capture-free, needs conductor's explicit lift of the 'NOT delete-only' constraint): DELETE the nested affectation key so geo-api falls back to serving the FLAT real 55-zone zoning. Resolves the 4072 hors-zone by construction; nested-only layout gone (single flat layout, like amherst). Reversible via a pre-delete backup to _replaced/. This is the only capture-free fix current primitives permit, but it yields ONE correct layout (flat), not two.",
+  "OPTION B (keeps both layouts, needs a lib change + conductor sign-off): add a sanctioned 'legacy layout-reconcile / copy-forward' primitive that carries a NON-v2 collection from flat to nested with byte-preserved geometry and honest provenance (zone_source_url=null, zone_source_level=legacy-traceable), NEVER minting a proof. This deliberately opens a proof-free served-key write path (currently forbidden by design) and must be gated (e.g. flat==source-of-truth, byte-identical geometry carry, no proof fabrication). Out of scope for a capture-free reconcile worker; it is a lib/spec change.",
+  "OPTION C (re-acquisition, NOT capture-free): if a covering vector source is ever found, re-acquire with a real v2 proof and deposit on both layouts (the beaupre recipe). None exists today (PDF-only); classified PDF-RECALAGE-T3 (est) in triage."
+ ],
+ "coverage_sanity": {
+  "flat_covers_bbox": true,
+  "note": "Flat bbox [-71.1925,46.8828 -> -71.1087,46.9519] covers the Boischatel municipal territory (~46.9N/-71.15W). No offset flag (unlike mille-isles). If a fix is later applied, the 4072 hors-zone lots should re-fold against the flat's real 55-zone coverage."
+ }
+}
