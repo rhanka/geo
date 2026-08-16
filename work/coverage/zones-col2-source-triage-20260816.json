@@ -1,0 +1,188 @@
+{
+  "contract": "zones-col2-source-triage/v1",
+  "generated_at_utc": "2026-08-16T00:00:00.000Z",
+  "mode": "READ-ONLY triage. NO capture / NO deposit / NO S3 write / NO cluster. Served state read from S3 (read-only); source identity discovered by public web probe (ArcGIS ?f=json + /query returnCountOnly). Classifies the 4 col-2 coherence-residual cities and answers the amherst nested-FINAL re-fold gate.",
+  "anti_invention": "verbatim-or-null. Every source URL was live-probed this pass (HTTP 200, field list + count read from the endpoint). Tiers not fetched-to-internals are labelled tier_confidence=estimated. estimated yields labelled 'est'. No source, tier, count, or CRS is fabricated; where a source could not be reached it is stated as such.",
+  "inputs": {
+    "col2_characterization": "git show f076432f:work/coverage/col2-characterization-routing-20260815.md",
+    "recalage_worklist": "work/coverage/zones-pdf-recalage-worklist-incohort-20260811.json",
+    "probe_script": "acquisition/src/_zones-col2-source-triage-20260816.ts",
+    "probe_template": "acquisition/src/_zones-vnatif-inspect-mirabel-20260810.ts",
+    "served_inspection_ran": "NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 npx tsx acquisition/src/_zones-col2-source-triage-20260816.ts (EXIT 0, all 4 slugs status=OK)"
+  },
+  "geo_api_layout_rule": "When flat AND nested coexist, geo-api serves the NESTED sub-folder. The col-2 characterization (post-fix) reads nested-first; the served authority a lot re-fold sees is the NESTED layout when present.",
+  "cities": {
+    "amherst": {
+      "slug": "amherst",
+      "problem": "1749 lots assigned, 100% mismatch. codeMissing = 1132 CONTENU (centroid inside ANOTHER served zone => mislabelled, code changed => jointures re-fold fix) + 617 HORS-ZONE (no containing served zone => source-coverage gap).",
+      "served_state": {
+        "layout": "FLAT-only (no nested; geo-api serves the flat collection = sole layout)",
+        "served_key": "normalized/ca-qc-zonage/qc-zonage-amherst.geojson",
+        "feature_count": 43,
+        "geometry_types": ["MultiPolygon"],
+        "distinct_zone_codes": 43,
+        "empty_zone_code": 0,
+        "zone_source_url": null,
+        "zone_source_level": "candidate",
+        "features_with_v2_proof": 0,
+        "collection_proof": null,
+        "internal_source_tag": "t2-vision-gcp / confidence=vision-positioned-autogcp (georeferenced from PDF plan)",
+        "bbox": {"min_lon": -74.85926761626489, "min_lat": 45.988153969889154, "max_lon": -74.6797484408034, "max_lat": 46.09790161909183},
+        "bbox_overlaps_municipality": true
+      },
+      "source_probe": {
+        "live_vector_source_found": false,
+        "why": "MRC des Laurentides serves zoning only via the proprietary JPCadrin viewer (www.jpcadrin.ca/CIF matrice graphique) — no downloadable vector FeatureServer/MapServer/WFS/geojson. No municipal ArcGIS org for Amherst.",
+        "plan_pdf": "https://municipalite.amherst.qc.ca/wp-content/uploads/2020/10/352-02-Zonage-revise-2017.pdf (Reglement de zonage 352-02; plan de zonage annexed, 2 sheets rural+village). Regulation grid already used for the served: https://municipalite.amherst.qc.ca/wp-content/uploads/2020/10/Grilles-usages-et-normes.pdf",
+        "anti_homonyme": "Municipalite (canton) d'Amherst, MRC des Laurentides — confirmed by municipal domain + bbox ~46.0N/-74.7W."
+      },
+      "classification": "PDF-RECALAGE-T3 (for the 617 HORS-ZONE residual) — the 1132 CONTENU is a jointures re-fold (NOT a source class) and is the primary lever.",
+      "source_url_or_null": null,
+      "tier_or_null": "T3",
+      "tier_confidence": "estimated",
+      "coverage_covers_bool": false,
+      "coverage_note": "Existing served (43 georeferenced zones) covers only part of the territory; 617 lots fall outside it. No live vector source to close them; a PDF-recalage re-registration of the 352-02 plan sheets is the only source path, tier defaulted T3 (est; served used vision-GCP => raster-plan signature).",
+      "notes": "Dominant fix is the jointures re-fold of the 1132 CONTENU against the current served (see amherst_gate). Source recovery only concerns the 617 hors-zone and has no vector option (JPCadrin proprietary)."
+    },
+    "beaupre": {
+      "slug": "beaupre",
+      "problem": "2929 lots ALL HORS-ZONE. Cause found: geo-api serves the NESTED layer, which is a MRC schema-d'amenagement AFFECTATION layer (20 polygons, zone_code=null) — NOT the zoning. The real vector zoning sits only in the FLAT layout (78 zones).",
+      "served_state": {
+        "layout": "BOTH (geo-api serves NESTED)",
+        "nested_served_key": "normalized/ca-qc-zonage/qc-zonage-beaupre/qc-zonage-beaupre.geojson",
+        "nested_feature_count": 20,
+        "nested_distinct_zone_codes": 0,
+        "nested_empty_zone_code": 20,
+        "nested_content": "Affectations_forestier_recreation_conservation (Recreation intensive, Conservation, Foret et recreation); source=ca-qc-zonage-claudialarrotamrccdb-arcgis (MRC affectation, disaggregated). zone_source_url stamped to the Zonage FS/17 but geometry+codes are affectation, not zoning.",
+        "flat_served_key": "normalized/ca-qc-zonage/qc-zonage-beaupre.geojson",
+        "flat_feature_count": 78,
+        "flat_distinct_zone_codes": 77,
+        "flat_empty_zone_code": 1,
+        "zone_source_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17",
+        "zone_source_level": "legacy-traceable",
+        "features_with_v2_proof": 0,
+        "flat_bbox": {"min_lon": -70.954764, "min_lat": 47.031413, "max_lon": -70.861133, "max_lat": 47.1096}
+      },
+      "source_probe": {
+        "live_vector_source_found": true,
+        "source_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17",
+        "service_description": "Zonage municipal — 'Zonage municipal de la Ville de Beaupre' (single layer id 17 'Zonage')",
+        "geometry_type": "esriGeometryPolygon",
+        "zone_code_field": "ZONE_",
+        "other_fields": ["FID", "LEGENDE", "Sup_Ha", "Dom", "PIIA", "logha_min", "logha_max", "Reglementa", "Shape__Area", "Shape__Length"],
+        "crs": "NAD_1983_Transverse_Mercator (MTM zone 7: central meridian -70.5, false easting 304800); no wkid advertised",
+        "live_count": 78,
+        "empty_zone_code_live": 1,
+        "max_record_count": 2000,
+        "extent_mtm": {"xmin": 270268.454, "ymin": 5210292.918, "xmax": 277358.069, "ymax": 5218998.962},
+        "anti_homonyme": "IDENTITY-CLEAN: serviceDescription explicitly 'Ville de Beaupre'; extent = Beaupre urban territory (~47.03-47.11N, -70.95--70.86W); org osUKB2jztkflrQhx is Beaupre-specific (single-municipality service)."
+      },
+      "classification": "RE-ACQUERABLE-VECTOR",
+      "source_url_or_null": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17",
+      "tier_or_null": null,
+      "coverage_covers_bool": true,
+      "coverage_gate_note": "1 of 78 features has an empty ZONE_ (live count confirmed) => on deposit that feature's zone_code becomes UNKNOWN (never N-A), matching the documented empty-code coverage-gate that blocked the earlier AGOL deposit. Deposit is anti-loss/anti-invention gated, not source-missing.",
+      "notes": "This is the documented 'beaupre empty-code' AGOL SKIP. Re-acquire Zonage/17 (v2 proof, MTM7->4326), then deposit on BOTH layouts (flat + nested) so geo-api stops serving the affectation layer. That replacement resolves the 2929 HORS-ZONE by construction (est). estimated yield: ~77 zone-coded polygons + 1 UNKNOWN (est, from live 78)."
+    },
+    "boischatel": {
+      "slug": "boischatel",
+      "problem": "4072 lots ALL HORS-ZONE. Same cause as beaupre: geo-api serves the NESTED AFFECTATION layer (17 polygons, zone_code=null), NOT the zoning. The real (georeferenced) zoning sits only in the FLAT layout (55 zones).",
+      "served_state": {
+        "layout": "BOTH (geo-api serves NESTED)",
+        "nested_served_key": "normalized/ca-qc-zonage/qc-zonage-boischatel/qc-zonage-boischatel.geojson",
+        "nested_feature_count": 17,
+        "nested_distinct_zone_codes": 0,
+        "nested_empty_zone_code": 17,
+        "nested_content": "Affectations_forestier_recreation_conservation; source=ca-qc-zonage-claudialarrotamrccdb-arcgis (MRC affectation, disaggregated). zone_code=null for all 17.",
+        "flat_served_key": "normalized/ca-qc-zonage/qc-zonage-boischatel.geojson",
+        "flat_feature_count": 55,
+        "flat_distinct_zone_codes": 55,
+        "flat_empty_zone_code": 0,
+        "flat_internal_source_tag": "t2-gcp3 / confidence=contour-manual-gcp (georeferenced from PDF plan, manual GCPs)",
+        "zone_source_url": null,
+        "zone_source_level": "legacy-traceable",
+        "features_with_v2_proof": 0,
+        "flat_bbox": {"min_lon": -71.19250704728223, "min_lat": 46.88281435457238, "max_lon": -71.10865303812822, "max_lat": 46.951893272825465}
+      },
+      "source_probe": {
+        "live_vector_source_found": false,
+        "why": "MRC de La Cote-de-Beaupre publishes no per-municipality vector zoning (its GIS is the CMQuebec/sig.cmquebec.qc.ca evaluation-unit matrice + Beaupre's own single-municipality org). No Boischatel ArcGIS zoning FeatureServer found.",
+        "plan_pdf": "http://boischatel.blob.core.windows.net/media/1230/rg-zonage.pdf (Reglement de zonage 2014-976; Annexe I 'Plan de zonage', ~p.219). Grid already used for the served: https://www.boischatel.ca/storage/app/media/ma-ville/administration/reglements-et-politiques/r-2024-976-grilles-zonage-boischatel-01-99-2025-02-10.pdf",
+        "anti_homonyme": "Boischatel, MRC Cote-de-Beaupre, Capitale-Nationale — confirmed by municipal blob domain + bbox ~46.9N/-71.15W."
+      },
+      "classification": "PDF-RECALAGE-T3 (est) — BUT the dominant lever is a LAYOUT/served-authority fix, not a new capture (see notes).",
+      "source_url_or_null": null,
+      "tier_or_null": "T3",
+      "tier_confidence": "estimated",
+      "coverage_covers_bool": false,
+      "coverage_note": "No live vector source. Plan is a by-law annex (raster signature: served flat already needed manual GCPs => T3 est).",
+      "notes": "CRITICAL: a georeferenced 55-zone layer ALREADY EXISTS in the FLAT layout (t2-gcp3) but geo-api serves the mis-deposited NESTED affectation (17 polys, no codes) — the direct cause of the 4072 HORS-ZONE. The fastest, capture-free lever is to reconcile the served authority (promote/serve the flat georeferenced zones on BOTH layouts, or remove the nested affectation), which restores most coverage. PDF-recalage of the 2014-976 Annexe I only IMPROVES registration beyond the existing t2-gcp3."
+    },
+    "mille-isles": {
+      "slug": "mille-isles",
+      "problem": "488 lots, 99.8% mismatch, MEDIAN OFFSET 1705 m (~1.7km), R=0.89 => systematic CRS/reprojection error against a REAL vector source. Served NESTED = 66 zones from MRC d'Argenteuil ArcGIS (disaggregated) that are shifted ~1.7km from the lots.",
+      "served_state": {
+        "layout": "BOTH (geo-api serves NESTED)",
+        "nested_served_key": "normalized/ca-qc-zonage/qc-zonage-mille-isles/qc-zonage-mille-isles.geojson",
+        "nested_feature_count": 66,
+        "nested_distinct_zone_codes": 66,
+        "nested_content": "fields zone/vocation/info/co_mun(=76030)/Shape__Area/Shape__Length; source=ca-qc-zonage-mahurtubise-mrcargenteuil-arcgis; zone codes present (H-14, Ru-14, Vi-9...).",
+        "flat_served_key": "normalized/ca-qc-zonage/qc-zonage-mille-isles.geojson",
+        "flat_feature_count": 4,
+        "flat_internal_source_tag": "geopdf-esri / contour-auto",
+        "zone_source_url": null,
+        "zone_source_level": "legacy-traceable",
+        "features_with_v2_proof": 0,
+        "nested_bbox": {"min_lon": -74.3096296211266, "min_lat": 45.78130106029, "max_lon": -74.1050518977143, "max_lat": 45.8596518385674}
+      },
+      "source_probe": {
+        "live_vector_source_found": true,
+        "source_url": "https://services9.arcgis.com/iZcAwIV2GibwcZLe/arcgis/rest/services/Zonage/FeatureServer/0",
+        "service_title": "Zonage reglementaire du territoire local (owner mahurtubise_mrcargenteuil = MRC d'Argenteuil) — MATCHES the served source slug 'mahurtubise-mrcargenteuil' exactly",
+        "geometry_type": "esriGeometryPolygon",
+        "zone_code_field": "zone",
+        "other_fields": ["FID", "vocation", "info", "co_mun", "Shape__Area", "Shape__Length"],
+        "fields_match_served": true,
+        "crs": "EPSG:3857 / wkid 102100 (Web Mercator Auxiliary Sphere)",
+        "service_extent_3857": {"xmin": -8328173.15, "ymin": 5700832.77, "xmax": -8249004.58, "ymax": 5770170.71},
+        "service_extent_deg_approx": {"min_lon": -74.82, "min_lat": 45.44, "max_lon": -74.11, "max_lat": 45.88},
+        "live_count_mille_isles": 66,
+        "co_mun_filter": "co_mun=76030",
+        "max_record_count": 2000,
+        "anti_homonyme": "IDENTITY-CLEAN: owner mahurtubise_mrcargenteuil (MRC d'Argenteuil, Quebec); fields co_mun/zone/vocation identical to served; co_mun=76030 = Mille-Isles; live count 66 == served nested 66. NOT the France 'Argenteuil' geo-open-data hub (PLU) which was rejected."
+      },
+      "classification": "OFFSET-REPROJECT",
+      "source_url_or_null": "https://services9.arcgis.com/iZcAwIV2GibwcZLe/arcgis/rest/services/Zonage/FeatureServer/0",
+      "tier_or_null": null,
+      "coverage_covers_bool": true,
+      "suspected_crs_mismatch": "Source native = EPSG:3857 (Web Mercator). The served nested carries a ~1705m uniform offset (R=0.89) introduced during the original disaggregation/reprojection (a 3857->4326 parameter error; magnitude is far too large for a NAD83<->WGS84 datum shift ~1-2m and far too small for a wrong MTM zone). Fix = RE-CAPTURE authoritative bytes (filter co_mun=76030) + reproject 3857->4326 correctly; NEVER shift the served geometry (fabrication).",
+      "notes": "Source is live, public, complete (66/66) and carries zone_code (field 'zone') — this is also a valid RE-ACQUERABLE-VECTOR endpoint; classified OFFSET-REPROJECT because the defect is a systematic offset over an already-correct source. R=0.89 (not perfectly rigid) means a residual may remain from source-digitization imprecision; verify at re-capture that the corrected reprojection closes the 1.7km."
+    }
+  },
+  "amherst_gate": {
+    "question": "Is amherst's served NESTED layout the authoritative/current geometry so jointures can SAFELY re-fold the 1132 CONTENU lots (containment) against it NOW?",
+    "finding": "amherst is FLAT-only — there is NO nested layout. geo-api serves the flat collection (the sole layout present). The flat 43-zone t2-vision-gcp collection IS the standing served authority.",
+    "nested_present": false,
+    "layout_authority": "FLAT (only layout; the 'nested-FINAL' gate is vacuously satisfied — no stale-flat-vs-fresh-nested divergence is possible when nested does not exist).",
+    "in_recalage_worklist": false,
+    "in_pending_deposit": false,
+    "no_inflight_touch": "amherst is not in the recalage worklist and not in any pending deposit (campaign closed) => no in-flight zones change touches it => the current served flat is the standing authority.",
+    "verdict_nested_FINAL": "YES (resolves to flat-FINAL: flat is the sole, current, authoritative served layout).",
+    "verdict_refold_1132": "GO — jointures may safely re-fold the 1132 CONTENU lots by containment against the current served flat NOW.",
+    "caveat": "The 617 HORS-ZONE makes amherst a re-acquisition/recalage candidate (no covering vector source found; only a PDF plan). If a covering source is later obtained, a future re-acquisition would change the geometry and jointures would re-fold again — containment is idempotent, so the 1132 re-fold done now stays correct."
+  },
+  "summary": {
+    "cities": 4,
+    "by_class": {
+      "RE-ACQUERABLE-VECTOR": ["beaupre"],
+      "OFFSET-REPROJECT": ["mille-isles"],
+      "PDF-RECALAGE": ["amherst (617 hors-zone residual, T3 est)", "boischatel (T3 est; primary lever is layout reconciliation)"],
+      "FLOOR": []
+    },
+    "live_vector_sources_found": 2,
+    "amherst_gate": "nested-FINAL=YES (flat-only) => GO for the 1132-contenu re-fold",
+    "cross_cutting_finding": "beaupre AND boischatel share the SAME defect class: geo-api serves a mis-deposited NESTED MRC-affectation layer (zone_code=null) while the real zoning lives in the FLAT layout. Coverage is largely a served-LAYOUT-authority problem, not only a source-missing problem — beaupre needs a v2 re-acquisition of its live vector; boischatel can be fixed capture-free by serving its existing flat georeferenced zones.",
+    "firm_classification_reached": ["amherst", "beaupre", "boischatel", "mille-isles"],
+    "unresolved": []
+  }
+}
