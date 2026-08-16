@@ -219,16 +219,17 @@ export const mount: MountGeoMap<MapContainer> = (host, options): GeoMapHandle =>
     getFeatureBoundary: (layerId, featureId) => {
       assertActive();
       if (!ready) return null;
+      let boundary: GeoBounds | null = null;
       for (const feature of map.queryRenderedFeatures()) {
         const hit = mapRenderedFeatureHit({
           layerId: feature.layer.id,
           properties: feature.properties,
         }, activeLayers(currentLayers, currentSyncLayers));
         if (hit?.layerId === layerId && hit.featureId === featureId) {
-          return geometryBounds(feature.geometry);
+          boundary = mergeBounds(boundary, geometryBounds(feature.geometry));
         }
       }
-      return null;
+      return boundary;
     },
     destroy: () => {
       if (destroyed) return;
@@ -381,6 +382,17 @@ function activeLayers(
   syncLayers: readonly GeoLayerSpec[],
 ): readonly GeoLayerSpec[] {
   return [...layers, ...syncLayers];
+}
+
+function mergeBounds(current: GeoBounds | null, next: GeoBounds | null): GeoBounds | null {
+  if (!current) return next;
+  if (!next) return current;
+  return {
+    west: Math.min(current.west, next.west),
+    south: Math.min(current.south, next.south),
+    east: Math.max(current.east, next.east),
+    north: Math.max(current.north, next.north),
+  };
 }
 
 function readCurrentViewport(map: Map, fallback: GeoViewport): GeoViewport {
