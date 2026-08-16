@@ -504,6 +504,29 @@ gardes anti-décalage conservés) est **en cours de double-consensus** (fable5 +
 des grilles déjà extraites** (vérité terrain, sans re-payer Mistral), à **ratifier par geo-archi** — ADR
 de suivi à venir. Les routes native/OCR ne sont pas affectées.
 
+## ADR-0025 — **Moteur carto geo RENDERER-NEUTRE (geo-owned) ; gel gaté sur démo 3D** · accepted · 2026-08-15
+
+**Contexte.** Vue géo mutualisée geo↔immo à capitaliser (brief : shell / responsive / légendes-outils /
+layers). Revue Fable5 (F1–F8) : le vrai moteur (réconciliateur déclaratif + viewport + tokens→paint +
+caméra + ré-injection post-`setStyle` + tool-plugin) est **greenfield ET framework-indépendant** ; le
+dupliquer ×4 = anti-pattern déjà tranché (dataviz-core agnostique + adaptateurs minces). immo a un spec 3D
+**committé** (`SPEC_EVOL_3D_MAPS_2026-08-14.md`) → le 3D n'est pas prospectif.
+
+**Décision (propriétaire, 2026-08-15).** (1) geo détient un **moteur carto unique** (package TS pur
+agnostique, repo geo ; API + versioning geo-owned) ; N adaptateurs framework MINCES + chrome présentationnel
+= DS-owned ; **zéro-copie**. (2) Le moteur est **RENDERER-NEUTRE dès la v1** (2D maplibre + 3D Cesium/deck) :
+aucune expression de peinture maplibre brute dans le contrat public, tokens résolus par le moteur selon le
+renderer, geo-core expose **zoom normalisé + équivalence caméra 2D/3D**. (3) `dataviz-core` émet des **bins
+neutres** ; le moteur compile par renderer. (4) Le **gel du seam v1 (§1) est GATÉ sur une DÉMO 3D concrète**
+(un renderer 3D réel satisfait le contrat couche+caméra neutre, round-trip 2D↔3D) — **jamais sur
+l'abstraction seule** ; la ratification/gel restent la conduite geo-cond → owner. Détail autoritaire :
+`docs/spec/SPEC_GEO_MAP_ENGINE.md`.
+
+**Conséquence.** OWNER-GATED des deux côtés : aucune implémentation avant ratification. Séquence amont :
+démo 3D verte → **gel §1** → (L1–L4 adaptateurs de base) ‖ (refactor `dataviz-core` → bins neutres,
+owner-gated) → L5 chrome/choroplèthe → L6 migration immo (fetch-out élargi). Co-signé DS ↔ geo ↔ immo
+(i-cond). Naming/shell/gates : sections §2–6 DS-authoritative du SPEC.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
