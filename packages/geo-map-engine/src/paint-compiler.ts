@@ -120,7 +120,7 @@ export function createMaplibreLayerProjector(
   return (layer) => projectMaplibreLayer(layer, tokens);
 }
 
-/** Compile one neutral layer to the internal projection consumed by W1. */
+/** Compile one neutral layer to the internal, ordered projection consumed by W1. */
 export function projectMaplibreLayer(
   layer: GeoLayerSpec,
   tokens: TokenMap,
@@ -129,11 +129,13 @@ export function projectMaplibreLayer(
     case "choropleth":
       return projectChoropleth(layer, tokens);
     case "points":
-      return makeProjection(layer, "circle", {
-        "circle-color": compileColorEncoding(layer.color, tokens),
-        "circle-radius": compileNumberEncoding(layer.radius),
-        ...opacityPaint("circle-opacity", layer.opacity),
-      });
+      return makeProjection([
+        makeSubLayer(layer, layer.id, "circle", {
+          "circle-color": compileColorEncoding(layer.color, tokens),
+          "circle-radius": compileNumberEncoding(layer.radius),
+          ...opacityPaint("circle-opacity", layer.opacity),
+        }),
+      ]);
     case "geojson":
       return projectGeojson(layer, tokens);
   }
@@ -143,103 +145,96 @@ function projectChoropleth(
   layer: Extract<GeoLayerSpec, { kind: "choropleth" }>,
   tokens: TokenMap,
 ): MaplibreLayerProjection {
-  if (layer.outline?.width) {
-    throw new Error(
-      "A custom choropleth outline width requires a second MapLibre line layer; MaplibreLayerProjection currently carries one layer",
-    );
-  }
-
   const paint: Record<string, unknown> = {
     "fill-color": compileColorEncoding(layer.fill.color, tokens),
     ...opacityPaint("fill-opacity", layer.fill.opacity ?? layer.opacity),
   };
-  if (layer.outline) {
+  if (layer.outline && !layer.outline.width) {
     paint["fill-outline-color"] = compileColorEncoding(layer.outline.color, tokens);
   }
 
   // `extrusion` is intentionally 3D-only in the frozen contract. The 2D
   // compiler preserves the regular fill projection and ignores it.
-  return makeProjection(layer, "fill", paint);
+  const layers: MaplibreSubLayer[] = [makeSubLayer(layer, layer.id, "fill", paint)];
+  if (layer.outline?.width) {
+    layers.push(
+      makeSubLayer(layer, `${layer.id}::outline`, "line", {
+        "line-color": compileColorEncoding(layer.outline.color, tokens),
+        "line-width": compileNumberEncoding(layer.outline.width),
+        ...opacityPaint("line-opacity", layer.opacity),
+      }),
+    );
+  }
+  return makeProjection(layers);
 }
 
 function projectGeojson(
   layer: Extract<GeoLayerSpec, { kind: "geojson" }>,
   tokens: TokenMap,
 ): MaplibreLayerProjection {
-  const parts = [layer.fill && "fill", layer.outline && "outline", layer.points && "points", layer.label && "label"].filter(
-    (part): part is "fill" | "outline" | "points" | "label" => Boolean(part),
-  );
-  if (parts.length === 0) {
+  if (!layer.fill && !layer.outline && !layer.points && !layer.label) {
     throw new Error("A geojson layer requires at least one renderable sub-spec");
   }
 
-  const [part] = parts;
-  if (parts.length > 1 && !(parts.length === 2 && layer.fill && layer.outline && !layer.outline.width)) {
-    throw new Error(
-      "Multiple geojson render sub-specs require multiple MapLibre layers; MaplibreLayerProjection currently carries one layer",
-    );
-  }
-
-  if (part === "fill") {
+  const layers: MaplibreSubLayer[] = [];
+  if (layer.fill) {
     const paint: Record<string, unknown> = {
-      "fill-color": compileColorEncoding(layer.fill!.color, tokens),
-      ...opacityPaint("fill-opacity", layer.fill!.opacity ?? layer.opacity),
+      "fill-color": compileColorEncoding(layer.fill.color, tokens),
+      ...opacityPaint("fill-opacity", layer.fill.opacity ?? layer.opacity),
     };
-    if (layer.outline) {
-      paint["fill-outline-color"] = compileColorEncoding(layer.outline.color, tokens);
-    }
-    return makeProjection(layer, "fill", paint);
+    layers.push(makeSubLayer(layer, layer.id, "fill", paint));
   }
-
-  if (part === "outline") {
-    const paint: Record<string, unknown> = {
-      "line-color": compileColorEncoding(layer.outline!.color, tokens),
+  if (layer.outline) {
+    layers.push(makeSubLayer(layer, `${layer.id}::outline`, "line", {
+      "line-color": compileColorEncoding(layer.outline.color, tokens),
       ...opacityPaint("line-opacity", layer.opacity),
-    };
-    if (layer.outline!.width) {
-      paint["line-width"] = compileNumberEncoding(layer.outline!.width);
-    }
-    return makeProjection(layer, "line", paint);
+      ...(layer.outline.width ? { "line-width": compileNumberEncoding(layer.outline.width) } : {}),
+    }));
   }
-
-  if (part === "points") {
-    return makeProjection(layer, "circle", {
-      "circle-color": compileColorEncoding(layer.points!.color, tokens),
-      "circle-radius": compileNumberEncoding(layer.points!.radius),
+  if (layer.points) {
+    layers.push(makeSubLayer(layer, layer.fill ? `${layer.id}::points` : layer.id, "circle", {
+      "circle-color": compileColorEncoding(layer.points.color, tokens),
+      "circle-radius": compileNumberEncoding(layer.points.radius),
       ...opacityPaint("circle-opacity", layer.opacity),
-    });
+    }));
   }
-
-  return makeProjection(
-    layer,
-    "symbol",
-    {
-      ...(layer.label!.color
-        ? { "text-color": compileColorEncoding(layer.label!.color, tokens) }
+  if (layer.label) {
+    const primaryLabel = !layer.fill && !layer.points;
+    layers.push(makeSubLayer(layer, primaryLabel ? layer.id : `${layer.id}::label`, "symbol", {
+      ...(layer.label.color
+        ? { "text-color": compileColorEncoding(layer.label.color, tokens) }
         : {}),
       ...opacityPaint("text-opacity", layer.opacity),
     },
-    { "text-field": ["get", layer.label!.field] },
-  );
+    { "text-field": ["get", layer.label.field] }));
+  }
+  return makeProjection(layers);
 }
 
 function makeProjection(
+  layers: readonly MaplibreSubLayer[],
+): MaplibreLayerProjection {
+  return { layers };
+}
+
+function makeSubLayer(
   layer: GeoLayerSpec,
+  id: string,
   type: "fill" | "circle" | "line" | "symbol",
   paint: Readonly<Record<string, unknown>>,
   layout?: Readonly<Record<string, unknown>>,
-): MaplibreLayerProjection {
+): MaplibreSubLayer {
   const visibility = layer.visible === false ? "none" : undefined;
   const resolvedLayout = visibility ? { ...layout, visibility } : layout;
   const source = maplibreSource(layer.data);
   const definition: MaplibreLayerDefinition = {
-    id: layer.id,
+    id,
     type,
     source,
     ...(resolvedLayout ? { layout: resolvedLayout } : {}),
     paint,
   };
-  const subLayer: MaplibreSubLayer = {
+  return {
     layer: definition,
     structure: {
       type,
@@ -249,7 +244,6 @@ function makeProjection(
     paint,
     data: layer.data,
   };
-  return { layers: [subLayer] };
 }
 
 function opacityPaint(property: string, encoding: NumberEncoding | undefined): Record<string, unknown> {
