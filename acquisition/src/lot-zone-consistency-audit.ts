@@ -36,6 +36,8 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { exists, getBytes, parseFeatureCollectionBuffer, s3Client } from "./lib/s3.js";
 import type { S3Client } from "@aws-sdk/client-s3";
+import { pointToPolygonsBoundaryMeters } from "./lib/point-polygon-distance.js";
+import { GEOMETRY_GRAIN_FIELD, type GeometryGrain } from "./lib/zonage-proof.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, "..", "..");
@@ -200,30 +202,119 @@ export function lotCentroidOutsideAllServedZones(
   return true;
 }
 
+/**
+ * SPEC_COL2_COHERENCE_AUDIT (ratifié, geo-jointures owner du dossier+spec ; geo-cond
+ * → owner du chiffre) — bandes de cohérence lot↔zone par DISTANCE métrique du
+ * centroïde du lot à sa zone ASSIGNÉE (indépendante ; on NE ré-assigne PAS).
+ *
+ *   d ≤ 10 m (COHERENCE_TOLERANCE_M)  → cohérent (absorbe le bruit CRS/bord/aire-majorité)
+ *   d > 10 m                          → MISMATCH (numérateur col-2)
+ *   d > 50 m (HARD_RESIDUE_M)         → résidu dur — SOUS-ENSEMBLE du mismatch,
+ *                                       TOUJOURS affiché à côté (breakout), JAMAIS soustrait
+ *
+ * Q1 (jointures tranche) : le résidu >50 m COMPTE dans `mismatch` — l'EXCLURE le
+ * masquerait (des erreurs dures paraîtraient cohérentes) = gaming. Il est reporté
+ * EN PLUS comme `residue_hard`, jamais À LA PLACE.
+ *   ⚠ Divergence de formulation signalée à geo-cond (qui présente le chiffre à
+ *   l'owner) : geo-cond a écrit « résidu EXCLU du % » ; jointures, owner de la spec,
+ *   tranche « INCLUS + breakout ». Les deux invoquent le même invariant anti-gaming
+ *   « le chiffre ne peut jamais masquer le résidu » ; la lecture d'inclusion est la
+ *   seule qui empêche réellement le masquage. Implémenté = jointures.
+ *
+ * Q2 (jointures) : sur grain servi `evaluation-unit` (UEV), un lot hors de TOUTE
+ * zone (`outside_all`) → UNKNOWN : cohérence indéterminable (lot hors trame UEV),
+ * exclu du numérateur ET du dénominateur — ni mismatch ni N-A. Grain absent ⇒
+ * défaut `zone-polygon` (conservateur, anti-invention : jamais d'UNKNOWN fabriqué ;
+ * `outside_all` reste alors un vrai mismatch).
+ */
+export const COHERENCE_TOLERANCE_M = 10;
+export const HARD_RESIDUE_M = 50;
+
+export type Col2Band = "coherent" | "mismatch" | "unknown_eval_unit";
+
+export function classifyCol2(params: {
+  insideAssigned: boolean;
+  distanceToAssignedM: number; // mètres ; 0 si insideAssigned
+  outsideAllServedZones: boolean;
+  evaluationUnitGrain: boolean;
+}): { band: Col2Band; residueHard: boolean } {
+  const { insideAssigned, distanceToAssignedM, outsideAllServedZones, evaluationUnitGrain } = params;
+  if (insideAssigned) return { band: "coherent", residueHard: false };
+  // Grain UEV + hors de TOUTE zone : cohérence indéterminable → UNKNOWN (prioritaire
+  // sur la tolérance : un lot hors trame UEV n'est pas « proche de sa zone », il est
+  // hors grille — on ne fabrique pas de cohérence).
+  if (outsideAllServedZones && evaluationUnitGrain) return { band: "unknown_eval_unit", residueHard: false };
+  if (distanceToAssignedM <= COHERENCE_TOLERANCE_M) return { band: "coherent", residueHard: false };
+  return { band: "mismatch", residueHard: distanceToAssignedM > HARD_RESIDUE_M };
+}
+
+/** Médiane (interpolée paire) d'une liste — null si vide. Diagnostic « distance des ratés ». */
+function median(values: number[]): number | null {
+  if (!values.length) return null;
+  const sorted = [...values].sort((a, b) => a - b);
+  const mid = sorted.length >> 1;
+  const m = sorted.length % 2 ? sorted[mid]! : (sorted[mid - 1]! + sorted[mid]!) / 2;
+  return Math.round(m * 100) / 100;
+}
+
+/** Grain servi de la ville = grain des features zonage (uniforme par collection). */
+function detectServedGrain(
+  zones: ReadonlyArray<{ properties?: Record<string, unknown> | null }>,
+): GeometryGrain | "absent" | "mixed" {
+  const seen = new Set<string>();
+  for (const z of zones) {
+    const g = z.properties?.[GEOMETRY_GRAIN_FIELD];
+    if (typeof g === "string" && g.trim()) seen.add(g.trim());
+  }
+  if (seen.size === 0) return "absent";
+  if (seen.size === 1) return [...seen][0] as GeometryGrain;
+  return "mixed";
+}
+
+interface Col2Example {
+  no_lot: string;
+  assigned: string;
+  distance_m: number;
+  band: "mismatch" | "residue_hard";
+  actual: string[];
+}
+
 interface CityReport {
   slug: string;
+  grain: GeometryGrain | "absent" | "mixed"; // grain servi détecté (geometry_grain)
   lots: number;
-  assigned: number;
-  matched: number;
-  misassigned: number;
-  outside_all: number;
-  unassigned: number;
-  mismatch_pct: number; // (misassigned+outside_all)/assigned
-  examples: Array<{ no_lot: string; assigned: string; actual: string[] }>;
+  assigned: number; // lot avec code_zone ET centroïde exploitable
+  unassigned: number; // sans code / géométrie inexploitable — EXCLU
+  unknown_eval_unit: number; // outside_all sur grain evaluation-unit — EXCLU du num ET dénom
+  denom: number; // assigned - unknown_eval_unit
+  coherent: number; // d ≤ 10 m
+  mismatch: number; // d > 10 m (INCLUT residue_hard)
+  residue_hard: number; // d > 50 m (SOUS-ENSEMBLE de mismatch, breakout)
+  outside_all: number; // diagnostic géométrie-suspecte : lots EN MISMATCH hors de TOUTE zone servie (⊆ mismatch)
+  mismatch_pct: number; // mismatch / denom  (résidu INCLUS — SPEC §4 anti-gaming)
+  residue_hard_pct: number; // residue_hard / denom (breakout, toujours affiché)
+  off_median_m: number | null; // médiane distance des lots NON strictement contenus (diagnostic)
+  examples: Col2Example[];
   note?: string;
 }
 
 interface ScaleCityReport {
   slug: string;
+  grain: GeometryGrain | "absent" | "mixed";
   lots: number;
   assigned: number;
-  matched: number;
-  misassigned: number;
-  outside_all: number;
   unassigned: number;
+  unknown_eval_unit: number;
+  denom: number;
+  coherent: number;
+  mismatch: number;
+  residue_hard: number;
+  outside_all: number;
   mismatch_pct: number | null;
-  status: "measured" | "inconclusive_zero_assigned" | "not_measured";
-  examples: Array<{ no_lot: string; assigned: string; actual: string[] }>;
+  residue_hard_pct: number | null;
+  off_median_m: number | null;
+  status: "measured" | "inconclusive_zero_denom" | "not_measured";
+  examples: Col2Example[];
 }
 
 interface ScaleReport {
@@ -253,11 +344,15 @@ interface ScaleReport {
   totals: {
     lots: number;
     assigned: number;
-    matched: number;
-    misassigned: number;
-    outside_all: number;
     unassigned: number;
+    unknown_eval_unit: number;
+    denom: number;
+    coherent: number;
+    mismatch: number;
+    residue_hard: number;
+    outside_all: number;
     weighted_mismatch_pct: number | null;
+    weighted_residue_hard_pct: number | null;
     median_city_mismatch_pct: number | null;
     p90_city_mismatch_pct: number | null;
   };
@@ -265,19 +360,38 @@ interface ScaleReport {
     rule: string;
     complete_under_5pct: number;
     incomplete_at_or_over_5pct: number;
-    inconclusive_zero_assigned: number;
+    cities_with_hard_residue: number;
+    inconclusive_zero_denom: number;
     not_measured: number;
     coverage_min_for_kpi: number;
     coverage_reached: number;
   };
   distribution: Array<{ band: string; cities: number; lots_assigned: number }>;
-  top20_worst_pct: Array<{ slug: string; mismatch_pct: number; assigned: number; misassigned: number; outside_all: number; unassigned: number; lots: number; examples: ScaleCityReport["examples"] }>;
-  top20_worst_pct_min200assigned: Array<{ slug: string; mismatch_pct: number; assigned: number; misassigned: number; outside_all: number; unassigned: number; lots: number; examples: ScaleCityReport["examples"] }>;
-  top20_worst_volume: Array<{ slug: string; mismatch_pct: number; assigned: number; misassigned: number; outside_all: number; unassigned: number; lots: number }>;
-  inconclusive_zero_assigned_slugs: Array<{ slug: string; lots: number; unassigned: number }>;
-  degenerate_small_denominator: Array<{ slug: string; mismatch_pct: number; assigned: number; lots: number; unassigned: number }>;
+  top20_worst_pct: Array<ScaleRankRow>;
+  top20_worst_pct_min200assigned: Array<ScaleRankRow>;
+  top20_worst_volume: Array<Omit<ScaleRankRow, "examples">>;
+  top20_worst_residue_hard: Array<Omit<ScaleRankRow, "examples">>;
+  inconclusive_zero_denom_slugs: Array<{ slug: string; lots: number; unassigned: number; unknown_eval_unit: number }>;
+  degenerate_small_denominator: Array<{ slug: string; mismatch_pct: number; denom: number; lots: number; unassigned: number }>;
   not_measured: Array<{ slug: string; error: string }>;
   cities: ScaleCityReport[];
+}
+
+interface ScaleRankRow {
+  slug: string;
+  grain: GeometryGrain | "absent" | "mixed";
+  mismatch_pct: number;
+  residue_hard_pct: number;
+  denom: number;
+  assigned: number;
+  mismatch: number;
+  residue_hard: number;
+  outside_all: number;
+  unknown_eval_unit: number;
+  unassigned: number;
+  lots: number;
+  off_median_m: number | null;
+  examples: Col2Example[];
 }
 
 async function loadFC(s3: S3Client, keys: string[]): Promise<Feature[] | null> {
@@ -292,8 +406,9 @@ async function loadFC(s3: S3Client, keys: string[]): Promise<Feature[] | null> {
 
 async function auditCity(s3: S3Client, slug: string, exampleLimit: number): Promise<CityReport> {
   const base: CityReport = {
-    slug, lots: 0, assigned: 0, matched: 0, misassigned: 0, outside_all: 0,
-    unassigned: 0, mismatch_pct: 0, examples: [],
+    slug, grain: "absent", lots: 0, assigned: 0, unassigned: 0, unknown_eval_unit: 0,
+    denom: 0, coherent: 0, mismatch: 0, residue_hard: 0, outside_all: 0,
+    mismatch_pct: 0, residue_hard_pct: 0, off_median_m: null, examples: [],
   };
   const [zones, lots] = await Promise.all([
     loadFC(s3, [
@@ -307,6 +422,12 @@ async function auditCity(s3: S3Client, slug: string, exampleLimit: number): Prom
   ]);
   if (!zones) { base.note = "qc-zonage non servi"; return base; }
   if (!lots) { base.note = "qc-lots non servi"; return base; }
+
+  const detected = detectServedGrain(zones);
+  base.grain = detected;
+  // Q2 : evaluation-unit → outside_all=UNKNOWN. Défaut conservateur pour absent/mixed
+  // (jamais d'UNKNOWN fabriqué) : seul un grain UEV pur active la règle.
+  const evaluationUnitGrain = detected === "evaluation-unit";
 
   const zoneIndex = new Map<string, Poly[]>();
   for (const z of zones) {
@@ -327,26 +448,54 @@ async function auditCity(s3: S3Client, slug: string, exampleLimit: number): Prom
     return "?";
   };
 
+  const offDistances: number[] = []; // distances des lots NON strictement contenus
   for (const lot of lots) {
     base.lots++;
     const code = assignedCode(lot.properties);
     if (!code) { base.unassigned++; continue; }
-    base.assigned++;
     const c = lotCentroid(lot.geometry);
-    if (!c) { base.unassigned++; base.assigned--; continue; }
-    if (inCode(c, zoneIndex.get(code))) { base.matched++; continue; }
-    // hors du code assigné → cherche le(s) code(s) réel(s)
+    if (!c) { base.unassigned++; continue; }
+    base.assigned++;
+    const assignedPolys = zoneIndex.get(code);
+    const insideAssigned = inCode(c, assignedPolys);
+    let distance = 0;
+    let outsideAll = false;
     const actual: string[] = [];
-    for (const [zc, polys] of zoneIndex) if (zc !== code && inCode(c, polys)) actual.push(zc);
-    if (actual.length) {
-      base.misassigned++;
-      if (base.examples.length < exampleLimit) base.examples.push({ no_lot: noLotOf(lot.properties), assigned: code, actual: actual.slice(0, 3) });
-    } else {
-      base.outside_all++;
-      if (base.examples.length < exampleLimit) base.examples.push({ no_lot: noLotOf(lot.properties), assigned: code, actual: [] });
+    if (!insideAssigned) {
+      // distance métrique (ENU local) au bord de la zone ASSIGNÉE — jamais de ré-assignation
+      distance = assignedPolys ? pointToPolygonsBoundaryMeters(c, assignedPolys) : Infinity;
+      offDistances.push(Number.isFinite(distance) ? distance : HARD_RESIDUE_M + 1);
+      // codes réels contenant le centroïde (diagnostic + outside_all)
+      for (const [zc, polys] of zoneIndex) if (zc !== code && inCode(c, polys)) actual.push(zc);
+      outsideAll = actual.length === 0;
+    }
+    const { band, residueHard } = classifyCol2({
+      insideAssigned,
+      distanceToAssignedM: distance,
+      outsideAllServedZones: outsideAll,
+      evaluationUnitGrain,
+    });
+    if (band === "coherent") { base.coherent++; continue; }
+    if (band === "unknown_eval_unit") { base.unknown_eval_unit++; continue; }
+    base.mismatch++;
+    if (residueHard) base.residue_hard++;
+    // `outside_all` = signal géométrie-suspecte : lot EN MISMATCH dont le centroïde
+    // est hors de TOUTE zone servie (⊆ mismatch → ratio de la garde toujours ≤ 1).
+    if (outsideAll) base.outside_all++;
+    if (base.examples.length < exampleLimit) {
+      base.examples.push({
+        no_lot: noLotOf(lot.properties),
+        assigned: code,
+        distance_m: Number.isFinite(distance) ? Math.round(distance * 10) / 10 : -1,
+        band: residueHard ? "residue_hard" : "mismatch",
+        actual: actual.slice(0, 3),
+      });
     }
   }
-  base.mismatch_pct = base.assigned ? Math.round(((base.misassigned + base.outside_all) / base.assigned) * 10000) / 100 : 0;
+  base.denom = base.assigned - base.unknown_eval_unit;
+  base.mismatch_pct = base.denom ? Math.round((base.mismatch / base.denom) * 10000) / 100 : 0;
+  base.residue_hard_pct = base.denom ? Math.round((base.residue_hard / base.denom) * 10000) / 100 : 0;
+  base.off_median_m = median(offDistances);
   return base;
 }
 
@@ -383,19 +532,22 @@ function percentileNearestRank(values: readonly number[], percentile: number): n
 
 function scaleMethod(): Record<string, unknown> {
   return {
-    tool: "acquisition/src/lot-zone-consistency-audit.ts (auditCity, réutilisé tel quel)",
+    spec: "SPEC_COL2_COHERENCE_AUDIT (ratifié ; owner dossier+spec = geo-jointures ; owner chiffre = geo-cond)",
+    tool: "acquisition/src/lot-zone-consistency-audit.ts (auditCity, banding distance)",
     runner: "une municipalité à la fois, checkpoint JSON atomique après chaque ville (reprise idempotente)",
-    test: "centroïde shoelace du plus grand anneau du lot -> point-in-polygon (avec trous) contre les polygones du code_zone ASSIGNÉ; layout servi nested avant flat",
-    classes: {
-      matched: "centroïde dans un polygone du code assigné",
-      misassigned: "centroïde hors du code assigné mais DANS un autre code servi",
-      outside_all: "centroïde hors de TOUTE zone servie",
+    metric: "distance MÈTRES du centroïde (shoelace du plus grand anneau du lot) au BORD de sa zone ASSIGNÉE — ENU local EPSG:4326→mètres (cos(lat)) ; on NE ré-assigne PAS (assignation aire-majorité servie inchangée) ; layout servi nested avant flat",
+    bands: {
+      coherent: `d ≤ ${COHERENCE_TOLERANCE_M} m (inclut strictement-contenu ; absorbe bruit CRS/bord/aire-majorité)`,
+      mismatch: `d > ${COHERENCE_TOLERANCE_M} m — numérateur col-2`,
+      residue_hard: `d > ${HARD_RESIDUE_M} m — SOUS-ENSEMBLE de mismatch, breakout TOUJOURS affiché, jamais soustrait (SPEC §4 anti-gaming)`,
+      unknown_eval_unit: "grain servi evaluation-unit + outside_all → cohérence indéterminable — EXCLU du num ET dénom",
       unassigned: "lot sans code_zone (ou géométrie inexploitable) — EXCLU du dénominateur",
     },
-    denominator: "mismatch_pct = (misassigned + outside_all) / assigned",
+    denominator: "mismatch_pct = mismatch / (assigned − unknown_eval_unit) ; residue_hard reporté EN PLUS",
+    grain: "geometry_grain servi (zone-polygon | evaluation-unit | dissolved-zone) ; absent/mixed ⇒ défaut zone-polygon (jamais d'UNKNOWN fabriqué)",
     limits: [
-      "le centroïde est un proxy premier ordre : un lot fin/long à cheval sur deux zones peut être compté à tort (candidats, pas verdicts)",
-      "une ville dont TOUS les lots sont unassigned a assigned=0 : le mismatch n'est PAS calculable (classée 'non concluante', pas 0 %)",
+      "le centroïde est un proxy premier ordre : un lot fin/long à cheval peut être compté à tort (candidats, pas verdicts)",
+      "une ville dont denom=0 (tout unassigned/unknown_eval_unit) n'a PAS de mismatch calculable (classée 'non concluante', pas 0 %)",
       "aucune écriture S3, aucun dépôt : mesure en lecture seule de l'univers SERVI",
     ],
     io: "LECTURE SEULE (S3 GET/LIST). Aucun PUT, aucun fold, aucune donnée servie modifiée.",
@@ -403,16 +555,22 @@ function scaleMethod(): Record<string, unknown> {
 }
 
 function scaleCity(city: CityReport): ScaleCityReport {
-  const status = city.assigned === 0 ? "inconclusive_zero_assigned" : "measured";
+  const status = city.denom === 0 ? "inconclusive_zero_denom" : "measured";
   return {
     slug: city.slug,
+    grain: city.grain,
     lots: city.lots,
     assigned: city.assigned,
-    matched: city.matched,
-    misassigned: city.misassigned,
-    outside_all: city.outside_all,
     unassigned: city.unassigned,
+    unknown_eval_unit: city.unknown_eval_unit,
+    denom: city.denom,
+    coherent: city.coherent,
+    mismatch: city.mismatch,
+    residue_hard: city.residue_hard,
+    outside_all: city.outside_all,
     mismatch_pct: status === "measured" ? city.mismatch_pct : null,
+    residue_hard_pct: status === "measured" ? city.residue_hard_pct : null,
+    off_median_m: city.off_median_m,
     status,
     examples: city.examples,
   };
@@ -420,8 +578,9 @@ function scaleCity(city: CityReport): ScaleCityReport {
 
 function notMeasuredCity(slug: string): ScaleCityReport {
   return {
-    slug, lots: 0, assigned: 0, matched: 0, misassigned: 0, outside_all: 0,
-    unassigned: 0, mismatch_pct: null, status: "not_measured", examples: [],
+    slug, grain: "absent", lots: 0, assigned: 0, unassigned: 0, unknown_eval_unit: 0,
+    denom: 0, coherent: 0, mismatch: 0, residue_hard: 0, outside_all: 0,
+    mismatch_pct: null, residue_hard_pct: null, off_median_m: null, status: "not_measured", examples: [],
   };
 }
 
@@ -432,31 +591,33 @@ function compareCities(left: ScaleCityReport, right: ScaleCityReport): number {
   return right.mismatch_pct - left.mismatch_pct || left.slug.localeCompare(right.slug);
 }
 
-function worstPct(city: ScaleCityReport): ScaleReport["top20_worst_pct"][number] {
-  if (city.mismatch_pct === null) throw new Error(`${city.slug}: mismatch_pct absent du classement`);
+function rankRow(city: ScaleCityReport): ScaleRankRow {
+  if (city.mismatch_pct === null || city.residue_hard_pct === null) throw new Error(`${city.slug}: mismatch_pct absent du classement`);
   return {
     slug: city.slug,
+    grain: city.grain,
     mismatch_pct: city.mismatch_pct,
+    residue_hard_pct: city.residue_hard_pct,
+    denom: city.denom,
     assigned: city.assigned,
-    misassigned: city.misassigned,
+    mismatch: city.mismatch,
+    residue_hard: city.residue_hard,
     outside_all: city.outside_all,
+    unknown_eval_unit: city.unknown_eval_unit,
     unassigned: city.unassigned,
     lots: city.lots,
+    off_median_m: city.off_median_m,
     examples: city.examples,
   };
 }
 
-function worstVolume(city: ScaleCityReport): ScaleReport["top20_worst_volume"][number] {
-  if (city.mismatch_pct === null) throw new Error(`${city.slug}: mismatch_pct absent du classement`);
-  return {
-    slug: city.slug,
-    mismatch_pct: city.mismatch_pct,
-    assigned: city.assigned,
-    misassigned: city.misassigned,
-    outside_all: city.outside_all,
-    unassigned: city.unassigned,
-    lots: city.lots,
-  };
+function worstPct(city: ScaleCityReport): ScaleRankRow {
+  return rankRow(city);
+}
+
+function worstVolume(city: ScaleCityReport): Omit<ScaleRankRow, "examples"> {
+  const { examples: _examples, ...rest } = rankRow(city);
+  return rest;
 }
 
 function distribution(conclusive: readonly ScaleCityReport[]): ScaleReport["distribution"] {
@@ -476,7 +637,7 @@ function distribution(conclusive: readonly ScaleCityReport[]): ScaleReport["dist
     const index = pct === 0 ? 0 : pct <= 1 ? 1 : pct <= 2 ? 2 : pct < 5 ? 3 : pct < 10 ? 4 : pct < 25 ? 5 : pct < 50 ? 6 : 7;
     const band = bands[index]!;
     band.cities++;
-    band.lots_assigned += city.assigned;
+    band.lots_assigned += city.denom;
   }
   return bands;
 }
@@ -493,20 +654,24 @@ function buildScaleReport(
   const pending = auditable.filter((slug) => !cities.has(slug));
   const measured = rows.filter((city) => city.status !== "not_measured");
   const conclusive = rows.filter((city) => city.status === "measured");
-  const inconclusive = rows.filter((city) => city.status === "inconclusive_zero_assigned");
+  const inconclusive = rows.filter((city) => city.status === "inconclusive_zero_denom");
   const notMeasured = rows.filter((city) => city.status === "not_measured");
   const totals = measured.reduce((acc, city) => ({
     lots: acc.lots + city.lots,
     assigned: acc.assigned + city.assigned,
-    matched: acc.matched + city.matched,
-    misassigned: acc.misassigned + city.misassigned,
-    outside_all: acc.outside_all + city.outside_all,
     unassigned: acc.unassigned + city.unassigned,
-  }), { lots: 0, assigned: 0, matched: 0, misassigned: 0, outside_all: 0, unassigned: 0 });
+    unknown_eval_unit: acc.unknown_eval_unit + city.unknown_eval_unit,
+    denom: acc.denom + city.denom,
+    coherent: acc.coherent + city.coherent,
+    mismatch: acc.mismatch + city.mismatch,
+    residue_hard: acc.residue_hard + city.residue_hard,
+    outside_all: acc.outside_all + city.outside_all,
+  }), { lots: 0, assigned: 0, unassigned: 0, unknown_eval_unit: 0, denom: 0, coherent: 0, mismatch: 0, residue_hard: 0, outside_all: 0 });
   const pctValues = conclusive.map((city) => city.mismatch_pct!).sort((left, right) => left - right);
   const ranked = [...conclusive].sort(compareCities);
   const complete = conclusive.filter((city) => city.mismatch_pct! < 5);
   const incomplete = conclusive.filter((city) => city.mismatch_pct! >= 5);
+  const withHardResidue = conclusive.filter((city) => city.residue_hard > 0);
   const listedErrors = notMeasured.map((city) => ({ slug: city.slug, error: errors.get(city.slug) ?? "erreur non documentée" })).sort((left, right) => left.slug.localeCompare(right.slug));
   return {
     generatedAt,
@@ -524,29 +689,35 @@ function buildScaleReport(
     },
     totals: {
       ...totals,
-      weighted_mismatch_pct: totals.assigned ? rounded(((totals.misassigned + totals.outside_all) / totals.assigned) * 100) : null,
+      weighted_mismatch_pct: totals.denom ? rounded((totals.mismatch / totals.denom) * 100) : null,
+      weighted_residue_hard_pct: totals.denom ? rounded((totals.residue_hard / totals.denom) * 100) : null,
       median_city_mismatch_pct: percentileNearestRank(pctValues, 0.5),
       p90_city_mismatch_pct: percentileNearestRank(pctValues, 0.9),
     },
     kpi_threshold_5pct: {
-      rule: "ville complete ssi mismatch_pct < 5 % (SPEC_PORTFOLIO_REPORT.md)",
+      rule: "ville complete ssi mismatch_pct < 5 % (mismatch = d>10m, résidu INCLUS) ; residue_hard reporté séparément (SPEC §4)",
       complete_under_5pct: complete.length,
       incomplete_at_or_over_5pct: incomplete.length,
-      inconclusive_zero_assigned: inconclusive.length,
+      cities_with_hard_residue: withHardResidue.length,
+      inconclusive_zero_denom: inconclusive.length,
       not_measured: notMeasured.length,
       coverage_min_for_kpi: 553,
       coverage_reached: measured.length,
     },
     distribution: distribution(conclusive),
     top20_worst_pct: ranked.slice(0, 20).map(worstPct),
-    top20_worst_pct_min200assigned: ranked.filter((city) => city.assigned >= 200).slice(0, 20).map(worstPct),
+    top20_worst_pct_min200assigned: ranked.filter((city) => city.denom >= 200).slice(0, 20).map(worstPct),
     top20_worst_volume: [...conclusive]
-      .sort((left, right) => (right.misassigned + right.outside_all) - (left.misassigned + left.outside_all) || left.slug.localeCompare(right.slug))
+      .sort((left, right) => right.mismatch - left.mismatch || left.slug.localeCompare(right.slug))
       .slice(0, 20)
       .map(worstVolume),
-    inconclusive_zero_assigned_slugs: inconclusive.map((city) => ({ slug: city.slug, lots: city.lots, unassigned: city.unassigned })),
-    degenerate_small_denominator: conclusive.filter((city) => city.assigned < 200 && city.mismatch_pct! >= 5)
-      .map((city) => ({ slug: city.slug, mismatch_pct: city.mismatch_pct!, assigned: city.assigned, lots: city.lots, unassigned: city.unassigned })),
+    top20_worst_residue_hard: [...conclusive]
+      .sort((left, right) => right.residue_hard - left.residue_hard || left.slug.localeCompare(right.slug))
+      .slice(0, 20)
+      .map(worstVolume),
+    inconclusive_zero_denom_slugs: inconclusive.map((city) => ({ slug: city.slug, lots: city.lots, unassigned: city.unassigned, unknown_eval_unit: city.unknown_eval_unit })),
+    degenerate_small_denominator: conclusive.filter((city) => city.denom < 200 && city.mismatch_pct! >= 5)
+      .map((city) => ({ slug: city.slug, mismatch_pct: city.mismatch_pct!, denom: city.denom, lots: city.lots, unassigned: city.unassigned })),
     not_measured: listedErrors,
     cities: rows,
   };
@@ -684,12 +855,12 @@ async function main(argv: readonly string[]): Promise<void> {
     try {
       r = await auditCity(s3, slug, exampleLimit);
     } catch (e) {
-      reports.push({ slug, lots: 0, assigned: 0, matched: 0, misassigned: 0, outside_all: 0, unassigned: 0, mismatch_pct: 0, examples: [], note: `err: ${e instanceof Error ? e.message : String(e)}` });
+      reports.push({ slug, grain: "absent", lots: 0, assigned: 0, unassigned: 0, unknown_eval_unit: 0, denom: 0, coherent: 0, mismatch: 0, residue_hard: 0, outside_all: 0, mismatch_pct: 0, residue_hard_pct: 0, off_median_m: null, examples: [], note: `err: ${e instanceof Error ? e.message : String(e)}` });
       continue;
     }
     reports.push(r);
     if (r.note) missing++;
-    else if (r.misassigned + r.outside_all > 0) { flagged++; if (verbose) console.log(`FLAG ${slug} mismatch=${r.mismatch_pct}% (misassigned=${r.misassigned} outside=${r.outside_all}/${r.assigned}) ex: ${r.examples.slice(0, 3).map((e) => `${e.no_lot}:${e.assigned}→${e.actual.join("|") || "∅"}`).join(", ")}`); }
+    else if (r.mismatch > 0) { flagged++; if (verbose) console.log(`FLAG ${slug} mismatch=${r.mismatch_pct}% (mismatch=${r.mismatch} résidu>50m=${r.residue_hard}/${r.denom}, grain=${r.grain}, médiane-ratés=${r.off_median_m}m) ex: ${r.examples.slice(0, 3).map((e) => `${e.no_lot}:${e.assigned}@${e.distance_m}m→${e.actual.join("|") || "∅"}`).join(", ")}`); }
     else clean++;
   }
   reports.sort((a, b) => b.mismatch_pct - a.mismatch_pct || a.slug.localeCompare(b.slug));
