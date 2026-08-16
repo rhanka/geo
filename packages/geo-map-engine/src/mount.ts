@@ -33,6 +33,7 @@ import type {
   MaplibreToolTarget,
 } from "./maplibre-tool-context.js";
 import { createMaplibreLayerProjector } from "./paint-compiler.js";
+import { geometryBounds, mapRenderedFeatureHit } from "./feature-query.js";
 import type { GeoLayerSpec, LayerData } from "./layers.js";
 import type { GeoBounds, GeoFeatureHit, GeoMapHandle, MountGeoMap } from "./surface.js";
 import {
@@ -42,7 +43,6 @@ import {
 import type { GeoViewport } from "./viewport.js";
 
 const PENDING_3D = "integration-pending — 3d renderer";
-const PENDING_W8 = "integration-pending — W8";
 type MapContainer = Exclude<MapOptions["container"], string>;
 type InlineLayerData = Exclude<LayerData, { sourceRef: string }>;
 type MountRendererOptions = Omit<
@@ -74,9 +74,11 @@ export const mount: MountGeoMap<MapContainer> = (host, options): GeoMapHandle =>
   const initialViewport = copyViewport(options.viewport);
   let currentBasemap = options.basemap;
   let currentLayers = options.layers;
+  let currentSyncLayers: readonly GeoLayerSpec[] = [];
   let currentTokens = options.tokens;
   let currentViewport = copyViewport(options.viewport);
   let reconciler: DeclarativeLayerReconciler | undefined;
+  let syncReconciler: DeclarativeLayerReconciler | undefined;
   let basemapController: MaplibreBasemapController | undefined;
   let viewportController: MaplibreViewportController | undefined;
   let ready = false;
@@ -85,22 +87,27 @@ export const mount: MountGeoMap<MapContainer> = (host, options): GeoMapHandle =>
   const assertActive = (): void => {
     if (destroyed) throw new Error("Geo map handle is destroyed");
   };
-  const rejectW8 = (): never => {
-    throw new Error(PENDING_W8);
-  };
   const makeReconciler = (): DeclarativeLayerReconciler => new DeclarativeLayerReconciler(target, {
     layerIdPrefix: "layers/",
     project: createMaplibreLayerProjector(currentTokens),
   });
+  const makeSyncReconciler = (): DeclarativeLayerReconciler => new DeclarativeLayerReconciler(target, {
+    layerIdPrefix: "sync/",
+    project: createMaplibreLayerProjector(currentTokens),
+  });
   const makeBasemapController = (): MaplibreBasemapController => new MaplibreBasemapController(target, {
     tokens: currentTokens,
-    reinjectOverlays: () => reconciler?.reinjectAfterStyle(),
+    reinjectOverlays: () => {
+      reconciler?.reinjectAfterStyle();
+      syncReconciler?.reinjectAfterStyle();
+    },
   });
   const applyInitialState = (): void => {
     if (destroyed) return;
 
     ready = true;
     reconciler = makeReconciler();
+    syncReconciler = makeSyncReconciler();
     basemapController = makeBasemapController();
     viewportController = new MaplibreViewportController(target, {
       initialViewport,
@@ -110,6 +117,7 @@ export const mount: MountGeoMap<MapContainer> = (host, options): GeoMapHandle =>
       },
     });
     reconciler.setLayers(currentLayers);
+    syncReconciler.setLayers(currentSyncLayers);
     map.once("idle", () => {
       if (!destroyed) options.onReady?.();
     });
@@ -157,8 +165,10 @@ export const mount: MountGeoMap<MapContainer> = (host, options): GeoMapHandle =>
       // W1 deliberately owns an immutable projector. Reconstructing it is the
       // W2 recompile boundary, then the same declaration reapplies all paint.
       reconciler = makeReconciler();
+      syncReconciler = makeSyncReconciler();
       basemapController = makeBasemapController();
       reconciler.setLayers(currentLayers);
+      syncReconciler.setLayers(currentSyncLayers);
       basemapController.setBasemap(currentBasemap);
     },
     flyTo: (viewport) => {
@@ -189,9 +199,38 @@ export const mount: MountGeoMap<MapContainer> = (host, options): GeoMapHandle =>
       currentViewport = copyViewport(initialViewport);
       if (ready) viewportController?.setViewport(currentViewport);
     },
-    syncLayers: () => rejectW8(),
-    queryRenderedFeatures: () => rejectW8(),
-    getFeatureBoundary: () => rejectW8(),
+    syncLayers: (layers) => {
+      assertActive();
+      assertSyncLayers(layers);
+      currentSyncLayers = layers;
+      if (ready) syncReconciler?.setLayers(currentSyncLayers);
+    },
+    queryRenderedFeatures: () => {
+      assertActive();
+      if (!ready) return [];
+      return map.queryRenderedFeatures().flatMap((feature) => {
+        const hit = mapRenderedFeatureHit({
+          layerId: feature.layer.id,
+          properties: feature.properties,
+        }, activeLayers(currentLayers, currentSyncLayers));
+        return hit ? [hit] : [];
+      });
+    },
+    getFeatureBoundary: (layerId, featureId) => {
+      assertActive();
+      if (!ready) return null;
+      let boundary: GeoBounds | null = null;
+      for (const feature of map.queryRenderedFeatures()) {
+        const hit = mapRenderedFeatureHit({
+          layerId: feature.layer.id,
+          properties: feature.properties,
+        }, activeLayers(currentLayers, currentSyncLayers));
+        if (hit?.layerId === layerId && hit.featureId === featureId) {
+          boundary = mergeBounds(boundary, geometryBounds(feature.geometry));
+        }
+      }
+      return boundary;
+    },
     destroy: () => {
       if (destroyed) return;
       destroyed = true;
@@ -320,26 +359,40 @@ function readInteractiveHit(
   event: MapMouseEvent,
   interaction: "hover" | "select",
 ): GeoFeatureHit | null {
-  const layerById = new globalThis.Map<string, GeoLayerSpec>(layers.map((layer) => [layer.id, layer]));
   for (const feature of map.queryRenderedFeatures(event.point)) {
-    const layer = layerById.get(parentLayerId(feature.layer.id));
-    const interactivity = layer?.interactivity;
-    if (!interactivity || !interactivity[interaction]) continue;
-
-    const featureId = feature.properties?.[interactivity.idField];
-    if (typeof featureId !== "string" && typeof featureId !== "number") continue;
-    return {
-      layerId: layer.id,
-      featureId,
-      properties: feature.properties ?? {},
-    };
+    const hit = mapRenderedFeatureHit({
+      layerId: feature.layer.id,
+      properties: feature.properties,
+    }, layers, interaction);
+    if (hit) return hit;
   }
   return null;
 }
 
-function parentLayerId(layerId: string): string {
-  const separator = layerId.indexOf("::");
-  return separator === -1 ? layerId : layerId.slice(0, separator);
+function assertSyncLayers(layers: readonly GeoLayerSpec[]): void {
+  for (const layer of layers) {
+    if (!layer.id.startsWith("sync/")) {
+      throw new Error(`syncLayers only accepts IDs in the sync/ namespace: ${layer.id}`);
+    }
+  }
+}
+
+function activeLayers(
+  layers: readonly GeoLayerSpec[],
+  syncLayers: readonly GeoLayerSpec[],
+): readonly GeoLayerSpec[] {
+  return [...layers, ...syncLayers];
+}
+
+function mergeBounds(current: GeoBounds | null, next: GeoBounds | null): GeoBounds | null {
+  if (!current) return next;
+  if (!next) return current;
+  return {
+    west: Math.min(current.west, next.west),
+    south: Math.min(current.south, next.south),
+    east: Math.max(current.east, next.east),
+    north: Math.max(current.north, next.north),
+  };
 }
 
 function readCurrentViewport(map: Map, fallback: GeoViewport): GeoViewport {
