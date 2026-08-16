@@ -28,10 +28,14 @@ import { loadFC, polygonsOf, lotCentroid, inCode, assignedCode, type Poly } from
 import { projConstants } from "./lib/t1-zones.js";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
-const OUT = resolve(ROOT, "work/coverage/col2-boundary-tolerance-quantify-20260810.json");
 const ZONAGE_PREFIX = "normalized/ca-qc-zonage/";
 const LOTS_PREFIX = "normalized/qc-lots/";
-const SLUGS = ["saint-hyacinthe", "varennes", "ormstown"]; // cas propres (aire-maj vs v2 courante)
+// --slugs a,b,c pour un spot-check ad-hoc (validation scale col-2) ; défaut = les 3 GT.
+const slugArg = process.argv.indexOf("--slugs");
+const SLUGS = slugArg >= 0 && process.argv[slugArg + 1]
+  ? process.argv[slugArg + 1]!.split(",").map((s) => s.trim()).filter(Boolean)
+  : ["saint-hyacinthe", "varennes", "ormstown"]; // cas propres (aire-maj vs v2 courante)
+const OUT = resolve(ROOT, `work/coverage/col2-boundary-tolerance-quantify-${slugArg >= 0 ? "spotcheck" : "20260810"}.json`);
 const TOLERANCES_M = [0, 2, 5, 10, 25, 50];
 
 type Pt = [number, number];
