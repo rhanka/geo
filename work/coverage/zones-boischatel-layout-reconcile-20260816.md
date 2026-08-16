@@ -1,6 +1,28 @@
-# boischatel — réconciliation-layout capture-free : BLOQUÉ (STOP, aucune écriture S3)
+# boischatel — réconciliation-layout capture-free : EXECUTED option A
 
-**Date** : 2026-08-16 · **Statut** : **BLOCKED-STOP** · **Écritures S3** : AUCUNE (état servi inchangé, entièrement réversible par inaction)
+**Date** : 2026-08-16 · **Statut** : **EXECUTED-option-A** (2026-08-16T0503Z) — nested backupé + SUPPRIMÉ, geo-api sert désormais le flat.
+(Historique : d'abord **BLOCKED-STOP** ; geo-cond a ensuite LEVÉ « pas de delete-only » POUR CE CAS PRÉCIS — nested-affectation-null-prouvé-bug, backup réversible, scopé.)
+
+## Résolution (option A exécutée)
+
+- **Script** : `acquisition/src/_zones-boischatel-layout-reconcile-optA-20260816.ts --commit`
+  · **Record machine** : `work/coverage/zones-boischatel-layout-reconcile-optA-record-20260816.json`
+- **BACKUP D'ABORD (garde dure)** : tout le dossier nested (2 objets) copié vers `_replaced/` sous le stamp
+  `2026-08-16T0503Z`, **chaque backup VÉRIFIÉ** (exists + non-vide + JSON.parse OK ; la geojson servie = 17 feat
+  affectation) **AVANT tout delete** :
+  - `normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.geojson` (154523 o, 17 feat affectation)
+  - `normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.meta.json` (805 o)
+- **DELETE** : `qc-zonage-boischatel/qc-zonage-boischatel.geojson` + `…/qc-zonage-boischatel.meta.json` supprimés.
+- **VÉRIF post-delete** : préfixe nested **vide** (`exists==false`) ; **FLAT présent + intact** (55 feat / 55 codes réels / 0 vide).
+  geo-api sert désormais le **flat** (layout unique, comme amherst) → les 4072 hors-zone doivent se replier sur le vrai zonage.
+- **Anti-invention** : **aucune preuve v2 fabriquée** ; la provenance du flat reste `legacy-traceable` (v2-proof différée recalage — KPI séparé).
+  **Flat non touché.** Réversible via les backups `_replaced/`.
+
+---
+
+## Contexte initial (inspection, avant GO)
+
+**Écritures S3 (phase inspection)** : AUCUNE
 **Triage** : `work/coverage/zones-col2-source-triage-20260816.json` (2c741540) · **Scan layout** : `work/coverage/zones-layout-authority-scan-20260816.json` (3d1b3353)
 **Sonde inspection (read-only S3)** : `acquisition/src/_zones-col2-source-triage-20260816.ts` (EXIT 0, boischatel status=OK, 2026-08-16T04:51Z)
 
@@ -80,5 +102,7 @@ and report the blocker instead. »
 
 ## État final
 
-Objets servis **byte-inchangés** ; bug non modifié ; **aucune écriture / suppression / backup**. Réversible par
-inaction. La correction attend une décision du conducteur (A, B ou C).
+**Option A EXÉCUTÉE** (après GO geo-cond). Le dossier nested affectation-null a été **backupé (vérifié) puis
+supprimé** ; le **flat 55-zones est intact** et **geo-api le sert désormais** (layout unique). Le bug de
+served-layout-authority est **corrigé** capture-free, sans fabriquer de preuve v2. Réversible via `_replaced/`.
+La preuve v2 (recalage du plan 2014-976 Annexe I) reste différée — KPI séparé.
