@@ -129,6 +129,35 @@ renderer en direct (fix F6c).
   « porte 1 »). C'est l'unité que l'écho du viewport contrôlé DS (epsilon+throttle) vise, et que la démo 3D
   (§9) exerce. **Évolution geo-core = release cross-repo** (ownership à confirmer par geo-cond/owner).
 
+### 1.5.1 Convention de zoom normalisé — GRAVÉE *(validée par le spike 3D §9)*
+
+Le spike 3D (deck.gl, `spike/engine-3d-20260815 @931f27a6`) a prouvé le round-trip caméra 2D↔3D à
+**~7×10⁻¹⁵° (état)** / **5,5×10⁻¹² px (projection)** SOUS la convention exacte ci-dessous. §1.5 énonçait
+l'**exigence** ; cette convention en est la **NORME** — geler « il existe un zoom normalisé » sans la graver
+serait une invention (d'où le verdict **ROUGE-constructif** du gate au 1er run). Convention autoritaire :
+
+- **Centre** : CRS84 `[longitude, latitude]` (ordre lon/lat, WGS84, degrés décimaux).
+- **Projection** : WebMercator (EPSG:3857).
+- **Zoom** : taille du monde = **512 × 2^zoom pixels CSS** (tuile 512 px ; identique maplibre 2D et `MapView` deck 3D).
+- **Angles** : `bearing`/`pitch` en **degrés**. Domaines : `bearing ∈ [0, 360)` (normalisé mod 360),
+  `pitch ∈ [0, pitchMax]` — `pitchMax` = **capacité renderer** exposée par le seam (ex. ~60° maplibre 2D).
+- **Équivalence 3D (dérivée déterministe)** : altitude relative **1,5** (unités écran), **FOV = 2·atan(0.5/1.5)** ;
+  le zoom normalisé mappe la distance caméra ↔ emprise au sol.
+- **États neutralisés (hors contrat v1)** : **pas** de terrain, padding, roll, ni wrap horizontal. Leur entrée
+  au contrat est explicite + versionnée (non-breaking, §1.1 principe 4), jamais implicite.
+- **Domaine commun 2D/3D** : les deux renderers partagent `center/zoom/bearing/pitch` dans ces unités → un
+  `GeoViewport` est **transportable 2D↔3D sans changement de contrat**.
+
+**Round-trip = préservation de l'état COURANT (clarification §1.1.5 — correctif du gate).** Au `setRenderer`
+(2D↔3D), le moteur préserve le **viewport COURANT** : si l'appelant a fait `setViewport(vp3d)`, le retour
+vers 2D **conserve vp3d** (pitch/bearing portés par maplibre 2D dans leurs domaines) ; il ne **restaure
+JAMAIS** un viewport antérieur (ex. `initialViewport`). « Round-trip sans perte » (§1.1.5) = l'état courant
+traverse la frontière renderer **sans dérive**, PAS un retour à un état initial. Le test du gate assert
+`vpX → autre renderer → retour → vpX` (à tolérance `1e-7`° / `1 px`), **jamais** `vpX → vp_initial`.
+
+*(Non-gel : cette convention PRÉCISE §1.5, elle ne gèle pas §1. Gel toujours gaté sur le re-run CANONIQUE
+du gate — fixtures DS réelles + F7b theme-switch — vert, puis OK geo-cond→owner. §9.)*
+
 ### 1.6 Frontière `dataviz-core` (arbitrage E.3, tranché)
 Aujourd'hui la choroplèthe passe par `binsToStepExpression` = **expression maplibre** (non portable 3D).
 **Découpage tranché** : `dataviz-core` émet des **bins NEUTRES `{upTo, token}[]`** (la MATH de
@@ -223,6 +252,15 @@ prouvant qu'un renderer 3D **réel** (Cesium OU deck.gl) :
    changement de contrat**, dans les unités de zoom normalisé.
 Démo verte ⟹ le contrat §1 est prouvé satisfiable en 3D ⟹ **gel §1** ⟹ démarrage des lots §7. Démo rouge ⟹
 §1 corrigé avant tout gel (jamais de figement sur l'abstraction seule).
+
+**Historique du gate.** *1er run (2026-08-16, deck.gl, `spike/engine-3d-20260815 @931f27a6`)* = **ROUGE-constructif** :
+satisfiabilité 3D PROUVÉE — encodages neutres → accessors deck.gl (**zéro expression maplibre**), rôles via
+TokenMap, extrusion, render WebGL2 réel, round-trip caméra 2D↔3D à **~7×10⁻¹⁵°** — MAIS §1.5 « zoom normalisé »
+était sous-spécifié (convention à inventer). **Correction appliquée** : convention gravée en **§1.5.1** + sémantique
+round-trip clarifiée (préservation de l'état courant). Réserve du 1er run : données synthétisées (fixtures DS non
+lues, F7b non exercé). *Re-run CANONIQUE requis avant gel* : fixtures DS réelles (`geo-spike-fixtures.json`) +
+**F7b** (`setTokens` light→dark) + assertion round-trip corrigée DS (vp3d→2D→3D→vp3d). Vert au re-run ⟹ remontée
+geo-cond ⟹ gel geo-cond→owner. **§1 reste NON-GELÉ.**
 
 ---
 
