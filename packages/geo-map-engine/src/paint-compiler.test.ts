@@ -182,7 +182,7 @@ describe("paint compiler", () => {
       projectMaplibreLayer(
         { ...base, fill: { color: { by: "constant", token: "category1" } } },
         tokens,
-      ).layer,
+      ).layers[0]?.layer,
     ).toMatchObject({ type: "fill", paint: { "fill-color": "#4e79a7" } });
     expect(
       projectMaplibreLayer(
@@ -194,7 +194,7 @@ describe("paint compiler", () => {
           },
         },
         tokens,
-      ).layer,
+      ).layers[0]?.layer,
     ).toMatchObject({
       type: "line",
       paint: { "line-color": "#e2e8f0", "line-width": 2 },
@@ -209,7 +209,7 @@ describe("paint compiler", () => {
           },
         },
         tokens,
-      ).layer,
+      ).layers[0]?.layer,
     ).toMatchObject({
       type: "circle",
       paint: { "circle-color": "#f28e2b", "circle-radius": 5 },
@@ -221,7 +221,7 @@ describe("paint compiler", () => {
           label: { field: "category", color: { by: "constant", token: "category3" } },
         },
         tokens,
-      ).layer,
+      ).layers[0]?.layer,
     ).toMatchObject({
       type: "symbol",
       layout: { "text-field": ["get", "category"] },

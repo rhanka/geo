@@ -86,13 +86,15 @@ function project(layer: GeoLayerSpec): MaplibreLayerProjection {
   }
 
   return {
-    layer: { id: layer.id, type: "fill", source: `source/${layer.id}` },
-    structure: { type: "fill", source: sourceIdentity(layer.data) },
-    data: layer.data,
-    paint: {
-      "fill-color": layer.fill.color,
-      "fill-opacity": layer.fill.opacity ?? layer.opacity ?? null,
-    },
+    layers: [{
+      layer: { id: layer.id, type: "fill", source: `source/${layer.id}` },
+      structure: { type: "fill", source: sourceIdentity(layer.data) },
+      data: layer.data,
+      paint: {
+        "fill-color": layer.fill.color,
+        "fill-opacity": layer.fill.opacity ?? layer.opacity ?? null,
+      },
+    }],
   };
 }
 
