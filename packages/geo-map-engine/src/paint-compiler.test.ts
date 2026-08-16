@@ -38,7 +38,7 @@ const polygons: FeatureCollection = {
 class FakeMaplibreMap implements MaplibreLayerTarget {
   readonly layers = new Map<string, MaplibreLayerDefinition>();
 
-  addLayer(layer: MaplibreLayerDefinition): void {
+  addLayer(layer: MaplibreLayerDefinition, _beforeId?: string): void {
     this.layers.set(layer.id, layer);
   }
 
@@ -128,14 +128,27 @@ describe("paint compiler", () => {
     expect(compileColorEncoding(encoding, { ...tokens, category1: "#1d4ed8" })).toBe("#1d4ed8");
   });
 
-  it("should project complete choropleth and points layers through W1's injected projector", () => {
-    const layers: readonly GeoLayerSpec[] = [
+  it("should render the canonical DS payload as a choropleth fill and line plus points circle", () => {
+    const canonicalDsPayload: readonly GeoLayerSpec[] = [
       {
         id: "layers/density",
         kind: "choropleth",
         data: polygons,
-        fill: { color: { by: "constant", token: "category1" }, opacity: { by: "constant", value: 0.72 } },
-        outline: { color: { by: "constant", token: "border-subtle" } },
+        fill: {
+          color: {
+            by: "valueStep",
+            field: "density",
+            stops: [
+              { upTo: 10, token: "category1" },
+              { upTo: Number.POSITIVE_INFINITY, token: "category2" },
+            ],
+          },
+          opacity: { by: "constant", value: 0.72 },
+        },
+        outline: {
+          color: { by: "constant", token: "border-subtle" },
+          width: { by: "constant", value: 1 },
+        },
         extrusion: { heightField: "density", unit: "m" },
       },
       {
@@ -152,17 +165,22 @@ describe("paint compiler", () => {
       project: createMaplibreLayerProjector(tokens),
     });
 
-    reconciler.setLayers(layers);
+    reconciler.setLayers(canonicalDsPayload);
 
     expect(map.layers.get("layers/density")).toMatchObject({
       id: "layers/density",
       type: "fill",
       source: { type: "geojson", data: polygons },
       paint: {
-        "fill-color": "#4e79a7",
+        "fill-color": ["step", ["get", "density"], "#4e79a7", 10, "#f28e2b"],
         "fill-opacity": 0.72,
-        "fill-outline-color": "#e2e8f0",
       },
+    });
+    expect(map.layers.get("layers/density::outline")).toMatchObject({
+      id: "layers/density::outline",
+      type: "line",
+      source: { type: "geojson", data: polygons },
+      paint: { "line-color": "#e2e8f0", "line-width": 1 },
     });
     expect(map.layers.get("layers/signals")).toMatchObject({
       id: "layers/signals",
@@ -173,6 +191,11 @@ describe("paint compiler", () => {
         "circle-radius": ["interpolate", ["linear"], ["get", "size"], 0, 4, 10, 18],
       },
     });
+    expect([...map.layers.keys()]).toEqual([
+      "layers/density",
+      "layers/density::outline",
+      "layers/signals",
+    ]);
   });
 
   it("should project each supported geojson primitive to its MapLibre paint kind", () => {
@@ -224,6 +247,40 @@ describe("paint compiler", () => {
       ).layers[0]?.layer,
     ).toMatchObject({
       type: "symbol",
+      layout: { "text-field": ["get", "category"] },
+      paint: { "text-color": "#59a14f" },
+    });
+  });
+
+  it("should emit ordered, derived MapLibre layers for every declared geojson sub-spec", () => {
+    const projection = projectMaplibreLayer(
+      {
+        id: "layers/mixed",
+        kind: "geojson",
+        data: polygons,
+        fill: { color: { by: "constant", token: "category1" } },
+        outline: {
+          color: { by: "constant", token: "border-subtle" },
+          width: { by: "constant", value: 2 },
+        },
+        points: {
+          color: { by: "constant", token: "category2" },
+          radius: { by: "constant", value: 5 },
+        },
+        label: { field: "category", color: { by: "constant", token: "category3" } },
+      },
+      tokens,
+    );
+
+    expect(projection.layers.map(({ layer }) => [layer.id, layer.type])).toEqual([
+      ["layers/mixed", "fill"],
+      ["layers/mixed::outline", "line"],
+      ["layers/mixed::points", "circle"],
+      ["layers/mixed::label", "symbol"],
+    ]);
+    expect(projection.layers[1]?.paint).toEqual({ "line-color": "#e2e8f0", "line-width": 2 });
+    expect(projection.layers[2]?.paint).toEqual({ "circle-color": "#f28e2b", "circle-radius": 5 });
+    expect(projection.layers[3]?.layer).toMatchObject({
       layout: { "text-field": ["get", "category"] },
       paint: { "text-color": "#59a14f" },
     });

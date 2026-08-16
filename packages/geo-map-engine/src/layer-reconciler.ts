@@ -10,7 +10,7 @@ import type { LayerData, GeoLayerSpec } from "./layers.js";
 
 /** The minimal map operations the reconciler needs from the 2D renderer. */
 export interface MaplibreLayerTarget {
-  addLayer(layer: MaplibreLayerDefinition): void;
+  addLayer(layer: MaplibreLayerDefinition, beforeId?: string): void;
   removeLayer(id: string): void;
   getLayer(id: string): unknown | undefined;
   setPaintProperty(id: string, property: string, value: unknown): void;
@@ -84,18 +84,31 @@ export class DeclarativeLayerReconciler {
     for (const [id, nextLayer] of next) {
       const previousLayer = this.#layers.get(id);
       if (!previousLayer) {
-        this.#add(id, nextLayer);
+        this.#add(id, nextLayer, this.#nextPresentLayerId(id, next));
         continue;
       }
 
       if (sameValue(previousLayer.structure, nextLayer.structure)) {
-        this.#update(id, previousLayer, nextLayer);
+        this.#update(id, previousLayer, nextLayer, next);
       } else {
-        this.#replace(id, nextLayer);
+        this.#replace(id, nextLayer, this.#nextPresentLayerId(id, next));
       }
     }
 
     this.#layers = next;
+  }
+
+  /**
+   * Re-adds overlays destroyed by MapLibre's `setStyle` in their declared
+   * order. The 2D renderer calls this from its post-style hook; `setLayers`
+   * remains a strict no-op for an unchanged declaration.
+   */
+  reinjectAfterStyle(): void {
+    for (const [id, layer] of this.#layers) {
+      if (this.#map.getLayer(id) === undefined) {
+        this.#add(id, layer, this.#nextPresentLayerId(id, this.#layers));
+      }
+    }
   }
 
   #materialize(layers: readonly GeoLayerSpec[]): Map<string, MaplibreSubLayer> {
@@ -110,6 +123,9 @@ export class DeclarativeLayerReconciler {
       declarativeIds.add(layer.id);
 
       const projection = this.#project(layer);
+      if (projection.layers.length === 0) {
+        throw new Error(`Projected declarative layer must contain at least one sub-layer: ${layer.id}`);
+      }
       for (const subLayer of projection.layers) {
         const id = subLayer.layer.id;
         if (!isDerivedLayerId(layer.id, id)) {
@@ -125,9 +141,9 @@ export class DeclarativeLayerReconciler {
     return next;
   }
 
-  #add(id: string, layer: MaplibreSubLayer): void {
+  #add(id: string, layer: MaplibreSubLayer, beforeId?: string): void {
     if (this.#map.getLayer(id) === undefined) {
-      this.#map.addLayer(layer.layer);
+      this.#map.addLayer(layer.layer, beforeId);
       return;
     }
 
@@ -140,22 +156,23 @@ export class DeclarativeLayerReconciler {
     if (this.#map.getLayer(id) !== undefined) this.#map.removeLayer(id);
   }
 
-  #replace(id: string, layer: MaplibreSubLayer): void {
+  #replace(id: string, layer: MaplibreSubLayer, beforeId?: string): void {
     if (this.#map.getLayer(id) !== undefined) this.#map.removeLayer(id);
-    this.#map.addLayer(layer.layer);
+    this.#map.addLayer(layer.layer, beforeId);
   }
 
   #update(
     id: string,
     previousLayer: MaplibreSubLayer,
     nextLayer: MaplibreSubLayer,
+    layers: ReadonlyMap<string, MaplibreSubLayer>,
   ): void {
     if (!hasDynamicChange(previousLayer, nextLayer)) return;
 
     // A renderer/style reset can remove our overlay. Re-add it only when the
     // desired declaration changed; an identical `setLayers` remains a no-op.
     if (this.#map.getLayer(id) === undefined) {
-      this.#map.addLayer(nextLayer.layer);
+      this.#map.addLayer(nextLayer.layer, this.#nextPresentLayerId(id, layers));
       return;
     }
 
@@ -183,6 +200,22 @@ export class DeclarativeLayerReconciler {
         this.#map.setPaintProperty(id, property, nextValue ?? null);
       }
     }
+  }
+
+  /** Finds the next currently rendered sibling without inspecting foreign IDs. */
+  #nextPresentLayerId(
+    id: string,
+    layers: ReadonlyMap<string, MaplibreSubLayer>,
+  ): string | undefined {
+    let found = false;
+    for (const candidateId of layers.keys()) {
+      if (!found) {
+        found = candidateId === id;
+        continue;
+      }
+      if (this.#map.getLayer(candidateId) !== undefined) return candidateId;
+    }
+    return undefined;
   }
 }
 
