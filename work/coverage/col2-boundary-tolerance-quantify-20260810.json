@@ -1,0 +1,135 @@
+{
+  "contract": "col2-boundary-tolerance-quantify/20260810",
+  "purpose": "Distance métrique centroïde→zone assignée des lots misassigned : à quelle tolérance X(m) le mismatch col-2 s'effondre (= preuve non-tautologique de l'artefact désalignement, garde-fou anti-circularité geo-cond).",
+  "method": "helpers KPI exacts (auditCity) + distance point-bords en frame local-equirectangulaire (projConstants). misassigned dont centroïde ≤ X m de sa zone assignée = artefact de frontière.",
+  "slugs": [
+    "saint-hyacinthe",
+    "varennes",
+    "ormstown"
+  ],
+  "cities": [
+    {
+      "slug": "saint-hyacinthe",
+      "assigned": 19379,
+      "matched": 18125,
+      "misassigned": 1246,
+      "outside": 8,
+      "mismatch_pct_strict": 6.47,
+      "misassigned_centroid_dist_median_m": 8.78,
+      "mismatch_by_tolerance": [
+        {
+          "tolerance_m": 0,
+          "mismatch_pct": 6.47,
+          "misassigned_within_tol": 0
+        },
+        {
+          "tolerance_m": 2,
+          "mismatch_pct": 5.29,
+          "misassigned_within_tol": 229
+        },
+        {
+          "tolerance_m": 5,
+          "mismatch_pct": 4.18,
+          "misassigned_within_tol": 443
+        },
+        {
+          "tolerance_m": 10,
+          "mismatch_pct": 3.09,
+          "misassigned_within_tol": 655
+        },
+        {
+          "tolerance_m": 25,
+          "mismatch_pct": 1.82,
+          "misassigned_within_tol": 901
+        },
+        {
+          "tolerance_m": 50,
+          "mismatch_pct": 1.18,
+          "misassigned_within_tol": 1026
+        }
+      ]
+    },
+    {
+      "slug": "varennes",
+      "assigned": 8287,
+      "matched": 7874,
+      "misassigned": 404,
+      "outside": 9,
+      "mismatch_pct_strict": 4.98,
+      "misassigned_centroid_dist_median_m": 9.32,
+      "mismatch_by_tolerance": [
+        {
+          "tolerance_m": 0,
+          "mismatch_pct": 4.98,
+          "misassigned_within_tol": 0
+        },
+        {
+          "tolerance_m": 2,
+          "mismatch_pct": 4.3,
+          "misassigned_within_tol": 57
+        },
+        {
+          "tolerance_m": 5,
+          "mismatch_pct": 3.45,
+          "misassigned_within_tol": 127
+        },
+        {
+          "tolerance_m": 10,
+          "mismatch_pct": 2.46,
+          "misassigned_within_tol": 209
+        },
+        {
+          "tolerance_m": 25,
+          "mismatch_pct": 1.21,
+          "misassigned_within_tol": 313
+        },
+        {
+          "tolerance_m": 50,
+          "mismatch_pct": 0.58,
+          "misassigned_within_tol": 365
+        }
+      ]
+    },
+    {
+      "slug": "ormstown",
+      "assigned": 2421,
+      "matched": 2353,
+      "misassigned": 64,
+      "outside": 4,
+      "mismatch_pct_strict": 2.81,
+      "misassigned_centroid_dist_median_m": 6.78,
+      "mismatch_by_tolerance": [
+        {
+          "tolerance_m": 0,
+          "mismatch_pct": 2.81,
+          "misassigned_within_tol": 0
+        },
+        {
+          "tolerance_m": 2,
+          "mismatch_pct": 2.02,
+          "misassigned_within_tol": 19
+        },
+        {
+          "tolerance_m": 5,
+          "mismatch_pct": 1.65,
+          "misassigned_within_tol": 28
+        },
+        {
+          "tolerance_m": 10,
+          "mismatch_pct": 1.24,
+          "misassigned_within_tol": 38
+        },
+        {
+          "tolerance_m": 25,
+          "mismatch_pct": 0.58,
+          "misassigned_within_tol": 54
+        },
+        {
+          "tolerance_m": 50,
+          "mismatch_pct": 0.45,
+          "misassigned_within_tol": 57
+        }
+      ]
+    }
+  ]
+}

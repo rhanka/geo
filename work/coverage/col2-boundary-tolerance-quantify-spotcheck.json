@@ -1,0 +1,93 @@
+{
+  "contract": "col2-boundary-tolerance-quantify/20260810",
+  "purpose": "Distance métrique centroïde→zone assignée des lots misassigned : à quelle tolérance X(m) le mismatch col-2 s'effondre (= preuve non-tautologique de l'artefact désalignement, garde-fou anti-circularité geo-cond).",
+  "method": "helpers KPI exacts (auditCity) + distance point-bords en frame local-equirectangulaire (projConstants). misassigned dont centroïde ≤ X m de sa zone assignée = artefact de frontière.",
+  "slugs": [
+    "granby",
+    "cowansville"
+  ],
+  "cities": [
+    {
+      "slug": "granby",
+      "assigned": 25946,
+      "matched": 24285,
+      "misassigned": 1587,
+      "outside": 74,
+      "mismatch_pct_strict": 6.4,
+      "misassigned_centroid_dist_median_m": 12.37,
+      "mismatch_by_tolerance": [
+        {
+          "tolerance_m": 0,
+          "mismatch_pct": 6.4,
+          "misassigned_within_tol": 0
+        },
+        {
+          "tolerance_m": 2,
+          "mismatch_pct": 5.56,
+          "misassigned_within_tol": 219
+        },
+        {
+          "tolerance_m": 5,
+          "mismatch_pct": 4.59,
+          "misassigned_within_tol": 469
+        },
+        {
+          "tolerance_m": 10,
+          "mismatch_pct": 3.62,
+          "misassigned_within_tol": 722
+        },
+        {
+          "tolerance_m": 25,
+          "mismatch_pct": 2.71,
+          "misassigned_within_tol": 958
+        },
+        {
+          "tolerance_m": 50,
+          "mismatch_pct": 2.23,
+          "misassigned_within_tol": 1082
+        }
+      ]
+    },
+    {
+      "slug": "cowansville",
+      "assigned": 6820,
+      "matched": 6557,
+      "misassigned": 246,
+      "outside": 17,
+      "mismatch_pct_strict": 3.86,
+      "misassigned_centroid_dist_median_m": 7.08,
+      "mismatch_by_tolerance": [
+        {
+          "tolerance_m": 0,
+          "mismatch_pct": 3.86,
+          "misassigned_within_tol": 0
+        },
+        {
+          "tolerance_m": 2,
+          "mismatch_pct": 3.17,
+          "misassigned_within_tol": 47
+        },
+        {
+          "tolerance_m": 5,
+          "mismatch_pct": 2.46,
+          "misassigned_within_tol": 95
+        },
+        {
+          "tolerance_m": 10,
+          "mismatch_pct": 1.67,
+          "misassigned_within_tol": 149
+        },
+        {
+          "tolerance_m": 25,
+          "mismatch_pct": 1.14,
+          "misassigned_within_tol": 185
+        },
+        {
+          "tolerance_m": 50,
+          "mismatch_pct": 0.85,
+          "misassigned_within_tol": 205
+        }
+      ]
+    }
+  ]
+}
