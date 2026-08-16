@@ -66,6 +66,7 @@ jobs:
             "packages/geo-sources-americas/package.json",
             "packages/geo-sources-europe/package.json",
             "packages/geo-ui-svelte/package.json",
+            "packages/geo-map-engine/package.json",
           ];
           const failures = [];
           for (const manifestPath of publishable) {
@@ -117,3 +118,4 @@ jobs:
           npm publish --workspace @sentropic/geo-sources-americas --access public --provenance
           npm publish --workspace @sentropic/geo-sources-europe   --access public --provenance
           npm publish --workspace @sentropic/geo-ui-svelte        --access public --provenance
+          npm publish --workspace @sentropic/geo-map-engine       --access public --provenance
