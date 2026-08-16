@@ -37,7 +37,12 @@ function isHttpUrl(value: unknown): value is string {
   if (typeof value !== "string" || value.length === 0) return false;
   try {
     const parsed = new URL(value);
-    return (parsed.protocol === "http:" || parsed.protocol === "https:") && parsed.hostname.length > 0;
+    // Require a DOTTED hostname: a real reglement source is a public domain
+    // (has a TLD). Sentinels like `https://non-disponible` parse as valid URLs
+    // but their single-label host has no dot — reject them (anti-invention:
+    // never fold/count a placeholder as a real served URL).
+    return (parsed.protocol === "http:" || parsed.protocol === "https:")
+      && parsed.hostname.includes(".");
   } catch {
     return false;
   }
@@ -51,9 +56,14 @@ export interface ServedUrlObservation {
   features_with_reglement_url: number;
   features_with_http_reglement_url: number;
   first_http_reglement_url: string | null;
+  // Raw provenance already on the grille that publish --generalize would MINE
+  // (reglement_url <- _source_url) — a pure verbatim fold, no capture.
+  features_with_http_source_url: number;
+  first_http_source_url: string | null;
 }
 
-/** Read the served norms grille(s) for a slug and observe reglement_url. Read-only. */
+/** Read the served norms grille(s) for a slug and observe reglement_url + the
+ *  mineable _source_url. Read-only. */
 export async function observeServedUrl(
   s3: ReturnType<typeof s3Client>,
   slug: string,
@@ -63,6 +73,8 @@ export async function observeServedUrl(
   let withUrl = 0;
   let withHttp = 0;
   let firstHttp: string | null = null;
+  let withSourceHttp = 0;
+  let firstSourceHttp: string | null = null;
   for (const key of servedKeys(slug)) {
     if (!(await exists(s3, key))) continue;
     layoutsServed.push(key);
@@ -71,11 +83,17 @@ export async function observeServedUrl(
     for (const f of feats) {
       features++;
       const value = f.properties?.["reglement_url"];
-      if (typeof value !== "string" || value.length === 0) continue;
-      withUrl++;
-      if (isHttpUrl(value)) {
-        withHttp++;
-        if (firstHttp === null) firstHttp = value;
+      if (typeof value === "string" && value.length > 0) {
+        withUrl++;
+        if (isHttpUrl(value)) {
+          withHttp++;
+          if (firstHttp === null) firstHttp = value;
+        }
+      }
+      const rawSource = f.properties?.["_source_url"];
+      if (isHttpUrl(rawSource)) {
+        withSourceHttp++;
+        if (firstSourceHttp === null) firstSourceHttp = rawSource;
       }
     }
   }
@@ -87,6 +105,8 @@ export async function observeServedUrl(
     features_with_reglement_url: withUrl,
     features_with_http_reglement_url: withHttp,
     first_http_reglement_url: firstHttp,
+    features_with_http_source_url: withSourceHttp,
+    first_http_source_url: firstSourceHttp,
   };
 }
 
@@ -141,13 +161,15 @@ async function main(): Promise<void> {
   }
   const s3 = s3Client();
   const observations: ServedUrlObservation[] = [];
-  let served = 0, withHttp = 0, i = 0;
+  let served = 0, withHttp = 0, mineable = 0, i = 0;
   for (const slug of slugs) {
     i++;
     const obs = await observeServedUrl(s3, slug);
     observations.push(obs);
     if (obs.grille_served) served++;
     if (obs.features_with_http_reglement_url > 0) withHttp++;
+    // Fold candidate: grille served, no served reglement_url yet, but a mineable http _source_url.
+    if (obs.features_with_http_reglement_url === 0 && obs.features_with_http_source_url > 0) mineable++;
     if (i % 25 === 0) console.log(`  ...${i}/${slugs.length}`);
   }
   const asOf = stamp();
@@ -162,6 +184,7 @@ async function main(): Promise<void> {
     slugs_audited: slugs.length,
     grille_served_total: served,
     features_with_http_reglement_url_total: withHttp,
+    mineable_source_fold_candidates_total: mineable,
     slugs: observations,
   };
   writeFileSync(resolve(ROOT, out), `${JSON.stringify(report, null, 2)}\n`);
@@ -170,6 +193,7 @@ async function main(): Promise<void> {
     slugs_audited: slugs.length,
     grille_served_total: served,
     served_url_total: withHttp,
+    mineable_source_fold_candidates: mineable,
   }, null, 2));
 }
 
