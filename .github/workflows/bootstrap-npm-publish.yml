@@ -1,0 +1,52 @@
+name: Bootstrap NPM Publish (new package, token)
+
+# Manual, one-off FIRST publication of a SINGLE new @sentropic package that OIDC
+# Trusted Publishing cannot create — a trusted publisher only configures on an
+# ALREADY-EXISTING package, so the very first publish of a brand-new package name
+# cannot use OIDC. This workflow uses a create-capable NPM_TOKEN for that first
+# publish; once the package exists, subsequent releases go through the tag-driven
+# `npm-publish.yml` via OIDC (and the temporary token step there is reverted).
+#
+# Trigger MANUALLY (workflow_dispatch) only AFTER a token with @sentropic *create*
+# rights is provisioned in the NPM_TOKEN secret. The package must already be at its
+# intended version in package.json (i.e. on a commit that is on the default branch).
+#
+# Provenance is preserved: this runs in GitHub Actions with id-token: write, so
+# `npm publish --provenance` attaches a signed provenance statement (sigstore) even
+# though authentication is by token rather than OIDC trusted publishing.
+on:
+  workflow_dispatch:
+    inputs:
+      workspace:
+        description: "Workspace to first-publish (must already be at the intended version in package.json)"
+        required: true
+        default: "@sentropic/geo-map-engine"
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  bootstrap-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Upgrade npm
+        run: npm install -g npm@11.16.0
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: First-publish (token)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish --workspace "${{ inputs.workspace }}" --access public --provenance
