@@ -1,0 +1,400 @@
+{
+ "contract": "zones-col2-reacq-deposit-record/v1",
+ "date": "2026-08-16",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md + SPEC_ZONE_GEOMETRY_GRAIN.md + SPEC_CAPTURE_ON_CLUSTER.md ; réplique la recette dépôt vnatif agglo-longueuil 0dcb13a0 / agol 5cc7e680 (variante RE-ACQUISITION col-2 : 2 layouts, empty→UNKNOWN override, fix nested-affectation-misdeposit beaupre / reproject 3857→4326 mille-isles)",
+ "decision": "RE-ACQUISITION v2 beaupre (Zonage/FeatureServer/17, ZONE_) + mille-isles (Zonage/FeatureServer/0, zone, co_mun=76030) depuis leurs FeatureServer AGOL, f=geojson outSR=4326, grain zone-polygon, preuve agol/natif/directe, dépôt sur les 2 layouts + backup _replaced/ + re-stamp documented",
+ "triage": "work/coverage/zones-col2-source-triage-20260816.json (2c741540)",
+ "coverage_gate_override": "beaupre: garde AGOL «≥1 zone-code vide → SKIP» LEVÉ par décision conducteur (le servi nested est FAUX/non-couvrant ; le remplacer EST la correction). 1 ZONE_ vide → zone_code=UNKNOWN (jamais N-A).",
+ "mode": "commit",
+ "run_stamp": "20260816T120000Z",
+ "worklist": "work/coverage/zones-col2-reacq-capture-worklist-20260816.json",
+ "proof_intended": {
+  "type": "agol",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE + coverage-count gate + geometry_grain + anti-troncature ArcGIS (returnCountOnly[MÊME where]==features & !exceededTransferLimit) + anti-homonyme nearest==slug ; overlap RAPPORTÉ non opposé (cible UNPROUVÉE)",
+ "summary": {
+  "total": 2,
+  "deposited": 2,
+  "skipped": 0,
+  "other": 0
+ },
+ "cities": [
+  {
+   "slug": "beaupre",
+   "run_stamp": "20260816T120000Z",
+   "source_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17/query?where=1%3D1&outFields=*&outSR=4326&f=geojson",
+   "count_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17/query?where=1%3D1&returnCountOnly=true&f=json",
+   "code_field": "ZONE_",
+   "expected_geometry_grain": "zone-polygon",
+   "nested_is_misdeposit": true,
+   "nested_misdeposit_reason": "nested = couche MRC-affectation (20 polys, zone_code=null, 49 clés wrong-layer) sans recouvrement de codes → backup _replaced/ + suppression + (re)création depuis le flat",
+   "deposit_mode": "RE-ACQUISITION v2 (servi UNPROUVÉ ; 2 layouts ; empty→UNKNOWN ; overlap RAPPORTÉ non opposé)",
+   "capture_run_id": "zones-20260816T120000Z-0-3b2aae3d-7bcd-4122-ae33-35191052d702",
+   "http_status": 200,
+   "sha256": "sha256:014f0d32766de0af1068fbd6ce6ed97098624e79bd64bf20f9d92a35493f7d9b",
+   "retrieved_at": "2026-08-16T04:31:40.965Z",
+   "storage_key": "raw/zones-vnatif/cas/014f0d32766de0af1068fbd6ce6ed97098624e79bd64bf20f9d92a35493f7d9b.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 78,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "beaupre",
+   "registry_attribution_km": 0.72,
+   "nearest_matches_slug": true,
+   "capture_bbox": [
+    -70.9547638913253,
+    47.0314126884214,
+    -70.8611333814042,
+    47.1096003000392
+   ],
+   "capture_centroid": [
+    -70.90794863636475,
+    47.0705064942303
+   ],
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "code_field_resolved": "ZONE_",
+   "zone_code_empty_count": 1,
+   "empty_mapped_to": "UNKNOWN",
+   "capture_distinct_codes": 78,
+   "sample_codes": [
+    {
+     "code_field_value": "68-Ri2",
+     "zone_code": "68-Ri2"
+    },
+    {
+     "code_field_value": "65-Ri1",
+     "zone_code": "65-Ri1"
+    },
+    {
+     "code_field_value": "63-Ri1",
+     "zone_code": "63-Ri1"
+    },
+    {
+     "code_field_value": "64-Ri1",
+     "zone_code": "64-Ri1"
+    },
+    {
+     "code_field_value": "61-H",
+     "zone_code": "61-H"
+    },
+    {
+     "code_field_value": "62-H",
+     "zone_code": "62-H"
+    },
+    {
+     "code_field_value": "54-H",
+     "zone_code": "54-H"
+    },
+    {
+     "code_field_value": "52-H",
+     "zone_code": "52-H"
+    }
+   ],
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-beaupre.geojson",
+    "normalized/ca-qc-zonage/qc-zonage-beaupre/qc-zonage-beaupre.geojson"
+   ],
+   "served_layout": "both",
+   "served_features": 78,
+   "served_distinct_codes": 77,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_nested_centroid": [
+    -70.90323093732515,
+    47.06708188278275
+   ],
+   "served_codes_covered": 77,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "old_nested_vs_new_capture_centroid_shift_m": 522,
+   "live_count": 78,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(78) == features(78)",
+   "guard_blocks": [],
+   "deposited": true,
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-beaupre__flat.2026-08-16T0441Z.geojson",
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-beaupre__nested-misdeposit.2026-08-16T0441Z.geojson"
+   ],
+   "both_layouts_present": true,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-beaupre__flat.2026-08-16T0441Z.geojson",
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-beaupre__nested-misdeposit.2026-08-16T0441Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-beaupre.geojson",
+     "present": true,
+     "served_features": 78,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "distinct_zone_codes": 78,
+     "proof_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17/query?where=1%3D1&outFields=*&outSR=4326&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:014f0d32766de0af1068fbd6ce6ed97098624e79bd64bf20f9d92a35493f7d9b",
+     "proof_sha256_first12": "014f0d32766d",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-16T04:31:40.965Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true,
+     "centroid": [
+      -70.90794863636475,
+      47.0705064942303
+     ]
+    },
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-beaupre/qc-zonage-beaupre.geojson",
+     "present": true,
+     "served_features": 78,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "distinct_zone_codes": 78,
+     "proof_url": "https://services6.arcgis.com/osUKB2jztkflrQhx/arcgis/rest/services/Zonage/FeatureServer/17/query?where=1%3D1&outFields=*&outSR=4326&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:014f0d32766de0af1068fbd6ce6ed97098624e79bd64bf20f9d92a35493f7d9b",
+     "proof_sha256_first12": "014f0d32766d",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-16T04:31:40.965Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true,
+     "centroid": [
+      -70.90794863636475,
+      47.0705064942303
+     ]
+    }
+   ],
+   "readback_ok": true,
+   "v2_proof_sha256_first12": "014f0d32766d",
+   "statut": "DEPOSITED",
+   "raison": "RE-ACQUISITION v2 byte-exact (agol/natif/directe) ; zone_code=ZONE_ brut, empty→UNKNOWN(1) ; grain=zone-polygon ; 2 layouts ; overlap servi 100% ; 0 code servi-seulement→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "mille-isles",
+   "run_stamp": "20260816T120000Z",
+   "source_url": "https://services9.arcgis.com/iZcAwIV2GibwcZLe/arcgis/rest/services/Zonage/FeatureServer/0/query?where=co_mun%3D76030&outFields=*&outSR=4326&f=geojson",
+   "count_url": "https://services9.arcgis.com/iZcAwIV2GibwcZLe/arcgis/rest/services/Zonage/FeatureServer/0/query?where=co_mun%3D76030&returnCountOnly=true&f=json",
+   "code_field": "zone",
+   "expected_geometry_grain": "zone-polygon",
+   "nested_is_misdeposit": false,
+   "nested_misdeposit_reason": null,
+   "deposit_mode": "RE-ACQUISITION v2 (servi UNPROUVÉ ; 2 layouts ; empty→UNKNOWN ; overlap RAPPORTÉ non opposé)",
+   "capture_run_id": "zones-20260816T120000Z-1-9d921688-8e0e-4e88-b919-78d9c3e63df8",
+   "http_status": 200,
+   "sha256": "sha256:e2441fb2cc9ce368e91b0ec76e50d1b55c004a04a39aa4daa7870506b5b949cf",
+   "retrieved_at": "2026-08-16T04:31:38.167Z",
+   "storage_key": "raw/zones-vnatif/cas/e2441fb2cc9ce368e91b0ec76e50d1b55c004a04a39aa4daa7870506b5b949cf.json",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 66,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "mille-isles",
+   "registry_attribution_km": 0.2,
+   "nearest_matches_slug": true,
+   "capture_bbox": [
+    -74.3096296211266,
+    45.78130106029,
+    -74.1050518977143,
+    45.8596518385674
+   ],
+   "capture_centroid": [
+    -74.20734075942045,
+    45.820476449428696
+   ],
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "grain_matches_expected": true,
+   "code_field_resolved": "zone",
+   "zone_code_empty_count": 0,
+   "empty_mapped_to": "UNKNOWN",
+   "capture_distinct_codes": 66,
+   "sample_codes": [
+    {
+     "code_field_value": "H-14",
+     "zone_code": "H-14"
+    },
+    {
+     "code_field_value": "H-20",
+     "zone_code": "H-20"
+    },
+    {
+     "code_field_value": "H-9",
+     "zone_code": "H-9"
+    },
+    {
+     "code_field_value": "H-11",
+     "zone_code": "H-11"
+    },
+    {
+     "code_field_value": "Ru-14",
+     "zone_code": "Ru-14"
+    },
+    {
+     "code_field_value": "Vi-9",
+     "zone_code": "Vi-9"
+    },
+    {
+     "code_field_value": "Ru-9",
+     "zone_code": "Ru-9"
+    },
+    {
+     "code_field_value": "Ru-6",
+     "zone_code": "Ru-6"
+    }
+   ],
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-mille-isles.geojson",
+    "normalized/ca-qc-zonage/qc-zonage-mille-isles/qc-zonage-mille-isles.geojson"
+   ],
+   "served_layout": "both",
+   "served_features": 66,
+   "served_distinct_codes": 66,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    null
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "served_nested_centroid": [
+    -74.20734075942045,
+    45.820476449428696
+   ],
+   "served_codes_covered": 66,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "old_nested_vs_new_capture_centroid_shift_m": 0,
+   "live_count": 66,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(66) == features(66)",
+   "guard_blocks": [],
+   "deposited": true,
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-mille-isles__flat.2026-08-16T0441Z.geojson",
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-mille-isles__nested.2026-08-16T0441Z.geojson"
+   ],
+   "both_layouts_present": true,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-mille-isles__flat.2026-08-16T0441Z.geojson",
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-mille-isles__nested.2026-08-16T0441Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-mille-isles.geojson",
+     "present": true,
+     "served_features": 66,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "distinct_zone_codes": 66,
+     "proof_url": "https://services9.arcgis.com/iZcAwIV2GibwcZLe/arcgis/rest/services/Zonage/FeatureServer/0/query?where=co_mun%3D76030&outFields=*&outSR=4326&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:e2441fb2cc9ce368e91b0ec76e50d1b55c004a04a39aa4daa7870506b5b949cf",
+     "proof_sha256_first12": "e2441fb2cc9c",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-16T04:31:38.167Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true,
+     "centroid": [
+      -74.20734075942045,
+      45.820476449428696
+     ]
+    },
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-mille-isles/qc-zonage-mille-isles.geojson",
+     "present": true,
+     "served_features": 66,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "distinct_zone_codes": 66,
+     "proof_url": "https://services9.arcgis.com/iZcAwIV2GibwcZLe/arcgis/rest/services/Zonage/FeatureServer/0/query?where=co_mun%3D76030&outFields=*&outSR=4326&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:e2441fb2cc9ce368e91b0ec76e50d1b55c004a04a39aa4daa7870506b5b949cf",
+     "proof_sha256_first12": "e2441fb2cc9c",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-16T04:31:38.167Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true,
+     "centroid": [
+      -74.20734075942045,
+      45.820476449428696
+     ]
+    }
+   ],
+   "readback_ok": true,
+   "v2_proof_sha256_first12": "e2441fb2cc9c",
+   "statut": "DEPOSITED",
+   "raison": "RE-ACQUISITION v2 byte-exact (agol/natif/directe) ; zone_code=zone brut, empty→UNKNOWN(0) ; grain=zone-polygon ; 2 layouts ; overlap servi 100% ; 0 code servi-seulement→UNKNOWN ; backup _replaced/ présent"
+  }
+ ]
+}
