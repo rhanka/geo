@@ -527,6 +527,34 @@ démo 3D verte → **gel §1** → (L1–L4 adaptateurs de base) ‖ (refactor `
 owner-gated) → L5 chrome/choroplèthe → L6 migration immo (fetch-out élargi). Co-signé DS ↔ geo ↔ immo
 (i-cond). Naming/shell/gates : sections §2–6 DS-authoritative du SPEC.
 
+## ADR-0026 — **Gel du seam moteur carto v1 (renderer-neutre)** · accepted (ratifié owner) · 2026-08-16
+
+**Contexte.** ADR-0025 a décidé un moteur carto geo-owned **renderer-neutre** (`SPEC_GEO_MAP_ENGINE.md §1`),
+laissé **NON-GELÉ**, son gel **gaté sur une démo 3D concrète** (§9) — on ne fige pas un contrat renderer-neutre
+non prouvé satisfiable en 3D.
+
+**Décision.** Le **contrat §1 (seam moteur v1) est GELÉ (stable)**, ratifié owner. Le gel a été **gagné sur
+preuve** au gate §9 :
+- *1er run* `spike/engine-3d-20260815 @931f27a6` (deck.gl) = **ROUGE-constructif** : satisfiabilité 3D prouvée,
+  mais §1.5 « zoom normalisé » sous-spécifié → convention **gravée en §1.5.1** (main `ce1edb99`) + sémantique
+  round-trip clarifiée (préservation de l'état courant).
+- *Re-run canonique* `spike/engine-3d-rerun-20260816 @b67eb222` (deck.gl) = **VERT** : §1.5.1 validé **7/7 dans
+  les octets** (mesuré : 512·2^zoom=32768px@z6, FOV 0.6435 rad, pitchMax 60 refuse 61, sans terrain/padding/roll/wrap),
+  **fixtures DS réelles lues** (import, zéro synthèse), **F7b prouvé** (`setTokens` light→dark, framebuffer
+  `2a6dd3ee→fead4a30`), **round-trip vp3d-préservé** + assertion négative, render WebGL2 réel (4 frames, 25 pické),
+  round-trip 7.1e-15° / 5.5e-12 px, **zéro expression maplibre**. Verify-the-verifier geo-archi confirmé dans le
+  code (`data.ts` import, `deck-compiler.ts`).
+
+**Conséquences.**
+- **Implémentation Phase 0 AUTORISÉE** : build moteur (W1–W10) dans le **cap 74–118 p-j** (ajustable, cf.
+  `CHIFFRAGE_MOTEUR_CARTO_2026-08-15.md §6.1`) ; tout dépassement → **re-check owner** (anti-chèque-en-blanc).
+- **DS démarre L1–L6** contre le contrat gelé (mock conforme au contrat gelé possible) ; **immo** planifie la migration.
+- **Toute évolution du seam gelé = nouvelle version (semver) + ADR**, jamais un changement silencieux.
+- Le gel couvre le **§1** (seam moteur geo-owned) ; **§2–6 restent le ressort DS** (cadence de ratification propre).
+
+**Réf.** `SPEC_GEO_MAP_ENGINE.md` §0/§1/§1.5.1/§1.8/§9 ; spike `931f27a6` / re-run `b67eb222` ;
+`CHIFFRAGE_MOTEUR_CARTO_2026-08-15.md §6.1` ; ADR-0025.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
