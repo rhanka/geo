@@ -27,7 +27,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "check": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run src"
+    "test": "vitest run src",
+    "test:mount-e2e": "node e2e/mount-e2e.mjs"
   },
   "dependencies": {
     "@sentropic/geo-core": "^0.5.0",
