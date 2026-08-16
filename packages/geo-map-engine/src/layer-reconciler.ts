@@ -10,7 +10,7 @@ import type { LayerData, GeoLayerSpec } from "./layers.js";
 
 /** The minimal map operations the reconciler needs from the 2D renderer. */
 export interface MaplibreLayerTarget {
-  addLayer(layer: MaplibreLayerDefinition): void;
+  addLayer(layer: MaplibreLayerDefinition, beforeId?: string): void;
   removeLayer(id: string): void;
   getLayer(id: string): unknown | undefined;
   setPaintProperty(id: string, property: string, value: unknown): void;
@@ -30,11 +30,19 @@ export interface MaplibreLayerDefinition {
  * definition used by `addLayer`; `structure` must exclude `paint` and source
  * data so that those changes do not force a recreation.
  */
-export interface MaplibreLayerProjection {
+export interface MaplibreSubLayer {
   readonly layer: MaplibreLayerDefinition;
   readonly structure: unknown;
   readonly paint: Readonly<Record<string, unknown>>;
   readonly data: LayerData;
+}
+
+/**
+ * One neutral layer can materialize as several ordered MapLibre layers. The
+ * order is the renderer stack order and is preserved by the reconciler.
+ */
+export interface MaplibreLayerProjection {
+  readonly layers: readonly MaplibreSubLayer[];
 }
 
 export interface DeclarativeLayerReconcilerOptions {
@@ -53,7 +61,7 @@ export class DeclarativeLayerReconciler {
   readonly #map: MaplibreLayerTarget;
   readonly #layerIdPrefix: string;
   readonly #project: (layer: GeoLayerSpec) => MaplibreLayerProjection;
-  #layers = new Map<string, MaplibreLayerProjection>();
+  #layers = new Map<string, MaplibreSubLayer>();
 
   constructor(map: MaplibreLayerTarget, options: DeclarativeLayerReconcilerOptions) {
     if (options.layerIdPrefix.length === 0) {
@@ -76,42 +84,66 @@ export class DeclarativeLayerReconciler {
     for (const [id, nextLayer] of next) {
       const previousLayer = this.#layers.get(id);
       if (!previousLayer) {
-        this.#add(id, nextLayer);
+        this.#add(id, nextLayer, this.#nextPresentLayerId(id, next));
         continue;
       }
 
       if (sameValue(previousLayer.structure, nextLayer.structure)) {
-        this.#update(id, previousLayer, nextLayer);
+        this.#update(id, previousLayer, nextLayer, next);
       } else {
-        this.#replace(id, nextLayer);
+        this.#replace(id, nextLayer, this.#nextPresentLayerId(id, next));
       }
     }
 
     this.#layers = next;
   }
 
-  #materialize(layers: readonly GeoLayerSpec[]): Map<string, MaplibreLayerProjection> {
-    const next = new Map<string, MaplibreLayerProjection>();
+  /**
+   * Re-adds overlays destroyed by MapLibre's `setStyle` in their declared
+   * order. The 2D renderer calls this from its post-style hook; `setLayers`
+   * remains a strict no-op for an unchanged declaration.
+   */
+  reinjectAfterStyle(): void {
+    for (const [id, layer] of this.#layers) {
+      if (this.#map.getLayer(id) === undefined) {
+        this.#add(id, layer, this.#nextPresentLayerId(id, this.#layers));
+      }
+    }
+  }
+
+  #materialize(layers: readonly GeoLayerSpec[]): Map<string, MaplibreSubLayer> {
+    const next = new Map<string, MaplibreSubLayer>();
+    const declarativeIds = new Set<string>();
 
     for (const layer of layers) {
       if (!layer.id.startsWith(this.#layerIdPrefix)) continue;
-      if (next.has(layer.id)) {
+      if (declarativeIds.has(layer.id)) {
         throw new Error(`Duplicate declarative layer id: ${layer.id}`);
       }
+      declarativeIds.add(layer.id);
 
       const projection = this.#project(layer);
-      if (projection.layer.id !== layer.id) {
-        throw new Error(`Projected layer id must match declarative layer id: ${layer.id}`);
+      if (projection.layers.length === 0) {
+        throw new Error(`Projected declarative layer must contain at least one sub-layer: ${layer.id}`);
       }
-      next.set(layer.id, projection);
+      for (const subLayer of projection.layers) {
+        const id = subLayer.layer.id;
+        if (!isDerivedLayerId(layer.id, id)) {
+          throw new Error(`Projected layer id must stay within declarative layer id: ${layer.id}`);
+        }
+        if (next.has(id)) {
+          throw new Error(`Duplicate projected layer id: ${id}`);
+        }
+        next.set(id, subLayer);
+      }
     }
 
     return next;
   }
 
-  #add(id: string, layer: MaplibreLayerProjection): void {
+  #add(id: string, layer: MaplibreSubLayer, beforeId?: string): void {
     if (this.#map.getLayer(id) === undefined) {
-      this.#map.addLayer(layer.layer);
+      this.#map.addLayer(layer.layer, beforeId);
       return;
     }
 
@@ -124,22 +156,23 @@ export class DeclarativeLayerReconciler {
     if (this.#map.getLayer(id) !== undefined) this.#map.removeLayer(id);
   }
 
-  #replace(id: string, layer: MaplibreLayerProjection): void {
+  #replace(id: string, layer: MaplibreSubLayer, beforeId?: string): void {
     if (this.#map.getLayer(id) !== undefined) this.#map.removeLayer(id);
-    this.#map.addLayer(layer.layer);
+    this.#map.addLayer(layer.layer, beforeId);
   }
 
   #update(
     id: string,
-    previousLayer: MaplibreLayerProjection,
-    nextLayer: MaplibreLayerProjection,
+    previousLayer: MaplibreSubLayer,
+    nextLayer: MaplibreSubLayer,
+    layers: ReadonlyMap<string, MaplibreSubLayer>,
   ): void {
     if (!hasDynamicChange(previousLayer, nextLayer)) return;
 
     // A renderer/style reset can remove our overlay. Re-add it only when the
     // desired declaration changed; an identical `setLayers` remains a no-op.
     if (this.#map.getLayer(id) === undefined) {
-      this.#map.addLayer(nextLayer.layer);
+      this.#map.addLayer(nextLayer.layer, this.#nextPresentLayerId(id, layers));
       return;
     }
 
@@ -148,8 +181,8 @@ export class DeclarativeLayerReconciler {
 
   #applyDataAndPaint(
     id: string,
-    previousLayer: MaplibreLayerProjection | undefined,
-    nextLayer: MaplibreLayerProjection,
+    previousLayer: MaplibreSubLayer | undefined,
+    nextLayer: MaplibreSubLayer,
   ): void {
     if (!previousLayer || !sameValue(previousLayer.data, nextLayer.data)) {
       this.#map.setData(id, nextLayer.data);
@@ -168,16 +201,37 @@ export class DeclarativeLayerReconciler {
       }
     }
   }
+
+  /** Finds the next currently rendered sibling without inspecting foreign IDs. */
+  #nextPresentLayerId(
+    id: string,
+    layers: ReadonlyMap<string, MaplibreSubLayer>,
+  ): string | undefined {
+    let found = false;
+    for (const candidateId of layers.keys()) {
+      if (!found) {
+        found = candidateId === id;
+        continue;
+      }
+      if (this.#map.getLayer(candidateId) !== undefined) return candidateId;
+    }
+    return undefined;
+  }
 }
 
 function hasDynamicChange(
-  previousLayer: MaplibreLayerProjection,
-  nextLayer: MaplibreLayerProjection,
+  previousLayer: MaplibreSubLayer,
+  nextLayer: MaplibreSubLayer,
 ): boolean {
   return (
     !sameValue(previousLayer.data, nextLayer.data) ||
     !sameValue(previousLayer.paint, nextLayer.paint)
   );
+}
+
+/** A generated layer is either the parent or explicitly scoped beneath it. */
+function isDerivedLayerId(parentId: string, id: string): boolean {
+  return id === parentId || id.startsWith(`${parentId}::`);
 }
 
 /** GeoLayerSpec and MapLibre paint projections are JSON-shaped values. */
