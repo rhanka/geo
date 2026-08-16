@@ -38,12 +38,20 @@ import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import {
+  CAPTURE_RUNS_PREFIX,
   captureRunKeys,
   parseManifestJsonl,
 } from "../../packages/qc-sources/src/capture/index.js";
 import { getBytes, listObjectEntries, s3Client } from "./lib/s3.js";
-import { captureRetrievalPrefix } from "./lib/capture-image-pin.js";
 import { runIdsFromManifestKeys } from "./_capture-e2e-probe.js";
+
+// Préfixe S3 déterministe des manifestes d'un run (== captureRetrievalPrefix de
+// lib/capture-image-pin) : `capture/_runs/<lane>-<stamp>-`. Dérivé ici de la
+// primitive CAPTURE_RUNS_PREFIX (lib capture) pour rester indépendant de
+// l'outillage capture-image-pin/capture-run-resolve non encore mergé sur main.
+function captureRetrievalPrefix(lane: string, runStamp: string): string {
+  return `${CAPTURE_RUNS_PREFIX}${lane}-${runStamp}-`;
+}
 
 const ROOT = resolve(import.meta.dirname, "..", "..");
 const COVERAGE = resolve(ROOT, "work", "coverage");
