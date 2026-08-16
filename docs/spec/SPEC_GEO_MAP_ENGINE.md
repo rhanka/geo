@@ -87,6 +87,19 @@ NumberEncoding =
 // forward 3D non-breaking : terrain?, sky?
 ```
 
+> **NOTE forward (non-breaking, doc-only) — branche `vector` SOUS-SPÉCIFIÉE, ratification DIFFÉRÉE owner-gated**
+> *(finding W5 capitalisé — la trace survit à la suppression du NOTE.md du worker)* : (a) `style` et `pmtiles`
+> sont **tous deux optionnels** dans le type gelé, alors que l'intention est **exclusive** (`style|pmtiles`) —
+> le type est plus lâche que l'intention ; (b) la **livraison de l'`attribution`** séparée dans un style externe
+> (`setStyle(url)`) n'a **aucune opération définie** dans le seam ; (c) **PMTiles seul** n'a ni `source-layer` ni
+> définitions de couches (le design PMTiles du repo exige un **style geo-authored**, réf
+> `docs/specs/2026-06-14-geomap-webgl-design.md` déc. 2). **Aucun consommateur v1** (DS = `blank`, immo = `raster`).
+> L'impl 2D (`packages/geo-map-engine/src/basemap-controller.ts`) **fail-close** sur `vector`
+> (`throw "vector basemap not yet supported — pending contract ratification"`, zéro invention). La ratification
+> exacte (état exclusif `style`/`pmtiles`, livraison attribution, projection PMTiles + source-layer/couches) est un
+> **item owner-gated** groupé au prochain sync owner ; **tout changement de `BasemapSpec.vector` = semver major +
+> ADR (ADR-0026)**. Cette note est **doc-only** : elle ne change pas les types gelés.
+
 **1.3.3 Contrat de résolution des tokens (fix Fable F7b — « couleurs figées au switch de thème »)** :
 - **Adaptateur (DS)** : résout les `--st-*` depuis le conteneur thémé (`getComputedStyle`) en une
   `TokenMap: Record<role, resolvedValue>` concrète, passée au moteur **au mount ET à chaque changement de
