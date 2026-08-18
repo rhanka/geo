@@ -94,10 +94,12 @@ jobs:
   publish:
     needs: release-guard
     runs-on: ubuntu-latest
-    # 5 packages via npm Trusted Publishing (OIDC, no token). geo-map-engine is a
-    # NEW package: OIDC cannot create it (a trusted publisher only configures on an
-    # existing package), so its FIRST publish uses NPM_TOKEN, then reverts to OIDC
-    # once it exists (the secret is removed after the first publish).
+    # All 6 packages via npm Trusted Publishing (OIDC): no NODE_AUTH_TOKEN needed.
+    # geo-map-engine's FIRST publish used a one-off token bootstrap
+    # (bootstrap-npm-publish.yml) because OIDC cannot create a brand-new package;
+    # now that it exists on the registry, it publishes via OIDC like the others.
+    # NB: OIDC requires a trusted publisher configured on npm for EACH package
+    # (repo rhanka/geo + this workflow) — must be set for geo-map-engine too.
     permissions:
       contents: read
       id-token: write
@@ -120,23 +122,13 @@ jobs:
           npm ci
           npm run build
 
-      - name: Publish OIDC packages (trusted publishing, dependency order)
+      - name: Publish packages (dependency order)
         run: |
-          # 5 public @sentropic/geo-* packages via OIDC, in dependency order (ADR-0017).
-          # geo-map-engine is published in the NEXT step (token, first publish).
+          # Public @sentropic/geo-* packages only, in dependency order (ADR-0017).
           # @sentropic/geo-site (apps/site) is private and not published.
           npm publish --workspace @sentropic/geo-core             --access public --provenance
           npm publish --workspace @sentropic/geo                  --access public --provenance
           npm publish --workspace @sentropic/geo-sources-americas --access public --provenance
           npm publish --workspace @sentropic/geo-sources-europe   --access public --provenance
           npm publish --workspace @sentropic/geo-ui-svelte        --access public --provenance
-
-      # geo-map-engine n'a jamais été publié : l'OIDC Trusted Publishing ne peut PAS
-      # créer un package neuf. 1re publication via NPM_TOKEN ; les runs suivants
-      # repassent en OIDC (secret retiré après). Provenance conservée (id-token: write).
-      # Ordre de dépendance : geo-core (step ci-dessus) est publié AVANT geo-map-engine.
-      - name: Publish geo-map-engine (token, première publication)
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
           npm publish --workspace @sentropic/geo-map-engine       --access public --provenance
