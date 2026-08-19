@@ -7,10 +7,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 namespace: geo-preprod
-# base `geo-api` → `geo-api-preprod` (nom svc/deploy que immo-preprod consomme in-cluster,
-# aligné #228). Les LABELS restent `geo-api` (nameSuffix ne les touche pas) → les
-# podSelector/selector par label (netpol, service) matchent le pod.
-nameSuffix: -preprod
+# Nom `geo-api` dans le ns `geo-preprod` (le namespace différencie de la prod — pratique
+# k8s standard). immo-preprod consomme le FQDN `geo-api.geo-preprod:8787` (in-cluster) ou le
+# host ingress. PAS de nameSuffix : il casserait les SealedSecrets (C3, scellés liés au
+# nom exact `geo-s3-credentials-preprod` → un suffixe romprait le sceau + l'envFrom).
 
 resources:
   - ../../base

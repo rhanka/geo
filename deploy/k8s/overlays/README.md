@@ -6,7 +6,7 @@ servie geo-api** est décrite **une fois** dans `../base` ; chaque environnement
 ```
 deploy/k8s/base/            # Deployment + Service + Ingress geo-api (S3-only), sans namespace
 deploy/k8s/overlays/
-  preprod/                  # ns geo-preprod, nameSuffix -preprod, bucket preprod, host preprod, netpols A2
+  preprod/                  # ns geo-preprod, bucket preprod, host preprod, netpols A2 (svc geo-api.geo-preprod)
   prod/                     # ns geo, bucket prod, host prod
 ```
 
