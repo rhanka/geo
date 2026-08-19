@@ -1,0 +1,15 @@
+# Base Kustomize — workload SERVING geo-api (OGC API – Features, S3-only).
+# Commun preprod+prod ; les overlays patchent ns / image / GEO_DATA_URI / secret / host.
+# Tenant (Namespace/ResourceQuota/RBAC/pull-secret) = poc-k8s (ownership split), hors base.
+# Adoption du plan de déploiement plateforme (ARCH-17/BR-55, ADR-0028).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - ingress.yaml
+
+# Le nom d'image `geo-api` est la CIBLE du transformer : chaque overlay (ou la CI
+# `deploy-preprod` via `kustomize edit set image`) le retargete vers le registre +
+# le DIGEST post-merge (jamais un tag mutable). Cf. ADR-0027 §8 / ADR-0028.
