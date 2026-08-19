@@ -75,15 +75,16 @@ d'origine immo (`caveat` à vérifier, §9). Position par défaut groundée : ge
 
 ## 4. Contrat data preprod immo↔geo *(§6)*
 
-- **Ce que geo-preprod SERT — PARITÉ COMPLÈTE (invariant, ratifié ADR-0027)** : geo-preprod sert
-  **l'intégralité du set servi par geo-prod** pour les familles immo, via **la même surface OGC** que la prod
-  (mêmes contrats de provenance), sur un **host preprod dédié**. Parité **data-driven** (= ce que geo-prod sert
-  AUJOURD'HUI, PAS un sous-ensemble curé — geo-api sert le layout S3, pas une liste codée en dur). Familles
-  connues à la ratif (grounded conso immo `ogc-pull.ts:689`, i-cond) : `qc-zonage-<slug>` **+ variantes suffixées**
-  `qc-zonage-<slug>-<layer>` (`-arcgis`/`-rcu`/`-affectations-arcgis`…, `startsWith`), `qc-lots-<slug>`,
-  `qc-zonage-norms-*`, **`qc-tod-<slug>`**, **`qc-zoning-events`**. Le sync copie le set COMPLET ; la gate
-  coherence_id (§4.1) vérifie **toutes** les familles servies (pas seulement le zonage de base) — un sous-ensemble
-  servi = **échec de parité**.
+- **Ce que geo-preprod SERT — MIROIR PLEIN (invariant, ratifié ADR-0027)** : geo-preprod sert **EXACTEMENT le
+  set que geo-prod sert aujourd'hui** — **miroir complet** du préfixe `normalized/` (les 2 layouts plat +
+  sous-dossier), via la même surface OGC + mêmes contrats de provenance, host preprod dédié. **PAS une whitelist
+  de familles ni un sous-ensemble** : le set réel groundé (geo-socle) = **3885 collections**, dont **~1088
+  « slug-nu » de ville** (`abercorn`, `acton-vale`…, même structure OGC) **HORS** des familles de conso immo → une
+  parité par whitelist **sous-servirait ~1088 collections**. Les familles immo — `qc-zonage-<slug>` (+ variantes
+  suffixées `-arcgis`/`-rcu`/`-affectations-arcgis`… `startsWith`, conso `ogc-pull.ts:689` i-cond), `qc-lots-<slug>`,
+  `qc-zonage-norms-*`, `qc-tod-<slug>`, `qc-zoning-events` — sont **ILLUSTRATIVES** (exemples de conso), **pas la
+  définition de parité**. Le sync **miroir** le set complet ; la gate coherence_id (§4.1) fait un **count/set-match
+  vs prod** (set COMPLET), pas les seules familles — sinon un slug-nu manquant = **faux vert**.
 - **Consommation** : **immo-preprod consomme geo-preprod uniquement** (§6) — imposé par (a) config
   immo-preprod (endpoint geo = host preprod) ET (b) isolation réseau (Q4). Jamais geo-prod.
 - **Point de cohérence** : un **`preprod_coherence_id`** partagé (= watermark du snapshot prod épinglé par
@@ -106,7 +107,9 @@ nouvelle donnée, pas juste que S3 la contient :
 - **Watermark unique dataset-level** (§6.1 : un seul point de cohérence ; TOUTES les collections le partagent —
   geo-api sert tout depuis un snapshot S3, un rollout recharge tout atomiquement).
 - **Stampé par le sync** dans un manifeste racine `normalized-preprod/coherence.json` =
-  `{ coherence_id, generated_at, prod_watermark }` (ou plié dans l'index served-collections lu au build d'index).
+  `{ coherence_id, generated_at, prod_watermark, served_count }` (+ empreinte de set optionnelle) — le
+  `served_count` (= count du miroir prod) permet à la gate de vérifier la **complétude** (preprod sert autant que
+  prod = les 3885), pas seulement la fraîcheur. (Ou plié dans l'index served-collections lu au build d'index.)
 - **Exposé par geo-api via OGC** : propriété `coherence_id` sur chaque `/collections/<id>` **+** sur la landing `/`.
   **Conditionnel** : présent en S3 → servi ; **absent** (ex. prod sans manifeste) → champ **omis** → gate **fail-closed** (correct).
 - **Gate socle** (committé `@349c3da5`) : `geo-verify-served-collections.mjs --expect-coherence <id> --coherence-field
@@ -165,9 +168,11 @@ Alimente les « fixtures production-shaped nettoyées » exigées par §5.2 du d
   jambe d'extraction, pas depuis les charges de serving preprod).
 - **A3** — endpoint geo de immo-preprod = host preprod (assert config), jamais le host prod.
 - **A4** — image preprod épinglée par digest immuable (jamais `:latest`).
-- **A5** — **parité de serving** (ADR-0027) : geo-preprod sert le set **COMPLET** de geo-prod pour les familles
-  immo (data-driven, cf. §4) ; la gate coherence_id (§4.1) échoue si une famille servie en prod manque en preprod
-  → un sous-ensemble servi n'est jamais « frais ET complet ».
+- **A5** — **parité = miroir plein** (ADR-0027) : geo-preprod sert **EXACTEMENT** le set de geo-prod (miroir du
+  préfixe `normalized/` — **3885 collections dont ~1088 slug-nu**, PAS une whitelist de familles) ; la gate
+  coherence_id (§4.1) fait un **count/set-match vs prod** (via `served_count`/empreinte du manifeste) — une
+  collection servie en prod mais **absente** en preprod (ex. un slug-nu) **échoue** la gate → jamais « frais ET
+  complet » sur un sous-ensemble.
 
 ## 8. Séquencement & ce qui reste gated
 
