@@ -91,6 +91,23 @@ d'origine immo (`caveat` à vérifier, §9). Position par défaut groundée : ge
 - **PREPROD_ACCEPTANCE** (§6, cross-repo unique) : contribution geo = couches servies épinglées au
   `coherence_id` ; l'acceptation assert que la jointure immo↔geo au `coherence_id` partagé réussit.
 
+### 4.1 — Contrat « coherence_id servi » (exposition OGC) *(nouveau, socle 2026-08-18)*
+
+Pour que la gate de fraîcheur (« dernier km ») soit **prouvable THROUGH l'API** (pas seulement en S3),
+geo-api DOIT exposer le `coherence_id` **servi** — c'est ce qui prouve que le **pod de serving** a chargé la
+nouvelle donnée, pas juste que S3 la contient :
+- **Watermark unique dataset-level** (§6.1 : un seul point de cohérence ; TOUTES les collections le partagent —
+  geo-api sert tout depuis un snapshot S3, un rollout recharge tout atomiquement).
+- **Stampé par le sync** dans un manifeste racine `normalized-preprod/coherence.json` =
+  `{ coherence_id, generated_at, prod_watermark }` (ou plié dans l'index served-collections lu au build d'index).
+- **Exposé par geo-api via OGC** : propriété `coherence_id` sur chaque `/collections/<id>` **+** sur la landing `/`.
+  **Conditionnel** : présent en S3 → servi ; **absent** (ex. prod sans manifeste) → champ **omis** → gate **fail-closed** (correct).
+- **Gate socle** (committé `@349c3da5`) : `geo-verify-served-collections.mjs --expect-coherence <id> --coherence-field
+  coherence_id` asserte `coherence_id` **servi (lu via l'API)** == sync'd → un pod stale ÉCHOUE (« présent » ≠ « frais »).
+- **Implémentation = petite addition geo-api** (`packages/geo` : lire le manifeste au build d'index → injecter dans la
+  métadonnée collection + landing). **geo-owned, ordonnancé par geo-cond.** Chemin JSON exact à confirmer contre la
+  sortie OGC réelle (reco : top-level `coherence_id`). **Tant que non exposé, la gate fail-closed = correct.**
+
 ## 5. Contrat du cycle de récup prod→preprod *(§6.1)*
 
 **Invariants (testables, non négociables) :**
@@ -151,7 +168,7 @@ ce cadrage (WP6, geo-archi) ─► co-design geo-cond + poc-k8s (topologie tier 
 ## 9. Reste `unknown` (anti-invention)
 
 - **6 faits socle §6 → RÉSOLUS** (socle 2026-08-18, cf. §6 table). Coût groundé = +1 pod (75m/128Mi–500m/768Mi), 0 postgis, 0 PVC.
-- **Capacité OVH prefix-deny** : `unknown` — probe socle en cours (documentaire ; la décision Q2 = bucket séparé n'en dépend PAS).
+- **Capacité OVH prefix-deny** : `unknown` — probe **différée** (socle 2026-08-18, raison factuelle) : la tester n'est PAS read-only (exige `put-bucket-policy` sur le bucket PROD `sentropic-geo`, risque de verrouiller la prod, ou l'IAM OVH **owner-held**) → on ne mute pas la policy du bucket prod sur un track non tranché. La décision Q2 = bucket séparé **n'en dépend PAS** ; probe quand (a) track avancé + (b) accès IAM owner (documentaire, `unknown → fait`).
 - **Enregistrement DNS** du host `api.preprod.geo.sent-tech.ca` = dépendance owner/infra (DNS externe).
 - **`caveat` Loi 25 geo** : vérifier qu'aucune couche servie par geo n'embarque de donnée personnelle
   d'origine immo. Défaut groundé = geo-servi public → copie seule ; à confirmer avant de graver « copie sans assainissement ».
