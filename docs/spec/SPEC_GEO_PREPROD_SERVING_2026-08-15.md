@@ -1,8 +1,8 @@
 # SPEC — geo-preprod-serving + contrat data preprod immo↔geo + cycle récup prod→preprod *(cadrage WP6)*
 
-> **Statut : DRAFT cadrage/étude — OWNER-GATED. Aucune implémentation ni déploiement avant
-> ratification ; le déploiement PROD reste propriété owner (KUBE_CONFIG_DATA).** Date : 2026-08-15 ;
-> **MàJ 2026-08-18** — les 6 besoins §6 groundés par socle (faits LIVE) → **Q2/Q5/Q6 tranchés**.
+> **Statut : RATIFIÉ owner 2026-08-18 (« ratifie, GO build gaté ») → ADR-0027. Build gaté AUTORISÉ ;
+> le déploiement PROD reste propriété owner (KUBE_CONFIG_DATA).** Date : 2026-08-15 ; **MàJ 2026-08-18** —
+> 6 besoins §6 groundés socle (Q2/Q5/Q6 tranchés) + §4.1 coherence_id servi + **§4 parité de serving** ; ratifié ADR-0027.
 > Auteur : geo-archi (`claude:archi`, WP6 contrats/architecture). **Je cadre ; geo-socle construit ;
 > poc-k8s pose la topologie du tier joint ; extraction prod = infra/extraction.**
 >
@@ -70,13 +70,21 @@ d'origine immo (`caveat` à vérifier, §9). Position par défaut groundée : ge
 | Q2 | S3 : préfixe `normalized-preprod/` vs bucket séparé | **DÉCISION = bucket séparé** (socle 2026-08-18) : creds OVH S3 = clés liées à un user OpenStack, le write-deny par préfixe façon IAM AWS **n'est PAS garanti** (`unknown`). Anti-invention : le sens unique §6.1 ne doit pas dépendre d'une capacité non vérifiée → un **bucket preprod séparé** impose la frontière au niveau credential/bucket (blast-radius propre), sans policy de préfixe. `GEO_DATA_URI` preprod pointe le bucket preprod. **Probe socle** en cours (documente la capacité OVH ; n'affecte pas la décision). | ✅ tranché (bucket) |
 | Q3 | Cycle promotion prod→preprod (Loi25, idempotent) | **Jambe geo = job de sync S3→S3 idempotent**, watermark-driven, tournant côté poc-k8s/socle (source S3 `sentropic-geo` **atteignable socle**, contrairement au PG prod immo qui exige i-infra). Copie seule (données publiques). Rejouable. | co-design poc-k8s |
 | Q4 | Isolation prod↔preprod | **SA/RBAC dédiés** au ns `geo-preprod` ; **secret `geo-s3-credentials-preprod` distinct**, sans droit d'écriture prod ; **NetworkPolicy refusant l'egress preprod→prod** ; ingress/host preprod dédié. Invariant : **aucune cred preprod ne peut écrire la prod** (impose §6.1 au niveau infra, pas par convention). | fait socle (host/DNS, IAM) |
-| Q5 | Image geo-api preprod : même digest prod vs canal candidat | **Digest CANDIDAT** épinglé `@sha256:<digest>` (jamais `:latest`). Preprod teste le candidat AVANT prod ; `PREPROD_ACCEPTANCE` vert → **promotion du MÊME digest** en prod = re-pointage, pas rebuild. **DÉCISION = aligner prod+preprod sur GHCR-by-digest** (socle 2026-08-18, en cours) : la promotion « re-pointer le même digest » n'est **littérale** qu'avec **un seul canal digest** ; le dual-registre+miroir rajoute une surface de drift. Un canal GHCR = Q5 littérale + une seule source d'identité d'image. geo-preprod prend un **imagePullSecret GHCR dédié**. | ✅ tranché (GHCR) |
+| Q5 | Image geo-api preprod : même digest prod vs canal candidat | **Promotion = re-pointer le MÊME digest** (jamais rebuild), invariant **registre-agnostique** ; image épinglée `@sha256:<digest>` (jamais `:latest`). **Cible = GHCR-by-digest** (canal unique → promotion littérale, une seule source d'identité). **Interim bring-up = Scaleway same-digest** : `ghcr.io/rhanka/geo-api` **n'existe pas encore** (job GHCR gaté, jamais publié — socle 2026-08-18) → preprod démarre sur le **digest prod Scaleway `f8b152b1`** (l'image EXACTE que prod run). **Follow-up = publier geo-api sur GHCR** (PR distincte post-kubeconfig) → bascule GHCR. Pull secret = `geo-registry-pull` (interim) → GHCR (cible). | ✅ tranché (same-digest ; GHCR cible / Scaleway interim) |
 | Q6 | Coût dans le quota | **RÉSOLU (socle 2026-08-18) = +1 pod geo-api-preprod** (req **75m CPU / 128Mi**, lim **500m CPU / 768Mi**), **0 postgis** (serving S3-only → le postgis du ns geo n'est pas dans le chemin de serving OGC), **0 PVC**. Ns dédié `geo-preprod` → quota propre (grant owner/infra) ; trivial côté cluster. ⚠ Quota **secrets** du ns : prévoir ≈ 3 (S3-preprod + GHCR-pull + tls). | ✅ tranché (1 pod) |
 
 ## 4. Contrat data preprod immo↔geo *(§6)*
 
-- **Ce que geo-preprod SERT** : `{zones, règlements, couches servies}` via **la même surface OGC** que la
-  prod (mêmes collections `qc-zonage-<slug>`, mêmes contrats de provenance), sur un **host preprod dédié**.
+- **Ce que geo-preprod SERT — MIROIR PLEIN (invariant, ratifié ADR-0027)** : geo-preprod sert **EXACTEMENT le
+  set que geo-prod sert aujourd'hui** — **miroir complet** du préfixe `normalized/` (les 2 layouts plat +
+  sous-dossier), via la même surface OGC + mêmes contrats de provenance, host preprod dédié. **PAS une whitelist
+  de familles ni un sous-ensemble** : le set réel groundé (geo-socle) = **3885 collections**, dont **~1088
+  « slug-nu » de ville** (`abercorn`, `acton-vale`…, même structure OGC) **HORS** des familles de conso immo → une
+  parité par whitelist **sous-servirait ~1088 collections**. Les familles immo — `qc-zonage-<slug>` (+ variantes
+  suffixées `-arcgis`/`-rcu`/`-affectations-arcgis`… `startsWith`, conso `ogc-pull.ts:689` i-cond), `qc-lots-<slug>`,
+  `qc-zonage-norms-*`, `qc-tod-<slug>`, `qc-zoning-events` — sont **ILLUSTRATIVES** (exemples de conso), **pas la
+  définition de parité**. Le sync **miroir** le set complet ; la gate coherence_id (§4.1) fait un **count/set-match
+  vs prod** (set COMPLET), pas les seules familles — sinon un slug-nu manquant = **faux vert**.
 - **Consommation** : **immo-preprod consomme geo-preprod uniquement** (§6) — imposé par (a) config
   immo-preprod (endpoint geo = host preprod) ET (b) isolation réseau (Q4). Jamais geo-prod.
 - **Point de cohérence** : un **`preprod_coherence_id`** partagé (= watermark du snapshot prod épinglé par
@@ -99,7 +107,9 @@ nouvelle donnée, pas juste que S3 la contient :
 - **Watermark unique dataset-level** (§6.1 : un seul point de cohérence ; TOUTES les collections le partagent —
   geo-api sert tout depuis un snapshot S3, un rollout recharge tout atomiquement).
 - **Stampé par le sync** dans un manifeste racine `normalized-preprod/coherence.json` =
-  `{ coherence_id, generated_at, prod_watermark }` (ou plié dans l'index served-collections lu au build d'index).
+  `{ coherence_id, generated_at, prod_watermark, served_count }` (+ empreinte de set optionnelle) — le
+  `served_count` (= count du miroir prod) permet à la gate de vérifier la **complétude** (preprod sert autant que
+  prod = les 3885), pas seulement la fraîcheur. (Ou plié dans l'index served-collections lu au build d'index.)
 - **Exposé par geo-api via OGC** : propriété `coherence_id` sur chaque `/collections/<id>` **+** sur la landing `/`.
   **Conditionnel** : présent en S3 → servi ; **absent** (ex. prod sans manifeste) → champ **omis** → gate **fail-closed** (correct).
 - **Gate socle** (committé `@349c3da5`) : `geo-verify-served-collections.mjs --expect-coherence <id> --coherence-field
@@ -157,7 +167,12 @@ Alimente les « fixtures production-shaped nettoyées » exigées par §5.2 du d
 - **A2** — NetworkPolicy : egress `geo-preprod` → endpoints prod = **refusé** (le cycle lit la prod depuis la
   jambe d'extraction, pas depuis les charges de serving preprod).
 - **A3** — endpoint geo de immo-preprod = host preprod (assert config), jamais le host prod.
-- **A4** — image preprod épinglée par digest immuable (jamais `:latest`).
+- **A4** — image preprod épinglée par **digest immuable** (jamais `:latest`) ; promotion = **même-digest** (registre-agnostique). Interim bring-up = digest prod Scaleway `f8b152b1` ; cible = GHCR-by-digest (post-publication de geo-api sur GHCR).
+- **A5** — **parité = miroir plein** (ADR-0027) : geo-preprod sert **EXACTEMENT** le set de geo-prod (miroir du
+  préfixe `normalized/` — **3885 collections dont ~1088 slug-nu**, PAS une whitelist de familles) ; la gate
+  coherence_id (§4.1) fait un **count/set-match vs prod** (via `served_count`/empreinte du manifeste) — une
+  collection servie en prod mais **absente** en preprod (ex. un slug-nu) **échoue** la gate → jamais « frais ET
+  complet » sur un sous-ensemble.
 
 ## 8. Séquencement & ce qui reste gated
 
