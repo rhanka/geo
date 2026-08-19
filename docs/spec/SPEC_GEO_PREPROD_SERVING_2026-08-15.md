@@ -107,9 +107,11 @@ nouvelle donnée, pas juste que S3 la contient :
 - **Watermark unique dataset-level** (§6.1 : un seul point de cohérence ; TOUTES les collections le partagent —
   geo-api sert tout depuis un snapshot S3, un rollout recharge tout atomiquement).
 - **Stampé par le sync** dans un manifeste racine `normalized-preprod/coherence.json` =
-  `{ coherence_id, generated_at, prod_watermark, served_count }` (+ empreinte de set optionnelle) — le
-  `served_count` (= count du miroir prod) permet à la gate de vérifier la **complétude** (preprod sert autant que
-  prod = les 3885), pas seulement la fraîcheur. (Ou plié dans l'index served-collections lu au build d'index.)
+  `{ coherence_id, served_count, set_hash, generated_at, prod_watermark }` — le `served_count` (count du miroir
+  prod) ET le **`set_hash` REQUIS** (= `computeSetHash` : sha256 des ids servis **dédupés+triés**, order-indépendant)
+  donnent à la gate un **vrai set-match** (complétude), pas un simple count : un drop+ajout gardant le count égal
+  échoue aussi. `buildCoherenceManifest` **fail-close au stamp** (coherenceId/servedCount/setHash requis) ; la MÊME
+  `computeSetHash` (lib `@sentropic/geo/preprod`) sert runner ET gate → **zéro dérive** (§7 A5).
 - **Exposé par geo-api via OGC** : propriété `coherence_id` sur chaque `/collections/<id>` **+** sur la landing `/`.
   **Conditionnel** : présent en S3 → servi ; **absent** (ex. prod sans manifeste) → champ **omis** → gate **fail-closed** (correct).
 - **Gate socle** (committé `@349c3da5`) : `geo-verify-served-collections.mjs --expect-coherence <id> --coherence-field
@@ -164,10 +166,18 @@ Alimente les « fixtures production-shaped nettoyées » exigées par §5.2 du d
 ## 7. Isolation & sûreté *(Loi 25 + sens unique — invariants assertables)*
 
 - **A1** — geo-preprod écrit dans un **bucket S3 preprod séparé** (Q2, socle 2026-08-18) ; **aucune cred montée en `geo-preprod` n'a de droit d'écriture sur le bucket prod `sentropic-geo`** ni sur le PG prod (frontière au niveau bucket, pas par policy de préfixe non garantie).
-- **A2** — NetworkPolicy : egress `geo-preprod` → endpoints prod = **refusé** (le cycle lit la prod depuis la
-  jambe d'extraction, pas depuis les charges de serving preprod).
+- **A2** — isolation serving↔prod par **DEUX mécanismes** (max enforçable en **mono-endpoint BHS** — `sentropic-geo`
+  et `sentropic-geo-preprod` partagent `s3.bhs.io.cloud.ovh.net` → un netpol ne peut PAS distinguer S3-prod de
+  S3-preprod, honnêteté d'archi) : **(1) in-cluster** — NetworkPolicy egress **default-deny** sur le pod serving,
+  allow **SEULEMENT** DNS + S3-BHS:443 → geo-api prod / DB / autres ns **inatteignables réseau** ; **(2) bucket S3
+  prod** (indistinguable réseau) — **cred-scoping** : le pod serving ne monte QUE le cred **dest preprod** (readWrite
+  `sentropic-geo-preprod` only, zéro cred source/prod) → ne peut lire `sentropic-geo`. La jambe **sync (Job)** = SEULE
+  porteuse du cred **source RO** (readOnly `sentropic-geo`), get→put sens-unique. Un deny *réseau* du bucket prod
+  exigerait des endpoints S3 distincts (pas le cas) — **ne pas graver un invariant infaisable**. Le scope réel des
+  VALEURS de clés (dest RW preprod-only / source RO prod-only) = **attestation live du minting** (poc-k8s), non
+  prouvable sur manifeste ; le manifeste prouve le **wiring** (quel NOM de secret monté où).
 - **A3** — endpoint geo de immo-preprod = host preprod (assert config), jamais le host prod.
-- **A4** — image preprod épinglée par **digest immuable** (jamais `:latest`) ; promotion = **même-digest** (registre-agnostique). Interim bring-up = digest prod Scaleway `f8b152b1` ; cible = GHCR-by-digest (post-publication de geo-api sur GHCR).
+- **A4** — image preprod épinglée par **digest immuable** (jamais `:latest`) ; promotion = **même-digest** (registre-agnostique). Interim bring-up = **le digest du BUILD POST-MERGE** (docker-publish depuis main après CE cadrage implémenté — il embarque l'expo coherence_id/served_count/set_hash + le runner de sync) ; **PAS `f8b152b1`** (build 07-08 antérieur → expo absente ⇒ gate INERTE + Job ENOENT). Manifests portant `REPLACE_WITH_POST_MERGE_GEO_DIGEST` (résolu à l'apply). Cible = GHCR-by-digest (post-publication).
 - **A5** — **parité = miroir plein** (ADR-0027) : geo-preprod sert **EXACTEMENT** le set de geo-prod (miroir du
   préfixe `normalized/` — **3885 collections dont ~1088 slug-nu**, PAS une whitelist de familles) ; la gate
   coherence_id (§4.1) fait un **count/set-match vs prod** (via `served_count`/empreinte du manifeste) — une
@@ -184,6 +194,13 @@ ce cadrage (WP6, geo-archi) ─► co-design geo-cond + poc-k8s (topologie tier 
     ‖ poc-k8s : chargement preprod + coordination cross-repo
 ```
 **Déploiement PROD reste owner** (KUBE_CONFIG_DATA). **HOLD** : rien de gelé/ratifié sans OK geo-cond→owner.
+
+**Ordre de bring-up (gravé — JAMAIS apply avant le build post-merge)** : (1) merge du livrable preprod →
+(2) `docker-publish` depuis main construit l'image geo-api **AVEC** l'expo coherence_id/served_count/set_hash +
+le runner de sync → (3) ce digest **post-merge** résout `REPLACE_WITH_POST_MERGE_GEO_DIGEST` (serving + Job) →
+(4) poc-k8s applique (fenêtre gatée pour la lecture prod du sync). Appliquer avant (2) = expo absente ⇒ **gates
+inertes** (fail-closed permanent) + **Job ENOENT**. Promotion : preprod valide le digest post-merge →
+`PREPROD_ACCEPTANCE` → **même digest promu en prod**.
 
 ## 9. Reste `unknown` (anti-invention)
 
