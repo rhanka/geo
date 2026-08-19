@@ -1,0 +1,87 @@
+# geo-api serving Deployment (S3-only, OGC API – Features). Base commune.
+# Overlays patchent : namespace, image (transformer `geo-api`), GEO_DATA_URI, envFrom secret.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geo-api
+  labels:
+    app.kubernetes.io/component: api
+    app.kubernetes.io/name: geo-api
+    app.kubernetes.io/part-of: geo
+spec:
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: geo-api
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: api
+        app.kubernetes.io/name: geo-api
+        app.kubernetes.io/part-of: geo
+    spec:
+      imagePullSecrets:
+        - name: geo-registry-pull
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: geo-api
+          # Retargeté par overlay/CI (`kustomize edit set image geo-api=<registry>@<digest>`).
+          image: geo-api
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8787
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "8787"
+            # GEO_DATA_URI + envFrom secret = PATCHÉS par overlay (bucket + creds par env).
+            - name: GEO_DATA_URI
+              value: s3://REPLACE-BY-OVERLAY/normalized
+            - name: NODE_ENV
+              value: production
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials-REPLACE-BY-OVERLAY
+          livenessProbe:
+            httpGet:
+              path: /conformance
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 10
+            periodSeconds: 20
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /conformance
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 3
+            periodSeconds: 10
+            timeoutSeconds: 2
+            successThreshold: 1
+            failureThreshold: 3
+          resources:
+            requests:
+              cpu: 75m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 768Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
