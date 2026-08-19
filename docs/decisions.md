@@ -579,6 +579,40 @@ lecture seule).
 
 **Réf.** `SPEC_GEO_PREPROD_SERVING_2026-08-15.md` (§3 Q1–Q6, §4/§4.1, §5, §7) ; immo `DOSSIER_DECISION_PREPROD_2026-08-15.md §6/§6.1` ; faits socle `geo-preprod-infra-facts.mjs @203bb250` ; gate/refresh socle `@349c3da5` ; parité conso immo `ogc-pull.ts:689` (i-cond).
 
+## ADR-0028 — **geo adopte le plan de déploiement plateforme (CD push-CI : main→preprod auto, tag→prod same-digest)** · accepted (ratifié owner, fork O1) · 2026-08-19
+
+**Contexte.** L'owner a **gelé le déploiement manuel** geo-preprod et demandé l'adoption du **CD plateforme** aligné
+immo/sentropic (`ARCH-17`/`BR-55`, DV2 « un tier non-prod main-aligned auto-CD »). Le **fork de canal** (résidence
+Loi-25) a été tranché **O1 = push-CI ratifié tel quel** (pas de GitOps, pas de re-ratification). Design d'adoption =
+`DESIGN_GEO_DEPLOYMENT_PLANE_ADOPTION_2026-08-19.md` (#230). Le substrat ADR-0027 (manifests preprod committés +
+invariant same-digest + `PREPROD_ACCEPTANCE`) était prêt → **adoption, zéro rework**.
+
+**Décision (propriétaire, 2026-08-19).** geo **adopte le plan de déploiement plateforme (mécanisme B, push-CI apply)** :
+1. **`main` → deploy AUTO preprod** — job CI `deploy-preprod` (kubeconfig SA least-priv ns-scopé → `kubectl apply -k
+   deploy/k8s/overlays/preprod`, digest post-merge résolu par `kustomize edit set image`, self-gate coherence/complétude).
+2. **tag → promotion prod** — `release-prod` off-main, **same-digest** (le digest preprod-validé, jamais rebuild ;
+   ADR-0027 §8), **gaté BR-55d** (plateforme-pending) + `PREPROD_ACCEPTANCE` (self-gate + UAT owner + orthogonalité cross-repo).
+3. **Manifests = Kustomize** `deploy/k8s/base` + `overlays/{preprod,prod}` (fin des manifests plats-par-env pour la ligne servie).
+4. **Secrets = SealedSecrets** (controller bitnami installé) committés dans l'overlay — **évolution du modèle secrets** :
+   d'« éphémère minté-en-fenêtre » (ADR-0027) → « minté 1× → scellé (`kubeseal`) → committé → long-vécu + rotation » ;
+   **scoping A2 préservé** (poc-k8s mint RW-dest/RO-source puis scelle), **ferme le gap « creds live-only »**.
+
+**Supersede le volet MANUEL de l'ADR-0027 §8** (l'apply manuel devient le pipeline CD) ; l'**invariant same-digest est
+PRÉSERVÉ** (désormais enforced par la CD). Les autres invariants ADR-0027 (namespace-par-env, S3-only, bucket séparé,
+coherence_id servi, parité miroir-plein, isolation A2) sont **inchangés**.
+
+**Conséquences.**
+- **Ownership** : geo = **workloads + config** (Kustomize, job CI, ADR, structure SealedSecrets) ; **poc-k8s** = tenant
+  (ns/quota/RBAC SA least-priv, réf **immo `11-ci-deployer-preprod-rbac.yaml`**) + minting/scellement des creds + cert
+  sealed-secrets ; **owner** = GH secret `KUBE_CONFIG_DATA_PREPROD` + **DNS** `api.preprod.geo.sent-tech.ca`.
+- **Chantiers** : **C1** Kustomize base+overlays (cet ADR) · **C2** job CI `deploy-preprod` + cible Makefile · **C3**
+  SealedSecrets · **C4** promotion prod (attend **BR-55d**). Coût ~6–11 p-j (preprod C1+C2+C3 maintenant).
+- **Anti-invention** : adoption d'un **standard ratifié** (pas greenfield) ; conventions confirmées contre la réf **immo
+  committée** (SA/RBAC, secret name) ; le Job de récup (`geo-preprod-sync`, §6.1) reste **gated-window poc-k8s** (hors CD auto).
+
+**Réf.** `DESIGN_GEO_DEPLOYMENT_PLANE_ADOPTION_2026-08-19.md` (#230) ; ADR-0027 §8 ; standard s-archi `ARCH-17`/`BR-55`
+(`SPEC_DECISION_DEPLOYMENT_PLANE.md`, hors repo geo) ; réf RBAC immo `radar-immobilier:deploy/k8s/11-ci-deployer-preprod-rbac.yaml`.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
