@@ -46,6 +46,8 @@ export interface OgcCollection {
   id: string;
   title: string;
   description?: string;
+  /** Dataset-level freshness watermark (§4.1); omitted when no manifest served. */
+  coherence_id?: string;
   attribution: string;
   extent?: {
     spatial: { bbox: number[][]; crs: string };
@@ -82,6 +84,7 @@ export function renderCollection(info: CollectionInfo, base: string): OgcCollect
     id: info.id,
     title: info.title,
     ...(info.description !== undefined ? { description: info.description } : {}),
+    ...(info.coherenceId !== undefined ? { coherence_id: info.coherenceId } : {}),
     attribution: info.attribution,
     ...(info.extent
       ? {

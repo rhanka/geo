@@ -1,0 +1,84 @@
+# NetworkPolicies du serving geo-api-preprod (ns geo-preprod) — isolation A2/A3 (SPEC §7).
+# Valeurs réseau = poc-k8s (autorité réseau) ; committé après son approbation. Deux docs :
+#   1. geo-api-preprod       : default-deny + traefik→8787 ingress + egress DNS + S3-BHS:443.
+#   2. allow-immo-preprod-…  : ingress additif immo-preprod→8787 (OBLIGATOIRE avant cutover,
+#      sinon le default-deny-ingress bloque immo). Ressource ns geo-preprod → bundle geo.
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: geo-api-preprod
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/name: geo-api-preprod
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: preprod
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: geo-api-preprod
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    # Traefik → pod:8787 (deux ns possibles selon le déploiement du contrôleur — miroir prod).
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: TCP
+          port: 8787
+  egress:
+    # DNS (kube-dns).
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # S3-BHS:443 uniquement (s3.bhs.io.cloud.ovh.net) — /32 épinglé par poc-k8s ; impose A2
+    # (le serving n'atteint PAS la prod : le cycle lit la prod depuis le Job d'extraction).
+    - to:
+        - ipBlock:
+            cidr: 54.39.60.208/32
+      ports:
+        - protocol: TCP
+          port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-immo-preprod-to-geo-api-preprod
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/name: geo-api-preprod
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: preprod
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: geo-api-preprod
+  policyTypes:
+    - Ingress
+  ingress:
+    # immo-preprod → geo-api-preprod:8787 (§6 : immo-preprod consomme geo-preprod, jamais prod).
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: radar-immobilier-preprod
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: radar-immobilier
+      ports:
+        - protocol: TCP
+          port: 8787
