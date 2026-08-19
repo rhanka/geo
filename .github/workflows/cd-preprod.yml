@@ -1,0 +1,101 @@
+name: CD Preprod
+
+# Adoption du plan de déploiement plateforme (ARCH-17/BR-55, mécanisme B push-CI, ADR-0028).
+# Sur push `main` touchant l'image ou les manifests preprod : build geo-api (→ DIGEST) →
+# résout le digest dans l'overlay preprod → `kubectl apply -k` → rollout status.
+#
+# Path-filtré : ne tourne QUE si l'image (packages/geo, Dockerfile) ou les manifests
+# preprod changent → pas de re-deploy à chaque merge non-pertinent. Le digest est
+# content-hash (immuable) : un code inchangé re-résout le même digest (idempotent).
+#
+# ⚠ Séparé du RELEASE tag-driven (`docker-publish.yml` + `npm-publish.yml`, domaine
+# geo-socle, intouché). Ici = déploiement continu preprod, PAS la publication versionnée.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "packages/geo/**"
+      - "Dockerfile"
+      - "deploy/k8s/base/**"
+      - "deploy/k8s/overlays/preprod/**"
+      - "Makefile"
+      - ".github/workflows/cd-preprod.yml"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+concurrency:
+  group: cd-preprod
+  cancel-in-progress: false
+
+env:
+  REGISTRY: rg.fr-par.scw.cloud
+  IMAGE: rg.fr-par.scw.cloud/sentropic-geo/geo-api
+
+jobs:
+  deploy-preprod:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      # Build workspace avant l'image : un build cassé échoue vite (idem docker-publish).
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # nologin = LITTÉRAL (convention Scaleway, cf. docker-publish.yml) ; pas un secret.
+      - name: Log in to Scaleway Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: nologin
+          password: ${{ secrets.SCW_SECRET_KEY }}
+
+      # C2a — build + push geo-api (interim Scaleway, same-digest ; GHCR = cible plus tard).
+      # Tag mouvant `main-<sha>` pour la traçabilité ; le DÉPLOIEMENT s'épingle PAR DIGEST (sortie).
+      - name: Build and push geo-api (→ digest immuable)
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ${{ env.IMAGE }}:main-${{ github.sha }}
+          provenance: true
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Install kubectl + kustomize
+        run: |
+          curl -sSLo /tmp/kubectl "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+          curl -sSL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          install -m 0755 kustomize /usr/local/bin/kustomize
+
+      # Kubeconfig = SA least-privilege ns-scopé geo-preprod (poc-k8s), base64 en GH secret.
+      - name: Configure kubeconfig (preprod)
+        run: |
+          mkdir -p "$HOME/.kube"
+          printf '%s' "${{ secrets.KUBE_CONFIG_DATA_PREPROD }}" | base64 -d > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+
+      # Anti-ImagePullBackOff : refuse d'appliquer un manifest référençant une image absente.
+      - name: Assert image digest en registry
+        run: |
+          docker buildx imagetools inspect "${IMAGE}@${{ steps.build.outputs.digest }}" > /dev/null
+
+      # C2b — résout le digest dans l'overlay + apply + rollout status (self-gate santé).
+      - name: Deploy preprod
+        run: make k8s-deploy-preprod GEO_DIGEST="${{ steps.build.outputs.digest }}"
