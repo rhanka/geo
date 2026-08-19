@@ -1,0 +1,33 @@
+# Overlay PROD — serving geo-api dans le ns geo (tag → promotion, ADR-0028 / ADR-0027 §8).
+# Image = DIGEST PROMU (same-digest : le digest preprod-validé, jamais un rebuild). Résolu par
+# `release-prod` (off-main, tag-driven, BR-55d plateforme-pending) — PAS par la CI main.
+# Pas de netpol/Job de sync ici (prod = la SOURCE du cycle, pas synchronisée).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: geo
+
+resources:
+  - ../../base
+
+images:
+  - name: geo-api
+    newName: rg.fr-par.scw.cloud/sentropic-geo/geo-api
+    # Résolu par release-prod au DIGEST PROMU (celui validé en preprod, PREPROD_ACCEPTANCE).
+    newTag: REPLACE_WITH_PROMOTED_GEO_DIGEST
+
+patches:
+  - path: patch-serving.yaml
+  - target:
+      kind: Ingress
+      name: geo-api
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: api.geo.sent-tech.ca
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: api.geo.sent-tech.ca
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: geo-api-tls

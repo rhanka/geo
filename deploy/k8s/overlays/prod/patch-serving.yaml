@@ -1,0 +1,16 @@
+# Prod : bucket S3 prod + creds prod (miroir de la source du cycle §6.1).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geo-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: geo-api
+          env:
+            - name: GEO_DATA_URI
+              value: s3://sentropic-geo/normalized
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials
