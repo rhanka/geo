@@ -1,8 +1,8 @@
 # SPEC — geo-preprod-serving + contrat data preprod immo↔geo + cycle récup prod→preprod *(cadrage WP6)*
 
-> **Statut : DRAFT cadrage/étude — OWNER-GATED. Aucune implémentation ni déploiement avant
-> ratification ; le déploiement PROD reste propriété owner (KUBE_CONFIG_DATA).** Date : 2026-08-15 ;
-> **MàJ 2026-08-18** — les 6 besoins §6 groundés par socle (faits LIVE) → **Q2/Q5/Q6 tranchés**.
+> **Statut : RATIFIÉ owner 2026-08-18 (« ratifie, GO build gaté ») → ADR-0027. Build gaté AUTORISÉ ;
+> le déploiement PROD reste propriété owner (KUBE_CONFIG_DATA).** Date : 2026-08-15 ; **MàJ 2026-08-18** —
+> 6 besoins §6 groundés socle (Q2/Q5/Q6 tranchés) + §4.1 coherence_id servi + **§4 parité de serving** ; ratifié ADR-0027.
 > Auteur : geo-archi (`claude:archi`, WP6 contrats/architecture). **Je cadre ; geo-socle construit ;
 > poc-k8s pose la topologie du tier joint ; extraction prod = infra/extraction.**
 >
@@ -75,8 +75,15 @@ d'origine immo (`caveat` à vérifier, §9). Position par défaut groundée : ge
 
 ## 4. Contrat data preprod immo↔geo *(§6)*
 
-- **Ce que geo-preprod SERT** : `{zones, règlements, couches servies}` via **la même surface OGC** que la
-  prod (mêmes collections `qc-zonage-<slug>`, mêmes contrats de provenance), sur un **host preprod dédié**.
+- **Ce que geo-preprod SERT — PARITÉ COMPLÈTE (invariant, ratifié ADR-0027)** : geo-preprod sert
+  **l'intégralité du set servi par geo-prod** pour les familles immo, via **la même surface OGC** que la prod
+  (mêmes contrats de provenance), sur un **host preprod dédié**. Parité **data-driven** (= ce que geo-prod sert
+  AUJOURD'HUI, PAS un sous-ensemble curé — geo-api sert le layout S3, pas une liste codée en dur). Familles
+  connues à la ratif (grounded conso immo `ogc-pull.ts:689`, i-cond) : `qc-zonage-<slug>` **+ variantes suffixées**
+  `qc-zonage-<slug>-<layer>` (`-arcgis`/`-rcu`/`-affectations-arcgis`…, `startsWith`), `qc-lots-<slug>`,
+  `qc-zonage-norms-*`, **`qc-tod-<slug>`**, **`qc-zoning-events`**. Le sync copie le set COMPLET ; la gate
+  coherence_id (§4.1) vérifie **toutes** les familles servies (pas seulement le zonage de base) — un sous-ensemble
+  servi = **échec de parité**.
 - **Consommation** : **immo-preprod consomme geo-preprod uniquement** (§6) — imposé par (a) config
   immo-preprod (endpoint geo = host preprod) ET (b) isolation réseau (Q4). Jamais geo-prod.
 - **Point de cohérence** : un **`preprod_coherence_id`** partagé (= watermark du snapshot prod épinglé par
@@ -158,6 +165,9 @@ Alimente les « fixtures production-shaped nettoyées » exigées par §5.2 du d
   jambe d'extraction, pas depuis les charges de serving preprod).
 - **A3** — endpoint geo de immo-preprod = host preprod (assert config), jamais le host prod.
 - **A4** — image preprod épinglée par digest immuable (jamais `:latest`).
+- **A5** — **parité de serving** (ADR-0027) : geo-preprod sert le set **COMPLET** de geo-prod pour les familles
+  immo (data-driven, cf. §4) ; la gate coherence_id (§4.1) échoue si une famille servie en prod manque en preprod
+  → un sous-ensemble servi n'est jamais « frais ET complet ».
 
 ## 8. Séquencement & ce qui reste gated
 
