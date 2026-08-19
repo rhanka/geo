@@ -1,0 +1,61 @@
+# RBAC du déployeur CI `deploy-preprod` (ns geo-preprod, least-privilege) — ADR-0028 / C2.
+# Réplique la réf flotte committée `radar-immobilier:deploy/k8s/11-geo-ci-deployer-preprod-rbac.yaml`
+# (gate-approuvée). poc-k8s APPLIQUE (crée la SA) + produit le kubeconfig → GH secret
+# `KUBE_CONFIG_DATA_PREPROD`. Le job CI (C2) fait `kubectl apply -k overlays/preprod` avec ce SA.
+#
+# Least-privilege : ns-scopé geo-preprod, ZÉRO verbe `secrets` (le controller sealed-secrets
+# crée le Secret ; le déployeur n'applique que le SealedSecret CR), zéro autre ns, zéro cluster-admin.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: geo-ci-deployer-preprod
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/part-of: geo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: geo-ci-deployer-preprod
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/part-of: geo
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses", "networkpolicies"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"]
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"] # delete = re-run sync
+  - apiGroups: ["bitnami.com"]
+    resources: ["sealedsecrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"] # applique les SealedSecret CRs (pas de verbe secrets)
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"] # rollout status
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"] # rollout status
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: geo-ci-deployer-preprod
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/part-of: geo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: geo-ci-deployer-preprod
+subjects:
+  - kind: ServiceAccount
+    name: geo-ci-deployer-preprod
+    namespace: geo-preprod
