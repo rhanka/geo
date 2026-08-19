@@ -1,0 +1,16 @@
+# Preprod : bucket S3 SÉPARÉ (isolation A2 cred/bucket) + creds preprod (dest-only).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: geo-api
+spec:
+  template:
+    spec:
+      containers:
+        - name: geo-api
+          env:
+            - name: GEO_DATA_URI
+              value: s3://sentropic-geo-preprod/normalized
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials-preprod
