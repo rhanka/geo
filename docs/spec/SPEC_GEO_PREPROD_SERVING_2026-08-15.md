@@ -104,9 +104,14 @@ nouvelle donnée, pas juste que S3 la contient :
   **Conditionnel** : présent en S3 → servi ; **absent** (ex. prod sans manifeste) → champ **omis** → gate **fail-closed** (correct).
 - **Gate socle** (committé `@349c3da5`) : `geo-verify-served-collections.mjs --expect-coherence <id> --coherence-field
   coherence_id` asserte `coherence_id` **servi (lu via l'API)** == sync'd → un pod stale ÉCHOUE (« présent » ≠ « frais »).
-- **Implémentation = petite addition geo-api** (`packages/geo` : lire le manifeste au build d'index → injecter dans la
-  métadonnée collection + landing). **geo-owned, ordonnancé par geo-cond.** Chemin JSON exact à confirmer contre la
-  sortie OGC réelle (reco : top-level `coherence_id`). **Tant que non exposé, la gate fail-closed = correct.**
+- **Chemin JSON = CONFIRMÉ top-level `coherence_id`** (socle 2026-08-18, vérifié contre la sortie OGC RÉELLE via
+  `scripts/geo-ogc-collection-dump.mjs`) : landing `/` = `{title, description, links}` et collection `/collections/<id>`
+  = `{id, title, attribution, crs, storageCrs, license, links}` → **top-level `coherence_id` libre sur les DEUX, zéro
+  collision** ; la gate socle (défaut `--coherence-field coherence_id`, top-level) est **déjà alignée** (zéro changement
+  verifier une fois le champ exposé).
+- **Implémentation = petite addition geo-api** (`packages/geo` : lire le manifeste au build d'index → injecter `coherence_id`
+  top-level sur collection **et** landing, conditionnel). **geo-owned, ordonnancé par geo-cond** ; preneur candidat = **socle**
+  (serving = son domaine). **Tant que non exposé, la gate fail-closed = correct.**
 
 ## 5. Contrat du cycle de récup prod→preprod *(§6.1)*
 
