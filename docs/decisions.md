@@ -555,6 +555,30 @@ preuve** au gate §9 :
 **Réf.** `SPEC_GEO_MAP_ENGINE.md` §0/§1/§1.5.1/§1.8/§9 ; spike `931f27a6` / re-run `b67eb222` ;
 `CHIFFRAGE_MOTEUR_CARTO_2026-08-15.md §6.1` ; ADR-0025.
 
+## ADR-0027 — **geo-preprod : tier de serving preprod (namespace-par-env, S3-only, bucket séparé, GHCR-by-digest, coherence_id servi, parité de serving)** · accepted (ratifié owner) · 2026-08-18
+
+**Contexte.** Le dossier §6/§6.1 (owner 2026-08-15) acte un **tier preprod joint cross-repo** (immo+geo+poc-k8s) :
+immo-preprod consomme **geo-preprod** (jamais geo-prod), au même point de cohérence, alimenté par un cycle de récup
+prod→preprod **assaini (Loi 25), sens-unique, idempotent**. geo n'avait **pas de preprod de serving**. Cadrage WP6 =
+`SPEC_GEO_PREPROD_SERVING_2026-08-15.md`, groundé sur faits LIVE socle (`geo-preprod-infra-facts.mjs @203bb250`, kubectl
+lecture seule).
+
+**Décision (propriétaire, 2026-08-18 — « ratifie, GO build gaté »).** Le cadrage geo-preprod est **ratifié**. Invariants gravés :
+1. **Namespace-par-env** — ns dédié `geo-preprod` (RBAC/secrets/quota isolés ; épouse la séparation immo-preprod↔geo-preprod du §6).
+2. **Serving S3-only** — geo-api sert la surface OGC depuis **S3 seul** (`GEO_DATA_URI`) ; le **postgis n'est PAS dans le chemin de serving** → tranche preprod = **1 pod geo-api-preprod** (0 postgis, 0 PVC).
+3. **Bucket S3 séparé (OVH-BHS)** — geo-preprod écrit dans un **bucket preprod distinct** ; le sens-unique §6.1 est imposé au **niveau credential/bucket** (aucune cred preprod n'écrit le bucket prod `sentropic-geo`), **pas** par policy de préfixe (write-deny par préfixe **non garanti** sur OVH S3, `unknown` — probe documentaire différée, sans effet sur la décision).
+4. **Image GHCR-by-digest** — prod ET preprod tirent du **même canal GHCR par digest** ; la promotion preprod→prod = **re-pointer le MÊME digest** (jamais rebuild), littérale grâce au canal unique. geo-preprod = imagePullSecret GHCR dédié.
+5. **coherence_id servi (§4.1)** — **watermark unique dataset-level** stampé par le sync (`normalized-preprod/coherence.json`), **exposé par geo-api en OGC top-level** sur `/collections/<id>` **et** landing `/` (chemin confirmé contre la sortie OGC réelle, zéro collision), lu THROUGH l'API par la gate de fraîcheur (un pod stale ÉCHOUE) — conditionnel/rétrocompat prod (absent → omis → fail-closed).
+6. **Parité de serving (invariant §4/§7)** — geo-preprod sert **l'intégralité du set servi par geo-prod** pour les familles immo, en **parité data-driven** (= ce que geo-prod sert AUJOURD'HUI, pas un sous-ensemble curé) : `qc-zonage-<slug>` **+ variantes suffixées** `qc-zonage-<slug>-<layer>` (`-arcgis`/`-rcu`/`-affectations-arcgis`…, matchées `startsWith` conso immo `ogc-pull.ts:689`), `qc-lots-<slug>`, `qc-zonage-norms-*`, **`qc-tod-<slug>`**, **`qc-zoning-events`**. Le sync copie le set COMPLET ; la gate coherence_id vérifie **toutes** les familles servies (pas seulement le zonage de base). *(Familles remontées par i-cond, grounded conso immo ; geo sert le set data-driven du layout S3, pas une liste codée en dur.)*
+
+**Conséquences.**
+- **Build gaté AUTORISÉ** : geo-socle construit geo-preprod (ns/deploy/ingress/secrets/sync/refresh) ; poc-k8s pose la topologie du tier joint (§6) + le chargement cross-repo ; **déploiement PROD reste owner** (KUBE_CONFIG_DATA).
+- **Addition geo-api** (petite, `packages/geo`) : exposer `coherence_id` top-level (lire le manifeste au build d'index) — **preneur = socle**, ordonnancé geo-cond ; **revue geo-archi** contre §4.1. Gate socle (`geo-verify-served-collections.mjs`) + refresh (`geo-preprod-refresh.mjs`) déjà livrés+committés, fail-closed en attendant.
+- **Sens-unique + Loi 25** : jambe geo = copie idempotente S3→S3 (données servies **publiques**) ; l'assainissement PII reste **immo-side** (`caveat` §9 : vérifier qu'aucune couche geo-servie n'embarque de PII d'origine immo).
+- **Reste externe** : enregistrement **DNS** `api.preprod.geo.sent-tech.ca` (owner/infra) ; probe prefix-deny OVH (documentaire, différée).
+
+**Réf.** `SPEC_GEO_PREPROD_SERVING_2026-08-15.md` (§3 Q1–Q6, §4/§4.1, §5, §7) ; immo `DOSSIER_DECISION_PREPROD_2026-08-15.md §6/§6.1` ; faits socle `geo-preprod-infra-facts.mjs @203bb250` ; gate/refresh socle `@349c3da5` ; parité conso immo `ogc-pull.ts:689` (i-cond).
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
