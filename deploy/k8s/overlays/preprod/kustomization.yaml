@@ -1,0 +1,39 @@
+# Overlay PREPROD — serving geo-api dans le ns geo-preprod (main → deploy AUTO, ADR-0028).
+# La CI deploy-preprod (C2) fait `kustomize edit set image geo-api=<registry>@<digest>` ici
+# (résout le digest post-merge) puis `kubectl apply -k`. Le Job de récup (geo-preprod-sync)
+# n'est PAS ici : c'est la jambe du cycle §6.1, appliquée par poc-k8s en fenêtre gatée
+# (coherence_id partagé), pas à chaque merge.
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: geo-preprod
+# base `geo-api` → `geo-api-preprod` (nom svc/deploy que immo-preprod consomme in-cluster,
+# aligné #228). Les LABELS restent `geo-api` (nameSuffix ne les touche pas) → les
+# podSelector/selector par label (netpol, service) matchent le pod.
+nameSuffix: -preprod
+
+resources:
+  - ../../base
+  - netpol.yaml
+
+images:
+  - name: geo-api
+    newName: rg.fr-par.scw.cloud/sentropic-geo/geo-api
+    # Tag placeholder résolu par la CI en DIGEST post-merge (jamais un tag mutable en prod).
+    newTag: REPLACE_WITH_POST_MERGE_GEO_DIGEST
+
+patches:
+  - path: patch-serving.yaml
+  - target:
+      kind: Ingress
+      name: geo-api
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/host
+        value: api.preprod.geo.sent-tech.ca
+      - op: replace
+        path: /spec/tls/0/hosts/0
+        value: api.preprod.geo.sent-tech.ca
+      - op: replace
+        path: /spec/tls/0/secretName
+        value: geo-api-preprod-tls
