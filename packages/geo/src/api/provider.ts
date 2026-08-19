@@ -48,6 +48,13 @@ export interface CollectionInfo {
   extent?: { bbox: BBox };
   /** Number of features in the collection. */
   count: number;
+  /**
+   * Dataset-level coherence watermark served for freshness gating (preprod
+   * récup cycle, SPEC geo-preprod-serving §4.1). Shared by all collections of a
+   * dataset; omitted when the dataset has no `coherence.json` manifest at its
+   * data root (e.g. prod today) — so a consumer's freshness gate fails closed.
+   */
+  coherenceId?: string;
 }
 
 /** Query parameters accepted by {@link FeatureProvider.getItems}. */
@@ -99,4 +106,25 @@ export interface FeatureProvider {
   streamItems?(id: string, query: Pick<ItemsQuery, "bbox">): Promise<ItemsStream | undefined>;
   /** A single feature by id, or `undefined` if collection/feature is unknown. */
   getItem(id: string, featureId: string): Promise<ServedFeature | undefined>;
+  /**
+   * Optional dataset-level coherence manifest (from a `coherence.json` at the
+   * data root). Its `coherenceId` proves the serving pod loaded a given snapshot
+   * (freshness) and its `servedCount` is the mirror-parity count (completeness);
+   * both are served on the landing page (§4.1, §7 A5). Resolves to `undefined`
+   * when no manifest is present.
+   */
+  getCoherence?(): Promise<CoherenceInfo | undefined>;
+}
+
+/**
+ * Dataset-level freshness + completeness manifest served for the preprod récup
+ * gate. Stamped by the mirror sync into `coherence.json` at the data root.
+ */
+export interface CoherenceInfo {
+  /** Watermark of the prod snapshot mirrored into this dataset (freshness). */
+  coherenceId?: string;
+  /** Number of collections the mirror published (completeness reference). */
+  servedCount?: number;
+  /** Hash of the served collection-id set (true set-match parity, §7 A5). */
+  setHash?: string;
 }
