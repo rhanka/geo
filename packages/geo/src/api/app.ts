@@ -91,8 +91,9 @@ export function createApp(
   app.use("*", cors());
 
   // ── Landing page ──────────────────────────────────────────────────────────
-  app.get("/", (c) => {
+  app.get("/", async (c) => {
     const base = baseUrlOf(c.req.url);
+    const coherence = await provider.getCoherence?.();
     const links: Link[] = [
       { href: `${base}/`, rel: "self", type: MEDIA_JSON, title: "This document" },
       {
@@ -124,6 +125,12 @@ export function createApp(
       title: "@sentropic/geo — OGC API – Features",
       description:
         "Administrative boundaries served as GeoJSON via OGC API – Features (Part 1: Core).",
+      // Dataset-level freshness (coherence_id) + mirror-parity completeness
+      // (served_count) + true set-match (set_hash), served through the API for the
+      // preprod récup gate (§4.1/§7 A5). All omitted when no coherence.json present.
+      ...(coherence?.coherenceId !== undefined ? { coherence_id: coherence.coherenceId } : {}),
+      ...(coherence?.servedCount !== undefined ? { served_count: coherence.servedCount } : {}),
+      ...(coherence?.setHash !== undefined ? { set_hash: coherence.setHash } : {}),
       links,
     });
   });
