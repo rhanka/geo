@@ -90,6 +90,9 @@ jobs:
           mkdir -p "$HOME/.kube"
           printf '%s' "${{ secrets.KUBE_CONFIG_DATA_PREPROD }}" | base64 -d > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
+          # Fail-fast clair si le secret est absent/vide (sinon l'échec surface plus tard,
+          # opaque, au `kubectl apply`). Vert-par-omission = rouge.
+          test -s "$HOME/.kube/config" || { echo "::error::KUBE_CONFIG_DATA_PREPROD absent ou vide — kubeconfig requis pour deploy-preprod"; exit 1; }
 
       # Anti-ImagePullBackOff : refuse d'appliquer un manifest référençant une image absente.
       - name: Assert image digest en registry
