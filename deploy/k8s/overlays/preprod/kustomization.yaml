@@ -15,6 +15,9 @@ namespace: geo-preprod
 resources:
   - ../../base
   - netpol.yaml
+  # SealedSecrets S3 preprod (C3) — resources PLAINES (jamais suffixées : scellées au nom
+  # exact ns+name). Le CD les applique → controller bitnami déchiffre → Secrets montés.
+  - sealed-secrets.yaml
 
 images:
   - name: geo-api
