@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { canonicalServedIds, isCanonicalGeojsonKey, stemOf } from "./canonical-key.js";
+import { isCanonicalGeojsonKey, servedCollectionId, servedDatasetIds, stemOf } from "./canonical-key.js";
 
 describe("isCanonicalGeojsonKey — index/mirror admission (ADR-0027)", () => {
   it("admits canonical flat + nested keys across ALL families (not just qc-zonage)", () => {
@@ -46,24 +46,58 @@ describe("stemOf", () => {
   });
 });
 
-describe("canonicalServedIds", () => {
-  it("derives the canonical served id SET (filter + stem + dedup flat/nested + sort)", () => {
-    const keys = [
-      "normalized/abercorn.geojson", // canonical
-      "normalized/qc-zonage-x.geojson", // flat
-      "normalized/qc-zonage-x/qc-zonage-x.geojson", // nested — SAME stem → collapses to one id
-      "normalized/qc-lots-montreal.geojson", // canonical
-      "normalized/_replaced/qc-zonage-x__flat.2026-08-21T00Z.geojson", // backup — excluded
-      "normalized/qc-zonage-x.additive-prebackup.geojson", // prebackup — excluded
-      "normalized/coherence.json", // non-geojson — excluded
+describe("servedCollectionId", () => {
+  it("uses datasetId when present, else the stem", () => {
+    expect(servedCollectionId("abercorn", "qc-lots-abercorn")).toBe("qc-lots-abercorn");
+    expect(servedCollectionId("abercorn", undefined)).toBe("abercorn");
+  });
+});
+
+describe("servedDatasetIds (the ONE served-id rule, shared serving⇄stamp)", () => {
+  it("keeps stem-colliding DISTINCT datasets separate (abercorn zonage vs qc-lots-abercorn) — no data-loss merge", () => {
+    const entries = [
+      { key: "normalized/abercorn.geojson" }, // zonage, no datasetId → id "abercorn"
+      { key: "normalized/qc-cadastre-lots/abercorn.geojson", datasetId: "qc-lots-abercorn" }, // lots
     ];
-    expect(canonicalServedIds(keys)).toEqual(["abercorn", "qc-lots-montreal", "qc-zonage-x"]);
+    expect(servedDatasetIds(entries)).toEqual(["abercorn", "qc-lots-abercorn"]);
   });
 
-  it("is stable regardless of listing order (a SET, deduped + sorted)", () => {
-    const a = canonicalServedIds(["normalized/b.geojson", "normalized/a.geojson", "normalized/a.geojson"]);
-    const b = canonicalServedIds(["normalized/a.geojson", "normalized/b.geojson"]);
-    expect(a).toEqual(["a", "b"]);
-    expect(a).toEqual(b);
+  it("STAMP-SET == SERVED-SET by construction (same fn both sides, incl. datasetId != stem)", () => {
+    const entries = [
+      { key: "normalized/qc-zonage-x.geojson", datasetId: undefined },
+      { key: "normalized/ca-qc-sda/regions.geojson", datasetId: "ca-qc-regions" }, // datasetId != stem
+      { key: "normalized/qc-cadastre-lots/abercorn.geojson", datasetId: "qc-lots-abercorn" },
+      { key: "normalized/abercorn.geojson", datasetId: undefined }, // stem collision with the lots one
+      { key: "normalized/_replaced/qc-zonage-x__flat.2026.geojson", datasetId: undefined }, // junk — excluded
+    ];
+    const stampSet = servedDatasetIds(entries);
+    // "serving-side" recompute: same servedCollectionId per canonical key, deduped + sorted.
+    const servedSet = [
+      ...new Set(
+        entries
+          .filter((e) => isCanonicalGeojsonKey(e.key))
+          .map((e) => servedCollectionId(stemOf(e.key), e.datasetId)),
+      ),
+    ].sort();
+    expect(stampSet).toEqual(servedSet);
+    expect(stampSet).toEqual(["abercorn", "ca-qc-regions", "qc-lots-abercorn", "qc-zonage-x"]);
+  });
+
+  it("dedups flat + nested of the same collection (same served id)", () => {
+    const entries = [
+      { key: "normalized/qc-zonage-x.geojson" },
+      { key: "normalized/qc-zonage-x/qc-zonage-x.geojson" }, // nested, same stem, no datasetId → same id
+    ];
+    expect(servedDatasetIds(entries)).toEqual(["qc-zonage-x"]);
+  });
+
+  it("excludes non-canonical keys even if they carry a datasetId (rejected on the raw key)", () => {
+    const entries = [
+      { key: "normalized/qc-zonage-x.geojson" },
+      { key: "normalized/_replaced/x__flat.2026.geojson", datasetId: "should-be-ignored" },
+      { key: "normalized/x.additive-prebackup.geojson", datasetId: "ignored" },
+      { key: "normalized/coherence.json" },
+    ];
+    expect(servedDatasetIds(entries)).toEqual(["qc-zonage-x"]);
   });
 });
