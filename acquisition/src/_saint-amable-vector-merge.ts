@@ -49,7 +49,7 @@ import { s3Client, BUCKET, getGeoJsonFeatureCollection, putBytes, copyObject, ex
 
 const SLUG = "saint-amable";
 const KEY = `normalized/ca-qc-zonage/qc-zonage-${SLUG}.geojson`;
-const BACKUP_KEY = `normalized/ca-qc-zonage/qc-zonage-${SLUG}.contour-auto-preclip.geojson`;
+const BACKUP_KEY = `normalized/ca-qc-zonage/_replaced/qc-zonage-${SLUG}__contour-auto-preclip.geojson`; // hors namespace servi, sous _replaced/ (index-exclu) — dé-entropie #4
 const T1_LOCAL = "/home/antoinefa/.cache-tmp/frag-triage/t1-sa-both/qc-zonage-saint-amable.geojson";
 
 interface Feature { type: "Feature"; properties: Record<string, unknown>; geometry: { type: string; coordinates: unknown } }
