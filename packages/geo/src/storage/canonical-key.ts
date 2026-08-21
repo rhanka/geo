@@ -44,18 +44,35 @@ export function isCanonicalGeojsonKey(key: string): boolean {
 }
 
 /**
- * The CANONICAL served dataset ids derived from a store-key listing, via the SAME
- * admission + stem rule the serving index uses — deduped (a flat + nested key of
- * the same collection collapse to one id, sharing a stem) and sorted.
+ * The SERVED collection id for a canonical dataset — the SINGLE source of truth
+ * used by BOTH the serving index and the sync parity stamp (§4). Equals the
+ * dataset's `datasetId` when its `.meta.json` carries one, else the key stem.
  *
- * This is the version-independent DATA-parity target the sync stamps into
- * `coherence.json` (`served_count` = length, `set_hash` = hash of these ids):
- * computed from the SOURCE data the mirror already lists, NOT from a possibly-stale
- * prod `/collections` — so the preprod gate matches the canonical serving by
- * construction, regardless of the prod image's index freshness (§4 re-spec).
+ * This distinction is LOAD-BEARING and version-independent: e.g.
+ * `normalized/abercorn.geojson` (zonage → id `abercorn`) and
+ * `normalized/qc-cadastre-lots/abercorn.geojson` (lots, `datasetId=qc-lots-abercorn`)
+ * SHARE the stem `abercorn` but are DISTINCT served collections. A stem-only id
+ * would MERGE them (data loss + broken immo refs); `datasetId ?? stem` keeps them
+ * separate — the ground truth immo consumes.
  */
-export function canonicalServedIds(keys: readonly string[]): string[] {
+export function servedCollectionId(stem: string, datasetId: string | undefined): string {
+  return datasetId ?? stem;
+}
+
+/**
+ * The SERVED collection id SET derived from canonical `{key, datasetId?}` entries,
+ * via {@link servedCollectionId} — deduped + sorted. The ONE derivation shared by
+ * the serving index (`store-provider`) and the sync stamp (runner reads the source
+ * `.meta.json` of each canonical key) so `stamp-set == served-set` BY CONSTRUCTION,
+ * regardless of the prod image's index freshness (§4 re-spec, meta-exact).
+ */
+export function servedDatasetIds(
+  entries: readonly { key: string; datasetId?: string | undefined }[],
+): string[] {
   const ids = new Set<string>();
-  for (const key of keys) if (isCanonicalGeojsonKey(key)) ids.add(stemOf(key));
+  for (const e of entries) {
+    if (!isCanonicalGeojsonKey(e.key)) continue;
+    ids.add(servedCollectionId(stemOf(e.key), e.datasetId));
+  }
   return [...ids].sort();
 }
