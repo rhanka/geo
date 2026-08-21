@@ -14,6 +14,11 @@ export type { ByteStream, PutOptions, Store } from "./store.js";
 export { FsStore } from "./fs-store.js";
 export { S3Store, type S3StoreConfig } from "./s3-store.js";
 export {
+  ovhSafeS3ClientOptions,
+  OVH_S3_STREAM_BUFFER_BYTES,
+  type OvhSafeS3ClientOptions,
+} from "./s3-client-config.js";
+export {
   createStore,
   parseStoreUri,
   type CreateStoreOptions,
