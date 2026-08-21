@@ -43,6 +43,9 @@ rules:
   - apiGroups: [""]
     resources: ["pods"]
     verbs: ["get", "list", "watch"] # rollout status
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["get", "list", "watch"] # diagnostics auto sur échec (read-only ; poc-k8s ré-applique)
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
