@@ -1,0 +1,798 @@
+{
+ "contract": "zones-noncanonical-key-audit/diagnostic",
+ "generated_at_utc": "2026-08-21T04:27:52.772Z",
+ "read_only": true,
+ "s3_prefix": "normalized/ca-qc-zonage/",
+ "location_rule": "namespace servi = normalized/ca-qc-zonage/ + qc-zonage-<slug>/. Un segment de répertoire commençant par `_` = zone backup/annexe HORS namespace servi.",
+ "totals": {
+  "total_keys_listed": 2806,
+  "by_category": {
+   "BACKUP-UNDER-PREFIX": 1165,
+   "OTHER": 2,
+   "NONCANONICAL-GEOJSON-IN-NAMESPACE": 433,
+   "SIDECAR-IN-NAMESPACE": 250,
+   "CANONICAL-FLAT": 808,
+   "CANONICAL-NESTED": 72,
+   "CANONICAL-NESTED-SIDECAR": 76
+  },
+  "canonical_flat_slugs": 808,
+  "canonical_nested_slugs": 72,
+  "distinct_canonical_slugs": 873,
+  "non_canonical_keys": 1850
+ },
+ "split_backup_vs_namespace": {
+  "backups_under_underscore_prefix": 1165,
+  "backup_prefixes": [
+   {
+    "prefix": "_zone-source-fold-backups",
+    "count": 895,
+    "geojson": 895
+   },
+   {
+    "prefix": "_replaced",
+    "count": 270,
+    "geojson": 269
+   }
+  ],
+  "noncanonical_geojson_in_namespace": 433,
+  "noncanonical_geojson_in_namespace_root": 396,
+  "noncanonical_geojson_in_nested_dir": 37,
+  "sidecar_json_in_namespace": 250,
+  "other": 2
+ },
+ "geoapi_indexer_verdict": {
+  "source": "packages/geo/src/api/providers/store-provider.ts + packages/geo/src/storage/s3-store.ts (établi par lecture code, file:line)",
+  "recurses_into_backup_prefixes": true,
+  "recurse_evidence": "S3Store.list() ListObjectsV2 sans Delimiter → récursif ; pushe chaque Key sans filtre (s3-store.ts:111-129)",
+  "keeps_suffix_as_collection_id": true,
+  "id_rule": "id = stemOf(basename) = basename moins .geojson (répertoire ignoré) ; override par sibling <stem>.meta.json.datasetId (store-provider.ts:108-119,231-234,246-250)",
+  "only_exclusion": ".endsWith('.geojson') ; puis dédup par id EXACT (store-provider.ts:96,101-104)",
+  "no_canonical_regex": true,
+  "no_prefix_skiplist": true,
+  "no_collapse_by_slug": true,
+  "consequence": "qc-zonage-<slug>__flat.<ts>.geojson (et .additive-prebackup/.contour-auto-preclip/__double-slug) deviennent chacun UNE collection distincte ; les snapshots single-slug qc-zonage-<slug>.geojson sous _zone-source-fold-backups collisionnent avec l'id canonique et sont déduppés (last-wins/nested), donc NE créent pas de collection en trop"
+ },
+ "geoapi_collection_model_exact": {
+  "algorithm": "id = basename(key) sans .geojson (répertoire ignoré) ; dédup par id exact ; filtre .geojson ; récursif ; réf store-provider.ts:86-120,246-278",
+  "meta_datasetId_caveat": "un sibling <stem>.meta.json avec datasetId remapperait l'id — non résolu ici ; borne haute = zéro remap",
+  "total_distinct_collections_modeled": 1638,
+  "legitimate_canonical_collections": 873,
+  "extra_noncanonical_collections": 765,
+  "extra_from_backup_prefix_keys": 342,
+  "extra_from_in_namespace_pollution": 422,
+  "extra_mixed_or_other": 1,
+  "noncanonical_geojson_keys_collapsed_into_canonical_id": 829,
+  "extra_stems_sample": [
+   "qc-zonage-adstock__flat.2026-08-10T1521Z",
+   "qc-zonage-albertville__flat.2026-08-10T1542Z",
+   "qc-zonage-amqui__flat.2026-08-10T1543Z",
+   "qc-zonage-armagh__flat.2026-07-26T0159Z",
+   "qc-zonage-auclair__flat.2026-07-26T1342Z",
+   "qc-zonage-ayers-cliff__flat.2026-08-03T2011Z",
+   "qc-zonage-baie-comeau__flat.2026-08-10T1521Z",
+   "qc-zonage-baie-des-sables__flat.2026-07-26T1045Z",
+   "qc-zonage-baie-trinite__flat.2026-08-10T1543Z",
+   "qc-zonage-barnston-ouest__subdir.2026-07-26T0640Z",
+   "qc-zonage-barraute__flat.2026-08-10T1543Z",
+   "qc-zonage-beauceville__flat.2026-08-10T1521Z",
+   "qc-zonage-beaulac-garthby__flat.2026-08-10T1543Z",
+   "qc-zonage-beaupre__flat.2026-08-16T0441Z",
+   "qc-zonage-beaupre__nested-misdeposit.2026-08-16T0441Z",
+   "qc-zonage-berry__flat.2026-08-10T1543Z",
+   "qc-zonage-berthier-sur-mer__flat.2026-08-10T1543Z",
+   "qc-zonage-berthierville__flat.2026-08-10T1544Z",
+   "qc-zonage-boisbriand__flat.2026-08-03T2012Z",
+   "qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z",
+   "qc-zonage-boucherville__flat.2026-08-10T1849Z",
+   "qc-zonage-brossard__flat.2026-08-10T1848Z",
+   "qc-zonage-cap-saint-ignace__flat.2026-08-10T1544Z",
+   "qc-zonage-causapscal__flat.2026-08-10T1544Z",
+   "qc-zonage-chambly__subdir.2026-07-26T0717Z",
+   "qc-zonage-chambly__subdir.2026-07-26T0725Z",
+   "qc-zonage-champneuf__flat.2026-08-10T1544Z",
+   "qc-zonage-chateauguay__flat.2026-08-10T1544Z",
+   "qc-zonage-chesterville__flat.2026-08-10T1725Z",
+   "qc-zonage-chute-aux-outardes__flat.2026-08-10T1544Z"
+  ]
+ },
+ "geoapi_collection_candidates_upper_bound_per_key": {
+  "note": "Borne HAUTE par CLÉ (avant dédup par stem). Le modèle exact ci-dessus est la mesure qui compte.",
+  "legitimate_canonical_slugs": 873,
+  "geojson_under_backup_prefixes": 1164,
+  "geojson_pollution_namespace_root": 396,
+  "geojson_pollution_nested_dir": 37,
+  "extra_keys_if_recurse": 1597,
+  "extra_keys_if_no_recurse_namespace_only": 433
+ },
+ "finding_762_check": {
+  "cited_extra_collections": 762,
+  "measured_extra_collections_exact_model": 765,
+  "measured_extra_from_backup_prefix": 342,
+  "measured_extra_from_in_namespace_pollution": 422,
+  "measured_noncanonical_geojson_keys_upper_bound": 1597,
+  "note": "Le modèle exact (stems distincts non-canoniques) est la comparaison correcte au +762 ; la borne haute par clé sur-compte car les snapshots single-slug collisionnent avec l'id canonique."
+ },
+ "suffix_token_set": [
+  {
+   "token": "flat",
+   "under_backup_prefix": 234,
+   "in_namespace": 0,
+   "total": 234
+  },
+  {
+   "token": "subdir",
+   "under_backup_prefix": 23,
+   "in_namespace": 0,
+   "total": 23
+  },
+  {
+   "token": "nested",
+   "under_backup_prefix": 9,
+   "in_namespace": 0,
+   "total": 9
+  },
+  {
+   "token": "nested-misdeposit",
+   "under_backup_prefix": 3,
+   "in_namespace": 0,
+   "total": 3
+  },
+  {
+   "token": "pre-712-47-20260715",
+   "under_backup_prefix": 1,
+   "in_namespace": 0,
+   "total": 1
+  }
+ ],
+ "pollution_in_namespace_by_variant": [
+  {
+   "variant": "additive-prebackup",
+   "count": 425
+  },
+  {
+   "variant": "",
+   "count": 5
+  },
+  {
+   "variant": "contour-auto-preclip",
+   "count": 3
+  }
+ ],
+ "pollution_in_namespace_by_location": [
+  {
+   "location": "namespace-nested",
+   "count": 37
+  },
+  {
+   "location": "namespace-root",
+   "count": 396
+  }
+ ],
+ "sidecar_in_namespace_by_variant": [
+  {
+   "variant": "stats.json",
+   "count": 241
+  },
+  {
+   "variant": "meta.json",
+   "count": 9
+  }
+ ],
+ "backup_canonical_correspondence": {
+  "considered_keys": 1598,
+  "with_matching_canonical": 1598,
+  "without_matching_canonical": 0,
+  "correspondence_rate_pct": 100,
+  "orphan_sample": []
+ },
+ "other_shapes": [
+  {
+   "shape": "other:.geojson",
+   "count": 1
+  },
+  {
+   "shape": "other:.json",
+   "count": 1
+  }
+ ],
+ "samples": {
+  "CANONICAL-FLAT": [
+   "normalized/ca-qc-zonage/qc-zonage-abercorn.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-acton-vale.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-adstock.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-albanel.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-albertville.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-alma.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-amherst.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-amqui.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-ange-gardien.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-armagh.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-arundel.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-ascot-corner.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-aston-jonction.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-auclair.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-audet.geojson"
+  ],
+  "CANONICAL-NESTED": [
+   "normalized/ca-qc-zonage/qc-zonage-amos/qc-zonage-amos.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-barnston-ouest/qc-zonage-barnston-ouest.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-beaupre/qc-zonage-beaupre.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-brownsburg-chatham/qc-zonage-brownsburg-chatham.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-chambly/qc-zonage-chambly.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-charlemagne/qc-zonage-charlemagne.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-coaticook/qc-zonage-coaticook.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-compton/qc-zonage-compton.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-contrecoeur/qc-zonage-contrecoeur.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-cote-saint-luc/qc-zonage-cote-saint-luc.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-dixville/qc-zonage-dixville.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-dorval/qc-zonage-dorval.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-east-hereford/qc-zonage-east-hereford.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-gore/qc-zonage-gore.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-grenville-sur-la-rouge/qc-zonage-grenville-sur-la-rouge.geojson"
+  ],
+  "CANONICAL-NESTED-SIDECAR": [
+   "normalized/ca-qc-zonage/qc-zonage-armagh/qc-zonage-armagh.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-barnston-ouest/qc-zonage-barnston-ouest.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-beaumont/qc-zonage-beaumont.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-beaupre/qc-zonage-beaupre.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-brownsburg-chatham/qc-zonage-brownsburg-chatham.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-chambly/qc-zonage-chambly.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-charlemagne/qc-zonage-charlemagne.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-chateau-richer/qc-zonage-chateau-richer.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-coaticook/qc-zonage-coaticook.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-compton/qc-zonage-compton.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-cote-saint-luc/qc-zonage-cote-saint-luc.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-dixville/qc-zonage-dixville.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-dorval/qc-zonage-dorval.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-east-hereford/qc-zonage-east-hereford.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-gore/qc-zonage-gore.meta.json"
+  ],
+  "BACKUP-UNDER-PREFIX": [
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-adstock__flat.2026-08-10T1521Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-albertville__flat.2026-08-10T1542Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-amqui__flat.2026-08-10T1543Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-armagh__flat.2026-07-26T0159Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-auclair__flat.2026-07-26T1342Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-ayers-cliff__flat.2026-08-03T2011Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-comeau__flat.2026-08-10T1521Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-des-sables__flat.2026-07-26T1045Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-trinite__flat.2026-08-10T1543Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-barnston-ouest__subdir.2026-07-26T0640Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-barraute__flat.2026-08-10T1543Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-beauceville__flat.2026-08-10T1521Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-beaulac-garthby__flat.2026-08-10T1543Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-beaupre__flat.2026-08-16T0441Z.geojson",
+   "normalized/ca-qc-zonage/_replaced/qc-zonage-beaupre__nested-misdeposit.2026-08-16T0441Z.geojson"
+  ],
+  "NONCANONICAL-GEOJSON-IN-NAMESPACE": [
+   "normalized/ca-qc-zonage/ca-qc-zonage-sainte-cecile-de-milton-boundary-georef/qc-zonage-sainte-cecile-de-milton.geojson",
+   "normalized/ca-qc-zonage/normalized/ca-qc-zonage/ca-qc-zonage-longueuil/qc-zonage-longueuil.geojson",
+   "normalized/ca-qc-zonage/normalized/ca-qc-zonage/ca-qc-zonage-rimouski/qc-zonage-rimouski.geojson",
+   "normalized/ca-qc-zonage/normalized/ca-qc-zonage/ca-qc-zonage-saguenay/qc-zonage-saguenay.geojson",
+   "normalized/ca-qc-zonage/normalized/ca-qc-zonage/ca-qc-zonage-shawinigan/qc-zonage-shawinigan.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-adstock.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-albertville.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-alma.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-amherst.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-amos/qc-zonage-amos.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-amqui.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-armagh.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-arundel.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-auclair.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-audet.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-ayers-cliff.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-baie-comeau.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-baie-des-sables.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-baie-trinite.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-barnston-ouest/qc-zonage-barnston-ouest.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-barraute.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-beauceville.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-beaulac-garthby.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-beaupre.additive-prebackup.geojson",
+   "normalized/ca-qc-zonage/qc-zonage-berry.additive-prebackup.geojson"
+  ],
+  "SIDECAR-IN-NAMESPACE": [
+   "normalized/ca-qc-zonage/ca-qc-zonage-sainte-cecile-de-milton-boundary-georef/qc-zonage-sainte-cecile-de-milton.meta.json",
+   "normalized/ca-qc-zonage/normalized/ca-qc-zonage/ca-qc-zonage-longueuil/qc-zonage-longueuil.meta.json",
+   "normalized/ca-qc-zonage/normalized/ca-qc-zonage/ca-qc-zonage-rimouski/qc-zonage-rimouski.meta.json",
+   "normalized/ca-qc-zonage/normalized/ca-qc-zonage/ca-qc-zonage-saguenay/qc-zonage-saguenay.meta.json",
+   "normalized/ca-qc-zonage/normalized/ca-qc-zonage/ca-qc-zonage-shawinigan/qc-zonage-shawinigan.meta.json",
+   "normalized/ca-qc-zonage/qc-zonage-abercorn.stats.json",
+   "normalized/ca-qc-zonage/qc-zonage-acton-vale.stats.json",
+   "normalized/ca-qc-zonage/qc-zonage-amherst.stats.json",
+   "normalized/ca-qc-zonage/qc-zonage-ange-gardien.stats.json",
+   "normalized/ca-qc-zonage/qc-zonage-arundel.stats.json",
+   "normalized/ca-qc-zonage/qc-zonage-ascot-corner.stats.json",
+   "normalized/ca-qc-zonage/qc-zonage-barkmere.stats.json",
+   "normalized/ca-qc-zonage/qc-zonage-becancour.stats.json",
+   "normalized/ca-qc-zonage/qc-zonage-bedford--brome-missisquoi.stats.json",
+   "normalized/ca-qc-zonage/qc-zonage-belcourt.stats.json"
+  ],
+  "OTHER": [
+   "normalized/ca-qc-zonage/anchors-saint-frederic.geojson",
+   "normalized/ca-qc-zonage/ca-qc-zonage-sainte-cecile-de-milton-boundary-georef/boundary_match_diag.json"
+  ]
+ },
+ "noncanonical_sample": [
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-adstock__flat.2026-08-10T1521Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "adstock",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-albertville__flat.2026-08-10T1542Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "albertville",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-amqui__flat.2026-08-10T1543Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "amqui",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-armagh__flat.2026-07-26T0159Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "armagh",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-auclair__flat.2026-07-26T1342Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "auclair",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-ayers-cliff__flat.2026-08-03T2011Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "ayers-cliff",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-comeau__flat.2026-08-10T1521Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "baie-comeau",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-des-sables__flat.2026-07-26T1045Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "baie-des-sables",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-baie-trinite__flat.2026-08-10T1543Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "baie-trinite",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-barnston-ouest__subdir.2026-07-26T0640Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "barnston-ouest",
+   "backup_prefix": "_replaced",
+   "variant": "__subdir.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-barraute__flat.2026-08-10T1543Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "barraute",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-beauceville__flat.2026-08-10T1521Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "beauceville",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-beaulac-garthby__flat.2026-08-10T1543Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "beaulac-garthby",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-beaupre__flat.2026-08-16T0441Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "beaupre",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-beaupre__nested-misdeposit.2026-08-16T0441Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "beaupre",
+   "backup_prefix": "_replaced",
+   "variant": "__nested-misdeposit.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-berry__flat.2026-08-10T1543Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "berry",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-berthier-sur-mer__flat.2026-08-10T1543Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "berthier-sur-mer",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-berthierville__flat.2026-08-10T1544Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "berthierville",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-boisbriand__flat.2026-08-03T2012Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "boisbriand",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "boischatel",
+   "backup_prefix": "_replaced",
+   "variant": "__nested-misdeposit.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-boischatel__nested-misdeposit.2026-08-16T0503Z.meta.json",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "boischatel",
+   "backup_prefix": "_replaced",
+   "variant": "__nested-misdeposit.<ts>.meta.json",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-boucherville__flat.2026-08-10T1849Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "boucherville",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-brossard__flat.2026-08-10T1848Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "brossard",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-cap-saint-ignace__flat.2026-08-10T1544Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "cap-saint-ignace",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-causapscal__flat.2026-08-10T1544Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "causapscal",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-chambly__subdir.2026-07-26T0717Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "chambly",
+   "backup_prefix": "_replaced",
+   "variant": "__subdir.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-chambly__subdir.2026-07-26T0725Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "chambly",
+   "backup_prefix": "_replaced",
+   "variant": "__subdir.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-champneuf__flat.2026-08-10T1544Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "champneuf",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-chateauguay__flat.2026-08-10T1544Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "chateauguay",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-chesterville__flat.2026-08-10T1725Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "chesterville",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-chute-aux-outardes__flat.2026-08-10T1544Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "chute-aux-outardes",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-chute-saint-philippe__flat.2026-08-16T0328Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "chute-saint-philippe",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-coaticook__subdir.2026-07-24T1639Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "coaticook",
+   "backup_prefix": "_replaced",
+   "variant": "__subdir.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-coaticook__subdir.2026-07-26T0641Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "coaticook",
+   "backup_prefix": "_replaced",
+   "variant": "__subdir.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-coaticook__subdir.2026-07-26T0643Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "coaticook",
+   "backup_prefix": "_replaced",
+   "variant": "__subdir.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-contrecoeur__nested.2026-08-03T1424Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "contrecoeur",
+   "backup_prefix": "_replaced",
+   "variant": "__nested.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-crabtree__flat.2026-08-10T1544Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "crabtree",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-danville__flat.2026-08-10T1545Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "danville",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-deux-montagnes__flat.2026-07-26T1221Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "deux-montagnes",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-disraeli--les-appalaches__flat.2026-07-26T1038Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "disraeli--les-appalaches",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-disraeli--les-appalaches--2__flat.2026-08-10T1545Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "disraeli--les-appalaches--2",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-dundee__flat.2026-08-10T1545Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "dundee",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-east-broughton__flat.2026-08-10T1545Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "east-broughton",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-elgin__flat.2026-08-10T1545Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "elgin",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-esterel__flat.2026-08-10T1545Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "esterel",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-farnham__flat.2026-08-10T1545Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "farnham",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-fermont__flat.2026-08-10T1546Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "fermont",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-franklin__flat.2026-07-26T1037Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "franklin",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-franquelin__flat.2026-08-10T1546Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "franquelin",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-gaspe__flat.2026-08-10T1706Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "gaspe",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-gatineau__flat.2026-08-10T1546Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "gatineau",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-godbout__flat.2026-07-26T1038Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "godbout",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-godmanchester__flat.2026-08-10T1546Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "godmanchester",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-grand-metis__flat.2026-07-26T1040Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "grand-metis",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-grand-metis__flat.2026-07-26T1043Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "grand-metis",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-grand-metis__flat.2026-07-26T1044Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "grand-metis",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-ham-nord__flat.2026-08-10T1725Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "ham-nord",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-ham-sud__flat.2026-07-26T1039Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "ham-sud",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-hampstead__nested.2026-08-10T1224Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "hampstead",
+   "backup_prefix": "_replaced",
+   "variant": "__nested.<ts>",
+   "location": "backup-prefix"
+  },
+  {
+   "key": "normalized/ca-qc-zonage/_replaced/qc-zonage-havelock__flat.2026-08-10T1546Z.geojson",
+   "category": "BACKUP-UNDER-PREFIX",
+   "slug": "havelock",
+   "backup_prefix": "_replaced",
+   "variant": "__flat.<ts>",
+   "location": "backup-prefix"
+  }
+ ]
+}
