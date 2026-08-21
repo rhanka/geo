@@ -10,6 +10,10 @@
 
 import { createHash } from "node:crypto";
 
+// Règle canonique PARTAGÉE (même source que le serving) — import direct du module
+// pur pour garder cette lib légère (pas de dépendance @aws-sdk via le barrel storage).
+import { isCanonicalGeojsonKey } from "../storage/canonical-key.js";
+
 /** Manifest object name at the data root; store key is relative to the prefix. */
 export const COHERENCE_MANIFEST_BASENAME = "coherence.json";
 
@@ -63,9 +67,13 @@ export interface MirrorPlan {
   /** Source keys deliberately not copied (a source-side `coherence.json`). */
   skipped: string[];
   /**
-   * Dest keys to PRUNE so the mirror is exact parity, not add-only (§4 GELÉ,
-   * ADR-0027): dest objects matching no mirrored source key, EXCLUDING the
-   * `coherenceKey` (never delete the runner-stamped manifest). Empty when no
+   * Dest keys to PRUNE so the SERVED mirror is exact parity, not add-only (§4
+   * GELÉ, ADR-0027): **CANONICAL** dest objects ({@link isCanonicalGeojsonKey})
+   * matching no mirrored source key. Non-canonical dest keys — backups
+   * (`_replaced/`, `_zone-source-fold-backups/`), prebackups, sidecars, the
+   * `coherence.json` manifest — are NEVER pruned: they are audit/reversibility
+   * provenance, and the serving already excludes them from the index, so parity
+   * of the SERVED set holds without deleting a byte of provenance. Empty when no
    * dest listing is given, OR when `srcKeys` is empty — the safety default that
    * refuses to prune against an empty/failed source listing (mass-delete guard,
    * garde-fou #1); the runner additionally verifies the source list fully
@@ -82,10 +90,10 @@ export interface MirrorPlan {
  * stray source `coherence.json` must not clobber it.
  *
  * When `destKeys` (the current dest listing) is supplied, also computes
- * {@link MirrorPlan.deletes} = dest keys matching no mirrored source key (minus
- * the coherence manifest) so the runner can PRUNE to exact parity. An empty
- * `srcKeys` yields no deletes (safety: never mass-delete against an empty/failed
- * source — see {@link MirrorPlan.deletes}).
+ * {@link MirrorPlan.deletes} = **canonical** dest keys matching no mirrored source
+ * key, so the runner can PRUNE the served set to exact parity while PRESERVING all
+ * non-canonical provenance (backups/prebackups/sidecars). An empty `srcKeys` yields
+ * no deletes (safety: never mass-delete against an empty/failed source).
  */
 export function planFullMirror(
   srcKeys: readonly string[],
@@ -104,12 +112,16 @@ export function planFullMirror(
     }
     copies.push({ srcKey, destKey });
   }
-  // Prune plan: keep every mirrored dest key + the stamped manifest; delete the
-  // rest. Refuse to prune when the source is empty (mass-delete guard #1).
+  // Prune plan: delete ONLY canonical surplus (a served-eligible dest key matching
+  // no mirrored source key). Non-canonical keys (backups/prebackups/sidecars/the
+  // manifest) are PRESERVED — provenance, and not served anyway. Refuse to prune
+  // when the source is empty (mass-delete guard #1).
   const expected = new Set(copies.map((c) => c.destKey));
   expected.add(coherenceKey);
   const deletes =
-    srcKeys.length === 0 ? [] : destKeys.filter((k) => !expected.has(k));
+    srcKeys.length === 0
+      ? []
+      : destKeys.filter((k) => isCanonicalGeojsonKey(k) && !expected.has(k));
   return { copies, coherenceKey, skipped, deletes };
 }
 
