@@ -22,6 +22,9 @@ import { S3Client, ListObjectsV2Command, HeadObjectCommand, CopyObjectCommand, G
 // copie publiée de node_modules (sans le nouveau subpath) ; le dist workspace est la
 // source de vérité locale, et le Job in-cluster est buildé depuis ce même repo.
 import { planFullMirror, buildCoherenceManifest, coherenceManifestKeyFor, computeSetHash } from "../packages/geo/dist/preprod/index.js";
+// Options client S3 sûres OVH/Scaleway (coupe l'aws-chunked refusé au PUT) — factory
+// PARTAGÉ de la lib, pas un fix ad-hoc : serving + sync + tout writer en bénéficient.
+import { ovhSafeS3ClientOptions } from "../packages/geo/dist/storage/index.js";
 import process from "node:process";
 
 // ── args ──────────────────────────────────────────────────────────────────────
@@ -56,7 +59,7 @@ const clientFrom = (p) => {
   if (endpoint) cfg.endpoint = endpoint;
   cfg.region = region || "us-east-1";
   if (ak && sk) cfg.credentials = { accessKeyId: ak, secretAccessKey: sk };
-  return new S3Client(cfg);
+  return new S3Client({ ...cfg, ...ovhSafeS3ClientOptions() });
 };
 const destClient = clientFrom("S3_");
 const hasSourceCreds = Boolean(process.env["S3_SOURCE_ACCESS_KEY"]);
