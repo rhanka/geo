@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readdirSync, readFileSync } from "node:fs";
 import { join, relative, resolve } from "node:path";
-import { assertGeometryProof, assertServedZoneGeojson, attachGeometryProof, carryForwardServedZoneProperties, featureHasV2Proof, isRealGeometryUrl, isServedZoneKey, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson, putServedZoneGeojsonIfMatch, sameGeometryProof } from "./zonage-proof.js";
+import { additivePrebackupKey, assertGeometryProof, assertServedZoneGeojson, attachGeometryProof, carryForwardServedZoneProperties, featureHasV2Proof, isRealGeometryUrl, isServedZoneKey, proofFromFetched, putServedZoneAdditive, putServedZoneGeojson, putServedZoneGeojsonIfMatch, sameGeometryProof } from "./zonage-proof.js";
 import { copyObject, putBytes } from "./s3.js";
 
 describe("served zonage geometry proof", () => {
@@ -804,6 +804,49 @@ describe("additive served-zone provenance write", () => {
       })).rejects.toThrow(/non-provenance property "proof"/);
       expect(sent.some((command) => command.name === PUT)).toBe(false);
     });
+  });
+
+  // ── dé-entropie finding #4: the pre-overwrite backup used to be written as
+  // `<servedkey>.additive-prebackup.geojson` — a sibling INSIDE the served
+  // namespace. geo-api indexes every `.geojson` under `normalized/ca-qc-zonage/`,
+  // so each such sibling became a junk collection (425 of them). The backup must
+  // now land under the index-excluded `_replaced/` prefix, and the served
+  // namespace must only ever receive the canonical `qc-zonage-<slug>.geojson` key.
+  it("writes the pre-overwrite backup UNDER _replaced/ (out of the served namespace), never as an in-namespace .additive-prebackup.geojson sibling", async () => {
+    const served = twoFeatures();
+    const { s3, sent } = fakeS3(served);
+    const incoming: any = clone(served);
+    for (const f of incoming.features) { f.properties.zone_source_url = "https://data.example.org/z.geojson"; f.properties.zone_source_level = "directe"; }
+    await putServedZoneAdditive(s3, KEY, incoming, { allowedProps: ["zone_source_url", "zone_source_level"] });
+
+    const copy = sent.find((c) => c.name === COPY)!;
+    const put = sent.find((c) => c.name === PUT)!;
+    // WHAT is backed up is unchanged: the source is the current served key.
+    expect(copy.input.CopySource).toContain(KEY);
+    // WHERE it lands changed: under the index-excluded `_replaced/` prefix, with the
+    // canonical campaign naming — NOT a `<key>.additive-prebackup.geojson` sibling.
+    expect(copy.input.Key).toMatch(/^normalized\/ca-qc-zonage\/_replaced\/qc-zonage-alpha__additive-prebackup-flat\.\d{4}-\d{2}-\d{2}T\d{4}Z\.geojson$/);
+    expect(copy.input.Key).not.toMatch(/\.additive-prebackup\.geojson$/);
+    // The backup is not an indexable served key (geo-api will not turn it into a collection).
+    expect(isServedZoneKey(copy.input.Key)).toBe(false);
+    // The ONLY canonical served write is the PutObject onto the canonical key.
+    expect(put.input.Key).toBe(KEY);
+    // No CopyObject destination ever targets the served namespace directly — all sit under `_replaced/`.
+    for (const dest of sent.filter((c) => c.name === COPY).map((c) => c.input.Key as string)) {
+      expect(dest.startsWith("normalized/ca-qc-zonage/_replaced/")).toBe(true);
+    }
+  });
+
+  it("derives the _replaced/ backup key for flat and nested layouts, and refuses a non-served key", () => {
+    const at = new Date("2026-08-21T04:27:52.772Z");
+    expect(additivePrebackupKey("normalized/ca-qc-zonage/qc-zonage-alpha.geojson", at))
+      .toBe("normalized/ca-qc-zonage/_replaced/qc-zonage-alpha__additive-prebackup-flat.2026-08-21T0427Z.geojson");
+    expect(additivePrebackupKey("normalized/ca-qc-zonage/qc-zonage-alpha/qc-zonage-alpha.geojson", at))
+      .toBe("normalized/ca-qc-zonage/_replaced/qc-zonage-alpha__additive-prebackup-nested.2026-08-21T0427Z.geojson");
+    // Both derived backup keys are outside the served index and never carry the old suffix.
+    expect(isServedZoneKey(additivePrebackupKey("normalized/ca-qc-zonage/qc-zonage-alpha.geojson", at))).toBe(false);
+    expect(additivePrebackupKey("normalized/ca-qc-zonage/qc-zonage-alpha.geojson", at)).not.toMatch(/\.additive-prebackup\.geojson$/);
+    expect(() => additivePrebackupKey("normalized/ca-qc-zonage/qc-zonage-alpha.contour-auto-preclip.geojson")).toThrow(/not a served zonage key/);
   });
 
   it("can skip the backup when explicitly disabled", async () => {
