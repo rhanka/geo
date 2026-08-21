@@ -5,17 +5,23 @@
 // script ne fait que l'I/O S3 autour d'elle.
 //
 // MIROIR PLEIN du préfixe `normalized/` prod → bucket preprod (data-driven, PAS de
-// whitelist : geo-prod sert 3885 collections dont 1088 slug-nu → une whitelist
-// sous-servirait). Copie SEULE (données publiques ; charge Loi 25 = immo-side).
-// Idempotent + rejouable. Sens-unique STRICT : lit la prod, écrit SEULEMENT le
-// bucket preprod. Ordonnancé par poc-k8s en Job in-cluster (fenêtre gatée i-cond S00).
+// whitelist). Copie SEULE (données publiques ; charge Loi 25 = immo-side). Prune du
+// surplus CANONIQUE seulement (provenance préservée). Idempotent + rejouable.
+// Sens-unique STRICT : lit la prod, écrit SEULEMENT le bucket preprod. Ordonnancé
+// par poc-k8s en Job in-cluster (fenêtre gatée i-cond S00).
+//
+// STAMP DE PARITÉ (coherence.json served_count/set_hash) : dérivé du listing SOURCE
+// canonique (`canonicalServedIds` = MÊME règle que le serving), PAS de prod-api
+// (dont l'index peut être STALE = conflation parité-VERSION). Le verify preprod
+// match par construction, quelle que soit la fraîcheur de l'image prod (§4 re-spec).
 //
 // Creds : la source (read-only, scopée) est FOURNIE À PART dans `S3_SOURCE_*`
 // (décision : pas de cred multi-bucket, scoping OVH `unknown`) → le runner bascule
 // en get→put streaming (deux clients, isolation propre). Dest = `S3_*`.
 //
 // Usage : node scripts/geo-preprod-sync.mjs --coherence-id <id> [--source <s3uri>]
-//            [--dest <s3uri>] [--prod-api <base>] [--dry-run] [--limit <n>] [--concurrency <n>]
+//            [--dest <s3uri>] [--dry-run] [--limit <n>] [--concurrency <n>]
+//   (--prod-api conservé pour compat mais NON utilisé — le stamp vient de la source.)
 import { S3Client, ListObjectsV2Command, HeadObjectCommand, CopyObjectCommand, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 // Logique pure depuis le dist workspace (build requis : `npm run -w @sentropic/geo
 // build`). Import RELATIF volontaire : le bare `@sentropic/geo/preprod` résout la
@@ -24,7 +30,7 @@ import { S3Client, ListObjectsV2Command, HeadObjectCommand, CopyObjectCommand, G
 import { planFullMirror, pruneBoundExceeded, DEFAULT_MAX_DELETE_FRACTION, buildCoherenceManifest, coherenceManifestKeyFor, computeSetHash } from "../packages/geo/dist/preprod/index.js";
 // Options client S3 sûres OVH/Scaleway (coupe l'aws-chunked refusé au PUT) — factory
 // PARTAGÉ de la lib, pas un fix ad-hoc : serving + sync + tout writer en bénéficient.
-import { ovhSafeS3ClientOptions } from "../packages/geo/dist/storage/index.js";
+import { ovhSafeS3ClientOptions, canonicalServedIds } from "../packages/geo/dist/storage/index.js";
 import process from "node:process";
 
 // ── args ──────────────────────────────────────────────────────────────────────
@@ -110,18 +116,16 @@ async function copyOne(srcKey, destKey, size) {
   }
   return "copy";
 }
-// Le count servi RÉEL + le hash du set d'ids, lus via l'API prod (= la parité que
-// le miroir reproduit). served_count et set_hash proviennent de la MÊME réponse,
-// donc d'un état cohérent. Renvoie null si l'API prod est injoignable/malformée.
-async function prodServedSet() {
-  try {
-    const r = await fetch(`${opt.prodApi.replace(/\/+$/, "")}/collections`, { headers: { accept: "application/json" } });
-    if (!r.ok) return null;
-    const j = await r.json();
-    if (!Array.isArray(j.collections)) return null;
-    const ids = j.collections.map((c) => c.id).filter((x) => typeof x === "string");
-    return { count: ids.length, setHash: computeSetHash(ids) };
-  } catch { return null; }
+// La cible de parité DATA CANONIQUE (served_count + set_hash), dérivée du listing
+// SOURCE que le miroir liste DÉJÀ — via la MÊME règle que le serving
+// (`canonicalServedIds` = isCanonicalGeojsonKey + stemOf + dedup flat/nested). Pas
+// de dépendance à prod-api (dont l'index peut être STALE = conflation parité-VERSION) :
+// le stamp EST ce que le serving canonique dérive des mêmes données → le verify
+// preprod match par construction (§4 re-spec geo-archi). `null` si source incomplète.
+function servedSetFromSource(srcKeys, complete) {
+  if (!complete) return null;
+  const ids = canonicalServedIds(srcKeys);
+  return { count: ids.length, setHash: computeSetHash(ids) };
 }
 async function pool(items, n, fn) {
   const res = new Array(items.length); let i = 0;
@@ -173,12 +177,13 @@ if (!source.complete || !destListing.complete) {
   pruneStatus = opt.dryRun ? "would-prune" : "pruned";
 }
 
-const served = await prodServedSet();
+// Cible de parité DATA canonique, dérivée du listing SOURCE (pas de prod-api).
+const served = servedSetFromSource(source.keys.map((o) => o.key), source.complete);
 
 let stamped = null;
 if (!opt.dryRun) {
   if (!opt.coherenceId) { console.error("ERREUR: --coherence-id requis pour stamper coherence.json (hors --dry-run)."); process.exit(2); }
-  if (served === null) { console.error("ERREUR: served_count/set_hash introuvables (API prod injoignable) — refus de stamper sans preuve de complétude/parité."); process.exit(3); }
+  if (served === null) { console.error("ERREUR: listing SOURCE incomplet → served_count/set_hash canoniques indérivables — refus de stamper sans preuve de complétude/parité."); process.exit(3); }
   // build + validation fail-closed du manifeste = lib (testée), pas ici.
   const manifest = buildCoherenceManifest({ coherenceId: opt.coherenceId, servedCount: served.count, setHash: served.setHash, generatedAt: new Date().toISOString() });
   await destClient.send(new PutObjectCommand({ Bucket: dest.bucket, Key: COHERENCE_KEY, Body: JSON.stringify(manifest, null, 2), ContentType: "application/json" }));
