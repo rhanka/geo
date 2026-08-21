@@ -13,6 +13,7 @@ export const VERSION = "0.1.0";
 export type { ByteStream, PutOptions, Store } from "./store.js";
 export { FsStore } from "./fs-store.js";
 export { S3Store, type S3StoreConfig } from "./s3-store.js";
+export { isCanonicalGeojsonKey } from "./canonical-key.js";
 export {
   ovhSafeS3ClientOptions,
   OVH_S3_STREAM_BUFFER_BYTES,
