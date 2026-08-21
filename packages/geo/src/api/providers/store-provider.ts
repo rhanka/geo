@@ -41,7 +41,7 @@ import type {
   ServedFeature,
 } from "../provider.js";
 import { geometryIntersectsBBox } from "../geo-util.js";
-import { isCanonicalGeojsonKey, stemOf, type ByteStream, type Store } from "../../storage/index.js";
+import { isCanonicalGeojsonKey, servedCollectionId, stemOf, type ByteStream, type Store } from "../../storage/index.js";
 
 const GEOJSON_SUFFIX = ".geojson";
 const META_SUFFIX = ".meta.json";
@@ -255,7 +255,8 @@ function buildCollectionInfo(
   meta: CollectionMeta | undefined,
   coherenceId: string | undefined,
 ): CollectionInfo {
-  const id = meta?.datasetId ?? stem;
+  // Served id = the ONE shared rule (datasetId ?? stem) — same as the sync stamp.
+  const id = servedCollectionId(stem, meta?.datasetId);
   const license: License = resolveLicense(meta?.license);
   return {
     id,
