@@ -61,33 +61,36 @@ describe("planFullMirror", () => {
   });
 });
 
-describe("planFullMirror — prune (exact parity, not add-only)", () => {
+describe("planFullMirror — prune (exact SERVED parity, preserves provenance)", () => {
   const srcPrefix = "normalized";
   const destPrefix = "normalized";
   const srcKeys = ["normalized/abercorn.geojson", "normalized/qc-lots-montreal.geojson"];
 
-  it("prunes a dest surplus key that matches no mirrored source key", () => {
+  it("prunes a CANONICAL surplus key (served-eligible, matches no source)", () => {
     const destKeys = [
       "normalized/abercorn.geojson", // mirrored — keep
       "normalized/qc-lots-montreal.geojson", // mirrored — keep
-      "normalized/qc-zonage-x__flat.2026-08-21T00Z.geojson", // stale surplus — prune
-      "normalized/qc-zonage-y__nested-misdeposit.2026-08-20.geojson", // stale surplus — prune
+      "normalized/qc-zonage-stale.geojson", // canonical surplus (no source) — PRUNE
     ];
     const plan = planFullMirror(srcKeys, srcPrefix, destPrefix, destKeys);
-    expect(plan.deletes.sort()).toEqual([
-      "normalized/qc-zonage-x__flat.2026-08-21T00Z.geojson",
-      "normalized/qc-zonage-y__nested-misdeposit.2026-08-20.geojson",
-    ]);
+    expect(plan.deletes).toEqual(["normalized/qc-zonage-stale.geojson"]);
   });
 
-  it("never prunes the coherence manifest key nor a key already in source", () => {
+  it("PRESERVES all non-canonical provenance — never prunes backups/prebackups/sidecars/manifest", () => {
     const destKeys = [
-      "normalized/abercorn.geojson", // in source
-      "normalized/coherence.json", // stamped manifest
+      "normalized/abercorn.geojson", // mirrored
+      "normalized/_replaced/qc-zonage-x__flat.2026-08-21T00Z.geojson", // backup — preserve
+      "normalized/_zone-source-fold-backups/2026-08-20/qc-lots-y.geojson", // backup — preserve
+      "normalized/qc-zonage-z.additive-prebackup.geojson", // prebackup — preserve
+      "normalized/qc-zonage-w.contour-auto-preclip.geojson", // sidecar — preserve
+      "normalized/coherence.json", // manifest — preserve
     ];
     const plan = planFullMirror(srcKeys, srcPrefix, destPrefix, destKeys);
-    expect(plan.deletes).not.toContain("normalized/coherence.json");
-    expect(plan.deletes).not.toContain("normalized/abercorn.geojson");
+    expect(plan.deletes).toEqual([]); // no canonical surplus; all non-canonical preserved
+  });
+
+  it("never prunes a canonical key already present in source", () => {
+    const plan = planFullMirror(srcKeys, srcPrefix, destPrefix, ["normalized/abercorn.geojson"]);
     expect(plan.deletes).toEqual([]);
   });
 
@@ -99,8 +102,7 @@ describe("planFullMirror — prune (exact parity, not add-only)", () => {
   });
 
   it("computes no deletes when no dest listing is supplied (add-only compat)", () => {
-    const plan = planFullMirror(srcKeys, srcPrefix, destPrefix);
-    expect(plan.deletes).toEqual([]);
+    expect(planFullMirror(srcKeys, srcPrefix, destPrefix).deletes).toEqual([]);
   });
 });
 

@@ -417,6 +417,24 @@ describe("StoreProvider via the OGC app", () => {
     expect(res.status).toBe(200);
   });
 
+  it("does NOT index operator backups / prebackups / sidecars as served collections (index-discipline)", async () => {
+    const store = new FakeStore();
+    // canonical — served
+    store.seed("qc-zonage-live.geojson", JSON.stringify(REF_COLLECTION));
+    store.seed("qc-zonage-x/qc-zonage-x.geojson", JSON.stringify(REF_COLLECTION)); // nested canonical
+    // junk — NEVER served (a: `_` segment ; b: `__`/`.` in stem)
+    store.seed("_replaced/qc-zonage-live__flat.2026-08-21T00Z.geojson", JSON.stringify(REF_COLLECTION));
+    store.seed("_zone-source-fold-backups/2026-08-20/qc-zonage-live.geojson", JSON.stringify(REF_COLLECTION));
+    store.seed("qc-zonage-live.additive-prebackup.geojson", JSON.stringify(REF_COLLECTION));
+    store.seed("qc-zonage-live.contour-auto-preclip.geojson", JSON.stringify(REF_COLLECTION));
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { collections: { id: string }[] };
+    expect(body.collections.map((c) => c.id).sort()).toEqual(["qc-zonage-live", "qc-zonage-x"]);
+  });
+
   it("serves coherence_id per-collection + coherence_id/served_count on the landing when a manifest is present", async () => {
     const store = seededStore();
     store.seed(
