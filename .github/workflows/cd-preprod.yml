@@ -102,3 +102,26 @@ jobs:
       # C2b — résout le digest dans l'overlay + apply + rollout status (self-gate santé).
       - name: Deploy preprod
         run: make k8s-deploy-preprod GEO_DIGEST="${{ steps.build.outputs.digest }}"
+
+      # Auto-diagnostic sur échec (rollout timeout, apply, …) : surface le POURQUOI du pod
+      # sans check manuel cluster (esprit repo « vert par omission = rouge »). Chaque dump
+      # tolère l'absence de droit/ressource (|| true) — le SA least-priv lit pods/deployments/
+      # sealedsecrets/events (zéro verbe secrets). N'échoue jamais lui-même (if: failure()).
+      - name: Diagnostics (on failure)
+        if: failure()
+        run: |
+          echo "::group::pods (STATUS = ImagePullBackOff / Pending / CrashLoop / Running-not-Ready ?)"
+          kubectl -n geo-preprod get pods -o wide || true
+          echo "::endgroup::"
+          echo "::group::describe pods geo-api"
+          kubectl -n geo-preprod describe pods -l app.kubernetes.io/name=geo-api || true
+          echo "::endgroup::"
+          echo "::group::deployment geo-api"
+          kubectl -n geo-preprod get deployment geo-api -o wide || true
+          echo "::endgroup::"
+          echo "::group::sealedsecrets (Synced ?)"
+          kubectl -n geo-preprod get sealedsecrets || true
+          echo "::endgroup::"
+          echo "::group::events (30 derniers)"
+          kubectl -n geo-preprod get events --sort-by=.lastTimestamp | tail -30 || true
+          echo "::endgroup::"
