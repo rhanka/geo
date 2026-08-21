@@ -16,19 +16,19 @@
 //
 // Usage : node scripts/geo-preprod-sync.mjs --coherence-id <id> [--source <s3uri>]
 //            [--dest <s3uri>] [--prod-api <base>] [--dry-run] [--limit <n>] [--concurrency <n>]
-import { S3Client, ListObjectsV2Command, HeadObjectCommand, CopyObjectCommand, GetObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3Client, ListObjectsV2Command, HeadObjectCommand, CopyObjectCommand, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 // Logique pure depuis le dist workspace (build requis : `npm run -w @sentropic/geo
 // build`). Import RELATIF volontaire : le bare `@sentropic/geo/preprod` résout la
 // copie publiée de node_modules (sans le nouveau subpath) ; le dist workspace est la
 // source de vérité locale, et le Job in-cluster est buildé depuis ce même repo.
-import { planFullMirror, buildCoherenceManifest, coherenceManifestKeyFor, computeSetHash } from "../packages/geo/dist/preprod/index.js";
+import { planFullMirror, pruneBoundExceeded, DEFAULT_MAX_DELETE_FRACTION, buildCoherenceManifest, coherenceManifestKeyFor, computeSetHash } from "../packages/geo/dist/preprod/index.js";
 // Options client S3 sûres OVH/Scaleway (coupe l'aws-chunked refusé au PUT) — factory
 // PARTAGÉ de la lib, pas un fix ad-hoc : serving + sync + tout writer en bénéficient.
 import { ovhSafeS3ClientOptions } from "../packages/geo/dist/storage/index.js";
 import process from "node:process";
 
 // ── args ──────────────────────────────────────────────────────────────────────
-const opt = { source: "s3://sentropic-geo/normalized", dest: "s3://sentropic-geo-preprod/normalized", prodApi: "https://api.geo.sent-tech.ca", coherenceId: null, dryRun: false, limit: Infinity, concurrency: 16 };
+const opt = { source: "s3://sentropic-geo/normalized", dest: "s3://sentropic-geo-preprod/normalized", prodApi: "https://api.geo.sent-tech.ca", coherenceId: null, dryRun: false, limit: Infinity, concurrency: 16, maxDeleteFraction: DEFAULT_MAX_DELETE_FRACTION };
 const argv = process.argv.slice(2);
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
@@ -39,6 +39,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--dry-run") opt.dryRun = true;
   else if (a === "--limit") opt.limit = Number(argv[++i]);
   else if (a === "--concurrency") opt.concurrency = Number(argv[++i]);
+  else if (a === "--max-delete-fraction") opt.maxDeleteFraction = Number(argv[++i]);
   else { console.error(`unknown arg: ${a}`); process.exit(2); }
 }
 
@@ -67,13 +68,32 @@ const sourceClient = hasSourceCreds ? clientFrom("S3_SOURCE_") : destClient;
 const streamMode = hasSourceCreds; // creds séparées => get→put (pas de copy server-side cross-cred)
 
 // ── I/O helpers (la logique de sélection/manifeste vit dans la lib) ───────────
-async function* listSource() {
-  let token;
-  do {
-    const out = await sourceClient.send(new ListObjectsV2Command({ Bucket: src.bucket, Prefix: src.prefix ? `${src.prefix}/` : undefined, ContinuationToken: token }));
-    for (const o of out.Contents ?? []) if (typeof o.Key === "string") yield { key: o.Key, size: o.Size ?? 0 };
-    token = out.IsTruncated ? out.NextContinuationToken : undefined;
-  } while (token);
+// Liste paginée d'un bucket/préfixe. `complete` = la pagination est allée AU BOUT
+// sans erreur ET sans troncature par `limit`. Le prune ne s'exécute QUE contre un
+// listing SOURCE (et DEST) complet — jamais contre un listing partiel/erroné
+// (garde-fou #1 : évite un mass-delete si le list source casse).
+async function listAll(client, bucket, prefix, limit = Infinity) {
+  const keys = [];
+  try {
+    let token;
+    do {
+      const out = await client.send(new ListObjectsV2Command({ Bucket: bucket, Prefix: prefix ? `${prefix}/` : undefined, ContinuationToken: token }));
+      for (const o of out.Contents ?? []) {
+        if (typeof o.Key !== "string") continue;
+        keys.push({ key: o.Key, size: o.Size ?? 0 });
+        if (keys.length >= limit) return { keys, complete: false }; // tronqué → incomplet
+      }
+      token = out.IsTruncated ? out.NextContinuationToken : undefined;
+    } while (token);
+    return { keys, complete: true };
+  } catch (e) {
+    return { keys, complete: false, error: e instanceof Error ? e.message : String(e) };
+  }
+}
+async function deleteOne(key) {
+  if (opt.dryRun) return "would-delete";
+  await destClient.send(new DeleteObjectCommand({ Bucket: dest.bucket, Key: key }));
+  return "delete";
 }
 async function destSize(key) {
   try { const h = await destClient.send(new HeadObjectCommand({ Bucket: dest.bucket, Key: key })); return h.ContentLength ?? -1; }
@@ -112,13 +132,47 @@ async function pool(items, n, fn) {
 }
 
 // ── run ──────────────────────────────────────────────────────────────────────
-const all = [];
-for await (const o of listSource()) { all.push(o); if (all.length >= opt.limit) break; }
-const sizeByKey = new Map(all.map((o) => [o.key, o.size]));
-const plan = planFullMirror(all.map((o) => o.key), src.prefix, dest.prefix); // sélection full-mirror (lib, testée)
+// Listings complets source + dest. `complete` conditionne le prune (garde-fou #1).
+const source = await listAll(sourceClient, src.bucket, src.prefix, opt.limit);
+const destListing = await listAll(destClient, dest.bucket, dest.prefix);
+const sizeByKey = new Map(source.keys.map((o) => [o.key, o.size]));
+// Plan full-mirror : copies + deletes (prune). deletes vide si source vide (garde-fou #1 lib).
+const plan = planFullMirror(
+  source.keys.map((o) => o.key),
+  src.prefix,
+  dest.prefix,
+  destListing.keys.map((o) => o.key),
+);
 
-const outcomes = await pool(plan.copies, opt.concurrency, (c) => copyOne(c.srcKey, c.destKey, sizeByKey.get(c.srcKey) ?? 0));
-const tally = outcomes.reduce((m, k) => ((m[k] = (m[k] || 0) + 1), m), {});
+// 1) COPY-FIRST — jamais de fenêtre où un objet valide manque.
+const copyOutcomes = await pool(plan.copies, opt.concurrency, (c) => copyOne(c.srcKey, c.destKey, sizeByKey.get(c.srcKey) ?? 0));
+const copyTally = copyOutcomes.reduce((m, k) => ((m[k] = (m[k] || 0) + 1), m), {});
+
+// 2) PRUNE (DEST-only) — sous garde-fous fail-closed.
+const destCount = destListing.keys.length;
+let deleteTally = {};
+let pruneStatus;
+if (!source.complete || !destListing.complete) {
+  // #1 : source/dest listing incomplet/tronqué/erroné → JAMAIS de prune (anti mass-delete).
+  pruneStatus = `skipped-incomplete-listing (source.complete=${source.complete} dest.complete=${destListing.complete})`;
+  console.error(`# prune SKIP : ${pruneStatus} — copies seules, parité laissée à un run complet.`);
+} else if (plan.deletes.length === 0) {
+  pruneStatus = "nothing-to-prune";
+} else if (pruneBoundExceeded(plan.deletes.length, destCount, opt.maxDeleteFraction)) {
+  // #2 : borne dépassée → ABORT, aucune suppression.
+  const pct = ((100 * plan.deletes.length) / destCount).toFixed(1);
+  console.error(`# prune ABORT (garde-fou #2) : ${plan.deletes.length}/${destCount} = ${pct}% > ${(100 * opt.maxDeleteFraction).toFixed(0)}%. Aucune suppression. Source cassée ? Investiguer.`);
+  console.log(JSON.stringify({ aborted: "prune-bound-exceeded", deletes_planned: plan.deletes.length, dest_count: destCount, max_delete_fraction: opt.maxDeleteFraction, sample_deletes: plan.deletes.slice(0, 10) }, null, 2));
+  process.exit(4);
+} else {
+  // #3 : log le plan (count + échantillon) avant exécution.
+  const pct = ((100 * plan.deletes.length) / destCount).toFixed(1);
+  console.error(`# prune : ${plan.deletes.length}/${destCount} surplus (${pct}%)${opt.dryRun ? " [dry-run]" : ""}. Échantillon: ${JSON.stringify(plan.deletes.slice(0, 10))}`);
+  const delOutcomes = await pool(plan.deletes, opt.concurrency, (k) => deleteOne(k));
+  deleteTally = delOutcomes.reduce((m, k) => ((m[k] = (m[k] || 0) + 1), m), {});
+  pruneStatus = opt.dryRun ? "would-prune" : "pruned";
+}
+
 const served = await prodServedSet();
 
 let stamped = null;
@@ -133,7 +187,11 @@ if (!opt.dryRun) {
 
 console.log(JSON.stringify({
   source: opt.source, dest: opt.dest, mode: streamMode ? "get-put" : "server-side-copy", dry_run: opt.dryRun,
-  objects_seen: all.length, objects_synced: plan.copies.length, skipped_source_coherence: plan.skipped, outcomes: tally,
+  source_listing: { count: source.keys.length, complete: source.complete },
+  dest_listing: { count: destCount, complete: destListing.complete },
+  copies: { planned: plan.copies.length, outcomes: copyTally },
+  prune: { status: pruneStatus, planned: plan.deletes.length, outcomes: deleteTally, max_delete_fraction: opt.maxDeleteFraction, sample: plan.deletes.slice(0, 10) },
+  skipped_source_coherence: plan.skipped,
   served_count: served?.count ?? null, set_hash: served?.setHash ?? null, coherence_key: COHERENCE_KEY, stamped,
 }, null, 2));
 process.exit(0);

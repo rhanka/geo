@@ -62,6 +62,16 @@ export interface MirrorPlan {
   coherenceKey: string;
   /** Source keys deliberately not copied (a source-side `coherence.json`). */
   skipped: string[];
+  /**
+   * Dest keys to PRUNE so the mirror is exact parity, not add-only (§4 GELÉ,
+   * ADR-0027): dest objects matching no mirrored source key, EXCLUDING the
+   * `coherenceKey` (never delete the runner-stamped manifest). Empty when no
+   * dest listing is given, OR when `srcKeys` is empty — the safety default that
+   * refuses to prune against an empty/failed source listing (mass-delete guard,
+   * garde-fou #1); the runner additionally verifies the source list fully
+   * succeeded and bounds the delete count before executing.
+   */
+  deletes: string[];
 }
 
 /**
@@ -70,11 +80,18 @@ export interface MirrorPlan {
  * bare-slug ones a whitelist would miss), EXCEPT a source object that would land
  * on the dest coherence manifest key — the runner stamps its own, so mirroring a
  * stray source `coherence.json` must not clobber it.
+ *
+ * When `destKeys` (the current dest listing) is supplied, also computes
+ * {@link MirrorPlan.deletes} = dest keys matching no mirrored source key (minus
+ * the coherence manifest) so the runner can PRUNE to exact parity. An empty
+ * `srcKeys` yields no deletes (safety: never mass-delete against an empty/failed
+ * source — see {@link MirrorPlan.deletes}).
  */
 export function planFullMirror(
   srcKeys: readonly string[],
   srcPrefix: string,
   destPrefix: string,
+  destKeys: readonly string[] = [],
 ): MirrorPlan {
   const coherenceKey = coherenceManifestKeyFor(destPrefix);
   const copies: MirrorCopy[] = [];
@@ -87,8 +104,33 @@ export function planFullMirror(
     }
     copies.push({ srcKey, destKey });
   }
-  return { copies, coherenceKey, skipped };
+  // Prune plan: keep every mirrored dest key + the stamped manifest; delete the
+  // rest. Refuse to prune when the source is empty (mass-delete guard #1).
+  const expected = new Set(copies.map((c) => c.destKey));
+  expected.add(coherenceKey);
+  const deletes =
+    srcKeys.length === 0 ? [] : destKeys.filter((k) => !expected.has(k));
+  return { copies, coherenceKey, skipped, deletes };
 }
+
+/**
+ * Safety bound for a prune (garde-fou #2): is deleting `deleteCount` of
+ * `destCount` objects too much? A full/partial source-listing failure would make
+ * the prune try to delete a large share of the dest; abort past `maxFraction`.
+ * A known-empty dest with anything to delete is treated as exceeded (defensive).
+ */
+export function pruneBoundExceeded(
+  deleteCount: number,
+  destCount: number,
+  maxFraction: number,
+): boolean {
+  if (deleteCount <= 0) return false;
+  if (destCount <= 0) return true;
+  return deleteCount / destCount > maxFraction;
+}
+
+/** Default prune safety bound: abort if a run would delete > 25% of the dest. */
+export const DEFAULT_MAX_DELETE_FRACTION = 0.25;
 
 /** Dataset-level freshness + completeness manifest stamped at the data root. */
 export interface CoherenceManifest {
