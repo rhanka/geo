@@ -1,0 +1,22 @@
+{
+ "contract": "zones-bareslug-preprod-reprobe/diagnostic",
+ "generated_at_utc": "2026-08-21T16:07:06.692Z",
+ "read_only": true,
+ "endpoint": "https://s3.bhs.io.cloud.ovh.net",
+ "default_bucket_overridden_from": "sentropic-geo",
+ "target_bucket": "sentropic-geo-preprod",
+ "preprod_access_ok": false,
+ "access_error": {
+  "name": "AccessDenied",
+  "http_status": 403,
+  "message": "Access Denied.",
+  "classified_as_access_or_bucket_error": true
+ },
+ "worklist": "work/coverage/zones-bareslug-alias-worklist-20260821.json",
+ "slug_count": 220,
+ "subdir_prefix": "normalized/ca-qc-zonage/",
+ "verdict": "STOP — creds SANS accès à sentropic-geo-preprod (AccessDenied 403). Escalade geo-archi (accès preprod/cluster). Aucun résultat par-slug fabriqué ou inféré.",
+ "rows": [],
+ "sample": [],
+ "note": "Le join par-slug/nature-zonage/totaux n'a PAS été exécuté : la LIST du préfixe a échoué avant tout HEAD/GET."
+}
