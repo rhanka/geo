@@ -488,8 +488,9 @@ export interface AdditiveOptions {
    * this exact same attestation.
    */
   allowProofV2Promotion?: Iterable<ProofV2Promotion>;
-  /** Take a non-destructive server-side backup of the current served object to
-   *  `<key>.additive-prebackup.geojson` before overwriting. Default true. */
+  /** Take a non-destructive server-side backup of the current served object,
+   *  under the index-excluded `_replaced/` prefix (see {@link additivePrebackupKey}),
+   *  before overwriting. Default true. Never writes into the served namespace. */
   backup?: boolean;
 }
 
@@ -860,6 +861,40 @@ function isAttestedCollectionProofV2Promotion(
   return isAttestedProofV2Promotion(currentProof, nextProof, promotions);
 }
 
+/** Root of the served qc-zonage namespace. Flat keys sit directly under it;
+ *  nested keys sit under `<root>qc-zonage-<slug>/`. Any directory segment that
+ *  begins with `_` (e.g. `_replaced/`) is EXCLUDED from the served index — that
+ *  is where backups belong. */
+const SERVED_ZONE_ROOT = "normalized/ca-qc-zonage/";
+
+/** Minute-precision backup stamp, mirroring the campaign `_replaced/` runners
+ *  (`_zones-col2-reacq-deposit`, `_zones-boischatel-layout-reconcile`): an ISO
+ *  instant with `:`/`.` stripped, e.g. `2026-08-21T0427Z`. */
+function backupStamp(now: Date = new Date()): string {
+  return now.toISOString().replace(/[:.]/g, "").slice(0, 15) + "Z";
+}
+
+/**
+ * Destination for the non-destructive pre-overwrite backup of a served zone.
+ *
+ * It MUST land OUTSIDE the served namespace: geo-api indexes EVERY `.geojson`
+ * under `normalized/ca-qc-zonage/` as a collection, so a sibling backup written
+ * as `<servedkey>.additive-prebackup.geojson` (the prior behaviour) became a junk
+ * collection — 425 of them polluted the index (dé-entropie finding #4). The backup
+ * therefore goes under the `_replaced/` segment, which the served index excludes,
+ * with the canonical `_replaced/qc-zonage-<slug>__<descriptor>.<stamp>.geojson`
+ * naming used by the col-2/boischatel campaign. Flat vs nested layout is encoded
+ * so the two layouts of one slug never collide. Preserve-not-delete: nothing is
+ * lost, the bytes are kept for audit/reversibility, just out of the served index.
+ */
+export function additivePrebackupKey(servedKey: string, now: Date = new Date()): string {
+  const match = servedKey.match(/^normalized\/ca-qc-zonage\/qc-zonage-([a-z0-9-]+)(?:\.geojson|\/qc-zonage-[a-z0-9-]+\.geojson)$/);
+  if (!match) throw new Error(`additivePrebackupKey: not a served zonage key: ${servedKey}`);
+  const slug = match[1]!;
+  const layout = servedKey.slice(SERVED_ZONE_ROOT.length).includes("/") ? "nested" : "flat";
+  return `${SERVED_ZONE_ROOT}_replaced/qc-zonage-${slug}__additive-prebackup-${layout}.${backupStamp(now)}.geojson`;
+}
+
 /**
  * ADDITIVE provenance write onto an ALREADY SERVED qc-zonage collection.
  *
@@ -982,11 +1017,14 @@ export async function putServedZoneAdditive(
       }
     }
   }
-  // Non-destructive backup of the current served object before overwriting. The backup suffix excludes this key from the producer selector (`[a-z0-9-]+`), but OGC API serves it as a collection.
-  // Measured 2026-07-29: `qc-zonage-sutton.additive-prebackup` returned HTTP 200 (95 features; 85 with `effet_densifiant` other than `inconnu`).
-  // The generic copy gate accepts it (single, overwriteable "before this write").
+  // Non-destructive backup of the current served object before overwriting.
+  // It lands under `_replaced/` (a `_`-prefixed segment the served index excludes),
+  // NEVER as a `<servedkey>.additive-prebackup.geojson` sibling in the served
+  // namespace — geo-api indexes EVERY `.geojson` under `normalized/ca-qc-zonage/`,
+  // so the old in-namespace suffix turned each pre-backup into a junk collection
+  // (425 of them; dé-entropie finding #4). See {@link additivePrebackupKey}.
   if (opts.backup !== false) {
-    await copyObject(s3, key, `${key.replace(/\.geojson$/, "")}.additive-prebackup.geojson`);
+    await copyObject(s3, key, additivePrebackupKey(key));
   }
   await s3.send(
     new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: JSON.stringify(fc), ContentType: "application/geo+json" }),
