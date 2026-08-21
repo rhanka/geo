@@ -41,7 +41,7 @@ import type {
   ServedFeature,
 } from "../provider.js";
 import { geometryIntersectsBBox } from "../geo-util.js";
-import { isCanonicalGeojsonKey, type ByteStream, type Store } from "../../storage/index.js";
+import { isCanonicalGeojsonKey, stemOf, type ByteStream, type Store } from "../../storage/index.js";
 
 const GEOJSON_SUFFIX = ".geojson";
 const META_SUFFIX = ".meta.json";
@@ -299,13 +299,6 @@ function parseCoherence(text: string | undefined): CoherenceInfo | undefined {
   return info.coherenceId === undefined && info.servedCount === undefined && info.setHash === undefined
     ? undefined
     : info;
-}
-
-/** The `<name>` stem of a `.geojson` store key (basename without suffix). */
-function stemOf(geojsonKey: string): string {
-  const slash = geojsonKey.lastIndexOf("/");
-  const base = slash === -1 ? geojsonKey : geojsonKey.slice(slash + 1);
-  return base.slice(0, -GEOJSON_SUFFIX.length);
 }
 
 type CollectionLayout = "flat" | "nested";

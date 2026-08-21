@@ -14,6 +14,14 @@
 
 const GEOJSON_SUFFIX = ".geojson";
 
+/** The `<name>` stem of a `.geojson` store key (basename without directory nor
+ *  suffix). Shared so the serving index and the sync stamp derive ids identically. */
+export function stemOf(geojsonKey: string): string {
+  const slash = geojsonKey.lastIndexOf("/");
+  const base = slash === -1 ? geojsonKey : geojsonKey.slice(slash + 1);
+  return base.slice(0, -GEOJSON_SUFFIX.length);
+}
+
 /**
  * A store key is a CANONICAL served geojson dataset SSI:
  *   (a) no path segment starts with `_` (excludes `_replaced/`,
@@ -31,8 +39,23 @@ const GEOJSON_SUFFIX = ".geojson";
 export function isCanonicalGeojsonKey(key: string): boolean {
   if (!key.endsWith(GEOJSON_SUFFIX)) return false;
   if (key.split("/").some((segment) => segment.startsWith("_"))) return false;
-  const slash = key.lastIndexOf("/");
-  const base = slash === -1 ? key : key.slice(slash + 1);
-  const stem = base.slice(0, -GEOJSON_SUFFIX.length);
+  const stem = stemOf(key);
   return !stem.includes("__") && !stem.includes(".");
+}
+
+/**
+ * The CANONICAL served dataset ids derived from a store-key listing, via the SAME
+ * admission + stem rule the serving index uses — deduped (a flat + nested key of
+ * the same collection collapse to one id, sharing a stem) and sorted.
+ *
+ * This is the version-independent DATA-parity target the sync stamps into
+ * `coherence.json` (`served_count` = length, `set_hash` = hash of these ids):
+ * computed from the SOURCE data the mirror already lists, NOT from a possibly-stale
+ * prod `/collections` — so the preprod gate matches the canonical serving by
+ * construction, regardless of the prod image's index freshness (§4 re-spec).
+ */
+export function canonicalServedIds(keys: readonly string[]): string[] {
+  const ids = new Set<string>();
+  for (const key of keys) if (isCanonicalGeojsonKey(key)) ids.add(stemOf(key));
+  return [...ids].sort();
 }
