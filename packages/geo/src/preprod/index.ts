@@ -7,6 +7,8 @@ export {
   coherenceManifestKeyFor,
   destKeyForMirror,
   planFullMirror,
+  pruneBoundExceeded,
+  DEFAULT_MAX_DELETE_FRACTION,
   buildCoherenceManifest,
   computeSetHash,
   type MirrorCopy,
