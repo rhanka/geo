@@ -30,7 +30,7 @@ import { S3Client, ListObjectsV2Command, HeadObjectCommand, CopyObjectCommand, G
 import { planFullMirror, pruneBoundExceeded, DEFAULT_MAX_DELETE_FRACTION, buildCoherenceManifest, coherenceManifestKeyFor, computeSetHash } from "../packages/geo/dist/preprod/index.js";
 // Options client S3 sûres OVH/Scaleway (coupe l'aws-chunked refusé au PUT) — factory
 // PARTAGÉ de la lib, pas un fix ad-hoc : serving + sync + tout writer en bénéficient.
-import { ovhSafeS3ClientOptions, canonicalServedIds } from "../packages/geo/dist/storage/index.js";
+import { ovhSafeS3ClientOptions, isCanonicalGeojsonKey, servedDatasetIds } from "../packages/geo/dist/storage/index.js";
 import process from "node:process";
 
 // ── args ──────────────────────────────────────────────────────────────────────
@@ -116,15 +116,31 @@ async function copyOne(srcKey, destKey, size) {
   }
   return "copy";
 }
-// La cible de parité DATA CANONIQUE (served_count + set_hash), dérivée du listing
-// SOURCE que le miroir liste DÉJÀ — via la MÊME règle que le serving
-// (`canonicalServedIds` = isCanonicalGeojsonKey + stemOf + dedup flat/nested). Pas
-// de dépendance à prod-api (dont l'index peut être STALE = conflation parité-VERSION) :
-// le stamp EST ce que le serving canonique dérive des mêmes données → le verify
-// preprod match par construction (§4 re-spec geo-archi). `null` si source incomplète.
-function servedSetFromSource(srcKeys, complete) {
+async function getSourceJson(key) {
+  try {
+    const g = await sourceClient.send(new GetObjectCommand({ Bucket: src.bucket, Key: key }));
+    return JSON.parse(await g.Body.transformToString());
+  } catch { return undefined; }
+}
+// Cible de parité DATA (served_count + set_hash) = la MÊME dérivation que le serving :
+// `servedDatasetIds` où id = datasetId ?? stem. META-EXACT : on lit le `.meta.json`
+// source de chaque clé canonique (pour son datasetId), sinon id = stem. Nécessaire car
+// des collections DISTINCTES partagent un stem (ex. `abercorn` zonage vs `qc-cadastre-
+// lots/abercorn`→`qc-lots-abercorn`) — un stamp stem-only les MERGE (perte de données).
+// Dérivé du listing SOURCE (pas de prod-api STALE) → stamp-set == served-set par
+// construction. `null` si source incomplète (fail-closed).
+async function servedSetFromSource(srcKeys, complete) {
   if (!complete) return null;
-  const ids = canonicalServedIds(srcKeys);
+  const keySet = new Set(srcKeys);
+  const canonical = srcKeys.filter(isCanonicalGeojsonKey);
+  const metaOf = (k) => `${k.slice(0, -".geojson".length)}.meta.json`;
+  const withMeta = canonical.filter((k) => keySet.has(metaOf(k)));
+  const datasetIdByKey = new Map();
+  await pool(withMeta, opt.concurrency, async (k) => {
+    const meta = await getSourceJson(metaOf(k));
+    if (meta && typeof meta.datasetId === "string") datasetIdByKey.set(k, meta.datasetId);
+  });
+  const ids = servedDatasetIds(canonical.map((k) => ({ key: k, datasetId: datasetIdByKey.get(k) })));
   return { count: ids.length, setHash: computeSetHash(ids) };
 }
 async function pool(items, n, fn) {
@@ -177,8 +193,8 @@ if (!source.complete || !destListing.complete) {
   pruneStatus = opt.dryRun ? "would-prune" : "pruned";
 }
 
-// Cible de parité DATA canonique, dérivée du listing SOURCE (pas de prod-api).
-const served = servedSetFromSource(source.keys.map((o) => o.key), source.complete);
+// Cible de parité DATA canonique, dérivée du listing SOURCE (meta-exact, pas de prod-api).
+const served = await servedSetFromSource(source.keys.map((o) => o.key), source.complete);
 
 let stamped = null;
 if (!opt.dryRun) {
