@@ -5,6 +5,11 @@
 > (revue indépendante). Désaccords sol↔fable **préservés** (non blendés). À présenter à l'owner **via geo-cond**
 > (AskUserQuestion). FACT/JUDGMENT tagués. **Confiance scindée** : ~**0.78** sur l'architecture cible ;
 > ~**0.55** sur l'état-des-lieux tel qu'écrit (voir Pièce №1).
+>
+> **Architecture cible complète (rejouable/auditable)** : `docs/spec/SPEC_PIPELINES_TARGET_ARCH.md` — capitalisation
+> de la cible groundée `fichier:ligne` produite par claude-fable-5 (par-pipeline × moteur commun ; traitements ;
+> environnements+infra ; 3 vues Mermaid EXISTE/`[cible]` : Traitement · Cycle-env · Topologie). **Ce dossier = la
+> DÉCISION** (Option B + 4 décisions cibles) ; **le SPEC = la CIBLE précise** qui en découle une fois ratifiée.
 
 ---
 
