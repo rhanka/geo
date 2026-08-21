@@ -9,8 +9,10 @@ import {
   buildCoherenceManifest,
   coherenceManifestKeyFor,
   computeSetHash,
+  DEFAULT_MAX_DELETE_FRACTION,
   destKeyForMirror,
   planFullMirror,
+  pruneBoundExceeded,
 } from "./mirror.js";
 
 describe("destKeyForMirror", () => {
@@ -56,6 +58,65 @@ describe("planFullMirror", () => {
   it("computes the coherence key under an empty prefix as the bare basename", () => {
     expect(coherenceManifestKeyFor("")).toBe("coherence.json");
     expect(coherenceManifestKeyFor("normalized")).toBe("normalized/coherence.json");
+  });
+});
+
+describe("planFullMirror — prune (exact parity, not add-only)", () => {
+  const srcPrefix = "normalized";
+  const destPrefix = "normalized";
+  const srcKeys = ["normalized/abercorn.geojson", "normalized/qc-lots-montreal.geojson"];
+
+  it("prunes a dest surplus key that matches no mirrored source key", () => {
+    const destKeys = [
+      "normalized/abercorn.geojson", // mirrored — keep
+      "normalized/qc-lots-montreal.geojson", // mirrored — keep
+      "normalized/qc-zonage-x__flat.2026-08-21T00Z.geojson", // stale surplus — prune
+      "normalized/qc-zonage-y__nested-misdeposit.2026-08-20.geojson", // stale surplus — prune
+    ];
+    const plan = planFullMirror(srcKeys, srcPrefix, destPrefix, destKeys);
+    expect(plan.deletes.sort()).toEqual([
+      "normalized/qc-zonage-x__flat.2026-08-21T00Z.geojson",
+      "normalized/qc-zonage-y__nested-misdeposit.2026-08-20.geojson",
+    ]);
+  });
+
+  it("never prunes the coherence manifest key nor a key already in source", () => {
+    const destKeys = [
+      "normalized/abercorn.geojson", // in source
+      "normalized/coherence.json", // stamped manifest
+    ];
+    const plan = planFullMirror(srcKeys, srcPrefix, destPrefix, destKeys);
+    expect(plan.deletes).not.toContain("normalized/coherence.json");
+    expect(plan.deletes).not.toContain("normalized/abercorn.geojson");
+    expect(plan.deletes).toEqual([]);
+  });
+
+  it("refuses to prune against an EMPTY source (mass-delete guard #1)", () => {
+    const destKeys = ["normalized/anything.geojson", "normalized/else.geojson"];
+    const plan = planFullMirror([], srcPrefix, destPrefix, destKeys);
+    expect(plan.deletes).toEqual([]);
+    expect(plan.copies).toEqual([]);
+  });
+
+  it("computes no deletes when no dest listing is supplied (add-only compat)", () => {
+    const plan = planFullMirror(srcKeys, srcPrefix, destPrefix);
+    expect(plan.deletes).toEqual([]);
+  });
+});
+
+describe("pruneBoundExceeded (safety bound #2)", () => {
+  it("passes a normal prune (762/4647 ≈ 16% < 25%)", () => {
+    expect(pruneBoundExceeded(762, 4647, DEFAULT_MAX_DELETE_FRACTION)).toBe(false);
+  });
+
+  it("trips a runaway prune (broken source would delete most of the dest)", () => {
+    expect(pruneBoundExceeded(3000, 4000, DEFAULT_MAX_DELETE_FRACTION)).toBe(true);
+  });
+
+  it("never trips when there is nothing to delete; trips defensively on a known-empty dest", () => {
+    expect(pruneBoundExceeded(0, 4647, DEFAULT_MAX_DELETE_FRACTION)).toBe(false);
+    expect(pruneBoundExceeded(0, 0, DEFAULT_MAX_DELETE_FRACTION)).toBe(false);
+    expect(pruneBoundExceeded(5, 0, DEFAULT_MAX_DELETE_FRACTION)).toBe(true);
   });
 });
 
