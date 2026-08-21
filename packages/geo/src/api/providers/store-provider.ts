@@ -41,7 +41,7 @@ import type {
   ServedFeature,
 } from "../provider.js";
 import { geometryIntersectsBBox } from "../geo-util.js";
-import type { ByteStream, Store } from "../../storage/index.js";
+import { isCanonicalGeojsonKey, type ByteStream, type Store } from "../../storage/index.js";
 
 const GEOJSON_SUFFIX = ".geojson";
 const META_SUFFIX = ".meta.json";
@@ -106,7 +106,10 @@ export class StoreProvider implements FeatureProvider {
     // collection carries the same watermark (§4.1). Absent → undefined.
     this.#coherence = parseCoherence(await this.#getText(COHERENCE_KEY));
 
-    const geojsonKeys = keys.filter((k) => k.endsWith(GEOJSON_SUFFIX)).sort();
+    // Index-discipline (ADR-0027) : n'indexe QUE les clés canoniques servies —
+    // jamais les backups/prebackups/sidecars qu'un `list()` récursif remonte.
+    // Filtre sur la CLÉ BRUTE, avant toute dérivation `datasetId` (rejet par chemin).
+    const geojsonKeys = keys.filter(isCanonicalGeojsonKey).sort();
     const keySet = new Set(keys);
     const entries = await mapLimit(geojsonKeys, INDEX_CONCURRENCY, (geojsonKey) =>
       this.#indexOne(geojsonKey, keySet),
