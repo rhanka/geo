@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isCanonicalGeojsonKey } from "./canonical-key.js";
+import { canonicalServedIds, isCanonicalGeojsonKey, stemOf } from "./canonical-key.js";
 
 describe("isCanonicalGeojsonKey — index/mirror admission (ADR-0027)", () => {
   it("admits canonical flat + nested keys across ALL families (not just qc-zonage)", () => {
@@ -36,5 +36,34 @@ describe("isCanonicalGeojsonKey — index/mirror admission (ADR-0027)", () => {
   it("excludes non-.geojson keys (manifests, meta sidecars)", () => {
     expect(isCanonicalGeojsonKey("normalized/coherence.json")).toBe(false);
     expect(isCanonicalGeojsonKey("normalized/qc-zonage-x.meta.json")).toBe(false);
+  });
+});
+
+describe("stemOf", () => {
+  it("returns the basename without directory nor .geojson suffix", () => {
+    expect(stemOf("normalized/ca-qc-sda/qc-lots-montreal.geojson")).toBe("qc-lots-montreal");
+    expect(stemOf("abercorn.geojson")).toBe("abercorn");
+  });
+});
+
+describe("canonicalServedIds", () => {
+  it("derives the canonical served id SET (filter + stem + dedup flat/nested + sort)", () => {
+    const keys = [
+      "normalized/abercorn.geojson", // canonical
+      "normalized/qc-zonage-x.geojson", // flat
+      "normalized/qc-zonage-x/qc-zonage-x.geojson", // nested — SAME stem → collapses to one id
+      "normalized/qc-lots-montreal.geojson", // canonical
+      "normalized/_replaced/qc-zonage-x__flat.2026-08-21T00Z.geojson", // backup — excluded
+      "normalized/qc-zonage-x.additive-prebackup.geojson", // prebackup — excluded
+      "normalized/coherence.json", // non-geojson — excluded
+    ];
+    expect(canonicalServedIds(keys)).toEqual(["abercorn", "qc-lots-montreal", "qc-zonage-x"]);
+  });
+
+  it("is stable regardless of listing order (a SET, deduped + sorted)", () => {
+    const a = canonicalServedIds(["normalized/b.geojson", "normalized/a.geojson", "normalized/a.geojson"]);
+    const b = canonicalServedIds(["normalized/a.geojson", "normalized/b.geojson"]);
+    expect(a).toEqual(["a", "b"]);
+    expect(a).toEqual(b);
   });
 });
