@@ -1,0 +1,2157 @@
+{
+ "contract": "zones-220-acquisition-backlog/v1",
+ "generated_at_utc": "2026-08-21T16:20:52.932Z",
+ "scope_note": "236 = 220 gate-slugs (f2459f44) + 16 data-gaps i-arch (post-reconciliation). UN SEUL record cohérent : dans les 236, 'qc-zonage-<slug> non servi' = gap de couverture, dimensions uniformes.",
+ "mode": "READ-ONLY classification. NO deposit / NO S3 write / NO cluster. Route-B zonage-gap acquisition backlog.",
+ "inputs": {
+  "220_gate_slugs": "work/coverage/zones-bareslug-alias-worklist-20260821.json (commit f2459f44)",
+  "16_data_gaps": "i-arch post-reconciliation add: lile-dorval, lile-cadieux, austin, saint-benoit-du-lac, notre-dame-des-anges, la-tuque, sainte-anne-de-la-pocatiere, saint-onesime-dixworth, hebertville-station, saint-bruno, saint-guy, sainte-jeanne-darc--la-mitis, eeyou-istchee-james-bay, aguanish, caniapiscau, cote-nord-du-golfe-du-saint-laurent",
+  "recalage_worklist": "work/coverage/zones-pdf-recalage-worklist-incohort-20260811.json (commit 2b9a5de2)",
+  "col2_triage": "work/coverage/zones-col2-source-triage-20260816.json (context, not a gap source)"
+ },
+ "na_contract": "CONTRAT_ATTESTATION_ABSENCE_SOURCE (i-arch): un candidat un-zonable N'EST PAS N-A. Absence de source ≠ absence de zonage. Sans attestation d'absence REJOUABLE (source+requête+résultat-absence+date), l'état reste UNKNOWN/source-gap. Aucune attestation d'absence n'a été produite ici : les 3 classes sont TOUTES UNKNOWN/source-gap et NOT-N-A.",
+ "total": 236,
+ "source_set_counts": {
+  "220-gate-slug": 220,
+  "16-data-gap": 16
+ },
+ "counts": {
+  "already-in-recalage-worklist": 6,
+  "new-gap": 216,
+  "candidate-un-zonable": 14
+ },
+ "already_in_worklist_tier_split": {
+  "T3": 6
+ },
+ "overlap_worklist_and_unzonable": [],
+ "no_lots_either": [
+  "austin"
+ ],
+ "unzonable_candidate_note": "candidate-un-zonable = HEURISTIQUE géographique de routage (Basse-Côte-Nord / Minganie côtière isolée / Nord-du-Québec / Jamésie), PAS une assertion d'absence. Chaque candidat reste UNKNOWN/source-gap, NOT-N-A (absence-proof=TODO). Aucune WebSearch/attestation n'a été effectuée ; ces slugs sont routés vers un futur travail d'attestation d'absence rejouable.",
+ "rows": [
+  {
+   "slug": "alleyn-et-cawood",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "aumond",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "baie-durfe",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "baie-johan-beetz",
+   "source_set": "220-gate-slug",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Minganie (Côte-Nord), très petite municipalité côtière isolée (~85 hab) — plausiblement sans zonage. HEURISTIQUE, pas d'attestation. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "beaconsfield",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "beauharnois",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "begin",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "beloeil",
+   "source_set": "220-gate-slug",
+   "classification": "already-in-recalage-worklist",
+   "tier_if_worklist": "T3",
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "capability-gated recalage (worklist 2b9a5de2, tier=T3) — zonage non servi, recalage BLOQUÉ (owner-level) en attente d'un spike capability."
+  },
+  {
+   "slug": "blainville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "blanc-sablon",
+   "source_set": "220-gate-slug",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Basse-Côte-Nord (Côte-Nord), territoire côtier isolé sans lien routier — plausiblement sans règlement de zonage municipal. HEURISTIQUE géographique, pas d'attestation d'absence. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "bois-des-filion",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "bois-franc",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "bonne-esperance",
+   "source_set": "220-gate-slug",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Basse-Côte-Nord, municipalité côtière isolée (Vieux-Fort/Saint-Paul-du-Nord) — plausiblement sans zonage. HEURISTIQUE, pas d'attestation. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "bouchette",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "brome",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "bryson",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "cacouna",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "calixa-lavallee",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "campbells-bay",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "cap-chat",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "cayamant",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "chapais",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "chartierville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "chibougamau",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "chichester",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "clarendon",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "colombier",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "deleage",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "desbiens",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "dolbeau-mistassini",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "eastman",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "egan-sud",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "gracefield",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "grande-vallee",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "gros-mecatina",
+   "source_set": "220-gate-slug",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Basse-Côte-Nord, municipalité côtière isolée (La Tabatière/Mutton Bay) — plausiblement sans zonage. HEURISTIQUE, pas d'attestation. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "hampden",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "hebertville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "henryville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "kazabazua",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "kipawa",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "la-dore",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "la-martre",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "la-morandiere-rochebaucourt",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "la-patrie",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "labelle",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lac-aux-sables",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lac-bouchette",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lac-edouard",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lac-poulin",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "laforce",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lamarche",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lanse-saint-jean",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "larouche",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lascension-de-notre-seigneur",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "laurierville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lebel-sur-quevillon",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lery",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "les-mechins",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lile-perrot",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lisle-aux-allumettes",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lisle-verte",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "litchfield",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lochaber",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lochaber-partie-ouest",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "longue-pointe-de-mingan",
+   "source_set": "220-gate-slug",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Minganie (Côte-Nord), petite municipalité côtière (task-named) — plausiblement sans zonage. HEURISTIQUE, pas d'attestation. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "longue-rive",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lorraine",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "malartic",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "maniwaki",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "mansfield-et-pontefract",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "marieville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "marsoui",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "mascouche",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "massueville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "matagami",
+   "source_set": "220-gate-slug",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Nord-du-Québec (Jamésie), territoire municipal très vaste (task-named) — candidat un-zonable au sens routage. HEURISTIQUE, pas d'attestation ; un noyau urbain zoné reste possible → UNKNOWN. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "mcmasterville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "mercier",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "messines",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "metabetchouan-lac-a-la-croix",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "mont-saint-gregoire",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "mont-saint-pierre",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "montcerf-lytton",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "napierville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "natashquan",
+   "source_set": "220-gate-slug",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Minganie (Côte-Nord), petite municipalité côtière isolée (task-named) — plausiblement sans zonage. HEURISTIQUE, pas d'attestation. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "newport",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "north-hatley",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "notre-dame-de-ham",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "notre-dame-de-la-salette",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "notre-dame-de-lorette",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "notre-dame-de-montauban",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "notre-dame-des-sept-douleurs",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "noyan",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "otter-lake",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "petite-vallee",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "pike-river",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "pincourt",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "pointe-calumet",
+   "source_set": "220-gate-slug",
+   "classification": "already-in-recalage-worklist",
+   "tier_if_worklist": "T3",
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "capability-gated recalage (worklist 2b9a5de2, tier=T3) — zonage non servi, recalage BLOQUÉ (owner-level) en attente d'un spike capability."
+  },
+  {
+   "slug": "pointe-des-cascades",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "port-cartier",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "portage-du-fort",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "portneuf-sur-mer",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "rapides-des-joachims",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "richelieu",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "riviere-a-claude",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "riviere-eternite",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "riviere-heva",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "riviere-saint-jean",
+   "source_set": "220-gate-slug",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Minganie (Côte-Nord), petite municipalité côtière (task-named) — plausiblement sans zonage. HEURISTIQUE, pas d'attestation. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "roxton",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-adalbert",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-adelme",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-alexis-des-monts",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-andre-du-lac-saint-jean",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-arsene",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-augustin--le-golfe-du-saint-laurent",
+   "source_set": "220-gate-slug",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Basse-Côte-Nord, très vaste territoire côtier isolé (Saint-Augustin) — plausiblement sans zonage municipal. HEURISTIQUE, pas d'attestation. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "saint-augustin--maria-chapdelaine",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-barnabe",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-bernard",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-blaise-sur-richelieu",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-cesaire",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-charles-de-bourget",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-clement",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-cyprien--riviere-du-loup",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-cyprien-de-napierville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-damase-de-lislet",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-edouard",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-edouard-de-maskinonge",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-eugene-dargentenay",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-eugene-de-guigues",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-francois-de-sales",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-francois-xavier-de-viger",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-fulgence",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-gerard-majella",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-henri-de-taillon",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-honore-de-shenley",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-isidore--la-nouvelle-beauce",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-isidore--roussillon",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-isidore-de-clifton",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-jacques-le-mineur",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-jean-de-cherbourg",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-jean-port-joli",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-jean-sur-richelieu",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-joseph-du-lac",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-lambert-de-lauzon",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-leon-le-grand--maskinonge",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-leonard-de-portneuf",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-louis-de-gonzague--beauharnois-salaberry",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-ludger-de-milot",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-marc-sur-richelieu",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-mathieu-de-rioux",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-modeste",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-nazaire",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-nazaire-dacton",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-norbert",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-norbert-darthabaska",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-omer",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-paul-dabbotsford",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-paul-de-la-croix",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-paul-de-lile-aux-noix",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-philibert",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-placide",
+   "source_set": "220-gate-slug",
+   "classification": "already-in-recalage-worklist",
+   "tier_if_worklist": "T3",
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "capability-gated recalage (worklist 2b9a5de2, tier=T3) — zonage non servi, recalage BLOQUÉ (owner-level) en attente d'un spike capability."
+  },
+  {
+   "slug": "saint-prime",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-remi",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-robert",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-roch-de-lachigan",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-roch-de-mekinac",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-roch-de-richelieu",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-samuel",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-sebastien--le-haut-richelieu",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-severe",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-severin--mekinac",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-simeon--bonaventure",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-urbain-premier",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-valentin",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-zenon",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-agathe-des-monts",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-angele-de-monnoir",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-angele-de-premont",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-anne-de-bellevue",
+   "source_set": "220-gate-slug",
+   "classification": "already-in-recalage-worklist",
+   "tier_if_worklist": "T3",
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "capability-gated recalage (worklist 2b9a5de2, tier=T3) — zonage non servi, recalage BLOQUÉ (owner-level) en attente d'un spike capability."
+  },
+  {
+   "slug": "sainte-anne-des-plaines",
+   "source_set": "220-gate-slug",
+   "classification": "already-in-recalage-worklist",
+   "tier_if_worklist": "T3",
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "capability-gated recalage (worklist 2b9a5de2, tier=T3) — zonage non servi, recalage BLOQUÉ (owner-level) en attente d'un spike capability."
+  },
+  {
+   "slug": "sainte-christine",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-felicite--lislet",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-hedwidge",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-helene-de-chester",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-jeanne-darc--maria-chapdelaine",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-louise",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-madeleine-de-la-riviere-madeleine",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-marguerite",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-marie",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-marthe",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-marthe-sur-le-lac",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-martine",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-perpetue--lislet",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-rita",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-rose-du-nord",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-sabine--brome-missisquoi",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-sophie-dhalifax",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-thecle",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-therese",
+   "source_set": "220-gate-slug",
+   "classification": "already-in-recalage-worklist",
+   "tier_if_worklist": "T3",
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "capability-gated recalage (worklist 2b9a5de2, tier=T3) — zonage non servi, recalage BLOQUÉ (owner-level) en attente d'un spike capability."
+  },
+  {
+   "slug": "sainte-ursule",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saints-anges",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saints-martyrs-canadiens",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "senneterre--la-vallee-de-lor--2",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "senneville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "shawville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sheenboro",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "stanbridge-station",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "stanstead--memphremagog--2",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "tadoussac",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "terrasse-vaudreuil",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "terrebonne",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "thorne",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "tourville",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "trois-rives",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "upton",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "vallee-jonction",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "vaudreuil-sur-le-lac",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "villeroy",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "waltham",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "weedon",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "yamachiche",
+   "source_set": "220-gate-slug",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lile-dorval",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "lile-cadieux",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "austin",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future). ⚠ i-arch: SEUL des 236 SANS qc-lots servi non plus (ni zonage ni lots)."
+  },
+  {
+   "slug": "saint-benoit-du-lac",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "notre-dame-des-anges",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "la-tuque",
+   "source_set": "16-data-gap",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Mauricie/Haute-Mauricie, agglomération au territoire parmi les plus vastes au monde (~28 000 km², i-arch-named). Candidat un-zonable au sens routage ; un noyau urbain zoné reste probable → UNKNOWN. HEURISTIQUE, pas d'attestation. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "sainte-anne-de-la-pocatiere",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-onesime-dixworth",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "hebertville-station",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-bruno",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "saint-guy",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "sainte-jeanne-darc--la-mitis",
+   "source_set": "16-data-gap",
+   "classification": "new-gap",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A",
+   "note": "vraie municipalité dont le zonage n'est pas servi et qui n'est PAS dans la worklist recalage — nécessite une source-assessment (passe de découverte/recalage future)."
+  },
+  {
+   "slug": "eeyou-istchee-james-bay",
+   "source_set": "16-data-gap",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Nord-du-Québec, gouvernement régional Eeyou Istchee Baie-James — territoire immense largement non-organisé/cri (i-arch-named). Candidat un-zonable au sens routage. HEURISTIQUE, pas d'attestation → UNKNOWN. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "aguanish",
+   "source_set": "16-data-gap",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Minganie (Côte-Nord), petite municipalité côtière isolée (i-arch-named). Candidat un-zonable au sens routage. HEURISTIQUE, pas d'attestation → UNKNOWN. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "caniapiscau",
+   "source_set": "16-data-gap",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Côte-Nord, municipalité nordique très vaste (secteur réservoir/Fermont, i-arch-named). Candidat un-zonable au sens routage. HEURISTIQUE, pas d'attestation → UNKNOWN. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  },
+  {
+   "slug": "cote-nord-du-golfe-du-saint-laurent",
+   "source_set": "16-data-gap",
+   "classification": "candidate-un-zonable",
+   "tier_if_worklist": null,
+   "coverage_state": "UNKNOWN/source-gap",
+   "na_status": "NOT-N-A (absence-proof=TODO)",
+   "note": "HEURISTIQUE un-zonable (routage seulement) : Basse-Côte-Nord, très vaste territoire côtier isolé (i-arch-named). Candidat un-zonable au sens routage. HEURISTIQUE, pas d'attestation → UNKNOWN. AUCUNE attestation d'absence rejouable → reste UNKNOWN/source-gap, JAMAIS N-A."
+  }
+ ]
+}
