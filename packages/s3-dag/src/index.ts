@@ -72,3 +72,12 @@ export {
   type K8sNodeSpec,
   type BuildJobManifestArgs,
 } from "./job-manifest.js";
+export {
+  K8sJobExecutor,
+  inClusterJobsApi,
+  jobStatusOf,
+  jobFailureReason,
+  type K8sJobsApi,
+  type RawJob,
+  type RawPod,
+} from "./executor-k8s.js";
