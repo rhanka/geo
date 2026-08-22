@@ -129,11 +129,15 @@ que)**, avec repli documenté vers CronJobs. Owner à ratifier.
 | **Service central sentropic** (gateway `llm.sent-tech.ca`, « sentropic-sentech ») | **fable** | **[FAIT]** `@sentropic/cluster-mesh` = contrats de **fédération d'identité de clusters**, il **ne route AUCUN LLM** ; `push-cluster` (comptes→Secret k8s) est **en suppression** côté h2a ; la décision owner sentropic `DECISION_LLM_EGRESS_STANDARD_PATH.md` retient **Option C** (gateway = porte d'entrée des usages cluster/metered). → « cluster-mesh » comme moteur LLM serait un cul-de-sac. Condition dure : personal-passthrough (comptes owner, pooling cross-user ToS OFF). |
 | **Cluster-mesh sentropic partagé** (via ClusterIP) | **sol** | Intégrer le mesh partagé géré par la plateforme, garder le DAG souverain ; ne pas embarquer/forker le mesh ; sentropic-sentech introduirait une frontière distante + un moteur de service plus haut niveau alors que le besoin est un appel borné/auditable/conditionnel. |
 
-**[JUGEMENT — désaccord réel]** fable oppose une **réfutation [FAIT]** (cluster-mesh n'est pas un
-routeur LLM) que sol ne traite pas ; le terme « cluster-mesh » du mandat owner est **ambigu** et
-doit être **levé auprès de l'owner**. La convergence **penche vers le service central/gateway**
-(mieux groundé), mais **je ne tranche pas** : c'est une décision owner. geo-archi prépare le dossier
-(enjeux netpol/latence/coût/ToS), recommande, l'owner ratifie **avant l'industrialisation de
+**[JUGEMENT — désaccord réel]** fable oppose une réfutation appuyée sur des **[FAIT] cross-repo
+(sentropic/h2a) NON re-vérifiés dans cette passe** (cluster-mesh = fédération d'identité sans routage
+LLM ; push-cluster en suppression ; `DECISION_LLM_EGRESS_STANDARD_PATH.md` = Option C) que sol ne
+traite pas ; le terme « cluster-mesh » du mandat owner est **ambigu** et doit être **levé auprès de
+l'owner**. Ces faits **pencheraient vers le service central/gateway SI geo-archi les confirme**
+(revue #243 raffinement #1 → vérification indépendante en cours, `SPEC_PIPELINES_TARGET_ARCH` §4.6) ;
+tant qu'ils ne sont pas vérifiés, le désaccord reste **pleinement ouvert**. **Je ne tranche pas** :
+c'est une décision owner. geo-archi prépare le dossier (vérifie d'abord les faits, puis enjeux
+netpol/latence/coût/ToS), recommande, l'owner ratifie **avant l'industrialisation de
 l'extraction LLM**. **Intérim** (gateway pas encore servie) : file d'exception CAS + inférence
 locale *lecture seule sur octets déjà captés* (légitime `SPEC_CAPTURE_ON_CLUSTER.md §4.2`), bascule
 gateway **sans changer le DAG**.
