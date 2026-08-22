@@ -3,13 +3,17 @@
   "note": [
     "C1 = la table identité→workspaceId dont le gateway a besoin pour dériver, du `sub`",
     "VÉRIFIÉ d'un pod de lane, le workspaceId sur lequel il applique le per-tenant.",
-    "CONTENU = geo (ce fichier). FORMAT/CONTRAT = mesh (dossier D2) : adapter au schéma",
-    "mesh si besoin. Le `sub` est émis par l'api-server pour le SA de lane STABLE",
-    "`s3dag-<lane>-sa` en ns `geo`. Un workspaceId DISTINCT par lane → le contrôle",
-    "per-tenant EXISTANT du gateway DEVIENT le per-lane. ⚠️ Le BUDGET / KILL-SWITCH par",
-    "workspaceId (quelle part du quota LLM owner chaque lane obtient) est un item OWNER",
-    "(D2+A3) — NON fixé ici, à trancher par rhanka."
+    "CONTENU = geo (ce fichier). FORMAT/CONTRAT = mesh (dossier D2). Les CLÉS (`sub`)",
+    "sont stables ; les VALEURS (`workspaceId`) sont ajustables au format mesh.",
+    "⚠️ BUDGET / KILL-SWITCH par workspaceId = item OWNER (D2+A3), NON fixé ici."
   ],
+  "acceptance": {
+    "1_entries": "8 entrées, 8 workspaceId DISTINCTS",
+    "2_key_exact": "clé = `sub` COMPLET (system:serviceaccount:geo:s3dag-<lane>-sa), ÉGALITÉ EXACTE — aucun motif/préfixe/normalisation",
+    "3_unknown_fails": "R1 : un `sub` absent de cette table ⇒ ÉCHEC (fail-closed), JAMAIS un workspaceId par défaut ni une lane par défaut (aucune entrée wildcard/catch-all ici)",
+    "4_single_source": "source UNIQUE — cette table est la seule ; pas de duplication ailleurs",
+    "5_audience_separate": "l'audience gateway est une valeur de CONTRAT SÉPARÉE (mesh), volontairement ABSENTE de cette table"
+  },
   "namespace": "geo",
   "lanes_source": "packages/qc-sources/src/capture/manifest.ts (CAPTURE_LANES)",
   "map": [
