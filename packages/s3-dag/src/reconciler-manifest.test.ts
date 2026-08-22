@@ -75,6 +75,17 @@ describe("reconcilerRbac — minimal, NO serviceaccounts verb", () => {
     expect(rb.subjects[0]!.name).toBe("s3dag-reconciler-sa");
     expect(rb.roleRef.name).toBe("s3dag-pv-reconciler");
   });
+
+  it("NEVER binds the `default` ServiceAccount (VAP invariant: `default` is allowed only because it stays bare)", () => {
+    // mesh measured `default` bare → it is on the allowlist; a RoleBinding to it would
+    // be a hole. Our RBAC binds ONLY s3dag-reconciler-sa; lane SAs get no binding at all.
+    const rb = roleBinding as { subjects: { name: string; kind: string }[] };
+    expect(rb.subjects.every((s) => s.name !== "default")).toBe(true);
+    expect(rb.subjects.map((s) => s.name)).toEqual(["s3dag-reconciler-sa"]);
+    // The lane SA bundle emits ServiceAccounts only — nothing that could bind `default`.
+    const laneObjs = laneServiceAccountManifests(LANES, "geo") as { kind: string }[];
+    expect(laneObjs.some((o) => o.kind === "RoleBinding")).toBe(false);
+  });
 });
 
 describe("reconcilerCronManifest", () => {
