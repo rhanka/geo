@@ -186,7 +186,7 @@ tmux/quotas/scripts locaux, et augmente le risque qu'une donnée fraîche ne soi
   diagnostic + JUDGMENT]** — révèle que **prod tourne une image de 6 semaines** (sert un index stale) : le cycle
   preprod↔prod **ne cycle pas** — c'est le cœur de la reco 4 + une **question owner**.
 
-## Section honnête — ce qui n'est PAS au carré / pas prêt
+## Section factuelle — ce qui n'est PAS au carré / pas prêt
 - **[FACT]** L'**état-des-lieux chiffré n'est pas rejouable** depuis un checkout propre (Pièce №1) → action :
   versionner `completion-regdens-*`, `immo-lot-zone-assignment-matrix-*`, `immo-folded-normes-*` + les manifests
   PV-refresh locaux, OU les re-libeller « local, non prouvé ».

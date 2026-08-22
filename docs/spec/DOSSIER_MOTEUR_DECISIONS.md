@@ -33,12 +33,18 @@ API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
   geo = consommateur ; intérim local borné jusqu'à livraison.
 
 **Retour `mesh` (WP14 — propriétaire des CONTRATS `llm-mesh` + `llm-gateway`, PAS de cluster-mesh) :**
-- **Le lot est un ORDRE DE GRANDEUR plus gros que « wrapper 2 APIs ».** Le « zéro cred en pod » **force le chemin
-  RÉSEAU** : wrapper l'in-process (llm-mesh en lib) mettrait la mesh **et les creds DANS le pod** (contraire à la
-  directive). Le wrap doit être **au-dessus du data-plane réseau (le gateway)**. Or **aucun service gateway n'est
-  déployé ni déployable côté sentropic aujourd'hui** (aucune cible Makefile, aucune app exécutable ; le seul
-  gateway sur la machine = le daemon `@sentropic/h2a-runtime`, actuellement **DOWN**). ⟹ vrai lot = **lever un
-  data-plane réseau côté sentropic**, PUIS le fronter — pas un simple wrapping.
+- **Le « zéro cred en pod » force le chemin RÉSEAU** : wrapper l'in-process (llm-mesh en lib) mettrait la mesh **et
+  les creds DANS le pod** (contraire à la directive). Le wrap doit donc être **au-dessus du data-plane réseau (le
+  gateway)**, pas de la librairie.
+- **Taille du lot — CORRIGÉE (mesure cluster h-arch, 2026-08-22)** : mon escalade « ordre de grandeur / lever un
+  data-plane » venait de la vue **repo-only** de mesh (aucune cible Makefile / app exécutable dans le dépôt ; seul
+  le daemon `h2a-runtime`, DOWN). **h-arch a mesuré le CLUSTER** : `sentropic-remote/llm-gateway` **EXISTE mais à
+  0 réplique** + netpol geo→gateway manquante + trou de provenance de manifeste. ⟹ le lot est **plus petit que
+  craint** : **coque/rallumage + netpol + provenance**, PAS un data-plane à inventer. (Les deux constats sont
+  vrais : rien de déployable *depuis le dépôt*, mais un déploiement *existe dans le cluster*, scalé à 0 — la vue
+  cluster est l'opérante pour « peut-on l'allumer ».) **+ 3 contrôles sécurité ajoutés par h-cond** au brief
+  egress : budget/kill-switch (contrôle anti-député-confus) · qui signe/vérifie `X-Sentropic-Served` · **tenant
+  obligatoire dans la clé de cache**.
 - **push-cluster supprimé = ALIGNÉ, pas un manque** : ce pont mettait des creds dans le pod = exactement ce que la
   directive écarte. Ne PAS le restaurer. Si le gateway détient les comptes, le Job geo n'a besoin que d'une
   **identité de workspace**. *(Corrige mon §2/§4b : je le portais comme dépendance — c'est cohérent avec la cible.)*
@@ -56,12 +62,14 @@ API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
   data-plane sentropic », pas « wrapper 2 APIs ». mesh adjuge le contrat + spécifie la surface consommée, **ne
   porte pas le paquet**.
 
-**D-moteur-1 — ROUVERT.** L'owner (« pas assez instruit ») ajoute un **critère décisif** : la **supervision du
-scraping doit être exposée via une API geo consommable par immo**. Argo le permet-il sans usine à gaz ? sinon
-**DAG-S3 custom** avec **étude SOTA** d'autres libs + **lib publiable réutilisable** (`@sentropic/…`) si custom.
-2 passes (sol 5.6 + gemini 3.7) relancées par geo-cond avec ces 3 exigences → re-synthèse → re-AskUserQuestion.
-**Ma reco A1 (Argo) devient un input à RÉ-ÉVALUER** contre le critère API-supervision-immo (cf. note geo-archi :
-le critère favorise plutôt un DAG-S3 geo-shaped, l'état étant déjà en S3 et déjà servi à immo).
+**D-moteur-1 — ROUVERT puis RATIFIÉ (owner, 2026-08-22).** L'owner (« pas assez instruit ») avait ajouté un
+**critère décisif** : la **supervision du scraping exposée via une API geo consommable par immo** ; + étude SOTA ;
++ lib publiable si custom. Ré-étude (`MIGRATION_D1_SYNTHESIS.md` : passe sol + input geo-archi + les 3 flags de ma
+revue ; gemini bloqué gateway) → **owner RATIFIE : custom `@sentropic/s3-dag`** (build-vs-buy : custom-cible +
+**Argo fallback documenté** + **gate 4-preuves** sur canari PV — crash-recovery · quota réel · read-model immo
+complet · reconstruction index depuis S3-immuable seul). **PR #244** capitalise décision + étude + synthèse vers
+main. **geo-socle prend le build (T5).** *(Ma reco initiale A1=Argo a été justement renversée par le critère
+API-supervision-immo — accepté ; le custom livre l'API métier S3-native, Argo reste le fallback réversible.)*
 
 **Seuil pruning** : geo-cond fixe **10 % réversible** par défaut (sauf objection owner).
 
@@ -218,7 +226,7 @@ quadrant « tout-maison-in-cluster » suppose un mécanisme creds in-cluster **q
 - **FACT/JUGEMENT** tagués. **D-moteur-1 ET D-moteur-2 COMPLETS** — les [FAIT]s cross-repo **re-vérifiés
   indépendamment (5/5, fichier:ligne)**, aucun [VERIF] pendant.
 - **Count-symmetry** : A1/A2 équilibrés ; G/L présentent chacun leur FOR réel et leur AGAINST factuel ; ~M
-  honnêtement marqué réfuté avec sa raison, pas caché.
+  **explicitement** marqué réfuté avec sa raison, pas caché.
 - **Strongest-case-AGAINST ma reco** : *contre A1* = 1 composant cluster de plus + couplage poc-k8s ; un besoin
   trivial ne le justifierait pas. *Contre « cibler G »* = on recommande un chemin **non encore livré** → dépendance
   calendaire ; si sentropic tarde, l'**intérim local risque de s'installer en prod de fait** (LLM durablement hors
