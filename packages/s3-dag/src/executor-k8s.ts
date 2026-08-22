@@ -18,10 +18,8 @@
  *    testable without a cluster; {@link inClusterJobsApi} is the real adapter.
  */
 
-import { readFileSync } from "node:fs";
-import { request as httpsRequest } from "node:https";
-
 import { buildJobManifest } from "./job-manifest.js";
+import { httpStatusOf, inClusterRest, type K8sRest } from "./k8s-rest.js";
 import type { JobExecutor, JobStatus, JobSubmission, ObservedJob } from "./ports.js";
 
 export interface RawJob {
@@ -108,86 +106,32 @@ export class K8sJobExecutor implements JobExecutor {
 }
 
 // ── in-cluster REST adapter ─────────────────────────────────────────────────
-const TOKEN_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/token";
-const CA_PATH = "/var/run/secrets/kubernetes.io/serviceaccount/ca.crt";
-
-function statusOf(err: unknown): number | null {
-  if (typeof err !== "object" || err === null) return null;
-  const e = err as { status?: unknown };
-  return typeof e.status === "number" ? e.status : null;
-}
-
 /**
- * The real {@link K8sJobsApi}, over the in-cluster REST API (node:https + the
- * projected SA token/CA). Reuses the proven `pv-capture-backlog-run` transport.
- * Credentials/host are read lazily so importing this module never touches the FS.
+ * The real {@link K8sJobsApi}, over the shared in-cluster REST transport. A 404 on
+ * GET Job → `undefined`; a 409 on POST Job → no-op (deterministic name already
+ * created ⇒ idempotent re-submit).
  */
-export function inClusterJobsApi(): K8sJobsApi {
-  const host = process.env["KUBERNETES_SERVICE_HOST"];
-  const port = Number(process.env["KUBERNETES_SERVICE_PORT_HTTPS"] ?? process.env["KUBERNETES_SERVICE_PORT"] ?? "443");
-  if (!host) throw new Error("KUBERNETES_SERVICE_HOST is required (must run in-cluster)");
-  const token = readFileSync(TOKEN_PATH, "utf8").trim();
-  const ca = readFileSync(CA_PATH);
-
-  function json<T>(method: string, path: string, body?: unknown): Promise<T> {
-    const serialized = body === undefined ? undefined : JSON.stringify(body);
-    return new Promise<T>((resolve, reject) => {
-      const req = httpsRequest(
-        {
-          hostname: host,
-          port,
-          path,
-          method,
-          ca,
-          headers: {
-            Authorization: `Bearer ${token}`,
-            Accept: "application/json",
-            ...(serialized === undefined ? {} : { "Content-Type": "application/json", "Content-Length": Buffer.byteLength(serialized) }),
-          },
-        },
-        (res) => {
-          const chunks: Buffer[] = [];
-          res.on("data", (c: Buffer) => chunks.push(Buffer.from(c)));
-          res.on("error", reject);
-          res.on("end", () => {
-            const text = Buffer.concat(chunks).toString("utf8");
-            const code = res.statusCode ?? 0;
-            if (code < 200 || code >= 300) {
-              const error = new Error(`k8s ${method} ${path}: HTTP ${code} ${text.slice(0, 600)}`) as Error & { status?: number };
-              error.status = code;
-              reject(error);
-              return;
-            }
-            resolve(text ? (JSON.parse(text) as T) : ({} as T));
-          });
-        },
-      );
-      req.on("error", reject);
-      if (serialized !== undefined) req.write(serialized);
-      req.end();
-    });
-  }
-
+export function inClusterJobsApi(rest: K8sRest = inClusterRest()): K8sJobsApi {
   return {
     async getJob(namespace, name) {
       try {
-        return await json<RawJob>("GET", `/apis/batch/v1/namespaces/${namespace}/jobs/${name}`);
+        return await rest.json<RawJob>("GET", `/apis/batch/v1/namespaces/${namespace}/jobs/${name}`);
       } catch (err) {
-        if (statusOf(err) === 404) return undefined;
+        if (httpStatusOf(err) === 404) return undefined;
         throw err;
       }
     },
     async createJob(namespace, manifest) {
       try {
-        await json("POST", `/apis/batch/v1/namespaces/${namespace}/jobs`, manifest);
+        await rest.json("POST", `/apis/batch/v1/namespaces/${namespace}/jobs`, manifest);
       } catch (err) {
-        if (statusOf(err) === 409) return; // deterministic name already created — idempotent
+        if (httpStatusOf(err) === 409) return; // deterministic name already created — idempotent
         throw err;
       }
     },
     async listPodsForJob(namespace, jobName) {
       const selector = encodeURIComponent(`job-name=${jobName}`);
-      const list = await json<{ items?: RawPod[] }>("GET", `/api/v1/namespaces/${namespace}/pods?labelSelector=${selector}`);
+      const list = await rest.json<{ items?: RawPod[] }>("GET", `/api/v1/namespaces/${namespace}/pods?labelSelector=${selector}`);
       return list.items ?? [];
     },
   };
