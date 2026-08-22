@@ -50,3 +50,18 @@ export type {
   QuotaHeadroom,
 } from "./ports.js";
 export { InMemoryDagStore, FakeJobExecutor } from "./testing.js";
+export { S3DagStore, type S3DagStoreConfig } from "./s3-store.js";
+export {
+  supervision,
+  laneIndexKey,
+  LANE_INDEX_CONTRACT,
+  type Supervision,
+  type Freshness,
+  type LaneIndex,
+  type RefreshOverview,
+  type RefreshFreshness,
+  type RefreshRunSummary,
+  type RefreshRunNodeView,
+  type RefreshRunView,
+} from "./supervision.js";
+export { refreshRoutes } from "./http.js";
