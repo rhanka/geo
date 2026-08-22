@@ -122,6 +122,18 @@ export function buildJobManifest(args: BuildJobManifestArgs): Record<string, unk
 
   // Fan-out: > 1 completion ⇒ an Indexed Job (one Job object, N indexed pods, one
   // receipt). Each pod reads its shard via the auto-injected JOB_COMPLETION_INDEX.
+  //
+  // STRUCTURAL guard (not a comment you must remember): a Job with completions < 1
+  // is INVALID — Kubernetes rejects it. So a node that resolved to ZERO remaining
+  // shards is a COMPLETED node, and the reconciler MUST resolve it to success
+  // (write a `succeeded` receipt, submit nothing) BEFORE reaching here. Throwing
+  // makes that branch impossible to skip — "everything already done" can never be
+  // silently coerced into a 1-pod Job (which would re-read the whole batch).
+  if (spec.completions !== undefined && spec.completions < 1) {
+    throw new Error(
+      "s3-dag: completions < 1 — a zero-shard node is COMPLETE, resolve it to success reconciler-side; never build an empty Job",
+    );
+  }
   const completions = spec.completions !== undefined && spec.completions > 1 ? spec.completions : 1;
   const parallelism = completions > 1 ? spec.parallelism ?? completions : 1;
   const jobSpec: Record<string, unknown> = {
