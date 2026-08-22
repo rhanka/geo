@@ -5,8 +5,16 @@
     "VÉRIFIÉ d'un pod de lane, le workspaceId sur lequel il applique le per-tenant.",
     "CONTENU = geo (ce fichier). FORMAT/CONTRAT = mesh (dossier D2). Les CLÉS (`sub`)",
     "sont stables ; les VALEURS (`workspaceId`) sont ajustables au format mesh.",
+    "⚠️ 8 PAIRES LITTÉRALES EN DUR — JAMAIS calculées. `geo-<lane>` est une CONVENTION",
+    "de format (lisibilité), PAS une règle : ne JAMAIS remplacer par une concaténation",
+    "`geo-${lane}` ni une fonction — sinon la table devient décorative et la clause",
+    "anti-motif est contournée par le bas. Le test c1-map.test.ts CASSE si on la",
+    "fonctionnalise ou si le nombre/distinction change.",
+    "⚠️ GRANULARITÉ : 1 tenant `geo` + 8 workspaceId (PAS 8 tenants). `workspaceId` =",
+    "attribution/imputation, partition en 8 SANS toucher au tenant applicatif `geo`.",
     "⚠️ BUDGET / KILL-SWITCH par workspaceId = item OWNER (D2+A3), NON fixé ici."
   ],
+  "tenant": "geo",
   "acceptance": {
     "1_entries": "8 entrées, 8 workspaceId DISTINCTS",
     "2_key_exact": "clé = `sub` COMPLET (system:serviceaccount:geo:s3dag-<lane>-sa), ÉGALITÉ EXACTE — aucun motif/préfixe/normalisation",
