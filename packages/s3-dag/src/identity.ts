@@ -7,16 +7,26 @@
  * Two carriers, DELIBERATELY different roles:
  *
  *  - ServiceAccount NAME `s3dag-<lane>-sa` — ONE STABLE SA per real lane, reused
- *    across ALL runs of that lane (NOT per-run, NOT per-lot). The reconciler
- *    self-ships the lanes' SAs + RBAC so a Job may bind ONLY its own lane's SA;
- *    the pod never chooses its SA, so the api-server-signed `sub` is non-spoofable.
- *    The gateway maps the EXACT `sub` → workspaceId via an EXACT registration (no
- *    prefix/pattern match — mesh's non-negotiable clause; hence no name parsing and
- *    no hyphen concern). The RUN lives in labels / the run-id, never in the SA name.
+ *    across ALL runs of that lane (NOT per-run, NOT per-lot). It is PRE-PROVISIONED
+ *    (by infra); the reconciler ASSIGNS it by name in the Job spec — it never
+ *    CREATES or PATCHES a SA (its RBAC excludes `create`/`patch serviceaccounts`),
+ *    so a run can neither invent nor mutate an identity (RUN isolation, proven at
+ *    the canary). The gateway maps the EXACT `sub` → workspaceId via an EXACT
+ *    registration (no prefix/pattern match — mesh's non-negotiable clause; hence no
+ *    name parsing, no hyphen concern). The RUN lives in labels / the run-id.
  *
  *  - Projected-token AUDIENCE — PURELY the gateway id (the token's recipient). It
  *    is NOT the lane carrier (the `sub` is). A node with no gateway audience mounts
  *    no projected token.
+ *
+ * ⚠️ SCOPE — this is the FOUNDATION, not per-lane ENFORCEMENT. Whoever creates the
+ * Job writes `serviceAccountName`, so the attested lane is chosen by the Job creator
+ * (e.g. a CI holding `create jobs`), not intrinsic to the workload — a confused
+ * deputy at the creator level. Until a CI identity boundary exists (namespace-per-
+ * lane, or an admission policy binding the admissible SA — infra / h-cond, NOT this
+ * lib), the lane is an ACCOUNTING label: budget / kill-switch are NOT yet applied,
+ * and must not be presented as such. This module is designed to stay compatible with
+ * a namespace-per-lane deployment.
  *
  * Target (b) token-exchange (conditioned on `@sentropic/cluster-mesh` ownership)
  * would change only the MINTING, never this DAG/identity shape.
