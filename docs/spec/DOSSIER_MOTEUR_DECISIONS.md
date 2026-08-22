@@ -62,6 +62,28 @@ API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
   data-plane sentropic », pas « wrapper 2 APIs ». mesh adjuge le contrat + spécifie la surface consommée, **ne
   porte pas le paquet**.
 
+**Surface egress geo↔mesh — contribution geo-archi (per-run *lane-enforced*, 2026-08-22) :**
+- **Le gateway keye budget/kill-switch/audit sur `workspaceId` → tenant pool** (`h2a/apps/llm-gateway/SPEC.md:77`).
+  Design : **mapper lane → `workspaceId`** ⟹ le contrôle per-tenant existant DEVIENT le per-lane (contrôle h-cond)
+  — pas de mécanisme neuf ; le SA **per-run** (`geo-pv-backlog-<run>-sa`, réalité poc-k8s) **agrège** vers le
+  `workspaceId` de sa lane.
+- **Hitch sécurité (à graver)** : `workspaceId` **DOIT** être un **claim VÉRIFIÉ** — jamais un header auto-déclaré
+  ni un nom de SA parsé (sinon un run réclamerait le budget d'une autre lane). Le gateway (coque) ne l'implémente
+  pas encore → **spécifier maintenant** : « le serveur dérive/vérifie `workspaceId`, l'appelant ne le choisit pas ».
+- **Dérivation run→lane — RETENU = (a) jeton projeté à `aud` lane-scoped** (vérifié par l'API-server k8s →
+  `workspaceId`) ; **cible durable = (b) token-exchange RFC 8693** via cluster-mesh (`cluster-mesh/README.md:24-35`,
+  jeton mesh à claim lane vérifié — **le DAG geo ne change pas entre (a) et (b)**). Le **nom de SA**
+  (`s3dag-<lane>-<run>-sa`) **+ labels** `s3dag.io/{lane,run}` = **RBAC + observabilité seulement, PAS le contrôle
+  sécu**. *(Sub-parse du `sub` d'abord proposé (PR2) puis **écarté** : même signé, dériver un contrôle sécu d'une
+  convention de nommage est une surface plus faible qu'un claim explicite — et le split `-` est ambigu pour
+  `usage-dominant`/`effet-densifiant`/`cadastre-role` (3/8 lanes). #247 mergé `5f9595ea` ; geo-socle code PR2
+  executor sur (a).)*
+- **Gate canari→prod** : per-run OK pour le **canari** (test), mais le per-lane n'est **réel** qu'avec la dérivation
+  claim-vérifié ⟹ **condition de sortie de canari = dérivation vérifiée** (le name-parse ne shippe pas en prod).
+- **À adjuger par mesh** (contrat gateway) : `workspaceId` d'un claim signé · granularité lane · mécanisme
+  audience-vs-token-exchange. **Rappel contraintes** : passthrough `X-Sentropic-Served` verbatim ; clé de cache
+  **tenant(=lane)-scopée** ; `crossUserPoolEnabled` OFF.
+
 **D-moteur-1 — ROUVERT puis RATIFIÉ (owner, 2026-08-22).** L'owner (« pas assez instruit ») avait ajouté un
 **critère décisif** : la **supervision du scraping exposée via une API geo consommable par immo** ; + étude SOTA ;
 + lib publiable si custom. Ré-étude (`MIGRATION_D1_SYNTHESIS.md` : passe sol + input geo-archi + les 3 flags de ma
