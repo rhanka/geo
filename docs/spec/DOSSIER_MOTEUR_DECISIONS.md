@@ -74,23 +74,30 @@ API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
   `sub → workspaceId` via C1** : zéro parse, zéro audience-scoping, zéro ambiguïté hyphen. Le jeton projeté porte
   **`aud=[gateway]`** (pur destinataire, **cardinalité 1** — testé geo-socle `f06bfc4b`) ; la lane vit dans le
   `sub`, **jamais** dans l'audience.
-- **Dérivation `sub`→`workspaceId` — via C1** (mécanisme à adjuger mesh) : **(a)** le gateway mappe le `sub`
-  **vérifié** → `workspaceId` via C1 **[canari, côté gateway]** ; **(b)** cluster-mesh **token-exchange** (RFC 8693,
-  `cluster-mesh/README.md:24-35`) le `sub` → claim `workspaceId` via C1 **[cible durable, aligne le rôle wrapper]**.
-  **C1 = donnée partagée** ; executor geo inchangé entre (a) et (b). `workspaceId` reste un **dérivé VÉRIFIÉ du
-  `sub`**, jamais un header auto-déclaré. *(Supersède l'« audience-lane-scoped », requise seulement pour des SAs
-  per-run où la lane n'est pas dans le `sub`.)*
+- **Dérivation `sub`→`workspaceId` — TRANCHÉ (mesh + h-arch) : (a) = FORME NORMALE** (canari **ET** durable) : le
+  gateway mappe le `sub` **vérifié** → `workspaceId` via C1, chaîne courte derrière `CallerAuthPort`/C5. **(b)
+  token-exchange (cluster-mesh) = PARKÉ** : allonge la chaîne sans rien retirer, pour 8 lignes, sur un cluster-mesh
+  **dormant + sans propriétaire** → justifiable **seulement** par plusieurs consommateurs du mapping + une propriété
+  cluster-mesh arbitrée. `workspaceId` reste un **dérivé VÉRIFIÉ du `sub`**, jamais un header auto-déclaré.
+  *(Supersède l'« audience-lane-scoped », requise seulement pour des SAs per-run.)* **⟹ conséquence : l'egress geo
+  est DÉCOUPLÉ de l'arbitrage propriété cluster-mesh** — (a) se suffit ; la directive owner « cluster-mesh =
+  wrapper » (D-moteur-2) devient une décision **stratégique / multi-consommateur** séparée du besoin technique de geo.
 - **Preuve de sortie de canari** : **non-liaison cross-lane RBAC PROUVÉE** (un run de lane X ne peut pas tourner
   comme le SA de lane Y — tenter + échouer). Labels `s3dag.io/{lane,run}` = observabilité (le run n'est PAS dans
   l'identité sécu ; le contrôle est per-lane — granularité juste).
 - **Découpage (confirmé)** : geo-socle = **table C1** (identité→workspaceId, nom→nom) · **owner (D2+A3)** = les
   **valeurs** budget/kill-switch par `workspaceId` (allocation du quota LLM) + policy · mesh = le **mécanisme**
   d'enforcement · geo-archi = le **contrat de surface**.
-- **À adjuger par mesh** (contrat gateway) : (1) **(a) gateway-mappe-`sub`-via-C1** vs **(b) token-exchange-via-C1** ;
-  (2) **format** du `workspaceId` (`geo-<lane>` ? `<tenant>/<scope>` ? uuid ?) ; (3) **granularité tenant** (8
-  `workspaceId` = 8 tenant-pools, ou geo = 1 tenant + 8 sous-scopes ?). CLÉS C1 stables (les `sub`), VALEURS
-  ajustables au format mesh. **Rappel contraintes** : `X-Sentropic-Served` verbatim ; cache `tenant(=lane)`-scopé ;
-  `crossUserPoolEnabled` OFF.
+- **Granularité — TRANCHÉ (mesh + h-arch) : 1 tenant (geo) + 8 `workspaceId`** (PAS 8 tenants — confusion
+  non-corrigeable). `workspaceId` = **attribution** ; `budgetScope` = **imputation** → partition en 8 **sans**
+  toucher au tenant unique. **Question owner attachée (D2, h-cond → rhanka avec budget/finops)** : `tenantId`
+  est-il le **seul** champ d'isolation de l'app ? Si oui, les `workspaceId` ne donnent **aucune isolation** (juste
+  de l'attribution) → le « per-lane kill-switch » serait un **plafond de budget**, pas une isolation dure. *(Pour
+  l'egress LLM — enjeu quota/coût — un plafond par `workspaceId` est vraisemblablement suffisant ; l'isolation dure
+  entre lanes ne compte que si l'owner l'exige.)*
+- **Reste ouvert** : **format** du `workspaceId` (`geo-<lane>` recommandé ; mesh confirme namespace/format) + la
+  question d'isolation ci-dessus (owner). CLÉS C1 stables, VALEURS ajustables au format mesh. **Rappel contraintes** :
+  `X-Sentropic-Served` verbatim ; cache `tenant(=lane)`-scopé ; `crossUserPoolEnabled` OFF.
 - **Artefact de contrat C1 (geo-socle) + vérif geo-archi** : `deploy/k8s/s3dag-c1-identity-workspace-map.json`
   (branche `feat/s3-dag-phase2c-canary`, commit `1a188486`) = le JSON machine consommé par le gateway (contrat
   `s3-dag/c1-identity-workspace-map/proposal-v1`). **Vérifié indépendamment (geo-archi, 5/5)** contre les critères
@@ -98,7 +105,10 @@ API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
   (aucun motif/préfixe/normalisation — le full-sub-exact moote toute ambiguïté hyphen) ✓ ; (3) **`sub` inconnu →
   R1 fail-closed** — JAMAIS un `workspaceId`/lane par défaut, **aucune entrée wildcard/catch-all** ✓ ; (4) **source
   unique** = CAPTURE_LANES ✓ ; (5) **audience = valeur de contrat séparée**, absente de la table ✓. CONTENU=geo ·
-  FORMAT/granularité=mesh (clés `sub` stables, valeurs `workspaceId` ajustables).
+  FORMAT/granularité=mesh (clés `sub` stables, valeurs `workspaceId` ajustables). **Anti-drift (mesh + h-arch,
+  gravé)** : C1 = **8 paires LITTÉRALES en dur** ({`sub`, `workspaceId`}), **jamais** un `geo-${lane}` calculé — une
+  fonction réintroduirait un catch-all et **R1 resterait ROUGE** (le fail-closed exige l'absence de mapping
+  calculable). Vérifié **littéral** dans `1a188486`.
 
 **D-moteur-1 — ROUVERT puis RATIFIÉ (owner, 2026-08-22).** L'owner (« pas assez instruit ») avait ajouté un
 **critère décisif** : la **supervision du scraping exposée via une API geo consommable par immo** ; + étude SOTA ;
