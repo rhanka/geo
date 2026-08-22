@@ -24,6 +24,7 @@ interface JobShape {
     backoffLimit: number;
     completions: number;
     parallelism: number;
+    completionMode?: string;
     template: {
       metadata: { labels: Record<string, string> };
       spec: {
@@ -35,6 +36,7 @@ interface JobShape {
           image: string;
           args?: string[];
           env?: { name: string; value: string }[];
+          envFrom?: { secretRef: { name: string } }[];
           volumeMounts?: { name: string; mountPath: string; readOnly: boolean }[];
         }[];
         volumes?: { name: string; projected: { sources: { serviceAccountToken: { audience: string; expirationSeconds: number; path: string } }[] } }[];
@@ -57,11 +59,11 @@ describe("buildJobManifest — structure & safety invariants", () => {
     expect(m.spec.template.spec.restartPolicy).toBe("Never");
   });
 
-  it("runs under the stable per-lane SA with automount, never default", () => {
+  it("runs under the stable per-lane SA with automount OFF (projected token is the only token)", () => {
     const podSpec = build().spec.template.spec;
     expect(podSpec.serviceAccountName).toBe("s3dag-pv-sa");
     expect(podSpec.serviceAccountName).not.toBe("default");
-    expect(podSpec.automountServiceAccountToken).toBe(true);
+    expect(podSpec.automountServiceAccountToken).toBe(false);
   });
 
   it("carries lane/run/node labels (observability + fallback only)", () => {
@@ -95,6 +97,38 @@ describe("buildJobManifest — structure & safety invariants", () => {
     const podSpec = build({ identity: { serviceAccountName: "s3dag-pv-sa", tokenAudiences: [] } }).spec.template.spec;
     expect(podSpec.volumes).toBeUndefined();
     expect(podSpec.containers[0]!.volumeMounts).toBeUndefined();
+  });
+});
+
+describe("buildJobManifest — fan-out (Indexed Job) & creds surface", () => {
+  it("stays a single completion by default (no completionMode)", () => {
+    const m = build();
+    expect(m.spec.completions).toBe(1);
+    expect(m.spec.parallelism).toBe(1);
+    expect(m.spec.completionMode).toBeUndefined();
+  });
+
+  it("becomes an Indexed Job when the node declares completions > 1", () => {
+    const m = build({ spec: { image: "registry/worker:1", args: ["capture"], completions: 6 } as unknown as JobSubmission["spec"] });
+    expect(m.spec.completions).toBe(6);
+    expect(m.spec.parallelism).toBe(6); // defaults to completions
+    expect(m.spec.completionMode).toBe("Indexed");
+  });
+
+  it("honours an explicit parallelism bound under fan-out", () => {
+    const m = build({ spec: { image: "x", completions: 10, parallelism: 3 } as unknown as JobSubmission["spec"] });
+    expect(m.spec.completions).toBe(10);
+    expect(m.spec.parallelism).toBe(3);
+  });
+
+  it("mounts S3 creds via envFrom (data-store only) and NO static gateway key", () => {
+    const m = build({ spec: { image: "x", envFrom: ["geo-s3-credentials-preprod"] } as unknown as JobSubmission["spec"] });
+    const c = m.spec.template.spec.containers[0]!;
+    expect(c.envFrom).toEqual([{ secretRef: { name: "geo-s3-credentials-preprod" } }]);
+    // The only gateway credential is the projected Bearer token — never a static key in env.
+    const envNames = (c.env ?? []).map((e) => e.name);
+    expect(envNames).not.toContain("ANTHROPIC_API_KEY");
+    expect(envNames).not.toContain("X_API_KEY");
   });
 });
 
