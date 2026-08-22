@@ -12,6 +12,37 @@
 
 ---
 
+## OUTCOME — redirection owner (2026-08-22, via geo-cond)
+
+**L'owner REDIRIGE les deux décisions (ne ratifie ni l'une ni l'autre).**
+
+**D-moteur-2 — l'owner pose un RÔLE CIBLE pour cluster-mesh** (verbatim) : « *cluster mesh est censé wrapper les
+API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
+- Mon `[FAIT]` « cluster-mesh ne route aucun LLM » reste vrai comme **ÉTAT COURANT** (vérifié §2) — mais le **RÔLE
+  CIBLE** posé par l'owner = cluster-mesh devient le **wrapper unifié** au-dessus de `llm-mesh` (control-plane,
+  enrollment) **+** `llm-gateway` (data-plane) pour les consommateurs k8s comme geo. Le gap n'est **pas une
+  confusion à écarter** (mon cadrage `~M` §4b est **corrigé** par l'owner) : c'est un **build cross-owner à
+  commander**.
+- **Réconciliation avec la reco §5** : la gateway (Mode 3) reste le **data-plane** ; cluster-mesh la **fronte**.
+  geo appelle **cluster-mesh** (identité de workspace, **zéro cred en pod**), qui wrappe l'enrollment llm-mesh +
+  le routage gw. `crossUserPoolEnabled` reste **OFF**. → « cible = gateway sanctionnée » devient « cible =
+  **cluster-mesh-as-wrapper(llm-mesh + gw)**, dont la gateway est le data-plane ».
+- **Action** : commande cross-owner routée au propriétaire de `@sentropic/cluster-mesh` (**session `mesh`**) — la
+  plateforme bâtit le wrapper. geo = consommateur ; intérim local borné jusqu'à livraison.
+
+**D-moteur-1 — ROUVERT.** L'owner (« pas assez instruit ») ajoute un **critère décisif** : la **supervision du
+scraping doit être exposée via une API geo consommable par immo**. Argo le permet-il sans usine à gaz ? sinon
+**DAG-S3 custom** avec **étude SOTA** d'autres libs + **lib publiable réutilisable** (`@sentropic/…`) si custom.
+2 passes (sol 5.6 + gemini 3.7) relancées par geo-cond avec ces 3 exigences → re-synthèse → re-AskUserQuestion.
+**Ma reco A1 (Argo) devient un input à RÉ-ÉVALUER** contre le critère API-supervision-immo (cf. note geo-archi :
+le critère favorise plutôt un DAG-S3 geo-shaped, l'état étant déjà en S3 et déjà servi à immo).
+
+**Seuil pruning** : geo-cond fixe **10 % réversible** par défaut (sauf objection owner).
+
+*(Le corps ci-dessous = l'analyse pré-décision, conservée telle quelle pour audit.)*
+
+---
+
 ## 1. Décision demandée
 
 - **D-moteur-1 — Orchestrateur DAG (T5)** : quel moteur exécute les 8 DAGs de refresh sur k8s ?
