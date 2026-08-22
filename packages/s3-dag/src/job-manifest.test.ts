@@ -93,6 +93,20 @@ describe("buildJobManifest — structure & safety invariants", () => {
     expect(byName["S3DAG_TOKEN_COUNT"]).toBe("1");
   });
 
+  it("carries EXACTLY ONE audience per token file, separate volumes for multiple recipients (never stacked)", () => {
+    // C7 is strict equality on aud: a multi-audience token would be replayable elsewhere.
+    const podSpec = build({ identity: { serviceAccountName: "s3dag-pv-sa", tokenAudiences: ["gw-a", "gw-b"] } }).spec.template.spec;
+    expect(podSpec.volumes).toHaveLength(2); // one volume per recipient
+    for (const v of podSpec.volumes!) {
+      expect(v.projected.sources).toHaveLength(1); // one source
+      expect(typeof v.projected.sources[0]!.serviceAccountToken.audience).toBe("string"); // one aud, not an array
+    }
+    const auds = podSpec.volumes!.map((v) => v.projected.sources[0]!.serviceAccountToken.audience);
+    expect(auds).toEqual(["gw-a", "gw-b"]); // distinct files, distinct aud
+    const mounts = podSpec.containers[0]!.volumeMounts!.map((m) => m.mountPath);
+    expect(new Set(mounts).size).toBe(2); // distinct mount paths
+  });
+
   it("mounts NO projected token when the node declares no audiences", () => {
     const podSpec = build({ identity: { serviceAccountName: "s3dag-pv-sa", tokenAudiences: [] } }).spec.template.spec;
     expect(podSpec.volumes).toBeUndefined();
