@@ -75,13 +75,16 @@ API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
   **`aud=[gateway]`** (pur destinataire, **cardinalité 1** — testé geo-socle `f06bfc4b`) ; la lane vit dans le
   `sub`, **jamais** dans l'audience.
 - **Dérivation `sub`→`workspaceId` — TRANCHÉ (mesh + h-arch) : (a) = FORME NORMALE** (canari **ET** durable) : le
-  gateway mappe le `sub` **vérifié** → `workspaceId` via C1, chaîne courte derrière `CallerAuthPort`/C5. **(b)
-  token-exchange (cluster-mesh) = PARKÉ** : allonge la chaîne sans rien retirer, pour 8 lignes, sur un cluster-mesh
-  **dormant + sans propriétaire** → justifiable **seulement** par plusieurs consommateurs du mapping + une propriété
-  cluster-mesh arbitrée. `workspaceId` reste un **dérivé VÉRIFIÉ du `sub`**, jamais un header auto-déclaré.
-  *(Supersède l'« audience-lane-scoped », requise seulement pour des SAs per-run.)* **⟹ conséquence : l'egress geo
-  est DÉCOUPLÉ de l'arbitrage propriété cluster-mesh** — (a) se suffit ; la directive owner « cluster-mesh =
-  wrapper » (D-moteur-2) devient une décision **stratégique / multi-consommateur** séparée du besoin technique de geo.
+  gateway mappe le `sub` **vérifié** → `workspaceId` via C1, chaîne courte derrière `CallerAuthPort`/C5. `workspaceId`
+  reste un **dérivé VÉRIFIÉ du `sub`**, jamais un header auto-déclaré. *(Supersède l'« audience-lane-scoped »,
+  requise seulement pour des SAs per-run.)*
+- **Cluster-mesh / token-exchange (b) — hors du besoin EGRESS de geo, SANS reclasser la directive owner** : (a)
+  établit un **fait technique borné** — cluster-mesh n'est **pas nécessaire pour l'egress geo** (sous-cas ①-C ; le
+  token-exchange allongerait la chaîne sans rien retirer, pour 8 lignes). **Ça ne dit RIEN des autres finalités
+  possibles de la directive owner « cluster-mesh = wrapper »** (convergence sentropic, sémantique partagée,
+  enrôlement — **hors egress**). ⟹ **QUESTION pour l'owner** (pas une décision de lane) : la directive garde-t-elle
+  des finalités **non-egress** ? **Une lane ne déclasse pas une directive owner sur sa seule mesure** (frontière
+  RACI, h-arch/h-cond). **(b) = QUESTION owner**, pas « parké-optionnel ».
 - **Preuve de sortie de canari** : **non-liaison cross-lane RBAC PROUVÉE** (un run de lane X ne peut pas tourner
   comme le SA de lane Y — tenter + échouer). Labels `s3dag.io/{lane,run}` = observabilité (le run n'est PAS dans
   l'identité sécu ; le contrôle est per-lane — granularité juste).
