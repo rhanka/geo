@@ -91,3 +91,11 @@ export {
   type RawResourceQuota,
 } from "./quota-k8s.js";
 export { acquireLease, type AcquireLeaseArgs } from "./lease.js";
+export {
+  laneServiceAccountManifests,
+  reconcilerRbac,
+  reconcilerCronManifest,
+  reconcilerLockName,
+  type ReconcilerRbacArgs,
+  type ReconcilerCronArgs,
+} from "./reconciler-manifest.js";
