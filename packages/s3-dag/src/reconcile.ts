@@ -29,6 +29,7 @@ import {
   type RunManifest,
   type RunPhase,
 } from "./state.js";
+import { laneIdentity } from "./identity.js";
 import type { DagStore, JobExecutor, JobIdentity, QuotaHeadroom } from "./ports.js";
 import type { Dag } from "./dag.js";
 
@@ -48,6 +49,13 @@ export interface ReconcileArgs {
   maxActiveJobs?: number;
   /** Per-node resource cost override. */
   perJob?: PerJobCost;
+  /**
+   * Lane this run belongs to. When set, identity uses the STABLE per-lane SA
+   * `s3dag-<lane>-sa` (the lane carrier via its verified `sub`; the run lives in
+   * labels/run-id) with the node's gateway audiences verbatim. When omitted, the
+   * DAG's fixed `serviceAccountName` + raw node audiences are used (Phase 0 mode).
+   */
+  lane?: string;
 }
 
 export interface ReconcileResult {
@@ -72,11 +80,16 @@ function buildManifest(dag: Dag, runId: string, now: string): RunManifest {
 export async function reconcileTick(args: ReconcileArgs): Promise<ReconcileResult> {
   const { dag, runId, store, executor, quota, now } = args;
   const maxActiveJobs = args.maxActiveJobs ?? DEFAULT_MAX_ACTIVE_JOBS;
-  // NHI: every Job runs as the lane's dedicated SA (+ the node's token audiences).
-  const identityFor = (id: string): JobIdentity => ({
-    serviceAccountName: dag.serviceAccountName,
-    tokenAudiences: dag.nodes[id]!.tokenAudiences ?? [],
-  });
+  // NHI: every Job runs as a dedicated SA (never `default`) + the node's audiences.
+  // With a lane, identity uses the stable per-lane SA (the lane rides its verified
+  // `sub`; audience stays the gateway id); without one, the DAG's fixed SA is used.
+  const identityFor = (id: string): JobIdentity => {
+    const baseAudiences = dag.nodes[id]!.tokenAudiences ?? [];
+    if (args.lane === undefined) {
+      return { serviceAccountName: dag.serviceAccountName, tokenAudiences: baseAudiences };
+    }
+    return laneIdentity({ lane: args.lane, baseAudiences });
+  };
   const empty = (conflict: boolean, phase: RunPhase): ReconcileResult => ({
     runId, phase, submitted: [], completed: [], failed: [], skipped: [], conflict,
   });
