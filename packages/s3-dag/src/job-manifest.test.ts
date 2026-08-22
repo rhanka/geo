@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { assertK8sNodeSpec, buildJobManifest } from "./job-manifest.js";
+import { assertK8sNodeSpec, buildJobManifest, resolveFanout } from "./job-manifest.js";
 import type { JobSubmission } from "./ports.js";
 
 function submission(over: Partial<JobSubmission> = {}): JobSubmission {
@@ -152,6 +152,22 @@ describe("buildJobManifest — fan-out (Indexed Job) & creds surface", () => {
     const envNames = (c.env ?? []).map((e) => e.name);
     expect(envNames).not.toContain("ANTHROPIC_API_KEY");
     expect(envNames).not.toContain("X_API_KEY");
+  });
+});
+
+describe("resolveFanout — typed empty-done vs run (structural, not a guard)", () => {
+  it("resolves 0 remaining to `complete` (no Job — the all-done node succeeds, never a silent 1-pod)", () => {
+    expect(resolveFanout(0)).toEqual({ kind: "complete" });
+  });
+
+  it("resolves N>0 to `run` with a REQUIRED completions (no optional to slip through)", () => {
+    expect(resolveFanout(6)).toEqual({ kind: "run", completions: 6 });
+    expect(resolveFanout(1)).toEqual({ kind: "run", completions: 1 });
+  });
+
+  it("throws on a negative or non-integer count (a broken sizing is a defect, not a 1-pod)", () => {
+    expect(() => resolveFanout(-1)).toThrow(/non-negative/);
+    expect(() => resolveFanout(1.5)).toThrow(/non-negative/);
   });
 });
 

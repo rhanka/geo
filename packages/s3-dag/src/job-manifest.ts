@@ -55,6 +55,24 @@ export function assertK8sNodeSpec(spec: unknown): asserts spec is K8sNodeSpec {
   }
 }
 
+/**
+ * Typed resolution of a fan-out node's remaining shards. "Nothing left to do" is a
+ * DISTINCT, non-optional state (`complete`) from "run N shards" (`run`) — so the
+ * reconciler cannot silently coerce an all-done node into a 1-pod Job, and there is
+ * no `undefined`/optional completions to slip through a guard. This is where the
+ * empty-because-done vs empty-because-absent distinction is STRUCTURAL (h-arch:
+ * a guard cannot hold what an optional type admits — the type must).
+ */
+export type FanoutResolution = { kind: "complete" } | { kind: "run"; completions: number };
+
+/** Resolve a computed remaining-shard count into a {@link FanoutResolution}. */
+export function resolveFanout(remainingShards: number): FanoutResolution {
+  if (!Number.isInteger(remainingShards) || remainingShards < 0) {
+    throw new Error(`s3-dag: remainingShards must be a non-negative integer, got ${String(remainingShards)}`);
+  }
+  return remainingShards === 0 ? { kind: "complete" } : { kind: "run", completions: remainingShards };
+}
+
 export interface BuildJobManifestArgs {
   namespace: string;
   /** Lane label (observability); the SECURITY carrier is the audience, not this. */
@@ -123,15 +141,17 @@ export function buildJobManifest(args: BuildJobManifestArgs): Record<string, unk
   // Fan-out: > 1 completion ⇒ an Indexed Job (one Job object, N indexed pods, one
   // receipt). Each pod reads its shard via the auto-injected JOB_COMPLETION_INDEX.
   //
-  // STRUCTURAL guard (not a comment you must remember): a Job with completions < 1
-  // is INVALID — Kubernetes rejects it. So a node that resolved to ZERO remaining
-  // shards is a COMPLETED node, and the reconciler MUST resolve it to success
-  // (write a `succeeded` receipt, submit nothing) BEFORE reaching here. Throwing
-  // makes that branch impossible to skip — "everything already done" can never be
-  // silently coerced into a 1-pod Job (which would re-read the whole batch).
+  // DEFENSE-IN-DEPTH only: reject an explicit `completions: 0` (a sizing that
+  // computed zero must have resolved to SUCCESS, not reached the builder). This
+  // does NOT — and cannot — close the `undefined` case: for a regular single-pod
+  // node, `undefined` legitimately means one pod. The empty-because-done vs
+  // empty-because-absent distinction is NOT enforceable here; it lives in the TYPED
+  // {@link resolveFanout} (0 remaining ⇒ `complete`, no Job) that the reconciler
+  // uses BEFORE calling this builder — a guard cannot hold what an optional type
+  // admits (h-arch: structural > guard).
   if (spec.completions !== undefined && spec.completions < 1) {
     throw new Error(
-      "s3-dag: completions < 1 — a zero-shard node is COMPLETE, resolve it to success reconciler-side; never build an empty Job",
+      "s3-dag: completions < 1 — a zero-shard fan-out is COMPLETE; resolve it via resolveFanout to success, never build an empty Job",
     );
   }
   const completions = spec.completions !== undefined && spec.completions > 1 ? spec.completions : 1;

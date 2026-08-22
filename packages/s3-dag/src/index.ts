@@ -69,8 +69,10 @@ export { laneServiceAccountName, laneIdentity } from "./identity.js";
 export {
   buildJobManifest,
   assertK8sNodeSpec,
+  resolveFanout,
   type K8sNodeSpec,
   type BuildJobManifestArgs,
+  type FanoutResolution,
 } from "./job-manifest.js";
 export {
   K8sJobExecutor,
