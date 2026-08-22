@@ -7,6 +7,31 @@ enforcement — that is the CI identity boundary (VAP), a prod-gate item (D2+A3)
 
 poc-k8s applies everything; nothing runs without direct owner GO.
 
+## Go-model (definitive — h-cond holds the RACI)
+
+**One owner go covers `[VAP-canary-Deny → apply substrate → run]`** — the VAP, even
+narrow (it keys ONLY on the s3-dag reconciler's username, orthogonal to the broad
+prod remediation), is a **cluster-scoped owner-gated** object, so the run is NOT
+"D1-covered". A **separate** owner go is the ratification gate (custom-vs-Argo +
+atomic legacy strangle) after the proofs.
+
+Order, with a **STOP-CONDITION** (proof-first — protects the gate of proof):
+
+1. **VAP-first**: i-infra authors + poc-k8s poses the narrow Deny binding (mesh
+   reviewed: Deny-direct + 4 conditions), and poc-k8s **tests the retract path
+   BEFORE** the go (retract held by an unconstrained identity — not the s3-dag SAs).
+2. **Apply** the substrate (SAs + reconciler RBAC + CronJob).
+3. **Measure the 3 negative refusals post-apply** (below). **STOP-CONDITION: if the 3
+   refusals are NOT all observed, the reconciler run does NOT start** — it returns to
+   the owner. The refusals gate the run.
+4. Only once the 3 refusals are green: **start the reconciler run** → collect the 4
+   proofs + CAS OVH.
+
+(Habilitation / separation-of-duties — if applicator = measurer = verifier is a
+single `system:masters` — is an owner decision, carried by geo-cond; outside this
+substrate. The reconciler's own identities do NOT rotate during the Deny window —
+stable per-lane SAs, by design.)
+
 ## What it deploys (all from tested builders — `emit-manifests.ts`)
 
 ```
