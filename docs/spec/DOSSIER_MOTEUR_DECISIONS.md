@@ -27,8 +27,34 @@ API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
   geo appelle **cluster-mesh** (identité de workspace, **zéro cred en pod**), qui wrappe l'enrollment llm-mesh +
   le routage gw. `crossUserPoolEnabled` reste **OFF**. → « cible = gateway sanctionnée » devient « cible =
   **cluster-mesh-as-wrapper(llm-mesh + gw)**, dont la gateway est le data-plane ».
-- **Action** : commande cross-owner routée au propriétaire de `@sentropic/cluster-mesh` (**session `mesh`**) — la
-  plateforme bâtit le wrapper. geo = consommateur ; intérim local borné jusqu'à livraison.
+- **Action** : *(corrigée après retour `mesh`/WP14)* — **l'attribution de `@sentropic/cluster-mesh` est OUVERTE**
+  (arbitrage owner en cours, porté par **h-cond** ; des sessions `agent:cluster-mesh` tournent dans
+  `sentropic/tmp/cluster-mesh` branche `feat/cluster-mesh-v1`, pilote inconnu). **Ne PAS figer d'attribution.**
+  geo = consommateur ; intérim local borné jusqu'à livraison.
+
+**Retour `mesh` (WP14 — propriétaire des CONTRATS `llm-mesh` + `llm-gateway`, PAS de cluster-mesh) :**
+- **Le lot est un ORDRE DE GRANDEUR plus gros que « wrapper 2 APIs ».** Le « zéro cred en pod » **force le chemin
+  RÉSEAU** : wrapper l'in-process (llm-mesh en lib) mettrait la mesh **et les creds DANS le pod** (contraire à la
+  directive). Le wrap doit être **au-dessus du data-plane réseau (le gateway)**. Or **aucun service gateway n'est
+  déployé ni déployable côté sentropic aujourd'hui** (aucune cible Makefile, aucune app exécutable ; le seul
+  gateway sur la machine = le daemon `@sentropic/h2a-runtime`, actuellement **DOWN**). ⟹ vrai lot = **lever un
+  data-plane réseau côté sentropic**, PUIS le fronter — pas un simple wrapping.
+- **push-cluster supprimé = ALIGNÉ, pas un manque** : ce pont mettait des creds dans le pod = exactement ce que la
+  directive écarte. Ne PAS le restaurer. Si le gateway détient les comptes, le Job geo n'a besoin que d'une
+  **identité de workspace**. *(Corrige mon §2/§4b : je le portais comme dépendance — c'est cohérent avec la cible.)*
+- **Précision consommateurs** : `llm-mesh` **A** un consommateur applicatif (l'`api` sentropic, in-process, 5+
+  imports) ; c'est le **gateway** qui a **zéro** consommateur dans le dépôt (mon « live = mesh-direct in-process »
+  reste exact ; l'attribution « zéro consommateur » va au gateway, pas à llm-mesh).
+- **Contraintes contrat mesh (côté enveloppé, non négociables)** : (1) l'attestation `X-Sentropic-Served:
+  provider/model/transport` émise par le gateway **doit traverser le wrapper verbatim** (jamais avalée ni
+  fabriquée) ; (2) personal-passthrough / `crossUserPoolEnabled` OFF = déjà le mode v0 du gateway (le besoin geo
+  colle au **gateway**, pas à un wrapper qui réimplémenterait la sélection) ; (3) **ne pas redéclarer le routage**
+  — le gateway expose `createCanonicalTargetResolver()` / `describeCanonicalTargetRoutes()` ; le wrapper LIT, ne
+  recopie pas ; (4) toute évolution de surface llm-mesh/llm-gateway passe par l'adjudication mesh.
+- **Reco process mesh (avant tout build)** : owner arbitre dans l'ordre — (a) qui possède `cluster-mesh` ; (b)
+  coordonner avec les agents de `tmp/cluster-mesh` (sinon double-écriture) ; (c) acter que le lot = « lever un
+  data-plane sentropic », pas « wrapper 2 APIs ». mesh adjuge le contrat + spécifie la surface consommée, **ne
+  porte pas le paquet**.
 
 **D-moteur-1 — ROUVERT.** L'owner (« pas assez instruit ») ajoute un **critère décisif** : la **supervision du
 scraping doit être exposée via une API geo consommable par immo**. Argo le permet-il sans usine à gaz ? sinon
