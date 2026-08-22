@@ -1,0 +1,29 @@
+{
+  "contract": "s3-dag/c1-identity-workspace-map/v1",
+  "note": [
+    "C1 = la table identité→workspaceId dont le gateway a besoin pour dériver, du `sub`",
+    "VÉRIFIÉ d'un pod de lane, le workspaceId sur lequel il applique le per-tenant.",
+    "CONTENU = geo (ce fichier). FORMAT/CONTRAT = mesh (dossier D2). Valeurs FIGÉES :",
+    "toute modification REPASSE en relecture mesh (ce n'est pas un brouillon ajustable).",
+    "⚠️ SEUL `sub` EST NORMATIF (la clé). `lane` est INFORMATIF (libellé) et ne doit",
+    "JAMAIS servir à CONSTRUIRE ni RÉSOUDRE une clé : pas de `system:serviceaccount:...`",
+    "assemblé depuis des parties, pas de `geo-${lane}`. La résolution est une ÉGALITÉ",
+    "EXACTE sur `sub` littéral, rien d'autre.",
+    "⚠️ 8 PAIRES LITTÉRALES EN DUR — jamais calculées. Le test c1-map.test.ts CASSE si on",
+    "fonctionnalise la table (drift, wildcard, 9e lane) ou si on reconstruit `sub`.",
+    "⚠️ GRANULARITÉ : 1 tenant `geo` + 8 workspaceId (PAS 8 tenants).",
+    "⚠️ BUDGET / KILL-SWITCH par workspaceId = item OWNER (D2+A3), NON fixé ici.",
+    "⚠️ audience gateway = valeur de contrat SÉPARÉE (mesh), volontairement ABSENTE d'ici."
+  ],
+  "tenant": "geo",
+  "map": [
+    { "lane": "zones",            "sub": "system:serviceaccount:geo:s3dag-zones-sa",            "workspaceId": "geo-zones" },
+    { "lane": "normes",           "sub": "system:serviceaccount:geo:s3dag-normes-sa",           "workspaceId": "geo-normes" },
+    { "lane": "pv",               "sub": "system:serviceaccount:geo:s3dag-pv-sa",               "workspaceId": "geo-pv" },
+    { "lane": "reglement",        "sub": "system:serviceaccount:geo:s3dag-reglement-sa",        "workspaceId": "geo-reglement" },
+    { "lane": "usage-dominant",   "sub": "system:serviceaccount:geo:s3dag-usage-dominant-sa",   "workspaceId": "geo-usage-dominant" },
+    { "lane": "effet-densifiant", "sub": "system:serviceaccount:geo:s3dag-effet-densifiant-sa", "workspaceId": "geo-effet-densifiant" },
+    { "lane": "cadastre",         "sub": "system:serviceaccount:geo:s3dag-cadastre-sa",         "workspaceId": "geo-cadastre" },
+    { "lane": "immo-lots",        "sub": "system:serviceaccount:geo:s3dag-immo-lots-sa",        "workspaceId": "geo-immo-lots" }
+  ]
+}

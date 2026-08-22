@@ -22,6 +22,8 @@ export interface K8sNodeSpec {
   command?: readonly string[];
   args?: readonly string[];
   env?: Readonly<Record<string, string>>;
+  /** Secret names mounted via `envFrom` — data-store creds ONLY (S3), never a gateway key. */
+  envFrom?: readonly string[];
   resources?: {
     requests?: { cpu?: string; memory?: string };
     limits?: { cpu?: string; memory?: string };
@@ -30,6 +32,15 @@ export interface K8sNodeSpec {
   tokenExpirationSeconds?: number;
   /** Directory the projected tokens mount under (default /var/run/secrets/s3dag). */
   tokenMountDir?: string;
+  /**
+   * Fan-out width: when > 1, the node becomes ONE `Indexed` Job with this many
+   * completions (each pod reads its shard via `JOB_COMPLETION_INDEX`). Still one
+   * node = one Job = one receipt (the reconciler sizes it; a node that resolves to
+   * zero remaining shards is a SUCCESS, not an empty-Job — handled reconciler-side).
+   */
+  completions?: number;
+  /** Max pods running at once for a fan-out node (default: bounded to `completions`). */
+  parallelism?: number;
 }
 
 const DEFAULT_TOKEN_DIR = "/var/run/secrets/s3dag";
@@ -42,6 +53,33 @@ export function assertK8sNodeSpec(spec: unknown): asserts spec is K8sNodeSpec {
   if (typeof spec !== "object" || spec === null || typeof (spec as { image?: unknown }).image !== "string") {
     throw new Error("s3-dag: k8s node spec requires a string `image`");
   }
+}
+
+/**
+ * Typed resolution of a fan-out node's remaining shards. "Nothing left to do" is a
+ * DISTINCT, non-optional state (`complete`) from "run N shards" (`run`) — so the
+ * reconciler cannot silently coerce an all-done node into a 1-pod Job, and there is
+ * no `undefined`/optional completions to slip through a guard. This is where the
+ * empty-because-done vs empty-because-absent distinction is STRUCTURAL (h-arch:
+ * a guard cannot hold what an optional type admits — the type must).
+ */
+export type FanoutResolution = { kind: "complete" } | { kind: "run"; completions: number };
+
+/**
+ * Resolve a computed remaining-shard count into a {@link FanoutResolution}.
+ *
+ * The `Number.isInteger` check is NOT redundant with the `number` type — do not
+ * "simplify" it to `< 0`. The count is computed from a worklist read from S3
+ * (`JSON.parse`), a boundary where TypeScript guarantees nothing: a missing field
+ * yields `undefined` at runtime regardless of the signature. `Number.isInteger`
+ * is the ONLY thing that holds past that deserialization boundary — the type
+ * covers internal paths, this covers what crosses the wire.
+ */
+export function resolveFanout(remainingShards: number): FanoutResolution {
+  if (!Number.isInteger(remainingShards) || remainingShards < 0) {
+    throw new Error(`s3-dag: remainingShards must be a non-negative integer, got ${String(remainingShards)}`);
+  }
+  return remainingShards === 0 ? { kind: "complete" } : { kind: "run", completions: remainingShards };
 }
 
 export interface BuildJobManifestArgs {
@@ -89,26 +127,56 @@ export function buildJobManifest(args: BuildJobManifestArgs): Record<string, unk
   if (spec.command !== undefined) container["command"] = [...spec.command];
   if (spec.args !== undefined) container["args"] = [...spec.args];
   if (env.length > 0) container["env"] = env;
+  // envFrom is for data-store creds ONLY (e.g. S3). The gateway credential is the
+  // projected Bearer token above — NEVER a static key in a Secret (would let a lane
+  // be attested from an alternate header instead of the SA's verified `sub`).
+  if (spec.envFrom !== undefined && spec.envFrom.length > 0) {
+    container["envFrom"] = spec.envFrom.map((name) => ({ secretRef: { name } }));
+  }
   if (spec.resources !== undefined) container["resources"] = spec.resources;
   if (volumeMounts.length > 0) container["volumeMounts"] = volumeMounts;
 
   const podSpec: Record<string, unknown> = {
     serviceAccountName: submission.identity.serviceAccountName,
-    automountServiceAccountToken: true,
+    // FALSE on purpose: with the SA's default token NOT auto-mounted, the projected
+    // Bearer token (gateway audience) is the ONLY token in the pod — no stray default
+    // API token to widen the surface.
+    automountServiceAccountToken: false,
     restartPolicy: "Never",
     containers: [container],
   };
   if (volumes.length > 0) podSpec["volumes"] = volumes;
 
+  // Fan-out: > 1 completion ⇒ an Indexed Job (one Job object, N indexed pods, one
+  // receipt). Each pod reads its shard via the auto-injected JOB_COMPLETION_INDEX.
+  //
+  // DEFENSE-IN-DEPTH only: reject an explicit `completions: 0` (a sizing that
+  // computed zero must have resolved to SUCCESS, not reached the builder). This
+  // does NOT — and cannot — close the `undefined` case: for a regular single-pod
+  // node, `undefined` legitimately means one pod. The empty-because-done vs
+  // empty-because-absent distinction is NOT enforceable here; it lives in the TYPED
+  // {@link resolveFanout} (0 remaining ⇒ `complete`, no Job) that the reconciler
+  // uses BEFORE calling this builder — a guard cannot hold what an optional type
+  // admits (h-arch: structural > guard).
+  if (spec.completions !== undefined && spec.completions < 1) {
+    throw new Error(
+      "s3-dag: completions < 1 — a zero-shard fan-out is COMPLETE; resolve it via resolveFanout to success, never build an empty Job",
+    );
+  }
+  const completions = spec.completions !== undefined && spec.completions > 1 ? spec.completions : 1;
+  const parallelism = completions > 1 ? spec.parallelism ?? completions : 1;
+  const jobSpec: Record<string, unknown> = {
+    backoffLimit: 0,
+    completions,
+    parallelism,
+    template: { metadata: { labels }, spec: podSpec },
+  };
+  if (completions > 1) jobSpec["completionMode"] = "Indexed";
+
   return {
     apiVersion: "batch/v1",
     kind: "Job",
     metadata: { name: submission.name, namespace, labels },
-    spec: {
-      backoffLimit: 0,
-      completions: 1,
-      parallelism: 1,
-      template: { metadata: { labels }, spec: podSpec },
-    },
+    spec: jobSpec,
   };
 }

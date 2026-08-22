@@ -18,6 +18,12 @@ WORKDIR /geo
 # installed dependency tree), since ESM deliberately ignores NODE_PATH.
 COPY packages/geo/ ./packages/geo/
 COPY packages/qc-sources/ ./packages/qc-sources/
+# @sentropic/s3-dag is imported by the s3-dag reconciler/worker entrypoints via a
+# relative source path (../../../packages/s3-dag/src/...), like qc-sources — not a
+# package.json dep. Its runtime deps (@aws-sdk) already resolve through
+# acquisition/node_modules; the entrypoints import submodules only (never the hono
+# barrel), so no extra dependency is pulled in.
+COPY packages/s3-dag/ ./packages/s3-dag/
 COPY acquisition/package.json acquisition/package-lock.json ./acquisition/
 RUN cd acquisition && npm ci \
  && ln -s /geo/acquisition/node_modules /geo/node_modules
