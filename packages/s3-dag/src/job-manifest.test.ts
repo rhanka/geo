@@ -121,6 +121,15 @@ describe("buildJobManifest — fan-out (Indexed Job) & creds surface", () => {
     expect(m.spec.parallelism).toBe(3);
   });
 
+  it("REFUSES completions < 1 structurally (zero-shard node is COMPLETE, never an empty Job)", () => {
+    // Forces the reconciler to resolve an all-done fan-out node to SUCCESS instead of
+    // silently coercing it to a 1-pod Job — the empty-because-done vs empty-because-absent
+    // distinction (h-arch) made structural, not a comment.
+    expect(() =>
+      buildJobManifest({ namespace: "geo", lane: "pv", submission: submission({ spec: { image: "x", completions: 0 } as unknown as JobSubmission["spec"] }) }),
+    ).toThrow(/completions < 1|zero-shard/);
+  });
+
   it("mounts S3 creds via envFrom (data-store only) and NO static gateway key", () => {
     const m = build({ spec: { image: "x", envFrom: ["geo-s3-credentials-preprod"] } as unknown as JobSubmission["spec"] });
     const c = m.spec.template.spec.containers[0]!;
