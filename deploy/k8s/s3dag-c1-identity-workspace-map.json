@@ -15,6 +15,7 @@
     "⚠️ BUDGET / KILL-SWITCH par workspaceId = item OWNER (D2+A3), NON fixé ici.",
     "⚠️ audience gateway = valeur de contrat SÉPARÉE (mesh), volontairement ABSENTE d'ici."
   ],
+  "must_satisfy": "8 entrées / 8 workspaceId distincts · clé = `sub` complet, égalité EXACTE (aucun motif/préfixe) · `sub` inconnu → fail-closed, aucun catch-all · source unique · audience absente · 1 tenant `geo` + 8 workspaceId. Vérifié par acquisition/src/s3dag/c1-map.test.ts.",
   "tenant": "geo",
   "map": [
     { "lane": "zones",            "sub": "system:serviceaccount:geo:s3dag-zones-sa",            "workspaceId": "geo-zones" },
