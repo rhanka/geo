@@ -65,7 +65,16 @@ export function assertK8sNodeSpec(spec: unknown): asserts spec is K8sNodeSpec {
  */
 export type FanoutResolution = { kind: "complete" } | { kind: "run"; completions: number };
 
-/** Resolve a computed remaining-shard count into a {@link FanoutResolution}. */
+/**
+ * Resolve a computed remaining-shard count into a {@link FanoutResolution}.
+ *
+ * The `Number.isInteger` check is NOT redundant with the `number` type — do not
+ * "simplify" it to `< 0`. The count is computed from a worklist read from S3
+ * (`JSON.parse`), a boundary where TypeScript guarantees nothing: a missing field
+ * yields `undefined` at runtime regardless of the signature. `Number.isInteger`
+ * is the ONLY thing that holds past that deserialization boundary — the type
+ * covers internal paths, this covers what crosses the wire.
+ */
 export function resolveFanout(remainingShards: number): FanoutResolution {
   if (!Number.isInteger(remainingShards) || remainingShards < 0) {
     throw new Error(`s3-dag: remainingShards must be a non-negative integer, got ${String(remainingShards)}`);
