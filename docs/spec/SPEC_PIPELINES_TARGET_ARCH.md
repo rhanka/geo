@@ -5,6 +5,12 @@
 > le dossier = la DÉCISION (Option B strangulation + 4 décisions cibles, ratification owner) ; **ce spec = la
 > CIBLE PRÉCISE** (par-pipeline, traitements, environnements+infra, 3 vues). Track `01M0GWZW2753PV92WJ2PGX5GS2`.
 >
+> **RATIFIÉ (2026-08-22)** : Track décision `01M0JAMM5YWV1ZH8D6R47RA9A8` **outcome=go** — Option B + 4 décisions
+> cibles. WP de migration `01M0N3PGJPY3FK8Y3ACXNV17A8` (accountable rhanka ; responsible geo-archi + geo-socle).
+> **Amendement owner** gravé au **§A** ci-dessous — *le formalisme d'architecture précède le plan old→new* :
+> DAG-first + LLM piloté par le DAG, `llm-mesh enroll`, moteur LLM sur sentropic (pattern à trancher),
+> tout-sur-k8s, tronc commun `geo-socle`.
+>
 > **Direction ratifiée** : Option B (strangulation incrémentale par lanes) + 4 décisions cibles — (1) moteur
 > COMMUN de refresh piloté par manifestes ; (2) refresh-on-k8s (zéro exécution locale) ; (3) LLM-minimal
 > (cascade natif→texte→OCR conditionnel→modèle fort sur résidu mesuré) ; (4) cycle preprod↔prod automatisé
@@ -13,6 +19,52 @@
 > **Légende** : `EXISTE` = composant vérifié dans le repo (cité `fichier:ligne`, mergé sur `origin/main` sauf
 > mention contraire). `[cible]` = composant à construire, décidé par la direction ratifiée. `[unknown]` = non
 > vérifiable depuis le repo — jamais inventé.
+
+---
+
+## A. Cadre d'architecture ratifié — le formalisme précède le plan
+
+> **Le formalisme d'architecture PRÉCÈDE le plan old→new** (exigence owner). Track `01M0JAMM…` outcome=go. Ces
+> cinq éléments-cadre s'appliquent **au-dessus** des 8 pipelines (§1) ; les §2–§4 les déclinent (traitements,
+> environnements+infra, écarts). Grounding marqué **explicitement** — les concepts d'infra hors repo geo sont
+> `[cible]` / `[unknown côté repo geo]`, jamais présumés.
+
+**A.1 — DAG-first ; le LLM est piloté PAR le DAG (jamais l'inverse).** L'unité d'architecture est un **DAG de
+transformations** par lane (capture → normalisation → extraction → jointure → gate → promotion), invalidé par
+**hash des entrées** (§2.2 étape 7 ; §2.3). Un nœud PEUT invoquer un modèle, mais **le DAG décide quand et si**
+l'appel a lieu, quelles villes, quelles reprises. **Aucun agent-LLM n'ordonnance, ne choisit les villes, ni ne
+décide des reprises.** Statut : `[cible]` — le graphe d'invalidation par hash (§2.2/§2.3) est le socle
+existant-en-préfiguration ; l'ordonnanceur DAG explicite reste à construire.
+
+**A.2 — LLM minimal via `llm-mesh enroll`.** Tout appel modèle passe par un **`llm-mesh`** à comptes **enrôlés**
+(codex + claude + gemini), usage **minimal** et **instrumenté** (provider / model / prompt-version / input-hash /
+output-key / coût — cf. §1.2 LLM-minimal). Le mesh est le **seul** point d'accès LLM du pipeline ; un échec de
+gate ⇒ `unknown`, **jamais** une 2ᵉ passe modèle pour fabriquer un vert. Statut : `[cible]` — pattern d'accès
+ratifié owner ; l'enrôlement des comptes + le routage mesh restent à implémenter. `git grep 'llm-mesh'` sur le
+repo geo = **0** ⇒ **`[unknown côté repo geo]`** : concept d'infra transverse, spécifié hors geo, non présumé ici.
+
+**A.3 — Moteur LLM hébergé sur `sentropic` — PATTERN À TRANCHER.** Décision d'architecture **ouverte**
+`[cible — à trancher]` : le moteur LLM tourne sur l'infra **sentropic** selon **l'un de deux patterns** —
+**(a) cluster-mesh** (le moteur vit dans un mesh inter-cluster) **vs (b) service `sentropic-sentech`** (un
+service adressé). À **arbitrer par l'owner / geo-socle** avant l'industrialisation de l'extraction : conditionne
+netpols (egress par-lane), latence et coût. Aucun des deux n'est présumé dans ce spec. `git grep` geo :
+`cluster-mesh` / `sentropic-sentech` = **0** ⇒ **`[unknown côté repo geo]`**. → écart §4.6.
+
+**A.4 — Tout sur k8s, sans exception — y compris refresh PV / règlements / grilles.** Zéro exécution de
+production hors cluster : **PV** (canari), **règlements**, **grilles-normes**, **zones**, **cadastre/rôle**,
+**immo-lots** = Jobs/CronJobs k8s (§3.2, §3.4). Décommission explicite (§3.2 « à décommissionner ») : Serverless
+Scaleway `deploy/normes-job`, orchestrateur local `deploy/acquisition-job` (`k8s-shard-run.ts` lancé du poste),
+flotte tmux `geo-fleet.ts` comme **moteur de refresh**. Les agents locaux restent **analystes lecture-seule**
+(CLAUDE.md). Statut : contrat on-k8s **EXISTE** (capture/PV) ; généralisation par-lane `[cible]`.
+
+**A.5 — Tronc commun `geo-socle` ; le spécifique-par-ville est lui-même mutualisé.** La logique se capitalise
+dans un **tronc commun** (`packages/`, **responsable geo-socle**) : moteurs par **famille de source** (§1.1),
+capture `capturedFetch` (§2.2 étape 2), jointure `lotZoneJoin` (§2.2 étape 6), serving `StoreProvider` (§2.2
+étape 11). Le « spécifique-par-ville » n'est **pas N implémentations sur-mesure** : c'est une **worklist S3 +
+config JSON validée par schéma fermé** (§1.2) — donc **mutualisé** : une famille sert M villes, la variation =
+**data, pas code**. Un runner par slug est un anti-pattern ; critère de renversement = >15 % des sources actives
+exigeant un escape-hatch par ville (§1.2). Statut : moteurs par famille **EXISTE** (§2.2 étape 4) ; promotion
+complète en lib geo-socle + route par le contrôleur `[cible]`.
 
 ---
 
@@ -342,6 +394,11 @@ flowchart TB
    est [unknown] depuis le repo seul → GitOps/readback [cible].
 5. **Conductors normes / usage dominant / effet densifiant / cadastre-rôle** : mappings [unknown] (dossier sol
    §11.9) — à nommer.
+6. **Pattern moteur LLM (A.3)** : **cluster-mesh vs service `sentropic-sentech`** — décision d'architecture
+   **ouverte**, à trancher owner/geo-socle **avant** l'industrialisation de l'extraction (conditionne
+   netpols/latence/coût). `[unknown côté repo geo]`.
+7. **`llm-mesh` (A.2)** : mécanisme d'enrôlement (`enroll` comptes codex+claude+gemini) + routage minimal
+   instrumenté — `[unknown côté repo geo]`, à spécifier hors geo puis à référencer ici.
 
 ---
 
