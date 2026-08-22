@@ -62,27 +62,35 @@ API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
   data-plane sentropic », pas « wrapper 2 APIs ». mesh adjuge le contrat + spécifie la surface consommée, **ne
   porte pas le paquet**.
 
-**Surface egress geo↔mesh — contribution geo-archi (per-run *lane-enforced*, 2026-08-22) :**
+**Surface egress geo↔mesh — contribution geo-archi (identité C1 *lane-enforced*, 2026-08-22) :**
 - **Le gateway keye budget/kill-switch/audit sur `workspaceId` → tenant pool** (`h2a/apps/llm-gateway/SPEC.md:77`).
-  Design : **mapper lane → `workspaceId`** ⟹ le contrôle per-tenant existant DEVIENT le per-lane (contrôle h-cond)
-  — pas de mécanisme neuf ; le SA **per-run** (`geo-pv-backlog-<run>-sa`, réalité poc-k8s) **agrège** vers le
-  `workspaceId` de sa lane.
-- **Hitch sécurité (à graver)** : `workspaceId` **DOIT** être un **claim VÉRIFIÉ** — jamais un header auto-déclaré
-  ni un nom de SA parsé (sinon un run réclamerait le budget d'une autre lane). Le gateway (coque) ne l'implémente
-  pas encore → **spécifier maintenant** : « le serveur dérive/vérifie `workspaceId`, l'appelant ne le choisit pas ».
-- **Dérivation run→lane — RETENU = (a) jeton projeté à `aud` lane-scoped** (vérifié par l'API-server k8s →
-  `workspaceId`) ; **cible durable = (b) token-exchange RFC 8693** via cluster-mesh (`cluster-mesh/README.md:24-35`,
-  jeton mesh à claim lane vérifié — **le DAG geo ne change pas entre (a) et (b)**). Le **nom de SA**
-  (`s3dag-<lane>-<run>-sa`) **+ labels** `s3dag.io/{lane,run}` = **RBAC + observabilité seulement, PAS le contrôle
-  sécu**. *(Sub-parse du `sub` d'abord proposé (PR2) puis **écarté** : même signé, dériver un contrôle sécu d'une
-  convention de nommage est une surface plus faible qu'un claim explicite — et le split `-` est ambigu pour
-  `usage-dominant`/`effet-densifiant`/`cadastre-role` (3/8 lanes). #247 mergé `5f9595ea` ; geo-socle code PR2
-  executor sur (a).)*
-- **Gate canari→prod** : per-run OK pour le **canari** (test), mais le per-lane n'est **réel** qu'avec la dérivation
-  claim-vérifié ⟹ **condition de sortie de canari = dérivation vérifiée** (le name-parse ne shippe pas en prod).
-- **À adjuger par mesh** (contrat gateway) : `workspaceId` d'un claim signé · granularité lane · mécanisme
-  audience-vs-token-exchange. **Rappel contraintes** : passthrough `X-Sentropic-Served` verbatim ; clé de cache
-  **tenant(=lane)-scopée** ; `crossUserPoolEnabled` OFF.
+  Design : **mapper lane → `workspaceId`** ⟹ le contrôle per-tenant existant DEVIENT le per-lane (contrôle h-cond),
+  pas de mécanisme neuf.
+- **Identité (table C1, geo-socle)** : **8 SAs de lane STABLES** `s3dag-<lane>-sa` (ns geo) → **8 `workspaceId`
+  DISTINCTS** `geo-<lane>` (`deploy/k8s/s3dag-c1-identity-workspace-map.json`). Les 8 lanes = **CAPTURE_LANES**
+  (`packages/qc-sources/src/capture/manifest.ts:26-35`, source unique) : zones · normes · pv · reglement ·
+  usage-dominant · effet-densifiant · cadastre · immo-lots. Le `sub` (`system:serviceaccount:geo:s3dag-<lane>-sa`)
+  est **signé k8s + RBAC-gated** ⟹ **la lane EST le `sub`** (SA stable par lane, PAS per-run) → mapping **1:1
+  `sub → workspaceId` via C1** : zéro parse, zéro audience-scoping, zéro ambiguïté hyphen. Le jeton projeté porte
+  **`aud=[gateway]`** (pur destinataire, **cardinalité 1** — testé geo-socle `f06bfc4b`) ; la lane vit dans le
+  `sub`, **jamais** dans l'audience.
+- **Dérivation `sub`→`workspaceId` — via C1** (mécanisme à adjuger mesh) : **(a)** le gateway mappe le `sub`
+  **vérifié** → `workspaceId` via C1 **[canari, côté gateway]** ; **(b)** cluster-mesh **token-exchange** (RFC 8693,
+  `cluster-mesh/README.md:24-35`) le `sub` → claim `workspaceId` via C1 **[cible durable, aligne le rôle wrapper]**.
+  **C1 = donnée partagée** ; executor geo inchangé entre (a) et (b). `workspaceId` reste un **dérivé VÉRIFIÉ du
+  `sub`**, jamais un header auto-déclaré. *(Supersède l'« audience-lane-scoped », requise seulement pour des SAs
+  per-run où la lane n'est pas dans le `sub`.)*
+- **Preuve de sortie de canari** : **non-liaison cross-lane RBAC PROUVÉE** (un run de lane X ne peut pas tourner
+  comme le SA de lane Y — tenter + échouer). Labels `s3dag.io/{lane,run}` = observabilité (le run n'est PAS dans
+  l'identité sécu ; le contrôle est per-lane — granularité juste).
+- **Découpage (confirmé)** : geo-socle = **table C1** (identité→workspaceId, nom→nom) · **owner (D2+A3)** = les
+  **valeurs** budget/kill-switch par `workspaceId` (allocation du quota LLM) + policy · mesh = le **mécanisme**
+  d'enforcement · geo-archi = le **contrat de surface**.
+- **À adjuger par mesh** (contrat gateway) : (1) **(a) gateway-mappe-`sub`-via-C1** vs **(b) token-exchange-via-C1** ;
+  (2) **format** du `workspaceId` (`geo-<lane>` ? `<tenant>/<scope>` ? uuid ?) ; (3) **granularité tenant** (8
+  `workspaceId` = 8 tenant-pools, ou geo = 1 tenant + 8 sous-scopes ?). CLÉS C1 stables (les `sub`), VALEURS
+  ajustables au format mesh. **Rappel contraintes** : `X-Sentropic-Served` verbatim ; cache `tenant(=lane)`-scopé ;
+  `crossUserPoolEnabled` OFF.
 
 **D-moteur-1 — ROUVERT puis RATIFIÉ (owner, 2026-08-22).** L'owner (« pas assez instruit ») avait ajouté un
 **critère décisif** : la **supervision du scraping exposée via une API geo consommable par immo** ; + étude SOTA ;
