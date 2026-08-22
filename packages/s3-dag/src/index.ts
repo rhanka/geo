@@ -65,3 +65,10 @@ export {
   type RefreshRunView,
 } from "./supervision.js";
 export { refreshRoutes } from "./http.js";
+export { laneServiceAccountName, laneIdentity } from "./identity.js";
+export {
+  buildJobManifest,
+  assertK8sNodeSpec,
+  type K8sNodeSpec,
+  type BuildJobManifestArgs,
+} from "./job-manifest.js";

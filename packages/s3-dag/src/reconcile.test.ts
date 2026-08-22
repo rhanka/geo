@@ -198,3 +198,35 @@ describe("reconcileTick — index reconstruction (gate proof 4, pure level)", ()
     expect(outcomes).toEqual(["succeeded", "succeeded", "succeeded"]);
   });
 });
+
+describe("reconcileTick — per-run lane-carrying identity (mechanism (a))", () => {
+  const gated = defineDag({
+    id: "pv",
+    serviceAccountName: "geo-pv-sa",
+    nodes: { capture: { spec }, extract: { needs: ["capture"], tokenAudiences: ["llm-gateway"], spec } },
+  });
+
+  it("uses the stable per-lane SA + lane-scoped audiences when a lane is given", async () => {
+    const store = new InMemoryDagStore();
+    const exec = new FakeJobExecutor();
+    await reconcileTick({ dag: gated, runId: "01hab", store, executor: exec, quota: ROOMY, now: NOW, lane: "usage-dominant" });
+    const cap = exec.submitted.find((s) => s.nodeId === "capture")!;
+    expect(cap.identity.serviceAccountName).toBe("s3dag-usage-dominant-sa"); // stable, hyphenated lane preserved, no run
+    expect(cap.identity.serviceAccountName).not.toBe("default");
+    expect(cap.identity.tokenAudiences).toEqual([]); // no base audiences → no projected token
+
+    exec.setStatus(deterministicJobName("01hab", "capture", 0), "succeeded");
+    await reconcileTick({ dag: gated, runId: "01hab", store, executor: exec, quota: ROOMY, now: NOW, lane: "usage-dominant" });
+    const ex = exec.submitted.find((s) => s.nodeId === "extract")!;
+    expect(ex.identity.serviceAccountName).toBe("s3dag-usage-dominant-sa");
+    expect(ex.identity.tokenAudiences).toEqual(["llm-gateway"]); // audience = gateway id (pure); lane rides the sub
+  });
+
+  it("stays in fixed mode (dag SA, raw audiences) when no lane is given — Phase 0 unchanged", async () => {
+    const store = new InMemoryDagStore();
+    const exec = new FakeJobExecutor();
+    await reconcileTick({ dag: gated, runId: "01hab", store, executor: exec, quota: ROOMY, now: NOW });
+    const cap = exec.submitted.find((s) => s.nodeId === "capture")!;
+    expect(cap.identity.serviceAccountName).toBe("geo-pv-sa");
+  });
+});
