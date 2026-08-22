@@ -91,6 +91,14 @@ API llm-mesh et gw. si c'est pas le cas ça doit le devenir* ». Donc :
   `workspaceId` = 8 tenant-pools, ou geo = 1 tenant + 8 sous-scopes ?). CLÉS C1 stables (les `sub`), VALEURS
   ajustables au format mesh. **Rappel contraintes** : `X-Sentropic-Served` verbatim ; cache `tenant(=lane)`-scopé ;
   `crossUserPoolEnabled` OFF.
+- **Artefact de contrat C1 (geo-socle) + vérif geo-archi** : `deploy/k8s/s3dag-c1-identity-workspace-map.json`
+  (branche `feat/s3-dag-phase2c-canary`, commit `1a188486`) = le JSON machine consommé par le gateway (contrat
+  `s3-dag/c1-identity-workspace-map/proposal-v1`). **Vérifié indépendamment (geo-archi, 5/5)** contre les critères
+  d'acceptation mesh : (1) **8 entrées, 8 `workspaceId` distincts** ✓ ; (2) **clé = `sub` COMPLET, égalité exacte**
+  (aucun motif/préfixe/normalisation — le full-sub-exact moote toute ambiguïté hyphen) ✓ ; (3) **`sub` inconnu →
+  R1 fail-closed** — JAMAIS un `workspaceId`/lane par défaut, **aucune entrée wildcard/catch-all** ✓ ; (4) **source
+  unique** = CAPTURE_LANES ✓ ; (5) **audience = valeur de contrat séparée**, absente de la table ✓. CONTENU=geo ·
+  FORMAT/granularité=mesh (clés `sub` stables, valeurs `workspaceId` ajustables).
 
 **D-moteur-1 — ROUVERT puis RATIFIÉ (owner, 2026-08-22).** L'owner (« pas assez instruit ») avait ajouté un
 **critère décisif** : la **supervision du scraping exposée via une API geo consommable par immo** ; + étude SOTA ;
