@@ -1,0 +1,33 @@
+{
+  "name": "@sentropic/s3-dag",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Narrow, publishable orchestrator for acyclic DAGs whose state lives in S3 and whose nodes run as idempotent Kubernetes Jobs. No database, no permanent workers, no supervision server. Contract: acyclic DAG known at build, at-least-once execution, crash-safe reconciliation via immutable receipts + CAS (If-Match) state pointers. NOT a general workflow engine (no loops, human signals, or distributed transactions).",
+  "license": "Apache-2.0",
+  "publishConfig": {
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rhanka/geo.git",
+    "directory": "packages/s3-dag"
+  },
+  "sideEffects": false,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "check": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run src --passWithNoTests"
+  }
+}
