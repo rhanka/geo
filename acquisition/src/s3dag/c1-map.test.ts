@@ -8,21 +8,25 @@ import { describe, expect, it } from "vitest";
  * This test keeps its OWN hardcoded copy of the 8 expected pairs on purpose. If the
  * table is ever "simplified" into a function/template (`geo-${lane}`) and DRIFTS —
  * a 9th lane leaks in, a value changes, a wildcard appears — this breaks. The
- * duplication is the check: C1 must be 8 LITERAL pairs, never computed (mesh
- * anti-pattern clause). Do NOT replace this expected table with a loop over
- * CAPTURE_LANES — that would defeat the very drift it exists to catch.
+ * duplication is the check: C1 must be 8 LITERAL pairs, never computed.
+ *
+ * SEUL `sub` est NORMATIF. This test NEVER assembles `sub` from parts (no
+ * `system:serviceaccount:geo:${…}`) — it compares `sub` LITERALLY to the hardcoded
+ * copy. The one regex below is a FORM check only; do NOT migrate it to key
+ * resolution. (mesh: only `sub`, exact equality.)
+ *
+ * Scope: this proves the TABLE (8 literal pairs, no catch-all). The gateway-side
+ * fail-closed on an unknown `sub` (R1) is mesh's to enforce — NOT claimed here.
  */
 
 interface C1Entry {
   lane: string;
-  serviceAccount: string;
   sub: string;
   workspaceId: string;
 }
 interface C1 {
   tenant?: string;
   map: C1Entry[];
-  acceptance?: unknown;
 }
 
 const EXPECTED: ReadonlyArray<{ sub: string; workspaceId: string }> = [
@@ -36,16 +40,20 @@ const EXPECTED: ReadonlyArray<{ sub: string; workspaceId: string }> = [
   { sub: "system:serviceaccount:geo:s3dag-immo-lots-sa", workspaceId: "geo-immo-lots" },
 ];
 
+const C1_PATH = new URL("../../../deploy/k8s/s3dag-c1-identity-workspace-map.json", import.meta.url);
+
 function loadC1(): C1 {
-  const path = new URL("../../../deploy/k8s/s3dag-c1-identity-workspace-map.json", import.meta.url);
-  return JSON.parse(readFileSync(path, "utf8")) as C1;
+  return JSON.parse(readFileSync(C1_PATH, "utf8")) as C1;
 }
 
-/** The gateway's fail-closed lookup, in reference form (R1): unknown sub → undefined. */
+/** The gateway's fail-closed lookup, reference form: EXACT sub, unknown → undefined. */
 function lookupWorkspaceId(map: readonly C1Entry[], sub: string): string | undefined {
-  const hit = map.find((e) => e.sub === sub); // EXACT equality — no pattern, no prefix
+  const hit = map.find((e) => e.sub === sub); // EXACT equality — no pattern, no prefix, no assembly
   return hit?.workspaceId;
 }
+
+// Form only — NEVER used to resolve/build a key. Marks the shape of a normative sub.
+const SUB_FORM = /^system:serviceaccount:geo:s3dag-[a-z0-9-]+-sa$/;
 
 describe("C1 identity→workspaceId table (committed JSON)", () => {
   const c1 = loadC1();
@@ -58,27 +66,27 @@ describe("C1 identity→workspaceId table (committed JSON)", () => {
     expect(new Set(c1.map.map((e) => e.workspaceId)).size).toBe(8);
   });
 
-  it("keys on the FULL sub, exact form (crit. 2)", () => {
-    for (const e of c1.map) {
-      expect(e.sub).toBe(`system:serviceaccount:geo:${e.serviceAccount}`);
-      expect(e.serviceAccount).toMatch(/^s3dag-[a-z0-9-]+-sa$/);
-    }
+  it("every `sub` matches the normative FORM (shape only — not key resolution) (crit. 2)", () => {
+    for (const e of c1.map) expect(e.sub).toMatch(SUB_FORM);
   });
 
-  it("has NO wildcard/catch-all — R1 fail-closed (crit. 3)", () => {
+  it("has NO wildcard/catch-all — the table provides no default (crit. 3)", () => {
     for (const e of c1.map) {
       expect(e.sub).not.toBe("*");
       expect(e.lane).not.toBe("*");
       expect(e.workspaceId).not.toBe("default");
     }
-    // an unknown sub resolves to undefined (never a default), by construction
+    // On the TABLE, an unknown sub resolves to undefined (no default entry exists).
+    // The gateway-side fail-closed behaviour (R1) is mesh's to enforce.
     expect(lookupWorkspaceId(c1.map, "system:serviceaccount:geo:s3dag-unknown-sa")).toBeUndefined();
     expect(lookupWorkspaceId(c1.map, "system:serviceaccount:kube-system:default")).toBeUndefined();
   });
 
-  it("carries NO audience (crit. 5 — audience is a separate mesh contract value)", () => {
-    const raw = readFileSync(new URL("../../../deploy/k8s/s3dag-c1-identity-workspace-map.json", import.meta.url), "utf8");
-    expect(raw).not.toMatch(/"audience"/);
+  it("carries NO reconstruction recipe: sub is the only key, no serviceAccount/namespace field", () => {
+    const raw = readFileSync(C1_PATH, "utf8");
+    expect(raw).not.toMatch(/"serviceAccount"/); // recipe ingredient removed
+    expect(raw).not.toMatch(/"namespace"/); // ns lives inside the literal sub, not as a part
+    expect(raw).not.toMatch(/"audience"/); // crit. 5 — audience is a separate mesh contract value
   });
 
   it("is ONE tenant `geo` + 8 workspaceId, not 8 tenants (granularity)", () => {
