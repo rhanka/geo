@@ -58,9 +58,19 @@ ship for unit-testing your own DAGs without a cluster.
 
 ## Status
 
-**Phase 0 — pure core + tests** (this package): `dag` (acyclic validation), `state`
-(S3 model + transitions + deterministic naming), `reconcile` (crash-safe tick), `quota`
-(slot planning), ports + test doubles. Real Kubernetes executor, the S3 store adapter,
-and the Hono supervision routes are Phase 1 (PV canary), gated by the owner's four
-proofs (crash recovery · quota respect · complete immo read-model · index rebuild from
-S3 only). License: Apache-2.0.
+**Phase 0 — pure core + tests**: `dag` (acyclic validation), `state` (S3 model +
+transitions + deterministic naming), `reconcile` (crash-safe tick), `quota` (slot
+planning), ports + test doubles.
+
+**Phase 1a — state / read / immo-API side** (this PR): `s3-store` (the `DagStore`
+adapter over OVH Object Storage, with the [#236] checksum-`WHEN_REQUIRED` fix so
+`If-Match`/412 is proven on its own merits), `supervision` (the immo read-model —
+overview / freshness / runs / run, freshness = last **promoted artifact**, never a
+Job status), and `http` (the read-only `/v1/refresh/*` Hono sub-app geo-api mounts).
+No cluster needed — all exercised against the in-memory doubles + a mocked S3 client.
+
+**Phase 1b — executor + canary** (next PR): the real Kubernetes Jobs executor
+(per-run dedicated SA, projected tokens), the PV DAG, and the reconciler CronJob,
+run on the OVH poc-ca to prove the owner's four gates (crash recovery · quota
+respect · complete immo read-model · index rebuild from S3 only) — else Argo
+fallback. License: Apache-2.0.
