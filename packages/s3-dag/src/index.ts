@@ -81,3 +81,13 @@ export {
   type RawJob,
   type RawPod,
 } from "./executor-k8s.js";
+export { inClusterRest, httpStatusOf, type K8sRest } from "./k8s-rest.js";
+export {
+  parseQuantity,
+  quotaHeadroomFrom,
+  readQuotaHeadroom,
+  inClusterQuotaApi,
+  type K8sQuotaApi,
+  type RawResourceQuota,
+} from "./quota-k8s.js";
+export { acquireLease, type AcquireLeaseArgs } from "./lease.js";
