@@ -22,6 +22,8 @@ export interface K8sNodeSpec {
   command?: readonly string[];
   args?: readonly string[];
   env?: Readonly<Record<string, string>>;
+  /** Secret names mounted via `envFrom` — data-store creds ONLY (S3), never a gateway key. */
+  envFrom?: readonly string[];
   resources?: {
     requests?: { cpu?: string; memory?: string };
     limits?: { cpu?: string; memory?: string };
@@ -30,6 +32,15 @@ export interface K8sNodeSpec {
   tokenExpirationSeconds?: number;
   /** Directory the projected tokens mount under (default /var/run/secrets/s3dag). */
   tokenMountDir?: string;
+  /**
+   * Fan-out width: when > 1, the node becomes ONE `Indexed` Job with this many
+   * completions (each pod reads its shard via `JOB_COMPLETION_INDEX`). Still one
+   * node = one Job = one receipt (the reconciler sizes it; a node that resolves to
+   * zero remaining shards is a SUCCESS, not an empty-Job — handled reconciler-side).
+   */
+  completions?: number;
+  /** Max pods running at once for a fan-out node (default: bounded to `completions`). */
+  parallelism?: number;
 }
 
 const DEFAULT_TOKEN_DIR = "/var/run/secrets/s3dag";
@@ -89,26 +100,42 @@ export function buildJobManifest(args: BuildJobManifestArgs): Record<string, unk
   if (spec.command !== undefined) container["command"] = [...spec.command];
   if (spec.args !== undefined) container["args"] = [...spec.args];
   if (env.length > 0) container["env"] = env;
+  // envFrom is for data-store creds ONLY (e.g. S3). The gateway credential is the
+  // projected Bearer token above — NEVER a static key in a Secret (would let a lane
+  // be attested from an alternate header instead of the SA's verified `sub`).
+  if (spec.envFrom !== undefined && spec.envFrom.length > 0) {
+    container["envFrom"] = spec.envFrom.map((name) => ({ secretRef: { name } }));
+  }
   if (spec.resources !== undefined) container["resources"] = spec.resources;
   if (volumeMounts.length > 0) container["volumeMounts"] = volumeMounts;
 
   const podSpec: Record<string, unknown> = {
     serviceAccountName: submission.identity.serviceAccountName,
-    automountServiceAccountToken: true,
+    // FALSE on purpose: with the SA's default token NOT auto-mounted, the projected
+    // Bearer token (gateway audience) is the ONLY token in the pod — no stray default
+    // API token to widen the surface.
+    automountServiceAccountToken: false,
     restartPolicy: "Never",
     containers: [container],
   };
   if (volumes.length > 0) podSpec["volumes"] = volumes;
 
+  // Fan-out: > 1 completion ⇒ an Indexed Job (one Job object, N indexed pods, one
+  // receipt). Each pod reads its shard via the auto-injected JOB_COMPLETION_INDEX.
+  const completions = spec.completions !== undefined && spec.completions > 1 ? spec.completions : 1;
+  const parallelism = completions > 1 ? spec.parallelism ?? completions : 1;
+  const jobSpec: Record<string, unknown> = {
+    backoffLimit: 0,
+    completions,
+    parallelism,
+    template: { metadata: { labels }, spec: podSpec },
+  };
+  if (completions > 1) jobSpec["completionMode"] = "Indexed";
+
   return {
     apiVersion: "batch/v1",
     kind: "Job",
     metadata: { name: submission.name, namespace, labels },
-    spec: {
-      backoffLimit: 0,
-      completions: 1,
-      parallelism: 1,
-      template: { metadata: { labels }, spec: podSpec },
-    },
+    spec: jobSpec,
   };
 }
