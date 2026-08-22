@@ -261,7 +261,7 @@ Le bloc suivant est du JSON valide. Les valeurs de `requis|remplacable` et les s
       "refresh": "local"
     },
     "extraction": {
-      "au_carre": {"verdict": "non", "source": "[RPT] 5/1106; acquisition/src/fold-effet-densifiant-scaffold.ts:8-13 laisse honnêtement inconnu; aucun moteur commun avant/après n'est prouvé"},
+      "au_carre": {"verdict": "non", "source": "[RPT] 5/1106; acquisition/src/fold-effet-densifiant-scaffold.ts:8-13 laisse explicitement inconnu; aucun moteur commun avant/après n'est prouvé"},
       "llm": {"ou": "lecture agent possible dans la lane 4a locale, actuellement désactivée", "requis|remplacable": "remplacable", "comment": "[FACT] le fold refuse d'inventer mais ne produit pas les compteurs. [JUDGMENT] extraire chaque version via le moteur normes, puis diff numérique; modèle seulement sur cellule illisible."},
       "specificite": "bespoke",
       "refresh": "local"
@@ -312,7 +312,7 @@ Le bloc suivant est du JSON valide. Les valeurs de `requis|remplacable` et les s
     },
     "serving": {
       "au_carre": {"verdict": "partiel", "source": "[RPT] qc-lots servis 874/1106, surface 868/1100, adresse 22/1100; acquisition/src/lots-enriched-run.ts:1-50,93-97; API S3/Kubernetes"},
-      "llm": {"ou": "absent", "requis|remplacable": "absent", "comment": "[FACT] champs servis avec null honnête. [JUDGMENT] aucun LLM requis; filtrage PII contractuel obligatoire."},
+      "llm": {"ou": "absent", "requis|remplacable": "absent", "comment": "[FACT] champs servis avec null explicite. [JUDGMENT] aucun LLM requis; filtrage PII contractuel obligatoire."},
       "specificite": "data",
       "refresh": "local"
     },
@@ -503,7 +503,7 @@ Plan : instrumenter d'abord chaque appel; changer `zonage-norms-2engine-keepbest
 
 - Réduit coût, variance, dépendance fournisseur et difficulté de replay.
 - Le dépôt possède déjà les alternatives déterministes et un garde interdisant le modèle Mistral défaillant après une facture de 480 €.
-- Les outputs peuvent être comparés bit-à-bit et les refus restent honnêtes.
+- Les outputs peuvent être comparés bit-à-bit et les refus restent fiables.
 - Concentre le modèle là où sa valeur marginale est mesurable.
 
 ### Case AGAINST — objection la plus forte
