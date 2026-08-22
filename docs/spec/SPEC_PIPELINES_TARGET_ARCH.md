@@ -5,8 +5,10 @@
 > le dossier = la DÉCISION (Option B strangulation + 4 décisions cibles, ratification owner) ; **ce spec = la
 > CIBLE PRÉCISE** (par-pipeline, traitements, environnements+infra, 3 vues). Track `01M0GWZW2753PV92WJ2PGX5GS2`.
 >
-> **RATIFIÉ (2026-08-22)** : Track décision `01M0JAMM5YWV1ZH8D6R47RA9A8` **outcome=go** — Option B + 4 décisions
-> cibles. WP de migration `01M0N3PGJPY3FK8Y3ACXNV17A8` (accountable rhanka ; responsible geo-archi + geo-socle).
+> **RATIFIÉ (2026-08-22)** : Track décision `01M0N6JM8TPN5WXVVG9QQ6PEHP` **outcome=go** — Option B + 4 décisions
+> cibles. WP de migration `01M0N6J2S8J7P68AQERKTPCMZM` (accountable rhanka ; responsible geo-archi + geo-socle).
+> (ULIDs **origin-backed**, re-gravés sur la lignée `origin/main` via PR #243 après `track validate` ; l'event
+> `01M0JAMM…` d'origine reste sur la lignée `feat/cadre-acquisition` divergente, non poussée.)
 > **Amendement owner** gravé au **§A** ci-dessous — *le formalisme d'architecture précède le plan old→new* :
 > DAG-first + LLM piloté par le DAG, `llm-mesh enroll`, moteur LLM sur sentropic (pattern à trancher),
 > tout-sur-k8s, tronc commun `geo-socle`.
@@ -19,12 +21,17 @@
 > **Légende** : `EXISTE` = composant vérifié dans le repo (cité `fichier:ligne`, mergé sur `origin/main` sauf
 > mention contraire). `[cible]` = composant à construire, décidé par la direction ratifiée. `[unknown]` = non
 > vérifiable depuis le repo — jamais inventé.
+>
+> **Ancrage `fichier:ligne`** : les citations proviennent de la cible fable-5 produite sur un checkout qui était
+> ~1010 commits derrière `origin/main` ; la convergence (`SPEC_PIPELINES_MIGRATION.md §0`) **confirme que les
+> composants cités EXISTENT sur `origin/main`** (les claims `EXISTE` tiennent), mais les **numéros de ligne** sont
+> à ré-ancrer contre `origin/main` (`fb0f7b62`) — tâche Lane 0 du plan de migration.
 
 ---
 
 ## A. Cadre d'architecture ratifié — le formalisme précède le plan
 
-> **Le formalisme d'architecture PRÉCÈDE le plan old→new** (exigence owner). Track `01M0JAMM…` outcome=go. Ces
+> **Le formalisme d'architecture PRÉCÈDE le plan old→new** (exigence owner). Track `01M0N6JM8T…` outcome=go. Ces
 > cinq éléments-cadre s'appliquent **au-dessus** des 8 pipelines (§1) ; les §2–§4 les déclinent (traitements,
 > environnements+infra, écarts). Grounding marqué **explicitement** — les concepts d'infra hors repo geo sont
 > `[cible]` / `[unknown côté repo geo]`, jamais présumés.
@@ -64,7 +71,11 @@ capture `capturedFetch` (§2.2 étape 2), jointure `lotZoneJoin` (§2.2 étape 6
 config JSON validée par schéma fermé** (§1.2) — donc **mutualisé** : une famille sert M villes, la variation =
 **data, pas code**. Un runner par slug est un anti-pattern ; critère de renversement = >15 % des sources actives
 exigeant un escape-hatch par ville (§1.2). Statut : moteurs par famille **EXISTE** (§2.2 étape 4) ; promotion
-complète en lib geo-socle + route par le contrôleur `[cible]`.
+complète en lib geo-socle + route par le contrôleur `[cible]`. **Cross-ref** : la découpe tronc-commun geo-socle
+(`work/tronc-commun-refresh-decoupe-20260821.md` @`833a04e7`) décline ce §A.5 — **quasi-isomorphe** : trunk T1–T6
+(capture / serving / normalisation / extraction / DAG / preuve) + couche ville mutualisée S1–S3 (adaptateurs par
+TYPE de site · registres config par-ville = data · parsers bespoke résiduels à réduire). Convergence indépendante
+lane↔lane = signal de solidité (`SPEC_PIPELINES_MIGRATION.md §1`).
 
 ---
 
@@ -109,6 +120,15 @@ dépendances de jointure, ressources/budget, gates, clé de sortie. Il **crée d
 est interdit dans le runtime. Séquence de migration (Option B) : PV (canari) → zones ArcGIS/WFS → règlement+usage
 → normes (après cascade LLM-minimal) → effet/cadastre/immo.
 
+**Grounding du `[cible]`** (découpe geo-socle T5, `work/tronc-commun-refresh-decoupe-20260821.md` @`833a04e7`) : le
+contrôleur **formalise un proto-modèle déjà codé** — `lib/pv-capture-backlog.ts` (manifeste immuable + pointeur
+d'état CAS mutable, phases `pending→planned→submitted→settled→blocked`, `max_active_jobs` progressif, ticks
+killables/idempotents k8s-natifs). T5 = graver CE pattern en **DAG déclaratif** (freshness → capture(T1) →
+normalisation(T3) → [extraction(T4)] → serve-refresh(T2) → verify-gate(T2)), pas un ordonnanceur ex nihilo.
+**Moteur T5 à trancher** (jumelle de A.3) : étendre ce DAG-S3-state maison **vs** adopter **Argo Workflows** — les
+2 passes de convergence tranchent **Argo** (`SPEC_PIPELINES_MIGRATION.md §3 D-moteur-1`) ; §2.1 reste
+engine-agnostic jusqu'à la ratification owner. → écart §4.8.
+
 ### 2.2 Un refresh bout-en-bout — composants réels vs [cible]
 
 | Étape | Composant | Statut |
@@ -122,8 +142,12 @@ est interdit dans le runtime. Séquence de migration (Option B) : PV (canari) �
 | 7. Invalidation | **Graphe d'invalidation par hash** : sha256 CAS des entrées → artefacts dérivés ; un hash inchangé ⇒ étape sautée (le HEAD-skip CAS et l'idempotence des folds préfigurent) | [cible] |
 | 8. Staging | Écriture versionnée par run : `preprod/runs/<merge-sha>/<run-id>/`, `prod/releases/<tag>/<run-id>/` — jamais d'écriture directe dans le baseline servi | [cible] |
 | 9. Gate | Jobs on-cluster : partition fermée 1106, provenance v2, non-régression, budget. Le Job `geo-preprod-verify` (parité set_hash via API, read-only) **préfigure explicitement** cette archi (`deploy/k8s/preprod/geo-api-preprod-verify-job.yaml:7-16`) | EXISTE (verify) / [cible] (généralisation par lane) |
-| 10. Promotion | Pointeur `current.json` promu atomiquement ; rollback = repointer. `coherence.json` + `computeSetHash` (`packages/geo/src/preprod/mirror.ts`) = le mécanisme existant à généraliser | EXISTE (coherence preprod) / [cible] (pointeur de release servi) |
+| 10. Promotion | **Pointeur de release = `coherence.json` ÉTENDU** (réutilise le mécanisme déjà codé/servi ; convergence : **ne pas inventer un nouveau `current.json`** — `SPEC_PIPELINES_MIGRATION.md §5#1`), promu atomiquement ; rollback = repointer. `coherence.json` + `computeSetHash` (`packages/geo/src/preprod/mirror.ts`) = le mécanisme à généraliser | EXISTE (coherence preprod) / [cible] (lineage run→collection sur le pointeur) |
 | 11. Serving | `StoreProvider` OGC : index méta d'abord, stream OOM-safe, règle sous-dossier-sur-plat (`store-provider.ts:61-207,267-278`), préfixe `normalized/` ; `invalidate()` (:77-79) = le hook de bascule post-promotion | EXISTE |
+
+> **Note pointeur de promotion** : les diagrammes (Vue A/C) portent le libellé `current.json` pour le **rôle de
+> pointeur de release** ; l'implémentation cible **étend `coherence.json`** (déjà codé/servi), elle n'introduit
+> pas un nouvel objet `current.json` — réconciliation de convergence (`SPEC_PIPELINES_MIGRATION.md §5#1`).
 
 ### 2.3 Vue A — Architecture de traitement cible
 
@@ -394,11 +418,18 @@ flowchart TB
    est [unknown] depuis le repo seul → GitOps/readback [cible].
 5. **Conductors normes / usage dominant / effet densifiant / cadastre-rôle** : mappings [unknown] (dossier sol
    §11.9) — à nommer.
-6. **Pattern moteur LLM (A.3)** : **cluster-mesh vs service `sentropic-sentech`** — décision d'architecture
-   **ouverte**, à trancher owner/geo-socle **avant** l'industrialisation de l'extraction (conditionne
-   netpols/latence/coût). `[unknown côté repo geo]`.
+6. **Pattern moteur LLM (A.3) = D-moteur-2** : **cluster-mesh vs service `sentropic-sentech`** — décision
+   d'architecture **ouverte**, à trancher owner **avant** l'industrialisation de l'extraction (conditionne
+   netpols/latence/coût). Désaccord de convergence **préservé** (`SPEC_PIPELINES_MIGRATION.md §3`) : fable réfute
+   cluster-mesh par des `[FAIT]`s **cross-repo** (sentropic/h2a) que le dossier present-decision **vérifie
+   indépendamment** avant l'owner — le « penche vers le service central » de la synthèse n'est pas un fait établi
+   tant que ces `[FAIT]`s ne sont pas re-vérifiés. `[unknown côté repo geo]`.
 7. **`llm-mesh` (A.2)** : mécanisme d'enrôlement (`enroll` comptes codex+claude+gemini) + routage minimal
    instrumenté — `[unknown côté repo geo]`, à spécifier hors geo puis à référencer ici.
+8. **Moteur d'orchestration T5 (A.1) = D-moteur-1** (jumelle de D-moteur-2) : **Argo Workflows vs DAG-S3-state
+   maison** (étendre `lib/pv-capture-backlog.ts`) — décision **ouverte**, à trancher owner (dossier
+   present-decision jumeau avec §4.6). Convergence (2 passes) recommande **Argo** (k8s-natif, `when:`/retry/
+   sémaphores de quota, réversible en CronJobs) ; §2.1 reste engine-agnostic jusqu'à la ratification.
 
 ---
 
