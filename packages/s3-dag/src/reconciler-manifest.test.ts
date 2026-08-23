@@ -61,12 +61,21 @@ describe("reconcilerRbac — minimal, NO serviceaccounts verb", () => {
     for (const r of rules) expect(r.resources).not.toContain("serviceaccounts");
   });
 
-  it("restricts self-suspend to its own CronJob and the lock lease to its own name", () => {
-    const cron = rules.find((r) => r.resources.includes("cronjobs"))!;
-    expect(cron.resourceNames).toEqual(["s3dag-pv-reconciler"]);
-    expect(cron.verbs.sort()).toEqual(["get", "patch"]);
+  it("restricts the lock lease to its own name", () => {
     const leaseGetUpdate = rules.find((r) => r.resources.includes("leases") && r.resourceNames)!;
     expect(leaseGetUpdate.resourceNames).toEqual([reconcilerLockName("s3dag-pv-reconciler")]);
+  });
+
+  it("grants `create` on jobs and on NO OTHER pod-spec carrier (jobs-only VAP soundness)", () => {
+    const POD_SPEC_CARRIERS = ["pods", "deployments", "statefulsets", "replicasets", "daemonsets", "replicationcontrollers", "cronjobs"];
+    const createResources = rules.filter((r) => r.verbs.includes("create")).flatMap((r) => r.resources);
+    // the ONLY workload kind with create is `jobs`; leases (no pod-spec) may also create
+    expect(createResources).toContain("jobs");
+    for (const carrier of POD_SPEC_CARRIERS) {
+      expect(createResources).not.toContain(carrier); // cannot escape a jobs-only VAP by changing kind
+    }
+    // and no cronjobs verb at all (no patch → cannot mutate its own jobTemplate)
+    expect(rules.some((r) => r.resources.includes("cronjobs"))).toBe(false);
   });
 
   it("binds the reconciler SA to the Role", () => {
