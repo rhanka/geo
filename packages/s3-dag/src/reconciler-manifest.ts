@@ -51,9 +51,10 @@ export interface ReconcilerRbacArgs {
 }
 
 /**
- * The reconciler's Role + RoleBinding. Minimal verbs — enough to submit/observe
- * Jobs, read the quota, self-suspend, and hold the lock lease — and DELIBERATELY
- * NO `serviceaccounts` verb (cannot invent or patch an identity).
+ * The reconciler's Role + RoleBinding. Minimal verbs — submit/observe Jobs, read
+ * the quota, hold the lock lease — with DELIBERATELY NO `serviceaccounts` verb
+ * (cannot invent/patch an identity) and `create` on NO pod-spec carrier except
+ * `jobs` (a jobs-only VAP then fully bounds the reconciler).
  */
 export function reconcilerRbac(args: ReconcilerRbacArgs): {
   serviceAccount: Record<string, unknown>;
@@ -72,15 +73,23 @@ export function reconcilerRbac(args: ReconcilerRbacArgs): {
       kind: "Role",
       metadata: { name: cronJobName, namespace, labels: { ...MANAGED_BY } },
       rules: [
+        // `create` on jobs — and ONLY jobs among pod-spec carriers. A jobs-only VAP
+        // bounds the reconciler's fan-out; granting `create` on any OTHER pod-spec
+        // carrier (pods/deployments/statefulsets/replicasets/daemonsets/
+        // replicationcontrollers/cronjobs) would let it escape that VAP by changing
+        // kind. So this is the ONLY `create` on a workload kind. (k8s soundness invariant.)
         { apiGroups: ["batch"], resources: ["jobs"], verbs: ["get", "list", "create"] },
-        { apiGroups: [""], resources: ["pods"], verbs: ["get", "list"] },
-        { apiGroups: [""], resources: ["resourcequotas"], verbs: ["get"] },
-        // self-suspend at terminal only (restricted to this CronJob)
-        { apiGroups: ["batch"], resources: ["cronjobs"], resourceNames: [cronJobName], verbs: ["get", "patch"] },
-        // single-writer lock lease
+        { apiGroups: [""], resources: ["pods"], verbs: ["get", "list"] }, // read-only (failure diagnosis)
+        { apiGroups: [""], resources: ["resourcequotas"], verbs: ["get"] }, // read-only
+        // single-writer lock lease — leases carry NO pod-spec, so `create` here is
+        // outside the jobs-only VAP's concern.
         { apiGroups: ["coordination.k8s.io"], resources: ["leases"], resourceNames: [reconcilerLockName(cronJobName)], verbs: ["get", "update"] },
         { apiGroups: ["coordination.k8s.io"], resources: ["leases"], verbs: ["create"] },
         // NOTE: intentionally NO serviceaccounts verb — cannot create/patch identities.
+        // NOTE: intentionally NO cronjobs verb — the reconciler never self-suspends
+        // (idle ticks after completion are no-ops); `patch cronjobs` would let it mutate
+        // its own jobTemplate so the CronJob controller creates a privileged Job the
+        // narrow VAP (keyed on this SA) would not see — closed by omission.
       ],
     },
     roleBinding: {
