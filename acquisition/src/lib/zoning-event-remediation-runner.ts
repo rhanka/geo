@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { z } from "zod";
 
 import {
+  CAS_KEY_RE,
   CaptureRunHeaderSchema,
   parseManifestJsonl,
 } from "../../../packages/qc-sources/src/capture/index.js";
@@ -20,6 +21,7 @@ import {
   ZONING_EVENT_EXHAUSTION_CONTRACT,
   ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT,
   ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT,
+  ZONING_EVENT_PV_TEXT_EXTRACTION_RECEIPT_CONTRACT,
   ZONING_EVENT_REMEDIATION_DRY_RUN_CONTRACT,
   type DurableEvidenceObjectRef,
   type Sha256Ref,
@@ -94,6 +96,18 @@ const PvLinkReceiptSchema = z.object({
   capture_manifest_ref: DurableRefSchema,
   captured_pdf_ref: DurableRefSchema,
   pv_text_ref: DurableRefSchema,
+  text_extraction_receipt_ref: DurableRefSchema,
+}).strict();
+const PvTextExtractionReceiptSchema = z.object({
+  contract: z.literal(ZONING_EVENT_PV_TEXT_EXTRACTION_RECEIPT_CONTRACT),
+  status: z.literal("extracted"),
+  receipt_key: ObjectKeySchema,
+  run_id: z.string().min(1),
+  source_url: z.string().min(1),
+  captured_pdf_ref: DurableRefSchema,
+  pv_text_ref: DurableRefSchema,
+  extraction_tool: z.string().min(1),
+  extracted_at: z.string().datetime(),
 }).strict();
 const ExhaustionReceiptSchema = z.object({
   contract: z.literal(ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT),
@@ -242,6 +256,16 @@ async function evidenceForCity(
       if (run.execution !== "cluster" || run.lane !== "pv" || run.finished_at === null || run.exit_code !== 0) {
         throw new Error(`preuve LINK ${item.event_id}: run PV cluster terminé requis`);
       }
+      if (
+        receipt.capture_run_ref.key !== `capture/_runs/${run.run_id}/run.json` ||
+        receipt.capture_manifest_ref.key !== `capture/_runs/${run.run_id}/manifest.jsonl`
+      ) {
+        throw new Error(`preuve LINK ${item.event_id}: clés run/manifeste non canoniques`);
+      }
+      const cas = CAS_KEY_RE.exec(receipt.captured_pdf_ref.key);
+      if (!cas || cas[2] !== receipt.captured_pdf_ref.sha256.slice("sha256:".length)) {
+        throw new Error(`preuve LINK ${item.event_id}: PDF hors CAS canonique`);
+      }
       const manifestBytes = await readVerified(receipt.capture_manifest_ref, readEvidence);
       let manifest;
       try {
@@ -264,6 +288,24 @@ async function evidenceForCity(
       );
       if (!captured) {
         throw new Error(`preuve LINK ${item.event_id}: URL/PDF non liés au manifeste PV cluster`);
+      }
+      const extractionReceiptBytes = await readVerified(receipt.text_extraction_receipt_ref, readEvidence);
+      let extractionReceipt: z.infer<typeof PvTextExtractionReceiptSchema>;
+      try {
+        extractionReceipt = PvTextExtractionReceiptSchema.parse(
+          JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(extractionReceiptBytes)),
+        );
+      } catch {
+        throw new Error(`preuve LINK ${item.event_id}: reçu d'extraction PDF→texte invalide`);
+      }
+      if (
+        extractionReceipt.receipt_key !== receipt.text_extraction_receipt_ref.key ||
+        extractionReceipt.run_id !== run.run_id ||
+        extractionReceipt.source_url !== receipt.source_url ||
+        JSON.stringify(extractionReceipt.captured_pdf_ref) !== JSON.stringify(receipt.captured_pdf_ref) ||
+        JSON.stringify(extractionReceipt.pv_text_ref) !== JSON.stringify(receipt.pv_text_ref)
+      ) {
+        throw new Error(`preuve LINK ${item.event_id}: extraction texte hors PDF/source cible`);
       }
       const pvBytes = await readVerified(receipt.pv_text_ref, readEvidence);
       let pvText: string;

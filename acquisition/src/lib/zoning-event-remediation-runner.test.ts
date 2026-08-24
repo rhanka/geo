@@ -20,6 +20,7 @@ import {
   ZONING_EVENT_EXHAUSTION_CONTRACT,
   ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT,
   ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT,
+  ZONING_EVENT_PV_TEXT_EXTRACTION_RECEIPT_CONTRACT,
   type Sha256Ref,
 } from "./zoning-event-remediation.js";
 
@@ -100,8 +101,10 @@ describe("buildZoningEventRemediationDryRun", () => {
     const auditSha = sha(`${JSON.stringify(auditValue, null, 2)}\n`);
     const span = "Règlement numéro 2026-101 modifiant le Règlement de zonage numéro 2019-342";
     const pv = Buffer.from(`Avis de motion\n\nDonne avis de motion pour le ${span}.`);
+    const pvTextRef = { key: "capture/_runs/unit/pv.txt", sha256: sha(pv) };
     const pdf = Buffer.from("%PDF-1.7 synthetic in-memory unit fixture");
-    const pdfRef = { key: "raw/pv/cas/unit.pdf", sha256: sha(pdf) };
+    const pdfSha = sha(pdf);
+    const pdfRef = { key: `raw/pv-unit/cas/${pdfSha.slice("sha256:".length)}.pdf`, sha256: pdfSha };
     const captureRunKey = "capture/_runs/unit/run.json";
     const captureRun = Buffer.from(JSON.stringify({
       run_id: "unit",
@@ -143,6 +146,18 @@ describe("buildZoningEventRemediationDryRun", () => {
       robots: "allowed",
       redacted: false,
     })}\n`);
+    const textExtractionReceiptKey = "capture/_runs/unit/pv-text-extraction-link.json";
+    const textExtractionReceipt = Buffer.from(JSON.stringify({
+      contract: ZONING_EVENT_PV_TEXT_EXTRACTION_RECEIPT_CONTRACT,
+      status: "extracted",
+      receipt_key: textExtractionReceiptKey,
+      run_id: "unit",
+      source_url: "https://example.test/pv.pdf",
+      captured_pdf_ref: pdfRef,
+      pv_text_ref: pvTextRef,
+      extraction_tool: "pdftotext/unit-test",
+      extracted_at: "2026-06-10T00:00:02.000Z",
+    }));
     const linkReceiptKey = "capture/link-receipt.json";
     const linkReceipt = Buffer.from(JSON.stringify({
       contract: ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT,
@@ -158,7 +173,11 @@ describe("buildZoningEventRemediationDryRun", () => {
       capture_run_ref: { key: captureRunKey, sha256: sha(captureRun) },
       capture_manifest_ref: { key: captureManifestKey, sha256: sha(captureManifest) },
       captured_pdf_ref: pdfRef,
-      pv_text_ref: { key: "capture/pv.txt", sha256: sha(pv) },
+      pv_text_ref: pvTextRef,
+      text_extraction_receipt_ref: {
+        key: textExtractionReceiptKey,
+        sha256: sha(textExtractionReceipt),
+      },
     }));
     const exhaustionReceiptKey = "capture/run.json";
     const exhaustionReceipt = Buffer.from(JSON.stringify({
@@ -199,10 +218,11 @@ describe("buildZoningEventRemediationDryRun", () => {
     const inventoryBytes = `${JSON.stringify(rawInventory, null, 2)}\n`;
     const inventory = parseZoningEventRemediationInventory(rawInventory);
     const evidence = new Map([
-      ["capture/pv.txt", pv],
+      [pvTextRef.key, pv],
       [pdfRef.key, pdf],
       [captureRunKey, captureRun],
       [captureManifestKey, captureManifest],
+      [textExtractionReceiptKey, textExtractionReceipt],
       [linkReceiptKey, linkReceipt],
       [exhaustionReceiptKey, exhaustionReceipt],
     ]);
