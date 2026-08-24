@@ -473,16 +473,22 @@ function assertOwnerGo(
  * matching artefact here.
  */
 export async function executeZoningEventRemediation(
-  document: ZoningEventsDocument,
+  /** Exact nested served object bytes re-read immediately before this boundary. */
+  documentBytes: Buffer,
   dryRun: ZoningEventRemediationDryRunReport,
   ownerGo: ZoningEventOwnerGo,
   options: {
     asOf: string;
-    /** SHA of the nested object re-read immediately before this boundary. */
-    collectionSha256: Sha256Ref;
     store?: ZoningEventsStore;
   },
 ): Promise<ServeZoningEventsResult> {
+  let document: ZoningEventsDocument;
+  try {
+    const text = new TextDecoder("utf-8", { fatal: true }).decode(documentBytes);
+    document = JSON.parse(text) as ZoningEventsDocument;
+  } catch {
+    throw new Error("zoning-event remediation: collection servie JSON UTF-8 invalide");
+  }
   if (
     dryRun.contract !== ZONING_EVENT_REMEDIATION_DRY_RUN_CONTRACT ||
     dryRun.dry_run !== true ||
@@ -505,8 +511,8 @@ export async function executeZoningEventRemediation(
     throw new Error("zoning-event remediation: plan municipal hors inventaire dry-run");
   }
   assertOwnerGo(ownerGo, dryRun);
-  assertSha(options.collectionSha256, "zoning-event remediation collection relue");
-  if (options.collectionSha256 !== plan.collection_sha256) {
+  const collectionSha256 = `sha256:${createHash("sha256").update(documentBytes).digest("hex")}`;
+  if (collectionSha256 !== plan.collection_sha256) {
     throw new Error("zoning-event remediation: collection servie modifiée depuis le dry-run");
   }
   assertIso(options.asOf, "zoning-event remediation served asOf");
