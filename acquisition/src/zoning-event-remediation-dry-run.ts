@@ -34,8 +34,8 @@ function option(name: string): string | null {
   return value ? value.slice(prefix.length) : null;
 }
 
-function assertArgs(): void {
-  for (const arg of argv) {
+export function assertZoningEventRemediationDryRunArgs(args: readonly string[]): void {
+  for (const arg of args) {
     const match = /^--([^=]+)=/.exec(arg);
     if (!match || !ALLOWED_OPTIONS.has(match[1]!)) {
       throw new Error(`option dry-run inconnue/interdite: ${arg}`);
@@ -79,7 +79,7 @@ function assertReadOnlyRunEnvironment(): void {
 }
 
 export async function main(): Promise<void> {
-  assertArgs();
+  assertZoningEventRemediationDryRunArgs(argv);
   assertReadOnlyRunEnvironment();
   const auditPath = resolve(ROOT, option("audit") ?? "work/coverage/zoning-event-source-audit-selection-b.json");
   const inventoryPath = resolve(ROOT, option("inventory") ?? "work/coverage/zoning-event-remediation-inventory-selection-b.json");
