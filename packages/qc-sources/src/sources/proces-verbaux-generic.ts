@@ -14,6 +14,10 @@ import {
   PV_NON_DISPONIBLE,
 } from "./proces-verbaux-parser.js";
 
+// Public alias for consumers that must use the same generic PV detector as
+// this adapter without reaching for, or reimplementing, its parsing rules.
+export { detectZonageChange as detectGenericPvZonageChange } from "./proces-verbaux-parser.js";
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants
 // ─────────────────────────────────────────────────────────────────────────────
