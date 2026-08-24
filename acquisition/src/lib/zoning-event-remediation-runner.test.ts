@@ -454,6 +454,58 @@ describe("buildZoningEventRemediationDryRun", () => {
     expect(failedReport.executable).toBe(false);
     expect(failedReport.totals.to_retract).toBe(0);
     expect(failedReport.cities[0]!.error).toMatch(/tentative PV ville sans capture exploitable/);
+
+    const divergentLines = failedManifest.toString("utf8").trim().split("\n")
+      .map((line) => JSON.parse(line) as Record<string, unknown>);
+    divergentLines[2]!["run_id"] = "other-run";
+    const divergentManifest = Buffer.from(`${divergentLines.map((line) => JSON.stringify(line)).join("\n")}\n`);
+    const divergentLinkReceipt = Buffer.from(JSON.stringify({
+      ...JSON.parse(failedLinkReceipt.toString("utf8")) as Record<string, unknown>,
+      capture_manifest_ref: { key: captureManifestKey, sha256: sha(divergentManifest) },
+    }));
+    const divergentExhaustionReceipt = Buffer.from(JSON.stringify({
+      ...JSON.parse(failedExhaustionReceipt.toString("utf8")) as Record<string, unknown>,
+      capture_manifest_ref: { key: captureManifestKey, sha256: sha(divergentManifest) },
+    }));
+    const divergentRawInventory = {
+      ...failedRawInventory,
+      cities: [{
+        ...failedRawInventory.cities[0]!,
+        events: failedRawInventory.cities[0]!.events.map((entry) => entry.event_id === "link" ? {
+          ...entry,
+          resolution: {
+            kind: "link" as const,
+            evidence_ref: { key: linkReceiptKey, sha256: sha(divergentLinkReceipt) },
+          },
+        } : {
+          ...entry,
+          resolution: {
+            kind: "retract" as const,
+            exhaustion: {
+              ...entry.resolution.exhaustion,
+              run_refs: [{ key: exhaustionReceiptKey, sha256: sha(divergentExhaustionReceipt) }],
+            },
+          },
+        }),
+      }],
+    };
+    const divergentEvidence = new Map(failedEvidence)
+      .set(captureManifestKey, divergentManifest)
+      .set(linkReceiptKey, divergentLinkReceipt)
+      .set(exhaustionReceiptKey, divergentExhaustionReceipt);
+    const divergentReport = await buildZoningEventRemediationDryRun(
+      auditValue,
+      parseZoningEventRemediationInventory(divergentRawInventory),
+      {
+        auditSha256: auditSha,
+        inventorySha256: sha(`${JSON.stringify(divergentRawInventory, null, 2)}\n`),
+      },
+      async () => ({ document: document(), sha256: collectionSha }),
+      async (key) => divergentEvidence.get(key)!,
+    );
+    expect(divergentReport.executable).toBe(false);
+    expect(divergentReport.totals.to_retract).toBe(0);
+    expect(divergentReport.cities[0]!.error).toMatch(/manifeste\/run non fermé/);
   });
 
   it("turns a declarative exhaustion receipt into unknown, never RETRACT", async () => {
