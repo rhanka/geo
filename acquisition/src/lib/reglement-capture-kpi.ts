@@ -76,7 +76,7 @@ export interface CaptureEvidence {
   failed: readonly FailedCaptureAttempt[];
 }
 
-function exactHttpUrl(value: unknown): value is string {
+export function exactHttpUrl(value: unknown): value is string {
   if (typeof value !== "string" || value.length === 0) return false;
   try {
     const parsed = new URL(value);
