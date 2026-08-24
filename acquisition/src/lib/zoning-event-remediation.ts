@@ -35,6 +35,8 @@ export const ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT =
   "zoning-event-pv-link-receipt/v1" as const;
 export const ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT =
   "zoning-event-extraction-exhaustion-receipt/v1" as const;
+export const ZONING_EVENT_PV_TEXT_EXTRACTION_RECEIPT_CONTRACT =
+  "zoning-event-pv-text-extraction-receipt/v1" as const;
 
 export type Sha256Ref = `sha256:${string}`;
 
