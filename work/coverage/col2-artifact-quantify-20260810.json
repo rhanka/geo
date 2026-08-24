@@ -1,0 +1,99 @@
+{
+  "contract": "col2-artifact-quantify/20260810",
+  "purpose": "Chiffrer l'artefact col-2 centroïde-vs-aire-majorité (décision A/B, archi+qa+owner). misassigned_multi_zone = artefact attendu (straddling); misassigned_mono_zone = erreur potentielle.",
+  "method": "réutilise loadFC/polygonsOf/lotCentroid/inCode/assignedCode de lot-zone-consistency-audit.ts (méthode KPI exacte); multi_zone lu de la propriété servie du lot.",
+  "caveat": "brossard/boucherville servis PAS re-foldés contre v2 zones 0dcb13a0 → mismatch mêle artefact + gap; saint-hyacinthe = cas propre.",
+  "cities": [
+    {
+      "slug": "saint-hyacinthe",
+      "refold_state": "clean-area-majority-vs-current-v2",
+      "lots": 19379,
+      "assigned": 19379,
+      "matched": 18125,
+      "misassigned_total": 1246,
+      "misassigned_multi_zone": 338,
+      "misassigned_mono_zone": 908,
+      "outside_all": 8,
+      "multi_zone_total": 880,
+      "mismatch_pct": 6.47
+    },
+    {
+      "slug": "brossard",
+      "refold_state": "served-not-refolded-to-new-v2",
+      "lots": 24823,
+      "assigned": 24771,
+      "matched": 22943,
+      "misassigned_total": 1828,
+      "misassigned_multi_zone": 170,
+      "misassigned_mono_zone": 1658,
+      "outside_all": 0,
+      "multi_zone_total": 411,
+      "mismatch_pct": 7.38
+    },
+    {
+      "slug": "boucherville",
+      "refold_state": "served-not-refolded-to-new-v2",
+      "lots": 16269,
+      "assigned": 16262,
+      "matched": 15506,
+      "misassigned_total": 756,
+      "misassigned_multi_zone": 118,
+      "misassigned_mono_zone": 638,
+      "outside_all": 0,
+      "multi_zone_total": 300,
+      "mismatch_pct": 4.65
+    },
+    {
+      "slug": "varennes",
+      "refold_state": "context",
+      "lots": 8287,
+      "assigned": 8287,
+      "matched": 7874,
+      "misassigned_total": 404,
+      "misassigned_multi_zone": 58,
+      "misassigned_mono_zone": 346,
+      "outside_all": 9,
+      "multi_zone_total": 146,
+      "mismatch_pct": 4.98
+    },
+    {
+      "slug": "ormstown",
+      "refold_state": "context",
+      "lots": 2421,
+      "assigned": 2421,
+      "matched": 2353,
+      "misassigned_total": 64,
+      "misassigned_multi_zone": 35,
+      "misassigned_mono_zone": 29,
+      "outside_all": 4,
+      "multi_zone_total": 96,
+      "mismatch_pct": 2.81
+    },
+    {
+      "slug": "sorel-tracy",
+      "refold_state": "context",
+      "lots": 16736,
+      "assigned": 16650,
+      "matched": 15810,
+      "misassigned_total": 840,
+      "misassigned_multi_zone": 274,
+      "misassigned_mono_zone": 566,
+      "outside_all": 0,
+      "multi_zone_total": 623,
+      "mismatch_pct": 5.05
+    },
+    {
+      "slug": "drummondville",
+      "refold_state": "context",
+      "lots": 30722,
+      "assigned": 30721,
+      "matched": 29185,
+      "misassigned_total": 1512,
+      "misassigned_multi_zone": 344,
+      "misassigned_mono_zone": 1168,
+      "outside_all": 24,
+      "multi_zone_total": 945,
+      "mismatch_pct": 5
+    }
+  ]
+}
