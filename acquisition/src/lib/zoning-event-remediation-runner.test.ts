@@ -16,7 +16,12 @@ import {
   parseZoningEventRemediationInventory,
   ZONING_EVENT_REMEDIATION_INVENTORY_CONTRACT,
 } from "./zoning-event-remediation-runner.js";
-import { ZONING_EVENT_EXHAUSTION_CONTRACT, type Sha256Ref } from "./zoning-event-remediation.js";
+import {
+  ZONING_EVENT_EXHAUSTION_CONTRACT,
+  ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT,
+  ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT,
+  type Sha256Ref,
+} from "./zoning-event-remediation.js";
 
 function sha(value: string | Buffer): Sha256Ref {
   return `sha256:${createHash("sha256").update(value).digest("hex")}`;
@@ -95,7 +100,29 @@ describe("buildZoningEventRemediationDryRun", () => {
     const auditSha = sha(`${JSON.stringify(auditValue, null, 2)}\n`);
     const span = "Règlement numéro 2026-101 modifiant le Règlement de zonage numéro 2019-342";
     const pv = Buffer.from(`Avis de motion\n\nDonne avis de motion pour le ${span}.`);
-    const receipt = Buffer.from('{"status":"exhausted"}\n');
+    const linkReceiptKey = "capture/link-receipt.json";
+    const linkReceipt = Buffer.from(JSON.stringify({
+      contract: ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT,
+      status: "source-found",
+      receipt_key: linkReceiptKey,
+      event_id: "link",
+      target_bylaw_numero: "026-101",
+      detector_reglement_numero: "2026-101",
+      source_url: "https://example.test/pv.pdf",
+      source_span: span,
+      as_of_date: "2026-06-10",
+      producer: "geo",
+      pv_text_ref: { key: "capture/pv.txt", sha256: sha(pv) },
+    }));
+    const exhaustionReceiptKey = "capture/run.json";
+    const exhaustionReceipt = Buffer.from(JSON.stringify({
+      contract: ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT,
+      status: "exhausted",
+      receipt_key: exhaustionReceiptKey,
+      event_id: "retract",
+      checked_sources: [{ source_ref: "pv:index", outcome: "no-source" }],
+      as_of: "2026-08-23T00:00:00Z",
+    }));
     const rawInventory = {
       contract: ZONING_EVENT_REMEDIATION_INVENTORY_CONTRACT,
       cohort_sha256: cohortSha,
@@ -110,18 +137,13 @@ describe("buildZoningEventRemediationDryRun", () => {
         slug: "ville-test",
         collection_sha256: collectionSha,
         events: [
-          { event_id: "link", resolution: { kind: "link", source: {
-            url: "https://example.test/pv.pdf",
-            source_span: span,
-            as_of_date: "2026-06-10",
-            producer: "geo",
-            detector_reglement_numero: "2026-101",
-            pv_text_ref: { key: "capture/pv.txt", sha256: sha(pv) },
+          { event_id: "link", resolution: { kind: "link", evidence_ref: {
+            key: linkReceiptKey, sha256: sha(linkReceipt),
           } } },
           { event_id: "retract", resolution: { kind: "retract", exhaustion: {
             contract: ZONING_EVENT_EXHAUSTION_CONTRACT,
             status: "exhausted",
-            run_refs: [{ key: "capture/run.json", sha256: sha(receipt) }],
+            run_refs: [{ key: exhaustionReceiptKey, sha256: sha(exhaustionReceipt) }],
             checked_sources: [{ source_ref: "pv:index", outcome: "no-source" }],
             as_of: "2026-08-23T00:00:00Z",
           } } },
@@ -130,7 +152,11 @@ describe("buildZoningEventRemediationDryRun", () => {
     };
     const inventoryBytes = `${JSON.stringify(rawInventory, null, 2)}\n`;
     const inventory = parseZoningEventRemediationInventory(rawInventory);
-    const evidence = new Map([["capture/pv.txt", pv], ["capture/run.json", receipt]]);
+    const evidence = new Map([
+      ["capture/pv.txt", pv],
+      [linkReceiptKey, linkReceipt],
+      [exhaustionReceiptKey, exhaustionReceipt],
+    ]);
     const report = await buildZoningEventRemediationDryRun(
       auditValue,
       inventory,
@@ -143,17 +169,27 @@ describe("buildZoningEventRemediationDryRun", () => {
       cities_unknown: 0, living_phantoms: 2, to_link: 1, to_retract: 1, blocked: 0,
     });
     expect(report.cities[0]!.plan?.to_link[0]).toMatchObject({
-      event_id: "link", source: { url: "https://example.test/pv.pdf", source_span: span },
+      event_id: "link",
+      source: { url: "https://example.test/pv.pdf", source_span: span },
+      mapping: { target_bylaw_numero: "026-101", detector_reglement_numero: "2026-101" },
     });
   });
 
-  it("turns a changed or unreadable durable proof into unknown, never RETRACT", async () => {
+  it("turns a semantically unrelated durable receipt into unknown, never RETRACT", async () => {
     const value = document();
     const body = Buffer.from(JSON.stringify(value));
     const collectionSha = sha(body);
     const cohortSha = sha("ville-test\n");
     const auditValue = audit(collectionSha, cohortSha);
     const auditSha = sha(`${JSON.stringify(auditValue, null, 2)}\n`);
+    const unrelatedReceipt = Buffer.from(JSON.stringify({
+      contract: ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT,
+      status: "exhausted",
+      receipt_key: "capture/run.json",
+      event_id: "retract",
+      checked_sources: [{ source_ref: "pv:unrelated", outcome: "no-source" }],
+      as_of: "2026-08-23T00:00:00Z",
+    }));
     const rawInventory = {
       contract: ZONING_EVENT_REMEDIATION_INVENTORY_CONTRACT,
       cohort_sha256: cohortSha,
@@ -166,7 +202,7 @@ describe("buildZoningEventRemediationDryRun", () => {
         events: [{ event_id: "retract", resolution: { kind: "retract", exhaustion: {
           contract: ZONING_EVENT_EXHAUSTION_CONTRACT,
           status: "exhausted",
-          run_refs: [{ key: "capture/run.json", sha256: sha("expected") }],
+          run_refs: [{ key: "capture/run.json", sha256: sha(unrelatedReceipt) }],
           checked_sources: [{ source_ref: "pv:index", outcome: "no-source" }],
           as_of: "2026-08-23T00:00:00Z",
         } } }],
@@ -177,11 +213,11 @@ describe("buildZoningEventRemediationDryRun", () => {
       parseZoningEventRemediationInventory(rawInventory),
       { auditSha256: auditSha, inventorySha256: sha(JSON.stringify(rawInventory)) },
       async () => ({ document: value, sha256: collectionSha }),
-      async () => Buffer.from("changed"),
+      async () => unrelatedReceipt,
     );
     expect(report.executable).toBe(false);
     expect(report.totals.cities_unknown).toBe(1);
     expect(report.totals.to_retract).toBe(0);
-    expect(report.cities[0]!.error).toMatch(/SHA divergent/);
+    expect(report.cities[0]!.error).toMatch(/sources reçues\/inventaire divergentes/);
   });
 });
