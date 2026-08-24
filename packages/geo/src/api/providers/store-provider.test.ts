@@ -177,6 +177,7 @@ describe("StoreProvider via the OGC app", () => {
     expect(store.getCalls.sort()).toEqual([
       "ca-qc-sda/postal.meta.json",
       "ca-qc-sda/regions.meta.json",
+      "coherence.json",
     ]);
   });
 
@@ -192,6 +193,7 @@ describe("StoreProvider via the OGC app", () => {
     expect(store.getCalls.sort()).toEqual([
       "ca-qc-sda/postal.meta.json",
       "ca-qc-sda/regions.meta.json",
+      "coherence.json",
     ]);
   });
 
@@ -413,6 +415,76 @@ describe("StoreProvider via the OGC app", () => {
     const app = createApp(new StoreProvider(store));
     const res = await app.request(`${ORIGIN}/collections/escaped-features/items?limit=1`);
     expect(res.status).toBe(200);
+  });
+
+  it("does NOT index operator backups / prebackups / sidecars as served collections (index-discipline)", async () => {
+    const store = new FakeStore();
+    // canonical — served
+    store.seed("qc-zonage-live.geojson", JSON.stringify(REF_COLLECTION));
+    store.seed("qc-zonage-x/qc-zonage-x.geojson", JSON.stringify(REF_COLLECTION)); // nested canonical
+    // junk — NEVER served (a: `_` segment ; b: `__`/`.` in stem)
+    store.seed("_replaced/qc-zonage-live__flat.2026-08-21T00Z.geojson", JSON.stringify(REF_COLLECTION));
+    store.seed("_zone-source-fold-backups/2026-08-20/qc-zonage-live.geojson", JSON.stringify(REF_COLLECTION));
+    store.seed("qc-zonage-live.additive-prebackup.geojson", JSON.stringify(REF_COLLECTION));
+    store.seed("qc-zonage-live.contour-auto-preclip.geojson", JSON.stringify(REF_COLLECTION));
+
+    const app = createApp(new StoreProvider(store));
+    const res = await app.request(`${ORIGIN}/collections`);
+    expect(res.status).toBe(200);
+    const body = (await res.json()) as { collections: { id: string }[] };
+    expect(body.collections.map((c) => c.id).sort()).toEqual(["qc-zonage-live", "qc-zonage-x"]);
+  });
+
+  it("serves coherence_id per-collection + coherence_id/served_count on the landing when a manifest is present", async () => {
+    const store = seededStore();
+    store.seed(
+      "coherence.json",
+      JSON.stringify({
+        coherence_id: "w-2026-08-18T00Z",
+        served_count: 2,
+        set_hash: "abc123",
+        generated_at: "2026-08-18T00:00:00.000Z",
+        prod_watermark: "prod-42",
+      }),
+    );
+    const app = createApp(new StoreProvider(store));
+
+    const coll = (await (await app.request(`${ORIGIN}/collections/ca-qc-regions`)).json()) as {
+      coherence_id?: string;
+    };
+    expect(coll.coherence_id).toBe("w-2026-08-18T00Z");
+
+    const landing = (await (await app.request(`${ORIGIN}/`)).json()) as {
+      coherence_id?: string;
+      served_count?: number;
+      set_hash?: string;
+    };
+    expect(landing.coherence_id).toBe("w-2026-08-18T00Z");
+    expect(landing.served_count).toBe(2);
+    expect(landing.set_hash).toBe("abc123");
+  });
+
+  it("omits coherence_id/served_count when no coherence.json manifest is present (rétrocompat prod)", async () => {
+    const app = createApp(new StoreProvider(seededStore()));
+
+    const coll = (await (await app.request(`${ORIGIN}/collections/ca-qc-regions`)).json()) as Record<
+      string,
+      unknown
+    >;
+    expect(coll).not.toHaveProperty("coherence_id");
+
+    const landing = (await (await app.request(`${ORIGIN}/`)).json()) as Record<string, unknown>;
+    expect(landing).not.toHaveProperty("coherence_id");
+    expect(landing).not.toHaveProperty("served_count");
+  });
+
+  it("fails closed to omitted fields when coherence.json is malformed", async () => {
+    const store = seededStore();
+    store.seed("coherence.json", "{ this is not json");
+    const app = createApp(new StoreProvider(store));
+    const landing = (await (await app.request(`${ORIGIN}/`)).json()) as Record<string, unknown>;
+    expect(landing).not.toHaveProperty("coherence_id");
+    expect(landing).not.toHaveProperty("set_hash");
   });
 
   it("keeps the legacy last-write-wins behavior for duplicate feature ids", async () => {
