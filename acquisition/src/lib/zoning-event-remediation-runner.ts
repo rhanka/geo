@@ -411,6 +411,22 @@ async function evidenceForCity(
       if (manifest.length !== run.counts.attempts) {
         throw new Error(`preuve RETRACT ${item.event_id}: manifeste/run non fermé`);
       }
+      const successfulCityLineIndexes = manifest.flatMap((candidate, index) =>
+        candidate.run_id === run.run_id &&
+        candidate.lane === "pv" &&
+        candidate.slugs.includes(city.slug) &&
+        candidate.method === "GET" &&
+        !candidate.redacted &&
+        candidate.http_status !== null &&
+        candidate.http_status >= 200 &&
+        candidate.http_status < 300 &&
+        candidate.error === null &&
+        candidate.storage_key !== null &&
+        candidate.sha256 !== null
+          ? [index]
+          : [],
+      );
+      const coveredCityLineIndexes: number[] = [];
       for (const checked of receipt.checked_sources) {
         const successfulLineIndexes = manifest.flatMap((candidate, index) =>
           candidate.run_id === run.run_id &&
@@ -439,6 +455,7 @@ async function evidenceForCity(
           throw new Error(`preuve RETRACT ${item.event_id}: partition des captures réussies non fermée`);
         }
         for (const evidence of checked.evidence) {
+          coveredCityLineIndexes.push(evidence.manifest_line_index);
           const line = manifest[evidence.manifest_line_index]!;
           const cas = CAS_KEY_RE.exec(line.storage_key!);
           if (!cas || cas[2] !== line.sha256!.slice("sha256:".length)) {
@@ -467,6 +484,14 @@ async function evidenceForCity(
           await readVerified(extraction.captured_object_ref, readEvidence);
         }
         receiptSources.push({ source_ref: checked.source_ref, outcome: checked.outcome });
+      }
+      coveredCityLineIndexes.sort((left, right) => left - right);
+      if (
+        successfulCityLineIndexes.length === 0 ||
+        new Set(coveredCityLineIndexes).size !== coveredCityLineIndexes.length ||
+        JSON.stringify(coveredCityLineIndexes) !== JSON.stringify(successfulCityLineIndexes)
+      ) {
+        throw new Error(`preuve RETRACT ${item.event_id}: partition PV réussie ville/run non fermée`);
       }
     }
     const normalizedReceiptSources = [...receiptSources]
