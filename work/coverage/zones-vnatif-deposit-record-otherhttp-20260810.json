@@ -1,0 +1,652 @@
+{
+ "contract": "zones-vnatif-deposit-record-otherhttp/v1",
+ "date": "2026-08-10",
+ "spec": "SPEC_ZONE_DEPOSIT_REPLACE_POLICY.md + SPEC_ZONE_GEOMETRY_GRAIN.md + SPEC_ACQUISITION_METHODES_PAR_SOURCE.md §12 ; réplique dépôt victoriaville 5564b2f5",
+ "decision": "CLEAN-UPGRADE veine marginale other-http (legacy-traceable→documented v2). Deux sources ArcGIS REST natives hors 4 veines-plateforme : (1) sig.mrcal.ca FeatureServer PARTAGÉ (MRC Antoine-Labelle) filtré par `code` (code géo MAMH), champ code-zone `zonage` ; (2) carte.rouyn-noranda.ca MapServer mono-muni (Plan de zonage) where=1=1, champ code-zone `NO_ZONE`. f=geojson, champ code-zone résolu par recouvrement ≥90% avec le servi, zone_code brut",
+ "mode": "commit",
+ "run_stamp": "20260811T000000Z",
+ "worklist": "work/coverage/zones-vnatif-capture-worklist-otherhttp-20260810.json",
+ "proof_intended": {
+  "type": "arcgis",
+  "method": "natif",
+  "reliability": "directe",
+  "schema_version": "2.0"
+ },
+ "gate": "depositCapturedZones identity gate PROVENANCE-AWARE (discriminateur = preuve v2 par-feature) + geometry_grain + anti-troncature ArcGIS (returnCountOnly[MÊME where]==features & !exceededTransferLimit)",
+ "summary": {
+  "total": 4,
+  "deposited": 3,
+  "skipped": 1,
+  "other": 0
+ },
+ "cities": [
+  {
+   "slug": "chute-saint-philippe",
+   "run_stamp": "20260811T000000Z",
+   "source_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code=%2779065%27&outFields=*&f=geojson",
+   "count_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code%3D%2779065%27&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260811T000000Z-0-69e0df81-acf7-4741-986c-c18acaaec8c5",
+   "http_status": 200,
+   "sha256": "sha256:52875c5037ee21e586880a2b3ebb528fb6bec4dd8cd06f59d27f25a4ea8929a8",
+   "retrieved_at": "2026-08-16T03:21:48.441Z",
+   "storage_key": "raw/zones-vnatif/cas/52875c5037ee21e586880a2b3ebb528fb6bec4dd8cd06f59d27f25a4ea8929a8.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 36,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "chute-saint-philippe",
+   "registry_attribution_km": 1.39,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-chute-saint-philippe.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 36,
+   "served_distinct_codes": 36,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "zonage",
+     "distinct": 36,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "idzonage",
+     "distinct": 36,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "date_debut",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "hprl_rglmt",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "type_zone",
+     "distinct": 0,
+     "null_count": 36,
+     "overlap_pct": 0
+    },
+    {
+     "field": "reglement",
+     "distinct": 0,
+     "null_count": 36,
+     "overlap_pct": 0
+    },
+    {
+     "field": "piia",
+     "distinct": 0,
+     "null_count": 36,
+     "overlap_pct": 0
+    },
+    {
+     "field": "affect_urb",
+     "distinct": 0,
+     "null_count": 36,
+     "overlap_pct": 0
+    },
+    {
+     "field": "affect_per",
+     "distinct": 0,
+     "null_count": 36,
+     "overlap_pct": 0
+    },
+    {
+     "field": "res_touris",
+     "distinct": 0,
+     "null_count": 36,
+     "overlap_pct": 0
+    },
+    {
+     "field": "date_fin",
+     "distinct": 0,
+     "null_count": 36,
+     "overlap_pct": 0
+    },
+    {
+     "field": "zone_autre",
+     "distinct": 0,
+     "null_count": 36,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "zonage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 36,
+   "sample_codes": [
+    {
+     "code_field_value": "VIL-05",
+     "zone_code": "VIL-05"
+    },
+    {
+     "code_field_value": "RU-04",
+     "zone_code": "RU-04"
+    },
+    {
+     "code_field_value": "VIL-01",
+     "zone_code": "VIL-01"
+    },
+    {
+     "code_field_value": "IND-01",
+     "zone_code": "IND-01"
+    },
+    {
+     "code_field_value": "A-01",
+     "zone_code": "A-01"
+    },
+    {
+     "code_field_value": "RU-02",
+     "zone_code": "RU-02"
+    },
+    {
+     "code_field_value": "RU-01",
+     "zone_code": "RU-01"
+    },
+    {
+     "code_field_value": "FO-02",
+     "zone_code": "FO-02"
+    }
+   ],
+   "served_codes_covered": 36,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 36,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(36) == features(36)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-chute-saint-philippe__flat.2026-08-16T0328Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-chute-saint-philippe__flat.2026-08-16T0328Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-chute-saint-philippe.geojson",
+     "served_features": 36,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code=%2779065%27&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:52875c5037ee21e586880a2b3ebb528fb6bec4dd8cd06f59d27f25a4ea8929a8",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-16T03:21:48.441Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code=%2779065%27&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = zonage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "lac-des-ecorces",
+   "run_stamp": "20260811T000000Z",
+   "source_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code=%2779078%27&outFields=*&f=geojson",
+   "count_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code%3D%2779078%27&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260811T000000Z-0-69e0df81-acf7-4741-986c-c18acaaec8c5",
+   "http_status": 200,
+   "sha256": "sha256:498930ab097c748db75b21c7cc4c86e606a929813bf066247e92f8d9e17362e5",
+   "retrieved_at": "2026-08-16T03:21:51.773Z",
+   "storage_key": "raw/zones-vnatif/cas/498930ab097c748db75b21c7cc4c86e606a929813bf066247e92f8d9e17362e5.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 120,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "lac-des-ecorces",
+   "registry_attribution_km": 0.88,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-lac-des-ecorces.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 120,
+   "served_distinct_codes": 120,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "zonage",
+     "distinct": 120,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "idzonage",
+     "distinct": 120,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "type_zone",
+     "distinct": 11,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "date_debut",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "hprl_rglmt",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "reglement",
+     "distinct": 0,
+     "null_count": 120,
+     "overlap_pct": 0
+    },
+    {
+     "field": "piia",
+     "distinct": 0,
+     "null_count": 120,
+     "overlap_pct": 0
+    },
+    {
+     "field": "affect_urb",
+     "distinct": 0,
+     "null_count": 120,
+     "overlap_pct": 0
+    },
+    {
+     "field": "affect_per",
+     "distinct": 0,
+     "null_count": 120,
+     "overlap_pct": 0
+    },
+    {
+     "field": "res_touris",
+     "distinct": 0,
+     "null_count": 120,
+     "overlap_pct": 0
+    },
+    {
+     "field": "date_fin",
+     "distinct": 0,
+     "null_count": 120,
+     "overlap_pct": 0
+    },
+    {
+     "field": "zone_autre",
+     "distinct": 0,
+     "null_count": 120,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "zonage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 120,
+   "sample_codes": [
+    {
+     "code_field_value": "COM-01",
+     "zone_code": "COM-01"
+    },
+    {
+     "code_field_value": "COM-20",
+     "zone_code": "COM-20"
+    },
+    {
+     "code_field_value": "FOR-01",
+     "zone_code": "FOR-01"
+    },
+    {
+     "code_field_value": "FOR-02",
+     "zone_code": "FOR-02"
+    },
+    {
+     "code_field_value": "FOR-04",
+     "zone_code": "FOR-04"
+    },
+    {
+     "code_field_value": "RES-07",
+     "zone_code": "RES-07"
+    },
+    {
+     "code_field_value": "RES-08",
+     "zone_code": "RES-08"
+    },
+    {
+     "code_field_value": "RES-09",
+     "zone_code": "RES-09"
+    }
+   ],
+   "served_codes_covered": 120,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 120,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(120) == features(120)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lac-des-ecorces__flat.2026-08-16T0328Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lac-des-ecorces__flat.2026-08-16T0328Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-lac-des-ecorces.geojson",
+     "served_features": 120,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code=%2779078%27&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:498930ab097c748db75b21c7cc4c86e606a929813bf066247e92f8d9e17362e5",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-16T03:21:51.773Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code=%2779078%27&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = zonage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "lascension",
+   "run_stamp": "20260811T000000Z",
+   "source_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code=%2779050%27&outFields=*&f=geojson",
+   "count_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code%3D%2779050%27&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260811T000000Z-0-69e0df81-acf7-4741-986c-c18acaaec8c5",
+   "http_status": 200,
+   "sha256": "sha256:a3e775eeab76d09a0eb748f47ea5cdec7bf203c9b1f21a43191c852e110bf2b7",
+   "retrieved_at": "2026-08-16T03:21:54.985Z",
+   "storage_key": "raw/zones-vnatif/cas/a3e775eeab76d09a0eb748f47ea5cdec7bf203c9b1f21a43191c852e110bf2b7.bin",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "is_featurecollection": true,
+   "feature_count": 48,
+   "exceeded_transfer_limit": false,
+   "geometry_types": [
+    "MultiPolygon",
+    "Polygon"
+   ],
+   "all_polygonal": true,
+   "nearest_registre_muni": "lascension",
+   "registry_attribution_km": 0.41,
+   "nearest_matches_slug": true,
+   "uev_fields_present": [],
+   "geometry_grain_classified": "zone-polygon",
+   "served_keys": [
+    "normalized/ca-qc-zonage/qc-zonage-lascension.geojson"
+   ],
+   "served_layout": "flat",
+   "served_features": 48,
+   "served_distinct_codes": 48,
+   "served_levels": [
+    "legacy-traceable"
+   ],
+   "served_source_urls": [
+    "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0"
+   ],
+   "served_has_real_v2_proof_block": false,
+   "served_has_collection_v2": false,
+   "field_candidates": [
+    {
+     "field": "zonage",
+     "distinct": 48,
+     "null_count": 0,
+     "overlap_pct": 100
+    },
+    {
+     "field": "idzonage",
+     "distinct": 48,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "type_zone",
+     "distinct": 12,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "date_debut",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "hprl_rglmt",
+     "distinct": 1,
+     "null_count": 0,
+     "overlap_pct": 0
+    },
+    {
+     "field": "reglement",
+     "distinct": 0,
+     "null_count": 48,
+     "overlap_pct": 0
+    },
+    {
+     "field": "piia",
+     "distinct": 0,
+     "null_count": 48,
+     "overlap_pct": 0
+    },
+    {
+     "field": "affect_urb",
+     "distinct": 0,
+     "null_count": 48,
+     "overlap_pct": 0
+    },
+    {
+     "field": "affect_per",
+     "distinct": 0,
+     "null_count": 48,
+     "overlap_pct": 0
+    },
+    {
+     "field": "res_touris",
+     "distinct": 0,
+     "null_count": 48,
+     "overlap_pct": 0
+    },
+    {
+     "field": "date_fin",
+     "distinct": 0,
+     "null_count": 48,
+     "overlap_pct": 0
+    },
+    {
+     "field": "zone_autre",
+     "distinct": 0,
+     "null_count": 48,
+     "overlap_pct": 0
+    }
+   ],
+   "code_field_chosen": "zonage",
+   "zone_code_null_count": 0,
+   "capture_distinct_codes": 48,
+   "sample_codes": [
+    {
+     "code_field_value": "A-II",
+     "zone_code": "A-II"
+    },
+    {
+     "code_field_value": "CAM-VII",
+     "zone_code": "CAM-VII"
+    },
+    {
+     "code_field_value": "A-I",
+     "zone_code": "A-I"
+    },
+    {
+     "code_field_value": "CON-I",
+     "zone_code": "CON-I"
+    },
+    {
+     "code_field_value": "REF-II",
+     "zone_code": "REF-II"
+    },
+    {
+     "code_field_value": "CAM-I",
+     "zone_code": "CAM-I"
+    },
+    {
+     "code_field_value": "CAM-V",
+     "zone_code": "CAM-V"
+    },
+    {
+     "code_field_value": "VIL-IV",
+     "zone_code": "VIL-IV"
+    }
+   ],
+   "served_codes_covered": 48,
+   "served_codes_uncovered": 0,
+   "uncovered_codes": [],
+   "overlap_ratio_pct": 100,
+   "live_count": 48,
+   "live_count_error": null,
+   "count_complete": true,
+   "count_complete_basis": "!exceededTransferLimit(true) && live count(48) == features(48)",
+   "guard_blocks": [],
+   "deposited": true,
+   "replaced_backups": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lascension__flat.2026-08-16T0328Z.geojson"
+   ],
+   "dropped_divergence": [],
+   "dropped_codes": [],
+   "dropped_count": 0,
+   "replaced_backups_listed": [
+    "normalized/ca-qc-zonage/_replaced/qc-zonage-lascension__flat.2026-08-16T0328Z.geojson"
+   ],
+   "readback": [
+    {
+     "key": "normalized/ca-qc-zonage/qc-zonage-lascension.geojson",
+     "served_features": 48,
+     "feature_count_matches_capture": true,
+     "geometry_digest_byte_exact": true,
+     "zone_code_present_all": true,
+     "proof_url": "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code=%2779050%27&outFields=*&f=geojson",
+     "proof_url_matches": true,
+     "proof_sha256": "sha256:a3e775eeab76d09a0eb748f47ea5cdec7bf203c9b1f21a43191c852e110bf2b7",
+     "proof_sha_matches_capture": true,
+     "proof_retrieved_at": "2026-08-16T03:21:54.985Z",
+     "carries_capture_sha256": true,
+     "zone_source_levels": [
+      "documented"
+     ],
+     "zone_source_urls": [
+      "https://sig.mrcal.ca/server/rest/services/EVALUATION/sde_zonage_s/FeatureServer/0/query?where=code=%2779050%27&outFields=*&f=geojson"
+     ],
+     "level_documented": true,
+     "url_all_proof": true,
+     "geometry_grain": [
+      "zone-polygon"
+     ],
+     "grain_uniform_expected": true
+    }
+   ],
+   "readback_ok": true,
+   "statut": "DEPOSITED",
+   "raison": "upgrade legacy-traceable→documented v2 byte-exact ; zone_code = zonage brut (overlap 100%) ; grain=zone-polygon ; 0 code(s) droppé(s)→UNKNOWN ; backup _replaced/ présent"
+  },
+  {
+   "slug": "rouyn-noranda",
+   "run_stamp": "20260811T000000Z",
+   "source_url": "https://carte.rouyn-noranda.ca/arcgis/rest/services/Donnees_ouvertes/Donnees_ouvertes/MapServer/5/query?where=1=1&outFields=*&f=geojson",
+   "count_url": "https://carte.rouyn-noranda.ca/arcgis/rest/services/Donnees_ouvertes/Donnees_ouvertes/MapServer/5/query?where=1%3D1&returnCountOnly=true&f=json",
+   "zone_code_source": "champ résolu par recouvrement ≥90% avec le servi (valeur brute)",
+   "capture_run_id": "zones-20260811T000000Z-0-69e0df81-acf7-4741-986c-c18acaaec8c5",
+   "http_status": 200,
+   "sha256": "sha256:8b7717007a0bbc6ba1f5e5b437cd8682bf8bd93102b01ee69ae56ceb8c569dd3",
+   "retrieved_at": "2026-08-16T03:22:11.096Z",
+   "storage_key": "raw/zones-vnatif/cas/8b7717007a0bbc6ba1f5e5b437cd8682bf8bd93102b01ee69ae56ceb8c569dd3.html",
+   "rehash_ok": true,
+   "cas_key_matches": true,
+   "raw_capture_verified": true,
+   "raw_capture_reason": null,
+   "captured_content": "html-not-json",
+   "statut": "SKIP",
+   "raison": "capture non-JSON (page HTML) — la source ne sert pas de geojson complet sur cette requête (requête pleine étendue tronquée/timeout passerelle en frontal) ; capture complète byte-exact single-payload impossible → hors pipeline standard"
+  }
+ ]
+}

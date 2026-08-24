@@ -1,13 +1,16 @@
 # SPEC — Moteur carto geo (geo-owned) + contrat de consommation DS/immo
 
-> **Statut : DRAFT co-signé DS ↔ geo — OWNER-GATED des deux côtés (aucune implémentation avant
-> ratification). Le §1 (moteur, renderer-neutre) est NON-GELÉ : son gel est gaté sur une DÉMO 3D
-> concrète (cf. §9).** Date : 2026-08-15. Auteur §1 + assemblage autoritaire : geo-archi
-> (`claude:archi`). Sections §2–6 : **DS-authoritative** (conducteur design-system), intégrées ici
-> sans altération ; DS relit ce draft pour cohérence §2–6. Contraintes §8 : **immo** (i-cond, spec 3D
-> committé). Conduite PR→ratification : geo-cond.
+> **Statut : §1 (MOTEUR, renderer-neutre) = CONTRAT v1 GELÉ (stable) — RATIFIÉ OWNER 2026-08-16** sur
+> **gate §9 VERT** (re-run canonique `b67eb222` : §1.5.1 validé 7/7 dans les octets, fixtures DS réelles,
+> F7b, round-trip vp3d-préservé). **Implémentation AUTORISÉE** : Phase 0 (W1–W10) dans le cap **74–118 p-j
+> (ajustable, cf. `CHIFFRAGE_MOTEUR_CARTO_2026-08-15.md §6.1`)** ; tout dépassement → re-check owner. Le gel
+> couvre le **§1** (seam moteur geo-owned) ; **§2–6 restent le ressort DS** (leur cadence de ratification).
+> Date : 2026-08-15 · **gel 2026-08-16**. Auteur §1 + assemblage autoritaire : geo-archi (`claude:archi`).
+> Sections §2–6 : **DS-authoritative** (conducteur design-system), intégrées ici sans altération. Contraintes
+> §8 : **immo** (i-cond, spec 3D committé). Conduite PR→ratification : geo-cond.
 >
-> **Maison autoritaire (geo-owned)** : ce fichier + `ADR-0025` dans `docs/decisions.md` (repo geo).
+> **Maison autoritaire (geo-owned)** : ce fichier + `ADR-0025` (décision) + `ADR-0026` (gel v1) dans
+> `docs/decisions.md` (repo geo).
 > Sources versées : `geo-archi-brief.md` (D1–D8), `geo-archi-proposal.md` (§0/§10 v2),
 > `geo-archi-fable5-review.md` (F1–F8), V0 réconciliée co-signée, entrée-consommateur DS (§A–§E),
 > `docs/spec/SPEC_EVOL_3D_MAPS_2026-08-14.md` (immo).
@@ -20,8 +23,9 @@ Capitaliser la vue géo **mutualisée geo↔immo**. **geo détient le moteur uni
 pur, framework-agnostic, dans le repo geo) ; **N adaptateurs framework MINCES + chrome présentationnel
 = DS-owned** ; **zéro-copie** (un moteur, N adaptateurs sans logique dupliquée). **Le moteur est
 RENDERER-NEUTRE dès la v1** (2D maplibre + 3D Cesium/deck), driven par le spec 3D committé d'immo — PAS
-maplibre-only. Le **gel du seam v1** est **gaté sur une démo 3D concrète** (un renderer 3D réel satisfait
-le contrat couche+caméra neutre), pas sur l'abstraction seule.
+maplibre-only. Le **gel du seam v1 est ACQUIS** (ratifié owner 2026-08-16) : la démo 3D concrète (re-run canonique
+`b67eb222`, deck.gl) a prouvé qu'un renderer 3D réel satisfait le contrat couche+caméra neutre — gel gagné
+sur preuve, jamais figé sur l'abstraction seule.
 
 ## 1. MOTEUR — geo-owned  *(AUTORITAIRE — geo-archi)*
 
@@ -83,6 +87,19 @@ NumberEncoding =
 // forward 3D non-breaking : terrain?, sky?
 ```
 
+> **NOTE forward (non-breaking, doc-only) — branche `vector` SOUS-SPÉCIFIÉE, ratification DIFFÉRÉE owner-gated**
+> *(finding W5 capitalisé — la trace survit à la suppression du NOTE.md du worker)* : (a) `style` et `pmtiles`
+> sont **tous deux optionnels** dans le type gelé, alors que l'intention est **exclusive** (`style|pmtiles`) —
+> le type est plus lâche que l'intention ; (b) la **livraison de l'`attribution`** séparée dans un style externe
+> (`setStyle(url)`) n'a **aucune opération définie** dans le seam ; (c) **PMTiles seul** n'a ni `source-layer` ni
+> définitions de couches (le design PMTiles du repo exige un **style geo-authored**, réf
+> `docs/specs/2026-06-14-geomap-webgl-design.md` déc. 2). **Aucun consommateur v1** (DS = `blank`, immo = `raster`).
+> L'impl 2D (`packages/geo-map-engine/src/basemap-controller.ts`) **fail-close** sur `vector`
+> (`throw "vector basemap not yet supported — pending contract ratification"`, zéro invention). La ratification
+> exacte (état exclusif `style`/`pmtiles`, livraison attribution, projection PMTiles + source-layer/couches) est un
+> **item owner-gated** groupé au prochain sync owner ; **tout changement de `BasemapSpec.vector` = semver major +
+> ADR (ADR-0026)**. Cette note est **doc-only** : elle ne change pas les types gelés.
+
 **1.3.3 Contrat de résolution des tokens (fix Fable F7b — « couleurs figées au switch de thème »)** :
 - **Adaptateur (DS)** : résout les `--st-*` depuis le conteneur thémé (`getComputedStyle`) en une
   `TokenMap: Record<role, resolvedValue>` concrète, passée au moteur **au mount ET à chaque changement de
@@ -129,6 +146,35 @@ renderer en direct (fix F6c).
   « porte 1 »). C'est l'unité que l'écho du viewport contrôlé DS (epsilon+throttle) vise, et que la démo 3D
   (§9) exerce. **Évolution geo-core = release cross-repo** (ownership à confirmer par geo-cond/owner).
 
+### 1.5.1 Convention de zoom normalisé — GRAVÉE *(validée par le spike 3D §9)*
+
+Le spike 3D (deck.gl, `spike/engine-3d-20260815 @931f27a6`) a prouvé le round-trip caméra 2D↔3D à
+**~7×10⁻¹⁵° (état)** / **5,5×10⁻¹² px (projection)** SOUS la convention exacte ci-dessous. §1.5 énonçait
+l'**exigence** ; cette convention en est la **NORME** — geler « il existe un zoom normalisé » sans la graver
+serait une invention (d'où le verdict **ROUGE-constructif** du gate au 1er run). Convention autoritaire :
+
+- **Centre** : CRS84 `[longitude, latitude]` (ordre lon/lat, WGS84, degrés décimaux).
+- **Projection** : WebMercator (EPSG:3857).
+- **Zoom** : taille du monde = **512 × 2^zoom pixels CSS** (tuile 512 px ; identique maplibre 2D et `MapView` deck 3D).
+- **Angles** : `bearing`/`pitch` en **degrés**. Domaines : `bearing ∈ [0, 360)` (normalisé mod 360),
+  `pitch ∈ [0, pitchMax]` — `pitchMax` = **capacité renderer** exposée par le seam (ex. ~60° maplibre 2D).
+- **Équivalence 3D (dérivée déterministe)** : altitude relative **1,5** (unités écran), **FOV = 2·atan(0.5/1.5)** ;
+  le zoom normalisé mappe la distance caméra ↔ emprise au sol.
+- **États neutralisés (hors contrat v1)** : **pas** de terrain, padding, roll, ni wrap horizontal. Leur entrée
+  au contrat est explicite + versionnée (non-breaking, §1.1 principe 4), jamais implicite.
+- **Domaine commun 2D/3D** : les deux renderers partagent `center/zoom/bearing/pitch` dans ces unités → un
+  `GeoViewport` est **transportable 2D↔3D sans changement de contrat**.
+
+**Round-trip = préservation de l'état COURANT (clarification §1.1.5 — correctif du gate).** Au `setRenderer`
+(2D↔3D), le moteur préserve le **viewport COURANT** : si l'appelant a fait `setViewport(vp3d)`, le retour
+vers 2D **conserve vp3d** (pitch/bearing portés par maplibre 2D dans leurs domaines) ; il ne **restaure
+JAMAIS** un viewport antérieur (ex. `initialViewport`). « Round-trip sans perte » (§1.1.5) = l'état courant
+traverse la frontière renderer **sans dérive**, PAS un retour à un état initial. Le test du gate assert
+`vpX → autre renderer → retour → vpX` (à tolérance `1e-7`° / `1 px`), **jamais** `vpX → vp_initial`.
+
+*(Non-gel : cette convention PRÉCISE §1.5, elle ne gèle pas §1. Gel toujours gaté sur le re-run CANONIQUE
+du gate — fixtures DS réelles + F7b theme-switch — vert, puis OK geo-cond→owner. §9.)*
+
 ### 1.6 Frontière `dataviz-core` (arbitrage E.3, tranché)
 Aujourd'hui la choroplèthe passe par `binsToStepExpression` = **expression maplibre** (non portable 3D).
 **Découpage tranché** : `dataviz-core` émet des **bins NEUTRES `{upTo, token}[]`** (la MATH de
@@ -141,14 +187,17 @@ choroplèthe/chrome L5, pas les adaptateurs de base).
 - **E.1** livraison tokens = `TokenMap` résolue (moteur DOM-free), pas callback. **E.2** vocabulaire
   d'encodage = `constant/category/valueStep/valueRamp` (jeu minimal ; extension seulement si une couche
   réelle l'exige). **E.3** frontière dataviz-core (1.6). **E.4** formes 3D `extrusion`/`elevation`
-  optionnelles & non-breaking (forme arbitrée par geo). **E.5** zoom normalisé (1.5).
+  optionnelles & non-breaking (forme arbitrée par geo). **E.5** zoom normalisé — convention **GRAVÉE en §1.5.1**
+  (validée 7/7 au gate §9, `b67eb222`).
 - **Fable** : F1/F3 (moteur écrit UNE fois, greenfield, testé 1× contre une fausse map — réponse au risque
   « tests sans GL ») ; F2 (geo-core, 1.5) ; F6 (namespaces, 1.4) ; F7 (viewport/thème/setStyle, 1.3.3+1.4).
   F4/F5/F8 relèvent des sections DS (§2/§4) et du resourcing (§7).
 
 ### 1.8 Gel
-Le §1 **n'est pas gelé** tant que la **démo 3D concrète** (§9) n'est pas verte. On ne fige pas un contrat
-renderer-neutre qu'on n'a pas prouvé satisfiable en 3D (anti-généralisation-prématurée).
+Le §1 est **GELÉ (contrat v1 stable)** depuis **2026-08-16**, **ratifié owner**. La **démo 3D concrète** (§9)
+est VERTE (re-run canonique `b67eb222`, deck.gl), prouvant le contrat renderer-neutre satisfiable en 3D — le
+gel a été **gagné sur preuve** (anti-généralisation-prématurée respectée), jamais figé sur l'abstraction seule.
+Toute évolution du seam gelé = **nouvelle version (semver) + ADR**, jamais un changement silencieux. Réf : ADR-0026.
 
 ---
 
@@ -213,9 +262,10 @@ immo a ratifié (owner) « module carto GEO-OWNED, DS-compliant » ; réfs `SPEC
   annotations lot/zone préservées au breakpoint ET au switch de mode.
 - **C5 gate migration précisé** : inventaire breaking 0.1→0.5 + coût upgrade `GeoView.svelte` (livrable Gate A).
 
-## 9. Jalon de gel : DÉMO 3D concrète (geo-owned)
+## 9. Jalon de gel : DÉMO 3D concrète (geo-owned) — ✅ GATE PASSÉ (VERT, 2026-08-16)
 
-**Le gel de §1 est gaté sur cette démo.** Barre (geo-owned : moteur + geo-core) : un **spike minimal**
+**Statut : gate ATTEINT — §1 GELÉ (ratifié owner, ADR-0026).** *(La barre ci-dessous est conservée pour référence historique.)*
+**Le gel de §1 était gaté sur cette démo.** Barre (geo-owned : moteur + geo-core) : un **spike minimal**
 prouvant qu'un renderer 3D **réel** (Cesium OU deck.gl) :
 1. **consomme le modèle de couche renderer-neutre** (§1.3.1) — un `GeoLayerSpec` avec `ColorEncoding` +
    `TokenMap` rend en 3D via le compile-par-renderer du moteur (tokens→paint 3D), sans expression maplibre ;
@@ -223,6 +273,22 @@ prouvant qu'un renderer 3D **réel** (Cesium OU deck.gl) :
    changement de contrat**, dans les unités de zoom normalisé.
 Démo verte ⟹ le contrat §1 est prouvé satisfiable en 3D ⟹ **gel §1** ⟹ démarrage des lots §7. Démo rouge ⟹
 §1 corrigé avant tout gel (jamais de figement sur l'abstraction seule).
+
+**Historique du gate.** *1er run (2026-08-16, deck.gl, `spike/engine-3d-20260815 @931f27a6`)* = **ROUGE-constructif** :
+satisfiabilité 3D PROUVÉE — encodages neutres → accessors deck.gl (**zéro expression maplibre**), rôles via
+TokenMap, extrusion, render WebGL2 réel, round-trip caméra 2D↔3D à **~7×10⁻¹⁵°** — MAIS §1.5 « zoom normalisé »
+était sous-spécifié (convention à inventer). **Correction appliquée** : convention gravée en **§1.5.1** + sémantique
+round-trip clarifiée (préservation de l'état courant). Réserve du 1er run : données synthétisées (fixtures DS non
+lues, F7b non exercé). *Re-run CANONIQUE requis avant gel* : fixtures DS réelles (`geo-spike-fixtures.json`) +
+**F7b** (`setTokens` light→dark) + assertion round-trip corrigée DS (vp3d→2D→3D→vp3d).
+*2e run CANONIQUE (2026-08-16, deck.gl, `spike/engine-3d-rerun-20260816 @b67eb222`)* = **VERT** : §1.5.1
+validé **7/7** dans les octets (mesuré : 512·2^zoom=32768px@z6, FOV 0.6435 rad, pitchMax 60 refuse 61, sans
+terrain/padding/roll/wrap), **fixtures DS réelles LUES** (`import geo-spike-fixtures.json`, zéro synthèse),
+**F7b PROUVÉ** (framebuffer `2a6dd3ee→fead4a30`, `updateTriggers`), **round-trip vp3d-préservé** + assertion
+négative, render WebGL2 réel (4 frames, 25 pické), round-trip **7.1e-15° / 5.5e-12 px**, zéro expression
+maplibre. *Verify-the-verifier geo-archi confirmé dans le code (`data.ts` import, `deck-compiler.ts`).*
+⟹ **gate ATTEINT** ⟹ **GEL §1 RATIFIÉ OWNER (2026-08-16)** + cap 74–118 p-j ratifié ⟹ démarrage Phase 0 (§7).
+**§1 = contrat v1 GELÉ** (cf. §1.8, ADR-0026).
 
 ---
 

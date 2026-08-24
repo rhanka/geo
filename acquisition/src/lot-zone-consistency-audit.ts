@@ -876,3 +876,6 @@ if (invokedDirectly) {
 }
 
 export { auditCity, type CityReport };
+// Helpers exposés pour la sonde de quantification A/B (col-2 centroïde vs
+// aire-majorité) — même méthode EXACTE que le KPI, zéro divergence.
+export { loadFC, polygonsOf, lotCentroid, inCode, assignedCode, type Poly, type Feature };

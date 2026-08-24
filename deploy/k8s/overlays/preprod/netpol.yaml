@@ -1,0 +1,77 @@
+# NetworkPolicies du SERVING geo-api (ns geo-preprod) — isolation A2 (SPEC §7 A2, 2 mécanismes).
+# Le netpol du serving impose le mécanisme (1) : egress default-deny + DNS + S3-BHS:443 → le
+# serving n'atteint PAS la prod in-cluster. Le mécanisme (2) cred-scoping = le serving ne monte
+# QUE le cred dest (patch-serving). Valeurs réseau = poc-k8s (autorité réseau).
+# podSelector = `geo-api` (label de base ; le ns geo-preprod différencie du prod).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: geo-api-serving
+  labels:
+    app.kubernetes.io/name: geo-api
+    app.kubernetes.io/part-of: geo
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: geo-api
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: traefik
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+      ports:
+        - protocol: TCP
+          port: 8787
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # S3-BHS:443 uniquement (s3.bhs.io.cloud.ovh.net) — /32 épinglé par poc-k8s.
+    - to:
+        - ipBlock:
+            cidr: 54.39.60.208/32
+      ports:
+        - protocol: TCP
+          port: 443
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-immo-preprod-to-geo-api
+  labels:
+    app.kubernetes.io/name: geo-api
+    app.kubernetes.io/part-of: geo
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: geo-api
+  policyTypes:
+    - Ingress
+  ingress:
+    # immo-preprod → geo-api:8787 (§6 : immo-preprod consomme geo-preprod, jamais prod).
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: radar-immobilier-preprod
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: radar-immobilier
+      ports:
+        - protocol: TCP
+          port: 8787

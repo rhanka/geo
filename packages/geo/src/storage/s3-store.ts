@@ -14,6 +14,7 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 
+import { ovhSafeS3ClientOptions } from "./s3-client-config.js";
 import type { ByteStream, PutOptions, Store } from "./store.js";
 
 /** Connection + addressing settings for an {@link S3Store}. */
@@ -161,7 +162,9 @@ function buildClient(config: S3StoreConfig): S3Client {
       secretAccessKey: config.secretAccessKey,
     };
   }
-  return new S3Client(opts);
+  // OVH/Scaleway rejettent l'aws-chunked que le SDK v3 active par défaut →
+  // options sûres partagées (write-safe). Cf. s3-client-config.ts.
+  return new S3Client({ ...opts, ...ovhSafeS3ClientOptions() });
 }
 
 /** Trim leading/trailing slashes from a prefix; `undefined` → empty. */
