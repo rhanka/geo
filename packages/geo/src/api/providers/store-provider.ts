@@ -32,6 +32,7 @@ import {
   validateFeatureCollectionStream,
 } from "./collection-loader.js";
 import type {
+  CoherenceInfo,
   CollectionInfo,
   FeatureProvider,
   ItemsQuery,
@@ -40,10 +41,13 @@ import type {
   ServedFeature,
 } from "../provider.js";
 import { geometryIntersectsBBox } from "../geo-util.js";
-import type { ByteStream, Store } from "../../storage/index.js";
+import { isCanonicalGeojsonKey, servedCollectionId, stemOf, type ByteStream, type Store } from "../../storage/index.js";
 
 const GEOJSON_SUFFIX = ".geojson";
 const META_SUFFIX = ".meta.json";
+/** Dataset-level freshness manifest at the data root (§4.1). Store key is
+ * relative to the store's prefix, i.e. `<GEO_DATA_URI>/coherence.json`. */
+const COHERENCE_KEY = "coherence.json";
 const DEFAULT_CRS = "http://www.opengis.net/def/crs/OGC/1.3/CRS84";
 const INDEX_CONCURRENCY = 32;
 
@@ -63,6 +67,8 @@ export class StoreProvider implements FeatureProvider {
   readonly #prefix: string;
   /** Resolves once keys have been listed and collection metadata indexed. */
   #indexed: Promise<Map<string, StoreCollectionEntry>> | undefined;
+  /** Dataset-level coherence manifest (freshness + completeness), set by {@link #index}. */
+  #coherence: CoherenceInfo | undefined;
 
   /**
    * @param store  The key→bytes object store to read from.
@@ -84,6 +90,9 @@ export class StoreProvider implements FeatureProvider {
   }
 
   async #index(): Promise<Map<string, StoreCollectionEntry>> {
+    // Reset first so an unreachable store yields undefined coherence, matching
+    // its zero-collection result (no stale watermark survives a failed refresh).
+    this.#coherence = undefined;
     const map = new Map<string, StoreCollectionEntry>();
     let keys: string[];
     try {
@@ -93,7 +102,14 @@ export class StoreProvider implements FeatureProvider {
       return map;
     }
 
-    const geojsonKeys = keys.filter((k) => k.endsWith(GEOJSON_SUFFIX)).sort();
+    // Read the dataset-level manifest once, before building infos, so every
+    // collection carries the same watermark (§4.1). Absent → undefined.
+    this.#coherence = parseCoherence(await this.#getText(COHERENCE_KEY));
+
+    // Index-discipline (ADR-0027) : n'indexe QUE les clés canoniques servies —
+    // jamais les backups/prebackups/sidecars qu'un `list()` récursif remonte.
+    // Filtre sur la CLÉ BRUTE, avant toute dérivation `datasetId` (rejet par chemin).
+    const geojsonKeys = keys.filter(isCanonicalGeojsonKey).sort();
     const keySet = new Set(keys);
     const entries = await mapLimit(geojsonKeys, INDEX_CONCURRENCY, (geojsonKey) =>
       this.#indexOne(geojsonKey, keySet),
@@ -115,7 +131,7 @@ export class StoreProvider implements FeatureProvider {
     return {
       geojsonKey,
       meta,
-      info: buildCollectionInfo(stem, meta),
+      info: buildCollectionInfo(stem, meta, this.#coherence?.coherenceId),
     };
   }
 
@@ -204,6 +220,12 @@ export class StoreProvider implements FeatureProvider {
     }
     return matched;
   }
+
+  /** Dataset-level coherence manifest, or `undefined` when no manifest exists. */
+  async getCoherence(): Promise<CoherenceInfo | undefined> {
+    await this.#ensureIndexed();
+    return this.#coherence;
+  }
 }
 
 async function* oneChunk(bytes: Uint8Array): ByteStream {
@@ -228,8 +250,13 @@ function featureKey(feature: ServedFeature, index: number): string {
 }
 
 /** Build collection metadata without parsing the potentially-large GeoJSON body. */
-function buildCollectionInfo(stem: string, meta: CollectionMeta | undefined): CollectionInfo {
-  const id = meta?.datasetId ?? stem;
+function buildCollectionInfo(
+  stem: string,
+  meta: CollectionMeta | undefined,
+  coherenceId: string | undefined,
+): CollectionInfo {
+  // Served id = the ONE shared rule (datasetId ?? stem) — same as the sync stamp.
+  const id = servedCollectionId(stem, meta?.datasetId);
   const license: License = resolveLicense(meta?.license);
   return {
     id,
@@ -239,14 +266,40 @@ function buildCollectionInfo(stem: string, meta: CollectionMeta | undefined): Co
     ...(meta?.rights ? { rights: meta.rights } : {}),
     crs: meta?.crs ?? DEFAULT_CRS,
     count: meta?.count ?? 0,
+    ...(coherenceId !== undefined ? { coherenceId } : {}),
   };
 }
 
-/** The `<name>` stem of a `.geojson` store key (basename without suffix). */
-function stemOf(geojsonKey: string): string {
-  const slash = geojsonKey.lastIndexOf("/");
-  const base = slash === -1 ? geojsonKey : geojsonKey.slice(slash + 1);
-  return base.slice(0, -GEOJSON_SUFFIX.length);
+/**
+ * Extract the dataset-level manifest from a `coherence.json` body
+ * (`{ coherence_id, served_count, generated_at, prod_watermark }`, §4.1/§7 A5).
+ * Each field is taken only when well-typed; a malformed/absent body yields
+ * `undefined`, and a bad field is dropped — so the served value is omitted and a
+ * consumer's freshness/completeness gate fails closed rather than passing blind.
+ */
+function parseCoherence(text: string | undefined): CoherenceInfo | undefined {
+  if (text === undefined) return undefined;
+  let obj: unknown;
+  try {
+    obj = JSON.parse(text);
+  } catch {
+    return undefined;
+  }
+  if (typeof obj !== "object" || obj === null) return undefined;
+  const raw = obj as { coherence_id?: unknown; served_count?: unknown; set_hash?: unknown };
+  const info: CoherenceInfo = {};
+  if (typeof raw.coherence_id === "string" && raw.coherence_id.length > 0) {
+    info.coherenceId = raw.coherence_id;
+  }
+  if (typeof raw.served_count === "number" && Number.isInteger(raw.served_count) && raw.served_count >= 0) {
+    info.servedCount = raw.served_count;
+  }
+  if (typeof raw.set_hash === "string" && raw.set_hash.length > 0) {
+    info.setHash = raw.set_hash;
+  }
+  return info.coherenceId === undefined && info.servedCount === undefined && info.setHash === undefined
+    ? undefined
+    : info;
 }
 
 type CollectionLayout = "flat" | "nested";

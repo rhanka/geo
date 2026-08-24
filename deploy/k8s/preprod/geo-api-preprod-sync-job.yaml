@@ -1,0 +1,136 @@
+# Job geo-preprod-sync + son NetworkPolicy — jambe geo du cycle de récup prod→preprod
+# (§5/§6.1). Valeurs réseau/secrets = poc-k8s (approuvé) ; committé après OK. Deux docs :
+#   1. allow-geo-sync-egress : le Job (SEULE jambe autorisée à joindre la prod) → DNS +
+#      S3-BHS:443 + prod-API EN INTERNE (ns geo, pod geo-api:8787 — le hairpin vers l'IP
+#      externe du LB 51.79.100.177/32 NE ROUTE PAS depuis un pod du même cluster ; le runner
+#      lit /collections pour served_count+set_hash fail-closed). Le netpol du SERVING ne
+#      couvre PAS ce pod (podSelector distinct).
+#   2. Job geo-preprod-sync : lance le runner (une image, deux rôles — cf. Dockerfile).
+#
+# INVARIANTS socle : SOURCE = cred read-only (S3_SOURCE_* ⇒ get→put, sens-unique) ; DEST =
+# geo-s3-credentials-preprod ; le SERVING ne monte QUE le dest (critère b) ; fail-closed
+# (refus de stamper sans served_count+set_hash).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-geo-sync-egress
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/name: geo-preprod-sync
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: preprod
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: geo-preprod-sync
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # S3-BHS (source read + dest write) — inchangé.
+    - to:
+        - ipBlock:
+            cidr: 54.39.60.208/32 # S3 BHS (s3.bhs.io.cloud.ovh.net)
+      ports:
+        - protocol: TCP
+          port: 443
+    # prod geo-API lu EN INTERNE. Le hairpin vers l'IP externe du LB (51.79.100.177/32:443)
+    # NE ROUTE PAS depuis un pod du même cluster (confirmé run sync 2026-08-20 : PUT DEST OK
+    # mais prod-API injoignable → fail-closed exit 3). Cross-ns vers le pod geo-api (ns geo),
+    # containerPort 8787 (svc 80 → targetPort http=8787). Le runner vise le svc:80
+    # (--prod-api http://geo-api.geo.svc.cluster.local:80) → DNAT vers pod:8787 → la netpol
+    # matche le pod:8787. Read-only GET /collections (served_count+set_hash). Egress sync-only.
+    # NB côté ns geo : si ingress default-deny sur geo-api, autoriser l'ingress depuis
+    # geo-preprod/geo-preprod-sync:8787 (domaine réseau poc-k8s).
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: geo
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: geo-api
+      ports:
+        - protocol: TCP
+          port: 8787
+        - protocol: TCP
+          port: 80 # belt-and-suspenders si le CNI évalue le port PRÉ-DNAT (service port)
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-preprod-sync
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/name: geo-preprod-sync
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: preprod
+spec:
+  backoffLimit: 2
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geo-preprod-sync
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/instance: preprod
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: geo-registry-pull
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: sync
+          # UNE image, deux rôles (cf. Dockerfile : embarque scripts/ + packages/geo/dist,
+          # build à l'image-build → `node scripts/...`, zéro build/clone in-cluster).
+          # ⚠ DOIT être le build POST-MERGE de geo-api (contient CE PR : geo-preprod-sync.mjs
+          # + packages/geo/dist/preprod). f8b152b1 (07-08) est ANTÉRIEUR → ne les contient PAS.
+          # Digest minté après merge (docker-publish, domaine release socle) — cf. serving.
+          image: REPLACE_WITH_POST_MERGE_GEO_DIGEST
+          workingDir: /app
+          # --prod-api INTERNE (svc geo-api ns geo) : évite le hairpin LB externe (cf. netpol).
+          command: ["node", "scripts/geo-preprod-sync.mjs", "--coherence-id", "$(COHERENCE_ID)", "--prod-api", "http://geo-api.geo.svc.cluster.local:80"]
+          env:
+            # coherence_id = point de cohérence PARTAGÉ cross-repo immo (§6.1), injecté par
+            # poc-k8s à la création du Job dans la fenêtre gatée (jamais fabriqué localement).
+            - name: COHERENCE_ID
+              value: REPLACE_WITH_SHARED_COHERENCE_ID
+            # SOURCE read-only prod → remap S3_SOURCE_* (présence de S3_SOURCE_ACCESS_KEY ⇒ get→put).
+            - name: S3_SOURCE_ENDPOINT
+              valueFrom: { secretKeyRef: { name: geo-s3-credentials-prod-ro, key: S3_ENDPOINT } }
+            - name: S3_SOURCE_REGION
+              valueFrom: { secretKeyRef: { name: geo-s3-credentials-prod-ro, key: S3_REGION } }
+            - name: S3_SOURCE_ACCESS_KEY
+              valueFrom: { secretKeyRef: { name: geo-s3-credentials-prod-ro, key: S3_ACCESS_KEY } }
+            - name: S3_SOURCE_SECRET_KEY
+              valueFrom: { secretKeyRef: { name: geo-s3-credentials-prod-ro, key: S3_SECRET_KEY } }
+          # DEST write preprod (S3_ENDPOINT/S3_REGION/S3_ACCESS_KEY/S3_SECRET_KEY).
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials-preprod
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: "1"
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL

@@ -527,6 +527,92 @@ démo 3D verte → **gel §1** → (L1–L4 adaptateurs de base) ‖ (refactor `
 owner-gated) → L5 chrome/choroplèthe → L6 migration immo (fetch-out élargi). Co-signé DS ↔ geo ↔ immo
 (i-cond). Naming/shell/gates : sections §2–6 DS-authoritative du SPEC.
 
+## ADR-0026 — **Gel du seam moteur carto v1 (renderer-neutre)** · accepted (ratifié owner) · 2026-08-16
+
+**Contexte.** ADR-0025 a décidé un moteur carto geo-owned **renderer-neutre** (`SPEC_GEO_MAP_ENGINE.md §1`),
+laissé **NON-GELÉ**, son gel **gaté sur une démo 3D concrète** (§9) — on ne fige pas un contrat renderer-neutre
+non prouvé satisfiable en 3D.
+
+**Décision.** Le **contrat §1 (seam moteur v1) est GELÉ (stable)**, ratifié owner. Le gel a été **gagné sur
+preuve** au gate §9 :
+- *1er run* `spike/engine-3d-20260815 @931f27a6` (deck.gl) = **ROUGE-constructif** : satisfiabilité 3D prouvée,
+  mais §1.5 « zoom normalisé » sous-spécifié → convention **gravée en §1.5.1** (main `ce1edb99`) + sémantique
+  round-trip clarifiée (préservation de l'état courant).
+- *Re-run canonique* `spike/engine-3d-rerun-20260816 @b67eb222` (deck.gl) = **VERT** : §1.5.1 validé **7/7 dans
+  les octets** (mesuré : 512·2^zoom=32768px@z6, FOV 0.6435 rad, pitchMax 60 refuse 61, sans terrain/padding/roll/wrap),
+  **fixtures DS réelles lues** (import, zéro synthèse), **F7b prouvé** (`setTokens` light→dark, framebuffer
+  `2a6dd3ee→fead4a30`), **round-trip vp3d-préservé** + assertion négative, render WebGL2 réel (4 frames, 25 pické),
+  round-trip 7.1e-15° / 5.5e-12 px, **zéro expression maplibre**. Verify-the-verifier geo-archi confirmé dans le
+  code (`data.ts` import, `deck-compiler.ts`).
+
+**Conséquences.**
+- **Implémentation Phase 0 AUTORISÉE** : build moteur (W1–W10) dans le **cap 74–118 p-j** (ajustable, cf.
+  `CHIFFRAGE_MOTEUR_CARTO_2026-08-15.md §6.1`) ; tout dépassement → **re-check owner** (anti-chèque-en-blanc).
+- **DS démarre L1–L6** contre le contrat gelé (mock conforme au contrat gelé possible) ; **immo** planifie la migration.
+- **Toute évolution du seam gelé = nouvelle version (semver) + ADR**, jamais un changement silencieux.
+- Le gel couvre le **§1** (seam moteur geo-owned) ; **§2–6 restent le ressort DS** (cadence de ratification propre).
+
+**Réf.** `SPEC_GEO_MAP_ENGINE.md` §0/§1/§1.5.1/§1.8/§9 ; spike `931f27a6` / re-run `b67eb222` ;
+`CHIFFRAGE_MOTEUR_CARTO_2026-08-15.md §6.1` ; ADR-0025.
+
+## ADR-0027 — **geo-preprod : tier de serving preprod (namespace-par-env, S3-only, bucket séparé, promotion same-digest, coherence_id servi, parité miroir-plein)** · accepted (ratifié owner) · 2026-08-18
+
+**Contexte.** Le dossier §6/§6.1 (owner 2026-08-15) acte un **tier preprod joint cross-repo** (immo+geo+poc-k8s) :
+immo-preprod consomme **geo-preprod** (jamais geo-prod), au même point de cohérence, alimenté par un cycle de récup
+prod→preprod **assaini (Loi 25), sens-unique, idempotent**. geo n'avait **pas de preprod de serving**. Cadrage WP6 =
+`SPEC_GEO_PREPROD_SERVING_2026-08-15.md`, groundé sur faits LIVE socle (`geo-preprod-infra-facts.mjs @203bb250`, kubectl
+lecture seule).
+
+**Décision (propriétaire, 2026-08-18 — « ratifie, GO build gaté »).** Le cadrage geo-preprod est **ratifié**. Invariants gravés :
+1. **Namespace-par-env** — ns dédié `geo-preprod` (RBAC/secrets/quota isolés ; épouse la séparation immo-preprod↔geo-preprod du §6).
+2. **Serving S3-only** — geo-api sert la surface OGC depuis **S3 seul** (`GEO_DATA_URI`) ; le **postgis n'est PAS dans le chemin de serving** → tranche preprod = **1 pod geo-api-preprod** (0 postgis, 0 PVC).
+3. **Bucket S3 séparé (OVH-BHS)** — geo-preprod écrit dans un **bucket preprod distinct** ; le sens-unique §6.1 est imposé au **niveau credential/bucket** (aucune cred preprod n'écrit le bucket prod `sentropic-geo`), **pas** par policy de préfixe (write-deny par préfixe **non garanti** sur OVH S3, `unknown` — probe documentaire différée, sans effet sur la décision).
+4. **Promotion « même-digest » (registre-agnostique)** — l'invariant = la promotion preprod→prod **re-pointe le MÊME digest** (jamais rebuild), **indépendant du registre**. **Cible = GHCR-by-digest** (canal unique, promotion littérale). **Interim bring-up = le digest du BUILD POST-MERGE** (docker-publish depuis main après implémentation de CE cadrage) — il embarque l'expo `coherence_id/served_count/set_hash` + le runner de sync ; **PAS `f8b152b1`** (build 07-08 **antérieur** à l'impl → expo absente ⇒ gate INERTE + Job ENOENT). `ghcr.io/rhanka/geo-api` n'existe pas encore (job GHCR gaté, jamais publié — socle 2026-08-18) → interim = build post-merge (Scaleway) ; **follow-up = publier geo-api sur GHCR** (PR distincte post-kubeconfig) → bascule GHCR-by-digest. Manifests portant `REPLACE_WITH_POST_MERGE_GEO_DIGEST` (résolu à l'apply). geo-preprod = pull secret `geo-registry-pull` (interim) → GHCR (cible).
+5. **coherence_id servi (§4.1)** — **watermark unique dataset-level** stampé par le sync (`normalized-preprod/coherence.json`), **exposé par geo-api en OGC top-level** sur `/collections/<id>` **et** landing `/` (chemin confirmé contre la sortie OGC réelle, zéro collision), lu THROUGH l'API par la gate de fraîcheur (un pod stale ÉCHOUE) — conditionnel/rétrocompat prod (absent → omis → fail-closed).
+6. **Parité de serving = MIROIR PLEIN data-driven (invariant §4/§7)** — geo-preprod sert **EXACTEMENT le set que geo-prod sert aujourd'hui** : **miroir complet** du préfixe `normalized/` (les 2 layouts plat + sous-dossier), **PAS une whitelist de familles ni un sous-ensemble**. Set réel groundé geo-socle = **3885 collections**, dont **~1088 « slug-nu » de ville** (`abercorn`, `acton-vale`…, même structure OGC) **HORS** des familles de conso immo → une parité par whitelist **sous-servirait ~1088 collections**. Les familles immo (`qc-zonage-<slug>` + variantes suffixées `-arcgis`/`-rcu`/`-affectations-arcgis`… `startsWith`, `qc-lots-<slug>`, `qc-zonage-norms-*`, `qc-tod-<slug>`, `qc-zoning-events` ; i-cond `ogc-pull.ts:689`) sont **ILLUSTRATIVES** (exemples de conso), **PAS la définition de parité**. Le sync **miroir** le set complet ; la gate coherence_id fait un **count/set-match vs prod** (set complet) — un slug-nu manquant **échoue** la gate, sinon = **faux vert**. *(Familles = conso immo i-cond ; set-complet 3885/~1088-slug-nu = serving prod vérifié geo-socle.)*
+
+**Conséquences.**
+- **Build gaté AUTORISÉ** : geo-socle construit geo-preprod (ns/deploy/ingress/secrets/sync/refresh) ; poc-k8s pose la topologie du tier joint (§6) + le chargement cross-repo ; **déploiement PROD reste owner** (KUBE_CONFIG_DATA).
+- **Addition geo-api** (petite, `packages/geo`) : exposer `coherence_id` top-level (lire le manifeste au build d'index) — **preneur = socle**, ordonnancé geo-cond ; **revue geo-archi** contre §4.1. Gate socle (`geo-verify-served-collections.mjs`) + refresh (`geo-preprod-refresh.mjs`) déjà livrés+committés, fail-closed en attendant.
+- **Sens-unique + Loi 25** : jambe geo = copie idempotente S3→S3 (données servies **publiques**) ; l'assainissement PII reste **immo-side** (`caveat` §9 : vérifier qu'aucune couche geo-servie n'embarque de PII d'origine immo).
+- **Reste externe** : enregistrement **DNS** `api.preprod.geo.sent-tech.ca` (owner/infra) ; probe prefix-deny OVH (documentaire, différée).
+
+**Réf.** `SPEC_GEO_PREPROD_SERVING_2026-08-15.md` (§3 Q1–Q6, §4/§4.1, §5, §7) ; immo `DOSSIER_DECISION_PREPROD_2026-08-15.md §6/§6.1` ; faits socle `geo-preprod-infra-facts.mjs @203bb250` ; gate/refresh socle `@349c3da5` ; parité conso immo `ogc-pull.ts:689` (i-cond).
+
+## ADR-0028 — **geo adopte le plan de déploiement plateforme (CD push-CI : main→preprod auto, tag→prod same-digest)** · accepted (ratifié owner, fork O1) · 2026-08-19
+
+**Contexte.** L'owner a **gelé le déploiement manuel** geo-preprod et demandé l'adoption du **CD plateforme** aligné
+immo/sentropic (`ARCH-17`/`BR-55`, DV2 « un tier non-prod main-aligned auto-CD »). Le **fork de canal** (résidence
+Loi-25) a été tranché **O1 = push-CI ratifié tel quel** (pas de GitOps, pas de re-ratification). Design d'adoption =
+`DESIGN_GEO_DEPLOYMENT_PLANE_ADOPTION_2026-08-19.md` (#230). Le substrat ADR-0027 (manifests preprod committés +
+invariant same-digest + `PREPROD_ACCEPTANCE`) était prêt → **adoption, zéro rework**.
+
+**Décision (propriétaire, 2026-08-19).** geo **adopte le plan de déploiement plateforme (mécanisme B, push-CI apply)** :
+1. **`main` → deploy AUTO preprod** — job CI `deploy-preprod` (kubeconfig SA least-priv ns-scopé → `kubectl apply -k
+   deploy/k8s/overlays/preprod`, digest post-merge résolu par `kustomize edit set image`, self-gate coherence/complétude).
+2. **tag → promotion prod** — `release-prod` off-main, **same-digest** (le digest preprod-validé, jamais rebuild ;
+   ADR-0027 §8), **gaté BR-55d** (plateforme-pending) + `PREPROD_ACCEPTANCE` (self-gate + UAT owner + orthogonalité cross-repo).
+3. **Manifests = Kustomize** `deploy/k8s/base` + `overlays/{preprod,prod}` (fin des manifests plats-par-env pour la ligne servie).
+4. **Secrets = SealedSecrets** (controller bitnami installé) committés dans l'overlay — **évolution du modèle secrets** :
+   d'« éphémère minté-en-fenêtre » (ADR-0027) → « minté 1× → scellé (`kubeseal`) → committé → long-vécu + rotation » ;
+   **scoping A2 préservé** (poc-k8s mint RW-dest/RO-source puis scelle), **ferme le gap « creds live-only »**.
+
+**Supersede le volet MANUEL de l'ADR-0027 §8** (l'apply manuel devient le pipeline CD) ; l'**invariant same-digest est
+PRÉSERVÉ** (désormais enforced par la CD). Les autres invariants ADR-0027 (namespace-par-env, S3-only, bucket séparé,
+coherence_id servi, parité miroir-plein, isolation A2) sont **inchangés**.
+
+**Conséquences.**
+- **Ownership** : geo = **workloads + config** (Kustomize, job CI, ADR, structure SealedSecrets) ; **poc-k8s** = tenant
+  (ns/quota/RBAC SA least-priv, réf **immo `11-ci-deployer-preprod-rbac.yaml`**) + minting/scellement des creds + cert
+  sealed-secrets ; **owner** = GH secret `KUBE_CONFIG_DATA_PREPROD` + **DNS** `api.preprod.geo.sent-tech.ca`.
+- **Chantiers** : **C1** Kustomize base+overlays (cet ADR) · **C2** job CI `deploy-preprod` + cible Makefile · **C3**
+  SealedSecrets · **C4** promotion prod (attend **BR-55d**). Coût ~6–11 p-j (preprod C1+C2+C3 maintenant).
+- **Anti-invention** : adoption d'un **standard ratifié** (pas greenfield) ; conventions confirmées contre la réf **immo
+  committée** (SA/RBAC, secret name) ; le Job de récup (`geo-preprod-sync`, §6.1) reste **gated-window poc-k8s** (hors CD auto).
+
+**Réf.** `DESIGN_GEO_DEPLOYMENT_PLANE_ADOPTION_2026-08-19.md` (#230) ; ADR-0027 §8 ; standard s-archi `ARCH-17`/`BR-55`
+(`SPEC_DECISION_DEPLOYMENT_PLANE.md`, hors repo geo) ; réf RBAC immo `radar-immobilier:deploy/k8s/11-ci-deployer-preprod-rbac.yaml`.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
