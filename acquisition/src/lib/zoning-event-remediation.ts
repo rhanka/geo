@@ -31,6 +31,10 @@ export const ZONING_EVENT_OWNER_GO_CONTRACT =
   "zoning-event-remediation-owner-go/v1" as const;
 export const ZONING_EVENT_REMEDIATION_DRY_RUN_CONTRACT =
   "zoning-event-remediation-dry-run/v1" as const;
+export const ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT =
+  "zoning-event-pv-link-receipt/v1" as const;
+export const ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT =
+  "zoning-event-extraction-exhaustion-receipt/v1" as const;
 
 export type Sha256Ref = `sha256:${string}`;
 
@@ -75,7 +79,15 @@ export interface ZoningEventRemediationEvidence {
   event_id: string;
   /** When present and valid, LINK always wins even if exhaustion is also supplied. */
   link_source?: ZoningEventLinkSource;
+  link_mapping?: ZoningEventLinkMapping;
   exhaustion?: ZoningEventExhaustionProof;
+}
+
+export interface ZoningEventLinkMapping {
+  /** Verbatim current event payload value; never derived from the PV number. */
+  target_bylaw_numero: string;
+  /** Exact new-regulation number confirmed by the generic PV detector. */
+  detector_reglement_numero: string;
 }
 
 interface RemediationPlanItemBase {
@@ -91,6 +103,7 @@ interface RemediationPlanItemBase {
 export interface ZoningEventLinkPlanItem extends RemediationPlanItemBase {
   action: "link";
   source: ZoningEventLinkSource;
+  mapping: ZoningEventLinkMapping;
 }
 
 export interface ZoningEventRetractPlanItem extends RemediationPlanItemBase {
@@ -126,11 +139,26 @@ export interface ZoningEventOwnerGo {
   contract: typeof ZONING_EVENT_OWNER_GO_CONTRACT;
   via: "geo-cond";
   owner_go_direct: true;
+  owner_instance: string;
   inventory_sha256: Sha256Ref;
   dry_run_sha256: Sha256Ref;
   h2a_envelope_id: string;
   h2a_session_id: string;
 }
+
+export interface VerifiedDirectOwnerGo {
+  verified: true;
+  via: "geo-cond";
+  owner_instance: string;
+  inventory_sha256: Sha256Ref;
+  dry_run_sha256: Sha256Ref;
+  h2a_envelope_id: string;
+  h2a_session_id: string;
+}
+
+export type DirectOwnerGoVerifier = (
+  ownerGo: ZoningEventOwnerGo,
+) => Promise<VerifiedDirectOwnerGo>;
 
 function nonEmpty(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
@@ -152,9 +180,11 @@ function assertIsoDate(value: string, label: string): void {
 }
 
 function assertIso(value: string, label: string): void {
-  if (!nonEmpty(value) || Number.isNaN(Date.parse(value))) {
+  const match = /^(\d{4}-\d{2}-\d{2})(?:T\d{2}:\d{2}:\d{2}(?:\.\d{1,9})?(?:Z|[+-]\d{2}:\d{2}))?$/.exec(value);
+  if (!match || Number.isNaN(Date.parse(value))) {
     throw new Error(`${label}: date ISO-8601 invalide`);
   }
+  assertIsoDate(match[1]!, label);
 }
 
 export function assertZoningEventLinkSource(source: ZoningEventLinkSource): void {
@@ -330,7 +360,17 @@ export function planZoningEventRemediation(
     const candidate = evidenceById.get(eventId);
     if (candidate?.link_source !== undefined) {
       assertZoningEventLinkSource(candidate.link_source);
-      toLink.push({ ...basePlanItem(event), action: "link", source: candidate.link_source });
+      const mapping = candidate.link_mapping;
+      if (
+        mapping === undefined ||
+        !nonEmpty(mapping.target_bylaw_numero) ||
+        !nonEmpty(mapping.detector_reglement_numero) ||
+        event.bylaw_numero !== mapping.target_bylaw_numero ||
+        !candidate.link_source.source_span.includes(mapping.detector_reglement_numero)
+      ) {
+        throw new Error(`zoning-event remediation ${event.event_id}: mapping LINK cible/PV divergent`);
+      }
+      toLink.push({ ...basePlanItem(event), action: "link", source: candidate.link_source, mapping });
       continue;
     }
     if (candidate?.exhaustion !== undefined) {
@@ -428,6 +468,12 @@ export function materializeZoningEventRemediation(
       if (link.from_version !== event.version || link.to_version !== event.version + 1) {
         throw new Error(`zoning-event remediation ${event.event_id}: plan stale (version divergente)`);
       }
+      if (
+        event.bylaw_numero !== link.mapping.target_bylaw_numero ||
+        !link.source.source_span.includes(link.mapping.detector_reglement_numero)
+      ) {
+        throw new Error(`zoning-event remediation ${event.event_id}: mapping LINK plan/event divergent`);
+      }
       return linkZoningEventSource(event, link.source);
     }
     const retract = retractById.get(event.event_id);
@@ -465,6 +511,75 @@ function assertOwnerGo(
   if (!nonEmpty(ownerGo.h2a_envelope_id) || !nonEmpty(ownerGo.h2a_session_id)) {
     throw new Error("zoning-event remediation: références session/enveloppe h2a requises");
   }
+  if (!nonEmpty(ownerGo.owner_instance)) {
+    throw new Error("zoning-event remediation: identité owner directe requise");
+  }
+}
+
+function assertClosedExecutableDryRun(dryRun: ZoningEventRemediationDryRunReport): void {
+  if (
+    dryRun.contract !== ZONING_EVENT_REMEDIATION_DRY_RUN_CONTRACT ||
+    dryRun.dry_run !== true
+  ) {
+    throw new Error("zoning-event remediation: rapport dry-run contractuel requis");
+  }
+  const cohortSlugs = [...dryRun.cohort.slugs].sort();
+  const citySlugs = dryRun.cities.map((city) => city.slug).sort();
+  if (
+    dryRun.cohort.expected_count !== cohortSlugs.length ||
+    new Set(cohortSlugs).size !== cohortSlugs.length ||
+    JSON.stringify(cohortSlugs) !== JSON.stringify(citySlugs)
+  ) {
+    throw new Error("zoning-event remediation: cohorte dry-run non fermée");
+  }
+  const totals = {
+    cities_total: dryRun.cities.length,
+    cities_planned: 0,
+    cities_unknown: 0,
+    living_phantoms: 0,
+    to_link: 0,
+    to_retract: 0,
+    blocked: 0,
+  };
+  for (const city of dryRun.cities) {
+    if (city.dry_run_state !== "planned" || city.plan === null) {
+      totals.cities_unknown++;
+      continue;
+    }
+    if (
+      city.plan.muni !== city.slug ||
+      city.plan.collection_key !== city.collection_key ||
+      city.plan.inventory_sha256 !== dryRun.inventory_sha256
+    ) {
+      throw new Error(`zoning-event remediation ${city.slug}: plan dry-run incohérent`);
+    }
+    totals.cities_planned++;
+    totals.living_phantoms += city.plan.counts.living_phantoms;
+    totals.to_link += city.plan.counts.to_link;
+    totals.to_retract += city.plan.counts.to_retract;
+    totals.blocked += city.plan.counts.blocked;
+  }
+  const executable = totals.cities_unknown === 0 && totals.blocked === 0;
+  if (JSON.stringify(totals) !== JSON.stringify(dryRun.totals) || dryRun.executable !== executable || !executable) {
+    throw new Error("zoning-event remediation: comptes/exécutabilité dry-run divergents");
+  }
+}
+
+function assertVerifiedOwnerGo(
+  ownerGo: ZoningEventOwnerGo,
+  verified: VerifiedDirectOwnerGo,
+): void {
+  if (
+    verified.verified !== true ||
+    verified.via !== "geo-cond" ||
+    verified.owner_instance !== ownerGo.owner_instance ||
+    verified.inventory_sha256 !== ownerGo.inventory_sha256 ||
+    verified.dry_run_sha256 !== ownerGo.dry_run_sha256 ||
+    verified.h2a_envelope_id !== ownerGo.h2a_envelope_id ||
+    verified.h2a_session_id !== ownerGo.h2a_session_id
+  ) {
+    throw new Error("zoning-event remediation: vérification h2a du go owner divergente");
+  }
 }
 
 /**
@@ -479,6 +594,8 @@ export async function executeZoningEventRemediation(
   ownerGo: ZoningEventOwnerGo,
   options: {
     asOf: string;
+    /** Mandatory live/durable h2a lookup; no caller assertion is sufficient. */
+    verifyDirectOwnerGo: DirectOwnerGoVerifier;
     store?: ZoningEventsStore;
   },
 ): Promise<ServeZoningEventsResult> {
@@ -489,15 +606,7 @@ export async function executeZoningEventRemediation(
   } catch {
     throw new Error("zoning-event remediation: collection servie JSON UTF-8 invalide");
   }
-  if (
-    dryRun.contract !== ZONING_EVENT_REMEDIATION_DRY_RUN_CONTRACT ||
-    dryRun.dry_run !== true ||
-    dryRun.executable !== true ||
-    dryRun.totals.cities_unknown !== 0 ||
-    dryRun.totals.blocked !== 0
-  ) {
-    throw new Error("zoning-event remediation: rapport dry-run fermé et exécutable requis");
-  }
+  assertClosedExecutableDryRun(dryRun);
   const cityMatches = dryRun.cities.filter((city) => city.slug === document.muni);
   if (
     cityMatches.length !== 1 ||
@@ -511,6 +620,8 @@ export async function executeZoningEventRemediation(
     throw new Error("zoning-event remediation: plan municipal hors inventaire dry-run");
   }
   assertOwnerGo(ownerGo, dryRun);
+  const verifiedOwnerGo = await options.verifyDirectOwnerGo(ownerGo);
+  assertVerifiedOwnerGo(ownerGo, verifiedOwnerGo);
   const collectionSha256 = `sha256:${createHash("sha256").update(documentBytes).digest("hex")}`;
   if (collectionSha256 !== plan.collection_sha256) {
     throw new Error("zoning-event remediation: collection servie modifiée depuis le dry-run");

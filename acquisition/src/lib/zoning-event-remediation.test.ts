@@ -142,6 +142,7 @@ describe("LINK and RETRACT mutations", () => {
       state: "retracted",
     });
     expect(() => retractZoningEvent(before, { ...exhaustion, run_refs: [] })).toThrow(/run_refs/);
+    expect(() => retractZoningEvent(before, { ...exhaustion, as_of: "2026-02-30" })).toThrow(/ISO-8601|YYYY-MM-DD/);
   });
 });
 
@@ -157,7 +158,12 @@ describe("planZoningEventRemediation", () => {
     const plan = planZoningEventRemediation(
       value,
       [
-        { event_id: "link", link_source: source, exhaustion },
+        {
+          event_id: "link",
+          link_source: source,
+          link_mapping: { target_bylaw_numero: "2026-101", detector_reglement_numero: "2026-101" },
+          exhaustion,
+        },
         { event_id: "retract", exhaustion },
       ],
       {
@@ -171,6 +177,19 @@ describe("planZoningEventRemediation", () => {
     expect(plan.blocked.map((item) => item.event_id)).toEqual(["blocked"]);
     expect(plan.counts).toEqual({ living_phantoms: 3, to_link: 1, to_retract: 1, blocked: 1 });
     expect(() => materializeZoningEventRemediation(value, plan)).toThrow(/bloqué/);
+    expect(() => planZoningEventRemediation(
+      value,
+      [{
+        event_id: "link",
+        link_source: source,
+        link_mapping: { target_bylaw_numero: "026-101", detector_reglement_numero: "2026-101" },
+      }],
+      {
+        collectionKey: zoningEventsKeys("ville-test")[1]!,
+        collectionSha256: SHA_A,
+        inventorySha256: SHA_B,
+      },
+    )).toThrow(/mapping LINK/);
   });
 });
 
@@ -182,7 +201,11 @@ describe("executeZoningEventRemediation", () => {
     const plan = planZoningEventRemediation(
       value,
       [
-        { event_id: "link", link_source: source },
+        {
+          event_id: "link",
+          link_source: source,
+          link_mapping: { target_bylaw_numero: "2026-101", detector_reglement_numero: "2026-101" },
+        },
         { event_id: "retract", exhaustion },
       ],
       {
@@ -195,6 +218,7 @@ describe("executeZoningEventRemediation", () => {
       contract: ZONING_EVENT_OWNER_GO_CONTRACT,
       via: "geo-cond" as const,
       owner_go_direct: true as const,
+      owner_instance: "owner:direct",
       inventory_sha256: SHA_B,
       dry_run_sha256: SHA_A,
       h2a_envelope_id: "env:owner-go",
@@ -206,7 +230,7 @@ describe("executeZoningEventRemediation", () => {
       executable: true,
       audit_sha256: SHA_A,
       inventory_sha256: SHA_B,
-      cohort_sha256: SHA_A,
+      cohort: { sha256: SHA_A, expected_count: 1, slugs: ["ville-test"] },
       authenticated: {
         origin: "immo-extraction" as const,
         extraction_ref: "d52af7",
@@ -234,12 +258,21 @@ describe("executeZoningEventRemediation", () => {
     };
     ownerGo.dry_run_sha256 = zoningEventRemediationArtifactSha256(dryRun);
     const memory = memoryStore(value);
+    const verifyDirectOwnerGo = async (go: typeof ownerGo) => ({
+      verified: true as const,
+      via: "geo-cond" as const,
+      owner_instance: go.owner_instance,
+      inventory_sha256: go.inventory_sha256,
+      dry_run_sha256: go.dry_run_sha256,
+      h2a_envelope_id: go.h2a_envelope_id,
+      h2a_session_id: go.h2a_session_id,
+    });
 
     await expect(executeZoningEventRemediation(
       valueBytes,
       dryRun,
       { ...ownerGo, dry_run_sha256: SHA_A },
-      { asOf: "2026-08-24T00:00:00Z", store: memory.store },
+      { asOf: "2026-08-24T00:00:00Z", verifyDirectOwnerGo, store: memory.store },
     )).rejects.toThrow(/dry-run exact/);
     expect(memory.written.size).toBe(0);
 
@@ -247,15 +280,46 @@ describe("executeZoningEventRemediation", () => {
       Buffer.from(`${valueBytes.toString("utf8")} `),
       dryRun,
       ownerGo,
-      { asOf: "2026-08-24T00:00:00Z", store: memory.store },
+      { asOf: "2026-08-24T00:00:00Z", verifyDirectOwnerGo, store: memory.store },
     )).rejects.toThrow(/modifiée depuis le dry-run/);
+    expect(memory.written.size).toBe(0);
+
+    const hiddenUnknown = {
+      ...dryRun,
+      cities: [{ ...dryRun.cities[0]!, dry_run_state: "unknown" as const, plan: null }],
+    };
+    const hiddenUnknownGo = {
+      ...ownerGo,
+      dry_run_sha256: zoningEventRemediationArtifactSha256(hiddenUnknown),
+    };
+    await expect(executeZoningEventRemediation(
+      valueBytes,
+      hiddenUnknown,
+      hiddenUnknownGo,
+      { asOf: "2026-08-24T00:00:00Z", verifyDirectOwnerGo, store: memory.store },
+    )).rejects.toThrow(/comptes\/exécutabilité/);
+    expect(memory.written.size).toBe(0);
+
+    await expect(executeZoningEventRemediation(
+      valueBytes,
+      dryRun,
+      ownerGo,
+      {
+        asOf: "2026-08-24T00:00:00Z",
+        verifyDirectOwnerGo: async (go) => ({
+          ...(await verifyDirectOwnerGo(go)),
+          owner_instance: "owner:forged",
+        }),
+        store: memory.store,
+      },
+    )).rejects.toThrow(/vérification h2a/);
     expect(memory.written.size).toBe(0);
 
     const result = await executeZoningEventRemediation(
       valueBytes,
       dryRun,
       ownerGo,
-      { asOf: "2026-08-24T00:00:00Z", store: memory.store },
+      { asOf: "2026-08-24T00:00:00Z", verifyDirectOwnerGo, store: memory.store },
     );
     expect(result.keys).toEqual(zoningEventsKeys("ville-test"));
     expect(result.document.events).toHaveLength(3);

@@ -13,6 +13,8 @@ import {
   planZoningEventRemediation,
   zoningEventRemediationArtifactSha256,
   ZONING_EVENT_EXHAUSTION_CONTRACT,
+  ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT,
+  ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT,
   ZONING_EVENT_REMEDIATION_DRY_RUN_CONTRACT,
   type DurableEvidenceObjectRef,
   type Sha256Ref,
@@ -34,26 +36,20 @@ const DurableRefSchema = z.object({
   key: ObjectKeySchema,
   sha256: ShaSchema,
 }).strict();
+const CheckedSourceSchema = z.object({
+  source_ref: z.string().min(1),
+  outcome: z.literal("no-source"),
+}).strict();
 const ExhaustionSchema = z.object({
   contract: z.literal(ZONING_EVENT_EXHAUSTION_CONTRACT),
   status: z.literal("exhausted"),
   run_refs: z.array(DurableRefSchema).min(1),
-  checked_sources: z.array(z.object({
-    source_ref: z.string().min(1),
-    outcome: z.literal("no-source"),
-  }).strict()).min(1),
+  checked_sources: z.array(CheckedSourceSchema).min(1),
   as_of: z.string().min(1),
 }).strict();
 const LinkResolutionSchema = z.object({
   kind: z.literal("link"),
-  source: z.object({
-    url: z.string().min(1),
-    source_span: z.string().min(1),
-    as_of_date: z.string().min(1),
-    producer: z.string().min(1),
-    detector_reglement_numero: z.string().min(1),
-    pv_text_ref: DurableRefSchema,
-  }).strict(),
+  evidence_ref: DurableRefSchema,
 }).strict();
 const RetractResolutionSchema = z.object({
   kind: z.literal("retract"),
@@ -78,6 +74,27 @@ const InventorySchema = z.object({
     }).strict()),
   }).strict()),
 }).strict();
+const PvLinkReceiptSchema = z.object({
+  contract: z.literal(ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT),
+  status: z.literal("source-found"),
+  receipt_key: ObjectKeySchema,
+  event_id: z.string().min(1),
+  target_bylaw_numero: z.string().min(1),
+  detector_reglement_numero: z.string().min(1),
+  source_url: z.string().min(1),
+  source_span: z.string().min(1),
+  as_of_date: z.string().min(1),
+  producer: z.string().min(1),
+  pv_text_ref: DurableRefSchema,
+}).strict();
+const ExhaustionReceiptSchema = z.object({
+  contract: z.literal(ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT),
+  status: z.literal("exhausted"),
+  receipt_key: ObjectKeySchema,
+  event_id: z.string().min(1),
+  checked_sources: z.array(CheckedSourceSchema).min(1),
+  as_of: z.string().min(1),
+}).strict();
 
 export type ZoningEventRemediationInventory = z.infer<typeof InventorySchema>;
 
@@ -97,7 +114,11 @@ export interface ZoningEventRemediationDryRunReport {
   executable: boolean;
   audit_sha256: Sha256Ref;
   inventory_sha256: Sha256Ref;
-  cohort_sha256: Sha256Ref;
+  cohort: {
+    sha256: Sha256Ref;
+    expected_count: number;
+    slugs: string[];
+  };
   authenticated: ZoningEventRemediationInventory["authenticated"];
   totals: {
     cities_total: number;
@@ -193,29 +214,67 @@ async function evidenceForCity(
   const result: ZoningEventRemediationEvidence[] = [];
   for (const item of city.events) {
     if (item.resolution.kind === "link") {
-      const source = item.resolution.source;
-      const pvBytes = await readVerified(source.pv_text_ref, readEvidence);
+      const receiptBytes = await readVerified(item.resolution.evidence_ref, readEvidence);
+      let receipt: z.infer<typeof PvLinkReceiptSchema>;
+      try {
+        receipt = PvLinkReceiptSchema.parse(JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(receiptBytes)));
+      } catch {
+        throw new Error(`preuve LINK ${item.resolution.evidence_ref.key}: reçu JSON contractuel invalide`);
+      }
+      if (receipt.receipt_key !== item.resolution.evidence_ref.key || receipt.event_id !== item.event_id) {
+        throw new Error(`preuve LINK ${item.event_id}: reçu hors cible`);
+      }
+      const pvBytes = await readVerified(receipt.pv_text_ref, readEvidence);
       let pvText: string;
       try {
         pvText = new TextDecoder("utf-8", { fatal: true }).decode(pvBytes);
       } catch {
-        throw new Error(`preuve durable ${source.pv_text_ref.key}: texte PV UTF-8 invalide`);
+        throw new Error(`preuve durable ${receipt.pv_text_ref.key}: texte PV UTF-8 invalide`);
       }
       result.push({
         event_id: item.event_id,
         link_source: linkSourceFromGenericPv({
-          url: source.url,
-          source_span: source.source_span,
-          as_of_date: source.as_of_date,
-          producer: source.producer,
-          detector_reglement_numero: source.detector_reglement_numero,
+          url: receipt.source_url,
+          source_span: receipt.source_span,
+          as_of_date: receipt.as_of_date,
+          producer: receipt.producer,
+          detector_reglement_numero: receipt.detector_reglement_numero,
           pv_text: pvText,
         }),
+        link_mapping: {
+          target_bylaw_numero: receipt.target_bylaw_numero,
+          detector_reglement_numero: receipt.detector_reglement_numero,
+        },
       });
       continue;
     }
+    const receiptSources: { source_ref: string; outcome: "no-source" }[] = [];
     for (const ref of item.resolution.exhaustion.run_refs) {
-      await readVerified(ref, readEvidence);
+      const receiptBytes = await readVerified(ref, readEvidence);
+      let receipt: z.infer<typeof ExhaustionReceiptSchema>;
+      try {
+        receipt = ExhaustionReceiptSchema.parse(JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(receiptBytes)));
+      } catch {
+        throw new Error(`preuve RETRACT ${ref.key}: reçu JSON contractuel invalide`);
+      }
+      if (
+        receipt.receipt_key !== ref.key ||
+        receipt.event_id !== item.event_id ||
+        receipt.as_of !== item.resolution.exhaustion.as_of
+      ) {
+        throw new Error(`preuve RETRACT ${item.event_id}: reçu hors cible/as_of`);
+      }
+      receiptSources.push(...receipt.checked_sources);
+    }
+    const normalizedReceiptSources = [...receiptSources]
+      .sort((left, right) => left.source_ref.localeCompare(right.source_ref));
+    const normalizedClaimedSources = [...item.resolution.exhaustion.checked_sources]
+      .sort((left, right) => left.source_ref.localeCompare(right.source_ref));
+    if (
+      new Set(normalizedReceiptSources.map((source) => source.source_ref)).size !== normalizedReceiptSources.length ||
+      JSON.stringify(normalizedReceiptSources) !== JSON.stringify(normalizedClaimedSources)
+    ) {
+      throw new Error(`preuve RETRACT ${item.event_id}: sources reçues/inventaire divergentes`);
     }
     result.push({ event_id: item.event_id, exhaustion: item.resolution.exhaustion });
   }
@@ -335,7 +394,11 @@ export async function buildZoningEventRemediationDryRun(
     executable: totals.cities_unknown === 0 && totals.blocked === 0,
     audit_sha256: hashes.auditSha256,
     inventory_sha256: hashes.inventorySha256,
-    cohort_sha256: inventory.cohort_sha256,
+    cohort: {
+      sha256: inventory.cohort_sha256,
+      expected_count: audit.cohort.expected_count,
+      slugs: [...audit.cohort.slugs].sort(),
+    },
     authenticated: inventory.authenticated,
     totals,
     cities,
