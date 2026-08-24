@@ -100,6 +100,49 @@ describe("buildZoningEventRemediationDryRun", () => {
     const auditSha = sha(`${JSON.stringify(auditValue, null, 2)}\n`);
     const span = "Règlement numéro 2026-101 modifiant le Règlement de zonage numéro 2019-342";
     const pv = Buffer.from(`Avis de motion\n\nDonne avis de motion pour le ${span}.`);
+    const pdf = Buffer.from("%PDF-1.7 synthetic in-memory unit fixture");
+    const pdfRef = { key: "raw/pv/cas/unit.pdf", sha256: sha(pdf) };
+    const captureRunKey = "capture/_runs/unit/run.json";
+    const captureRun = Buffer.from(JSON.stringify({
+      run_id: "unit",
+      lane: "pv",
+      execution: "cluster",
+      git_sha: "a".repeat(40),
+      worklist: "capture/worklists/unit.json",
+      started_at: "2026-06-10T00:00:00.000Z",
+      finished_at: "2026-06-10T00:01:00.000Z",
+      exit_code: 0,
+      user_agent: "geo-test/1",
+      egress: "direct",
+      via_obscura: false,
+      counts: { attempts: 1, ok: 1, failed: 0, dedup: 0, bytes: pdf.length },
+    }));
+    const captureManifestKey = "capture/_runs/unit/manifest.jsonl";
+    const captureManifest = Buffer.from(`${JSON.stringify({
+      run_id: "unit",
+      lane: "pv",
+      source: "proces-verbaux-test",
+      slugs: ["ville-test"],
+      url: "https://example.test/pv.pdf",
+      method: "GET",
+      attempt: 1,
+      requested_at: "2026-06-10T00:00:00.000Z",
+      retrieved_at: "2026-06-10T00:00:01.000Z",
+      http_status: 200,
+      redirect_chain: [],
+      final_url: "https://example.test/pv.pdf",
+      content_type: "application/pdf",
+      bytes: pdf.length,
+      sha256: pdfRef.sha256,
+      storage_key: pdfRef.key,
+      dedup: false,
+      error: null,
+      user_agent: "geo-test/1",
+      via_obscura: false,
+      egress: "direct",
+      robots: "allowed",
+      redacted: false,
+    })}\n`);
     const linkReceiptKey = "capture/link-receipt.json";
     const linkReceipt = Buffer.from(JSON.stringify({
       contract: ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT,
@@ -112,6 +155,9 @@ describe("buildZoningEventRemediationDryRun", () => {
       source_span: span,
       as_of_date: "2026-06-10",
       producer: "geo",
+      capture_run_ref: { key: captureRunKey, sha256: sha(captureRun) },
+      capture_manifest_ref: { key: captureManifestKey, sha256: sha(captureManifest) },
+      captured_pdf_ref: pdfRef,
       pv_text_ref: { key: "capture/pv.txt", sha256: sha(pv) },
     }));
     const exhaustionReceiptKey = "capture/run.json";
@@ -154,6 +200,9 @@ describe("buildZoningEventRemediationDryRun", () => {
     const inventory = parseZoningEventRemediationInventory(rawInventory);
     const evidence = new Map([
       ["capture/pv.txt", pv],
+      [pdfRef.key, pdf],
+      [captureRunKey, captureRun],
+      [captureManifestKey, captureManifest],
       [linkReceiptKey, linkReceipt],
       [exhaustionReceiptKey, exhaustionReceipt],
     ]);
