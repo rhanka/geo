@@ -14,6 +14,7 @@ import {
   type ZoningEventSourceAuditReport,
   ZONING_EVENT_AUDIT_CONTRACT,
 } from "./zoning-event-source-audit-runner.js";
+import { exactHttpUrl } from "./reglement-capture-kpi.js";
 import {
   linkSourceFromGenericPv,
   planZoningEventRemediation,
@@ -23,6 +24,7 @@ import {
   ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT,
   ZONING_EVENT_PV_TEXT_EXTRACTION_RECEIPT_CONTRACT,
   ZONING_EVENT_REMEDIATION_DRY_RUN_CONTRACT,
+  ZONING_EVENT_SOURCE_NO_MATCH_RECEIPT_CONTRACT,
   type DurableEvidenceObjectRef,
   type Sha256Ref,
   type ZoningEventRemediationCityPlan,
@@ -39,6 +41,7 @@ const ObjectKeySchema = z.string().min(1).refine((key) => {
   const parts = key.split("/");
   return !key.startsWith("/") && !key.includes("://") && parts.every((part) => part !== "." && part !== "..");
 }, "clé objet durable invalide");
+const HttpUrlSchema = z.string().refine(exactHttpUrl, "URL HTTP(S) exacte requise");
 const DurableRefSchema = z.object({
   key: ObjectKeySchema,
   sha256: ShaSchema,
@@ -114,8 +117,32 @@ const ExhaustionReceiptSchema = z.object({
   status: z.literal("exhausted"),
   receipt_key: ObjectKeySchema,
   event_id: z.string().min(1),
-  checked_sources: z.array(CheckedSourceSchema).min(1),
+  capture_run_ref: DurableRefSchema,
+  capture_manifest_ref: DurableRefSchema,
+  checked_sources: z.array(z.object({
+    source_ref: HttpUrlSchema,
+    outcome: z.literal("no-source"),
+    evidence: z.array(z.object({
+      kind: z.literal("extracted-no-match"),
+      manifest_line_index: z.number().int().nonnegative(),
+      extraction_receipt_ref: DurableRefSchema,
+    }).strict()).min(1),
+  }).strict()).min(1),
   as_of: z.string().min(1),
+}).strict();
+const SourceNoMatchReceiptSchema = z.object({
+  contract: z.literal(ZONING_EVENT_SOURCE_NO_MATCH_RECEIPT_CONTRACT),
+  status: z.literal("complete-no-match"),
+  receipt_key: ObjectKeySchema,
+  event_id: z.string().min(1),
+  run_id: z.string().min(1),
+  source_ref: HttpUrlSchema,
+  captured_object_ref: DurableRefSchema,
+  detector: z.string().min(1),
+  detector_git_sha: z.string().regex(/^[0-9a-f]{40}$/),
+  complete: z.literal(true),
+  matches: z.array(z.never()).length(0),
+  extracted_at: z.string().datetime(),
 }).strict();
 
 export type ZoningEventRemediationInventory = z.infer<typeof InventorySchema>;
@@ -273,6 +300,9 @@ async function evidenceForCity(
       } catch {
         throw new Error(`preuve LINK ${item.event_id}: manifeste de capture invalide`);
       }
+      if (manifest.length !== run.counts.attempts) {
+        throw new Error(`preuve LINK ${item.event_id}: manifeste/run non fermé`);
+      }
       await readVerified(receipt.captured_pdf_ref, readEvidence);
       const captured = manifest.some((line) =>
         line.run_id === run.run_id &&
@@ -347,7 +377,97 @@ async function evidenceForCity(
       ) {
         throw new Error(`preuve RETRACT ${item.event_id}: reçu hors cible/as_of`);
       }
-      receiptSources.push(...receipt.checked_sources);
+      const runBytes = await readVerified(receipt.capture_run_ref, readEvidence);
+      let run: z.infer<typeof CaptureRunHeaderSchema>;
+      try {
+        run = CaptureRunHeaderSchema.parse(
+          JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(runBytes)),
+        );
+      } catch {
+        throw new Error(`preuve RETRACT ${item.event_id}: run de capture contractuel invalide`);
+      }
+      if (
+        run.execution !== "cluster" ||
+        run.lane !== "pv" ||
+        run.finished_at === null ||
+        run.exit_code !== 0 ||
+        !/^[0-9a-f]{40}$/.test(run.git_sha ?? "")
+      ) {
+        throw new Error(`preuve RETRACT ${item.event_id}: run PV cluster terminal et git_sha requis`);
+      }
+      if (
+        receipt.capture_run_ref.key !== `capture/_runs/${run.run_id}/run.json` ||
+        receipt.capture_manifest_ref.key !== `capture/_runs/${run.run_id}/manifest.jsonl`
+      ) {
+        throw new Error(`preuve RETRACT ${item.event_id}: clés run/manifeste non canoniques`);
+      }
+      const manifestBytes = await readVerified(receipt.capture_manifest_ref, readEvidence);
+      let manifest;
+      try {
+        manifest = parseManifestJsonl(new TextDecoder("utf-8", { fatal: true }).decode(manifestBytes));
+      } catch {
+        throw new Error(`preuve RETRACT ${item.event_id}: manifeste de capture invalide`);
+      }
+      if (manifest.length !== run.counts.attempts) {
+        throw new Error(`preuve RETRACT ${item.event_id}: manifeste/run non fermé`);
+      }
+      for (const checked of receipt.checked_sources) {
+        const successfulLineIndexes = manifest.flatMap((candidate, index) =>
+          candidate.run_id === run.run_id &&
+          candidate.lane === "pv" &&
+          candidate.slugs.includes(city.slug) &&
+          (candidate.url === checked.source_ref || candidate.final_url === checked.source_ref) &&
+          candidate.method === "GET" &&
+          !candidate.redacted &&
+          candidate.http_status !== null &&
+          candidate.http_status >= 200 &&
+          candidate.http_status < 300 &&
+          candidate.error === null &&
+          candidate.storage_key !== null &&
+          candidate.sha256 !== null
+            ? [index]
+            : [],
+        );
+        const evidenceIndexes = checked.evidence
+          .map((entry) => entry.manifest_line_index)
+          .sort((left, right) => left - right);
+        if (
+          successfulLineIndexes.length === 0 ||
+          new Set(evidenceIndexes).size !== evidenceIndexes.length ||
+          JSON.stringify(evidenceIndexes) !== JSON.stringify(successfulLineIndexes)
+        ) {
+          throw new Error(`preuve RETRACT ${item.event_id}: partition des captures réussies non fermée`);
+        }
+        for (const evidence of checked.evidence) {
+          const line = manifest[evidence.manifest_line_index]!;
+          const cas = CAS_KEY_RE.exec(line.storage_key!);
+          if (!cas || cas[2] !== line.sha256!.slice("sha256:".length)) {
+            throw new Error(`preuve RETRACT ${item.event_id}: capture d'extraction hors CAS`);
+          }
+          const extractionBytes = await readVerified(evidence.extraction_receipt_ref, readEvidence);
+          let extraction: z.infer<typeof SourceNoMatchReceiptSchema>;
+          try {
+            extraction = SourceNoMatchReceiptSchema.parse(
+              JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(extractionBytes)),
+            );
+          } catch {
+            throw new Error(`preuve RETRACT ${item.event_id}: résultat d'extraction no-match invalide`);
+          }
+          if (
+            extraction.receipt_key !== evidence.extraction_receipt_ref.key ||
+            extraction.event_id !== item.event_id ||
+            extraction.run_id !== run.run_id ||
+            extraction.source_ref !== checked.source_ref ||
+            extraction.detector_git_sha !== run.git_sha ||
+            extraction.captured_object_ref.key !== line.storage_key ||
+            extraction.captured_object_ref.sha256 !== line.sha256
+          ) {
+            throw new Error(`preuve RETRACT ${item.event_id}: no-match hors run/source/capture cible`);
+          }
+          await readVerified(extraction.captured_object_ref, readEvidence);
+        }
+        receiptSources.push({ source_ref: checked.source_ref, outcome: checked.outcome });
+      }
     }
     const normalizedReceiptSources = [...receiptSources]
       .sort((left, right) => left.source_ref.localeCompare(right.source_ref));
