@@ -18,8 +18,9 @@
  * ou jusqu'à un abandon propre.
  *
  * GATE géométrie-suspecte : si `outside_all` domine le mismatch d'une ville
- * (> 50% de misassigned+outside_all), la géométrie de zone elle-même est
- * suspecte (pas seulement le label) — la ville est SAUTÉE sans dépôt
+ * (> 50% des lots EN MISMATCH ont leur centroïde hors de TOUTE zone servie),
+ * la géométrie de zone elle-même est suspecte (offset, pas seulement le label)
+ * — la ville est SAUTÉE sans dépôt
  * (`skipped_reason: "geometry-suspect"`), plutôt que de re-déposer un fold
  * qui resterait faux.
  *
@@ -177,10 +178,13 @@ function parseArgs(argv: string[]): Args {
 interface AuditSnapshot {
   lots: number;
   assigned: number;
-  matched: number;
-  misassigned: number;
-  outside_all: number;
+  denom: number;
+  coherent: number;
+  mismatch: number;
+  residue_hard: number;
+  outside_all: number; // lots EN MISMATCH hors de toute zone servie (⊆ mismatch) — signal géométrie-suspecte
   unassigned: number;
+  unknown_eval_unit: number;
   mismatch_pct: number;
   note?: string;
 }
@@ -272,10 +276,13 @@ function trimReport(r: CityReport): AuditSnapshot {
   return {
     lots: r.lots,
     assigned: r.assigned,
-    matched: r.matched,
-    misassigned: r.misassigned,
+    denom: r.denom,
+    coherent: r.coherent,
+    mismatch: r.mismatch,
+    residue_hard: r.residue_hard,
     outside_all: r.outside_all,
     unassigned: r.unassigned,
+    unknown_eval_unit: r.unknown_eval_unit,
     mismatch_pct: r.mismatch_pct,
     ...(r.note ? { note: r.note } : {}),
   };
@@ -553,7 +560,10 @@ async function processSlug(
       return;
     }
 
-    const mismatchTotal = (before?.misassigned ?? 0) + (before?.outside_all ?? 0);
+    // Signal géométrie-suspecte : parmi les lots EN MISMATCH (d>10m), quelle
+    // fraction a son centroïde hors de TOUTE zone servie (offset de géométrie de
+    // zone plutôt qu'erreur d'étiquette). `outside_all ⊆ mismatch` → ratio ≤ 1.
+    const mismatchTotal = before?.mismatch ?? 0;
     if (before && !args.allowGeometrySuspect && mismatchTotal > 0 && before.outside_all / mismatchTotal > OUTSIDE_ALL_SKIP_FRACTION) {
       finalizeSkip(
         `geometry-suspect (outside_all=${before.outside_all}/${mismatchTotal} mismatch, ` +
@@ -570,7 +580,7 @@ async function processSlug(
     if (before) {
       console.log(
         `[refold-batch] ${slug}: audit-before lots=${before.lots} assigned=${before.assigned} ` +
-          `mismatch=${before.mismatch_pct}% (misassigned=${before.misassigned} outside_all=${before.outside_all} unassigned=${before.unassigned})`,
+          `mismatch=${before.mismatch_pct}% (mismatch=${before.mismatch} résidu>50m=${before.residue_hard} outside_all=${before.outside_all} unassigned=${before.unassigned})`,
       );
     }
 
@@ -612,7 +622,7 @@ async function processSlug(
     if (after) {
       console.log(
         `[refold-batch] ${slug}: audit-after mismatch=${after.mismatch_pct}% ` +
-          `(misassigned=${after.misassigned} outside_all=${after.outside_all} unassigned=${after.unassigned})`,
+          `(mismatch=${after.mismatch} résidu>50m=${after.residue_hard} outside_all=${after.outside_all} unassigned=${after.unassigned})`,
       );
     }
 
