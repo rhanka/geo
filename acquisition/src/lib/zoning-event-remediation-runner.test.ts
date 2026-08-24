@@ -374,6 +374,86 @@ describe("buildZoningEventRemediationDryRun", () => {
     expect(openReport.executable).toBe(false);
     expect(openReport.totals.to_retract).toBe(0);
     expect(openReport.cities[0]!.error).toMatch(/partition PV réussie ville\/run non fermée/);
+
+    const failedRun = Buffer.from(JSON.stringify({
+      ...JSON.parse(captureRun.toString("utf8")) as Record<string, unknown>,
+      counts: { attempts: 3, ok: 2, failed: 1, dedup: 0, bytes: pdf.length + indexBytes.length },
+    }));
+    const failedManifest = Buffer.from(`${captureManifest.toString("utf8")}${JSON.stringify({
+      run_id: "unit",
+      lane: "pv",
+      source: "proces-verbaux-test",
+      slugs: ["ville-test"],
+      url: "https://example.test/pv-missing",
+      method: "GET",
+      attempt: 1,
+      requested_at: "2026-06-10T00:00:05.000Z",
+      retrieved_at: null,
+      http_status: null,
+      redirect_chain: [],
+      final_url: null,
+      content_type: null,
+      bytes: null,
+      sha256: null,
+      storage_key: null,
+      dedup: null,
+      error: "timeout",
+      user_agent: "geo-test/1",
+      via_obscura: false,
+      egress: "direct",
+      robots: "allowed",
+      redacted: false,
+    })}\n`);
+    const failedLinkReceipt = Buffer.from(JSON.stringify({
+      ...JSON.parse(linkReceipt.toString("utf8")) as Record<string, unknown>,
+      capture_run_ref: { key: captureRunKey, sha256: sha(failedRun) },
+      capture_manifest_ref: { key: captureManifestKey, sha256: sha(failedManifest) },
+    }));
+    const failedExhaustionReceipt = Buffer.from(JSON.stringify({
+      ...JSON.parse(exhaustionReceipt.toString("utf8")) as Record<string, unknown>,
+      capture_run_ref: { key: captureRunKey, sha256: sha(failedRun) },
+      capture_manifest_ref: { key: captureManifestKey, sha256: sha(failedManifest) },
+    }));
+    const failedRawInventory = {
+      ...rawInventory,
+      cities: [{
+        ...rawInventory.cities[0]!,
+        events: rawInventory.cities[0]!.events.map((entry) => entry.event_id === "link" ? {
+          ...entry,
+          resolution: {
+            kind: "link" as const,
+            evidence_ref: { key: linkReceiptKey, sha256: sha(failedLinkReceipt) },
+          },
+        } : {
+          ...entry,
+          resolution: {
+            kind: "retract" as const,
+            exhaustion: {
+              ...entry.resolution.exhaustion,
+              run_refs: [{ key: exhaustionReceiptKey, sha256: sha(failedExhaustionReceipt) }],
+            },
+          },
+        }),
+      }],
+    };
+    const failedEvidence = new Map(evidence)
+      .set(captureRunKey, failedRun)
+      .set(captureManifestKey, failedManifest)
+      .set(linkReceiptKey, failedLinkReceipt)
+      .set(exhaustionReceiptKey, failedExhaustionReceipt);
+    const failedReport = await buildZoningEventRemediationDryRun(
+      auditValue,
+      parseZoningEventRemediationInventory(failedRawInventory),
+      {
+        auditSha256: auditSha,
+        inventorySha256: sha(`${JSON.stringify(failedRawInventory, null, 2)}\n`),
+      },
+      async () => ({ document: document(), sha256: collectionSha }),
+      async (key) => failedEvidence.get(key)!,
+    );
+    expect(failedReport.executable).toBe(false);
+    expect(failedReport.totals.to_retract).toBe(0);
+    expect(failedReport.cities[0]!.error).toMatch(/tentative PV ville sans capture exploitable/);
   });
 
   it("turns a declarative exhaustion receipt into unknown, never RETRACT", async () => {
