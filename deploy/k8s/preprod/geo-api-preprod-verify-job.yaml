@@ -1,0 +1,127 @@
+# Job geo-preprod-verify + sa NetworkPolicy — GATE de parité miroir-plein (LECTURE SEULE,
+# §4 parité + §7 A5 completeness). Prouve que la preprod SERT réellement le set COMPLET,
+# FRAIS, byte-parité avec prod — THROUGH l'API (jamais depuis S3). Pendant lecture-seule au
+# Job geo-preprod-sync (write side) : le sync stampe served_count+set_hash+coherence_id ;
+# ce Job les re-vérifie contre le set réellement exposé.
+#
+# POURQUOI un Job on-cluster (et PAS un build/run local) — donnée d'archi cible :
+#   Le gate `--completeness` importe `computeSetHash` de packages/geo/dist/preprod (MÊME
+#   fonction que le runner sync → 0 dérive). Ce `dist` est buildé À L'IMAGE (geo-api),
+#   jamais committé. Le lancer en local = build irreproductible (anti principe fondateur).
+#   On-cluster sur l'image geo-api = reproductible + auditable (logs du Job) + aligné mandat
+#   owner « tout on-k8s, gates/refreshes inclus ». Cette gate PRÉFIGURE l'archi cible du
+#   dossier dé-entropie : gates ET refreshes = Jobs on-cluster sur image commune.
+#
+# Deux modes du script (cf. son en-tête) : CE Job lance le mode B (--completeness = count +
+# VRAI set-hash match + coherence fail-closed). Le mode A (fraîcheur par-collection, pur
+# fetch) est un cross-check lancé par geo-archi EN LOCAL, en parallèle (pas de build requis).
+#
+# Valeurs réseau/image = poc-k8s (comme le sync Job) ; committé après OK. AUCUN secret monté
+# (lecture API HTTP seule) — plus least-priv que le sync. Le SA `geo-ci-deployer-preprod`
+# peut déjà create/get jobs + read pods/logs (RBAC ns-scoped existant).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-geo-verify-egress
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/name: geo-preprod-verify
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: preprod
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: geo-preprod-verify
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    # API preprod lue EN INTERNE (svc geo-api, MÊME ns geo-preprod). Le hairpin vers l'IP
+    # externe du LB (api.preprod.geo.sent-tech.ca) NE ROUTE PAS depuis un pod du même cluster
+    # (prouvé au run sync 2026-08-20, même cause). On vise donc le Service in-cluster même-ns
+    # geo-api:8787 (svc 80 → targetPort http=8787). Même réponse API (coherence/served_count/
+    # set_hash servis par le même process). La preuve EXTERNE (ingress + TLS + DNS) est déjà
+    # verte via le pré-check geo-archi (HTTP 200 + cert) → pas re-testée par ce Job.
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: geo-api
+      ports:
+        - protocol: TCP
+          port: 8787
+        - protocol: TCP
+          port: 80 # belt-and-suspenders si le CNI évalue le port PRÉ-DNAT (service port)
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-preprod-verify
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/name: geo-preprod-verify
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: preprod
+spec:
+  backoffLimit: 2                 # tolère un transient réseau ; un VRAI mismatch data échoue (déterministe)
+  ttlSecondsAfterFinished: 86400  # logs auditables 24h puis auto-clean
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geo-preprod-verify
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/instance: preprod
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: geo-registry-pull
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: verify
+          # MÊME image geo-api que le serving/sync preprod : embarque scripts/ +
+          # packages/geo/dist/preprod (computeSetHash). k8s confirme = build 15ac559c
+          # (post-#236) ; il remplit ce placeholder par le digest registry-qualifié courant.
+          # Zéro build/clone in-cluster.
+          image: REPLACE_WITH_GEO_API_DIGEST  # k8s: build 15ac559c (post-#236)
+          workingDir: /app
+          command:
+            - node
+            - scripts/geo-verify-served-collections.mjs
+            - --completeness
+            - --expect-coherence
+            - $(EXPECT_COHERENCE_ID)
+          env:
+            # MÊME coherence_id partagé injecté au sync (§6.1) — JAMAIS fabriqué ici : c'est
+            # le watermark FINAL acké i-cond (S00). La gate asserte que la landing sert CE
+            # watermark exact (fail-closed si absent/mismatch).
+            - name: EXPECT_COHERENCE_ID
+              value: w-2026-08-21T00Z  # cycle courant (final, i-cond acké) ; paramétrer par cycle
+            - name: GEO_API_BASE
+              value: http://geo-api.geo-preprod.svc.cluster.local:80  # svc interne même-ns (évite le hairpin LB ; exposition externe prouvée par pré-check)
+          resources:
+            requests:
+              cpu: 50m
+              memory: 96Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false  # aligné au sync Job (robustesse node) ; aucun secret monté = le gain least-priv
+            capabilities:
+              drop:
+                - ALL
