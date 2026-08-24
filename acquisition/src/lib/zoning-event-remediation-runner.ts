@@ -300,7 +300,10 @@ async function evidenceForCity(
       } catch {
         throw new Error(`preuve LINK ${item.event_id}: manifeste de capture invalide`);
       }
-      if (manifest.length !== run.counts.attempts) {
+      if (
+        manifest.length !== run.counts.attempts ||
+        manifest.some((line) => line.run_id !== run.run_id || line.lane !== "pv")
+      ) {
         throw new Error(`preuve LINK ${item.event_id}: manifeste/run non fermé`);
       }
       await readVerified(receipt.captured_pdf_ref, readEvidence);
@@ -408,7 +411,10 @@ async function evidenceForCity(
       } catch {
         throw new Error(`preuve RETRACT ${item.event_id}: manifeste de capture invalide`);
       }
-      if (manifest.length !== run.counts.attempts) {
+      if (
+        manifest.length !== run.counts.attempts ||
+        manifest.some((line) => line.run_id !== run.run_id || line.lane !== "pv")
+      ) {
         throw new Error(`preuve RETRACT ${item.event_id}: manifeste/run non fermé`);
       }
       const cityLineIndexes = manifest.flatMap((candidate, index) =>
