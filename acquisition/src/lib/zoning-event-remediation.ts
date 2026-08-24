@@ -140,25 +140,27 @@ export interface ZoningEventOwnerGo {
   via: "geo-cond";
   owner_go_direct: true;
   owner_instance: string;
+  geo_cond_instance: string;
   inventory_sha256: Sha256Ref;
   dry_run_sha256: Sha256Ref;
   h2a_envelope_id: string;
   h2a_session_id: string;
 }
 
-export interface VerifiedDirectOwnerGo {
-  verified: true;
-  via: "geo-cond";
-  owner_instance: string;
-  inventory_sha256: Sha256Ref;
-  dry_run_sha256: Sha256Ref;
-  h2a_envelope_id: string;
-  h2a_session_id: string;
-}
+export type H2aRecordReader = (id: string) => Promise<unknown>;
 
-export type DirectOwnerGoVerifier = (
-  ownerGo: ZoningEventOwnerGo,
-) => Promise<VerifiedDirectOwnerGo>;
+export interface ZoningEventsWholeSetStore {
+  getExisting(key: string): Promise<Buffer | null>;
+  /**
+   * One owner-controlled conditional commit for both layouts. Implementations
+   * must fail without writing when either expected SHA is no longer current.
+   */
+  commitWholeSetIfUnchanged(input: {
+    keys: readonly [string, string];
+    expected_sha256: Sha256Ref;
+    body: Buffer;
+  }): Promise<void>;
+}
 
 function nonEmpty(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
@@ -514,6 +516,9 @@ function assertOwnerGo(
   if (!nonEmpty(ownerGo.owner_instance)) {
     throw new Error("zoning-event remediation: identité owner directe requise");
   }
+  if (!nonEmpty(ownerGo.geo_cond_instance)) {
+    throw new Error("zoning-event remediation: identité geo-cond requise");
+  }
 }
 
 function assertClosedExecutableDryRun(dryRun: ZoningEventRemediationDryRunReport): void {
@@ -565,20 +570,47 @@ function assertClosedExecutableDryRun(dryRun: ZoningEventRemediationDryRunReport
   }
 }
 
-function assertVerifiedOwnerGo(
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+async function assertOwnerGoInH2a(
   ownerGo: ZoningEventOwnerGo,
-  verified: VerifiedDirectOwnerGo,
-): void {
+  readEnvelope: H2aRecordReader,
+  readSession: H2aRecordReader,
+): Promise<void> {
+  const envelope = await readEnvelope(ownerGo.h2a_envelope_id);
+  if (!isRecord(envelope) || !isRecord(envelope["actor"]) || !isRecord(envelope["body"])) {
+    throw new Error("zoning-event remediation: enveloppe h2a owner-go invalide");
+  }
+  const actor = envelope["actor"];
+  const body = envelope["body"];
   if (
-    verified.verified !== true ||
-    verified.via !== "geo-cond" ||
-    verified.owner_instance !== ownerGo.owner_instance ||
-    verified.inventory_sha256 !== ownerGo.inventory_sha256 ||
-    verified.dry_run_sha256 !== ownerGo.dry_run_sha256 ||
-    verified.h2a_envelope_id !== ownerGo.h2a_envelope_id ||
-    verified.h2a_session_id !== ownerGo.h2a_session_id
+    envelope["protocol"] !== "sentropic.h2a" ||
+    envelope["version"] !== "0.1" ||
+    envelope["id"] !== ownerGo.h2a_envelope_id ||
+    envelope["type"] !== "event" ||
+    actor["instance"] !== ownerGo.owner_instance ||
+    actor["role"] !== "OWNER" ||
+    body["kind"] !== "zoning-event-remediation-owner-go" ||
+    body["via"] !== "geo-cond" ||
+    body["owner_go_direct"] !== true ||
+    body["owner_instance"] !== ownerGo.owner_instance ||
+    body["geo_cond_instance"] !== ownerGo.geo_cond_instance ||
+    body["inventory_sha256"] !== ownerGo.inventory_sha256 ||
+    body["dry_run_sha256"] !== ownerGo.dry_run_sha256 ||
+    body["h2a_session_id"] !== ownerGo.h2a_session_id
   ) {
-    throw new Error("zoning-event remediation: vérification h2a du go owner divergente");
+    throw new Error("zoning-event remediation: enveloppe h2a owner DIRECT divergente");
+  }
+  const session = await readSession(ownerGo.h2a_session_id);
+  if (
+    !isRecord(session) ||
+    session["sessionId"] !== ownerGo.h2a_session_id ||
+    session["instance"] !== ownerGo.geo_cond_instance ||
+    !(["live", "closed", "draining"] as unknown[]).includes(session["state"])
+  ) {
+    throw new Error("zoning-event remediation: session h2a geo-cond divergente");
   }
 }
 
@@ -588,17 +620,45 @@ function assertVerifiedOwnerGo(
  * matching artefact here.
  */
 export async function executeZoningEventRemediation(
-  /** Exact nested served object bytes re-read immediately before this boundary. */
-  documentBytes: Buffer,
+  slug: string,
   dryRun: ZoningEventRemediationDryRunReport,
   ownerGo: ZoningEventOwnerGo,
   options: {
     asOf: string;
-    /** Mandatory live/durable h2a lookup; no caller assertion is sufficient. */
-    verifyDirectOwnerGo: DirectOwnerGoVerifier;
-    store?: ZoningEventsStore;
+    /** Raw lookups; this module, not the caller, validates their semantics. */
+    readH2aEnvelope: H2aRecordReader;
+    readH2aSession: H2aRecordReader;
+    /** No default real-S3 writer exists: owner-controlled whole-set CAS only. */
+    store: ZoningEventsWholeSetStore;
   },
 ): Promise<ServeZoningEventsResult> {
+  assertClosedExecutableDryRun(dryRun);
+  const cityMatches = dryRun.cities.filter((city) => city.slug === slug);
+  if (
+    cityMatches.length !== 1 ||
+    cityMatches[0]!.dry_run_state !== "planned" ||
+    cityMatches[0]!.plan === null
+  ) {
+    throw new Error(`zoning-event remediation ${slug}: plan absent/ambigu dans le dry-run revu`);
+  }
+  const plan = cityMatches[0]!.plan;
+  if (plan.inventory_sha256 !== dryRun.inventory_sha256) {
+    throw new Error("zoning-event remediation: plan municipal hors inventaire dry-run");
+  }
+  assertOwnerGo(ownerGo, dryRun);
+  await assertOwnerGoInH2a(ownerGo, options.readH2aEnvelope, options.readH2aSession);
+  const keys = zoningEventsKeys(slug) as [string, string];
+  const snapshots = new Map<string, Buffer>();
+  for (const key of keys) {
+    const body = await options.store.getExisting(key);
+    if (body === null) throw new Error(`zoning-event remediation: layout servi manquant ${key}`);
+    const actualSha = `sha256:${createHash("sha256").update(body).digest("hex")}`;
+    if (actualSha !== plan.collection_sha256) {
+      throw new Error(`zoning-event remediation: layout servi modifié/divergent ${key}`);
+    }
+    snapshots.set(key, body);
+  }
+  const documentBytes = snapshots.get(plan.collection_key)!;
   let document: ZoningEventsDocument;
   try {
     const text = new TextDecoder("utf-8", { fatal: true }).decode(documentBytes);
@@ -606,31 +666,31 @@ export async function executeZoningEventRemediation(
   } catch {
     throw new Error("zoning-event remediation: collection servie JSON UTF-8 invalide");
   }
-  assertClosedExecutableDryRun(dryRun);
-  const cityMatches = dryRun.cities.filter((city) => city.slug === document.muni);
-  if (
-    cityMatches.length !== 1 ||
-    cityMatches[0]!.dry_run_state !== "planned" ||
-    cityMatches[0]!.plan === null
-  ) {
-    throw new Error(`zoning-event remediation ${document.muni}: plan absent/ambigu dans le dry-run revu`);
-  }
-  const plan = cityMatches[0]!.plan;
-  if (plan.inventory_sha256 !== dryRun.inventory_sha256) {
-    throw new Error("zoning-event remediation: plan municipal hors inventaire dry-run");
-  }
-  assertOwnerGo(ownerGo, dryRun);
-  const verifiedOwnerGo = await options.verifyDirectOwnerGo(ownerGo);
-  assertVerifiedOwnerGo(ownerGo, verifiedOwnerGo);
-  const collectionSha256 = `sha256:${createHash("sha256").update(documentBytes).digest("hex")}`;
-  if (collectionSha256 !== plan.collection_sha256) {
-    throw new Error("zoning-event remediation: collection servie modifiée depuis le dry-run");
-  }
   assertIso(options.asOf, "zoning-event remediation served asOf");
   const events = materializeZoningEventRemediation(document, plan);
-  return serveZoningEvents(document.muni, events, {
+  const staged = new Map<string, Buffer>();
+  const stagingStore: ZoningEventsStore = {
+    async getExisting(key) {
+      return snapshots.get(key) ?? null;
+    },
+    async put(key, body) {
+      staged.set(key, body);
+    },
+  };
+  const result = await serveZoningEvents(document.muni, events, {
     asOf: options.asOf,
     complete: true,
-    ...(options.store ? { store: options.store } : {}),
+    store: stagingStore,
   });
+  const flatBody = staged.get(keys[0]);
+  const nestedBody = staged.get(keys[1]);
+  if (flatBody === undefined || nestedBody === undefined || !flatBody.equals(nestedBody)) {
+    throw new Error("zoning-event remediation: serveZoningEvents n'a pas produit les deux layouts identiques");
+  }
+  await options.store.commitWholeSetIfUnchanged({
+    keys,
+    expected_sha256: plan.collection_sha256,
+    body: nestedBody,
+  });
+  return result;
 }

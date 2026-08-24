@@ -7,7 +7,6 @@ import {
   zoningEventsKeys,
   type ZoningEvent,
   type ZoningEventsDocument,
-  type ZoningEventsStore,
 } from "../zoning-events-emit.js";
 import {
   executeZoningEventRemediation,
@@ -22,6 +21,7 @@ import {
   ZONING_EVENT_REMEDIATION_DRY_RUN_CONTRACT,
   type ZoningEventExhaustionProof,
   type ZoningEventLinkSource,
+  type ZoningEventsWholeSetStore,
 } from "./zoning-event-remediation.js";
 
 const PDF = "https://example.test/pv.pdf";
@@ -78,7 +78,8 @@ const exhaustion: ZoningEventExhaustionProof = {
 };
 
 function memoryStore(seed: ZoningEventsDocument): {
-  store: ZoningEventsStore;
+  store: ZoningEventsWholeSetStore;
+  data: Map<string, Buffer>;
   written: Map<string, ZoningEventsDocument>;
 } {
   const data = new Map<string, Buffer>();
@@ -89,11 +90,21 @@ function memoryStore(seed: ZoningEventsDocument): {
       async getExisting(key) {
         return data.get(key) ?? null;
       },
-      async put(key, body) {
-        data.set(key, body);
-        written.set(key, JSON.parse(body.toString("utf8")) as ZoningEventsDocument);
+      async commitWholeSetIfUnchanged(input) {
+        for (const key of input.keys) {
+          const current = data.get(key);
+          const actual = current
+            ? `sha256:${createHash("sha256").update(current).digest("hex")}`
+            : null;
+          if (actual !== input.expected_sha256) throw new Error(`CAS divergent ${key}`);
+        }
+        for (const key of input.keys) {
+          data.set(key, input.body);
+          written.set(key, JSON.parse(input.body.toString("utf8")) as ZoningEventsDocument);
+        }
       },
     },
+    data,
     written,
   };
 }
@@ -219,6 +230,7 @@ describe("executeZoningEventRemediation", () => {
       via: "geo-cond" as const,
       owner_go_direct: true as const,
       owner_instance: "owner:direct",
+      geo_cond_instance: "claude:geo-cond",
       inventory_sha256: SHA_B,
       dry_run_sha256: SHA_A,
       h2a_envelope_id: "env:owner-go",
@@ -258,30 +270,50 @@ describe("executeZoningEventRemediation", () => {
     };
     ownerGo.dry_run_sha256 = zoningEventRemediationArtifactSha256(dryRun);
     const memory = memoryStore(value);
-    const verifyDirectOwnerGo = async (go: typeof ownerGo) => ({
-      verified: true as const,
-      via: "geo-cond" as const,
-      owner_instance: go.owner_instance,
-      inventory_sha256: go.inventory_sha256,
-      dry_run_sha256: go.dry_run_sha256,
-      h2a_envelope_id: go.h2a_envelope_id,
-      h2a_session_id: go.h2a_session_id,
-    });
+    const ownerEnvelope = {
+      protocol: "sentropic.h2a",
+      version: "0.1",
+      id: ownerGo.h2a_envelope_id,
+      type: "event",
+      actor: { instance: ownerGo.owner_instance, role: "OWNER", scope: "scope:default" },
+      body: {
+        kind: "zoning-event-remediation-owner-go",
+        via: "geo-cond",
+        owner_go_direct: true,
+        owner_instance: ownerGo.owner_instance,
+        geo_cond_instance: ownerGo.geo_cond_instance,
+        inventory_sha256: ownerGo.inventory_sha256,
+        dry_run_sha256: ownerGo.dry_run_sha256,
+        h2a_session_id: ownerGo.h2a_session_id,
+      },
+    };
+    const geoCondSession = {
+      sessionId: ownerGo.h2a_session_id,
+      instance: ownerGo.geo_cond_instance,
+      state: "live",
+    };
+    const h2a = {
+      readH2aEnvelope: async () => ownerEnvelope,
+      readH2aSession: async () => geoCondSession,
+    };
 
     await expect(executeZoningEventRemediation(
-      valueBytes,
+      "ville-test",
       dryRun,
       { ...ownerGo, dry_run_sha256: SHA_A },
-      { asOf: "2026-08-24T00:00:00Z", verifyDirectOwnerGo, store: memory.store },
+      { asOf: "2026-08-24T00:00:00Z", ...h2a, store: memory.store },
     )).rejects.toThrow(/dry-run exact/);
     expect(memory.written.size).toBe(0);
 
+    const staleMemory = memoryStore(value);
+    staleMemory.data.set(zoningEventsKeys("ville-test")[1]!, Buffer.from(`${valueBytes.toString("utf8")} `));
     await expect(executeZoningEventRemediation(
-      Buffer.from(`${valueBytes.toString("utf8")} `),
+      "ville-test",
       dryRun,
       ownerGo,
-      { asOf: "2026-08-24T00:00:00Z", verifyDirectOwnerGo, store: memory.store },
-    )).rejects.toThrow(/modifiée depuis le dry-run/);
+      { asOf: "2026-08-24T00:00:00Z", ...h2a, store: staleMemory.store },
+    )).rejects.toThrow(/layout servi modifié\/divergent/);
+    expect(staleMemory.written.size).toBe(0);
     expect(memory.written.size).toBe(0);
 
     const hiddenUnknown = {
@@ -293,33 +325,34 @@ describe("executeZoningEventRemediation", () => {
       dry_run_sha256: zoningEventRemediationArtifactSha256(hiddenUnknown),
     };
     await expect(executeZoningEventRemediation(
-      valueBytes,
+      "ville-test",
       hiddenUnknown,
       hiddenUnknownGo,
-      { asOf: "2026-08-24T00:00:00Z", verifyDirectOwnerGo, store: memory.store },
+      { asOf: "2026-08-24T00:00:00Z", ...h2a, store: memory.store },
     )).rejects.toThrow(/comptes\/exécutabilité/);
     expect(memory.written.size).toBe(0);
 
     await expect(executeZoningEventRemediation(
-      valueBytes,
+      "ville-test",
       dryRun,
       ownerGo,
       {
         asOf: "2026-08-24T00:00:00Z",
-        verifyDirectOwnerGo: async (go) => ({
-          ...(await verifyDirectOwnerGo(go)),
-          owner_instance: "owner:forged",
+        readH2aEnvelope: async () => ({
+          ...ownerEnvelope,
+          actor: { instance: "owner:forged", role: "OWNER", scope: "scope:default" },
         }),
+        readH2aSession: h2a.readH2aSession,
         store: memory.store,
       },
-    )).rejects.toThrow(/vérification h2a/);
+    )).rejects.toThrow(/enveloppe h2a owner DIRECT/);
     expect(memory.written.size).toBe(0);
 
     const result = await executeZoningEventRemediation(
-      valueBytes,
+      "ville-test",
       dryRun,
       ownerGo,
-      { asOf: "2026-08-24T00:00:00Z", verifyDirectOwnerGo, store: memory.store },
+      { asOf: "2026-08-24T00:00:00Z", ...h2a, store: memory.store },
     );
     expect(result.keys).toEqual(zoningEventsKeys("ville-test"));
     expect(result.document.events).toHaveLength(3);

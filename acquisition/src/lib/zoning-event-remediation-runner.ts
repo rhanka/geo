@@ -2,6 +2,11 @@ import { createHash } from "node:crypto";
 
 import { z } from "zod";
 
+import {
+  CaptureRunHeaderSchema,
+  parseManifestJsonl,
+} from "../../../packages/qc-sources/src/capture/index.js";
+
 import type { ZoningEventsDocument } from "../zoning-events-emit.js";
 import {
   type ZoningEventDocumentRead,
@@ -85,6 +90,9 @@ const PvLinkReceiptSchema = z.object({
   source_span: z.string().min(1),
   as_of_date: z.string().min(1),
   producer: z.string().min(1),
+  capture_run_ref: DurableRefSchema,
+  capture_manifest_ref: DurableRefSchema,
+  captured_pdf_ref: DurableRefSchema,
   pv_text_ref: DurableRefSchema,
 }).strict();
 const ExhaustionReceiptSchema = z.object({
@@ -223,6 +231,39 @@ async function evidenceForCity(
       }
       if (receipt.receipt_key !== item.resolution.evidence_ref.key || receipt.event_id !== item.event_id) {
         throw new Error(`preuve LINK ${item.event_id}: reçu hors cible`);
+      }
+      const runBytes = await readVerified(receipt.capture_run_ref, readEvidence);
+      let run: z.infer<typeof CaptureRunHeaderSchema>;
+      try {
+        run = CaptureRunHeaderSchema.parse(JSON.parse(new TextDecoder("utf-8", { fatal: true }).decode(runBytes)));
+      } catch {
+        throw new Error(`preuve LINK ${item.event_id}: run de capture contractuel invalide`);
+      }
+      if (run.execution !== "cluster" || run.lane !== "pv" || run.finished_at === null || run.exit_code !== 0) {
+        throw new Error(`preuve LINK ${item.event_id}: run PV cluster terminé requis`);
+      }
+      const manifestBytes = await readVerified(receipt.capture_manifest_ref, readEvidence);
+      let manifest;
+      try {
+        manifest = parseManifestJsonl(new TextDecoder("utf-8", { fatal: true }).decode(manifestBytes));
+      } catch {
+        throw new Error(`preuve LINK ${item.event_id}: manifeste de capture invalide`);
+      }
+      await readVerified(receipt.captured_pdf_ref, readEvidence);
+      const captured = manifest.some((line) =>
+        line.run_id === run.run_id &&
+        line.lane === "pv" &&
+        line.slugs.includes(city.slug) &&
+        (line.url === receipt.source_url || line.final_url === receipt.source_url) &&
+        line.http_status !== null && line.http_status >= 200 && line.http_status < 300 &&
+        line.error === null &&
+        line.redacted === false &&
+        line.storage_key === receipt.captured_pdf_ref.key &&
+        line.sha256 === receipt.captured_pdf_ref.sha256 &&
+        line.content_type?.toLowerCase().includes("pdf") === true
+      );
+      if (!captured) {
+        throw new Error(`preuve LINK ${item.event_id}: URL/PDF non liés au manifeste PV cluster`);
       }
       const pvBytes = await readVerified(receipt.pv_text_ref, readEvidence);
       let pvText: string;
