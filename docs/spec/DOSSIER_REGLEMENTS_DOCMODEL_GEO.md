@@ -124,7 +124,38 @@ OWNER, extraction et moi donnons l'analyse, pas la décision) :
 ⟹ **geo sert la lignée ⟺ immo la projette 1:1** ; B ferme la fuite maintenant, A la rend **récurrence-proof**
 (ancre servi-geo). C'est la **colonne de la reco §4**.
 
-**Reste (non-bloquant pour le fond)** : j'envoie à extraction les enums geo `ZoningEvent.type`
-(`ppcmoi | changement-de-zonage | projet-reglement | entree-en-vigueur | derogation-mineure | cptaq | consultation
-| registre-referendaire | alienation | autre`, `zoning-events-emit.ts:38-48`) + `detection_state` → extraction clôt
-la **table champ-exact** ; je la grave ici en clôture.
+**Table champ-exact — CLÔTURÉE avec extraction :**
+
+*Mapping `geo ZoningEvent.type` → {immo `kind`, immo `stage`} (many-to-two) :*
+
+| geo `type` | immo `kind` | immo `stage` (étape) |
+|---|---|---|
+| `ppcmoi` | ppcmoi | (étape=ppcmoi) |
+| `changement-de-zonage` | modification_zonage / rezonage | — |
+| `derogation-mineure` | derogation / derogation_mineure | (étape=derogation_mineure) |
+| `cptaq` | cptaq | — |
+| `alienation` | acquisition / expropriation | — |
+| `projet-reglement` | — | projet_reglement (+ avis_motion, second_projet) |
+| `entree-en-vigueur` | — | adoption (⟺ `bylaw_lifecycle=en_vigueur`) |
+| `consultation` | — | consultation publique |
+| `registre-referendaire` | — | registre référendaire |
+| `autre` | (fallback) | inconnu |
+
+*Mapping `detection_state` → buckets discriminant immo :* `detected` ⟺ source existe+vérifiée · `no-event` ⟺
+absence **RÉELLE** (après épuisement) · `detection_incomplete` ⟺ candidat-non-vérifié / PIIA-pending. ⟹ c'est le
+**discriminant §2.3, à SERVIR (Model A)**.
+
+**3 ajouts au contrat servi (Model A) — gravés :**
+1. **`provenance.docSha`** (sha256 preuve-v2) = clé de liaison du fix 71/137.
+2. **`bylaw_lifecycle`** (`projet → en_cours → adopte → en_vigueur → abroge`) = statut du **DOCUMENT** ; **aucun home
+   servi geo** aujourd'hui.
+3. **`subject`/`address` ref pour la classe d'événements SANS bylaw** *(3ᵉ finding extraction)* : les événements
+   **PIIA / plan-de-site address-keyed** (mesurés : sainte-martine 13, saint-michel ~10) ont `bylaw_numero = null`
+   — leur ancre/lignée est **`address` + `date`**, PAS un bylaw. `ZoningEvent` n'a **aucun** champ sujet/adresse
+   (il porte `zone_codes` zone-level) ⟹ **ajouter un `subject` ref** (adresse/lot) sinon cette classe est
+   **structurellement non-ancrable** = un fantôme que le modèle bylaw-only rate.
+
+**Note taxonomie** : geo `type` est **plus grossier** que le `kind` immo (manque `piia`, `usage-conditionnel`,
+`densification`, `lotissement`, `rezonage`-distinct → tombent en `autre`). Le **split `type` → `kind` + `stage`
+(Model A)** doit aussi **élargir l'enum `kind`** pour couvrir ces instruments. *(Table close ; extraction dépose
+son §1-exemples + §2-immo data-model à geo-cond pour le fold §4.)*
