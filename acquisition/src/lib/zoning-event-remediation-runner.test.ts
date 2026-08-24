@@ -21,6 +21,7 @@ import {
   ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT,
   ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT,
   ZONING_EVENT_PV_TEXT_EXTRACTION_RECEIPT_CONTRACT,
+  ZONING_EVENT_SOURCE_NO_MATCH_RECEIPT_CONTRACT,
   type Sha256Ref,
 } from "./zoning-event-remediation.js";
 
@@ -106,6 +107,12 @@ describe("buildZoningEventRemediationDryRun", () => {
     const pdfSha = sha(pdf);
     const pdfRef = { key: `raw/pv-unit/cas/${pdfSha.slice("sha256:".length)}.pdf`, sha256: pdfSha };
     const captureRunKey = "capture/_runs/unit/run.json";
+    const indexBytes = Buffer.from("<html><body>PV index without target source</body></html>");
+    const indexSha = sha(indexBytes);
+    const indexRef = {
+      key: `raw/pv-unit/cas/${indexSha.slice("sha256:".length)}.html`,
+      sha256: indexSha,
+    };
     const captureRun = Buffer.from(JSON.stringify({
       run_id: "unit",
       lane: "pv",
@@ -118,7 +125,7 @@ describe("buildZoningEventRemediationDryRun", () => {
       user_agent: "geo-test/1",
       egress: "direct",
       via_obscura: false,
-      counts: { attempts: 1, ok: 1, failed: 0, dedup: 0, bytes: pdf.length },
+      counts: { attempts: 2, ok: 2, failed: 0, dedup: 0, bytes: pdf.length + indexBytes.length },
     }));
     const captureManifestKey = "capture/_runs/unit/manifest.jsonl";
     const captureManifest = Buffer.from(`${JSON.stringify({
@@ -138,6 +145,30 @@ describe("buildZoningEventRemediationDryRun", () => {
       bytes: pdf.length,
       sha256: pdfRef.sha256,
       storage_key: pdfRef.key,
+      dedup: false,
+      error: null,
+      user_agent: "geo-test/1",
+      via_obscura: false,
+      egress: "direct",
+      robots: "allowed",
+      redacted: false,
+    })}\n${JSON.stringify({
+      run_id: "unit",
+      lane: "pv",
+      source: "proces-verbaux-test",
+      slugs: ["ville-test"],
+      url: "https://example.test/pv-index",
+      method: "GET",
+      attempt: 1,
+      requested_at: "2026-06-10T00:00:02.000Z",
+      retrieved_at: "2026-06-10T00:00:03.000Z",
+      http_status: 200,
+      redirect_chain: [],
+      final_url: "https://example.test/pv-index",
+      content_type: "text/html",
+      bytes: indexBytes.length,
+      sha256: indexRef.sha256,
+      storage_key: indexRef.key,
       dedup: false,
       error: null,
       user_agent: "geo-test/1",
@@ -179,13 +210,38 @@ describe("buildZoningEventRemediationDryRun", () => {
         sha256: sha(textExtractionReceipt),
       },
     }));
-    const exhaustionReceiptKey = "capture/run.json";
+    const noMatchReceiptKey = "capture/_runs/unit/no-match-retract.json";
+    const noMatchReceipt = Buffer.from(JSON.stringify({
+      contract: ZONING_EVENT_SOURCE_NO_MATCH_RECEIPT_CONTRACT,
+      status: "complete-no-match",
+      receipt_key: noMatchReceiptKey,
+      event_id: "retract",
+      run_id: "unit",
+      source_ref: "https://example.test/pv-index",
+      captured_object_ref: indexRef,
+      detector: "immo-extraction/d52af7",
+      detector_git_sha: "a".repeat(40),
+      complete: true,
+      matches: [],
+      extracted_at: "2026-06-10T00:00:04.000Z",
+    }));
+    const exhaustionReceiptKey = "capture/_runs/unit/exhaustion-retract.json";
     const exhaustionReceipt = Buffer.from(JSON.stringify({
       contract: ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT,
       status: "exhausted",
       receipt_key: exhaustionReceiptKey,
       event_id: "retract",
-      checked_sources: [{ source_ref: "pv:index", outcome: "no-source" }],
+      capture_run_ref: { key: captureRunKey, sha256: sha(captureRun) },
+      capture_manifest_ref: { key: captureManifestKey, sha256: sha(captureManifest) },
+      checked_sources: [{
+        source_ref: "https://example.test/pv-index",
+        outcome: "no-source",
+        evidence: [{
+          kind: "extracted-no-match",
+          manifest_line_index: 1,
+          extraction_receipt_ref: { key: noMatchReceiptKey, sha256: sha(noMatchReceipt) },
+        }],
+      }],
       as_of: "2026-08-23T00:00:00Z",
     }));
     const rawInventory = {
@@ -209,7 +265,7 @@ describe("buildZoningEventRemediationDryRun", () => {
             contract: ZONING_EVENT_EXHAUSTION_CONTRACT,
             status: "exhausted",
             run_refs: [{ key: exhaustionReceiptKey, sha256: sha(exhaustionReceipt) }],
-            checked_sources: [{ source_ref: "pv:index", outcome: "no-source" }],
+            checked_sources: [{ source_ref: "https://example.test/pv-index", outcome: "no-source" }],
             as_of: "2026-08-23T00:00:00Z",
           } } },
         ],
@@ -220,10 +276,12 @@ describe("buildZoningEventRemediationDryRun", () => {
     const evidence = new Map([
       [pvTextRef.key, pv],
       [pdfRef.key, pdf],
+      [indexRef.key, indexBytes],
       [captureRunKey, captureRun],
       [captureManifestKey, captureManifest],
       [textExtractionReceiptKey, textExtractionReceipt],
       [linkReceiptKey, linkReceipt],
+      [noMatchReceiptKey, noMatchReceipt],
       [exhaustionReceiptKey, exhaustionReceipt],
     ]);
     const report = await buildZoningEventRemediationDryRun(
@@ -244,7 +302,7 @@ describe("buildZoningEventRemediationDryRun", () => {
     });
   });
 
-  it("turns a semantically unrelated durable receipt into unknown, never RETRACT", async () => {
+  it("turns a declarative exhaustion receipt into unknown, never RETRACT", async () => {
     const value = document();
     const body = Buffer.from(JSON.stringify(value));
     const collectionSha = sha(body);
@@ -256,7 +314,7 @@ describe("buildZoningEventRemediationDryRun", () => {
       status: "exhausted",
       receipt_key: "capture/run.json",
       event_id: "retract",
-      checked_sources: [{ source_ref: "pv:unrelated", outcome: "no-source" }],
+      checked_sources: [{ source_ref: "https://example.test/pv-index", outcome: "no-source" }],
       as_of: "2026-08-23T00:00:00Z",
     }));
     const rawInventory = {
@@ -272,7 +330,7 @@ describe("buildZoningEventRemediationDryRun", () => {
           contract: ZONING_EVENT_EXHAUSTION_CONTRACT,
           status: "exhausted",
           run_refs: [{ key: "capture/run.json", sha256: sha(unrelatedReceipt) }],
-          checked_sources: [{ source_ref: "pv:index", outcome: "no-source" }],
+          checked_sources: [{ source_ref: "https://example.test/pv-index", outcome: "no-source" }],
           as_of: "2026-08-23T00:00:00Z",
         } } }],
       }],
@@ -287,6 +345,6 @@ describe("buildZoningEventRemediationDryRun", () => {
     expect(report.executable).toBe(false);
     expect(report.totals.cities_unknown).toBe(1);
     expect(report.totals.to_retract).toBe(0);
-    expect(report.cities[0]!.error).toMatch(/sources reçues\/inventaire divergentes/);
+    expect(report.cities[0]!.error).toMatch(/reçu JSON contractuel invalide/);
   });
 });
