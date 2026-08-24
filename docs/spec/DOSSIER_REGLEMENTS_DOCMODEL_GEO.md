@@ -159,3 +159,27 @@ absence **RÉELLE** (après épuisement) · `detection_incomplete` ⟺ candidat-
 `densification`, `lotissement`, `rezonage`-distinct → tombent en `autre`). Le **split `type` → `kind` + `stage`
 (Model A)** doit aussi **élargir l'enum `kind`** pour couvrir ces instruments. *(Table close ; extraction dépose
 son §1-exemples + §2-immo data-model à geo-cond pour le fold §4.)*
+
+### §2.5 — Cause racine PRODUCTEUR (escalade extraction) : la lignée doit être ÉMISE, pas seulement servie
+
+**[FACT mesuré — extraction]** Sur la cohorte des 137 fantômes : **seuls 36/137 ont un edge `derived_from` portant
+le `docSha`** ; **101/137 n'ont AUCUN lien event→Source** dans le graphe (saint-jean 39, bouchette, saint-raymond,
+30/46 sainte-martine, …). Leur PV source **EXISTE** (récupéré+vérifié par Source-by-date / corpus-probe /
+PIIA-adresse), mais le producteur (graphify) **n'a jamais émis l'edge** → la projection **ne peut pas porter une
+lignée jamais produite**. C'est **la severance de §2.2, un hop plus haut** — au **producteur**.
+
+**Chaîne causale (3 hops)** : (1) **non-émission producteur** (edge émis pour 36/137 seulement → 101 sans-source
+à la SOURCE) → (2) **severance de projection** (§2.2 : la projection droppe l'edge des 36 qui l'ont) → (3)
+**fantôme servi** (`hasPdfLink=false`).
+
+**Exigence de contrat cible — COMPLÉTUDE du producteur** : la lignée `event → Source/Bylaw` (`refs.docSha`) doit
+être **émise pour 100 % des événements**, pas 36/137. Un producteur partiel **régénère la classe de fantômes à
+chaque run**. En **Model A**, c'est **geo** le producteur : l'émission `qc-zoning-events` (`zoning-events-emit.ts`)
+doit porter `provenance.docSha` (dispo dans le manifeste de capture `raw/proces-verbaux-<city>/cas/<sha>.pdf`) pour
+**chaque** événement — un gate de complétude à l'émission, sinon on ne stampe pas (anti-fantôme par construction,
+même logique que le VETO §4-fold). En **Model B**, c'est le graphify d'immo qui doit émettre l'edge par événement.
+
+**Les 3 moitiés à APPAIRER en §4** (aucune ne suffit seule) : **producteur ÉMET** (100 %) ⟺ **projection
+MATÉRIALISE** (immo) ⟺ **nœud servi PORTE** (contrat). *(Données §4 : 36 edge-linked / 101 unlinked sur 137 ;
+la ventilation par-ville + node-ids des 101 = input d'implémentation, à prendre quand geo possède le producteur
+Model A.)*
