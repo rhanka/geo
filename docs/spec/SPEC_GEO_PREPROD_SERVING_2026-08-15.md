@@ -1,7 +1,8 @@
 # SPEC — geo-preprod-serving + contrat data preprod immo↔geo + cycle récup prod→preprod *(cadrage WP6)*
 
-> **Statut : DRAFT cadrage/étude — OWNER-GATED. Aucune implémentation ni déploiement avant
-> ratification ; le déploiement PROD reste propriété owner (KUBE_CONFIG_DATA).** Date : 2026-08-15.
+> **Statut : RATIFIÉ owner 2026-08-18 (« ratifie, GO build gaté ») → ADR-0027. Build gaté AUTORISÉ ;
+> le déploiement PROD reste propriété owner (KUBE_CONFIG_DATA).** Date : 2026-08-15 ; **MàJ 2026-08-18** —
+> 6 besoins §6 groundés socle (Q2/Q5/Q6 tranchés) + §4.1 coherence_id servi + **§4 parité de serving** ; ratifié ADR-0027.
 > Auteur : geo-archi (`claude:archi`, WP6 contrats/architecture). **Je cadre ; geo-socle construit ;
 > poc-k8s pose la topologie du tier joint ; extraction prod = infra/extraction.**
 >
@@ -11,6 +12,10 @@
 > - `geo lane/socle : work/preprod-infra-inventory-20260810.md` — faits LIVE OVH (kubectl lecture seule) :
 >   convention namespace-par-env, état geo prod, quota `tenant-quota`, S3 `sentropic-geo`, job GHCR
 >   `6f916eb4`, contrainte « dernier km » (refresh index).
+> - `geo lane/socle : scripts/geo-preprod-infra-facts.mjs @203bb250` (kubectl lecture seule, **2026-08-18**) —
+>   faits LIVE **résolvant les 6 besoins §6** : serving **S3-only** (env geo-api prod = `{PORT, GEO_DATA_URI,
+>   NODE_ENV}`, **zéro PG**), host/ingress **traefik + letsencrypt-prod**, registre **Scaleway→GHCR (alignement
+>   en cours)**, refresh **`rollout restart` + verify gaté coherence_id**, coût **+1 pod** (0 postgis, 0 PVC).
 >
 > **Anti-invention** : ce cadrage ne fabrique AUCUN chiffre de coût absolu ni valeur infra non observée ;
 > toute donnée que je n'ai pas en lecture est marquée `unknown → socle` (liste §6). **HOLD** : rien de
@@ -62,25 +67,63 @@ d'origine immo (`caveat` à vérifier, §9). Position par défaut groundée : ge
 | # | Question | Recommandation (groundée) | Gate |
 |---|---|---|---|
 | Q1 | ns preprod dédié vs réutiliser `sentropic-preprod` | **`geo-preprod` dédié** : suit la convention ns-par-env (matchid/openerp), isole RBAC/secrets/quota, épouse la séparation immo-preprod↔geo-preprod du §6. Réutiliser `sentropic-preprod` co-mêlerait deux apps/cycles. | ratif. geo-cond+poc-k8s |
-| Q2 | S3 : préfixe `normalized-preprod/` vs bucket séparé | **Préfixe `normalized-preprod/` SI** les creds preprod peuvent être **scopées par préfixe** (écriture `normalized-preprod/*` autorisée, `normalized/*` **refusée** → sens unique §6.1 imposé au niveau IAM). **SINON bucket séparé** (blast-radius propre). `GEO_DATA_URI` preprod pointe le chemin preprod. | fait socle (IAM préfixe ?) |
+| Q2 | S3 : préfixe `normalized-preprod/` vs bucket séparé | **DÉCISION = bucket séparé** (socle 2026-08-18) : creds OVH S3 = clés liées à un user OpenStack, le write-deny par préfixe façon IAM AWS **n'est PAS garanti** (`unknown`). Anti-invention : le sens unique §6.1 ne doit pas dépendre d'une capacité non vérifiée → un **bucket preprod séparé** impose la frontière au niveau credential/bucket (blast-radius propre), sans policy de préfixe. `GEO_DATA_URI` preprod pointe le bucket preprod. **Probe socle** en cours (documente la capacité OVH ; n'affecte pas la décision). | ✅ tranché (bucket) |
 | Q3 | Cycle promotion prod→preprod (Loi25, idempotent) | **Jambe geo = job de sync S3→S3 idempotent**, watermark-driven, tournant côté poc-k8s/socle (source S3 `sentropic-geo` **atteignable socle**, contrairement au PG prod immo qui exige i-infra). Copie seule (données publiques). Rejouable. | co-design poc-k8s |
 | Q4 | Isolation prod↔preprod | **SA/RBAC dédiés** au ns `geo-preprod` ; **secret `geo-s3-credentials-preprod` distinct**, sans droit d'écriture prod ; **NetworkPolicy refusant l'egress preprod→prod** ; ingress/host preprod dédié. Invariant : **aucune cred preprod ne peut écrire la prod** (impose §6.1 au niveau infra, pas par convention). | fait socle (host/DNS, IAM) |
-| Q5 | Image geo-api preprod : même digest prod vs canal candidat | **Digest CANDIDAT** épinglé `@sha256:<digest>` (jamais `:latest`, cohérent §2 du dossier). Preprod teste le candidat AVANT prod ; `PREPROD_ACCEPTANCE` vert → **promotion du MÊME digest** en prod (approuvé owner) = re-pointage, pas rebuild. CI/CD = job GHCR par digest (`6f916eb4`). | fait socle (registre GHCR vs Scaleway) |
-| Q6 | Coût dans le quota 20-pods/6Gi | **geo-preprod minimal = geo-api (1 pod)** + **postgis preprod UNIQUEMENT si le serving en dépend** (à confirmer §6). Enveloppe : usage courant 2/20 pods, marge large → +1 à +2 pods tient. Chiffre exact = 2 faits socle (postgis requis ? empreinte mém.). | faits socle |
+| Q5 | Image geo-api preprod : même digest prod vs canal candidat | **Promotion = re-pointer le MÊME digest** (jamais rebuild), invariant **registre-agnostique** ; image épinglée `@sha256:<digest>` (jamais `:latest`). **Cible = GHCR-by-digest** (canal unique → promotion littérale, une seule source d'identité). **Interim bring-up = Scaleway same-digest** : `ghcr.io/rhanka/geo-api` **n'existe pas encore** (job GHCR gaté, jamais publié — socle 2026-08-18) → preprod démarre sur le **digest prod Scaleway `f8b152b1`** (l'image EXACTE que prod run). **Follow-up = publier geo-api sur GHCR** (PR distincte post-kubeconfig) → bascule GHCR. Pull secret = `geo-registry-pull` (interim) → GHCR (cible). | ✅ tranché (same-digest ; GHCR cible / Scaleway interim) |
+| Q6 | Coût dans le quota | **RÉSOLU (socle 2026-08-18) = +1 pod geo-api-preprod** (req **75m CPU / 128Mi**, lim **500m CPU / 768Mi**), **0 postgis** (serving S3-only → le postgis du ns geo n'est pas dans le chemin de serving OGC), **0 PVC**. Ns dédié `geo-preprod` → quota propre (grant owner/infra) ; trivial côté cluster. ⚠ Quota **secrets** du ns : prévoir ≈ 3 (S3-preprod + GHCR-pull + tls). | ✅ tranché (1 pod) |
 
 ## 4. Contrat data preprod immo↔geo *(§6)*
 
-- **Ce que geo-preprod SERT** : `{zones, règlements, couches servies}` via **la même surface OGC** que la
-  prod (mêmes collections `qc-zonage-<slug>`, mêmes contrats de provenance), sur un **host preprod dédié**.
+- **Ce que geo-preprod SERT — MIROIR PLEIN (invariant, ratifié ADR-0027)** : geo-preprod sert **EXACTEMENT le
+  set que geo-prod sert aujourd'hui** — **miroir complet** du préfixe `normalized/` (les 2 layouts plat +
+  sous-dossier), via la même surface OGC + mêmes contrats de provenance, host preprod dédié. **PAS une whitelist
+  de familles ni un sous-ensemble** : le set réel groundé (geo-socle) = **3885 collections**, dont **~1088
+  « slug-nu » de ville** (`abercorn`, `acton-vale`…, même structure OGC) **HORS** des familles de conso immo → une
+  parité par whitelist **sous-servirait ~1088 collections**. Les familles immo — `qc-zonage-<slug>` (+ variantes
+  suffixées `-arcgis`/`-rcu`/`-affectations-arcgis`… `startsWith`, conso `ogc-pull.ts:689` i-cond), `qc-lots-<slug>`,
+  `qc-zonage-norms-*`, `qc-tod-<slug>`, `qc-zoning-events` — sont **ILLUSTRATIVES** (exemples de conso), **pas la
+  définition de parité**. Le sync **miroir** le set complet ; la gate coherence_id (§4.1) fait un **count/set-match
+  vs prod** (set COMPLET), pas les seules familles — sinon un slug-nu manquant = **faux vert**.
 - **Consommation** : **immo-preprod consomme geo-preprod uniquement** (§6) — imposé par (a) config
   immo-preprod (endpoint geo = host preprod) ET (b) isolation réseau (Q4). Jamais geo-prod.
 - **Point de cohérence** : un **`preprod_coherence_id`** partagé (= watermark du snapshot prod épinglé par
   les DEUX jambes de récup) ; la jointure immo↔geo en preprod n'est valide qu'à `coherence_id` égal des
   deux côtés (§6.1 « même point de cohérence »).
-- **Ordre « dernier km »** : récup écrit `normalized-preprod/` → **rollout/refresh geo-api-preprod**
-  (l'index est caché au démarrage, contrainte socle) → alors seulement le nouveau `coherence_id` est *servi*.
+- **Ordre « dernier km »** (outillé socle, `scripts/geo-preprod-refresh.mjs` = rollout+verify) : récup écrit
+  `normalized-preprod/` + stampe `coherence_id` → **`kubectl rollout restart deployment/geo-api-preprod`**
+  (l'index est caché au démarrage) → **verify gaté** (`geo-verify-served-collections.mjs`, `GEO_API_BASE`
+  preprod : 200 + numberMatched **au `coherence_id` synchronisé** — un pod stale ÉCHOUE la gate) → alors
+  seulement le `coherence_id` est *servi*. La gate assert la **fraîcheur** (coherence_id servi == sync'd), pas
+  la seule présence des collections.
 - **PREPROD_ACCEPTANCE** (§6, cross-repo unique) : contribution geo = couches servies épinglées au
   `coherence_id` ; l'acceptation assert que la jointure immo↔geo au `coherence_id` partagé réussit.
+
+### 4.1 — Contrat « coherence_id servi » (exposition OGC) *(nouveau, socle 2026-08-18)*
+
+Pour que la gate de fraîcheur (« dernier km ») soit **prouvable THROUGH l'API** (pas seulement en S3),
+geo-api DOIT exposer le `coherence_id` **servi** — c'est ce qui prouve que le **pod de serving** a chargé la
+nouvelle donnée, pas juste que S3 la contient :
+- **Watermark unique dataset-level** (§6.1 : un seul point de cohérence ; TOUTES les collections le partagent —
+  geo-api sert tout depuis un snapshot S3, un rollout recharge tout atomiquement).
+- **Stampé par le sync** dans un manifeste racine `normalized-preprod/coherence.json` =
+  `{ coherence_id, served_count, set_hash, generated_at, prod_watermark }` — le `served_count` (count du miroir
+  prod) ET le **`set_hash` REQUIS** (= `computeSetHash` : sha256 des ids servis **dédupés+triés**, order-indépendant)
+  donnent à la gate un **vrai set-match** (complétude), pas un simple count : un drop+ajout gardant le count égal
+  échoue aussi. `buildCoherenceManifest` **fail-close au stamp** (coherenceId/servedCount/setHash requis) ; la MÊME
+  `computeSetHash` (lib `@sentropic/geo/preprod`) sert runner ET gate → **zéro dérive** (§7 A5).
+- **Exposé par geo-api via OGC** : propriété `coherence_id` sur chaque `/collections/<id>` **+** sur la landing `/`.
+  **Conditionnel** : présent en S3 → servi ; **absent** (ex. prod sans manifeste) → champ **omis** → gate **fail-closed** (correct).
+- **Gate socle** (committé `@349c3da5`) : `geo-verify-served-collections.mjs --expect-coherence <id> --coherence-field
+  coherence_id` asserte `coherence_id` **servi (lu via l'API)** == sync'd → un pod stale ÉCHOUE (« présent » ≠ « frais »).
+- **Chemin JSON = CONFIRMÉ top-level `coherence_id`** (socle 2026-08-18, vérifié contre la sortie OGC RÉELLE via
+  `scripts/geo-ogc-collection-dump.mjs`) : landing `/` = `{title, description, links}` et collection `/collections/<id>`
+  = `{id, title, attribution, crs, storageCrs, license, links}` → **top-level `coherence_id` libre sur les DEUX, zéro
+  collision** ; la gate socle (défaut `--coherence-field coherence_id`, top-level) est **déjà alignée** (zéro changement
+  verifier une fois le champ exposé).
+- **Implémentation = petite addition geo-api** (`packages/geo` : lire le manifeste au build d'index → injecter `coherence_id`
+  top-level sur collection **et** landing, conditionnel). **geo-owned, ordonnancé par geo-cond** ; preneur candidat = **socle**
+  (serving = son domaine). **Tant que non exposé, la gate fail-closed = correct.**
 
 ## 5. Contrat du cycle de récup prod→preprod *(§6.1)*
 
@@ -107,24 +150,39 @@ au même `coherence_id` que la jambe geo.
 
 Alimente les « fixtures production-shaped nettoyées » exigées par §5.2 du dossier (tests de migration).
 
-## 6. Handoff socle — mes besoins précis *(valeurs réelles à me remonter pour finaliser)*
+## 6. Handoff socle — RÉSOLU *(valeurs réelles remontées, socle 2026-08-18 `geo-preprod-infra-facts.mjs @203bb250`)*
 
-1. **postgis requis pour le SERVING ?** geo-api-preprod sert-il depuis S3 seul (`GEO_DATA_URI`), ou a-t-il
-   besoin de postgis (⇒ +1 pod preprod) ? → tranche Q6 (1 vs 2 pods).
-2. **Creds S3 scopables par préfixe ?** OVH S3 permet-il une cred écrivant `normalized-preprod/*` mais
-   **refusée** sur `normalized/*` ? → tranche Q2 (préfixe vs bucket séparé) en imposant le sens unique.
-3. **Host/ingress preprod** (ex. `api.preprod.geo.…`) + cert (cert-manager présent) → Q4.
-4. **Registre image preprod** : GHCR (job `6f916eb4`) vs Scaleway (registre prod actuel) — aligner ou dual ? → Q5.
-5. **Empreinte mém. postgis preprod** (si requis) → chiffre Q6.
-6. **Interface du refresh « dernier km »** (handle/commande de rollout/refresh déjà outillé) → câbler l'ordre récup→refresh du §4.
+| # | Besoin | Fait remonté (socle) | Décision |
+|---|---|---|---|
+| 1 | postgis requis pour le SERVING ? | **NON.** env geo-api prod = `{PORT=8787, GEO_DATA_URI=s3://…/normalized, NODE_ENV=production}`, **zéro var PG** ; serving OGC depuis **S3 seul**. | Q6 = 1 pod, 0 postgis |
+| 2 | creds S3 scopables par préfixe ? | **`unknown`.** OVH S3 = clés liées à un user OpenStack ; prefix-deny IAM **non garanti**. Probe socle en cours (documentaire). | Q2 = **bucket séparé** |
+| 3 | host/ingress + cert | **traefik** + cluster-issuer **letsencrypt-prod** ; host preprod `api.preprod.geo.sent-tech.ca`, tls `geo-api-preprod-tls`, cert **auto** (cert-manager). | Q4 ✅ (seul **DNS** = owner/infra) |
+| 4 | registre image | Scaleway aujourd'hui (`rg.fr-par.scw.cloud/…`, pull secret `geo-registry-pull`) ; job GHCR pousse déjà sur GHCR. | Q5 = **aligner GHCR-by-digest** + imagePullSecret GHCR preprod |
+| 5 | empreinte postgis preprod | **N/A** (découle de #1). Réf. prod : req 30m/160Mi, lim 768Mi. | — |
+| 6 | interface refresh « dernier km » | `kubectl rollout restart deployment/geo-api-preprod` + gate `geo-verify-served-collections.mjs` (coherence_id) → packagé **`geo-preprod-refresh.mjs`** (validé). | §4 câblé |
+
+**Reste 2 dépendances externes** : (a) **enregistrement DNS** du host preprod = owner/infra ; (b) **probe socle** capacité OVH prefix-deny = documentaire (n'affecte pas Q2).
 
 ## 7. Isolation & sûreté *(Loi 25 + sens unique — invariants assertables)*
 
-- **A1** — aucune cred montée en `geo-preprod` n'a de droit d'écriture sur `normalized/*` (prod) ni sur le PG prod.
-- **A2** — NetworkPolicy : egress `geo-preprod` → endpoints prod = **refusé** (le cycle lit la prod depuis la
-  jambe d'extraction, pas depuis les charges de serving preprod).
+- **A1** — geo-preprod écrit dans un **bucket S3 preprod séparé** (Q2, socle 2026-08-18) ; **aucune cred montée en `geo-preprod` n'a de droit d'écriture sur le bucket prod `sentropic-geo`** ni sur le PG prod (frontière au niveau bucket, pas par policy de préfixe non garantie).
+- **A2** — isolation serving↔prod par **DEUX mécanismes** (max enforçable en **mono-endpoint BHS** — `sentropic-geo`
+  et `sentropic-geo-preprod` partagent `s3.bhs.io.cloud.ovh.net` → un netpol ne peut PAS distinguer S3-prod de
+  S3-preprod, honnêteté d'archi) : **(1) in-cluster** — NetworkPolicy egress **default-deny** sur le pod serving,
+  allow **SEULEMENT** DNS + S3-BHS:443 → geo-api prod / DB / autres ns **inatteignables réseau** ; **(2) bucket S3
+  prod** (indistinguable réseau) — **cred-scoping** : le pod serving ne monte QUE le cred **dest preprod** (readWrite
+  `sentropic-geo-preprod` only, zéro cred source/prod) → ne peut lire `sentropic-geo`. La jambe **sync (Job)** = SEULE
+  porteuse du cred **source RO** (readOnly `sentropic-geo`), get→put sens-unique. Un deny *réseau* du bucket prod
+  exigerait des endpoints S3 distincts (pas le cas) — **ne pas graver un invariant infaisable**. Le scope réel des
+  VALEURS de clés (dest RW preprod-only / source RO prod-only) = **attestation live du minting** (poc-k8s), non
+  prouvable sur manifeste ; le manifeste prouve le **wiring** (quel NOM de secret monté où).
 - **A3** — endpoint geo de immo-preprod = host preprod (assert config), jamais le host prod.
-- **A4** — image preprod épinglée par digest immuable (jamais `:latest`).
+- **A4** — image preprod épinglée par **digest immuable** (jamais `:latest`) ; promotion = **même-digest** (registre-agnostique). Interim bring-up = **le digest du BUILD POST-MERGE** (docker-publish depuis main après CE cadrage implémenté — il embarque l'expo coherence_id/served_count/set_hash + le runner de sync) ; **PAS `f8b152b1`** (build 07-08 antérieur → expo absente ⇒ gate INERTE + Job ENOENT). Manifests portant `REPLACE_WITH_POST_MERGE_GEO_DIGEST` (résolu à l'apply). Cible = GHCR-by-digest (post-publication).
+- **A5** — **parité = miroir plein** (ADR-0027) : geo-preprod sert **EXACTEMENT** le set de geo-prod (miroir du
+  préfixe `normalized/` — **3885 collections dont ~1088 slug-nu**, PAS une whitelist de familles) ; la gate
+  coherence_id (§4.1) fait un **count/set-match vs prod** (via `served_count`/empreinte du manifeste) — une
+  collection servie en prod mais **absente** en preprod (ex. un slug-nu) **échoue** la gate → jamais « frais ET
+  complet » sur un sous-ensemble.
 
 ## 8. Séquencement & ce qui reste gated
 
@@ -137,12 +195,20 @@ ce cadrage (WP6, geo-archi) ─► co-design geo-cond + poc-k8s (topologie tier 
 ```
 **Déploiement PROD reste owner** (KUBE_CONFIG_DATA). **HOLD** : rien de gelé/ratifié sans OK geo-cond→owner.
 
+**Ordre de bring-up (gravé — JAMAIS apply avant le build post-merge)** : (1) merge du livrable preprod →
+(2) `docker-publish` depuis main construit l'image geo-api **AVEC** l'expo coherence_id/served_count/set_hash +
+le runner de sync → (3) ce digest **post-merge** résout `REPLACE_WITH_POST_MERGE_GEO_DIGEST` (serving + Job) →
+(4) poc-k8s applique (fenêtre gatée pour la lecture prod du sync). Appliquer avant (2) = expo absente ⇒ **gates
+inertes** (fail-closed permanent) + **Job ENOENT**. Promotion : preprod valide le digest post-merge →
+`PREPROD_ACCEPTANCE` → **même digest promu en prod**.
+
 ## 9. Reste `unknown` (anti-invention)
 
-- Les 6 faits socle du §6 (postgis-serving, IAM préfixe, host, registre, empreinte postgis, interface refresh) — `unknown → socle`.
+- **6 faits socle §6 → RÉSOLUS** (socle 2026-08-18, cf. §6 table). Coût groundé = +1 pod (75m/128Mi–500m/768Mi), 0 postgis, 0 PVC.
+- **Capacité OVH prefix-deny** : `unknown` — probe **différée** (socle 2026-08-18, raison factuelle) : la tester n'est PAS read-only (exige `put-bucket-policy` sur le bucket PROD `sentropic-geo`, risque de verrouiller la prod, ou l'IAM OVH **owner-held**) → on ne mute pas la policy du bucket prod sur un track non tranché. La décision Q2 = bucket séparé **n'en dépend PAS** ; probe quand (a) track avancé + (b) accès IAM owner (documentaire, `unknown → fait`).
+- **Enregistrement DNS** du host `api.preprod.geo.sent-tech.ca` = dépendance owner/infra (DNS externe).
 - **`caveat` Loi 25 geo** : vérifier qu'aucune couche servie par geo n'embarque de donnée personnelle
   d'origine immo. Défaut groundé = geo-servi public → copie seule ; à confirmer avant de graver « copie sans assainissement ».
-- Chiffre de coût absolu (pods/Mi/CPU) : `unknown` tant que Q6.1/Q6.5 non remontés ; pas de nombre fabriqué.
 - Topologie exacte du tier joint (namespaces croisés, promotion) : propriété poc-k8s (§6).
 
 ---
