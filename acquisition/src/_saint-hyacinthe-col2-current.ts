@@ -17,9 +17,10 @@ async function main(): Promise<void> {
   const s3 = s3Client();
   const r = await auditCity(s3, "saint-hyacinthe", 5);
   process.stdout.write(
-    `saint-hyacinthe col-2 COURANT: lots=${r.lots} assigned=${r.assigned} matched=${r.matched} ` +
-      `misassigned=${r.misassigned} outside_all=${r.outside_all} unassigned=${r.unassigned} ` +
-      `mismatch_pct=${r.mismatch_pct}%${r.note ? ` note=${r.note}` : ""}\n`,
+    `saint-hyacinthe col-2 COURANT (audit distance): lots=${r.lots} assigned=${r.assigned} ` +
+      `coherent=${r.coherent} mismatch=${r.mismatch} résidu>50m=${r.residue_hard} outside_all=${r.outside_all} ` +
+      `unassigned=${r.unassigned} mismatch_pct=${r.mismatch_pct}% résidu_pct=${r.residue_hard_pct}% ` +
+      `grain=${r.grain} médiane-ratés=${r.off_median_m}m${r.note ? ` note=${r.note}` : ""}\n`,
   );
 }
 
