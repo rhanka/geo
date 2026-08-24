@@ -35,7 +35,7 @@ import { s3Client, BUCKET, getGeoJsonFeatureCollection, putBytes, copyObject, ex
 
 const SLUG = "notre-dame-de-lourdes--joliette";
 const KEY = `normalized/ca-qc-zonage/qc-zonage-${SLUG}.geojson`;
-const BACKUP_KEY = `normalized/ca-qc-zonage/qc-zonage-${SLUG}.contour-auto-preclip.geojson`;
+const BACKUP_KEY = `normalized/ca-qc-zonage/_replaced/qc-zonage-${SLUG}__contour-auto-preclip.geojson`; // hors namespace servi, sous _replaced/ (index-exclu) — dé-entropie #4
 const T1_LOCAL = "/home/antoinefa/.cache-tmp/frag-triage/t1-ndl/qc-zonage-notre-dame-de-lourdes--joliette.geojson";
 
 interface Feature { type: "Feature"; properties: Record<string, unknown>; geometry: { type: string; coordinates: unknown } }
