@@ -229,12 +229,18 @@ const report = {
     served_audit_generated_at: servedAudit.timestamp,
   },
   bucket_semantics: {
-    complete: "numéro présent ET URL servie sur la grille de normes (reglement_url http)",
+    complete: "numéro présent ET URL de BASE servie sur la grille de normes (reglement_url http). PLANCHER base-cadre, PAS preuve per-event (cf. caveats.granularity)",
     "curable-fold": "numéro + URL http CURÉE au registre, grille servie mais URL non stampée → fold additif publish-reglement-provenance SANS capture (levier LOCAL)",
     "grille-unserved": "numéro + URL http au registre mais grille de normes NON servie → dépend du serving de la grille (zones/serving)",
     "capture-bound": "numéro présent, aucune URL http nulle part (registre null/placeholder ET non servie) → capture cluster (socle)",
     "no-numero": "numéro absent (gap de déclaration amont; URL sans objet)",
     unmatched: "slug cohorte non résolu à une ville catalogue",
+  },
+  // Ce que « complete » NE prouve PAS — pour ne pas greenwash (revue croisée
+  // avec la lane extraction/fantômes, 2026-08-23).
+  caveats: {
+    granularity: "complete = une URL de reglement de BASE servie (plancher que le cadre de zonage existe). Ce n'est PAS une preuve per-event: une zone/amendement servi peut pointer un règlement dont le PDF spécifique n'est pas la base. Le sourcing per-event (par bylaw/PV) reste un objectif distinct.",
+    liveness: "L'URL n'est validée qu'en FORME (http, domaine à point, pas placeholder) et via la curation registre; elle n'est PAS re-fetchée à la génération. Une URL curée peut être morte (404) après coup — un axe liveness re-vérifiée serait une passe capture séparée.",
   },
   partition,
   // complete/167 is the owner-facing coverage line for this axis.
