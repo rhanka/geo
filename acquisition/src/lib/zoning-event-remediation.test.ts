@@ -1,3 +1,5 @@
+import { createHash } from "node:crypto";
+
 import { describe, expect, it } from "vitest";
 
 import {
@@ -175,6 +177,8 @@ describe("planZoningEventRemediation", () => {
 describe("executeZoningEventRemediation", () => {
   it("refuses a mismatched owner-go and otherwise re-emits the whole set to both keys", async () => {
     const value = document([event("link"), event("retract"), event("unchanged", { url_pdf: PDF })]);
+    const valueBytes = Buffer.from(JSON.stringify(value));
+    const collectionSha = `sha256:${createHash("sha256").update(valueBytes).digest("hex")}` as const;
     const plan = planZoningEventRemediation(
       value,
       [
@@ -183,7 +187,7 @@ describe("executeZoningEventRemediation", () => {
       ],
       {
         collectionKey: zoningEventsKeys("ville-test")[1]!,
-        collectionSha256: SHA_A,
+        collectionSha256: collectionSha,
         inventorySha256: SHA_B,
       },
     );
@@ -221,8 +225,8 @@ describe("executeZoningEventRemediation", () => {
       cities: [{
         slug: "ville-test",
         collection_key: zoningEventsKeys("ville-test")[1]!,
-        audit_collection_sha256: SHA_A,
-        current_collection_sha256: SHA_A,
+        audit_collection_sha256: collectionSha,
+        current_collection_sha256: collectionSha,
         dry_run_state: "planned" as const,
         error: null,
         plan,
@@ -232,18 +236,26 @@ describe("executeZoningEventRemediation", () => {
     const memory = memoryStore(value);
 
     await expect(executeZoningEventRemediation(
-      value,
+      valueBytes,
       dryRun,
       { ...ownerGo, dry_run_sha256: SHA_A },
-      { asOf: "2026-08-24T00:00:00Z", collectionSha256: SHA_A, store: memory.store },
+      { asOf: "2026-08-24T00:00:00Z", store: memory.store },
     )).rejects.toThrow(/dry-run exact/);
     expect(memory.written.size).toBe(0);
 
-    const result = await executeZoningEventRemediation(
-      value,
+    await expect(executeZoningEventRemediation(
+      Buffer.from(`${valueBytes.toString("utf8")} `),
       dryRun,
       ownerGo,
-      { asOf: "2026-08-24T00:00:00Z", collectionSha256: SHA_A, store: memory.store },
+      { asOf: "2026-08-24T00:00:00Z", store: memory.store },
+    )).rejects.toThrow(/modifiée depuis le dry-run/);
+    expect(memory.written.size).toBe(0);
+
+    const result = await executeZoningEventRemediation(
+      valueBytes,
+      dryRun,
+      ownerGo,
+      { asOf: "2026-08-24T00:00:00Z", store: memory.store },
     );
     expect(result.keys).toEqual(zoningEventsKeys("ville-test"));
     expect(result.document.events).toHaveLength(3);
