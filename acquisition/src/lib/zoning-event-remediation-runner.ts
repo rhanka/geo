@@ -411,6 +411,13 @@ async function evidenceForCity(
       if (manifest.length !== run.counts.attempts) {
         throw new Error(`preuve RETRACT ${item.event_id}: manifeste/run non fermé`);
       }
+      const cityLineIndexes = manifest.flatMap((candidate, index) =>
+        candidate.run_id === run.run_id &&
+        candidate.lane === "pv" &&
+        candidate.slugs.includes(city.slug)
+          ? [index]
+          : [],
+      );
       const successfulCityLineIndexes = manifest.flatMap((candidate, index) =>
         candidate.run_id === run.run_id &&
         candidate.lane === "pv" &&
@@ -426,6 +433,12 @@ async function evidenceForCity(
           ? [index]
           : [],
       );
+      if (
+        cityLineIndexes.length === 0 ||
+        JSON.stringify(cityLineIndexes) !== JSON.stringify(successfulCityLineIndexes)
+      ) {
+        throw new Error(`preuve RETRACT ${item.event_id}: tentative PV ville sans capture exploitable`);
+      }
       const coveredCityLineIndexes: number[] = [];
       for (const checked of receipt.checked_sources) {
         const successfulLineIndexes = manifest.flatMap((candidate, index) =>
