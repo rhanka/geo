@@ -1,0 +1,15 @@
+{
+  "_comment": "IMAGE DE CAPTURE DE GEO — DECLAREE ICI, ET C'EST CE FICHIER QUI FAIT FOI.",
+  "_pourquoi": [
+    "Le defaut du launcher etait un TAG Scaleway mutable (geo-capture:0.1.1). Un tag",
+    "peut pointer sur une AUTRE image demain sans que rien ne le signale: une capture",
+    "rejouee tournerait alors du code perime, ecrivant des octets et un manifeste faux",
+    "sous le KPI cardinal (preuve v2) sans qu'aucun garde ne le voie. Meme maladie que",
+    "la cible S3/k8s: le remede est le meme, on declare l'immuable DANS LE DEPOT.",
+    "Le deploiement s'epingle PAR DIGEST GHCR; le launcher REFUSE tout image non epinglee",
+    "(assertPinnedImage), sauf --allow-unpinned-image explicite pour un debug."
+  ],
+  "image": "ghcr.io/rhanka/geo-capture@sha256:60f048b5ac667805bf90b3e1a1e75b3b85fd2a4dc634aa11c13fee8b27fa629b",
+  "registry": "ghcr.io/rhanka/geo-capture",
+  "pinned_at": "2026-08-02"
+}
