@@ -1,9 +1,7 @@
 import {
-  assertCampaignScope,
+  assertClaimedArtefact,
   buildCampaignExecutionPlan,
   campaignDesignSha256,
-  CAMPAIGN_BUCKET,
-  OBJECT_STORE_CAMPAIGN_OWNER_GO_CONTRACT,
   type ObjectStoreCampaignOwnerGo,
   type Sha256Ref,
 } from "./object-store-campaign-gate.js";
@@ -11,41 +9,43 @@ import {
 /** Le manifeste soumis fixe lui aussi GEO_CAPTURE_EXECUTION="cluster" (CA-G2). */
 export const SUBMITTED_JOB_EXECUTION: "cluster" = "cluster";
 
-export type LaneGatedCaptureOwnerGoArtifact = Omit<
-  ObjectStoreCampaignOwnerGo,
-  "h2a_envelope_id" | "h2a_session_id"
-> &
-  Partial<Pick<ObjectStoreCampaignOwnerGo, "h2a_envelope_id" | "h2a_session_id">>;
-
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
-}
-
-function nonEmpty(value: unknown): value is string {
-  return typeof value === "string" && value.trim().length > 0;
-}
-
-function assertSha(value: unknown, label: string): asserts value is Sha256Ref {
-  if (typeof value !== "string" || !/^sha256:[0-9a-f]{64}$/.test(value)) {
-    throw new Error(`${label}: SHA-256 invalide (attendu sha256:<64hex>)`);
-  }
-}
+/**
+ * L'artefact owner-go COMPLET que le lane exécutant (k8s) a lu+vérifié depuis SON
+ * inbox h2a authentifié, puis copié verbatim dans un fichier. `h2a_envelope_id` /
+ * `h2a_session_id` sont REQUIS (hook de provenance : ils lient l'artefact au message
+ * inbox réel — k8s cross-check `h2a_envelope_id == le message qu'il a copié` à son
+ * runbook et l'enregistre comme preuve C3). C'est le MÊME type que le firewall plein :
+ * le field-check est RÉUTILISÉ (`assertClaimedArtefact`) — single-source, drift-proof
+ * (il reçoit tout durcissement futur du gate, p.ex. Q-CRYPTO).
+ */
+export type LaneGatedCaptureOwnerGoArtifact = ObjectStoreCampaignOwnerGo;
 
 /**
- * CA-G8 — autorisation proportionnée, strictement réservée à la capture
- * additive : parole DIRECTE de l'owner vérifiée par la lane exécutante k8s
- * depuis SON inbox h2a + frontière de lancement RBAC (le kubeconfig OVH n'est
- * détenu que par k8s) + binding design_sha256 + CA-G2 + dépôt create-once.
+ * CA-G8 — autorisation PROCÉDURALE, strictement réservée à la capture ADDITIVE.
  *
- * La relecture du store h2a est SAUTÉE proportionnellement au caractère
- * additif/réversible de proof-v2. Cette autorisation n'est JAMAIS valide pour
- * un scope d'écriture, notamment write-rekey ou write-legacy-merge.
+ * ⚠ L'ancre anti-forge de ce mode est PROCÉDURALE, PAS cryptographique : le runner
+ * FIELD-CHECK l'artefact (intégrité-de-PLAN) mais NE RELIT PAS le store h2a. La
+ * non-forgeabilité repose sur (1) le lane exécutant (k8s) qui lit+VÉRIFIE l'owner-go
+ * depuis SON inbox h2a authentifié puis le copie verbatim (runbook, GATÉ sur mesh-UP,
+ * évidencé + enveloppe enregistrée), et (2) la frontière RBAC de lancement (le
+ * kubeconfig OVH est k8s-SEUL ; `assertDeclaredCluster` borne le OÙ). Le `design_sha256`
+ * self-référentiel bloque la SUBSTITUTION-DE-PLAN, PAS la forge : quiconque peut écrire
+ * `--owner-go-artifact` + connaît method/targets/git-sha peut forger un artefact passant.
+ * Cette forge est BORNÉE par : la frontière RBAC (forge ≡ launch-k8s ≡ déjà-TCB-cluster,
+ * pas d'élargissement) + l'egress-belt C2 (SSRF : deny interne + 169.254 métadonnée,
+ * ENFORCÉ par le CNI = hard-gate) + le caractère additif/create-once/réversible.
+ *
+ * Décision contract (geo-archi, ≥2-peer) : procédural ACCEPTÉ pour capture
+ * additive/réversible SEULEMENT. Les scopes d'ÉCRITURE (write-rekey/write-legacy-merge)
+ * ne sont JAMAIS lane-gated — ils gardent le firewall PLEIN (relecture-store) + Q-CRYPTO.
+ * Voir SPEC_OBJECT_STORE_CAMPAIGN_OWNER_GO_GATE.md §CA-G8.
  */
 export function assertLaneGatedCaptureAuthorized(input: {
   execution: "local" | "cluster";
   runnerGitSha: string;
   method: Record<string, unknown>;
   targets: readonly unknown[];
+  // Contenu de fichier NON-FIABLE — validé au runtime par assertClaimedArtefact.
   ownerGoArtifact: unknown;
 }): { designSha256: Sha256Ref } {
   if (input.execution !== SUBMITTED_JOB_EXECUTION) {
@@ -53,7 +53,21 @@ export function assertLaneGatedCaptureAuthorized(input: {
       `lane-gated capture refusé: execution="${input.execution}" — CA-G2 exige "cluster" (jamais local)`,
     );
   }
-
+  // CA-G8 (refus DUR, AVANT le field-check) : ce mode ne débloque QUE scope="capture".
+  // Un artefact de scope write (write-rekey/write-legacy-merge) est refusé ici — les
+  // writes ne sont JAMAIS lane-gated (ils gardent le firewall PLEIN + Q-CRYPTO). (Belt
+  // explicite : `assertClaimedArtefact` re-vérifie scope===capture juste après.)
+  const claimedScope =
+    typeof input.ownerGoArtifact === "object" && input.ownerGoArtifact !== null
+      ? (input.ownerGoArtifact as { scope?: unknown }).scope
+      : undefined;
+  if (claimedScope !== "capture") {
+    throw new Error(
+      `lane-gated capture REFUS DUR (CA-G8 capture-only): artefact scope="${String(claimedScope)}" — ` +
+        `un scope write (write-rekey/write-legacy-merge) n'est JAMAIS lane-gated`,
+    );
+  }
+  // Plan résolu réel (scope="capture" HARDCODÉ) → design_sha256 recalculé (CA-G6).
   const plan = buildCampaignExecutionPlan({
     scope: "capture",
     runnerGitSha: input.runnerGitSha,
@@ -61,52 +75,16 @@ export function assertLaneGatedCaptureAuthorized(input: {
     targets: input.targets,
   });
   const designSha256 = campaignDesignSha256(plan);
-  const artefact = input.ownerGoArtifact;
-
-  if (!isRecord(artefact)) {
-    throw new Error("lane-gated capture refusé: artefact owner-go complet requis");
-  }
-  if (artefact.contract !== OBJECT_STORE_CAMPAIGN_OWNER_GO_CONTRACT) {
-    throw new Error("lane-gated capture refusé: contract object-store-campaign-owner-go/v1 requis");
-  }
-  if (!isRecord(artefact.actor) || artefact.actor.role !== "OWNER") {
-    throw new Error("lane-gated capture refusé: actor.role=OWNER requis (relais geo-cond insuffisant)");
-  }
-  if (artefact.via !== "geo-cond" || artefact.owner_go_direct !== true) {
-    throw new Error("lane-gated capture refusé: go owner DIRECT via geo-cond requis");
-  }
-
-  assertCampaignScope(artefact.scope);
-  if (artefact.scope !== "capture") {
-    throw new Error(
-      `lane-gated capture refusé: CA-G8 capture-only interdit le scope ${artefact.scope}; ` +
-        "write-rekey/write-legacy-merge gardent le firewall complet",
-    );
-  }
-  if (artefact.bucket !== CAMPAIGN_BUCKET) {
-    throw new Error(`lane-gated capture refusé: bucket doit être ${CAMPAIGN_BUCKET}`);
-  }
-  if (!nonEmpty(artefact.actor.instance)) {
-    throw new Error("lane-gated capture refusé: actor.instance non vide requis");
-  }
-  if (!nonEmpty(artefact.owner_instance)) {
-    throw new Error("lane-gated capture refusé: owner_instance non vide requis");
-  }
-  if (!nonEmpty(artefact.geo_cond_instance)) {
-    throw new Error("lane-gated capture refusé: geo_cond_instance non vide requis");
-  }
-  if (artefact.h2a_envelope_id !== undefined && !nonEmpty(artefact.h2a_envelope_id)) {
-    throw new Error("lane-gated capture refusé: h2a_envelope_id doit être non vide lorsqu'il est présent");
-  }
-  if (artefact.h2a_session_id !== undefined && !nonEmpty(artefact.h2a_session_id)) {
-    throw new Error("lane-gated capture refusé: h2a_session_id doit être non vide lorsqu'il est présent");
-  }
-
-  assertSha(artefact.design_sha256, "lane-gated capture owner-go design_sha256");
-  if (artefact.design_sha256 !== designSha256) {
-    throw new Error(
-      "lane-gated capture refusé: design_sha256 ne vise pas le plan résolu réel du runner (binding rompu)",
-    );
-  }
+  // RÉUTILISE les field-checks du firewall (single-source, drift-proof) : les MÊMES
+  // vérifs que le chemin plein — contract, actor.role=OWNER, via+owner_go_direct,
+  // design_sha256===recalculé, scope===capture (CA-G8 : un artefact de scope write
+  // → throw "scope divergent"), bucket, owner/geo_cond_instance, h2a_envelope_id/
+  // session_id NON-VIDES (hook provenance), actor.instance. On SKIP UNIQUEMENT
+  // `crossVerifyOwnerGoInStore` (la relecture-store qui exige le NHI) — remplacée par
+  // la vérif-inbox PROCÉDURALE de k8s (voir docstring CA-G8 ci-dessus).
+  assertClaimedArtefact(input.ownerGoArtifact as ObjectStoreCampaignOwnerGo, {
+    designSha256,
+    scope: "capture",
+  });
   return { designSha256 };
 }
