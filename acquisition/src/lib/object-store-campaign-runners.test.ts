@@ -1,23 +1,24 @@
 import { describe, expect, it, vi } from "vitest";
 
-import { getBytes, objectHead } from "./s3.js";
 import {
-  assertObjectStoreCampaignOwnerGo,
-  buildLegacyMergePlan,
-  buildRekeyPlan,
-  campaignExecutionPlanSha256,
+  campaignDesignSha256,
   CAMPAIGN_BUCKET,
-  CAMPAIGN_OWNER_GO_ENVELOPE_KIND,
   OBJECT_STORE_CAMPAIGN_OWNER_GO_CONTRACT,
-  runLegacyMergeCampaign,
-  runRekeyCampaign,
+  OBJECT_STORE_CAMPAIGN_OWNER_GO_KIND,
   type CampaignScope,
   type H2aRecordReader,
-  type LegacyMergeTarget,
   type ObjectStoreCampaignOwnerGo,
-  type RekeyTarget,
   type Sha256Ref,
-} from "./object-store-campaign.js";
+} from "./object-store-campaign-gate.js";
+import {
+  buildLegacyMergePlan,
+  buildRekeyPlan,
+  runLegacyMergeCampaign,
+  runRekeyCampaign,
+  type LegacyMergeTarget,
+  type RekeyTarget,
+} from "./object-store-campaign-runners.js";
+import { getBytes, objectHead } from "./s3.js";
 
 // --------------------------------------------------------------------------
 // Stateful, network-free mock S3 — records every command; actually copies bytes
@@ -125,7 +126,7 @@ function buildFixture(scope: CampaignScope, designSha256: Sha256Ref) {
     type: "event",
     actor: { instance: OWNER, role: "OWNER" },
     body: {
-      kind: CAMPAIGN_OWNER_GO_ENVELOPE_KIND,
+      kind: OBJECT_STORE_CAMPAIGN_OWNER_GO_KIND,
       via: "geo-cond",
       owner_go_direct: true,
       owner_instance: OWNER,
@@ -139,108 +140,30 @@ function buildFixture(scope: CampaignScope, designSha256: Sha256Ref) {
   const session = { sessionId: SESSION_ID, instance: GEO_COND, state: "live" };
   const readEnvelope: H2aRecordReader = async (id) => (id === ENVELOPE_ID ? h2aEnvelope : null);
   const readSession: H2aRecordReader = async (id) => (id === SESSION_ID ? session : null);
-  return { ownerGo, h2aEnvelope, session, readEnvelope, readSession };
+  return { ownerGo, readEnvelope, readSession };
 }
 
 const REKEY_TARGETS: RekeyTarget[] = [
   { src_key: "exports/geo/old/a.json", dest_key: "exports/geo/new/a.json" },
   { src_key: "exports/geo/old/b.json", dest_key: "exports/geo/new/b.json" },
 ];
-const REKEY_DESIGN = campaignExecutionPlanSha256(buildRekeyPlan(RUNNER_SHA, REKEY_TARGETS));
+const REKEY_DESIGN = campaignDesignSha256(buildRekeyPlan(RUNNER_SHA, REKEY_TARGETS));
 
 const LEGACY_TAG = "legacy-2026";
 const LEGACY_TARGETS: LegacyMergeTarget[] = [
   { key: "registry/geo/legacy/tag-1/x.json", body: "XXX", contentType: "application/json" },
   { key: "registry/geo/legacy/tag-1/y.json", body: "YYY", contentType: "application/json" },
 ];
-const LEGACY_DESIGN = campaignExecutionPlanSha256(
+const LEGACY_DESIGN = campaignDesignSha256(
   buildLegacyMergePlan(RUNNER_SHA, LEGACY_TAG, LEGACY_TARGETS),
 );
 
-// --------------------------------------------------------------------------
-// CA-G1 — gate refuses BY CONSTRUCTION
-// --------------------------------------------------------------------------
-
-describe("CA-G1 — gate par construction", () => {
-  const expectedRekey = { designSha256: REKEY_DESIGN, scope: "write-rekey" as const };
-
-  it("no artefact (undefined/null) → throw", async () => {
-    const fx = buildFixture("write-rekey", REKEY_DESIGN);
-    await expect(
-      assertObjectStoreCampaignOwnerGo(undefined, expectedRekey, fx.readEnvelope, fx.readSession),
-    ).rejects.toThrow(/absent ou malformé/);
-    await expect(
-      assertObjectStoreCampaignOwnerGo(null, expectedRekey, fx.readEnvelope, fx.readSession),
-    ).rejects.toThrow(/absent ou malformé/);
-  });
-
-  it("a plain relay object (not a real envelope) → throw", async () => {
-    const fx = buildFixture("write-rekey", REKEY_DESIGN);
-    const relay = { from: "conductor", message: "the owner said go" };
-    await expect(
-      assertObjectStoreCampaignOwnerGo(relay, expectedRekey, fx.readEnvelope, fx.readSession),
-    ).rejects.toThrow(/absent ou malformé/);
-  });
-
-  it("wrong design_sha256 → throw", async () => {
-    const fx = buildFixture("write-rekey", REKEY_DESIGN);
-    const tampered = { ...fx.ownerGo, design_sha256: `sha256:${"0".repeat(64)}` as Sha256Ref };
-    await expect(
-      assertObjectStoreCampaignOwnerGo(tampered, expectedRekey, fx.readEnvelope, fx.readSession),
-    ).rejects.toThrow(/binding rompu/);
-  });
-
-  it("actor.role ≠ OWNER → throw", async () => {
-    const fx = buildFixture("write-rekey", REKEY_DESIGN);
-    const relayed = { ...fx.ownerGo, actor: { role: "geo-cond", instance: OWNER } };
-    await expect(
-      assertObjectStoreCampaignOwnerGo(relayed, expectedRekey, fx.readEnvelope, fx.readSession),
-    ).rejects.toThrow(/actor\.role=OWNER/);
-  });
-
-  it("scope mismatch — write-rekey artefact used by legacy-merge → throw", async () => {
-    const fx = buildFixture("write-rekey", REKEY_DESIGN);
-    await expect(
-      assertObjectStoreCampaignOwnerGo(
-        fx.ownerGo,
-        { designSha256: REKEY_DESIGN, scope: "write-legacy-merge" },
-        fx.readEnvelope,
-        fx.readSession,
-      ),
-    ).rejects.toThrow(/scope .* ≠ action write-legacy-merge/);
-  });
-
-  it("scope mismatch — capture-go used for a write → throw", async () => {
-    const captureDesign = `sha256:${"c".repeat(64)}` as Sha256Ref;
-    const fx = buildFixture("capture", captureDesign);
-    await expect(
-      assertObjectStoreCampaignOwnerGo(
-        fx.ownerGo,
-        { designSha256: captureDesign, scope: "write-rekey" },
-        fx.readEnvelope,
-        fx.readSession,
-      ),
-    ).rejects.toThrow(/scope capture ≠ action write-rekey/);
-  });
-
-  it("a relay claim with no backing h2a envelope in the store → throw", async () => {
-    const fx = buildFixture("write-rekey", REKEY_DESIGN);
-    const emptyStore: H2aRecordReader = async () => null;
-    await expect(
-      assertObjectStoreCampaignOwnerGo(fx.ownerGo, expectedRekey, emptyStore, fx.readSession),
-    ).rejects.toThrow(/enveloppe h2a introuvable/);
-  });
-
-  it("a valid, fully-backed artefact passes (positive control)", async () => {
-    const fx = buildFixture("write-rekey", REKEY_DESIGN);
-    await expect(
-      assertObjectStoreCampaignOwnerGo(fx.ownerGo, expectedRekey, fx.readEnvelope, fx.readSession),
-    ).resolves.toBeUndefined();
-  });
-});
+function outcomesByKey(written: Array<{ key: string; outcome: string }>): Record<string, string> {
+  return Object.fromEntries(written.map((w) => [w.key, w.outcome]));
+}
 
 // --------------------------------------------------------------------------
-// CA-G7 — re-key is COPY-ONLY
+// CA-G7 — re-key is COPY-ONLY (old key intact byte-for-byte; no deleteObject)
 // --------------------------------------------------------------------------
 
 describe("CA-G7 — re-key COPY-ONLY", () => {
@@ -263,17 +186,12 @@ describe("CA-G7 — re-key COPY-ONLY", () => {
     // (a) deleteObject was NEVER called
     expect(mock.ops.filter((o) => o.op === "delete")).toHaveLength(0);
     // (b) old keys still return byte-identical content
-    expect((await getBytes(mock.s3, "exports/geo/old/a.json", CAMPAIGN_BUCKET)).toString()).toBe(
-      "AAA",
-    );
-    expect((await getBytes(mock.s3, "exports/geo/old/b.json", CAMPAIGN_BUCKET)).toString()).toBe(
-      "BBB",
-    );
+    expect((await getBytes(mock.s3, "exports/geo/old/a.json", CAMPAIGN_BUCKET)).toString()).toBe("AAA");
+    expect((await getBytes(mock.s3, "exports/geo/old/b.json", CAMPAIGN_BUCKET)).toString()).toBe("BBB");
     expect((await objectHead(mock.s3, "exports/geo/old/a.json", CAMPAIGN_BUCKET)).exists).toBe(true);
     // new keys carry the copied bytes
-    expect((await getBytes(mock.s3, "exports/geo/new/a.json", CAMPAIGN_BUCKET)).toString()).toBe(
-      "AAA",
-    );
+    expect((await getBytes(mock.s3, "exports/geo/new/a.json", CAMPAIGN_BUCKET)).toString()).toBe("AAA");
+    expect((await getBytes(mock.s3, "exports/geo/new/b.json", CAMPAIGN_BUCKET)).toString()).toBe("BBB");
   });
 });
 
@@ -295,19 +213,15 @@ describe("CA-G3 — legacy-merge additif-taggé", () => {
       targets: LEGACY_TARGETS,
     });
 
-    expect(result.written).toEqual([
-      { key: "registry/geo/legacy/tag-1/x.json", outcome: "existing-equal" },
-      { key: "registry/geo/legacy/tag-1/y.json", outcome: "created" },
-    ]);
+    expect(outcomesByKey(result.written)).toEqual({
+      "registry/geo/legacy/tag-1/x.json": "existing-equal",
+      "registry/geo/legacy/tag-1/y.json": "created",
+    });
     // existing key byte-unchanged; no successful overwrite PUT landed on it
-    expect((await getBytes(mock.s3, "registry/geo/legacy/tag-1/x.json", CAMPAIGN_BUCKET)).toString()).toBe(
-      "XXX",
-    );
+    expect((await getBytes(mock.s3, "registry/geo/legacy/tag-1/x.json", CAMPAIGN_BUCKET)).toString()).toBe("XXX");
     expect(mock.ops.filter((o) => o.op === "put" && o.key.endsWith("x.json"))).toHaveLength(0);
     // new tagged key added
-    expect((await getBytes(mock.s3, "registry/geo/legacy/tag-1/y.json", CAMPAIGN_BUCKET)).toString()).toBe(
-      "YYY",
-    );
+    expect((await getBytes(mock.s3, "registry/geo/legacy/tag-1/y.json", CAMPAIGN_BUCKET)).toString()).toBe("YYY");
   });
 
   it("refuses to overwrite an existing key holding DIFFERENT bytes (leaves it unchanged)", async () => {
@@ -325,9 +239,7 @@ describe("CA-G3 — legacy-merge additif-taggé", () => {
       }),
     ).rejects.toThrow(/immutable S3 object collision/);
     // the pre-existing object is untouched, and no delete happened
-    expect((await getBytes(mock.s3, "registry/geo/legacy/tag-1/x.json", CAMPAIGN_BUCKET)).toString()).toBe(
-      "DIFFERENT",
-    );
+    expect((await getBytes(mock.s3, "registry/geo/legacy/tag-1/x.json", CAMPAIGN_BUCKET)).toString()).toBe("DIFFERENT");
     expect(mock.ops.filter((o) => o.op === "delete")).toHaveLength(0);
   });
 });
@@ -403,14 +315,12 @@ describe("CA-G6 — binding design_sha", () => {
     expect(mock.ops.filter((o) => o.op === "copy" || o.op === "delete")).toHaveLength(0);
   });
 
-  it("design_sha is order-independent (canonical, sorted preimage)", () => {
-    const forward = campaignExecutionPlanSha256(buildRekeyPlan(RUNNER_SHA, REKEY_TARGETS));
-    const reversed = campaignExecutionPlanSha256(
-      buildRekeyPlan(RUNNER_SHA, [...REKEY_TARGETS].reverse()),
-    );
+  it("design_sha is order-independent (canonical, sorted preimage) and code-bound", () => {
+    const forward = campaignDesignSha256(buildRekeyPlan(RUNNER_SHA, REKEY_TARGETS));
+    const reversed = campaignDesignSha256(buildRekeyPlan(RUNNER_SHA, [...REKEY_TARGETS].reverse()));
     expect(reversed).toBe(forward);
     // a different runner_git_sha (different CODE) changes the binding
-    const otherCode = campaignExecutionPlanSha256(buildRekeyPlan("b".repeat(40), REKEY_TARGETS));
+    const otherCode = campaignDesignSha256(buildRekeyPlan("b".repeat(40), REKEY_TARGETS));
     expect(otherCode).not.toBe(forward);
   });
 });
