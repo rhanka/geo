@@ -38,7 +38,7 @@ Enveloppe h2a émise **DIRECTEMENT par l'owner** (session geo-cond), liée au de
 { "contract": "campaign-execution-plan/v1",
   "scope": "capture" | "write-rekey" | "write-legacy-merge",
   "bucket": "sentropic-geo",
-  "runner_git_sha": "<40-hex>",   // le CODE réellement exécuté
+  "runner_git_sha": "<40-hex>",   // commit du checkout DÉPLOYÉ (code complet: lib+wrapper+hardening, deploy-pin/scope)
   "method": { ... },              // params méthode (tag legacy-merge ; mapping re-key)
   "targets": [ ... ] }            // les CIBLES EXACTES, TRIÉES (clés/objets à écrire)
 ```
@@ -48,6 +48,16 @@ Enveloppe h2a émise **DIRECTEMENT par l'owner** (session geo-cond), liée au de
   effectivement écrire + son `runner_git_sha`) AVANT d'écrire, et exige l'égalité avec l'artefact.
   ⟹ l'owner autorise le plan RÉELLEMENT EXÉCUTÉ (**code + méthode + CIBLES**), pas un manifeste
   découplé qu'un runner hasherait en exécutant autre chose.
+- **`runner_git_sha` = le commit du checkout DÉPLOYÉ** (`git rev-parse HEAD` du pod qui exécute),
+  i.e. le **code COMPLET** qui tourne : lib-runner **+ wrapper cluster + hardening** — pas le seul
+  commit d'une lib. Nommer un sous-ensemble alors qu'un wrapper d'un AUTRE commit choisit les cibles
+  ou alimente les octets serait un **vert-par-omission sur la provenance** (la preuve attesterait un
+  code incomplet), et laisserait l'owner autoriser du code AVANT ses garde-fous de sûreté (p.ex. un
+  plancher CAP large-object livré par un PR de hardening ultérieur). ⟹ le `design_sha256` se **fige
+  au DEPLOY-PIN par scope** (le commit épinglé incluant le wrapper + tout hardening) ; l'owner émet
+  le go APRÈS ce pin. Un `design_sha256` **draft** (calculé avec le seul commit lib) est admis pour
+  lancer la **revue ≥2-pairs anticipée**, mais l'**owner-go LIANT est recalculé au deploy-pin et
+  re-vérifié avant émission** — un draft ne lie jamais un run.
 - Le **SHA-design** remis à l'owner (post-revue ≥2-pairs) = ce même `sha256(canonicalJSON(plan))`.
 
 ## 2. Vérification — `assertObjectStoreCampaignOwnerGo(envelope, expected, readEnvelope, readSession)`
