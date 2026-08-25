@@ -26,6 +26,11 @@ import {
   type ObjectStoreCampaignOwnerGo,
   type Sha256Ref,
 } from "./lib/object-store-campaign-gate.js";
+import {
+  assertLaneGatedCaptureAuthorized,
+  SUBMITTED_JOB_EXECUTION,
+  type LaneGatedCaptureOwnerGoArtifact,
+} from "./lib/lane-gated-capture-authorization.js";
 import { putBytesIfAbsent, s3Client } from "./lib/s3.js";
 import { assertPinnedImage } from "./lib/capture-image-pin.js";
 
@@ -44,6 +49,10 @@ interface Args {
   memoryLimitMi: number;
   egress: string;
   dryRun: boolean;
+  /** Active CA-G8, uniquement pour une capture additive lancée par la lane k8s. */
+  laneGatedCapture: boolean;
+  /** Artefact owner-go complet lu et vérifié depuis l'inbox h2a de la lane k8s. */
+  ownerGoArtifactPath?: string;
   /**
    * SHA git 40-hex du CODE réellement exécuté (runner_git_sha du plan owner-go).
    * Optionnel au parse (le contrat `jobManifest`/`parseArgs` existant reste
@@ -132,6 +141,14 @@ function parseArgs(argv: string[]): Args {
   if (gitSha !== undefined && !/^[0-9a-f]{40}$/.test(gitSha)) {
     throw new Error("--git-sha doit être un SHA git complet (40 hex)");
   }
+  const laneGatedCapture = flag(argv, "lane-gated-capture");
+  const ownerGoArtifactPath = option(argv, "owner-go-artifact");
+  if (laneGatedCapture && (!ownerGoArtifactPath || ownerGoArtifactPath.startsWith("--"))) {
+    throw new Error("--owner-go-artifact <path> requis avec --lane-gated-capture");
+  }
+  if (laneGatedCapture && gitSha === undefined) {
+    throw new Error("--git-sha <40-hex> requis avec --lane-gated-capture");
+  }
   return {
     lane: lane(option(argv, "lane")),
     worklistPath,
@@ -147,6 +164,8 @@ function parseArgs(argv: string[]): Args {
     memoryLimitMi,
     egress,
     dryRun: flag(argv, "dry-run"),
+    laneGatedCapture,
+    ...(ownerGoArtifactPath !== undefined ? { ownerGoArtifactPath } : {}),
     ...(gitSha !== undefined ? { gitSha } : {}),
   };
 }
@@ -338,13 +357,6 @@ function apply(args: Args, manifest: string): void {
 // explicite de l'artefact, rien ne fire.
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * Le Job soumis par ce runner tourne TOUJOURS sur le cluster : le manifeste fixe
- * `GEO_CAPTURE_EXECUTION="cluster"` et `DRY_RUN="0"`. CA-G2 (jamais local) est
- * donc structurel ici ; le gate le RÉ-ASSERTE quand même par construction.
- */
-const SUBMITTED_JOB_EXECUTION: "cluster" = "cluster";
-
 export interface CampaignOwnerGoResolution {
   ownerGo: ObjectStoreCampaignOwnerGo;
   readEnvelope: H2aRecordReader;
@@ -450,15 +462,40 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   // cet assert est la ceinture par-dessus les bretelles. imagePinOptsForPath("store", …)
   // force allowUnpinned:false — le flag debug est structurellement ignoré ici.
   assertPinnedImage(args.image, imagePinOptsForPath("store", args.allowUnpinnedImage));
-  // FIREWALL : rien ne fire vers sentropic-geo sans go owner DIRECT relu du store.
-  const gate = await assertCaptureStoreAuthorized({
-    execution: SUBMITTED_JOB_EXECUTION,
-    runnerGitSha: requireRunnerGitSha(args),
-    method: captureCampaignMethod(args),
-    targets,
-    deps,
-  });
-  process.stderr.write(`[capture-orch] owner-go vérifié: design_sha256=${gate.designSha256}\n`);
+  if (args.laneGatedCapture) {
+    const ownerGoArtifact = JSON.parse(
+      readFileSync(args.ownerGoArtifactPath as string, "utf8"),
+    ) as LaneGatedCaptureOwnerGoArtifact;
+    const gate = assertLaneGatedCaptureAuthorized({
+      execution: SUBMITTED_JOB_EXECUTION,
+      runnerGitSha: requireRunnerGitSha(args),
+      method: captureCampaignMethod(args),
+      targets,
+      ownerGoArtifact,
+    });
+    // C3 (preuve) : la trace capture le via + la provenance PAR MODE (ancre procédurale
+    // évidencée) — h2a_envelope_id/session_id (lane-B, cross-checké vs l'inbox) OU
+    // executor_session/received_at (lane-A, la session exécutante du go owner).
+    const provenanceTrace =
+      ownerGoArtifact.via === "geo-cond"
+        ? `h2a_envelope_id=${ownerGoArtifact.h2a_envelope_id}, h2a_session_id=${ownerGoArtifact.h2a_session_id}`
+        : `executor_session=${ownerGoArtifact.executor_session}, received_at=${ownerGoArtifact.received_at}`;
+    process.stderr.write(
+      `[capture-orch] LANE-GATED additive capture launch, via=${ownerGoArtifact.via}, ` +
+        `design_sha=${gate.designSha256}, owner_instance=${ownerGoArtifact.owner_instance}, ` +
+        `${provenanceTrace}\n`,
+    );
+  } else {
+    // FIREWALL : rien ne fire vers sentropic-geo sans go owner DIRECT relu du store.
+    const gate = await assertCaptureStoreAuthorized({
+      execution: SUBMITTED_JOB_EXECUTION,
+      runnerGitSha: requireRunnerGitSha(args),
+      method: captureCampaignMethod(args),
+      targets,
+      deps,
+    });
+    process.stderr.write(`[capture-orch] owner-go vérifié: design_sha256=${gate.designSha256}\n`);
+  }
   // Ne jamais écraser une worklist portant le même identifiant : l'objet auquel
   // run.json fait référence reste le contrat exact soumis au cluster.
   await putBytesIfAbsent(s3Client(), key, `${JSON.stringify(targets, null, 2)}\n`, "application/json");
@@ -474,4 +511,4 @@ if (invokedDirectly) {
   });
 }
 
-export { jobManifest, parseArgs, worklistKey };
+export { assertLaneGatedCaptureAuthorized, jobManifest, parseArgs, worklistKey };
