@@ -92,6 +92,25 @@ producteur défini mais non peuplé/servi** → la pile 4-niveaux n'est **pas** 
    (remplacer le field-bound-sur-reader-injecté par une **vérif de signature** dans le module **#258 PARTAGÉ**) =
    **lot / décision-owner DISTINCT** (changement de modèle de sécurité, revue dédiée), **jamais en douce dans
    Model A**.
+6. **Runner-VÉRIFICATION sémantique par construction (Q-SEMANTIC-VERIFY)** — *proposée geo-archi, endossée
+   geo-socle (findings adversarial #264 sur le runner #258 PARTAGÉ) ; décision de lot / présentation owner =
+   geo-cond*. **Orthogonale au write-gate (pt5)** : pt5 = **AUTORISATION** (qui écrit) ; ce point = **VÉRIFICATION**
+   (ce qui est écrit est **byte-vrai**). Le runner doit **re-dériver la claim des octets capturés**, jamais
+   **s'en remettre à l'assertion du producteur** — même principe fondateur (vérifier **par construction** ≠
+   compter sur un **producteur de confiance / non-malveillant**). Deux gaps mesurés :
+   - **(finding 2, PRIORITÉ) RETRACT déclaratif** : retirer un event servi = **perte de donnée** (un amendement
+     valide disparaît ; le tombstone guard ne couvre pas — le RETRACT EST le chemin de retrait autorisé), et c'est
+     aujourd'hui **non re-vérifié** sur les octets, contrairement au LINK. **Fix borné + symétrique** : le runner
+     re-run le détecteur sur les octets no-match **et confirme zéro match** (miroir du re-run LINK). *« Le plus
+     destructif est le moins vérifié. »*
+   - **(finding 1) LINK ≠ identité** : tie au règlement **RÉEL** de l'event — cross-check `target_bylaw_numero ==
+     servedEvent.bylaw_numero` (reader injecté) + `detector_reglement_numero == target_bylaw_numero` ; le tie à
+     l'identité ancrée-source (`sha256(muni|source_ref|detection_anchor)`) = à cadrer en **L3** (récupération de
+     phantom).
+   **Scoping** : runner #258 **PARTAGÉ** ⟹ **lot owner-décision DISTINCT** (revue dédiée), **jamais en douce dans
+   Model A**. **Model A avance** (producteur de confiance) ; ce gap de trust-model = **LIMITATION connue + lot
+   tracké** (capitaliser, pas un TODO perdu). Symétrie : **Q-CRYPTO-HARDEN** (autorisation, pt5) **+
+   Q-SEMANTIC-VERIFY** (vérification, ce point).
 
 ### §2.4 — Contrat de format geo↔immo (pivot reco §4) — « geo sert X ⟺ immo projette X »
 *(Accord **LOCKÉ avec extraction [d52af7]** : mapping confirmé + séquence **B→A** ; shapes immo mesurées sur
