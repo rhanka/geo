@@ -15,7 +15,17 @@ import {
   captureRunStamp,
   parseCaptureWorklist,
   type CaptureLane,
+  type CaptureWorklistTarget,
 } from "../../packages/qc-sources/src/capture/index.js";
+import {
+  assertObjectStoreCampaignOwnerGo,
+  buildCampaignExecutionPlan,
+  campaignDesignSha256,
+  type CampaignExecutionPlan,
+  type H2aRecordReader,
+  type ObjectStoreCampaignOwnerGo,
+  type Sha256Ref,
+} from "./lib/object-store-campaign-gate.js";
 import { putBytesIfAbsent, s3Client } from "./lib/s3.js";
 
 interface Args {
@@ -32,6 +42,12 @@ interface Args {
   memoryLimitMi: number;
   egress: string;
   dryRun: boolean;
+  /**
+   * SHA git 40-hex du CODE réellement exécuté (runner_git_sha du plan owner-go).
+   * Optionnel au parse (le contrat `jobManifest`/`parseArgs` existant reste
+   * inchangé) ; EXIGÉ par le gate de campagne avant toute soumission storante.
+   */
+  gitSha?: string;
 }
 
 // This image parses the immutable `derivation` control carried by captured
@@ -76,6 +92,10 @@ function parseArgs(argv: string[]): Args {
     throw new Error("--egress doit être direct | tor:<lane> | proxy:<id>");
   }
   const memoryLimitMi = integer("memory-limit-mi", option(argv, "memory-limit-mi"), 176, 176);
+  const gitSha = option(argv, "git-sha");
+  if (gitSha !== undefined && !/^[0-9a-f]{40}$/.test(gitSha)) {
+    throw new Error("--git-sha doit être un SHA git complet (40 hex)");
+  }
   return {
     lane: lane(option(argv, "lane")),
     worklistPath,
@@ -90,6 +110,7 @@ function parseArgs(argv: string[]): Args {
     memoryLimitMi,
     egress,
     dryRun: flag(argv, "dry-run"),
+    ...(gitSha !== undefined ? { gitSha } : {}),
   };
 }
 
@@ -270,7 +291,105 @@ function apply(args: Args, manifest: string): void {
   process.stderr.write(result.stdout);
 }
 
-async function main(): Promise<void> {
+// ─────────────────────────────────────────────────────────────────────────────
+// FIREWALL — gate owner-go de la campagne object-store (SPEC §3, CA-G1/G2/G6)
+//
+// Avant TOUTE soumission d'un Job de capture STORANTE (PUT worklist + kubectl
+// apply), le runner exige un artefact `object-store-campaign-owner-go/v1` valide
+// RELU du store h2a via des lecteurs INJECTÉS. Un relais conducteur (« l'owner a
+// dit go ») ne satisfait JAMAIS le gate. Refus par construction : sans câblage
+// explicite de l'artefact, rien ne fire.
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Le Job soumis par ce runner tourne TOUJOURS sur le cluster : le manifeste fixe
+ * `GEO_CAPTURE_EXECUTION="cluster"` et `DRY_RUN="0"`. CA-G2 (jamais local) est
+ * donc structurel ici ; le gate le RÉ-ASSERTE quand même par construction.
+ */
+const SUBMITTED_JOB_EXECUTION: "cluster" = "cluster";
+
+export interface CampaignOwnerGoResolution {
+  ownerGo: ObjectStoreCampaignOwnerGo;
+  readEnvelope: H2aRecordReader;
+  readSession: H2aRecordReader;
+}
+
+/**
+ * Point d'injection du store h2a. ABSENT PAR DÉFAUT → refus par construction :
+ * aucune capture storante ne fire tant que l'owner-go n'est pas câblé (lu depuis
+ * le store h2a injecté, jamais depuis un message conducteur).
+ */
+export interface CaptureCampaignGateDeps {
+  resolveOwnerGo?: (ctx: {
+    plan: CampaignExecutionPlan;
+    designSha256: Sha256Ref;
+  }) => Promise<CampaignOwnerGoResolution>;
+}
+
+/** Params de méthode stables de la campagne capture (partie de la préimage design_sha256). */
+export function captureCampaignMethod(
+  args: Pick<Args, "lane" | "egress" | "image" | "maxBytes">,
+): Record<string, unknown> {
+  return { lane: args.lane, egress: args.egress, image: args.image, max_bytes: args.maxBytes };
+}
+
+function requireRunnerGitSha(args: Pick<Args, "gitSha">): string {
+  if (args.gitSha === undefined || !/^[0-9a-f]{40}$/.test(args.gitSha)) {
+    throw new Error(
+      "--git-sha <40-hex> requis: runner_git_sha du plan owner-go de la campagne object-store (le CODE réellement exécuté)",
+    );
+  }
+  return args.gitSha;
+}
+
+/**
+ * GATE avant toute soumission STORANTE (§3) :
+ * (a) CA-G2 — `execution === "cluster"` (JAMAIS local) ;
+ * (b) construit le plan résolu RÉEL (scope="capture", cibles TRIÉES, runner_git_sha,
+ *     method), RECALCULE `design_sha256`, et exige un artefact owner-go valide relu
+ *     du store h2a via `assertObjectStoreCampaignOwnerGo`.
+ * Sans artefact valide → THROW (refus de soumettre). Preuve-v2 par construction
+ * reste assurée en aval par `captureProofFields` (les lignes de capture).
+ */
+export async function assertCaptureStoreAuthorized(input: {
+  execution: "local" | "cluster";
+  runnerGitSha: string;
+  method: Record<string, unknown>;
+  targets: readonly CaptureWorklistTarget[];
+  deps: CaptureCampaignGateDeps;
+}): Promise<{ designSha256: Sha256Ref }> {
+  // (a) CA-G2 — JAMAIS local.
+  if (input.execution !== "cluster") {
+    throw new Error(
+      `capture store refusé: execution="${input.execution}" — CA-G2 exige "cluster" (jamais local)`,
+    );
+  }
+  // (b) plan résolu réel (cibles exactes + code) → design_sha256 recalculé.
+  const plan = buildCampaignExecutionPlan({
+    scope: "capture",
+    runnerGitSha: input.runnerGitSha,
+    method: input.method,
+    targets: input.targets,
+  });
+  const designSha256 = campaignDesignSha256(plan);
+  const resolve = input.deps.resolveOwnerGo;
+  if (!resolve) {
+    throw new Error(
+      "capture store refusé: aucun artefact owner-go câblé — object-store-campaign-owner-go/v1 requis, " +
+        "lu depuis le store h2a INJECTÉ (refus par construction). Un relais conducteur ne satisfait pas le gate.",
+    );
+  }
+  const resolution = await resolve({ plan, designSha256 });
+  await assertObjectStoreCampaignOwnerGo(
+    resolution.ownerGo,
+    { designSha256, scope: "capture" },
+    resolution.readEnvelope,
+    resolution.readSession,
+  );
+  return { designSha256 };
+}
+
+async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const targets = parseCaptureWorklist(JSON.parse(readFileSync(args.worklistPath, "utf8")));
   const key = worklistKey(args);
@@ -284,6 +403,15 @@ async function main(): Promise<void> {
     process.stdout.write(manifest);
     return;
   }
+  // FIREWALL : rien ne fire vers sentropic-geo sans go owner DIRECT relu du store.
+  const gate = await assertCaptureStoreAuthorized({
+    execution: SUBMITTED_JOB_EXECUTION,
+    runnerGitSha: requireRunnerGitSha(args),
+    method: captureCampaignMethod(args),
+    targets,
+    deps,
+  });
+  process.stderr.write(`[capture-orch] owner-go vérifié: design_sha256=${gate.designSha256}\n`);
   // Ne jamais écraser une worklist portant le même identifiant : l'objet auquel
   // run.json fait référence reste le contrat exact soumis au cluster.
   await putBytesIfAbsent(s3Client(), key, `${JSON.stringify(targets, null, 2)}\n`, "application/json");
