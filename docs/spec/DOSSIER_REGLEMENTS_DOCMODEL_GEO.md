@@ -91,7 +91,13 @@ producteur défini mais non peuplé/servi** → la pile 4-niveaux n'est **pas** 
    frontière gatée unique = **critère d'acceptation Model A** (`SPEC_EVOL`) ; (c) le **durcissement crypto**
    (remplacer le field-bound-sur-reader-injecté par une **vérif de signature** dans le module **#258 PARTAGÉ**) =
    **lot / décision-owner DISTINCT** (changement de modèle de sécurité, revue dédiée), **jamais en douce dans
-   Model A**.
+   Model A**. **Séquence — principe général** *(endossé geo-socle sur la revue firewall #267 ; décision de lot =
+   geo-cond)* : **un gate d'autorisation FIELD-BOUND ne doit PAS être câblé sur des écritures irréversibles RÉELLES
+   avant Q-CRYPTO-HARDEN.** Tant que le gate reste field-bound (avant la vérif de signature), le **resolver réel**
+   (lecture du store d'autorisation réel) **reste absent = refuse-by-construction** ; le câbler = un **lot SÉPARÉ
+   gaté sur Q-CRYPTO-HARDEN**, revue adversariale dédiée. S'applique généralement (Model A L4 · campagne
+   object-store #266 · futur) ; le spec campagne #266 porte le campaign-specific (« Q-CRYPTO-HARDEN plus prioritaire
+   ICI »), ce point = le **principe général** qui le sous-tend.
 6. **Runner-VÉRIFICATION sémantique par construction (Q-SEMANTIC-VERIFY)** — *proposée geo-archi, endossée
    geo-socle (findings adversarial #264 sur le runner #258 PARTAGÉ) ; décision de lot / présentation owner =
    geo-cond*. **Orthogonale au write-gate (pt5)** : pt5 = **AUTORISATION** (qui écrit) ; ce point = **VÉRIFICATION**
