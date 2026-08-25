@@ -75,6 +75,22 @@ export function captureImage(): CaptureImageConfig {
   return { image: parsed.image, registry: parsed.registry ?? "", pinned_at: parsed.pinned_at ?? "" };
 }
 
+/**
+ * Options d'`assertPinnedImage` PAR CHEMIN. Le chemin **store** (soumission
+ * storante gated) IGNORE `--allow-unpinned-image` PAR CONSTRUCTION → image
+ * épinglée toujours exigée ; l'échappatoire n'est honorée QUE sur le chemin
+ * **dry-run** (debug non storant), et seulement si le flag est explicitement passé.
+ * Rendre l'inatteignabilité STRUCTURELLE (pas « on ne passe juste pas le flag »)
+ * empêche un refactor futur de re-câbler l'échappatoire dans l'assert storant sans
+ * casser ce helper + son test.
+ */
+export function imagePinOptsForPath(
+  path: "store" | "dry-run",
+  allowUnpinned: boolean,
+): { allowUnpinned: boolean } {
+  return { allowUnpinned: path === "dry-run" ? allowUnpinned : false };
+}
+
 function option(argv: string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
   return index >= 0 ? argv[index + 1] : undefined;
@@ -423,7 +439,7 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   if (args.dryRun) {
     // Chemin dry-run NON storant : l'échappatoire --allow-unpinned-image n'est
     // tolérée qu'ICI (debug explicite), jamais dans le chemin storant gated.
-    assertPinnedImage(args.image, { allowUnpinned: args.allowUnpinnedImage });
+    assertPinnedImage(args.image, imagePinOptsForPath("dry-run", args.allowUnpinnedImage));
     process.stderr.write("[capture-orch] --dry-run: aucun PUT ni kubectl apply\n");
     process.stdout.write(manifest);
     return;
@@ -431,8 +447,9 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   // Chemin STORANT gated : image épinglée EXIGÉE PAR CONSTRUCTION. --allow-unpinned-image
   // est INATTEIGNABLE ici (jamais passé) — une image non épinglée casserait de toute
   // façon le binding design_sha256 (method.image ⊂ la préimage) → refus du gate ;
-  // cet assert est la ceinture par-dessus les bretelles.
-  assertPinnedImage(args.image);
+  // cet assert est la ceinture par-dessus les bretelles. imagePinOptsForPath("store", …)
+  // force allowUnpinned:false — le flag debug est structurellement ignoré ici.
+  assertPinnedImage(args.image, imagePinOptsForPath("store", args.allowUnpinnedImage));
   // FIREWALL : rien ne fire vers sentropic-geo sans go owner DIRECT relu du store.
   const gate = await assertCaptureStoreAuthorized({
     execution: SUBMITTED_JOB_EXECUTION,
