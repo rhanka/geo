@@ -81,6 +81,17 @@ producteur défini mais non peuplé/servi** → la pile 4-niveaux n'est **pas** 
    servi-side**.
 4. **Jointure base↔amendement** — matérialiser la clé rattachant l'amendement (`ZoningEvent`, `zone_codes_resolus`)
    à la base servie (`muni` + `zone_code`) : la jointure aujourd'hui **absente** (§2.1).
+5. **Write-path servi GATÉ PAR CONSTRUCTION (authz)** — *exigence ratifiée (geo-socle + geo-archi, sur le catch
+   ≥2-pairs Model A)*. Toute écriture servie de `qc-zoning-events` (y compris l'émetteur-complétude §2.5) passe par
+   la **frontière gatée UNIQUE** (owner-go, `executeZoningEventRemediation`), **JAMAIS** via un writer non-gaté
+   (`serveZoningEvents`). **Une discipline n'est pas un gate** : le HOLD « zéro écriture servie sans write-go » doit
+   être **enforced par CONSTRUCTION**, pas par convention. Symétrie : **gate de complétude producteur (§2.5 / S2)**
+   **+** **gate d'autorisation d'écriture (ce point)**. **Scoping** (pour ne pas faire baller Model A) : (a) ce
+   doc-model = la **CIBLE** (authz par construction) ; (b) **Model A réalise le ROUTAGE** — tout write → la
+   frontière gatée unique = **critère d'acceptation Model A** (`SPEC_EVOL`) ; (c) le **durcissement crypto**
+   (remplacer le field-bound-sur-reader-injecté par une **vérif de signature** dans le module **#258 PARTAGÉ**) =
+   **lot / décision-owner DISTINCT** (changement de modèle de sécurité, revue dédiée), **jamais en douce dans
+   Model A**.
 
 ### §2.4 — Contrat de format geo↔immo (pivot reco §4) — « geo sert X ⟺ immo projette X »
 *(Accord **LOCKÉ avec extraction [d52af7]** : mapping confirmé + séquence **B→A** ; shapes immo mesurées sur
