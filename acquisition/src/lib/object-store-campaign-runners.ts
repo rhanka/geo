@@ -2,7 +2,7 @@
  * Write-runners de la campagne object-store tout-geo (bucket `sentropic-geo`).
  *
  * DEUX écritures NON destructives, chacune bâtie AUTOUR de la gate PARTAGÉE :
- *   - re-key       = COPY-ONLY   (copyObject src→dest ; JAMAIS deleteObject/écrase l'ancienne clé)
+ *   - re-key       = COPY-ONLY   (GET src + PUT dest If-None-Match:"*" ; JAMAIS deleteObject/écrase l'ancienne clé)
  *   - legacy-merge = ADDITIF-TAGGÉ (putBytesIfAbsentOrEqual ; JAMAIS drop/écrase un existant)
  *
  * La gate n'est PAS ré-implémentée ici : `assertObjectStoreCampaignOwnerGo`,
@@ -20,7 +20,7 @@ import { createHash } from "node:crypto";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 
-import { copyObject, putBytesIfAbsentOrEqual } from "./s3.js";
+import { putBytesIfAbsentOrEqual, rekeyObjectIfAbsentOrEqual } from "./s3.js";
 import {
   assertObjectStoreCampaignOwnerGo,
   buildCampaignExecutionPlan,
@@ -64,12 +64,13 @@ export interface RekeyCampaignInput {
 export interface RekeyCampaignResult {
   scope: "write-rekey";
   design_sha256: Sha256Ref;
-  copied: RekeyTarget[];
+  copied: Array<{ src_key: string; dest_key: string; outcome: "created" | "existing-equal" }>;
 }
 
 function assertRekeyTargets(targets: readonly RekeyTarget[]): void {
   if (targets.length === 0) throw new Error("campaign rekey: au moins une cible requise");
   const dests = new Set<string>();
+  const srcs = new Set<string>();
   for (const t of targets) {
     if (!nonEmpty(t.src_key) || !nonEmpty(t.dest_key)) {
       throw new Error("campaign rekey: src_key/dest_key non vides requis");
@@ -81,6 +82,18 @@ function assertRekeyTargets(targets: readonly RekeyTarget[]): void {
       throw new Error(`campaign rekey: dest_key dupliqué (${t.dest_key})`);
     }
     dests.add(t.dest_key);
+    srcs.add(t.src_key);
+  }
+  // Disjointness src ∩ dest = ∅ : une clé à la fois SOURCE d'une cible et
+  // DESTINATION d'une autre rend l'ORDRE des copies signifiant (chaîne
+  // [A→B, B→C] : B est-il lu avant ou après avoir été écrit ?) — plan AMBIGU,
+  // et sans create-once c'était le clobber destructif F1. On rejette dès la
+  // VALIDATION (fail-fast, avant toute écriture), en défense-en-profondeur
+  // par-dessus le plancher create-once de rekeyObjectIfAbsentOrEqual (CA-G7).
+  for (const dest of dests) {
+    if (srcs.has(dest)) {
+      throw new Error(`campaign rekey: clé à la fois src et dest interdite (${dest})`);
+    }
   }
 }
 
@@ -100,9 +113,12 @@ export function buildRekeyPlan(
 
 /**
  * Re-key — COPY-ONLY. Recalcule `design_sha256`, passe la gate AVANT toute
- * écriture (scope `write-rekey`), puis `copyObject(src→dest)` UNIQUEMENT. Ne
- * supprime ni n'écrase jamais l'ancienne clé (la suppression = étape DESTRUCTIVE
- * hors campagne, owner-gated séparément, jamais sous `write-rekey`).
+ * écriture (scope `write-rekey`), puis `rekeyObjectIfAbsentOrEqual(src→dest)`
+ * UNIQUEMENT : GET source + PUT dest `IfNoneMatch:"*"` (le CopyObject server-side
+ * renvoie 501 sur OVH-BHS — voir le probe committé), create-once / byte-equal.
+ * Ne supprime ni n'écrase jamais l'ancienne clé — un dest pré-existant d'octets
+ * différents throw (jamais d'écrasement, CA-G7 / F1). La suppression = étape
+ * DESTRUCTIVE hors campagne, owner-gated séparément, jamais sous `write-rekey`.
  */
 export async function runRekeyCampaign(input: RekeyCampaignInput): Promise<RekeyCampaignResult> {
   const plan = buildRekeyPlan(input.runnerGitSha, input.targets);
@@ -114,11 +130,20 @@ export async function runRekeyCampaign(input: RekeyCampaignInput): Promise<Rekey
     input.readEnvelope,
     input.readSession,
   );
-  const copied: RekeyTarget[] = [];
+  const copied: RekeyCampaignResult["copied"] = [];
   for (const target of plan.targets as readonly RekeyTarget[]) {
-    // COPY-ONLY. Aucun deleteObject, aucune écriture de l'ancienne clé.
-    await copyObject(input.s3, target.src_key, target.dest_key, CAMPAIGN_BUCKET);
-    copied.push(target);
+    // COPY-ONLY create-once. Aucun deleteObject, aucune écriture de l'ancienne clé.
+    // rekeyObjectIfAbsentOrEqual : GET src + PUT dest IfNoneMatch:"*" (enforcement
+    // PROUVÉ sur OVH-BHS) — crée le dest OU accepte un dest déjà présent SEULEMENT
+    // s'il est octet-pour-octet identique ; une collision d'octets différents THROW.
+    // Ferme F1 : le clobber d'un dest pré-existant est impossible PAR CONSTRUCTION.
+    const outcome = await rekeyObjectIfAbsentOrEqual(
+      input.s3,
+      target.src_key,
+      target.dest_key,
+      CAMPAIGN_BUCKET,
+    );
+    copied.push({ src_key: target.src_key, dest_key: target.dest_key, outcome });
   }
   return { scope: "write-rekey", design_sha256: designSha256, copied };
 }
