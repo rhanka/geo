@@ -319,11 +319,14 @@ describe("additive served-zone provenance write", () => {
     for (const f of incoming.features) { f.properties.zone_source_url = "https://data.example.org/z.geojson"; f.properties.zone_source_level = "directe"; }
     const r = await putServedZoneAdditive(s3, KEY, incoming, { allowedProps: ["zone_source_url", "zone_source_level"] });
     expect(r.features).toBe(2);
-    const names = sent.map((c) => c.name);
-    // backup (CopyObject) precedes the PutObject write.
-    expect(names.indexOf(COPY)).toBeGreaterThanOrEqual(0);
-    expect(names.indexOf(COPY)).toBeLessThan(names.indexOf(PUT));
-    const put = sent.find((c) => c.name === PUT)!;
+    // Backup is a portable GET+PUT (OVH-BHS returns 501 on server-side CopyObject):
+    // the pre-overwrite backup PUT lands under `_replaced/` BEFORE the served write.
+    const puts = sent.filter((c) => c.name === PUT);
+    const backupPut = puts.find((c) => c.input.Key !== KEY)!;
+    const put = puts.find((c) => c.input.Key === KEY)!;
+    expect(sent.some((c) => c.name === COPY)).toBe(false);
+    expect(backupPut.input.Key.startsWith("normalized/ca-qc-zonage/_replaced/")).toBe(true);
+    expect(sent.indexOf(backupPut)).toBeLessThan(sent.indexOf(put));
     expect(put.input.Key).toBe(KEY);
     expect(put.input.ContentType).toBe("application/geo+json");
     const body = JSON.parse(put.input.Body);
@@ -407,7 +410,7 @@ describe("additive served-zone provenance write", () => {
     });
 
     expect(result.features).toBe(served.features.length);
-    const body = JSON.parse(sent.find((command) => command.name === PUT)!.input.Body);
+    const body = JSON.parse(sent.find((command) => command.name === PUT && command.input.Key === KEY)!.input.Body);
     expect(body.features.map((feature: any) => feature.geometry)).toEqual(served.features.map((feature: any) => feature.geometry));
     expect(body.features).toHaveLength(served.features.length);
     expect(body.features.map((feature: any) => feature.properties.proof.sources.geometry)).toEqual(
@@ -470,7 +473,7 @@ describe("additive served-zone provenance write", () => {
     });
 
     expect(result.features).toBe(served.features.length);
-    const body = JSON.parse(sent.find((command) => command.name === PUT)!.input.Body);
+    const body = JSON.parse(sent.find((command) => command.name === PUT && command.input.Key === KEY)!.input.Body);
     expect(body.features.map((feature: any) => feature.geometry)).toEqual(served.features.map((feature: any) => feature.geometry));
     expect(body.features.map((feature: any) => feature.properties.proof.sources.geometry)).toEqual(
       served.features.map((feature: any) => ({
@@ -612,7 +615,7 @@ describe("additive served-zone provenance write", () => {
     for (const f of incoming.features) f.properties.zone_source_level = "documented";
     const r = await putServedZoneAdditive(s3, KEY, incoming, { allowedProps: ["zone_source_url", "zone_source_level"] });
     expect(r.features).toBe(2);
-    const body = JSON.parse(sent.find((c) => c.name === PUT)!.input.Body);
+    const body = JSON.parse(sent.find((c) => c.name === PUT && c.input.Key === KEY)!.input.Body);
     expect(body.features[0].properties.zone_source_level).toBe("documented");
     expect(body.proof.geometry_source.url).toBe("https://sig.officiel.example/zones.geojson");
   });
@@ -741,7 +744,7 @@ describe("additive served-zone provenance write", () => {
         allowedProps: ["zone_source_url", "zone_source_level"],
         allowProofV2Promotion: [{ geometrySource: source }],
       });
-      const body = JSON.parse(sent.find((command) => command.name === PUT)!.input.Body);
+      const body = JSON.parse(sent.find((command) => command.name === PUT && command.input.Key === KEY)!.input.Body);
       expect(body.features.map((feature: any) => feature.geometry)).toEqual(served.features.map((feature: any) => feature.geometry));
       expect(body.features[0].properties.proof.sources).toEqual(served.features[0].properties.proof.sources);
       expect(body.proof).toEqual({ schema_version: "2.0", geometry_source: source });
@@ -782,20 +785,26 @@ describe("additive served-zone provenance write", () => {
     for (const f of incoming.features) { f.properties.zone_source_url = "https://data.example.org/z.geojson"; f.properties.zone_source_level = "directe"; }
     await putServedZoneAdditive(s3, KEY, incoming, { allowedProps: ["zone_source_url", "zone_source_level"] });
 
-    const copy = sent.find((c) => c.name === COPY)!;
-    const put = sent.find((c) => c.name === PUT)!;
-    // WHAT is backed up is unchanged: the source is the current served key.
-    expect(copy.input.CopySource).toContain(KEY);
+    // The backup is a portable GET(served key) + PUT(_replaced key): OVH-BHS returns
+    // 501 on server-side CopyObject, so a `CopyObjectCommand` must never be emitted.
+    expect(sent.some((c) => c.name === COPY)).toBe(false);
+    const puts = sent.filter((c) => c.name === PUT);
+    const backupPut = puts.find((c) => c.input.Key !== KEY)!;
+    const put = puts.find((c) => c.input.Key === KEY)!;
+    // WHAT is backed up is unchanged: the backup carries the current served bytes.
+    expect(JSON.parse(backupPut.input.Body.toString())).toEqual(served);
     // WHERE it lands changed: under the index-excluded `_replaced/` prefix, with the
     // canonical campaign naming — NOT a `<key>.additive-prebackup.geojson` sibling.
-    expect(copy.input.Key).toMatch(/^normalized\/ca-qc-zonage\/_replaced\/qc-zonage-alpha__additive-prebackup-flat\.\d{4}-\d{2}-\d{2}T\d{4}Z\.geojson$/);
-    expect(copy.input.Key).not.toMatch(/\.additive-prebackup\.geojson$/);
+    expect(backupPut.input.Key).toMatch(/^normalized\/ca-qc-zonage\/_replaced\/qc-zonage-alpha__additive-prebackup-flat\.\d{4}-\d{2}-\d{2}T\d{4}Z\.geojson$/);
+    expect(backupPut.input.Key).not.toMatch(/\.additive-prebackup\.geojson$/);
     // The backup is not an indexable served key (geo-api will not turn it into a collection).
-    expect(isServedZoneKey(copy.input.Key)).toBe(false);
-    // The ONLY canonical served write is the PutObject onto the canonical key.
+    expect(isServedZoneKey(backupPut.input.Key)).toBe(false);
+    // The backup PUT precedes the ONLY canonical served write (onto the canonical key).
+    expect(sent.indexOf(backupPut)).toBeLessThan(sent.indexOf(put));
     expect(put.input.Key).toBe(KEY);
-    // No CopyObject destination ever targets the served namespace directly — all sit under `_replaced/`.
-    for (const dest of sent.filter((c) => c.name === COPY).map((c) => c.input.Key as string)) {
+    // No PUT other than the canonical served write targets the served namespace directly —
+    // every backup PUT sits under `_replaced/`.
+    for (const dest of puts.filter((c) => c.input.Key !== KEY).map((c) => c.input.Key as string)) {
       expect(dest.startsWith("normalized/ca-qc-zonage/_replaced/")).toBe(true);
     }
   });
@@ -818,7 +827,10 @@ describe("additive served-zone provenance write", () => {
     const incoming: any = clone(served);
     for (const f of incoming.features) f.properties.zone_geometry_status = "clean";
     await putServedZoneAdditive(s3, KEY, incoming, { allowedProps: ["zone_geometry_status"], backup: false });
+    // Backup disabled ⇒ no backup GET+PUT: the ONLY PUT is the canonical served write.
+    const puts = sent.filter((c) => c.name === PUT);
+    expect(puts).toHaveLength(1);
+    expect(puts[0]!.input.Key).toBe(KEY);
     expect(sent.some((c) => c.name === COPY)).toBe(false);
-    expect(sent.some((c) => c.name === PUT)).toBe(true);
   });
 });
