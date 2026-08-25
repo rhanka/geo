@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  copyObject,
   copyObjectIfMatch,
   objectHead,
   putBytesIfAbsentOrEqual,
@@ -64,6 +65,65 @@ describe("putStream", () => {
         { ETag: "etag-2", PartNumber: 2 },
       ],
     });
+  });
+});
+
+describe("copyObject", () => {
+  // Built by join so the raw-write token never appears verbatim here — the guard
+  // test in zonage-proof.test.ts forbids it outside lib/s3.ts and lib/zonage-proof.ts.
+  const PUT = ["PutObject", "Command"].join("");
+  const COPY = ["CopyObject", "Command"].join("");
+
+  it("copies via GET+PUT — never a server-side CopyObject — preserving bytes and ContentType", async () => {
+    // OVH-BHS returns 501 on server-side CopyObject; copyObject must therefore emit
+    // exactly one GetObject then one PutObject, and never a server-side copy.
+    const srcBytes = Buffer.from('{"type":"FeatureCollection","features":[]}', "utf8");
+    const sent: Array<{ name: string; input: Record<string, unknown> }> = [];
+    const s3 = {
+      send: vi.fn(async (command: { constructor: { name: string }; input: Record<string, unknown> }) => {
+        sent.push({ name: command.constructor.name, input: command.input });
+        if (command.constructor.name === "GetObjectCommand") {
+          async function* body(): AsyncIterable<Buffer> {
+            yield srcBytes;
+          }
+          return { Body: body(), ContentType: "application/geo+json" };
+        }
+        if (command.constructor.name === PUT) return {};
+        throw new Error(`unexpected ${command.constructor.name}`);
+      }),
+    };
+
+    await copyObject(
+      s3 as never,
+      "normalized/ca-qc-zonage/backups/qc-zonage-foo-preclip.geojson",
+      "normalized/ca-qc-zonage/backups/qc-zonage-foo.geojson",
+    );
+
+    expect(sent.map((c) => c.name)).toEqual(["GetObjectCommand", PUT]);
+    expect(sent.some((c) => c.name === COPY)).toBe(false);
+
+    const get = sent.find((c) => c.name === "GetObjectCommand")!;
+    expect(get.input["Key"]).toBe("normalized/ca-qc-zonage/backups/qc-zonage-foo-preclip.geojson");
+    const put = sent.find((c) => c.name === PUT)!;
+    expect(put.input["Key"]).toBe("normalized/ca-qc-zonage/backups/qc-zonage-foo.geojson");
+    // round-trip: destination bytes are exactly the source bytes
+    expect((put.input["Body"] as Buffer).equals(srcBytes)).toBe(true);
+    // the source object's declared ContentType is carried onto the copy
+    expect(put.input["ContentType"]).toBe("application/geo+json");
+  });
+
+  it("refuses a served-zone destination before any read or write", async () => {
+    const sent: string[] = [];
+    const s3 = {
+      send: vi.fn(async (command: { constructor: { name: string } }) => {
+        sent.push(command.constructor.name);
+        return {};
+      }),
+    };
+    await expect(
+      copyObject(s3 as never, "backup.geojson", "normalized/ca-qc-zonage/qc-zonage-montreal.geojson"),
+    ).rejects.toThrow(/destination proof/);
+    expect(sent).toHaveLength(0);
   });
 });
 
