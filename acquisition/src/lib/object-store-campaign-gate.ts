@@ -161,6 +161,41 @@ export function sortCampaignTargets(targets: readonly unknown[]): unknown[] {
     .map((entry) => entry.target);
 }
 
+/**
+ * R2 (revue adversariale) — invariant JSON-total. Rejette toute valeur que la
+ * canonicalisation (`JSON.stringify(canonicalize(v))`) trahirait : `undefined` /
+ * function / symbol (droppés silencieusement → deux plans distincts, un même
+ * sha), `bigint` (throw), non-fini (NaN/Infinity → `null`), ou objet non-simple
+ * (Date/Map… → réduit à `{}`). GARDE de validation seulement : ni l'API publique
+ * ni l'algo de canonicalisation `design_sha256` ne changent. Cruciale car la gate
+ * est PARTAGÉE (les write-runners re-key/legacy-merge passent method/targets
+ * structurés).
+ */
+function assertJsonTotal(value: unknown, label: string): void {
+  if (value === null) return;
+  const t = typeof value;
+  if (t === "boolean" || t === "string") return;
+  if (t === "number") {
+    if (!Number.isFinite(value)) throw new Error(`${label}: nombre non-fini interdit (JSON-total)`);
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, i) => assertJsonTotal(item, `${label}[${i}]`));
+    return;
+  }
+  if (isRecord(value)) {
+    const proto = Object.getPrototypeOf(value) as unknown;
+    if (proto !== Object.prototype && proto !== null) {
+      throw new Error(
+        `${label}: objet non-simple interdit (${(value as { constructor?: { name?: string } }).constructor?.name ?? "?"}) — non JSON-total`,
+      );
+    }
+    for (const [key, item] of Object.entries(value)) assertJsonTotal(item, `${label}.${key}`);
+    return;
+  }
+  throw new Error(`${label}: valeur non-JSON-total interdite (${t}) — collision/throw de design_sha256 possible`);
+}
+
 export function assertCampaignExecutionPlan(
   plan: CampaignExecutionPlan,
 ): void {
@@ -177,6 +212,12 @@ export function assertCampaignExecutionPlan(
   }
   if (!isRecord(plan.method)) throw new Error("campaign plan: method doit être un objet");
   if (!Array.isArray(plan.targets)) throw new Error("campaign plan: targets doit être un tableau");
+  // R2 — invariant JSON-total (voir assertJsonTotal) sur les deux parties libres
+  // du plan, pour que canonicalString soit TOTALE (ni drop silencieux ni throw)
+  // → design_sha256 déterministe + sans collision, y compris pour les plans
+  // structurés des write-runners.
+  assertJsonTotal(plan.method, "campaign plan.method");
+  assertJsonTotal(plan.targets, "campaign plan.targets");
 }
 
 /**
@@ -277,7 +318,7 @@ function assertClaimedArtefact(
  * store est la source de vérité : un relais conducteur (qui ne peut pas déposer
  * une enveloppe signée OWNER dans le store) ne peut pas satisfaire ce point.
  */
-async function assertOwnerGoInH2a(
+async function crossVerifyOwnerGoInStore(
   artefact: ObjectStoreCampaignOwnerGo,
   readEnvelope: H2aRecordReader,
   readSession: H2aRecordReader,
@@ -338,5 +379,5 @@ export async function assertObjectStoreCampaignOwnerGo(
   assertCampaignScope(expected.scope);
   assertSha(expected.designSha256, "campaign owner-go expected.designSha256");
   assertClaimedArtefact(artefact, expected);
-  await assertOwnerGoInH2a(artefact, readEnvelope, readSession);
+  await crossVerifyOwnerGoInStore(artefact, readEnvelope, readSession);
 }
