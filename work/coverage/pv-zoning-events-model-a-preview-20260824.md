@@ -176,3 +176,12 @@ substrate), `_pv-manifest-layout-probe.ts` (manifest storage_key layout),
 — the 18-target pv-lane capture worklist (`PvCaptureTarget` shape) + per-docSha
 expectations (sha256 + CAS key + source_kind + links_backed) for Model-A step 2.
 Labeled NOT-executed (owner-gated).
+
+**Committed reproducible source of the 4/22 coverage (no probe needed):** the 4 present
+docShas are the `already_on_geo` entries in the companion worklist above, and they are
+attested on `origin/main` by the committed capture-classification manifests
+`pv-capture-octets-classification-*.json` (which list those docShas); cross-referenced,
+these committed artifacts alone reproduce the 4/22-present · 18/22-absent split. The live
+object-store figures (≈8,919 CAS objects, 648 pv-lane cluster runs) additionally require
+running the read-only `_pv-*-probe.ts` sondes against live S3 — those sondes are the
+reproducibility harness for the S3 state and are intentionally not committed.
