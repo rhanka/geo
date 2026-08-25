@@ -62,6 +62,7 @@ describe("capture worklist job contract", () => {
       memoryLimitMi: 176,
       egress: "direct" as const,
       dryRun: false,
+      laneGatedCapture: false,
     };
     const manifest = jobManifest(args, "registry/capture-worklists/normes-20260726T120000Z.json");
     expect(manifest).toContain("securityContext:\n        # The capture image declares USER 1000:1000. EmptyDir is\n        # mounted at /scratch for its redacted temporary log, so grant that\n        # group ownership before the non-root entrypoint starts.\n        fsGroup: 1000\n        runAsNonRoot: true");
