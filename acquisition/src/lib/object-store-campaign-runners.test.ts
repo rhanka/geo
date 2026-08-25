@@ -35,9 +35,11 @@ interface MockOp {
   key: string;
 }
 
-function makeMockS3(initial: Record<string, string> = {}) {
+function makeMockS3(initial: Record<string, string> = {}, initialCtypes: Record<string, string> = {}) {
   const store = new Map<string, Buffer>();
   for (const [k, v] of Object.entries(initial)) store.set(k, Buffer.from(v, "utf8"));
+  const ctype = new Map<string, string>();
+  for (const [k, v] of Object.entries(initialCtypes)) ctype.set(k, v);
   const ops: MockOp[] = [];
   let etagSeq = 0;
   const send = vi.fn(
@@ -47,11 +49,15 @@ function makeMockS3(initial: Record<string, string> = {}) {
       const bucket = String(input["Bucket"]);
       if (name === "PutObjectCommand") {
         const key = String(input["Key"]);
+        // Models OVH-BHS proven enforcement of PutObject IfNoneMatch:"*": a
+        // pre-existing key → 412 AND the stored bytes are left UNCHANGED (the
+        // store is only mutated on the success path below), never accept-and-ignore.
         if (input["IfNoneMatch"] === "*" && store.has(key)) {
           ops.push({ op: "put-412", bucket, key });
           throw { name: "PreconditionFailed", $metadata: { httpStatusCode: 412 } };
         }
         store.set(key, bytesOf(input["Body"]));
+        if (input["ContentType"]) ctype.set(key, String(input["ContentType"]));
         ops.push({ op: "put", bucket, key });
         return { ETag: `"etag-${String(++etagSeq)}"` };
       }
@@ -64,6 +70,7 @@ function makeMockS3(initial: Record<string, string> = {}) {
           Body: (async function* () {
             yield bytes;
           })(),
+          ...(ctype.has(key) ? { ContentType: ctype.get(key) } : {}),
         };
       }
       if (name === "HeadObjectCommand") {
@@ -71,7 +78,12 @@ function makeMockS3(initial: Record<string, string> = {}) {
         ops.push({ op: "head", bucket, key });
         const bytes = store.get(key);
         if (!bytes) throw { name: "NotFound", $metadata: { httpStatusCode: 404 } };
-        return { ETag: '"etag-head"', ContentLength: bytes.length, LastModified: new Date(0) };
+        return {
+          ETag: '"etag-head"',
+          ContentLength: bytes.length,
+          LastModified: new Date(0),
+          ...(ctype.has(key) ? { ContentType: ctype.get(key) } : {}),
+        };
       }
       if (name === "CopyObjectCommand") {
         const key = String(input["Key"]);
@@ -92,7 +104,7 @@ function makeMockS3(initial: Record<string, string> = {}) {
       throw new Error(`unexpected ${name}`);
     },
   );
-  return { s3: { send } as never, store, ops };
+  return { s3: { send } as never, store, ctype, ops };
 }
 
 // --------------------------------------------------------------------------
@@ -183,6 +195,7 @@ describe("CA-G7 — re-key COPY-ONLY", () => {
     });
 
     expect(result.copied).toHaveLength(2);
+    expect(result.copied.map((c) => c.outcome)).toEqual(["created", "created"]);
     // (a) deleteObject was NEVER called
     expect(mock.ops.filter((o) => o.op === "delete")).toHaveLength(0);
     // (b) old keys still return byte-identical content
@@ -192,6 +205,123 @@ describe("CA-G7 — re-key COPY-ONLY", () => {
     // new keys carry the copied bytes
     expect((await getBytes(mock.s3, "exports/geo/new/a.json", CAMPAIGN_BUCKET)).toString()).toBe("AAA");
     expect((await getBytes(mock.s3, "exports/geo/new/b.json", CAMPAIGN_BUCKET)).toString()).toBe("BBB");
+  });
+});
+
+// --------------------------------------------------------------------------
+// F1 (CA-G7) — re-key is create-once: a pre-existing destination is NEVER
+// clobbered. The dangerous historical bug: an unconditional copy overwrote a
+// pre-existing dest holding different bytes (chained [A→B, B→C] destroyed B).
+// Two independent floors close it: (1) create-once at write time
+// (rekeyObjectIfAbsentOrEqual = native PutObject IfNoneMatch:"*", proven
+// enforced on OVH-BHS); (2) src/dest disjointness rejected at plan validation.
+// --------------------------------------------------------------------------
+
+function outcomesByDest(
+  copied: Array<{ dest_key: string; outcome: string }>,
+): Record<string, string> {
+  return Object.fromEntries(copied.map((c) => [c.dest_key, c.outcome]));
+}
+
+describe("F1 — re-key create-once (no clobber)", () => {
+  it("refuses to overwrite a pre-existing dest holding DIFFERENT bytes; leaves it byte-unchanged", async () => {
+    const mock = makeMockS3({
+      "exports/geo/old/a.json": "AAA",
+      "exports/geo/old/b.json": "BBB",
+      // dest already holds DIFFERENT bytes — the F1 clobber scenario.
+      "exports/geo/new/a.json": "PRE-EXISTING-DIFFERENT",
+    });
+    const fx = buildFixture("write-rekey", REKEY_DESIGN);
+    await expect(
+      runRekeyCampaign({
+        s3: mock.s3,
+        ownerGo: fx.ownerGo,
+        readEnvelope: fx.readEnvelope,
+        readSession: fx.readSession,
+        runnerGitSha: RUNNER_SHA,
+        targets: REKEY_TARGETS,
+      }),
+    ).rejects.toThrow(/immutable S3 object collision/);
+    // dest left byte-for-byte UNCHANGED (no accept-and-ignore, no clobber)
+    expect((await getBytes(mock.s3, "exports/geo/new/a.json", CAMPAIGN_BUCKET)).toString()).toBe(
+      "PRE-EXISTING-DIFFERENT",
+    );
+    // source intact, nothing deleted (COPY-ONLY)
+    expect((await getBytes(mock.s3, "exports/geo/old/a.json", CAMPAIGN_BUCKET)).toString()).toBe("AAA");
+    expect(mock.ops.filter((o) => o.op === "delete")).toHaveLength(0);
+    // the 412 preconditioned PUT was actually exercised (enforcement path, not a HEAD-first fallback)
+    expect(mock.ops.some((o) => o.op === "put-412" && o.key === "exports/geo/new/a.json")).toBe(true);
+  });
+
+  it("accepts a pre-existing dest holding IDENTICAL bytes as existing-equal (idempotent re-run)", async () => {
+    const mock = makeMockS3({
+      "exports/geo/old/a.json": "AAA",
+      "exports/geo/old/b.json": "BBB",
+      // dest already holds the SAME bytes as the source — a partial prior run.
+      "exports/geo/new/a.json": "AAA",
+    });
+    const fx = buildFixture("write-rekey", REKEY_DESIGN);
+    const result = await runRekeyCampaign({
+      s3: mock.s3,
+      ownerGo: fx.ownerGo,
+      readEnvelope: fx.readEnvelope,
+      readSession: fx.readSession,
+      runnerGitSha: RUNNER_SHA,
+      targets: REKEY_TARGETS,
+    });
+    expect(outcomesByDest(result.copied)).toEqual({
+      "exports/geo/new/a.json": "existing-equal",
+      "exports/geo/new/b.json": "created",
+    });
+    expect((await getBytes(mock.s3, "exports/geo/new/a.json", CAMPAIGN_BUCKET)).toString()).toBe("AAA");
+    expect((await getBytes(mock.s3, "exports/geo/new/b.json", CAMPAIGN_BUCKET)).toString()).toBe("BBB");
+    expect(mock.ops.filter((o) => o.op === "delete")).toHaveLength(0);
+  });
+
+  it("rejects a chained [A→B, B→C] plan at validation (src ∩ dest ≠ ∅) — before any write", async () => {
+    const chained: RekeyTarget[] = [
+      { src_key: "exports/geo/k/a.json", dest_key: "exports/geo/k/b.json" },
+      { src_key: "exports/geo/k/b.json", dest_key: "exports/geo/k/c.json" },
+    ];
+    // (a) plan validation throws directly
+    expect(() => buildRekeyPlan(RUNNER_SHA, chained)).toThrow(/à la fois src et dest/);
+    // (b) runRekeyCampaign throws BEFORE touching S3 (guard runs before the gate/writes)
+    const mock = makeMockS3({
+      "exports/geo/k/a.json": "AAA",
+      "exports/geo/k/b.json": "BBB",
+    });
+    const fx = buildFixture("write-rekey", REKEY_DESIGN);
+    await expect(
+      runRekeyCampaign({
+        s3: mock.s3,
+        ownerGo: fx.ownerGo,
+        readEnvelope: fx.readEnvelope,
+        readSession: fx.readSession,
+        runnerGitSha: RUNNER_SHA,
+        targets: chained,
+      }),
+    ).rejects.toThrow(/à la fois src et dest/);
+    expect(mock.ops).toHaveLength(0);
+  });
+
+  it("preserves the source content-type on the re-keyed destination", async () => {
+    const ctTargets: RekeyTarget[] = [
+      { src_key: "raw/pv/src.pdf", dest_key: "raw/pv-index/dest.pdf" },
+    ];
+    const ctDesign = campaignDesignSha256(buildRekeyPlan(RUNNER_SHA, ctTargets));
+    const mock = makeMockS3({ "raw/pv/src.pdf": "PDFBYTES" }, { "raw/pv/src.pdf": "application/pdf" });
+    const fx = buildFixture("write-rekey", ctDesign);
+    await runRekeyCampaign({
+      s3: mock.s3,
+      ownerGo: fx.ownerGo,
+      readEnvelope: fx.readEnvelope,
+      readSession: fx.readSession,
+      runnerGitSha: RUNNER_SHA,
+      targets: ctTargets,
+    });
+    const destHead = await objectHead(mock.s3, "raw/pv-index/dest.pdf", CAMPAIGN_BUCKET);
+    expect(destHead.contentType).toBe("application/pdf");
+    expect((await getBytes(mock.s3, "raw/pv-index/dest.pdf", CAMPAIGN_BUCKET)).toString()).toBe("PDFBYTES");
   });
 });
 
@@ -311,8 +441,8 @@ describe("CA-G6 — binding design_sha", () => {
         ],
       }),
     ).rejects.toThrow(/binding rompu/);
-    // gate BEFORE any write: nothing copied, nothing deleted
-    expect(mock.ops.filter((o) => o.op === "copy" || o.op === "delete")).toHaveLength(0);
+    // gate BEFORE any write: no PUT (re-key writes the dest via PutObject), no delete
+    expect(mock.ops.filter((o) => o.op === "put" || o.op === "put-412" || o.op === "delete")).toHaveLength(0);
   });
 
   it("design_sha is order-independent (canonical, sorted preimage) and code-bound", () => {
