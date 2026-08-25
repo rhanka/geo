@@ -54,6 +54,7 @@ describe("capture worklist job contract", () => {
       shards: 1,
       concurrency: 1,
       image: "registry.example/geo-capture:test",
+      allowUnpinnedImage: false,
       namespace: "geo",
       runStamp: "20260726T120000Z",
       delayMs: 0,
