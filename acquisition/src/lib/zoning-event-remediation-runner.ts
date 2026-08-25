@@ -65,7 +65,7 @@ const RetractResolutionSchema = z.object({
   kind: z.literal("retract"),
   exhaustion: ExhaustionSchema,
 }).strict();
-const InventorySchema = z.object({
+export const InventorySchema = z.object({
   contract: z.literal(ZONING_EVENT_REMEDIATION_INVENTORY_CONTRACT),
   cohort_sha256: ShaSchema,
   audit_sha256: ShaSchema,
@@ -84,7 +84,7 @@ const InventorySchema = z.object({
     }).strict()),
   }).strict()),
 }).strict();
-const PvLinkReceiptSchema = z.object({
+export const PvLinkReceiptSchema = z.object({
   contract: z.literal(ZONING_EVENT_PV_LINK_RECEIPT_CONTRACT),
   status: z.literal("source-found"),
   receipt_key: ObjectKeySchema,
@@ -101,7 +101,7 @@ const PvLinkReceiptSchema = z.object({
   pv_text_ref: DurableRefSchema,
   text_extraction_receipt_ref: DurableRefSchema,
 }).strict();
-const PvTextExtractionReceiptSchema = z.object({
+export const PvTextExtractionReceiptSchema = z.object({
   contract: z.literal(ZONING_EVENT_PV_TEXT_EXTRACTION_RECEIPT_CONTRACT),
   status: z.literal("extracted"),
   receipt_key: ObjectKeySchema,
@@ -112,7 +112,7 @@ const PvTextExtractionReceiptSchema = z.object({
   extraction_tool: z.string().min(1),
   extracted_at: z.string().datetime(),
 }).strict();
-const ExhaustionReceiptSchema = z.object({
+export const ExhaustionReceiptSchema = z.object({
   contract: z.literal(ZONING_EVENT_EXHAUSTION_RECEIPT_CONTRACT),
   status: z.literal("exhausted"),
   receipt_key: ObjectKeySchema,
@@ -130,7 +130,7 @@ const ExhaustionReceiptSchema = z.object({
   }).strict()).min(1),
   as_of: z.string().min(1),
 }).strict();
-const SourceNoMatchReceiptSchema = z.object({
+export const SourceNoMatchReceiptSchema = z.object({
   contract: z.literal(ZONING_EVENT_SOURCE_NO_MATCH_RECEIPT_CONTRACT),
   status: z.literal("complete-no-match"),
   receipt_key: ObjectKeySchema,
