@@ -473,9 +473,12 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
       targets,
       ownerGoArtifact,
     });
+    // C3 (preuve) : la trace capture le h2a_envelope_id — l' id que k8s a cross-checké
+    // contre le message inbox qu'il a copié (ancre procédurale évidencée, delta-2/4).
     process.stderr.write(
       `[capture-orch] LANE-GATED additive capture launch, design_sha=${gate.designSha256}, ` +
-        `owner_instance=${ownerGoArtifact.owner_instance}\n`,
+        `owner_instance=${ownerGoArtifact.owner_instance}, ` +
+        `h2a_envelope_id=${ownerGoArtifact.h2a_envelope_id}, h2a_session_id=${ownerGoArtifact.h2a_session_id}\n`,
     );
   } else {
     // FIREWALL : rien ne fire vers sentropic-geo sans go owner DIRECT relu du store.
