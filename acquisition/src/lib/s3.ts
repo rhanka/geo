@@ -16,7 +16,6 @@ import {
   GetObjectCommand,
   HeadObjectCommand,
   PutObjectCommand,
-  CopyObjectCommand,
   DeleteObjectCommand,
   ListObjectsV2Command,
   UploadPartCommand,
@@ -518,7 +517,26 @@ export async function deleteObject(
   await s3.send(new DeleteObjectCommand({ Bucket: bucket, Key: key }));
 }
 
-/** Server-side copy (used for the non-destructive *-preclip backups). */
+/**
+ * Copy an object with GET+PUT (portable), NOT a server-side `CopyObjectCommand`.
+ *
+ * Used for the non-destructive `*-preclip` / prebackup backups a geometry
+ * replacement takes before overwriting a served zone. OVH Object Storage
+ * (BHS — the prod store since the 2026-07-29 migration) returns
+ * `501 NotImplemented` on server-side `CopyObject`, so `CopyObjectCommand`
+ * silently failed there: the backup never landed and the replace was left with
+ * no rollback. Reading the source and re-uploading its bytes is portable across
+ * clouds and reproduces the exact same result.
+ *
+ * The source object's `ContentType` is read from the GET and re-declared on the
+ * PUT, so the copy keeps its type exactly as the server-side copy did (it copied
+ * object metadata) — geojson backups stay `application/geo+json`, json stays
+ * `application/json`, and any other declared type is preserved verbatim rather
+ * than guessed. The object is buffered in memory, which is fine for the MB-range
+ * zonage backups this serves (same footprint as {@link getBytes}). The
+ * destination is written through {@link putBytes}, so the served-zone write
+ * guard applies to both the caller's check above and the actual PUT.
+ */
 export async function copyObject(
   s3: S3Client,
   srcKey: string,
@@ -528,13 +546,11 @@ export async function copyObject(
   if (isServedZoneKey(destKey)) {
     throw new Error(`direct served qc-zonage copy refused: destination proof must be validated before write (${destKey})`);
   }
-  await s3.send(
-    new CopyObjectCommand({
-      Bucket: bucket,
-      CopySource: `${bucket}/${encodeURI(srcKey)}`,
-      Key: destKey,
-    }),
-  );
+  const source = await s3.send(new GetObjectCommand({ Bucket: bucket, Key: srcKey }));
+  const body = source.Body as AsyncIterable<Buffer>;
+  const chunks: Buffer[] = [];
+  for await (const chunk of body) chunks.push(chunk);
+  await putBytes(s3, destKey, Buffer.concat(chunks), source.ContentType, bucket);
 }
 
 /**
@@ -573,10 +589,28 @@ export async function rekeyObjectIfAbsentOrEqual(
 }
 
 /**
- * Server-side backup tied to the exact source revision observed during a
- * preflight.  A geometry replacement cannot claim to have backed up revision
- * A, then silently copy (and later overwrite) revision B after a concurrent
- * writer.  The destination remains non-served, exactly like {@link copyObject}.
+ * Backup tied to the exact source revision observed during a preflight, done
+ * with a REVISION-GUARDED GET+PUT — NOT a server-side `CopyObjectCommand`.
+ *
+ * A geometry replacement cannot claim to have backed up revision A, then
+ * silently copy (and later overwrite) revision B written by a concurrent
+ * writer. The server-side copy enforced that with `CopySourceIfMatch`, but OVH
+ * Object Storage (BHS — the prod store since the 2026-07-29 migration) returns
+ * `501 NotImplemented` on server-side `CopyObject`, so that copy silently
+ * failed there and the revision-guarded backup never landed — the same OVH-BHS
+ * bug that {@link copyObject} works around.
+ *
+ * The revision guard is preserved by carrying the observed ETag onto the GET as
+ * `IfMatch`: if the source's current ETag no longer matches `sourceEtag`, S3
+ * returns `412 PreconditionFailed` and the GET throws — exactly the mismatch
+ * signal the old `CopySourceIfMatch` produced — so no PUT is issued and the
+ * backup is never written from the wrong revision. This is deliberately NOT a
+ * naked GET: the `IfMatch` IS the compare-and-swap and the whole point of the
+ * primitive. The source object's `ContentType` is read from the GET and
+ * re-declared on the PUT (same as {@link copyObject}), and the write goes
+ * through {@link putBytes} so the served-zone guard applies to the actual PUT as
+ * well as the caller's check above. The destination remains non-served, exactly
+ * like {@link copyObject}.
  */
 export async function copyObjectIfMatch(
   s3: S3Client,
@@ -589,14 +623,13 @@ export async function copyObjectIfMatch(
   if (isServedZoneKey(destKey)) {
     throw new Error(`direct served qc-zonage copy refused: destination proof must be validated before write (${destKey})`);
   }
-  await s3.send(
-    new CopyObjectCommand({
-      Bucket: bucket,
-      CopySource: `${bucket}/${encodeURI(srcKey)}`,
-      CopySourceIfMatch: sourceEtag,
-      Key: destKey,
-    }),
+  const source = await s3.send(
+    new GetObjectCommand({ Bucket: bucket, Key: srcKey, IfMatch: sourceEtag }),
   );
+  const body = source.Body as AsyncIterable<Buffer>;
+  const chunks: Buffer[] = [];
+  for await (const chunk of body) chunks.push(chunk);
+  await putBytes(s3, destKey, Buffer.concat(chunks), source.ContentType, bucket);
 }
 
 /**
