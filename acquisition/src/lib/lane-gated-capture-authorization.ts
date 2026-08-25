@@ -10,8 +10,9 @@ import {
 export const SUBMITTED_JOB_EXECUTION: "cluster" = "cluster";
 
 /**
- * L'artefact owner-go COMPLET que le lane exécutant (k8s) a lu+vérifié depuis SON
- * inbox h2a authentifié, puis copié verbatim dans un fichier. `h2a_envelope_id` /
+ * L'artefact owner-go COMPLET que le lane exécutant (k8s) a lu depuis SON inbox h2a
+ * (file-channel host-writable, JSON non signé = (B) audit-trace, PAS anti-forge — SPEC
+ * §7.1), puis copié verbatim dans un fichier. `h2a_envelope_id` /
  * `h2a_session_id` sont REQUIS (hook de provenance : ils lient l'artefact au message
  * inbox réel — k8s cross-check `h2a_envelope_id == le message qu'il a copié` à son
  * runbook et l'enregistre comme preuve C3). C'est le MÊME type que le firewall plein :
@@ -24,16 +25,17 @@ export type LaneGatedCaptureOwnerGoArtifact = ObjectStoreCampaignOwnerGo;
  * CA-G8 — autorisation PROCÉDURALE, strictement réservée à la capture ADDITIVE.
  *
  * ⚠ L'ancre anti-forge de ce mode est PROCÉDURALE, PAS cryptographique : le runner
- * FIELD-CHECK l'artefact (intégrité-de-PLAN) mais NE RELIT PAS le store h2a. La
- * non-forgeabilité repose sur (1) le lane exécutant (k8s) qui lit+VÉRIFIE l'owner-go
- * depuis SON inbox h2a authentifié puis le copie verbatim (runbook, GATÉ sur mesh-UP,
- * évidencé + enveloppe enregistrée), et (2) la frontière RBAC de lancement (le
- * kubeconfig OVH est k8s-SEUL ; `assertDeclaredCluster` borne le OÙ). Le `design_sha256`
- * self-référentiel bloque la SUBSTITUTION-DE-PLAN, PAS la forge : quiconque peut écrire
- * `--owner-go-artifact` + connaît method/targets/git-sha peut forger un artefact passant.
- * Cette forge est BORNÉE par : la frontière RBAC (forge ≡ launch-k8s ≡ déjà-TCB-cluster,
- * pas d'élargissement) + l'egress-belt C2 (SSRF : deny interne + 169.254 métadonnée,
- * ENFORCÉ par le CNI = hard-gate) + le caractère additif/create-once/réversible.
+ * FIELD-CHECK l'artefact (intégrité-de-PLAN) mais NE RELIT PAS le store h2a. Le
+ * `design_sha256` self-référentiel bloque la SUBSTITUTION-DE-PLAN, PAS la forge :
+ * quiconque peut écrire `--owner-go-artifact` + connaît method/targets/git-sha peut
+ * forger un artefact passant. La non-forgeabilité EFFECTIVE repose sur DEUX contrôles
+ * DURS : (1) la frontière RBAC de lancement (kubeconfig OVH k8s-SEUL ;
+ * `assertDeclaredCluster` borne le OÙ ; forge ≡ launch-k8s ≡ déjà-TCB-cluster, pas
+ * d'élargissement), et (2) l'egress-belt C2 (deny RFC1918 + 169.254 métadonnée, MESURÉ
+ * enforcé par le CNI Calico) qui borne une forge à « capture externe additive » + le
+ * caractère additif/create-once/réversible. Le cross-check inbox de k8s (`h2a_envelope_id`)
+ * est de l'AUDIT-TRACE (inbox host-writable, JSON non signé = (B), PAS anti-forge), pas un
+ * contrôle de non-forgeabilité. Voir SPEC §7.1.
  *
  * Décision contract (geo-archi, ≥2-peer) : procédural ACCEPTÉ pour capture
  * additive/réversible SEULEMENT. Les scopes d'ÉCRITURE (write-rekey/write-legacy-merge)

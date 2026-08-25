@@ -147,7 +147,8 @@ destructif par construction.
 Chemin de fire PROPORTIONNÉ pour la **capture ADDITIVE** (create-once proof-v2) quand le
 reader-store-NHI (§2 pt 8, la relecture crypto du store) n'est pas provisionné (bottleneck de
 provision). L'autorisation est **relocalisée au LANE EXÉCUTANT (k8s)** : k8s lit+vérifie l'artefact
-owner-go depuis SON inbox h2a authentifié, le copie verbatim dans un fichier, puis lance le Job qui
+owner-go depuis SON inbox h2a (file-channel host-writable, enveloppes non signées — §7.1), le copie
+verbatim dans un fichier, puis lance le Job qui
 le passe au runner via `--lane-gated-capture --owner-go-artifact <path>`. Le runner
 (`assertLaneGatedCaptureAuthorized`) **RÉUTILISE `assertClaimedArtefact`** (les MÊMES field-checks que
 le firewall plein — contract, role, via, `design_sha256` binding [CA-G6], `scope=capture`, bucket,
@@ -158,19 +159,35 @@ le firewall plein — contract, role, via, `design_sha256` binding [CA-G6], `sco
 Le runner field-check un FICHIER + recalcule le design_sha. **Ni le field-check ni le design_sha ne
 sont anti-forge** : le `design_sha256` est self-référentiel (il bloque la SUBSTITUTION-DE-PLAN vs un
 artefact genuine, PAS la forge d'un artefact ad hoc). Quiconque peut écrire `--owner-go-artifact` +
-connaît `method`/`targets`/`runner_git_sha` peut forger un artefact qui PASSE. La non-forgeabilité
-repose donc sur des contrôles PROCÉDURAUX/opérationnels, PAS sur une relecture-store cryptographique :
+connaît `method`/`targets`/`runner_git_sha` peut forger un artefact qui PASSE. La
+**non-forgeabilité/acceptabilité EFFECTIVE** repose sur **DEUX contrôles** (PAS sur une relecture-store
+cryptographique, absente ; **PAS sur l'inbox-verify** — voir plus bas, ce n'est qu'un contrôle
+d'audit-trace) :
 
-1. **k8s lit+vérifie l'owner-go depuis SON inbox h2a authentifié** puis le copie verbatim (runbook,
-   **gaté sur mesh-UP** : mesh h2a down → k8s ne peut PAS vérifier → ne DOIT PAS lancer). k8s
-   **cross-check `h2a_envelope_id == le message inbox qu'il a copié`** et **enregistre l'enveloppe
-   vérifiée** (preuve C3, trace `[capture-orch] … h2a_envelope_id=…`) — un fire sans vérif réelle
-   devient détectable.
-2. **Frontière RBAC de lancement** : le kubeconfig OVH est **k8s-SEUL** ; `assertDeclaredCluster`
-   borne le cluster/namespace. La capacité de forge ≡ la capacité de lancer sur le cluster ≡ déjà
-   dans la TCB cluster ⟹ **pas d'élargissement** de la surface au-delà de « compromis k8s ».
-3. **Belt egress C2 ENFORCÉ** (CA-G9) : une forge est BORNÉE à « capture externe additive » (deny
-   RFC1918 + 169.254 métadonnée) — pas de SSRF→vol-creds-métadonnée→compromis total.
+1. **Frontière RBAC de lancement** : le kubeconfig OVH est **k8s-SEUL** ; `assertDeclaredCluster`
+   borne le cluster/namespace. La capacité de forger l'owner-go ≡ la capacité de lancer sur le
+   cluster ≡ déjà dans la TCB cluster ⟹ **pas d'élargissement** de la surface au-delà de
+   « compromis k8s ».
+2. **Belt egress C2 ENFORCÉ** (CA-G9 ; **MESURÉ enforcé** — CNI Calico-Felix, probe témoin :
+   kube-API + `169.254.169.254` métadonnée **BLOQUÉS**, externe + DNS préservés ; evidence
+   `capture-C2-cni-enforcement-evidence-20260825.txt`) : une forge est **BORNÉE à « capture externe
+   additive »** — pas de SSRF→vol-creds-métadonnée→compromis total.
+
+**Le cross-check inbox n'est PAS un de ces contrôles — c'est de l'AUDIT-TRACE / PROVENANCE (type B).**
+k8s lit l'owner-go depuis SON inbox h2a (**gaté sur mesh-UP** : mesh down → k8s ne lance PAS),
+cross-check `h2a_envelope_id == le message inbox qu'il a copié` + enregistre l'enveloppe (trace C3
+`[capture-orch] … h2a_envelope_id=…`). ⚠ **MESURÉ (pv + k8s)** : l'inbox est un **répertoire local
+host-writable** (`drwxrwxr-x` — tout process de l'uid y écrit, = l'accès requis pour écrire
+`--owner-go-artifact`) et les enveloppes sont du **JSON NON signé** (aucune signature/hmac/pubkey) —
+donc **PAS crypto-authentifié**. ⟹ un adversaire host-compromis écrit **LES DEUX** (fausse enveloppe +
+artefact la référençant) → le check les accepte (rien ne distingue real/forgé) : **audit-trace +
+hausse-de-barre, PAS anti-forge dur.** **Valeur résiduelle (honnête)** : force la cohérence de
+provenance (artefact ⟶ vraie enveloppe inbox) ⟹ attrape l'erreur ACCIDENTELLE + une forge
+relais-message-only SANS accès-host, PAS un host-compromis.
+
+> **(A) anti-forge-dur (futur, HORS SCOPE)** : atteindre une ancre inbox non-forgeable exigerait des
+> **enveloppes mesh SIGNÉES au dépôt (clé OWNER)** + la **vérif d'une pubkey mesh de confiance** au
+> check-0 (pas un simple JSON host-writable). À traiter avec le durcissement h2a (mcp), hors campagne.
 
 ### 7.2 Risque résiduel + périmètre de la décision
 
@@ -186,8 +203,8 @@ lane-gated** — ils gardent le firewall PLEIN (relecture-store §2 pt 8) + Q-CR
 
 ### 7.3 Contrôles compensatoires (tous requis avant fire)
 
-- **C1** — frontière RBAC de lancement (kubeconfig k8s-seul) + runbook gaté sur mesh-UP + inbox-verify
-  RÉUSSI, ÉVIDENCÉ (§7.1 pt 1).
+- **C1** — frontière RBAC de lancement (kubeconfig k8s-seul, contrôle DUR) + runbook gaté sur mesh-UP
+  + inbox-verify (audit-trace, ÉVIDENCÉ — contrôle de provenance (B), PAS anti-forge ; §7.1).
 - **C2 / CA-G9** — belt egress SSRF ENFORCÉ, re-probé au go sur le vrai label (fail-closed
   by-construction = fast-follow).
 - **C3** — la trace de preuve capture le `h2a_envelope_id` vérifié (§7.1 pt 1).
