@@ -27,6 +27,7 @@ import {
   type Sha256Ref,
 } from "./lib/object-store-campaign-gate.js";
 import { putBytesIfAbsent, s3Client } from "./lib/s3.js";
+import { assertPinnedImage } from "./lib/capture-image-pin.js";
 
 interface Args {
   lane: CaptureLane;
@@ -35,6 +36,7 @@ interface Args {
   shards: number;
   concurrency: number;
   image: string;
+  allowUnpinnedImage: boolean;
   namespace: string;
   runStamp: string;
   delayMs: number;
@@ -50,10 +52,44 @@ interface Args {
   gitSha?: string;
 }
 
-// This image parses the immutable `derivation` control carried by captured
-// normes subpage/PDF worklists. The legacy 0.1.1 image rejects that field
-// before any capture attempt.
-const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:normes-pdf-aa66adf5";
+interface CaptureImageConfig {
+  image: string;
+  registry: string;
+  pinned_at: string;
+}
+
+/**
+ * Image de capture déclarée DANS LE DÉPÔT ; c'est ce fichier qui fait foi. Le
+ * défaut était un tag Scaleway mutable (geo-capture:0.1.1 / normes-pdf-*) qui
+ * pouvait glisser vers une AUTRE image sans signal — une capture rejouée aurait
+ * alors tourné du code périmé sous le KPI cardinal (preuve v2). On épingle
+ * désormais un digest GHCR immuable (acquisition/config/capture-image.json), et
+ * `assertPinnedImage` REFUSE tout ce qui n'est pas ce digest.
+ */
+export function captureImage(): CaptureImageConfig {
+  const path = new URL("../config/capture-image.json", import.meta.url);
+  const parsed = JSON.parse(readFileSync(path, "utf8")) as Partial<CaptureImageConfig>;
+  if (!parsed.image) {
+    throw new Error("acquisition/config/capture-image.json incomplet: image (digest GHCR) requis");
+  }
+  return { image: parsed.image, registry: parsed.registry ?? "", pinned_at: parsed.pinned_at ?? "" };
+}
+
+/**
+ * Options d'`assertPinnedImage` PAR CHEMIN. Le chemin **store** (soumission
+ * storante gated) IGNORE `--allow-unpinned-image` PAR CONSTRUCTION → image
+ * épinglée toujours exigée ; l'échappatoire n'est honorée QUE sur le chemin
+ * **dry-run** (debug non storant), et seulement si le flag est explicitement passé.
+ * Rendre l'inatteignabilité STRUCTURELLE (pas « on ne passe juste pas le flag »)
+ * empêche un refactor futur de re-câbler l'échappatoire dans l'assert storant sans
+ * casser ce helper + son test.
+ */
+export function imagePinOptsForPath(
+  path: "store" | "dry-run",
+  allowUnpinned: boolean,
+): { allowUnpinned: boolean } {
+  return { allowUnpinned: path === "dry-run" ? allowUnpinned : false };
+}
 
 function option(argv: string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
@@ -102,7 +138,8 @@ function parseArgs(argv: string[]): Args {
     kubeconfig,
     shards,
     concurrency,
-    image: option(argv, "image") ?? DEFAULT_IMAGE,
+    image: option(argv, "image") ?? captureImage().image,
+    allowUnpinnedImage: flag(argv, "allow-unpinned-image"),
     namespace: option(argv, "namespace") ?? "geo",
     runStamp,
     delayMs: integer("delay-ms", option(argv, "delay-ms"), 2_000, 0),
@@ -396,13 +433,23 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   const manifest = jobManifest(args, key);
   process.stderr.write(
     `[capture-orch] lane=${args.lane} targets=${targets.length} shards=${args.shards} concurrency=${args.concurrency}\n` +
+      `[capture-orch] image=${args.image}\n` +
       `[capture-orch] worklist=s3://sentropic-geo/${key}\n`,
   );
   if (args.dryRun) {
+    // Chemin dry-run NON storant : l'échappatoire --allow-unpinned-image n'est
+    // tolérée qu'ICI (debug explicite), jamais dans le chemin storant gated.
+    assertPinnedImage(args.image, imagePinOptsForPath("dry-run", args.allowUnpinnedImage));
     process.stderr.write("[capture-orch] --dry-run: aucun PUT ni kubectl apply\n");
     process.stdout.write(manifest);
     return;
   }
+  // Chemin STORANT gated : image épinglée EXIGÉE PAR CONSTRUCTION. --allow-unpinned-image
+  // est INATTEIGNABLE ici (jamais passé) — une image non épinglée casserait de toute
+  // façon le binding design_sha256 (method.image ⊂ la préimage) → refus du gate ;
+  // cet assert est la ceinture par-dessus les bretelles. imagePinOptsForPath("store", …)
+  // force allowUnpinned:false — le flag debug est structurellement ignoré ici.
+  assertPinnedImage(args.image, imagePinOptsForPath("store", args.allowUnpinnedImage));
   // FIREWALL : rien ne fire vers sentropic-geo sans go owner DIRECT relu du store.
   const gate = await assertCaptureStoreAuthorized({
     execution: SUBMITTED_JOB_EXECUTION,
