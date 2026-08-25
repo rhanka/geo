@@ -47,8 +47,10 @@ contains agent cursor/fact files only.
 
 The A1 v2 section says `event_id = sha256(muni | source_ref |
 detection_anchor)` and forbids moving `bylaw_numero` from identity. A later
-“Identity + revision (amendment 2)” section instead gives
-`sha256(muni | bylaw_numero | type | date_iso)`. They conflict. The executable
+“Identity + revision (amendment 2)” section formerly gave
+~~`sha256(muni | bylaw_numero | type | date_iso)`~~ (struck 2026-08-24 —
+reconciled to the A1 source-anchor formula above; see SPEC_QC_ZONING_EVENTS_V2
+amendment-2). The executable
 emitter and tests follow A1/source-anchor identity. This study treats A1 as
 controlling but does not silently amend the joint geo/immo contract.
 
