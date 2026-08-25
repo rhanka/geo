@@ -5,6 +5,7 @@ import {
   objectHead,
   putBytesIfAbsentOrEqual,
   putStream,
+  rekeyObjectIfAbsentOrEqual,
   STREAM_PART_BYTES,
 } from "./s3.js";
 
@@ -91,6 +92,72 @@ describe("putBytesIfAbsentOrEqual", () => {
     };
     await expect(putBytesIfAbsentOrEqual(s3 as never, "registry/worklist.json", "expected"))
       .rejects.toThrow(/immutable S3 object collision/);
+  });
+});
+
+describe("rekeyObjectIfAbsentOrEqual", () => {
+  // Server-side CopyObject is 501 NotImplemented on OVH-BHS (proven by the
+  // committed probe), so a re-key is GET source + conditional PUT dest. The
+  // helper must preserve bytes AND content-type, create-once, and NEVER clobber.
+  function makeS3(initial: Record<string, string>, ctypes: Record<string, string> = {}) {
+    const store = new Map(
+      Object.entries(initial).map(([k, v]) => [k, Buffer.from(v, "utf8")] as const),
+    );
+    const ctype = new Map(Object.entries(ctypes));
+    const send = vi.fn(
+      async (command: { constructor: { name: string }; input: Record<string, unknown> }) => {
+        const name = command.constructor.name;
+        const key = String(command.input["Key"]);
+        if (name === "GetObjectCommand") {
+          const bytes = store.get(key);
+          if (!bytes) throw { name: "NoSuchKey", $metadata: { httpStatusCode: 404 } };
+          const payload: Buffer = bytes;
+          async function* body(): AsyncIterable<Buffer> {
+            yield payload;
+          }
+          return { Body: body(), ...(ctype.has(key) ? { ContentType: ctype.get(key) } : {}) };
+        }
+        if (name === "HeadObjectCommand") {
+          const bytes = store.get(key);
+          if (!bytes) throw { name: "NotFound", $metadata: { httpStatusCode: 404 } };
+          return { ContentLength: bytes.length, ...(ctype.has(key) ? { ContentType: ctype.get(key) } : {}) };
+        }
+        if (name === "PutObjectCommand") {
+          // Models OVH-BHS proven IfNoneMatch enforcement: pre-existing key → 412,
+          // bytes left unchanged (store mutated only on the success path).
+          if (command.input["IfNoneMatch"] === "*" && store.has(key)) {
+            throw { name: "PreconditionFailed", $metadata: { httpStatusCode: 412 } };
+          }
+          store.set(key, Buffer.from(command.input["Body"] as Uint8Array));
+          if (command.input["ContentType"]) ctype.set(key, String(command.input["ContentType"]));
+          return { ETag: '"e"' };
+        }
+        throw new Error(`unexpected ${name}`);
+      },
+    );
+    return { s3: { send } as never, store, ctype };
+  }
+
+  it("creates the dest with the source bytes AND content-type when absent", async () => {
+    const m = makeS3({ "raw/src.pdf": "PDF" }, { "raw/src.pdf": "application/pdf" });
+    await expect(rekeyObjectIfAbsentOrEqual(m.s3, "raw/src.pdf", "raw/dest.pdf", "sentropic-geo"))
+      .resolves.toBe("created");
+    expect(m.store.get("raw/dest.pdf")!.toString()).toBe("PDF");
+    expect(m.ctype.get("raw/dest.pdf")).toBe("application/pdf");
+  });
+
+  it("accepts a pre-existing dest with identical bytes as existing-equal (no overwrite)", async () => {
+    const m = makeS3({ "raw/src.pdf": "PDF", "raw/dest.pdf": "PDF" });
+    await expect(rekeyObjectIfAbsentOrEqual(m.s3, "raw/src.pdf", "raw/dest.pdf", "sentropic-geo"))
+      .resolves.toBe("existing-equal");
+    expect(m.store.get("raw/dest.pdf")!.toString()).toBe("PDF");
+  });
+
+  it("refuses a pre-existing dest with different bytes; leaves it byte-for-byte unchanged", async () => {
+    const m = makeS3({ "raw/src.pdf": "PDF", "raw/dest.pdf": "OTHER" });
+    await expect(rekeyObjectIfAbsentOrEqual(m.s3, "raw/src.pdf", "raw/dest.pdf", "sentropic-geo"))
+      .rejects.toThrow(/immutable S3 object collision/);
+    expect(m.store.get("raw/dest.pdf")!.toString()).toBe("OTHER");
   });
 });
 
