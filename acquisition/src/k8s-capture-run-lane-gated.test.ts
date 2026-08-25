@@ -46,7 +46,10 @@ function validOwnerGo(): Record<string, unknown> {
     bucket: CAMPAIGN_BUCKET,
     owner_instance: "owner:direct",
     geo_cond_instance: "claude:geo-cond",
-    // h2a_envelope_id / h2a_session_id may be absent in CA-G8 lane-gated mode.
+    // h2a_* REQUIS en mode lane-gated (hook provenance, delta-2/F2) : ils lient
+    // l'artefact au message inbox que k8s a copié (k8s cross-check l'envelope_id).
+    h2a_envelope_id: "env-01JLANEGATEDCAPTURE",
+    h2a_session_id: "ses-01JLANEGATEDCAPTURE",
   };
 }
 
@@ -108,6 +111,16 @@ describe("assertLaneGatedCaptureAuthorized — CA-G8 capture-only lane gate", ()
 
   it("throws when execution is not cluster (CA-G2)", () => {
     expect(() => authorize(validOwnerGo(), "local")).toThrow(/CA-G2 exige "cluster"/);
+  });
+
+  it("throws when h2a_envelope_id is missing — provenance hook REQUIRED in lane-gated (F2/delta-2)", () => {
+    const { h2a_envelope_id: _omit, ...withoutEnvelope } = validOwnerGo();
+    expect(() => authorize(withoutEnvelope)).toThrow(/h2a_envelope_id non vide requis/);
+  });
+
+  it("throws when h2a_session_id is missing — provenance hook REQUIRED in lane-gated (F2/delta-2)", () => {
+    const { h2a_session_id: _omit, ...withoutSession } = validOwnerGo();
+    expect(() => authorize(withoutSession)).toThrow(/h2a_session_id non vide requis/);
   });
 });
 

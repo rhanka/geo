@@ -257,7 +257,7 @@ export function buildCampaignExecutionPlan(input: {
  * ligne). Ces champs sont ensuite CONTRE-VÉRIFIÉS contre l'enveloppe relue du
  * store h2a — c'est cette relecture qui fait foi, pas la réclamation.
  */
-function assertClaimedArtefact(
+export function assertClaimedArtefact(
   artefact: ObjectStoreCampaignOwnerGo,
   expected: CampaignOwnerGoExpectation,
 ): void {
