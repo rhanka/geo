@@ -112,6 +112,18 @@ single-use est préféré au design-bound-idempotent.
 - **CA-G5 — proof-v2 par construction** (captures) : `captureProofFields` passe sur chaque ligne.
 - **CA-G6 — binding design_sha** : l'artefact n'autorise QUE le plan résolu canonique (§1.1),
   cibles incluses ; un changement de design ⇒ re-revue + nouvel artefact.
+- **CA-G8 — mode lane-gated capture-only (ancre PROCÉDURALE, capture additive SEULEMENT)** :
+  voir §7. `--lane-gated-capture` ne débloque QUE `scope="capture"` ; un artefact de scope write
+  → **REFUS DUR** (test `scope=write-rekey → throw`). Les writes ne sont JAMAIS lane-gated (firewall
+  PLEIN + relecture-store + Q-CRYPTO). Le field-check RÉUTILISE `assertClaimedArtefact` (single-source,
+  drift-proof, h2a_* REQUIS) ; **seul** `crossVerifyOwnerGoInStore` (la relecture-store) est sauté.
+- **CA-G9 — belt egress C2 ENFORCÉ au go** (l'ancre étant PROCÉDURALE, le belt est LOAD-BEARING :
+  il borne une forge à « capture externe additive » au lieu de SSRF→169.254 métadonnée). **Ce mode** :
+  k8s **re-probe l'enforcement au go** sur le vrai label `app:geo-capture`, ÉVIDENCÉ (kubectl),
+  AVANT launch — un belt non-enforçant (CNI sans egress) = **NO-GO**. **Fast-follow** (durcissement
+  by-construction, re-flaggé le moment venu) : init-container self-probe dans le `jobManifest` (MÊME
+  pod, sous le belt, image = digest capture PINNÉ → `method.image` stable) qui fail-close le pod si
+  `169.254.169.254` / une IP RFC1918 est joignable — « belt live » garanti par construction.
 
 ## 5. Frontière (ce que ce gate N'AUTORISE PAS)
 
@@ -129,3 +141,62 @@ destructif par construction.
    SHA-design), par scope.
 4. Le runner VÉRIFIE l'artefact par construction → capture/écriture fire.
 5. Rien ne fire sur (a) revue non-verte OU (b) artefact non vérifié par l'exécutant.
+
+## 7. Mode lane-gated capture (CA-G8) — ancre PROCÉDURALE, capture additive SEULEMENT
+
+Chemin de fire PROPORTIONNÉ pour la **capture ADDITIVE** (create-once proof-v2) quand le
+reader-store-NHI (§2 pt 8, la relecture crypto du store) n'est pas provisionné (bottleneck de
+provision). L'autorisation est **relocalisée au LANE EXÉCUTANT (k8s)** : k8s lit+vérifie l'artefact
+owner-go depuis SON inbox h2a authentifié, le copie verbatim dans un fichier, puis lance le Job qui
+le passe au runner via `--lane-gated-capture --owner-go-artifact <path>`. Le runner
+(`assertLaneGatedCaptureAuthorized`) **RÉUTILISE `assertClaimedArtefact`** (les MÊMES field-checks que
+le firewall plein — contract, role, via, `design_sha256` binding [CA-G6], `scope=capture`, bucket,
+`h2a_*` REQUIS) + CA-G2 ; il **saute UNIQUEMENT** `crossVerifyOwnerGoInStore` (la relecture-store).
+
+### 7.1 ⚠ L'ancre anti-forge est PROCÉDURALE, PAS cryptographique (décision contract explicite)
+
+Le runner field-check un FICHIER + recalcule le design_sha. **Ni le field-check ni le design_sha ne
+sont anti-forge** : le `design_sha256` est self-référentiel (il bloque la SUBSTITUTION-DE-PLAN vs un
+artefact genuine, PAS la forge d'un artefact ad hoc). Quiconque peut écrire `--owner-go-artifact` +
+connaît `method`/`targets`/`runner_git_sha` peut forger un artefact qui PASSE. La non-forgeabilité
+repose donc sur des contrôles PROCÉDURAUX/opérationnels, PAS sur une relecture-store cryptographique :
+
+1. **k8s lit+vérifie l'owner-go depuis SON inbox h2a authentifié** puis le copie verbatim (runbook,
+   **gaté sur mesh-UP** : mesh h2a down → k8s ne peut PAS vérifier → ne DOIT PAS lancer). k8s
+   **cross-check `h2a_envelope_id == le message inbox qu'il a copié`** et **enregistre l'enveloppe
+   vérifiée** (preuve C3, trace `[capture-orch] … h2a_envelope_id=…`) — un fire sans vérif réelle
+   devient détectable.
+2. **Frontière RBAC de lancement** : le kubeconfig OVH est **k8s-SEUL** ; `assertDeclaredCluster`
+   borne le cluster/namespace. La capacité de forge ≡ la capacité de lancer sur le cluster ≡ déjà
+   dans la TCB cluster ⟹ **pas d'élargissement** de la surface au-delà de « compromis k8s ».
+3. **Belt egress C2 ENFORCÉ** (CA-G9) : une forge est BORNÉE à « capture externe additive » (deny
+   RFC1918 + 169.254 métadonnée) — pas de SSRF→vol-creds-métadonnée→compromis total.
+
+### 7.2 Risque résiduel + périmètre de la décision
+
+**Risque résiduel** : un détenteur d'accès-launch-cluster connaissant method/targets/git-sha peut
+diriger la capture vers des cibles arbitraires (bornées externes-additives par C2). C'est une
+**dégradation** de l'ancre (crypto store-reread → procédural) — ACCEPTÉE par **décision contract
+geo-archi (≥2-pairs)** pour la **capture ADDITIVE/create-once/RÉVERSIBLE SEULEMENT** : la forge
+n'élargit pas la TCB (pt 2), l'effet est borné (pt 3) et réversible (create-once, aucun objet
+existant touché). **Les scopes d'ÉCRITURE (write-rekey / write-legacy-merge) ne sont JAMAIS
+lane-gated** — ils gardent le firewall PLEIN (relecture-store §2 pt 8) + Q-CRYPTO. C'est le
+**graduated-by-stakes** appliqué au firewall lui-même : on relâche l'ancre à proportion de l'enjeu
+(additif réversible), jamais pour l'irréversible.
+
+### 7.3 Contrôles compensatoires (tous requis avant fire)
+
+- **C1** — frontière RBAC de lancement (kubeconfig k8s-seul) + runbook gaté sur mesh-UP + inbox-verify
+  RÉUSSI, ÉVIDENCÉ (§7.1 pt 1).
+- **C2 / CA-G9** — belt egress SSRF ENFORCÉ, re-probé au go sur le vrai label (fail-closed
+  by-construction = fast-follow).
+- **C3** — la trace de preuve capture le `h2a_envelope_id` vérifié (§7.1 pt 1).
+- **C4** — l'owner accepte SCIEMMENT l'ancre PROCÉDURALE (informed consent : « anti-forge = RBAC
+  procédural + belt C2, PAS crypto ; borné additif/réversible »), pas seulement « chemin relaxé ».
+- **CA-G8** — mode capture-only : un artefact de scope write → REFUS DUR (test).
+
+### 7.4 Chemin par défaut INCHANGÉ
+
+Sans `--lane-gated-capture`, le runner emprunte le firewall PLEIN (`assertCaptureStoreAuthorized`,
+relecture-store, refuse-par-construction) — byte-inchangé. Le mode lane-gated est un branchement
+explicite, jamais le défaut.
