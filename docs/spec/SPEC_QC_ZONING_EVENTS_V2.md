@@ -57,7 +57,7 @@ would mass-delete still-valid events. So the SERVED collection carries a complet
   `complete:true` is a bug, not a signal.
 
 ## Identity + revision (amendment 2 — makes idempotent ingestion possible)
-- `event_id`: canonical deterministic = `sha256(muni | bylaw_numero | type | date_iso)`.
+- `event_id`: canonical deterministic = `sha256(muni | source_ref | detection_anchor)`.
   Survives a correction (the tuple is the identity; content changes bump version, not id).
 - `version`: monotonically increasing integer.
 - `supersedes`: `event_id` of the previous version if this is a correction, else null.
