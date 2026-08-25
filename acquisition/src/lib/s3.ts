@@ -297,7 +297,7 @@ export async function objectHead(
   s3: S3Client,
   key: string,
   bucket: string = BUCKET,
-): Promise<{ exists: boolean; etag?: string; lastModified?: Date; contentLength?: number }> {
+): Promise<{ exists: boolean; etag?: string; lastModified?: Date; contentLength?: number; contentType?: string }> {
   try {
     const result = await s3.send(new HeadObjectCommand({ Bucket: bucket, Key: key }));
     return {
@@ -305,6 +305,7 @@ export async function objectHead(
       ...(result.ETag ? { etag: result.ETag } : {}),
       ...(result.LastModified ? { lastModified: result.LastModified } : {}),
       ...(result.ContentLength === undefined ? {} : { contentLength: result.ContentLength }),
+      ...(result.ContentType ? { contentType: result.ContentType } : {}),
     };
   } catch (error) {
     if (isMissingObjectError(error)) return { exists: false };
@@ -534,6 +535,41 @@ export async function copyObject(
       Key: destKey,
     }),
   );
+}
+
+/**
+ * Idempotent immutable re-key — copy a source object to a NEW key with the exact
+ * bytes AND content-type of the source, create-once. The create-once mirror of a
+ * server-side copy, but done CLIENT-SIDE (GET source + conditional PUT dest):
+ * the OVH-BHS S3 endpoint returns `501 NotImplemented` for server-side
+ * CopyObject (proven by the committed enforcement probe), so {@link copyObject}
+ * is not usable here. The destination is created once, or an already-present
+ * destination is accepted ONLY when its bytes are exactly equal to the source
+ * (idempotent re-run).
+ *
+ * The write goes through {@link putBytesIfAbsentOrEqual}, i.e. native PutObject
+ * `IfNoneMatch: "*"` — proven ENFORCED on OVH-BHS (a pre-existing different-bytes
+ * destination throws 412 and is left byte-for-byte UNCHANGED, never
+ * accept-and-ignore). A 412 is never treated as success by omission: the existing
+ * destination is re-read and compared with `Buffer.equals` against the source
+ * bytes we hold from the GET (never an ETag compare — a multipart ETag
+ * `<md5>-<n>` is not the content MD5 and would false-negative). Because the
+ * PutObject precondition is atomic and fail-closed there is NO objectHead-then-put
+ * fallback pretending create-once (no TOCTOU window) and NO exclusive-window
+ * constraint is required. COPY-ONLY: the source is only READ, never modified or
+ * deleted (CA-G7).
+ */
+export async function rekeyObjectIfAbsentOrEqual(
+  s3: S3Client,
+  srcKey: string,
+  destKey: string,
+  bucket: string = BUCKET,
+): Promise<"created" | "existing-equal"> {
+  const bytes = await getBytes(s3, srcKey, bucket);
+  const head = await objectHead(s3, srcKey, bucket);
+  // putBytesIfAbsentOrEqual guards a served-zone destination and enforces the
+  // create-once / byte-equal contract via native PutObject IfNoneMatch:"*".
+  return putBytesIfAbsentOrEqual(s3, destKey, bytes, head.contentType, bucket);
 }
 
 /**
