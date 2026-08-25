@@ -1,7 +1,9 @@
 import {
   assertClaimedArtefact,
+  assertDirectSessionChatOwnerGo,
   buildCampaignExecutionPlan,
   campaignDesignSha256,
+  type DirectSessionChatCampaignOwnerGo,
   type ObjectStoreCampaignOwnerGo,
   type Sha256Ref,
 } from "./object-store-campaign-gate.js";
@@ -10,16 +12,21 @@ import {
 export const SUBMITTED_JOB_EXECUTION: "cluster" = "cluster";
 
 /**
- * L'artefact owner-go COMPLET que le lane exécutant (k8s) a lu depuis SON inbox h2a
- * (file-channel host-writable, JSON non signé = (B) audit-trace, PAS anti-forge — SPEC
- * §7.1), puis copié verbatim dans un fichier. `h2a_envelope_id` /
- * `h2a_session_id` sont REQUIS (hook de provenance : ils lient l'artefact au message
- * inbox réel — k8s cross-check `h2a_envelope_id == le message qu'il a copié` à son
- * runbook et l'enregistre comme preuve C3). C'est le MÊME type que le firewall plein :
- * le field-check est RÉUTILISÉ (`assertClaimedArtefact`) — single-source, drift-proof
- * (il reçoit tout durcissement futur du gate, p.ex. Q-CRYPTO).
+ * L'artefact owner-go que le lane exécutant (k8s) a lu + copié verbatim dans un
+ * fichier, dans l'un des DEUX modes de provenance (dispatch sur `via`) :
+ *  - `via=geo-cond` (lane-B) : dépôt h2a-inbox — `h2a_envelope_id`/`h2a_session_id`
+ *    REQUIS (l'inbox est host-writable/non-signé = (B) audit-trace, PAS anti-forge ;
+ *    SPEC §7.1) ;
+ *  - `via=direct-session-chat` (lane-A) : go owner comme tour-user DANS la session
+ *    exécutante (k8s) — `executor_session`/`received_at`/`owner_go_text` REQUIS, et
+ *    `owner_go_text` RÉFÉRENCE le design_sha S (cond-1). Provenance ≥ (B) + zéro mesh.
+ * Les checks PARTAGÉS (contract/role/design_sha/scope/bucket/instances) sont
+ * single-source (`assertSharedCampaignOwnerGoFields`) — drift-proof (Q-CRYPTO). Seule
+ * la provenance est PAR MODE, avec ses champs REQUIS (jamais optionnels-pour-tous : F2).
  */
-export type LaneGatedCaptureOwnerGoArtifact = ObjectStoreCampaignOwnerGo;
+export type LaneGatedCaptureOwnerGoArtifact =
+  | ObjectStoreCampaignOwnerGo
+  | DirectSessionChatCampaignOwnerGo;
 
 /**
  * CA-G8 — autorisation PROCÉDURALE, strictement réservée à la capture ADDITIVE.
@@ -77,16 +84,31 @@ export function assertLaneGatedCaptureAuthorized(input: {
     targets: input.targets,
   });
   const designSha256 = campaignDesignSha256(plan);
-  // RÉUTILISE les field-checks du firewall (single-source, drift-proof) : les MÊMES
-  // vérifs que le chemin plein — contract, actor.role=OWNER, via+owner_go_direct,
-  // design_sha256===recalculé, scope===capture (CA-G8 : un artefact de scope write
-  // → throw "scope divergent"), bucket, owner/geo_cond_instance, h2a_envelope_id/
-  // session_id NON-VIDES (hook provenance), actor.instance. On SKIP UNIQUEMENT
-  // `crossVerifyOwnerGoInStore` (la relecture-store qui exige le NHI) — remplacée par
-  // la vérif-inbox PROCÉDURALE de k8s (voir docstring CA-G8 ci-dessus).
-  assertClaimedArtefact(input.ownerGoArtifact as ObjectStoreCampaignOwnerGo, {
-    designSha256,
-    scope: "capture",
-  });
+  // Dispatch PAR MODE de provenance sur `via` (énum FERMÉ, fail-closed — cond-3).
+  // Les DEUX modes appliquent les MÊMES checks PARTAGÉS single-source (contract,
+  // role=OWNER, design_sha256===recalculé [CA-G6], scope===capture [CA-G8, déjà refusé
+  // ci-dessus + re-checké], bucket, instances) ; ils DIFFÈRENT SEULEMENT sur la
+  // provenance, chaque mode avec ses champs REQUIS (jamais optionnels-pour-tous : F2) :
+  //   geo-cond → h2a_envelope_id/h2a_session_id REQUIS ;
+  //   direct-session-chat → executor_session/received_at/owner_go_text REQUIS (+ cond-1).
+  // On SKIP UNIQUEMENT `crossVerifyOwnerGoInStore` (la relecture-store) — remplacée par
+  // la vérif PROCÉDURALE de k8s (vérif-inbox lane-B / discipline executor lane-A ; §7).
+  const claimedVia =
+    typeof input.ownerGoArtifact === "object" && input.ownerGoArtifact !== null
+      ? (input.ownerGoArtifact as { via?: unknown }).via
+      : undefined;
+  if (claimedVia === "geo-cond") {
+    assertClaimedArtefact(input.ownerGoArtifact as ObjectStoreCampaignOwnerGo, {
+      designSha256,
+      scope: "capture",
+    });
+  } else if (claimedVia === "direct-session-chat") {
+    assertDirectSessionChatOwnerGo(input.ownerGoArtifact, { designSha256, scope: "capture" });
+  } else {
+    throw new Error(
+      `lane-gated capture REFUS (via inconnu="${String(claimedVia)}"): ` +
+        `via ∈ {geo-cond, direct-session-chat} requis (fail-closed, cond-3)`,
+    );
+  }
   return { designSha256 };
 }
