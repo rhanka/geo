@@ -4,7 +4,7 @@
  * Usage (the network guards are mandatory and enforced):
  *   NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
  *   npx tsx acquisition/src/zoning-event-source-audit-run.ts \
- *     --cohort=work/coverage/cohorte-vivier-b-6mo.slugs.tsv
+ *     --cohort=docs/spec/reports/set-167-bprime.tsv --expected-count=167
  *
  * This runner imports no S3 write primitive and has no apply/publish flag.
  */
@@ -67,14 +67,14 @@ function assertReadOnlyRunEnvironment(): void {
 
 export async function main(): Promise<void> {
   assertReadOnlyRunEnvironment();
-  const cohortPath = resolve(ROOT, option("cohort") ?? "work/coverage/cohorte-vivier-b-6mo.slugs.tsv");
+  const cohortPath = resolve(ROOT, option("cohort") ?? "docs/spec/reports/set-167-bprime.tsv");
   const outputPath = resolve(ROOT, option("output") ?? "work/coverage/zoning-event-source-audit-selection-b.json");
   if (!inside(ROOT, cohortPath)) throw new Error("--cohort doit rester dans le checkout reproductible");
   if (!inside(COVERAGE, outputPath)) throw new Error("--output doit rester sous work/coverage/");
 
   const cohortBytes = readFileSync(cohortPath, "utf8");
   const slugs = parseZoningEventCohortTsv(cohortBytes);
-  const expectedCount = boundedInt("expected-count", 127, 1, 1106);
+  const expectedCount = boundedInt("expected-count", 167, 1, 1106);
   const concurrency = boundedInt("concurrency", 4, 1, 16);
   const s3 = s3Client();
   const report = await auditZoningEventSourceCohort(
