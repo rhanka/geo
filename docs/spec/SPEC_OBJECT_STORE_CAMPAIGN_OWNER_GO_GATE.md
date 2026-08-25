@@ -115,8 +115,10 @@ single-use est préféré au design-bound-idempotent.
 - **CA-G8 — mode lane-gated capture-only (ancre PROCÉDURALE, capture additive SEULEMENT)** :
   voir §7. `--lane-gated-capture` ne débloque QUE `scope="capture"` ; un artefact de scope write
   → **REFUS DUR** (test `scope=write-rekey → throw`). Les writes ne sont JAMAIS lane-gated (firewall
-  PLEIN + relecture-store + Q-CRYPTO). Le field-check RÉUTILISE `assertClaimedArtefact` (single-source,
-  drift-proof, h2a_* REQUIS) ; **seul** `crossVerifyOwnerGoInStore` (la relecture-store) est sauté.
+  PLEIN + relecture-store + Q-CRYPTO). Le field-check RÉUTILISE les checks PARTAGÉS single-source
+  (`assertSharedCampaignOwnerGoFields`, drift-proof) + dispatch sur `via` (`geo-cond` / `direct-session-chat`,
+  énum FERMÉ fail-closed ; provenance REQUISE PAR MODE — §7.5) ; **seul** `crossVerifyOwnerGoInStore`
+  (la relecture-store) est sauté.
 - **CA-G9 — belt egress C2 ENFORCÉ au go** (l'ancre étant PROCÉDURALE, le belt est LOAD-BEARING :
   il borne une forge à « capture externe additive » au lieu de SSRF→169.254 métadonnée). **Ce mode** :
   k8s **re-probe l'enforcement au go** sur le vrai label `app:geo-capture`, ÉVIDENCÉ (kubectl),
@@ -203,11 +205,13 @@ lane-gated** — ils gardent le firewall PLEIN (relecture-store §2 pt 8) + Q-CR
 
 ### 7.3 Contrôles compensatoires (tous requis avant fire)
 
-- **C1** — frontière RBAC de lancement (kubeconfig k8s-seul, contrôle DUR) + runbook gaté sur mesh-UP
-  + inbox-verify (audit-trace, ÉVIDENCÉ — contrôle de provenance (B), PAS anti-forge ; §7.1).
+- **C1** — frontière RBAC de lancement (kubeconfig k8s-seul, contrôle DUR) + discipline executor de
+  provenance ÉVIDENCÉE, PAR MODE (audit-trace, PAS anti-forge) : lane-B = vérif-inbox gatée mesh-UP
+  (§7.1) ; lane-A = go owner comme tour-user dans la session exécutante (§7.5).
 - **C2 / CA-G9** — belt egress SSRF ENFORCÉ, re-probé au go sur le vrai label (fail-closed
   by-construction = fast-follow).
-- **C3** — la trace de preuve capture le `h2a_envelope_id` vérifié (§7.1 pt 1).
+- **C3** — la trace de preuve capture la provenance PAR MODE : `h2a_envelope_id` (lane-B) OU
+  `executor_session`/`received_at` (lane-A) — §7.1 / §7.5.
 - **C4** — l'owner accepte SCIEMMENT l'ancre PROCÉDURALE (informed consent : « anti-forge = RBAC
   procédural + belt C2, PAS crypto ; borné additif/réversible »), pas seulement « chemin relaxé ».
 - **CA-G8** — mode capture-only : un artefact de scope write → REFUS DUR (test).
@@ -217,3 +221,38 @@ lane-gated** — ils gardent le firewall PLEIN (relecture-store §2 pt 8) + Q-CR
 Sans `--lane-gated-capture`, le runner emprunte le firewall PLEIN (`assertCaptureStoreAuthorized`,
 relecture-store, refuse-par-construction) — byte-inchangé. Le mode lane-gated est un branchement
 explicite, jamais le défaut.
+
+### 7.5 Deux modes de provenance (dispatch sur `via`, énum FERMÉ)
+
+Le canal par lequel l'owner-go atteint k8s est vérifié PAR MODE (`assertLaneGatedCaptureAuthorized`
+dispatch sur `via` ; un `via` inconnu → **REFUS fail-closed**, cond-3). Les checks PARTAGÉS
+(contract / role / `design_sha256`-binding / scope / bucket / instances) sont **single-source**
+(`assertSharedCampaignOwnerGoFields`, réutilisé par le firewall PLEIN + les deux lanes — drift-proof,
+reçoit Q-CRYPTO). Seule la **provenance** diffère, chaque mode avec ses champs **REQUIS** (jamais
+optionnels-pour-tous — sinon régression F2) :
+
+- **`via=geo-cond` (lane-B)** — dépôt **h2a-inbox** : `h2a_envelope_id` / `h2a_session_id` REQUIS. La
+  provenance = le cross-check inbox de k8s (audit-trace (B), host-writable / non-signé — §7.1).
+- **`via=direct-session-chat` (lane-A)** — l'owner donne son go **comme tour-user DANS la session
+  EXÉCUTANTE (k8s)**, comme pour scw/R2 (canal PROUVÉ). Champs REQUIS : `executor_session` (la session
+  k8s), `received_at`, `owner_go_text` (le VERBATIM du go owner, jamais fabriqué). **cond-1** :
+  `owner_go_text` doit **RÉFÉRENCER le design_sha S** attendu (le go autorise LE PLAN S, esprit CA-G6 —
+  pas un « go capture » liable à n'importe quel S ; le runner exige `owner_go_text.includes(S)`).
+
+**Provenance path-A ≥ path-B** : un VRAI tour-user owner dans la session exécutante (canal session
+authentifié + transcript verbatim recoupable) est un meilleur ancrage d'audit qu'un fichier inbox
+host-writable non-signé, et c'est **anti-laundering plus propre** (owner→executor DIRECT, zéro relais
+mesh, zéro fichier host-writable comme SOURCE). **Mais les DEUX restent de la PROVENANCE / AUDIT-TRACE,
+PAS de l'anti-forge** : sous host-compromis, le forgeur écrit le fichier `--owner-go-artifact` dans les
+deux cas → même honnêteté qu'en §7.1. Les contrôles DURS (RBAC + belt + `design_sha`-binding + additif)
+sont IDENTIQUES et INCHANGÉS. `via=direct-session-chat` = **capture lane-gated SEULEMENT** ; jamais un
+write (CA-G8 refuse le scope write pour LES DEUX via).
+
+**Discipline executor path-A (fail-closed, cond-5)** : k8s écrit l'artefact owner-go UNIQUEMENT depuis
+un go owner arrivé comme **VRAI tour-user dans SA session** (comme scw/R2) ; le `design_sha256` écrit ==
+le **X** que pv confirme ; `owner_go_text` = **copie VERBATIM** (jamais fabriqué) référençant S ; champ
+manquant / pas-de-go-in-session → **REFUS + RECORD durable**. Un fire sans go owner réel devient ainsi
+détectable. (Le SPEC executor de k8s `capture-direct-chat-ownergo-spec` porte ce gate côté k8s.)
+
+**(A) anti-forge-dur (futur, HORS SCOPE)** — inchangé §7.1 : enveloppes mesh SIGNÉES + pubkey de
+confiance (path-B) ; pour path-A, une attestation crypto de la session exécutante. Hors campagne.
