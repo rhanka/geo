@@ -1,0 +1,56 @@
+name: deposit-pv-cas-resolver
+
+# Publie l'index résolveur immo→geo v2 (SoT committé) vers le bucket DÉDIÉ
+# corpus-isolé `sentropic-geo-index` (variante B, décision geo-cond + owner-GO) à chaque
+# changement de l'index sur main. Le filtre `paths` EST le gate if-changed ; la clé `-v2`
+# (version de SCHÉMA, jamais par-contenu) est fixe → overwrite idempotent = URI STABLE pour
+# le loader S3-fetch immo. Writer-cred least-priv (bucket dédié, isolé du corpus
+# `sentropic-geo`) porté par CE SEUL petit workflow (blast-radius minimal) ; jamais sur PR
+# (les secrets ne sont pas exposés aux PR de fork).
+#
+# Spec : i-infra `S3-POLICY-INDEX-WRITER-LEASTPRIV.md` §6.
+# endpoint/région/bucket = NON-secrets (cf. `acquisition/config/s3-target.json`).
+# path-style : mirror `acquisition/src/lib/s3.ts` (`forcePathStyle: true`, exigé OVH-BHS).
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "work/coverage/geo-pv-cas-sha-slug-index.json"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deposit-pv-cas-resolver
+  cancel-in-progress: true
+
+jobs:
+  deposit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deposit index v2 to OVH sentropic-geo-index (path-style)
+        env:
+          # Writer-cred least-priv (§1, bucket-dédié RW) — provisionné owner-gated,
+          # secrets GitHub geo-side. La reader-cred immo-RO (§2) est SÉPARÉE (secret
+          # cluster immo, jamais ici) : le CI ne tient QUE le writer.
+          AWS_ACCESS_KEY_ID: ${{ secrets.S3_PV_CAS_INDEX_WRITE_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.S3_PV_CAS_INDEX_WRITE_SECRET }}
+          # OVH-BHS exige le path-style (mirror s3.ts forcePathStyle:true).
+          AWS_S3_ADDRESSING_STYLE: path
+        run: |
+          set -euo pipefail
+          endpoint="https://s3.bhs.io.cloud.ovh.net"
+          region="bhs"
+          bucket="sentropic-geo-index"
+          key="pv-cas-resolver/geo-pv-cas-sha-slug-index-v2.json"
+          src="work/coverage/geo-pv-cas-sha-slug-index.json"
+          aws s3 cp "$src" "s3://${bucket}/${key}" \
+            --endpoint-url "$endpoint" --region "$region" \
+            --content-type application/json --cache-control no-cache
+          # Vérif post-upload fail-closed : head-object échoue (exit≠0 → job rouge) si
+          # l'objet n'a pas atterri ; log ETag + taille pour la trace.
+          aws s3api head-object --bucket "$bucket" --key "$key" \
+            --endpoint-url "$endpoint" --region "$region" \
+            --query '{ETag:ETag,Size:ContentLength}' --output json
