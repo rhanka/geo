@@ -42,6 +42,12 @@ jobs:
         run: node scripts/run-workspaces.mjs check
       - name: Test
         run: npm test
+      # Les tests des outils `scripts/` (node:test) ne sont PAS dans les workspaces,
+      # donc `npm test` (run-workspaces) ne les couvre pas — step explicite pour que
+      # le contrat du générateur/résolveur (déterminisme + branche DRIFT + invariants)
+      # soit ENFORCÉ en CI, pas seulement committé.
+      - name: Test (scripts/)
+        run: npm run test:scripts
       - name: Install Chromium for MapLibre mount e2e
         run: npx playwright install --with-deps chromium
       - name: Mount e2e (real MapLibre and Chromium)
