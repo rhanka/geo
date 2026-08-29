@@ -19,7 +19,7 @@
     "build": "node scripts/run-workspaces.mjs build",
     "check": "npm run build && node scripts/run-workspaces.mjs check",
     "test": "node scripts/run-workspaces.mjs test",
-    "test:scripts": "node --test scripts/",
+    "test:scripts": "node --test scripts/*.test.mjs",
     "lint": "node scripts/run-workspaces.mjs lint",
     "verify": "npm run check && npm test && npm run test:scripts",
     "geo": "npm --workspace @sentropic/geo run -s cli --",
