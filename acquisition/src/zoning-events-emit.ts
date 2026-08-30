@@ -181,10 +181,14 @@ export interface Provenance {
    * PHANTOM stage, forbidden. `null` for a non-emitted derived value.
    *
    * OPTIONAL KEY (transitional §6 rollout): pre-§6 sibling producers (`zoning-events-detect-emit`,
-   * `zoning-event-remediation`, source-audit) build a Provenance WITHOUT proof; keeping the key
-   * optional keeps them compiling. This does NOT weaken §6 — {@link validateZoningEvent} HARD-REJECTS
-   * any served event whose `sha256`/`retrieved_at` is absent-or-nullish (`!undefined` throws), so the
-   * proof requirement is enforced at SERVE time regardless of the permissive type.
+   * `zoning-event-remediation`, source-audit) build a Provenance WITHOUT the key (`undefined`); keeping
+   * it optional keeps them compiling. Enforcement (corrected — an ABSENT key is NOT hard-rejected):
+   * {@link validateZoningEvent} rejects a PRESENT-but-empty/`null` proof; an ABSENT key (`undefined`) is
+   * GRANDFATHERED for those legacy producers (§6 adoption = a separate task). The proof requirement for a
+   * geo-EMITTED event is enforced UPSTREAM at {@link buildReglementEvent}'s input (doc_sha256/retrieved_at
+   * ABSENT/`undefined` — incl. a JSON-dropped key — → REFUS, ALL types, round-trip-safe); a PRESENT-but-empty
+   * proof → REFUS at the validate gate above; plus a validate defense-in-depth for a TYPED event
+   * (`document_type` set ⇒ proof present).
    */
   sha256?: string | null;
   /** ISO `retrieved_at` of the capture (FROZEN contract §6) — a REAL manifest value, never fabricated. OPTIONAL KEY (see `sha256`): the serve-time guard requires it. */
@@ -407,6 +411,17 @@ export const CONTENT_EVENT_LIFECYCLE_DEFAULTS = {
  * {@link validateZoningEvent} on the result before serving.
  */
 export function buildReglementEvent(input: ReglementLifecycleInput): ZoningEvent {
+  // §6 chokepoint (round-trip-safe, ALL types incl. content/suspensifs `document_type=null`): a
+  // geo-emitted event carries a REAL capture proof-v2. A JSON-fed input whose `doc_sha256`/
+  // `retrieved_at` arrives absent-or-empty at RUNTIME — the declared `string` type cannot see a
+  // parsed-JSON key dropped by `undefined` — is REJECTED HERE, before the event is built: never
+  // grandfathered downstream, never a fabricated proof (§6). This is the true scaling gate (the
+  // validate-time presence-gate only sees the built value; the input is where the seam opens).
+  if (!input.provenance || input.provenance.doc_sha256 === undefined || input.provenance.retrieved_at === undefined) {
+    throw new Error(
+      `buildReglementEvent(${input.muni}/${input.source_ref}): provenance.doc_sha256 ET retrieved_at REQUIS (preuve v2 réelle, §6, jamais fabriquée) — un event émis, TOUS types, exige une preuve de capture ; provenance/clé ABSENTE (undefined — ex. record JSON-fed dont la clé est droppée) = REFUS, jamais grandfather (une preuve présente-mais-vide est rejetée en aval au validate)`,
+    );
+  }
   const firstNumber = input.reglement_number.find((n): n is string => typeof n === "string") ?? null;
   return {
     event_id: computeEventId(input.muni, input.source_ref, input.detection_anchor),
@@ -688,6 +703,19 @@ export function validateZoningEvent(event: ZoningEvent): void {
   if (event.provenance.retrieved_at !== undefined && !event.provenance.retrieved_at) {
     throw new Error(
       `zoning-event ${id}: provenance.retrieved_at manquant — preuve v2 §6 (valeur réelle du manifeste, jamais fabriquée)`,
+    );
+  }
+  // Defense-in-depth (§8 future migration): a TYPED lifecycle event (`document_type` set) MUST carry
+  // proof — reject one whose sha256/retrieved_at is ABSENT (`undefined`), which the presence-gate above
+  // would otherwise grandfather. Closes the §8 `migrateTypeToDocumentType` path (setting document_type on
+  // a legacy proof-less event + re-serving). No main producer sets document_type, so no legacy producer
+  // is broken; `document_type=string` survives JSON round-trip, so this stays enforced post-serialisation.
+  if (
+    event.document_type != null &&
+    (event.provenance.sha256 === undefined || event.provenance.retrieved_at === undefined)
+  ) {
+    throw new Error(
+      `zoning-event ${id}: document_type='${event.document_type}' (event lifecycle typé) SANS preuve v2 (sha256/retrieved_at absent) — un event typé porte TOUJOURS sa preuve §6 ; absent = interdit (defense-in-depth §8, pas de grandfather pour un event typé)`,
     );
   }
 }
