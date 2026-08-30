@@ -1,0 +1,753 @@
+{
+ "contract": "zones-normalizezonecode-revalidate/diagnostic",
+ "generated_at_utc": "2026-08-30T13:50:24.837Z",
+ "predecessor": "acquisition/src/_zones-normalizezonecode-validate-20260830.ts (commit 29a14334)",
+ "question": "i-infra ADJUSTED normalizeZoneCode identity (balanced-parens, content KEPT) — is it INJECTIVE on served zone_codes per muni?",
+ "method": {
+  "s3_prefix": "normalized/ca-qc-zonage/",
+  "target": "prod sentropic-geo (OVH BHS)",
+  "served_layer_rule": "nested wins when both flat and nested exist (geo-api authority)",
+  "normalizeZoneCode": "String(raw ?? \"\").toUpperCase().replace(/[–—]/g,\"-\").replace(/\\(([A-Z0-9]{2,8})\\)/g,\"$1\").replace(/\\s+/g,\"\")",
+  "diff_from_predecessor": "paren rule changed from /\\s*\\([A-Z0-9]{2,8}\\)\\s*/g -> \"\" (content destroyed) to /\\(([A-Z0-9]{2,8})\\)/g -> \"$1\" (balanced parens removed, content KEPT)",
+  "searchKey_note": "zoneSearchKey = normalizeZoneCode(raw).replace(/[^A-Z0-9]/g,'') is intentionally many-to-one and NOT evaluated here — only the normalizeZoneCode identity must be injective",
+  "skip": "null/empty/UNKNOWN raw zone_code; codes whose normalizeZoneCode output is empty reported separately (norm_emptied)",
+  "per_muni_collision": ">=2 distinct trimmed raw codes mapping to the same normalizeZoneCode output within one muni = false merge",
+  "cause_classification": "a rule R is a cause iff removing R from the pipeline re-splits the group (>=2 outputs). kind=HARMFUL iff paren in causes; else BENIGN (case/whitespace/dash refold of the same code).",
+  "paren_vs_native_watch": "flags a HARMFUL group where >=1 raw has NO parens at all and >=1 raw HAS parens — the new merge mode enabled specifically by content-preservation (X (SECT) -> XSECT colliding a native XSECT)",
+  "read_only": true
+ },
+ "coverage": {
+  "total_keys_listed": 2806,
+  "served_slugs_total": 873,
+  "munis_checked": 873,
+  "flat_only": 801,
+  "nested_only": 65,
+  "both": 7,
+  "read_errors": 0
+ },
+ "verdict": "INJECTIVE for false-merge purposes — 0 HARMFUL false merge, SAFE identity, merge-GO (10 pre-existing BENIGN same-code refold(s) unchanged, not false merges: disraeli--les-appalaches--2/74-ZR[whitespace], laverlochere-angliers/INST1[case], laverlochere-angliers/INST2[case], notre-dame-du-bon-conseil--drummond--2/AVP[case], riviere-au-tonnerre/RA-14[case], saint-ferdinand/137-P[case], saint-robert-bellarmin/REC-2[case], sainte-elisabeth/P-183[case], sainte-elisabeth/P-184[case], ville-marie/RC8[case])",
+ "injective_strict": false,
+ "injective_for_false_merge_purposes": true,
+ "normalizezonecode_collisions": {
+  "total_collision_groups": 10,
+  "muni_with_any_collision": 8,
+  "harmful_paren": 0,
+  "benign_same_code_refold": 10,
+  "paren_vs_native_watch_count": 0,
+  "by_cause": {
+   "paren": 0,
+   "whitespace": 1,
+   "dash": 0,
+   "case": 9
+  },
+  "list": [
+   {
+    "slug": "disraeli--les-appalaches--2",
+    "layout": "flat",
+    "collisions": [
+     {
+      "output": "74-ZR",
+      "raw_codes": [
+       "74 - ZR",
+       "74-ZR"
+      ],
+      "causes": [
+       "whitespace"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     }
+    ]
+   },
+   {
+    "slug": "laverlochere-angliers",
+    "layout": "flat",
+    "collisions": [
+     {
+      "output": "INST1",
+      "raw_codes": [
+       "INST1",
+       "Inst1"
+      ],
+      "causes": [
+       "case"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     },
+     {
+      "output": "INST2",
+      "raw_codes": [
+       "INST2",
+       "Inst2"
+      ],
+      "causes": [
+       "case"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     }
+    ]
+   },
+   {
+    "slug": "notre-dame-du-bon-conseil--drummond--2",
+    "layout": "flat",
+    "collisions": [
+     {
+      "output": "AVP",
+      "raw_codes": [
+       "AVP",
+       "AVp"
+      ],
+      "causes": [
+       "case"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     }
+    ]
+   },
+   {
+    "slug": "riviere-au-tonnerre",
+    "layout": "flat",
+    "collisions": [
+     {
+      "output": "RA-14",
+      "raw_codes": [
+       "RA-14",
+       "Ra-14"
+      ],
+      "causes": [
+       "case"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     }
+    ]
+   },
+   {
+    "slug": "saint-ferdinand",
+    "layout": "flat",
+    "collisions": [
+     {
+      "output": "137-P",
+      "raw_codes": [
+       "137-P",
+       "137-p"
+      ],
+      "causes": [
+       "case"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     }
+    ]
+   },
+   {
+    "slug": "saint-robert-bellarmin",
+    "layout": "flat",
+    "collisions": [
+     {
+      "output": "REC-2",
+      "raw_codes": [
+       "REC-2",
+       "Rec-2"
+      ],
+      "causes": [
+       "case"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     }
+    ]
+   },
+   {
+    "slug": "sainte-elisabeth",
+    "layout": "flat",
+    "collisions": [
+     {
+      "output": "P-183",
+      "raw_codes": [
+       "P-183",
+       "p-183"
+      ],
+      "causes": [
+       "case"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     },
+     {
+      "output": "P-184",
+      "raw_codes": [
+       "P-184",
+       "p-184"
+      ],
+      "causes": [
+       "case"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     }
+    ]
+   },
+   {
+    "slug": "ville-marie",
+    "layout": "flat",
+    "collisions": [
+     {
+      "output": "RC8",
+      "raw_codes": [
+       "RC8",
+       "Rc8"
+      ],
+      "causes": [
+       "case"
+      ],
+      "kind": "BENIGN",
+      "paren_vs_native": false
+     }
+    ]
+   }
+  ]
+ },
+ "paren_vs_native_watch": {
+  "note": "new merge mode enabled by content-preservation: a parenthesized raw's collapsed form equals a co-present native (paren-less) raw in the same muni.",
+  "count": 0,
+  "list": []
+ },
+ "regression_15_historic_harmful": {
+  "note": "the 15 historically-harmful pairs (record 8d3d8b9b) must stay DISTINCT under the adjusted normalizeZoneCode (unaffected by the paren content-preservation fix).",
+  "all_stay_distinct": true,
+  "list": [
+   {
+    "slug": "drummondville",
+    "raw_a": "H-103-1",
+    "raw_b": "H-1031",
+    "out_a": "H-103-1",
+    "out_b": "H-1031",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "lanoraie",
+    "raw_a": "C1-8",
+    "raw_b": "C18",
+    "out_a": "C1-8",
+    "out_b": "C18",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "franklin",
+    "raw_a": "HA-1-2",
+    "raw_b": "HA-12",
+    "out_a": "HA-1-2",
+    "out_b": "HA-12",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "hinchinbrooke",
+    "raw_a": "Af-1-1",
+    "raw_b": "Af-11",
+    "out_a": "AF-1-1",
+    "out_b": "AF-11",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "mont-saint-hilaire",
+    "raw_a": "C-1-1",
+    "raw_b": "C-11",
+    "out_a": "C-1-1",
+    "out_b": "C-11",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "saint-ambroise-de-kildare",
+    "raw_a": "A1-1",
+    "raw_b": "A11",
+    "out_a": "A1-1",
+    "out_b": "A11",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "sainte-clotilde",
+    "raw_a": "Ra1-1",
+    "raw_b": "Ra11",
+    "out_a": "RA1-1",
+    "out_b": "RA11",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "saint-joseph-de-beauce",
+    "raw_a": "H-1.3",
+    "raw_b": "H-13",
+    "out_a": "H-1.3",
+    "out_b": "H-13",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "saint-narcisse-de-beaurivage",
+    "raw_a": "3.1-H",
+    "raw_b": "31-H",
+    "out_a": "3.1-H",
+    "out_b": "31-H",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "amqui",
+    "raw_a": "5.1 R",
+    "raw_b": "51 R",
+    "out_a": "5.1R",
+    "out_b": "51R",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "ascot-corner",
+    "raw_a": "P-1",
+    "raw_b": "P1",
+    "out_a": "P-1",
+    "out_b": "P1",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "cote-saint-luc",
+    "raw_a": "RU*-65",
+    "raw_b": "RU-65",
+    "out_a": "RU*-65",
+    "out_b": "RU-65",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "saint-aime-du-lac-des-iles",
+    "raw_a": "A-01",
+    "raw_b": "A-Î01",
+    "out_a": "A-01",
+    "out_b": "A-Î01",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "saint-donat--la-mitis",
+    "raw_a": "01 (AGF)",
+    "raw_b": "01 AGF)",
+    "out_a": "01AGF",
+    "out_b": "01AGF)",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   },
+   {
+    "slug": "saint-joseph-de-lepage",
+    "raw_a": "01 (AGF)",
+    "raw_b": "01 AGF)",
+    "out_a": "01AGF",
+    "out_b": "01AGF)",
+    "distinct_by_function": true,
+    "slug_served": true,
+    "raw_a_present_in_data": true,
+    "raw_b_present_in_data": true,
+    "merged_in_data": false
+   }
+  ]
+ },
+ "regression_16_paren_killed": {
+  "note": "the 16 groups HARMFUL under the predecessor's paren-strip-all rule (record 29a14334) must be KILLED (distinct outputs) under the adjusted content-preserving rule.",
+  "all_killed": true,
+  "list": [
+   {
+    "slug": "la-redemption",
+    "old_output": "02",
+    "raws": [
+     "02 (AGF)",
+     "02 (RCT)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "02 (AGF)",
+      "out": "02AGF"
+     },
+     {
+      "raw": "02 (RCT)",
+      "out": "02RCT"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "la-redemption",
+    "old_output": "20",
+    "raws": [
+     "20 (AGF)",
+     "20 (FRT)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "20 (AGF)",
+      "out": "20AGF"
+     },
+     {
+      "raw": "20 (FRT)",
+      "out": "20FRT"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "la-redemption",
+    "old_output": "28",
+    "raws": [
+     "28 (AGF)",
+     "28 (FRT)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "28 (AGF)",
+      "out": "28AGF"
+     },
+     {
+      "raw": "28 (FRT)",
+      "out": "28FRT"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "la-redemption",
+    "old_output": "29",
+    "raws": [
+     "29 (AIC)",
+     "29 (FRT)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "29 (AIC)",
+      "out": "29AIC"
+     },
+     {
+      "raw": "29 (FRT)",
+      "out": "29FRT"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "la-redemption",
+    "old_output": "33",
+    "raws": [
+     "33 (FRT)",
+     "33 (LSR)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "33 (FRT)",
+      "out": "33FRT"
+     },
+     {
+      "raw": "33 (LSR)",
+      "out": "33LSR"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "la-redemption",
+    "old_output": "34",
+    "raws": [
+     "34 (CSV)",
+     "34 (HBF)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "34 (CSV)",
+      "out": "34CSV"
+     },
+     {
+      "raw": "34 (HBF)",
+      "out": "34HBF"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "padoue",
+    "old_output": "35",
+    "raws": [
+     "35 (AGF)",
+     "35 (MTF)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "35 (AGF)",
+      "out": "35AGF"
+     },
+     {
+      "raw": "35 (MTF)",
+      "out": "35MTF"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "saint-donat--la-mitis",
+    "old_output": "01",
+    "raws": [
+     "01 (AGF)",
+     "01 (FRT)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "01 (AGF)",
+      "out": "01AGF"
+     },
+     {
+      "raw": "01 (FRT)",
+      "out": "01FRT"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "saint-donat--la-mitis",
+    "old_output": "02",
+    "raws": [
+     "02 (AGC)",
+     "02 (AGF)",
+     "02 (VLG)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "02 (AGC)",
+      "out": "02AGC"
+     },
+     {
+      "raw": "02 (AGF)",
+      "out": "02AGF"
+     },
+     {
+      "raw": "02 (VLG)",
+      "out": "02VLG"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "saint-donat--la-mitis",
+    "old_output": "43",
+    "raws": [
+     "43 (MTF)",
+     "43 (RCT)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "43 (MTF)",
+      "out": "43MTF"
+     },
+     {
+      "raw": "43 (RCT)",
+      "out": "43RCT"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "saint-joseph-de-lepage",
+    "old_output": "02",
+    "raws": [
+     "02 (AGC)",
+     "02 (VLG)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "02 (AGC)",
+      "out": "02AGC"
+     },
+     {
+      "raw": "02 (VLG)",
+      "out": "02VLG"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "saint-joseph-de-lepage",
+    "old_output": "03",
+    "raws": [
+     "03 (AGF)",
+     "03 (VLG)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "03 (AGF)",
+      "out": "03AGF"
+     },
+     {
+      "raw": "03 (VLG)",
+      "out": "03VLG"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "saint-joseph-de-lepage",
+    "old_output": "06",
+    "raws": [
+     "06 (AGC)",
+     "06 (CSV)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "06 (AGC)",
+      "out": "06AGC"
+     },
+     {
+      "raw": "06 (CSV)",
+      "out": "06CSV"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "saint-joseph-de-lepage",
+    "old_output": "07",
+    "raws": [
+     "07 (AGC)",
+     "07 (VLG)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "07 (AGC)",
+      "out": "07AGC"
+     },
+     {
+      "raw": "07 (VLG)",
+      "out": "07VLG"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "saint-joseph-de-lepage",
+    "old_output": "17",
+    "raws": [
+     "17 (AGF)",
+     "17 (RCT)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "17 (AGF)",
+      "out": "17AGF"
+     },
+     {
+      "raw": "17 (RCT)",
+      "out": "17RCT"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   },
+   {
+    "slug": "saint-joseph-de-lepage",
+    "old_output": "19",
+    "raws": [
+     "19 (AGC)",
+     "19 (AGF)"
+    ],
+    "new_outputs": [
+     {
+      "raw": "19 (AGC)",
+      "out": "19AGC"
+     },
+     {
+      "raw": "19 (AGF)",
+      "out": "19AGF"
+     }
+    ],
+    "killed_by_function": true,
+    "slug_served": true,
+    "still_merged_in_data": false
+   }
+  ]
+ },
+ "read_errors": []
+}
