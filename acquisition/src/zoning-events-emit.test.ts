@@ -449,6 +449,72 @@ describe("validateZoningEvent — règlement-lifecycle guards (geo emits verbati
     const event = buildReglementEvent(reglementInput({ url_pdf: "https://non-disponible/x.pdf" }));
     expect(() => validateZoningEvent(event)).toThrow(/FANTÔME/);
   });
+
+  // ── The scaling seam (F1): buildReglementEvent fail-loud on an ABSENT (undefined) proof key ──
+  // A JSON-fed corpus record MISSING doc_sha256/retrieved_at arrives as `undefined` (the `string`
+  // type can't see a dropped key); the build-time gate rejects it BEFORE the event exists, so it can
+  // never be grandfathered by the validate-time presence-gate. Covers ALL types (content included).
+  it("REJECTS a content-event (document_type=null) whose doc_sha256 is ABSENT/undefined (seam, all types)", () => {
+    expect(() =>
+      buildReglementEvent(
+        reglementInput({
+          document_type: null,
+          provenance: {
+            doc_sha256: undefined as unknown as string,
+            retrieved_at: "2026-05-13T09:00:00Z",
+            source_span: "p17",
+          },
+        }),
+      ),
+    ).toThrow(/doc_sha256 ET retrieved_at REQUIS/);
+  });
+
+  it("REJECTS an ABSENT/undefined retrieved_at at the input (seam, all types)", () => {
+    expect(() =>
+      buildReglementEvent(
+        reglementInput({
+          provenance: {
+            doc_sha256: "a".repeat(64),
+            retrieved_at: undefined as unknown as string,
+            source_span: "p17",
+          },
+        }),
+      ),
+    ).toThrow(/doc_sha256 ET retrieved_at REQUIS/);
+  });
+
+  it("REJECTS a JSON round-tripped record whose proof key was dropped by undefined (round-trip-safe)", () => {
+    // JSON.stringify OMITS an `undefined` key → the parsed record has NO doc_sha256 — exactly the
+    // corpus→JSON→scaling-runner path. buildReglementEvent still fails-loud on the input.
+    const input = reglementInput({
+      provenance: {
+        doc_sha256: undefined as unknown as string,
+        retrieved_at: "2026-05-13T09:00:00Z",
+        source_span: "p17",
+      },
+    });
+    const roundTripped = JSON.parse(JSON.stringify(input)) as ReglementLifecycleInput;
+    expect(roundTripped.provenance.doc_sha256).toBeUndefined(); // the key was dropped by the round-trip
+    expect(() => buildReglementEvent(roundTripped)).toThrow(/doc_sha256 ET retrieved_at REQUIS/);
+  });
+
+  it("validate defense-in-depth (§8): a TYPED event (document_type set) with an ABSENT proof key is REJECTED", () => {
+    // Closes the §8 migrateTypeToDocumentType path (setting document_type on a legacy proof-less event
+    // + re-serving): the presence-gate grandfathers `undefined`, so option-c catches a typed event.
+    // Constructed directly to bypass buildReglementEvent's own input gate — pins the validate-side belt.
+    const legacy = baseEvent({ document_type: "projet_reglement" });
+    const noProof = {
+      ...legacy,
+      provenance: {
+        producer: "geo",
+        source_span: legacy.provenance.source_span,
+        source_url: legacy.url_pdf,
+        as_of_date: legacy.date_iso,
+      },
+    } as unknown as ZoningEvent;
+    expect(noProof.provenance.sha256).toBeUndefined();
+    expect(() => validateZoningEvent(noProof)).toThrow(/SANS preuve/);
+  });
 });
 
 describe("migrateTypeToDocumentType (§8) — lossless de-conflation, FAIL-LOUD", () => {
