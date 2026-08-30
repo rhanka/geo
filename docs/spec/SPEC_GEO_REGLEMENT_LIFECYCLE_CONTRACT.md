@@ -1,6 +1,7 @@
 # SPEC — Contrat d'émission geo du cycle de vie règlement (LOT 1, interface GELÉE)
 
-> **Statut : v3 — FREEZE-READY (pass anti-invention fable finale en cours).**
+> **Statut : v3.1 — FREEZE-READY (fable-5 CLEAN après fixes F1–F6 ; check-intention
+> `reglements` CLEAN ; reste = revue agy gemini 3.7 high → GELÉ).**
 > Livrable LOT 1 = ce **CONTRAT D'ÉMISSION GELÉ (interface)**, pas l'impl (immo
 > projette contre l'interface gelée ; geo build l'impl APRÈS). Périmètre WP6. Auteur :
 > geo-archi. Mode (b) : geo-archi conçoit + `reglements` co-conception + fable-5 2e avis.
@@ -11,6 +12,11 @@
 > anti-fabrication = des gates sur la dérivation, **+ mandat d'émission geo des faits
 > suspensifs/terminaux** (§2.1) ; (iii) durcissements H1 (migration : test de stage exige
 > deux bouts à stage connu, §8) + H4 (répétition même-stage = keep-history, PAS révision, §7.7).
+> **v3→v3.1** : passe fable-5 (F1 blocker = quote §9 fabriquée → §9 étendu à `relation_type` +
+> §3.1 dé-cité ; F2 = `replaces` flaggé/uncertain NE gate PAS, route pending §2.1 ; F3 = mandat
+> d'émission respecte la taxonomie §1 par-surface ; F4–F6 mineurs) + catch i-arch (dérivation
+> `en_vigueur` = verbatim-ou-UNKNOWN, 3 états, §2.1) + refinement reglements (DATE keyée sur le
+> déclencheur légal publication-avis/certificat-MRC, PAS l'adoption, §2.1).
 > Décisions owner : Q3 (document_type), Q2 (reglement_number liste), en_vigueur (geo-cond).
 > Split GEO/IMMO validé i-arch, cohérent V34 + graphify 3.4. Ratification (GO LOT 1) :
 > geo-cond→i-cond→owner.
@@ -31,7 +37,8 @@ le TYPE. (Résout la contradiction §1/§3-vs-§4 de la v1.)
 
 `document_type` (owner Q3, first-class, source-doc-tied) ∈
 `{ avis_motion | projet_reglement | adoption | entree_en_vigueur | abrogation }` +
-extension additive (§9). **Un event par document-source.** Par type, ce que geo émet :
+extension additive (§9). **Un event par document-source** (par item-résolution sous fan-out,
+§5 — F4). Par type, ce que geo émet :
 
 | document_type | reglement_number (liste) | cible_reglement_numero | mentions/libellés verbatim |
 |---|---|---|---|
@@ -61,11 +68,22 @@ VIGUEUR » keye sur `lifecycle_stage` (dérivé immo), **inrépondable depuis
 divergences. Un `document_type` de **contenu** (`changement-de-zonage`, `derogation`,
 `registre-referendaire`…) → **stage = null** (jamais inféré — S4d).
 
-### 2.1 `en_vigueur` — anti-invention + GATE de dérivation (geo-cond + consolidation reglements)
-geo émet un event `entree_en_vigueur` **UNIQUEMENT si un document source existe**
-(verbatim) ; **sinon immo DÉRIVE** `en_vigueur` de `(adoption + délai légal)`. **immo marque
-le stage dérivé COMME dérivé** (provenance : document-backed vs derived — résout S2), pour
-que le census owner sépare preuve-grade d'inférence-grade.
+### 2.1 `en_vigueur` — anti-invention + GATE de dérivation (geo-cond + reglements + i-arch)
+geo émet un event `entree_en_vigueur` **UNIQUEMENT si un document source existe** (verbatim).
+**Sinon immo DÉRIVE** `en_vigueur` — mais la dérivation est **elle-même verbatim-ou-UNKNOWN**
+(i-arch), en **séparant STATUT et DATE** (reglements) :
+- le **STATUT** `en_vigueur` peut être dérivé (adopté + délai légal écoulé + AUCUN gate,
+  cf. ⭐ ci-dessous) — robuste même sans date exacte ;
+- la **DATE** d'entrée en vigueur est **verbatim-ou-UNKNOWN**, keyée sur le **fait-DÉCLENCHEUR
+  légal** — pour un règlement de zonage QC c'est en général la **publication de l'avis
+  d'entrée en vigueur / le certificat de conformité MRC**, **PAS l'adoption** (le délai court
+  de LÀ — reglements). **Déclencheur ou délai absent → DATE = `UNKNOWN`, JAMAIS fabriquée** :
+  `adoption + délai-approximé` n'est pas qu'une invention, c'est une date **subtilement FAUSSE**
+  (mauvais trigger).
+⟹ le marquage de provenance porte **3 états**, pas 2 : **`verbatim`** (event geo
+document-backed) / **`derived`** (STATUT dérivé + DATE sur déclencheur+délai CONNUS) /
+**`UNKNOWN`** (déclencheur/délai absent : le STATUT peut rester dérivé, la **DATE = UNKNOWN**).
+Le census owner sépare ainsi preuve-grade, inférence-grade, et non-dérivable.
 
 **⭐ La dérivation `en_vigueur` est GATÉE (consolidation reglements — cas-C §7.2 et
 processus-interrompu §7.8 sont UN SEUL motif anti-fabrication = des gates).** immo ne dérive
@@ -73,22 +91,35 @@ processus-interrompu §7.8 sont UN SEUL motif anti-fabrication = des gates).** i
 `{ event suspensif (registre-referendaire / retrait / échec-référendaire / refus-MRC),
 document d'abrogation, bylaw qui `replaces` }`. **Là où la preuve d'un gate est
 SILENCIEUSE/absente, `en_vigueur` est un PLANCHER (résidu documenté), PAS une garantie** — le
-faux-positif de l'abrogation silencieuse (§7.2) reste un CONNU, jamais masqué.
+faux-positif de l'abrogation silencieuse (§7.2) reste un CONNU, jamais masqué. **⚠ (F2,
+safety-critical) un `replaces` — ou tout fait de gate — `typing_confidence:uncertain`/`flagged`
+NE résout JAMAIS silencieusement `¬replaced` dans un sens ou l'autre** : il ne GATE pas (sinon
+un amendement mis-typé `replaces` par le défaut-conservateur de migration §8 tuerait à tort la
+base vivante à grande échelle) NI ne garantit `en_vigueur` ; la base affectée **route en
+pending/review** (motif §4 « pending/UNKNOWN, jamais forcé »). **Seul un `replaces` `certain`
+gate.**
 
 **⭐ Mandat d'émission geo (le côté-geo du gate — sinon immo ne PEUT pas gater et FABRIQUERA
 un `en_vigueur`).** Comme `lifecycle_stage` est DÉRIVÉ immo, les gates VIVENT côté dérivation
 immo ; la responsabilité du contrat d'ÉMISSION geo est donc d'**ÉMETTRE tous les faits que
-immo doit gater**, comme **content-events verbatim** : le `registre-referendaire` (et tout
-event suspensif), le document d'`abrogation`, et le libellé « remplace » (matériau du
-`replaces`). Un fait suspensif/terminal présent-dans-la-source mais NON émis = un `en_vigueur`
-fabriqué en aval. geo n'INTERPRÈTE pas ces faits (immo les type/gate) ; geo GARANTIT leur
-émission verbatim quand la source les porte.
+immo doit gater OU dont il dérive la date**, **chacun sur SA surface d'émission déjà au
+contrat (F3 — pas de double-émission, respect de la taxonomie §1)** : le **content-event
+`registre-referendaire`** (taxonomie v2.1) et tout event suspensif ; l'**event `abrogation`**
+(§1, un `document_type` lifecycle — PAS un content-event) ; le **libellé « remplace » = CHAMP
+verbatim sur l'event `adoption`** (§1, matériau du `replaces`) ; et — pour la **DATE**
+d'entrée en vigueur (pas seulement le gate) — le **fait-DÉCLENCHEUR verbatim** (date de
+publication de l'avis d'entrée en vigueur / certificat de conformité MRC) comme champ/event,
+faute de quoi la DATE dérivée est `UNKNOWN` (jamais adossée à l'adoption par défaut — reglements).
+Un fait suspensif/terminal présent-dans-la-source mais NON émis = un `en_vigueur` fabriqué en
+aval. geo n'INTERPRÈTE pas ces faits (immo les type/gate/dérive) ; geo GARANTIT leur émission
+verbatim quand la source les porte.
 
 ## 3. Les 3 relations = TYPÉES PAR IMMO (geo émet le verbatim) — noms corrigés (résout B1)
 
 ⚠ **B1 — collision de nom** : `supersedes` EXISTE DÉJÀ dans le contrat gelé v2.1 avec un
 sens DIFFÉRENT = **pointeur de RÉVISION d'une MÊME étape** (même `event_id`, `version++`,
-ne traverse JAMAIS les étapes — `SPEC_QC_ZONING_EVENTS_V2:39-42,63`, `emit.ts:97,148-149`).
+ne traverse JAMAIS les étapes — `SPEC_QC_ZONING_EVENTS_V2:39-42,63`,
+`acquisition/src/zoning-events-emit.ts:97,148-149`).
 On NE le redéfinit PAS. Les relations de CYCLE portent des noms **distincts** :
 
 | Relation (typée par IMMO) | Portée | Sémantique | Matériau verbatim (émis geo) |
@@ -104,11 +135,14 @@ un amendement mis-typé `replaces` tuerait à tort une base vivante.
 
 ### 3.1 Forme de champ = (α) relation typée DISCRIMINÉE + temporal node-level (DÉCIDÉE i-arch)
 [FAIT — décision i-arch, sa supersession bitemporelle prime (deferral geo-cond).] La forme
-n'est PAS une préférence : le §9 la TRANCHE. Le §9 grave « `relation_type` inconnu → ignoré,
-ADDITION de valeur = minor-version » — une extension au niveau **VALEUR (discriminant)**.
-**(α) relation discriminée** la supporte nativement ; **(β) champs nommés la CONTREDIT**
-(ajouter un prédicat = changement de schéma = major, pas minor). ⟹ (α) est la SEULE forme
-cohérente avec la politique d'extension déjà gravée. Forme figée (graphe PROJETÉ immo) :
+n'est PAS une préférence : elle découle de la **politique d'extension par-VALEUR du §9**
+(gravée à l'origine pour `document_type`, **explicitement étendue à `relation_type` au §9** —
+F1, pas de citation d'un texte inexistant). Cette politique — valeur d'énum discriminante
+inconnue → ignorée, ADDITION de valeur = minor-version non-breaking — est une extension au
+niveau **VALEUR (discriminant)** : **(α) relation discriminée** la supporte nativement ;
+**(β) champs nommés la CONTREDIT** (ajouter un prédicat = changement de schéma = major, pas
+minor). ⟹ (α) est la SEULE forme cohérente avec la politique d'extension gravée. Forme figée
+(graphe PROJETÉ immo) :
 
 ```
 node.relations: [ {
@@ -144,7 +178,7 @@ divergence → **pending/UNKNOWN, jamais forcé**. geo émet les DEUX n° neutre
 ## 5. `event_id` sous fan-out (résout B3) + `reglement_number` liste (Q2)
 
 **A1 (v2.1) : `event_id = sha256(muni | source_ref | detection_anchor)` ; `bylaw_numero`
-INTERDIT dans l'identité** (`emit.ts:150-153`). Sous fan-out (un PV multi-règlements → un
+INTERDIT dans l'identité** (`acquisition/src/zoning-events-emit.ts:150-153`). Sous fan-out (un PV multi-règlements → un
 event/stage par n°), l'`detection_anchor` **DOIT** distinguer par règlement **sans** le
 n° dans l'id : anchor = **hash du libellé-résolution verbatim par item** (jamais l'ordinal
 positionnel — l'émetteur l'interdit, lever la contradiction v2.1:18) → pas de collision
@@ -172,8 +206,9 @@ a un entree_en_vigueur).
    ⚠ **cas C — abrogation SILENCIEUSE** (ni doc, ni successeur) : le bylaw reste
    `en_vigueur` À TORT = **faux-positif CONNU**. On n'invente PAS d'abroge sans preuve,
    mais on **GRAVE le caveat** (reglements) : « **en_vigueur = dernier stage attesté SANS
-   preuve d'abrogation/supersession = un PLANCHER, pas une garantie contre l'abrogation
-   silencieuse** ». La cible owner « tous les vrais EN VIGUEUR » porte ce caveat.
+   preuve d'abrogation/remplacement (`replaces`) = un PLANCHER, pas une garantie contre
+   l'abrogation silencieuse** » (F5 : « remplacement », pas le terme B1-collidé). La cible
+   owner « tous les vrais EN VIGUEUR » porte ce caveat.
 3. **amendement vs base** (saint-dominique) → `amends` (§3), l'amendement = son n°+cycle.
 4. **placeholder/404** → stage fantôme interdit (§6).
 5. **découverte rétroactive/hors-ordre** → predecessor sur (n°+ordre-des-stages), pas ordre d'émission.
@@ -221,11 +256,15 @@ a un entree_en_vigueur).
 
 ## 9. Politique d'extension + attendus (résout B4 = freeze-readiness)
 
-- **Extension additive gravée** : les consommateurs **DOIVENT tolérer un `document_type`
-  inconnu** (ignorer/passer, jamais crash) ; toute ADDITION de valeur = **minor-version**
-  (non-breaking). ⟹ le gel n'est pas bloqué par une énum « fermée » — il est bloqué par
-  une énum **sans politique** ; la politique est gravée, donc l'ajout futur (`abroge` déjà
-  in, un doc de processus-interrompu plus tard) n'est PAS breaking.
+- **Extension additive gravée (par-VALEUR, sur les DEUX énums discriminantes)** : les
+  consommateurs **DOIVENT tolérer une VALEUR inconnue d'énum discriminante** — un
+  `document_type` inconnu **ET** un `relation_type` inconnu (§3.1) — (ignorer/passer, jamais
+  crash) ; toute ADDITION de valeur = **minor-version** (non-breaking). ⟹ le gel n'est pas
+  bloqué par une énum « fermée » — il est bloqué par une énum **sans politique** ; la politique
+  est gravée pour les deux énums, donc l'ajout futur (`abroge` déjà in ; un `document_type` de
+  processus-interrompu, ou un nouveau `relation_type`, plus tard) n'est PAS breaking. **C'est
+  cette politique par-valeur qui tranche la forme (α) discriminée du §3.1** (F1 : le §3.1 s'y
+  réfère, il ne cite aucun texte inexistant).
 - **Prédicat owner corrigé (S1)** : « tous les VRAIS règlements EN VIGUEUR » (en force
   AUJOURD'HUI) = `lifecycle_stage==en_vigueur ∧ ¬replaced ∧ ¬abroge` (**3 clauses**, pas
   1), **évalué sur le graphe PROJETÉ immo** (après dérivation), jamais sur le flux émis geo.
