@@ -1,10 +1,13 @@
-# SPEC — Contrat d'émission geo du cycle de vie règlement (LOT 1, interface GELÉE)
+# SPEC — Contrat d'émission geo du cycle de vie règlement (LOT 1, interface RATIFIÉE)
 
-> **Statut : GELÉ (interface v3.1) — revue complète : fable-5 CLEAN (F1–F6 vérifiés + 0
-> nouveau défaut, regression-sweep OK) + check-intention `reglements` CLEAN + forme relations
-> figée `i-arch`. ⚠ Interface GELÉE ≠ ratifiée : la RATIFICATION owner (GO LOT 1) reste à
-> obtenir via geo-cond→i-cond. Review routée fable-5 (fallback sanctionné : agy gemini 3.7
-> saturé côté h2a_run — wiring gap disclosed).**
+> **Statut : ✅ RATIFIÉ — owner GO LOT 1 (2026-08-30).** Owner (rhanka) a ratifié **DIRECTEMENT**
+> via AskUserQuestion dans la session i-cond (« Ratifier — GO LOT 1 »), 3 revues convergentes.
+> Record durable AUTORITATIF = **track decision `01M1A07BZSH07FMCXTCGMVD0E0`** (immo
+> `ws:8e7df847…`, outcome GO), attesté par i-cond (conducteur present-decision) — **owner-direct,
+> PAS un relai**. L'interface était **GELÉE (v3.1)** avec revue complète : fable-5 CLEAN (F1–F6 +
+> 0 nouveau défaut, regression-sweep OK) + check-intention `reglements` CLEAN + forme relations
+> figée `i-arch` (review routée fable-5, fallback sanctionné : agy gemini 3.7 saturé h2a_run) ;
+> elle est désormais **RATIFIÉE**. ⟹ GO impl LOT 1 (immo projette + geo build contre l'interface).
 > Livrable LOT 1 = ce **CONTRAT D'ÉMISSION GELÉ (interface)**, pas l'impl (immo
 > projette contre l'interface gelée ; geo build l'impl APRÈS). Périmètre WP6. Auteur :
 > geo-archi. Mode (b) : geo-archi conçoit + `reglements` co-conception + fable-5 2e avis.
