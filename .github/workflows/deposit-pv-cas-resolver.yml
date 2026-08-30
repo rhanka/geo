@@ -41,6 +41,15 @@ jobs:
           AWS_S3_ADDRESSING_STYLE: path
         run: |
           set -euo pipefail
+          # Dépôt PACED/owner-gated : tant que le write-cred n'est pas provisionné (secrets
+          # absents), SKIP GRACIEUX (exit 0) — aucune écriture, pas d'échec CI sur main. Le
+          # dépôt s'active tout seul dès que geo-cond+owner provisionnent les secrets. ⟹ le
+          # merge de ce workflow (avant secrets) ne peut PAS produire de rouge latent sur un
+          # futur changement d'index.
+          if [ -z "${AWS_ACCESS_KEY_ID:-}" ] || [ -z "${AWS_SECRET_ACCESS_KEY:-}" ]; then
+            echo "::notice::deposit-pv-cas-resolver: write-cred absent (paced) — skip gracieux, aucune ecriture S3."
+            exit 0
+          fi
           endpoint="https://s3.bhs.io.cloud.ovh.net"
           region="bhs"
           bucket="sentropic-geo-index"
