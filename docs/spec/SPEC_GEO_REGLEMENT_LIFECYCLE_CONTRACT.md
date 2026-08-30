@@ -1,7 +1,10 @@
 # SPEC — Contrat d'émission geo du cycle de vie règlement (LOT 1, interface GELÉE)
 
-> **Statut : v3.1 — FREEZE-READY (fable-5 CLEAN après fixes F1–F6 ; check-intention
-> `reglements` CLEAN ; reste = revue agy gemini 3.7 high → GELÉ).**
+> **Statut : GELÉ (interface v3.1) — revue complète : fable-5 CLEAN (F1–F6 vérifiés + 0
+> nouveau défaut, regression-sweep OK) + check-intention `reglements` CLEAN + forme relations
+> figée `i-arch`. ⚠ Interface GELÉE ≠ ratifiée : la RATIFICATION owner (GO LOT 1) reste à
+> obtenir via geo-cond→i-cond. Review routée fable-5 (fallback sanctionné : agy gemini 3.7
+> saturé côté h2a_run — wiring gap disclosed).**
 > Livrable LOT 1 = ce **CONTRAT D'ÉMISSION GELÉ (interface)**, pas l'impl (immo
 > projette contre l'interface gelée ; geo build l'impl APRÈS). Périmètre WP6. Auteur :
 > geo-archi. Mode (b) : geo-archi conçoit + `reglements` co-conception + fable-5 2e avis.
@@ -179,7 +182,8 @@ divergence → **pending/UNKNOWN, jamais forcé**. geo émet les DEUX n° neutre
 
 **A1 (v2.1) : `event_id = sha256(muni | source_ref | detection_anchor)` ; `bylaw_numero`
 INTERDIT dans l'identité** (`acquisition/src/zoning-events-emit.ts:150-153`). Sous fan-out (un PV multi-règlements → un
-event/stage par n°), l'`detection_anchor` **DOIT** distinguer par règlement **sans** le
+event/stage **par item-résolution**, §1-F4 — jamais « par n° » : le n° n'entre pas dans
+l'identité), l'`detection_anchor` **DOIT** distinguer par règlement **sans** le
 n° dans l'id : anchor = **hash du libellé-résolution verbatim par item** (jamais l'ordinal
 positionnel — l'émetteur l'interdit, lever la contradiction v2.1:18) → pas de collision
 d'id, pas de fuite du n° dans l'anchor. `reglement_number` = **liste** (Q2 ; refonte = N
