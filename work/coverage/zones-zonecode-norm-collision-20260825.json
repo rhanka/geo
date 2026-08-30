@@ -1,0 +1,1384 @@
+{
+ "contract": "zones-zonecode-norm-collision/diagnostic",
+ "generated_at_utc": "2026-08-30T12:45:59.872Z",
+ "question": "immo norm(c)=c.toUpperCase().replace(/[^A-Z0-9]/g,'') — does it wrongly merge distinct served zone_codes per muni?",
+ "method": {
+  "s3_prefix": "normalized/ca-qc-zonage/",
+  "served_layer_rule": "nested wins when both flat and nested exist (geo-api authority)",
+  "norm": "c.toUpperCase().replace(/[^A-Z0-9]/g,'')",
+  "skip": "null/empty/UNKNOWN raw zone_code; norm-emptied codes reported separately",
+  "per_muni_collision": ">=2 distinct trimmed raw codes mapping to the same normalized string within one muni",
+  "harmful_vs_benign": "HARMFUL = raws still distinct after upper-case + whitespace-strip (separator position differs → distinct real zones). BENIGN = differ only by case/whitespace.",
+  "read_only": true
+ },
+ "coverage": {
+  "total_keys_listed": 2806,
+  "served_slugs_total": 873,
+  "munis_checked": 873,
+  "flat_only": 801,
+  "nested_only": 65,
+  "both": 7
+ },
+ "verdict": "UNSAFE for 15 muni(s) — these raw codes would wrongly merge distinct zones",
+ "served_per_muni_collisions": {
+  "muni_with_any_collision": 23,
+  "muni_with_harmful_collision": 15,
+  "muni_with_benign_only_collision": 8,
+  "list": [
+   {
+    "slug": "amqui",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "51R",
+      "raw_codes": [
+       "5.1 R",
+       "51 R"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "ascot-corner",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "P1",
+      "raw_codes": [
+       "P-1",
+       "P1"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "cote-saint-luc",
+    "layout": "nested",
+    "collisions": [
+     {
+      "normalized": "RU65",
+      "raw_codes": [
+       "RU*-65",
+       "RU-65"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "disraeli--les-appalaches--2",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "74ZR",
+      "raw_codes": [
+       "74 - ZR",
+       "74-ZR"
+      ],
+      "kind": "BENIGN"
+     }
+    ]
+   },
+   {
+    "slug": "drummondville",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "H1031",
+      "raw_codes": [
+       "H-103-1",
+       "H-1031"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "franklin",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "HA12",
+      "raw_codes": [
+       "HA-1-2",
+       "HA-12"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "hinchinbrooke",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "AF11",
+      "raw_codes": [
+       "Af-1-1",
+       "Af-11"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "lanoraie",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "C18",
+      "raw_codes": [
+       "C1-8",
+       "C18"
+      ],
+      "kind": "HARMFUL"
+     },
+     {
+      "normalized": "R16",
+      "raw_codes": [
+       "R1-6",
+       "R16"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "laverlochere-angliers",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "INST1",
+      "raw_codes": [
+       "INST1",
+       "Inst1"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "INST2",
+      "raw_codes": [
+       "INST2",
+       "Inst2"
+      ],
+      "kind": "BENIGN"
+     }
+    ]
+   },
+   {
+    "slug": "mont-saint-hilaire",
+    "layout": "nested",
+    "collisions": [
+     {
+      "normalized": "C11",
+      "raw_codes": [
+       "C-1-1",
+       "C-11"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "notre-dame-du-bon-conseil--drummond--2",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "AVP",
+      "raw_codes": [
+       "AVP",
+       "AVp"
+      ],
+      "kind": "BENIGN"
+     }
+    ]
+   },
+   {
+    "slug": "riviere-au-tonnerre",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "RA14",
+      "raw_codes": [
+       "RA-14",
+       "Ra-14"
+      ],
+      "kind": "BENIGN"
+     }
+    ]
+   },
+   {
+    "slug": "saint-aime-du-lac-des-iles",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "A01",
+      "raw_codes": [
+       "A-01",
+       "A-Î01"
+      ],
+      "kind": "HARMFUL"
+     },
+     {
+      "normalized": "A02",
+      "raw_codes": [
+       "A-02",
+       "A-Î02"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "saint-ambroise-de-kildare",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "A11",
+      "raw_codes": [
+       "A1-1",
+       "A11"
+      ],
+      "kind": "HARMFUL"
+     },
+     {
+      "normalized": "A21",
+      "raw_codes": [
+       "A2-1",
+       "A21"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "saint-donat--la-mitis",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "01AGF",
+      "raw_codes": [
+       "01 (AGF)",
+       "01 AGF)"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "saint-ferdinand",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "137P",
+      "raw_codes": [
+       "137-P",
+       "137-p"
+      ],
+      "kind": "BENIGN"
+     }
+    ]
+   },
+   {
+    "slug": "saint-joseph-de-beauce",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "H13",
+      "raw_codes": [
+       "H-1.3",
+       "H-13"
+      ],
+      "kind": "HARMFUL"
+     },
+     {
+      "normalized": "H14",
+      "raw_codes": [
+       "H-1.4",
+       "H-14"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "saint-joseph-de-lepage",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "01AGF",
+      "raw_codes": [
+       "01 (AGF)",
+       "01 AGF)"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "saint-narcisse-de-beaurivage",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "31H",
+      "raw_codes": [
+       "3.1-H",
+       "31-H"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "saint-robert-bellarmin",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "REC2",
+      "raw_codes": [
+       "REC-2",
+       "Rec-2"
+      ],
+      "kind": "BENIGN"
+     }
+    ]
+   },
+   {
+    "slug": "sainte-clotilde",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "RA11",
+      "raw_codes": [
+       "Ra1-1",
+       "Ra11"
+      ],
+      "kind": "HARMFUL"
+     },
+     {
+      "normalized": "RA13",
+      "raw_codes": [
+       "Ra1-3",
+       "Ra13"
+      ],
+      "kind": "HARMFUL"
+     },
+     {
+      "normalized": "RA14",
+      "raw_codes": [
+       "Ra-1-4",
+       "Ra14"
+      ],
+      "kind": "HARMFUL"
+     },
+     {
+      "normalized": "RA16",
+      "raw_codes": [
+       "Ra1-6",
+       "Ra16"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   },
+   {
+    "slug": "sainte-elisabeth",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "P183",
+      "raw_codes": [
+       "P-183",
+       "p-183"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "P184",
+      "raw_codes": [
+       "P-184",
+       "p-184"
+      ],
+      "kind": "BENIGN"
+     }
+    ]
+   },
+   {
+    "slug": "ville-marie",
+    "layout": "flat",
+    "collisions": [
+     {
+      "normalized": "RC8",
+      "raw_codes": [
+       "RC8",
+       "Rc8"
+      ],
+      "kind": "BENIGN"
+     }
+    ]
+   }
+  ]
+ },
+ "global_cross_muni_context": {
+  "note": "context only — zone_code is municipality-scoped, so per-muni is the authoritative risk. A global collision across two different munis is NOT a wrong merge within immo's per-muni search.",
+  "normalized_strings_from_2plus_distinct_raw": 5312,
+  "top": [
+   {
+    "normalized": "RA1",
+    "raw_codes": [
+     "R/A-1",
+     "RA 1",
+     "RA-1",
+     "RA1",
+     "Ra - 1",
+     "Ra 1",
+     "Ra-1",
+     "Ra.1",
+     "Ra1"
+    ],
+    "distinct_raw": 9
+   },
+   {
+    "normalized": "RA3",
+    "raw_codes": [
+     "R/A-3",
+     "RA 3",
+     "RA-3",
+     "RA3",
+     "Ra - 3",
+     "Ra 3",
+     "Ra-3",
+     "Ra.3",
+     "Ra3"
+    ],
+    "distinct_raw": 9
+   },
+   {
+    "normalized": "RA4",
+    "raw_codes": [
+     "R/A-4",
+     "RA 4",
+     "RA-4",
+     "RA4",
+     "Ra - 4",
+     "Ra 4",
+     "Ra-4",
+     "Ra.4",
+     "Ra4"
+    ],
+    "distinct_raw": 9
+   },
+   {
+    "normalized": "RA5",
+    "raw_codes": [
+     "R/A-5",
+     "RA 5",
+     "RA-5",
+     "RA5",
+     "Ra - 5",
+     "Ra 5",
+     "Ra-5",
+     "Ra.5",
+     "Ra5"
+    ],
+    "distinct_raw": 9
+   },
+   {
+    "normalized": "RC1",
+    "raw_codes": [
+     "R/C-1",
+     "RC 1",
+     "RC-1",
+     "RC1",
+     "Rc - 1",
+     "Rc 1",
+     "Rc-1",
+     "Rc.1",
+     "Rc1"
+    ],
+    "distinct_raw": 9
+   },
+   {
+    "normalized": "IA1",
+    "raw_codes": [
+     "I-A1",
+     "IA-1",
+     "IA1",
+     "Ia 1",
+     "Ia-1",
+     "Ia.1",
+     "Ia1",
+     "ia-1"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "PA1",
+    "raw_codes": [
+     "P-A1",
+     "PA 1",
+     "PA-1",
+     "PA1",
+     "Pa 1",
+     "Pa-1",
+     "Pa.1",
+     "Pa1"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "PA3",
+    "raw_codes": [
+     "P-A3",
+     "PA 3",
+     "PA-3",
+     "PA3",
+     "Pa 3",
+     "Pa-3",
+     "Pa.3",
+     "Pa3"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "RA11",
+    "raw_codes": [
+     "RA 11",
+     "RA-11",
+     "Ra - 11",
+     "Ra 11",
+     "Ra-11",
+     "Ra.11",
+     "Ra1-1",
+     "Ra11"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "RA2",
+    "raw_codes": [
+     "RA 2",
+     "RA-2",
+     "RA2",
+     "Ra - 2",
+     "Ra 2",
+     "Ra-2",
+     "Ra.2",
+     "Ra2"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "RA6",
+    "raw_codes": [
+     "RA 6",
+     "RA-6",
+     "RA6",
+     "Ra - 6",
+     "Ra 6",
+     "Ra-6",
+     "Ra.6",
+     "Ra6"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "RA7",
+    "raw_codes": [
+     "RA 7",
+     "RA-7",
+     "RA7",
+     "Ra - 7",
+     "Ra 7",
+     "Ra-7",
+     "Ra.7",
+     "Ra7"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "RB4",
+    "raw_codes": [
+     "RB 4",
+     "RB-4",
+     "RB4",
+     "Rb - 4",
+     "Rb 4",
+     "Rb-4",
+     "Rb.4",
+     "Rb4"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "RB5",
+    "raw_codes": [
+     "RB 5",
+     "RB-5",
+     "RB5",
+     "Rb - 5",
+     "Rb 5",
+     "Rb-5",
+     "Rb.5",
+     "Rb5"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "RC2",
+    "raw_codes": [
+     "R-C2",
+     "R/C-2",
+     "RC 2",
+     "RC-2",
+     "RC2",
+     "Rc-2",
+     "Rc.2",
+     "Rc2"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "RC3",
+    "raw_codes": [
+     "R/C-3",
+     "RC 3",
+     "RC-3",
+     "RC3",
+     "Rc - 3",
+     "Rc-3",
+     "Rc.3",
+     "Rc3"
+    ],
+    "distinct_raw": 8
+   },
+   {
+    "normalized": "AC1",
+    "raw_codes": [
+     "A/c-1",
+     "AC-1",
+     "AC1",
+     "Ac - 1",
+     "Ac-1",
+     "Ac.1",
+     "Ac1"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "AF11",
+    "raw_codes": [
+     "AF 11",
+     "AF-11",
+     "AF11",
+     "Af-1-1",
+     "Af-11",
+     "Af1-1",
+     "Af11"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "CA2",
+    "raw_codes": [
+     "CA 2",
+     "CA-2",
+     "CA2",
+     "Ca 2",
+     "Ca-2",
+     "Ca.2",
+     "Ca2"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "PA2",
+    "raw_codes": [
+     "P-A2",
+     "PA 2",
+     "PA-2",
+     "Pa 2",
+     "Pa-2",
+     "Pa.2",
+     "Pa2"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "PB1",
+    "raw_codes": [
+     "P-B1",
+     "PB 1",
+     "PB-1",
+     "Pb 1",
+     "Pb-1",
+     "Pb.1",
+     "Pb1"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "PC1",
+    "raw_codes": [
+     "P-C1",
+     "PC 1",
+     "PC-1",
+     "PC1",
+     "Pc-1",
+     "Pc.1",
+     "Pc1"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RA12",
+    "raw_codes": [
+     "RA-12",
+     "Ra - 12",
+     "Ra 12",
+     "Ra-12",
+     "Ra.12",
+     "Ra1-2",
+     "Ra12"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RA13",
+    "raw_codes": [
+     "RA-13",
+     "Ra - 13",
+     "Ra 13",
+     "Ra-13",
+     "Ra.13",
+     "Ra1-3",
+     "Ra13"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RA9",
+    "raw_codes": [
+     "RA 9",
+     "RA-9",
+     "Ra - 9",
+     "Ra 9",
+     "Ra-9",
+     "Ra.9",
+     "Ra9"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RB1",
+    "raw_codes": [
+     "RB 1",
+     "RB-1",
+     "RB1",
+     "Rb 1",
+     "Rb-1",
+     "Rb.1",
+     "Rb1"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RB2",
+    "raw_codes": [
+     "RB 2",
+     "RB-2",
+     "RB2",
+     "Rb 2",
+     "Rb-2",
+     "Rb.2",
+     "Rb2"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RB3",
+    "raw_codes": [
+     "RB 3",
+     "RB-3",
+     "RB3",
+     "Rb 3",
+     "Rb-3",
+     "Rb.3",
+     "Rb3"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RB6",
+    "raw_codes": [
+     "RB 6",
+     "RB-6",
+     "Rb - 6",
+     "Rb 6",
+     "Rb-6",
+     "Rb.6",
+     "Rb6"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RB7",
+    "raw_codes": [
+     "R-B7",
+     "RB-7",
+     "Rb - 7",
+     "Rb 7",
+     "Rb-7",
+     "Rb.7",
+     "Rb7"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RB8",
+    "raw_codes": [
+     "R-B8",
+     "RB-8",
+     "Rb - 8",
+     "Rb 8",
+     "Rb-8",
+     "Rb.8",
+     "Rb8"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RB9",
+    "raw_codes": [
+     "R-B9",
+     "RB-9",
+     "Rb - 9",
+     "Rb 9",
+     "Rb-9",
+     "Rb.9",
+     "Rb9"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RC4",
+    "raw_codes": [
+     "R/C-4",
+     "RC 4",
+     "RC-4",
+     "Rc - 4",
+     "Rc-4",
+     "Rc.4",
+     "Rc4"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RC5",
+    "raw_codes": [
+     "R/C-5",
+     "RC 5",
+     "RC-5",
+     "Rc - 5",
+     "Rc-5",
+     "Rc.5",
+     "Rc5"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RC8",
+    "raw_codes": [
+     "R/C-8",
+     "RC-8",
+     "RC8",
+     "Rc - 8",
+     "Rc-8",
+     "Rc.8",
+     "Rc8"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "RF3",
+    "raw_codes": [
+     "RF 3",
+     "RF-3",
+     "RF3",
+     "Rf - 3",
+     "Rf-3",
+     "Rf.3",
+     "Rf3"
+    ],
+    "distinct_raw": 7
+   },
+   {
+    "normalized": "AA1",
+    "raw_codes": [
+     "AA-1",
+     "AA1",
+     "Aa - 1",
+     "Aa-1",
+     "Aa.1",
+     "Aa1"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AA2",
+    "raw_codes": [
+     "AA-2",
+     "AA2",
+     "Aa - 2",
+     "Aa-2",
+     "Aa.2",
+     "Aa2"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AB1",
+    "raw_codes": [
+     "AB-1",
+     "AB1",
+     "Ab - 1",
+     "Ab-1",
+     "Ab.1",
+     "Ab1"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AB2",
+    "raw_codes": [
+     "AB-2",
+     "AB2",
+     "Ab - 2",
+     "Ab-2",
+     "Ab.2",
+     "Ab2"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AF2",
+    "raw_codes": [
+     "AF 2",
+     "AF-2",
+     "AF2",
+     "Af 2",
+     "Af-2",
+     "Af2"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AF3",
+    "raw_codes": [
+     "AF 3",
+     "AF-3",
+     "AF3",
+     "Af 3",
+     "Af-3",
+     "Af3"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AF4",
+    "raw_codes": [
+     "AF 4",
+     "AF-4",
+     "AF4",
+     "Af 4",
+     "Af-4",
+     "Af4"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AF5",
+    "raw_codes": [
+     "AF 5",
+     "AF-5",
+     "AF5",
+     "Af 5",
+     "Af-5",
+     "Af5"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AF6",
+    "raw_codes": [
+     "AF 6",
+     "AF-6",
+     "AF6",
+     "Af 6",
+     "Af-6",
+     "Af6"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AF7",
+    "raw_codes": [
+     "AF 7",
+     "AF-7",
+     "AF7",
+     "Af 7",
+     "Af-7",
+     "Af7"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "AF8",
+    "raw_codes": [
+     "AF 8",
+     "AF-8",
+     "AF8",
+     "Af 8",
+     "Af-8",
+     "Af8"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "CA1",
+    "raw_codes": [
+     "CA 1",
+     "CA-1",
+     "CA1",
+     "Ca-1",
+     "Ca.1",
+     "Ca1"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "CB1",
+    "raw_codes": [
+     "CB-1",
+     "Cb - 1",
+     "Cb 1",
+     "Cb-1",
+     "Cb.1",
+     "Cb1"
+    ],
+    "distinct_raw": 6
+   },
+   {
+    "normalized": "CC1",
+    "raw_codes": [
+     "C-C1",
+     "CC-1",
+     "Cc - 1",
+     "Cc-1",
+     "Cc.1",
+     "Cc1"
+    ],
+    "distinct_raw": 6
+   }
+  ]
+ },
+ "non_served_flat_layer_context": {
+  "note": "flat layer for BOTH slugs is NOT served by geo-api (nested wins); reported for completeness only",
+  "muni_with_collision": 2,
+  "list": [
+   {
+    "slug": "gore",
+    "collisions": [
+     {
+      "normalized": "RU1",
+      "raw_codes": [
+       "RU-1",
+       "Ru-1"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU10",
+      "raw_codes": [
+       "RU-10",
+       "Ru-10"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU11",
+      "raw_codes": [
+       "RU-11",
+       "Ru-11"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU12",
+      "raw_codes": [
+       "RU-12",
+       "Ru-12"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU13",
+      "raw_codes": [
+       "RU-13",
+       "Ru-13"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU14",
+      "raw_codes": [
+       "RU-14",
+       "Ru-14"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU15",
+      "raw_codes": [
+       "RU-15",
+       "Ru-15"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU16",
+      "raw_codes": [
+       "RU-16",
+       "Ru-16"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU17",
+      "raw_codes": [
+       "RU-17",
+       "Ru-17"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU18",
+      "raw_codes": [
+       "RU-18",
+       "Ru-18"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU19",
+      "raw_codes": [
+       "RU-19",
+       "Ru-19"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU2",
+      "raw_codes": [
+       "RU-2",
+       "Ru-2"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU20",
+      "raw_codes": [
+       "RU-20",
+       "Ru-20"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU21",
+      "raw_codes": [
+       "RU-21",
+       "Ru-21"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU22",
+      "raw_codes": [
+       "RU-22",
+       "Ru-22"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU23",
+      "raw_codes": [
+       "RU-23",
+       "Ru-23"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU3",
+      "raw_codes": [
+       "RU-3",
+       "Ru-3"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU4",
+      "raw_codes": [
+       "RU-4",
+       "Ru-4"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU5",
+      "raw_codes": [
+       "RU-5",
+       "Ru-5"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU6",
+      "raw_codes": [
+       "RU-6",
+       "Ru-6"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU7",
+      "raw_codes": [
+       "RU-7",
+       "Ru-7"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU8",
+      "raw_codes": [
+       "RU-8",
+       "Ru-8"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "RU9",
+      "raw_codes": [
+       "RU-9",
+       "Ru-9"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI1",
+      "raw_codes": [
+       "VI-1",
+       "Vi-1"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI10",
+      "raw_codes": [
+       "VI-10",
+       "Vi-10"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI11",
+      "raw_codes": [
+       "VI-11",
+       "Vi-11"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI2",
+      "raw_codes": [
+       "VI-2",
+       "Vi-2"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI3",
+      "raw_codes": [
+       "VI-3",
+       "Vi-3"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI4",
+      "raw_codes": [
+       "VI-4",
+       "Vi-4"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI5",
+      "raw_codes": [
+       "VI-5",
+       "Vi-5"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI6",
+      "raw_codes": [
+       "VI-6",
+       "Vi-6"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI7",
+      "raw_codes": [
+       "VI-7",
+       "Vi-7"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI8",
+      "raw_codes": [
+       "VI-8",
+       "Vi-8"
+      ],
+      "kind": "BENIGN"
+     },
+     {
+      "normalized": "VI9",
+      "raw_codes": [
+       "VI-9",
+       "Vi-9"
+      ],
+      "kind": "BENIGN"
+     }
+    ]
+   },
+   {
+    "slug": "mont-saint-hilaire",
+    "collisions": [
+     {
+      "normalized": "C11",
+      "raw_codes": [
+       "C-1-1",
+       "C-11"
+      ],
+      "kind": "HARMFUL"
+     }
+    ]
+   }
+  ]
+ },
+ "read_errors": []
+}
