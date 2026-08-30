@@ -4,23 +4,27 @@
  *
  * Answers the conductor question "chaque slug de cohorte porte-t-il numéro +
  * URL/PDF servi ?" with a CLOSED partition and a per-slug action bucket. Every
- * signal is read from a COMMITTED input (registry + latest capture-KPI + cohort
- * + municipal catalogue); nothing is fetched, nothing is inferred from a
+ * signal is read from a COMMITTED input (registry + latest served-URL audit +
+ * cohort + municipal catalogue); nothing is fetched, nothing is inferred from a
  * neighbouring city. A slug with no evidence lands in the bucket its missing
  * evidence dictates — never guessed.
  *
  * Buckets (per cohort slug, first match wins → closed partition of 167):
- *   unmatched     cohort slug resolves to no catalogue city (alias miss)
- *   no-numero     règlement number absent (upstream declaration gap; URL moot)
- *   complete      numéro présent ET URL servie (served feature carries http reglement_url)
- *   curable       numéro présent, URL non servie, MAIS une URL http existe déjà
- *                 dans le registre → foldable/re-servable SANS nouvelle capture (levier LOCAL)
- *   capture-bound numéro présent, aucune URL http nulle part → capture cluster requise
+ *   unmatched        cohort slug resolves to no catalogue city (alias miss)
+ *   no-numero        règlement number absent (upstream declaration gap; URL moot)
+ *   complete         numéro présent ET URL servie sur la grille de normes (http reglement_url)
+ *   curable-fold     numéro + URL http CURÉE au registre, grille servie mais URL non
+ *                    stampée → fold additif publish-reglement-provenance SANS capture (levier LOCAL)
+ *   grille-unserved  numéro + URL http au registre mais grille de normes NON servie
+ *                    → dépend du serving de la grille (zones/serving), pas un fold local
+ *   capture-bound    numéro présent, aucune URL http nulle part → capture cluster requise
  *
- * The served-URL signal is the capture-KPI city `state`: `unknown` ⇔ the served
- * collection carries zero http `reglement_url` (lib classifyReglementCityCapture,
- * urls.length===0); any other state ⇔ ≥1 served http `reglement_url`. States
- * `capture_inchange`/`change` additionally mean the PDF bytes are captured (CAS).
+ * The served-URL signal is the reglement-url-served-audit (read-only S3 census of
+ * `reglement_url` on the norms grille `normalized/qc-zonage-norms/` — the SAME
+ * surface publish-reglement-provenance stamps, NOT the geometry ca-qc-zonage):
+ * a slug's `features_with_http_reglement_url > 0` ⇔ URL servie. The audit also
+ * exposes a mineable `_source_url` as DIAGNOSTIC ONLY (never a curable signal — it
+ * can be a dead/placeholder link the curated registry already adjudicated to null).
  */
 import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
