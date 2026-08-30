@@ -34,9 +34,18 @@ const REPO_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const CITY_TARGET = 1106;
 const PALIER_TARGET = 167;
 const BUCKETS = ["complete", "curable-fold", "grille-unserved", "capture-bound", "no-numero", "unmatched"];
+// `--universe` buckets ALL 1106 catalogue slugs (photo globale WP3); default =
+// the palier-167 cohort. Same bucket logic, same anti-invention, same closed
+// partition — only the slug universe + the served-audit source differ.
+const MODE = process.argv.includes("--universe") ? "universe" : "cohort";
+const TARGET = MODE === "universe" ? CITY_TARGET : PALIER_TARGET;
 const OUTPUT_DATE = new Date().toISOString().slice(0, 10).replaceAll("-", "");
 const OUTPUT_AS_OF = `${OUTPUT_DATE.slice(0, 4)}-${OUTPUT_DATE.slice(4, 6)}-${OUTPUT_DATE.slice(6, 8)}`;
-const OUTPUT = `work/coverage/reglement-url-coverage-palier167-${OUTPUT_DATE}.json`;
+const OUTPUT_SCOPE = MODE === "universe" ? "all1106" : "palier167";
+const OUTPUT = `work/coverage/reglement-url-coverage-${OUTPUT_SCOPE}-${OUTPUT_DATE}.json`;
+const AUDIT_PATTERN = MODE === "universe"
+  ? /^reglement-url-served-audit-all1106-.*\.json$/
+  : /^reglement-url-served-audit-palier167-.*\.json$/;
 
 function absolute(relativePath) {
   return resolve(REPO_ROOT, relativePath);
@@ -102,7 +111,7 @@ for (const [slug, row] of Object.entries(registrySource.slugs)) {
 // that SAME surface (acquisition/src/reglement-url-served-audit.ts, read-only),
 // so a slug counted "served" here is genuinely complete on the surface the fold
 // writes — NOT the geometry collection (which a capture-KPI would observe).
-const servedAudit = latestCoverageFile(/^reglement-url-served-audit-palier167-.*\.json$/, "generated_at");
+const servedAudit = latestCoverageFile(AUDIT_PATTERN, "generated_at");
 invariant(servedAudit.data.contract === "reglement-url-served-audit/v1",
   `${servedAudit.relativePath} has unexpected contract`);
 invariant(Array.isArray(servedAudit.data.slugs), `${servedAudit.relativePath} has no slugs array`);
@@ -192,18 +201,25 @@ function bucketForCity(geoSlug) {
   return { bucket: "capture-bound", ...detail };
 }
 
-const cities = palierRows.map(({ slug, priorityRank }) => {
-  const geoSlug = resolvePalierSlug(slug);
-  const { bucket, ...detail } = bucketForCity(geoSlug);
-  return {
-    priorityRank,
-    slug,
-    geo_slug: geoSlug ?? null,
-    aliased: geoSlug !== undefined && geoSlug !== slug,
-    bucket,
-    ...detail,
-  };
-});
+// Universe mode iterates the 1106 catalogue slugs directly (each IS a catalogue
+// city → never `unmatched`); cohort mode keeps the radar-slug + alias resolution.
+const cities = MODE === "universe"
+  ? catalog.map(({ slug }) => {
+      const { bucket, ...detail } = bucketForCity(slug);
+      return { slug, geo_slug: slug, bucket, ...detail };
+    })
+  : palierRows.map(({ slug, priorityRank }) => {
+      const geoSlug = resolvePalierSlug(slug);
+      const { bucket, ...detail } = bucketForCity(geoSlug);
+      return {
+        priorityRank,
+        slug,
+        geo_slug: geoSlug ?? null,
+        aliased: geoSlug !== undefined && geoSlug !== slug,
+        bucket,
+        ...detail,
+      };
+    });
 
 // --- Closed-partition totals + loud invariant --------------------------------
 const partition = Object.fromEntries(BUCKETS.map((b) => [b, 0]));
@@ -212,8 +228,8 @@ for (const city of cities) {
   partition[city.bucket] += 1;
 }
 const partitionTotal = BUCKETS.reduce((sum, b) => sum + partition[b], 0);
-invariant(partitionTotal === PALIER_TARGET,
-  `partition is ${partitionTotal}, expected ${PALIER_TARGET}`);
+invariant(partitionTotal === TARGET,
+  `partition is ${partitionTotal}, expected ${TARGET}`);
 
 // Actionable slug lists (geo slug) so a campaign shards without re-deriving.
 const bucketSlugs = Object.fromEntries(BUCKETS.filter((b) => b !== "complete").map((b) => [
@@ -222,11 +238,12 @@ const bucketSlugs = Object.fromEntries(BUCKETS.filter((b) => b !== "complete").m
 ]));
 
 const report = {
-  contract: "reglement-url-coverage-palier167/v1",
+  contract: MODE === "universe" ? "reglement-url-coverage-all1106/v1" : "reglement-url-coverage-palier167/v1",
   as_of: OUTPUT_AS_OF,
-  cohort: palierCohortSource.cohort,
-  cohort_source: palierCohortSource.source,
-  target: PALIER_TARGET,
+  ...(MODE === "universe"
+    ? { universe: CITY_TARGET }
+    : { cohort: palierCohortSource.cohort, cohort_source: palierCohortSource.source }),
+  target: TARGET,
   source_as_of: {
     registry_path: REGISTRY_PATH,
     served_audit_path: servedAudit.relativePath,
@@ -247,8 +264,8 @@ const report = {
     liveness: "L'URL n'est validée qu'en FORME (http, domaine à point, pas placeholder) et via la curation registre; elle n'est PAS re-fetchée à la génération. Une URL curée peut être morte (404) après coup — un axe liveness re-vérifiée serait une passe capture séparée.",
   },
   partition,
-  // complete/167 is the owner-facing coverage line for this axis.
-  coverage: `${partition.complete}/${PALIER_TARGET}`,
+  // complete/target is the owner-facing coverage line for this axis.
+  coverage: `${partition.complete}/${TARGET}`,
   buckets: bucketSlugs,
   cities,
 };
@@ -257,7 +274,7 @@ writeFileSync(absolute(OUTPUT), `${JSON.stringify(report, null, 2)}\n`);
 console.log(JSON.stringify({
   output: OUTPUT,
   source_as_of: report.source_as_of,
-  target: PALIER_TARGET,
+  target: TARGET,
   partition,
   coverage: report.coverage,
   curable_fold_count: bucketSlugs["curable-fold"].length,

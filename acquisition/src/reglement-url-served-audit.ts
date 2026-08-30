@@ -139,6 +139,13 @@ function cohortGeoSlugs(): string[] {
   return [...new Set(geo)].sort();
 }
 
+// Full universe: every catalogue slug (1106). `--all` audits all of them.
+function allCatalogueSlugs(): string[] {
+  const catalog = JSON.parse(readFileSync(
+    resolve(ROOT, "packages/qc-sources/src/geo/municipalities.qc.json"), "utf8")) as Array<{ slug: string }>;
+  return [...new Set(catalog.map((c) => c.slug))].sort();
+}
+
 function arg(argv: string[], k: string): string | undefined {
   const i = argv.indexOf(`--${k}`);
   return i >= 0 ? argv[i + 1] : undefined;
@@ -152,11 +159,14 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const slugsArg = arg(argv, "slugs");
   const cohortMode = argv.includes("--cohort");
-  const slugs = cohortMode
-    ? cohortGeoSlugs()
-    : (slugsArg ?? "").split(",").map((s) => s.trim()).filter(Boolean);
+  const allMode = argv.includes("--all");
+  const slugs = allMode
+    ? allCatalogueSlugs()
+    : cohortMode
+      ? cohortGeoSlugs()
+      : (slugsArg ?? "").split(",").map((s) => s.trim()).filter(Boolean);
   if (slugs.length === 0) {
-    console.error("pass --cohort or --slugs <a,b>");
+    console.error("pass --all, --cohort or --slugs <a,b>");
     process.exit(2);
   }
   const s3 = s3Client();
@@ -173,7 +183,7 @@ async function main(): Promise<void> {
     if (i % 25 === 0) console.log(`  ...${i}/${slugs.length}`);
   }
   const asOf = stamp();
-  const scope = cohortMode ? "palier167" : "slugs";
+  const scope = allMode ? "all1106" : cohortMode ? "palier167" : "slugs";
   const out = `work/coverage/reglement-url-served-audit-${scope}-${asOf}.json`;
   const report = {
     contract: "reglement-url-served-audit/v1",
