@@ -34,7 +34,15 @@ import { canonZone } from "./lib/zonage-norms.js";
 
 export type ZoningEventState = "active" | "corrected" | "retracted";
 
-/** Neutral SOURCE taxonomy only (amendment 3) — geo never emits a Steve-oriented category. */
+/**
+ * Neutral SOURCE taxonomy only (amendment 3) — geo never emits a Steve-oriented category.
+ *
+ * The four SUSPENSIVE content-events (registre-referendaire / retrait /
+ * echec-referendaire / refus-mrc) are the facts the FROZEN règlement contract
+ * (§2.1 gate) requires geo to EMIT so immo can gate `en_vigueur` derivation: a
+ * suspensive fact present-in-the-source but NOT emitted becomes a fabricated
+ * en_vigueur downstream. geo emits them VERBATIM; it never types or gates.
+ */
 export type ZoningEventType =
   | "ppcmoi"
   | "changement-de-zonage"
@@ -44,8 +52,114 @@ export type ZoningEventType =
   | "cptaq"
   | "consultation"
   | "registre-referendaire"
+  | "retrait"
+  | "echec-referendaire"
+  | "refus-mrc"
   | "alienation"
   | "autre";
+
+/** The four suspensive content-event types the §2.1 gate consumes (immo gates, geo emits). */
+export const SUSPENSIVE_EVENT_TYPES: ReadonlySet<ZoningEventType> = new Set([
+  "registre-referendaire",
+  "retrait",
+  "echec-referendaire",
+  "refus-mrc",
+]);
+
+/**
+ * `document_type` — the FIRST-CLASS lifecycle document axis (FROZEN contract
+ * `SPEC_GEO_REGLEMENT_LIFECYCLE_CONTRACT.md` §1), source-doc-tied, DISTINCT from the
+ * content `type`. geo emits it VERBATIM from the source-document kind; immo DERIVES
+ * `lifecycle_stage` from it (geo NEVER emits a stage). A pure content event carries
+ * `document_type: null`.
+ */
+export type DocumentTypeKnown =
+  | "avis_motion"
+  | "projet_reglement"
+  | "adoption"
+  | "entree_en_vigueur"
+  | "abrogation";
+
+/** The known first-class set (used by the extension-policy guard). */
+export const DOCUMENT_TYPE_KNOWN: ReadonlySet<string> = new Set<DocumentTypeKnown>([
+  "avis_motion",
+  "projet_reglement",
+  "adoption",
+  "entree_en_vigueur",
+  "abrogation",
+]);
+
+/**
+ * Extension policy (contract §9): a consumer MUST tolerate an UNKNOWN `document_type`
+ * value (a future addition = minor-version, non-breaking) and never crash. The type is
+ * therefore a widened string; the known values are enumerated in {@link DOCUMENT_TYPE_KNOWN}.
+ */
+export type DocumentType = DocumentTypeKnown | (string & {});
+
+/** en_vigueur DATE trigger-fact kind (contract §2.1) — never the adoption date by default. */
+export type DeclencheurType = "publication_avis" | "certificat_mrc";
+
+/**
+ * §10.2 the known instrument tokens. `"unknown"` is the OUT-OF-ENUM sentinel
+ * (§9 tolerance, examined-but-source-mute) — it is NEVER a member of this set,
+ * and neither is `null` (not-populated / legacy). A declared-but-untabled
+ * instrument is a §9 by-value extension (tolerated, added here later = minor-version),
+ * NOT a member yet either. Consumers route an unknown value to a generic bucket,
+ * never crash.
+ */
+export const INSTRUMENT_TYPE_KNOWN: ReadonlySet<string> = new Set<string>([
+  "zonage",
+  "lotissement",
+  "construction",
+  "plan-urbanisme",
+  "piia",
+  "derogation",
+]);
+
+/** Normalise a DECLARED term: strip diacritics, lower-case, apostrophes/hyphens→space, collapse ws. */
+function normalizeDeclaredInstrument(declared: string): string {
+  return declared
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .toLowerCase()
+    .replace(/['‘’`]/g, " ")
+    .replace(/[-–—]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+/**
+ * §10.3 declared-source → canonical instrument token. geo NORMALISES a term the
+ * SOURCE DECLARED (it NEVER infers the instrument from content): "règlement de
+ * zonage"→`zonage`, "plan d'urbanisme"→`plan-urbanisme`, "règlement sur les
+ * dérogations mineures"→`derogation`. Single capitalised canon point (parallel to
+ * {@link canonZone}) so the mapping is not re-invented per corpus record.
+ *
+ * Three-state (§10.2/§10.3/§10.7), NEVER guessed:
+ *   - a declared term naming a known instrument → its canonical token ({@link INSTRUMENT_TYPE_KNOWN});
+ *   - an already-canonical token → itself (idempotent);
+ *   - the literal `unknown` / empty → `"unknown"` — the OUT-OF-ENUM sentinel (examined, source-mute), NOT a set member;
+ *   - a declared-but-untabled instrument → its normalised slug (§9 by-value tolerance: emitted + generically bucketed, promoted to the known set later = minor-version). It is NEVER silently collapsed to `"unknown"` — that would erase a real declaration.
+ *
+ * Ambiguity/absence is the CALLER's call (the corpus side feeds the literal `unknown`
+ * for a mute/ambiguous title); `null` (not-populated) never reaches here — the caller keeps it null.
+ */
+export function canonInstrumentType(declared: string): string {
+  const n = normalizeDeclaredInstrument(declared);
+  if (n === "" || n === "unknown") return "unknown";
+  // Idempotence: an already-canonical token (its hyphen is normalised to a space above) passes through.
+  const asToken = n.replace(/\s+/g, "-");
+  if (INSTRUMENT_TYPE_KNOWN.has(asToken)) return asToken;
+  // Ordered most-specific-first so a declared term resolves deterministically to its head instrument.
+  if (n.includes("plan d urbanisme") || n.includes("plan durbanisme")) return "plan-urbanisme";
+  if (n.includes("implantation et d integration architecturale") || /\bpiia\b/.test(n)) return "piia";
+  if (n.includes("derogation")) return "derogation";
+  if (n.includes("lotissement")) return "lotissement";
+  if (n.includes("construction")) return "construction";
+  if (n.includes("zonage")) return "zonage";
+  // Declared, but not a known instrument → §9-tolerant slug passthrough (never guessed, never erased to unknown).
+  return asToken;
+}
 
 /** Discovery, distinct from revision (`state`). */
 export type ZoningDetectionState = "detected" | "detection_incomplete" | "no-event";
@@ -61,6 +175,20 @@ export interface Provenance {
   source_span: string;
   source_url: string;
   as_of_date: string;
+  /**
+   * Capture-proof sha256 of the source document (FROZEN contract §6 — the proof-v2
+   * anchor). A served geo LIFECYCLE event MUST carry it; a placeholder/absent proof is a
+   * PHANTOM stage, forbidden. `null` for a non-emitted derived value.
+   *
+   * OPTIONAL KEY (transitional §6 rollout): pre-§6 sibling producers (`zoning-events-detect-emit`,
+   * `zoning-event-remediation`, source-audit) build a Provenance WITHOUT proof; keeping the key
+   * optional keeps them compiling. This does NOT weaken §6 — {@link validateZoningEvent} HARD-REJECTS
+   * any served event whose `sha256`/`retrieved_at` is absent-or-nullish (`!undefined` throws), so the
+   * proof requirement is enforced at SERVE time regardless of the permissive type.
+   */
+  sha256?: string | null;
+  /** ISO `retrieved_at` of the capture (FROZEN contract §6) — a REAL manifest value, never fabricated. OPTIONAL KEY (see `sha256`): the serve-time guard requires it. */
+  retrieved_at?: string | null;
 }
 
 /** `score_confiance = 1.0` ONLY on EXACT match (provenance `exact_geom`). */
@@ -100,6 +228,44 @@ export interface ZoningEvent {
   /** Verbatim from the bylaw BODY art.1.1 — NEVER the title/URL/filename number. May be null. */
   bylaw_numero: string | null;
   type: ZoningEventType;
+
+  // ── FROZEN règlement-lifecycle contract (LOT 1) — geo emits VERBATIM material ONLY.
+  //    geo NEVER emits a typed relation (replaces/amends) nor a lifecycle_stage; immo derives those.
+  //
+  //    ADDITIVE fields (§10.7 / LOT 1) — OPTIONAL KEYS: a pre-LOT-1 producer
+  //    (`zoning-events-detect-emit`, remediation, source-audit) emits a v2.1 content/detection
+  //    event WITHOUT lifecycle material; the safe-default is "absent = not-populated" (§10.7:
+  //    "null pour les events existants = rétro-compat"). `buildReglementEvent` ALWAYS sets them
+  //    explicitly; `validateZoningEvent` treats `undefined` as the content-default (`!= null`),
+  //    so a served LIFECYCLE event is still fully checked and a legacy event still validates.
+  /** Source-doc-tied lifecycle document kind (contract §1); `null`/absent for a pure content event. */
+  document_type?: DocumentType | null;
+  /**
+   * §10: the DECLARED-SOURCE instrument type as a CANONICAL TOKEN — one of
+   * {@link INSTRUMENT_TYPE_KNOWN} `{ zonage | lotissement | construction | plan-urbanisme |
+   * piia | derogation }` + §9-tolerant (a 3rd by-value discriminant enum). Built from the
+   * source-declared term via {@link canonInstrumentType} (geo emits, geo does NOT classify).
+   *
+   * Three DISTINCT states (do not conflate — the crown-jewel N-A≠UNKNOWN motif):
+   *   - a canonical token → the source DECLARED that instrument;
+   *   - the literal `"unknown"` → EXAMINED but the source title is absent/ambiguous (the OUT-OF-ENUM sentinel, §9-tolerated — NOT a 7th member, NEVER guessed from content);
+   *   - `null` → NOT populated (legacy / pre-§10, §10.7) — never conflate with `"unknown"`.
+   *
+   * The REGIME (bylaw vs case) is `document_type`-driven, NOT this field (§10.5); immo routes on it.
+   * ADDITIVE §10.7 — OPTIONAL KEY (see `document_type`): absent = not-populated on a pre-§10 event.
+   */
+  type_instrument?: string | null;
+  /** Verbatim list of règlement numbers (art.1.1 body per §1 table); `[]` for `avis_motion`. Verbatim-or-null per item, never guessed. ADDITIVE §10.7 — optional (absent = `[]`). */
+  reglement_number?: (string | null)[];
+  /** The `avis`'s ANNOUNCED target number, verbatim-or-null (contract §1/§4). Never inferred. ADDITIVE §10.7 — optional (absent = `null`). */
+  cible_reglement_numero?: string | null;
+  /** Raw verbatim relation libellés ("modifiant/remplace/abroge `<n°>`") — MATERIAL for immo relation typing; geo does NOT type them. ADDITIVE §10.7 — optional (absent = `[]`). */
+  libelles_relation?: string[];
+  /** en_vigueur DATE trigger kind (contract §2.1): publication de l'avis / certificat MRC. `null`/absent = unknown. ADDITIVE §10.7 — optional. */
+  declencheur_type?: DeclencheurType | null;
+  /** Verbatim trigger date (contract §2.1). `null`/absent = UNKNOWN — NEVER the adoption date by default. ADDITIVE §10.7 — optional. */
+  declencheur_date_verbatim?: string | null;
+
   /** YYYY-MM-DD */
   date_iso: string;
   detection_state: ZoningDetectionState;
@@ -160,6 +326,122 @@ export function computeEventId(
   return createHash("sha256")
     .update(`${muni}|${sourceRef}|${detectionAnchor}`, "utf8")
     .digest("hex");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Règlement-lifecycle emission (FROZEN contract LOT 1) — verbatim material only
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * The verbatim per-ITEM-RESOLUTION input the corpus side feeds to build ONE
+ * event (FROZEN contract §5: the fan-out unit is the item-resolution, NOT the
+ * bylaw number). ONE input = ONE item-resolution = ONE event = ONE
+ * `detection_anchor`. `reglement_number` is the LIST of numbers THIS item
+ * attests (1 for a mono résolution, N for a refonte like la-minerve 765–770).
+ *
+ * The producer emits VERBATIM: it NEVER types a relation (libellés go raw into
+ * `libelles_relation` for immo to type) and NEVER derives a stage. A suspensive
+ * fact (contract §2.1) is a content event: set `type` to one of
+ * {@link SUSPENSIVE_EVENT_TYPES} and leave `document_type: null`.
+ */
+export interface ReglementLifecycleInput {
+  muni: string;
+  /** Stable source-document identity (notice/PV/certificate url). */
+  source_ref: string;
+  /** Per-item verbatim libellé hash (A1 anchor) — NEVER an ordinal, NEVER a reglement_number. */
+  detection_anchor: string;
+  /** YYYY-MM-DD of the source document. */
+  date_iso: string;
+  url_pdf: string;
+  /** Verbatim proof span. */
+  extrait_brut: string;
+  /** Source-doc-tied lifecycle kind; `null` for a pure content/suspensive event. */
+  document_type: DocumentType | null;
+  /**
+   * §10.3: the instrument type the SOURCE DECLARED, VERBATIM (e.g. `"règlement de zonage"`,
+   * `"plan d'urbanisme"`) OR the literal `"unknown"` (title absent/ambiguous — the corpus side
+   * decides that, NEVER geo, NEVER guessed from content). {@link buildReglementEvent} canonicalises
+   * it to the emitted `type_instrument` TOKEN via {@link canonInstrumentType} (single capitalised
+   * canon point). `null`/omitted = not-populated (legacy/pre-§10, §10.7) — kept `null`, NOT canonicalised.
+   */
+  type_instrument_declared?: string | null;
+  /** Verbatim number list THIS item attests (`[]` for `avis_motion`). */
+  reglement_number: (string | null)[];
+  /** The avis's announced number, verbatim-or-null. */
+  cible_reglement_numero: string | null;
+  /** Raw verbatim relation libellés ("modifiant/remplace/abroge `<n°>`"). */
+  libelles_relation: string[];
+  /** en_vigueur DATE trigger kind (§2.1). */
+  declencheur_type: DeclencheurType | null;
+  /** Verbatim trigger date (§2.1); `null` = UNKNOWN. */
+  declencheur_date_verbatim: string | null;
+  /** Content taxonomy: a suspensive/content type, else defaults to `"autre"` for a pure lifecycle doc. */
+  type?: ZoningEventType;
+  /** Optional EXACT-resolved zone links (already resolved by the caller via {@link resolveZonesExact}). */
+  zone_codes_resolus?: ZoneCodeResolution[];
+  zone_codes_non_resolus?: ZoneCodeNonResolution[];
+  /**
+   * §6 auditable provenance the corpus side actually holds: the capture-proof sha256
+   * (from the -pocs manifest / the CAS key), the capture `retrieved_at` (a REAL manifest
+   * value, NEVER fabricated), and a source span (e.g. "p17 item 9.1"). {@link buildReglementEvent}
+   * assembles the full {@link Provenance} from these + `url_pdf`/`date_iso`.
+   */
+  provenance: { doc_sha256: string; retrieved_at: string; source_span: string };
+}
+
+/** The six lifecycle fields at their content-event defaults (a pure content event carries no lifecycle material). */
+export const CONTENT_EVENT_LIFECYCLE_DEFAULTS = {
+  document_type: null,
+  reglement_number: [] as (string | null)[],
+  cible_reglement_numero: null,
+  libelles_relation: [] as string[],
+  declencheur_type: null,
+  declencheur_date_verbatim: null,
+} as const;
+
+/**
+ * Build ONE {@link ZoningEvent} from a verbatim item-resolution input. Does NOT
+ * fan out (the caller produces one input per item-resolution); does NOT type a
+ * relation or derive a stage. `bylaw_numero` (v2.1 back-compat payload) is the
+ * first non-null of `reglement_number` — NEVER part of identity (A1). Always run
+ * {@link validateZoningEvent} on the result before serving.
+ */
+export function buildReglementEvent(input: ReglementLifecycleInput): ZoningEvent {
+  const firstNumber = input.reglement_number.find((n): n is string => typeof n === "string") ?? null;
+  return {
+    event_id: computeEventId(input.muni, input.source_ref, input.detection_anchor),
+    version: 1,
+    supersedes: null,
+    state: "active",
+    muni: input.muni,
+    bylaw_numero: firstNumber,
+    type: input.type ?? "autre",
+    document_type: input.document_type,
+    // §10.3 declared-source → canonical token (single canon point). `null` stays `null` (not-populated); a declared term / `"unknown"` is canonicalised.
+    type_instrument: input.type_instrument_declared != null ? canonInstrumentType(input.type_instrument_declared) : null,
+    reglement_number: input.reglement_number,
+    cible_reglement_numero: input.cible_reglement_numero,
+    libelles_relation: input.libelles_relation,
+    declencheur_type: input.declencheur_type,
+    declencheur_date_verbatim: input.declencheur_date_verbatim,
+    date_iso: input.date_iso,
+    detection_state: "detected",
+    zone_codes_resolus: input.zone_codes_resolus ?? [],
+    zone_codes_non_resolus: input.zone_codes_non_resolus ?? [],
+    nb_unites_max: null,
+    effet_densifiant_ref: null,
+    url_pdf: input.url_pdf,
+    extrait_brut: input.extrait_brut,
+    confidence: 1,
+    provenance: {
+      producer: "geo",
+      source_span: input.provenance.source_span,
+      source_url: input.url_pdf,
+      as_of_date: input.date_iso,
+      sha256: input.provenance.doc_sha256,
+      retrieved_at: input.provenance.retrieved_at,
+    },
+  };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -265,6 +547,9 @@ const ZONING_DETECTION_STATES: readonly ZoningDetectionState[] = [
   "no-event",
 ];
 const EFFET_DENSIFIANT_REF_KEYS = new Set(["collection", "zone_code"]);
+const DECLENCHEUR_TYPES: ReadonlySet<string> = new Set(["publication_avis", "certificat_mrc"]);
+/** geo emits VERBATIM: a typed relation (replaces/amends) or a derived stage is IMMO's — NEVER emitted here (contract §0/§3). */
+const FORBIDDEN_EMITTED_KEYS: readonly string[] = ["replaces", "amends", "lifecycle_stage"];
 
 /**
  * Hard gate on ONE event, run before it is ever written. Mirrors the spirit
@@ -313,6 +598,143 @@ export function validateZoningEvent(event: ZoningEvent): void {
       }
     }
   }
+
+  // ── FROZEN règlement-lifecycle guards — geo emits VERBATIM; immo types/derives ──
+  // The load-bearing anti-invention gate: geo NEVER emits a typed relation nor a stage.
+  for (const key of FORBIDDEN_EMITTED_KEYS) {
+    if (Object.prototype.hasOwnProperty.call(event, key)) {
+      throw new Error(
+        `zoning-event ${id}: clé interdite '${key}' émise par geo — geo émet du VERBATIM ; il ne TYPE pas les relations (replaces/amends) ni ne DÉRIVE le stage (lifecycle_stage), c'est le rôle d'immo (contrat §0/§3)`,
+      );
+    }
+  }
+  // ADDITIVE lifecycle fields (§10.7) are OPTIONAL: `undefined` (a pre-LOT-1 producer omitted it) is
+  // the content-default, treated exactly like `null`/`[]`. `!= null` (loose) tolerates undefined+null;
+  // array fields are checked only when present. buildReglementEvent always sets EVERY field, so this
+  // stays a hard gate for a served LIFECYCLE event; a legacy content event validates unchanged.
+  // document_type: string (known OR tolerated-unknown, contract §9) or null/absent — never a non-string.
+  if (event.document_type != null && typeof event.document_type !== "string") {
+    throw new Error(
+      `zoning-event ${id}: document_type invalide (${String(event.document_type)}) — string (connu ou toléré §9) ou null`,
+    );
+  }
+  // §10 : type_instrument = déclaré-source (connu ou toléré §9) OU null/absent ; jamais deviné (§9-tolérant, pas d'enum-membership).
+  if (event.type_instrument != null && typeof event.type_instrument !== "string") {
+    throw new Error(
+      `zoning-event ${id}: type_instrument invalide (${String(event.type_instrument)}) — string déclaré-source (connu ou toléré §9/§10) ou null, jamais deviné`,
+    );
+  }
+  if (event.reglement_number !== undefined) {
+    if (!Array.isArray(event.reglement_number)) {
+      throw new Error(`zoning-event ${id}: reglement_number doit être une LISTE (verbatim-ou-null par item)`);
+    }
+    for (const n of event.reglement_number) {
+      if (n !== null && typeof n !== "string") {
+        throw new Error(
+          `zoning-event ${id}: reglement_number porte un item non-verbatim (${String(n)}) — chaque n° est une string verbatim ou null, jamais deviné`,
+        );
+      }
+    }
+  }
+  if (event.cible_reglement_numero != null && typeof event.cible_reglement_numero !== "string") {
+    throw new Error(`zoning-event ${id}: cible_reglement_numero invalide — string verbatim ou null`);
+  }
+  // §1 table : cible_reglement_numero est RÉSERVÉ à avis_motion (le n° ANNONCÉ, corrélation avis→adoption §4).
+  // Sur un document_type lifecycle NON-avis, le n° de règlement de base MODIFIÉ va dans libelles_relation
+  // (immo en type amends/replaces) — PAS dans cible (sinon immo mis-corrèle la base comme l'avis-cible).
+  if (
+    event.cible_reglement_numero != null &&
+    event.document_type !== "avis_motion" &&
+    typeof event.document_type === "string" &&
+    DOCUMENT_TYPE_KNOWN.has(event.document_type)
+  ) {
+    throw new Error(
+      `zoning-event ${id}: cible_reglement_numero='${event.cible_reglement_numero}' sur document_type='${event.document_type}' — cible est RÉSERVÉ à avis_motion (§1 table, corrélation §4) ; le n° de base modifié va dans libelles_relation (immo type amends/replaces), pas dans cible`,
+    );
+  }
+  if (
+    event.libelles_relation !== undefined &&
+    (!Array.isArray(event.libelles_relation) ||
+      event.libelles_relation.some((l) => typeof l !== "string"))
+  ) {
+    throw new Error(`zoning-event ${id}: libelles_relation doit être une liste de libellés VERBATIM (string)`);
+  }
+  if (event.declencheur_type != null && !DECLENCHEUR_TYPES.has(event.declencheur_type)) {
+    throw new Error(
+      `zoning-event ${id}: declencheur_type invalide (${String(event.declencheur_type)}) — 'publication_avis' | 'certificat_mrc' | null`,
+    );
+  }
+  if (event.declencheur_date_verbatim != null && typeof event.declencheur_date_verbatim !== "string") {
+    throw new Error(
+      `zoning-event ${id}: declencheur_date_verbatim invalide — string verbatim ou null (JAMAIS l'adoption par défaut)`,
+    );
+  }
+  // §6 source-vivante : un event LIFECYCLE geo-émis PORTE sa preuve v2 (url réelle + retrieved_at + sha256).
+  // Placeholder/404 = stage FANTÔME interdit ; retrieved_at est une valeur RÉELLE, jamais fabriquée.
+  if (event.provenance.source_url.includes("non-disponible")) {
+    throw new Error(
+      `zoning-event ${id}: provenance.source_url placeholder ('non-disponible') — stage FANTÔME interdit (§6, source vivante exigée)`,
+    );
+  }
+  // Proof-v2 is ADDITIVE (§6 / LOT 1): the LIFECYCLE emitter (buildReglementEvent) ALWAYS carries it, so a
+  // PRESENT-but-empty/`null` proof is a hard §6 violation (rejected). A pre-§6 producer (detect-emit dry-run,
+  // remediation) that OMITS the keys entirely (`undefined`) is grandfathered — its §6 adoption is a separate
+  // task, NOT retroactively broken here. (Same presence-gate as the additive lifecycle fields above.)
+  if (event.provenance.sha256 !== undefined && !event.provenance.sha256) {
+    throw new Error(
+      `zoning-event ${id}: provenance.sha256 manquant — un event lifecycle geo-émis porte la preuve v2 (url+retrieved_at+sha256, §6), jamais une preuve incomplète`,
+    );
+  }
+  if (event.provenance.retrieved_at !== undefined && !event.provenance.retrieved_at) {
+    throw new Error(
+      `zoning-event ${id}: provenance.retrieved_at manquant — preuve v2 §6 (valeur réelle du manifeste, jamais fabriquée)`,
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Migration (§8) — de-conflate the v2.1 `type` into `document_type`, lossless
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Explicit, lossless de-conflation of the old v2.1 `type` (which conflated
+ * document + status) into a `document_type` (contract §8). A value mapped to
+ * `null` is a pure CONTENT/suspensive event (no lifecycle document_type). Any
+ * `type` absent from this table is FAIL-LOUD — never a silent relabel.
+ *
+ * NB (contract §8): `entree-en-vigueur` maps to the `entree_en_vigueur`
+ * document_type ONLY for a document-backed event; a DERIVED en_vigueur (no
+ * source doc) is not a geo event and is not migrated here (§2.1 / §6). The
+ * predecessor/replaces split and the 3rd branch (same n° + same stage = a v2.1
+ * `supersedes`-revision → keep, do NOT reclassify) live on IMMO's projection.
+ */
+const TYPE_TO_DOCUMENT_TYPE = new Map<ZoningEventType, DocumentType | null>([
+  ["projet-reglement", "projet_reglement"],
+  ["entree-en-vigueur", "entree_en_vigueur"],
+  ["ppcmoi", null],
+  ["changement-de-zonage", null],
+  ["derogation-mineure", null],
+  ["cptaq", null],
+  ["consultation", null],
+  ["registre-referendaire", null],
+  ["retrait", null],
+  ["echec-referendaire", null],
+  ["refus-mrc", null],
+  ["alienation", null],
+  ["autre", null],
+]);
+
+/**
+ * Map a v2.1 `type` to its `document_type` (contract §8, lossless). FAIL-LOUD on
+ * an unmapped type (never a silent relabel — the anti-invention lesson).
+ */
+export function migrateTypeToDocumentType(type: ZoningEventType): DocumentType | null {
+  if (!TYPE_TO_DOCUMENT_TYPE.has(type)) {
+    throw new Error(
+      `migration §8: type v2.1 '${type}' absent de la table de dé-conflation — FAIL-LOUD (jamais de relabel silencieux)`,
+    );
+  }
+  return TYPE_TO_DOCUMENT_TYPE.get(type) ?? null;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
