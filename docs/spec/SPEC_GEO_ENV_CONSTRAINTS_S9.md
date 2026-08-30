@@ -1,13 +1,16 @@
 # SPEC — §9 Couches environnementales geo : rendu 3D + ConstraintHit servi
 
-> **Statut : PROPOSÉ — INCOMPLET (prérequis §5.0 : l'audit de sources D07 est À
-> PRODUIRE avant serving).** Périmètre WP6 (contrat d'émission/serving, pas l'impl).
-> Auteur : geo-archi (`claude:archi`). Design pass mode (b) : geo-archi conçoit +
-> **fable-5 = 2e avis indépendant** (double-instruction ; codex-sol runtime saturé).
-> Revue fable v1 : 4 blockers (B1–B4) + 9 should-fix INTÉGRÉS ci-dessous. Contrat
-> consommateur validé par i-arch. Conduite→ratification : geo-cond→i-cond→owner.
-> **Phase 1 seulement** — couche user custom + stockage/ACL (dissent #3) DIFFÉRÉS
-> Phase 2 (décision owner), hors ce spec.
+> **Statut : ✅ RATIFIÉ owner AUDIT-FIRST (2026-08-30).** Owner (rhanka) a ratifié via
+> AskUserQuestion (« Ratifier + audit-first ») ; record durable = **track decision
+> `01M1A0GDF3NRZT6CQSGW8AXMAF`** (attesté i-cond, owner-direct). ⚠ **Serving GATÉ sur l'audit
+> source** : l'audit §5.0 D07 est **PRODUIT** (`AUDIT_D07_SOURCES_ENV_CONSTRAINTS.md`, commit
+> `789a51c3` — verdict `NOT_ACQUIRED`, tier-1 établi / tier-2 ordonné) ; **aucun serving avant
+> le tier-2 (runner DÉDIÉ G02 + run tracé cluster→S3)**. Périmètre WP6 (contrat d'émission/
+> serving, pas l'impl). Auteur : geo-archi. Design pass mode (b) : geo-archi conçoit + **fable-5
+> = 2e avis indépendant** (double-instruction ; codex-sol runtime saturé). Revue fable v1 : 4
+> blockers (B1–B4) + 9 should-fix INTÉGRÉS. Contrat consommateur validé i-arch.
+> **Phase 1 seulement** — couche user custom + stockage/ACL (dissent #3) DIFFÉRÉS Phase 2
+> (décision owner), hors ce spec.
 
 ## 1. Objet
 
