@@ -8,6 +8,12 @@
 > 0 nouveau défaut, regression-sweep OK) + check-intention `reglements` CLEAN + forme relations
 > figée `i-arch` (review routée fable-5, fallback sanctionné : agy gemini 3.7 saturé h2a_run) ;
 > elle est désormais **RATIFIÉE**. ⟹ GO impl LOT 1 (immo projette + geo build contre l'interface).
+> **➕ §10 `type_instrument` = le DESIGN geo (revu fable-5) qui IMPLÉMENTE le SCOPE owner-ratifié §1**
+> (record `01M1A25HKYSH2MK67K2CXH4Q1Q`, 2026-08-30) : famille règlements-d'urbanisme
+> (zonage+lotissement+construction+PIIA+dérogation) + plan d'urbanisme = surface DISTINCTE. ⚠ **L'owner a
+> ratifié le SCOPE (§1), PAS ce contrat (§10)** — §10 = ma conception réalisant §1, revue-fable, **non
+> séparément owner-ratifiée**. Extension §9-minor additive (déclaré-source-ou-`unknown`) ; §1–§8 INCHANGÉS ;
+> §9 étendu additivement (3e énum, politique par-valeur inchangée) ; raccord immo additif (i-arch drive).
 > Livrable LOT 1 = ce **CONTRAT D'ÉMISSION GELÉ (interface)**, pas l'impl (immo
 > projette contre l'interface gelée ; geo build l'impl APRÈS). Périmètre WP6. Auteur :
 > geo-archi. Mode (b) : geo-archi conçoit + `reglements` co-conception + fable-5 2e avis.
@@ -263,15 +269,16 @@ a un entree_en_vigueur).
 
 ## 9. Politique d'extension + attendus (résout B4 = freeze-readiness)
 
-- **Extension additive gravée (par-VALEUR, sur les DEUX énums discriminantes)** : les
+- **Extension additive gravée (par-VALEUR, sur les TROIS énums discriminantes)** : les
   consommateurs **DOIVENT tolérer une VALEUR inconnue d'énum discriminante** — un
-  `document_type` inconnu **ET** un `relation_type` inconnu (§3.1) — (ignorer/passer, jamais
-  crash) ; toute ADDITION de valeur = **minor-version** (non-breaking). ⟹ le gel n'est pas
-  bloqué par une énum « fermée » — il est bloqué par une énum **sans politique** ; la politique
-  est gravée pour les deux énums, donc l'ajout futur (`abroge` déjà in ; un `document_type` de
-  processus-interrompu, ou un nouveau `relation_type`, plus tard) n'est PAS breaking. **C'est
-  cette politique par-valeur qui tranche la forme (α) discriminée du §3.1** (F1 : le §3.1 s'y
-  réfère, il ne cite aucun texte inexistant).
+  `document_type`, un `relation_type` (§3.1), **ET un `type_instrument` (§10)** inconnus —
+  (ignorer/passer, jamais crash) ; toute ADDITION de valeur = **minor-version** (non-breaking).
+  ⟹ le gel n'est pas bloqué par une énum « fermée » — il est bloqué par une énum **sans
+  politique** ; la politique est gravée pour les trois énums, donc l'ajout futur (`abroge` déjà
+  in ; un `document_type` de processus-interrompu, un nouveau `relation_type`, ou un nouveau
+  `type_instrument` observé, plus tard) n'est PAS breaking. **C'est cette politique par-valeur
+  qui tranche la forme (α) discriminée du §3.1** (F1 : le §3.1 s'y réfère, il ne cite aucun
+  texte inexistant) **ET qui a permis l'extension §10 `type_instrument` (owner §1)**.
 - **Prédicat owner corrigé (S1)** : « tous les VRAIS règlements EN VIGUEUR » (en force
   AUJOURD'HUI) = `lifecycle_stage==en_vigueur ∧ ¬replaced ∧ ¬abroge` (**3 clauses**, pas
   1), **évalué sur le graphe PROJETÉ immo** (après dérivation), jamais sur le flux émis geo.
@@ -288,3 +295,83 @@ a un entree_en_vigueur).
   déléguée à un fichier fantôme.
 - Ratif du contrat gelé → **GO LOT 1** ; immo projette contre l'interface ; geo build
   l'impl ; i-cond aligne le §6 immo (`SPEC_EVOL_AVIS_MOTION_CYCLE_VIE.md`).
+
+## 10. Extension `type_instrument` — famille règlements-d'urbanisme + surface plan distincte
+
+> **SCOPE owner-RATIFIÉ §1 (2026-08-30, record `01M1A25HKYSH2MK67K2CXH4Q1Q`, outcome GO)** : (b) **famille
+> règlements-d'urbanisme** (zonage + lotissement + construction + **PIIA + dérogation**) + **plan
+> d'urbanisme INCLUS comme SURFACE DISTINCTE** (intention-grade ; capte le flagship `2026-509`).
+> Conditions : `type_instrument` (déclaré-source-ou-`unknown`) + `② (ii)-via-statut`.
+> ⚠ **§10 = le DESIGN geo (revu fable-5) qui IMPLÉMENTE ce scope §1 — l'owner a ratifié le SCOPE (§1),
+> PAS ce contrat (§10).** **Extension §9-minor additive** (par-valeur, 3e énum discriminante) ; le cycle
+> bylaw gelé §1–§8 INCHANGÉS ; §9 étendu additivement (3e énum, politique par-valeur inchangée).
+
+**§10.1 Le champ.** `type_instrument: string | null` émis PAR EVENT = le **type d'instrument
+DÉCLARÉ-SOURCE** que l'event concerne, extrait VERBATIM du titre/type source. **Granularité
+PAR-EVENT** (comme `document_type` ; sous fan-out §5, chaque item-résolution porte SON instrument —
+une refonte multi-règlement porte le bon instrument par event). **Énum à VALEUR, PAS un booléen**
+(un flag ne distinguerait pas lotissement de PIIA — i-arch).
+
+**§10.2 Set connu initial** : `{ zonage | lotissement | construction | plan-urbanisme | piia |
+derogation }` (+ valeurs observées ultérieures). **§9-tolérant** (cf. §9, 3e énum discriminante
+par-valeur) : une valeur INCONNUE → le consommateur l'ignore / route en bucket générique, **jamais
+un crash** ; ADDITION de valeur = minor-version.
+
+**§10.3 Déclaré-source-OU-`unknown`** (nuance anti-invention, symétrique sainte-martine) : extrait
+du titre/type source VERBATIM (« règlement de **zonage** »→`zonage` ; « **plan d'urbanisme** »→
+`plan-urbanisme` ; « règlement de **lotissement** »→`lotissement`). ⚠ **Titre absent/ambigu →
+`unknown`, JAMAIS deviné du contenu.** Le **mislabel** (plan présenté en zonage) ET l'**absence**
+(instrument deviné) sont tous deux couverts. geo émet le déclaré-source ; **geo ne CLASSIFIE pas** ;
+immo route/rend/score sur la valeur (jamais un label heuristique).
+
+**§10.4 `plan-urbanisme` = LE marqueur de la SURFACE DISTINCTE (owner).** Le plan d'urbanisme est
+DANS la famille MAIS **comme surface distincte** : intention-grade / indicateur-avancé (un changement
+de plan **HABILITE** un rezonage, ce n'est PAS un rezonage ferme). immo route `type_instrument=
+plan-urbanisme` vers cette surface, rendue/scorée **distinctement** d'une contrainte zonage ferme.
+⟹ **le SEUL champ `type_instrument` porte À LA FOIS l'appartenance-famille ET la distinction-plan** —
+pas de 2e flag.
+
+**§10.5 ⚠ Articulation BYLAW-lifecycle vs CASE-lifecycle** [JUGEMENT — conséquence structurelle de
+l'élargissement owner, surfacée à geo-cond]. L'owner inclut **PIIA + dérogation** dans la famille ;
+ces objets sont souvent des **décisions PAR CAS** (pas de cycle avis→projet→adoption). ⚠ **Le RÉGIME
+(bylaw vs case) est déterminé par `document_type`, PAS par `type_instrument`** (F2 fable) :
+- **`document_type` SET** → **bylaw-lifecycle** (cycle avis→…→abrogation, §1–§8), quel que soit
+  `type_instrument`. ⚠ Un **règlement HABILITANT** (« Règlement sur les dérogations mineures », «
+  Règlement relatif aux PIIA ») EST un bylaw à cycle complet **portant `type_instrument=derogation/piia`**
+  — c'est un event bylaw (document_type set), PAS un case.
+- **`document_type=null`** → **content-event** (`type ∈ {derogation-mineure, ppcmoi, cptaq, …}`
+  taxonomie v2.1), décision unique par-cas, PAS de cycle.
+⟹ `type_instrument` (déclaré-source) = l'**INSTRUMENT** (mapping TYPIQUE : zonage/lotissement/
+construction/plan = famille-bylaw ; piia/derogation = souvent case, **mais bylaw si document_type set**) ;
+`document_type` (set-ou-`null`) = le **RÉGIME** ; `type` (content) = la sous-catégorie case. immo route :
+bylaw-famille → surface contrainte ; plan → surface intention-grade distincte ; case → surface par-cas.
+**Le champ unifiant gère l'élargissement sans casser le cycle bylaw** (le régime reste `document_type`-
+driven, §1–§8 intacts).
+
+**§10.5.1 Dérivation `statut` — N-A-PROUVÉ ≠ UNKNOWN (raffinement D6, i-arch).** Un `document_type=null`
+n'est PAS toujours « stage inconnu ». La dérivation du **`statut`** (côté immo) discrimine via
+`type_instrument`+`type` :
+- `document_type=null` **ET** case (`type_instrument ∈ {piia, derogation}` OU content-`type ∈ {ppcmoi,
+  derogation-mineure, …}`) → **statut = N-A-PROUVÉ, non-flaggé** (l'instrument n'a par nature aucun cycle
+  → absence de stage PROUVÉE) ;
+- `document_type=null` **ET** instrument bylaw-family (`type_instrument ∈ {zonage, lotissement,
+  construction, plan-urbanisme}`) → **statut = UNKNOWN + flagged** (lacune RÉELLE : un instrument
+  bylaw-family devrait porter un stage).
+Sans ce discriminateur, immo flaggerait des cases « stage manquant » à tort (fausse-lacune). ⚠ La règle
+porte sur la dérivation du **`statut`**, PAS sur `type_instrument` lui-même (qui reste déclaré-source-ou-
+`unknown`, geo-émis verbatim). **Binding pour LES DEUX consommateurs** (projection extraction LOT 1.b +
+raccord immo), auditable. Même motif que la garde couverture 3-états du §9-env (N-A seulement dans
+l'emprise déclarée).
+
+**§10.6 Émission.** extraction/reglements extraient `type_instrument` du titre/type source verbatim ;
+absent/ambigu → `unknown`. geo n'arbitre pas (déclaré-source). `validateZoningEvent` : `string`
+(connu-ou-toléré) ou `null` ; jamais deviné.
+
+**§10.7 Migration / back-compat.** Champ **ADDITIF, safe-default** : `null` pour les events existants
+= rétro-compat (comme LOT 1.a). Back-fill `type_instrument` SI le titre-source le déclare, sinon
+`unknown` (jamais deviné). immo : `nullable`/`unknown` défaut, §9-tolérant (comme `relation_type`).
+
+**§10.8 Version.** §9-minor (par-valeur), non-breaking. **SCOPE owner-ratifié §1** (record
+`01M1A25HKYSH2MK67K2CXH4Q1Q`, 2026-08-30) ; **§10 = le design geo revu-fable qui l'implémente, PAS
+séparément owner-ratifié**. Livrable LOT 1 = ce contrat ; l'impl émission + consommation immo (surface
+plan distincte) = raccord ADDITIF (i-arch drive).
