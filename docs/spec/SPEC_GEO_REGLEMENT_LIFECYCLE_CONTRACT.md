@@ -1,12 +1,19 @@
 # SPEC — Contrat d'émission geo du cycle de vie règlement (LOT 1, interface GELÉE)
 
-> **Statut : PROPOSÉ (v2 — fable-revu + reglements-co-conçu ; presque freeze-ready).**
+> **Statut : v3 — FREEZE-READY (pass anti-invention fable finale en cours).**
 > Livrable LOT 1 = ce **CONTRAT D'ÉMISSION GELÉ (interface)**, pas l'impl (immo
 > projette contre l'interface gelée ; geo build l'impl APRÈS). Périmètre WP6. Auteur :
 > geo-archi. Mode (b) : geo-archi conçoit + `reglements` co-conception + fable-5 2e avis.
-> Revue v1 : 4 blockers (B1–B4) + S1–S6 INTÉGRÉS ci-dessous. Décisions owner : Q3
-> (document_type), Q2 (reglement_number liste), en_vigueur (geo-cond). Split GEO/IMMO
-> validé i-arch, cohérent V34 + graphify 3.4. Ratification (GO LOT 1) : geo-cond→i-cond→owner.
+> Revue v1 : 4 blockers (B1–B4) + S1–S6 INTÉGRÉS. **v2→v3** : (i) **forme de champ des
+> relations = (α) discriminée + temporal node-level — DÉCIDÉE i-arch** (sa supersession
+> bitemporelle prime, deferral geo-cond ; §3.1) ; (ii) **consolidation du gate `en_vigueur`
+> — reglements** : cas-C (abrogation silencieuse) + processus-interrompu = UN SEUL motif
+> anti-fabrication = des gates sur la dérivation, **+ mandat d'émission geo des faits
+> suspensifs/terminaux** (§2.1) ; (iii) durcissements H1 (migration : test de stage exige
+> deux bouts à stage connu, §8) + H4 (répétition même-stage = keep-history, PAS révision, §7.7).
+> Décisions owner : Q3 (document_type), Q2 (reglement_number liste), en_vigueur (geo-cond).
+> Split GEO/IMMO validé i-arch, cohérent V34 + graphify 3.4. Ratification (GO LOT 1) :
+> geo-cond→i-cond→owner.
 
 ## 0. Principe de séparation émission/dérivation (résout B2)
 
@@ -54,11 +61,28 @@ VIGUEUR » keye sur `lifecycle_stage` (dérivé immo), **inrépondable depuis
 divergences. Un `document_type` de **contenu** (`changement-de-zonage`, `derogation`,
 `registre-referendaire`…) → **stage = null** (jamais inféré — S4d).
 
-### 2.1 `en_vigueur` — anti-invention (geo-cond)
+### 2.1 `en_vigueur` — anti-invention + GATE de dérivation (geo-cond + consolidation reglements)
 geo émet un event `entree_en_vigueur` **UNIQUEMENT si un document source existe**
-(verbatim) ; **sinon immo DÉRIVE** `en_vigueur` de `(adoption + date)`. **immo marque le
-stage dérivé COMME dérivé** (provenance : document-backed vs derived — résout S2), pour
+(verbatim) ; **sinon immo DÉRIVE** `en_vigueur` de `(adoption + délai légal)`. **immo marque
+le stage dérivé COMME dérivé** (provenance : document-backed vs derived — résout S2), pour
 que le census owner sépare preuve-grade d'inférence-grade.
+
+**⭐ La dérivation `en_vigueur` est GATÉE (consolidation reglements — cas-C §7.2 et
+processus-interrompu §7.8 sont UN SEUL motif anti-fabrication = des gates).** immo ne dérive
+`en_vigueur = adopté + délai légal` **QU'EN L'ABSENCE** de tout fait suspensif/terminal :
+`{ event suspensif (registre-referendaire / retrait / échec-référendaire / refus-MRC),
+document d'abrogation, bylaw qui `replaces` }`. **Là où la preuve d'un gate est
+SILENCIEUSE/absente, `en_vigueur` est un PLANCHER (résidu documenté), PAS une garantie** — le
+faux-positif de l'abrogation silencieuse (§7.2) reste un CONNU, jamais masqué.
+
+**⭐ Mandat d'émission geo (le côté-geo du gate — sinon immo ne PEUT pas gater et FABRIQUERA
+un `en_vigueur`).** Comme `lifecycle_stage` est DÉRIVÉ immo, les gates VIVENT côté dérivation
+immo ; la responsabilité du contrat d'ÉMISSION geo est donc d'**ÉMETTRE tous les faits que
+immo doit gater**, comme **content-events verbatim** : le `registre-referendaire` (et tout
+event suspensif), le document d'`abrogation`, et le libellé « remplace » (matériau du
+`replaces`). Un fait suspensif/terminal présent-dans-la-source mais NON émis = un `en_vigueur`
+fabriqué en aval. geo n'INTERPRÈTE pas ces faits (immo les type/gate) ; geo GARANTIT leur
+émission verbatim quand la source les porte.
 
 ## 3. Les 3 relations = TYPÉES PAR IMMO (geo émet le verbatim) — noms corrigés (résout B1)
 
@@ -76,9 +100,40 @@ On NE le redéfinit PAS. Les relations de CYCLE portent des noms **distincts** :
 
 immo TYPE la relation depuis le libellé verbatim ; **libellé peu clair → UNKNOWN, jamais
 deviné** (S6). `replaces` ≠ `amends` (total ≠ modification) est **safety-critical** :
-un amendement mis-typé `replaces` tuerait à tort une base vivante. **[forme de champ :
-relation typée discriminée OU champs nommés = call i-arch/immo, leur supersession
-bitemporelle prime.]**
+un amendement mis-typé `replaces` tuerait à tort une base vivante.
+
+### 3.1 Forme de champ = (α) relation typée DISCRIMINÉE + temporal node-level (DÉCIDÉE i-arch)
+[FAIT — décision i-arch, sa supersession bitemporelle prime (deferral geo-cond).] La forme
+n'est PAS une préférence : le §9 la TRANCHE. Le §9 grave « `relation_type` inconnu → ignoré,
+ADDITION de valeur = minor-version » — une extension au niveau **VALEUR (discriminant)**.
+**(α) relation discriminée** la supporte nativement ; **(β) champs nommés la CONTREDIT**
+(ajouter un prédicat = changement de schéma = major, pas minor). ⟹ (α) est la SEULE forme
+cohérente avec la politique d'extension déjà gravée. Forme figée (graphe PROJETÉ immo) :
+
+```
+node.relations: [ {
+  relation_type: "lifecycle_predecessor" | "replaces" | "amends" | "supersedes",
+  target: { reglement_number } | { node_id },   // A1-safe : le n° vit dans la CIBLE,
+                                                //  JAMAIS dans l'event_id (=hash-libellé-par-item, §5)
+  from_libelle: <libellé verbatim émis geo> | null,  // null pour lifecycle_predecessor
+                                                //  (dérivé n°+ordre-stages, PAS d'un libellé)
+  typing_confidence: "certain" | "uncertain",   // uncertain → flagged
+  flagged: boolean                              // libellé peu clair / amends incertain →
+                                                //  flaggé, JAMAIS deviné (S6/§8)
+} ]
+node.temporal: TemporalSpan{ validFrom, validTo, knownFrom, knownTo }
+              // bitemporel au niveau NŒUD, verbatim-ou-UNKNOWN (S4b, jamais fabriqué) ;
+              // validTo se ferme quand le successeur lifecycle_predecessor arrive.
+              // Les relations sont des LIENS ; le temporel vit sur le NŒUD.
+```
+
+Les 4 contraintes fermes sont respectées : (1) **A1-safe** — le n° est dans `target`, pas
+dans l'identité d'event ; (2) **bitemporel verbatim-ou-UNKNOWN** — `temporal` ne fabrique
+aucune date ; (3) **`amends` conservateur** — `typing_confidence:uncertain` + `flagged`
+rendent le safety-critical `replaces`≠`amends` EXPLICITE (défaut migration = `replaces`+flag,
+jamais auto-`amends`) ; (4) **stage dérivé-immo** — la forme ne ré-encode aucun stage émis ;
+`lifecycle_predecessor` LIE par n°+ordre-stages. Écriture des relations = **immo**
+(projection/écrivain unique) ; geo émet les stage-events verbatim, immo COMPUTE.
 
 ## 4. Corrélation cross-stage — best-effort = business-logic IMMO (sound, inchangé)
 
@@ -125,7 +180,11 @@ a un entree_en_vigueur).
 6. **PV multi-règlements** → fan-out (§5).
 7. **(S5) répétition MÊME stage** : premier/second projet de règlement (approbation
    référendaire QC) = 2 docs `projet_reglement`, même n° → « ordre des stages » ne
-   départage pas INTRA-stage → immo ordonne par date/provenance ; le contrat le note.
+   départage pas INTRA-stage → immo ordonne par date/provenance. ⚠ **(H4) PAS un
+   `supersedes`-révision** (reglements) : les DEUX projets sont des events DISTINCTS
+   (event_id distincts, docs-sources distincts) et sont **GARDÉS** (keep-history) ; traiter
+   le second comme un `version++` du premier EFFACERAIT le redraft déclenché par le registre
+   référendaire (anti-invention). Chacun porte son propre `node.temporal`.
 8. **(S5) processus INTERROMPU** : `registre-referendaire`/référendum/refus-MRC tue une
    chaîne entre adoption et en_vigueur → la chaîne **s'arrête** (comme avis mort) ; ces
    docs restent **content-`type`, PAS des stages** → sinon la dérivation §2.1 fabriquerait
@@ -143,6 +202,11 @@ a un entree_en_vigueur).
   intra ; différent → cross. ⚠ **(B1) 3e branche OBLIGATOIRE** : même n° **ET même
   stage/type** = un `supersedes`-révision v2.1 → **garder tel quel** (ne PAS reclasser en
   predecessor — sinon fabrique une transition de stage + casse la chaîne de révision).
+  ⚠ **(H1, durcissement reglements) le test de stage exige que les DEUX bouts aient un stage
+  CONNU** : si un event est un content-event sans type-lifecycle (stage UNKNOWN), le test
+  même-stage/différent-stage est **INAPPLICABLE** → **NE PAS reclasser, garder `supersedes`
+  (conservateur) + flagger**. On n'INFÈRE jamais un stage pour PILOTER la reclassification
+  (fail-loud étendu).
 - **Split replaces/amends = NON mécanique** (reglements) : exige la sémantique « remplace »
   vs « modifie » → la migration laisse le cross-n° en **`replaces` (défaut CONSERVATEUR)
   + le FLAGGE pour revue**, ne devine JAMAIS `amends`.
@@ -165,7 +229,8 @@ a un entree_en_vigueur).
 - **Prédicat owner corrigé (S1)** : « tous les VRAIS règlements EN VIGUEUR » (en force
   AUJOURD'HUI) = `lifecycle_stage==en_vigueur ∧ ¬replaced ∧ ¬abroge` (**3 clauses**, pas
   1), **évalué sur le graphe PROJETÉ immo** (après dérivation), jamais sur le flux émis geo.
-  (+ le caveat cas-C §7.2.)
+  Les clauses `¬replaced ∧ ¬abroge` **SONT le gate §2.1** (même motif) ; le caveat cas-C
+  §7.2 (PLANCHER, pas garantie) reste porté par le prédicat.
 - **(N3)** le set `adopte`-sans-signal-en_vigueur (dérivation impossible : ni doc ni date)
   s'accumule à `adopte` — comportement anti-invention CORRECT, mais il **alimente le
   refresh-priorité §6** à côté du set pending-avis (sinon le sous-comptage est invisible).
