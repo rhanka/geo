@@ -145,6 +145,10 @@ function discoverProvQuality() {
 const readbackRel = discoverReadback();
 const lotZoneScaleRel = discoverLotZoneScale();
 const provQualityRel = discoverProvQuality();
+// Attestation d'absence rejouable des municipalités PROUVÉES un-zonables (désignation
+// autoritative MAMH : Territoire non organisé / Gouvernement régional). Alimente
+// l'overlay N/A additif du KPI Zones. Découverte déterministe par nom daté ; absent → pas d'overlay.
+const unzonableRel = discoverLatest(/^zones-unzonable-absence-attestation-.*\.json$/);
 
 const SRC = {
   zonesNormes: loadFile('work/coverage/completion-1-zones-normes-summary-20260723.json'),
@@ -158,10 +162,24 @@ const SRC = {
   // Mesure de cohérence lot-zone à l'échelle (867 villes auditables). Ancien chemin conservé en repli.
   lotZoneScale: lotZoneScaleRel ? loadFile(lotZoneScaleRel) : { path: null, exists: false, sha256: null, data: null, asOf: null },
   lotZoneConsistency: loadFile('work/coverage/lot-zone-consistency.json'),
+  // Attestation d'absence : municipalités PROUVÉES un-zonables (N-A-PROVEN sur désignation
+  // MAMH autoritative). Utilisée uniquement pour un overlay N/A additif et gardé du KPI Zones.
+  unzonableAttestation: unzonableRel
+    ? loadFile(unzonableRel)
+    : { path: null, exists: false, sha256: null, data: null, asOf: null },
   // Registre des villes canoniques (UTILISÉ UNIQUEMENT pour l'ensemble des slugs de l'univers 1 106,
   // jamais pour ses valeurs de couverture) : évite de créditer une ligne hors-univers.
   cityRegistry: loadFile('work/coverage/coverage-matrix.json'),
 };
+
+// Matrice zones per-muni (état par slug), verrouillée à la MÊME passe que l'agrégat
+// `completion-1-zones-normes-summary-*` via son propre `deliverables.zonesMatrix`.
+// L'overlay N/A la LIT pour connaître le bucket réel de chaque slug (measure > infer) :
+// sans elle, on ne devine pas de quel bucket retirer une municipalité un-zonable.
+const zonesMatrixRel = SRC.zonesNormes.data?.deliverables?.zonesMatrix || null;
+SRC.zonesMatrix = zonesMatrixRel
+  ? loadFile(zonesMatrixRel)
+  : { path: null, exists: false, sha256: null, data: null, asOf: null };
 
 // Ensemble des slugs villes canoniques (univers 1 106). null si le registre est absent.
 function canonicalSlugSet() {
@@ -211,6 +229,8 @@ function computeAsOf() {
     s.lotZoneScale.asOf = [g, l ? `listing S3 ${l}` : null].filter(Boolean).join(' ; ') || null;
   }
   if (s.lotZoneConsistency.data) s.lotZoneConsistency.asOf = s.lotZoneConsistency.data.generatedAt || null;
+  if (s.unzonableAttestation.data) s.unzonableAttestation.asOf = s.unzonableAttestation.data.generated_at || s.unzonableAttestation.data.generatedAt || null;
+  if (s.zonesMatrix.data) s.zonesMatrix.asOf = s.zonesMatrix.data.analysis_as_of || null;
   if (s.cityRegistry.data) s.cityRegistry.asOf = s.cityRegistry.data.generatedAt || null;
 }
 computeAsOf();
@@ -248,10 +268,105 @@ function unknownCell(cibleFallback = fmt(UNIVERSE)) {
 }
 
 // ---- extracteurs par KPI ---------------------------------------------------
+// Overlay N/A ADDITIF et GARDÉ du KPI Zones : municipalités PROUVÉES un-zonables
+// (désignation autoritative MAMH « Territoire non organisé » / « Gouvernement régional »,
+// via l'attestation d'absence committée `zones-unzonable-absence-attestation-*.json`)
+// reclassées N/A. Règles NON NÉGOCIABLES :
+//   - source = attestation committée uniquement ; rien n'est deviné ;
+//   - chaque slug est gaté à l'univers canonique 1 106 (hors-univers ⇒ ignoré + avert.) ;
+//   - un slug N-A-PROVEN dont la grille qc-zonage EST servie est REFUSÉ : une revendication
+//     d'inzonabilité contredite par une grille servie ne reclasse jamais en silence ;
+//   - l'état de base par slug est LU dans la matrice zones per-muni (measure > infer) :
+//     on retire chaque municipalité du SEUL bucket qu'elle occupe réellement, jamais d'un
+//     bucket supposé ; sans matrice per-muni, l'overlay est sauté (pas d'inférence) ;
+//   - garde de fermeture : aucun bucket ne peut passer sous 0, sinon overlay ENTIÈREMENT sauté.
+// Retourne null si aucun overlay applicable (⇒ KPI de base inchangé, partition à 1 106).
+function unzonableNaOverlay(base) {
+  const att = SRC.unzonableAttestation.data;
+  if (!att || !Array.isArray(att.rows)) {
+    if (!SRC.unzonableAttestation.path) warn('overlay un-zonable: attestation d’absence absente — aucun overlay N/A appliqué (KPI Zones de base inchangé).');
+    return null;
+  }
+  const proven = att.rows
+    .filter((r) => r && r.classification === 'N-A-PROVEN')
+    .sort((a, b) => String(a.slug).localeCompare(String(b.slug)));
+  if (!proven.length) return null;
+
+  const canon = canonicalSlugSet();
+  // États per-muni de base : sans eux, impossible de savoir de quel bucket retirer un
+  // slug. On ne suppose pas — on saute l'overlay et on le signale.
+  const rows = Array.isArray(SRC.zonesMatrix.data?.cities) ? SRC.zonesMatrix.data.cities : null;
+  if (!rows) {
+    warn('overlay un-zonable: matrice zones per-muni indisponible — overlay N/A sauté (état de base non mesurable, aucune inférence).');
+    return null;
+  }
+  const stateBySlug = new Map();
+  for (const c of rows) if (c && c.slug) stateBySlug.set(c.slug, c.state);
+
+  const decrements = { complete: 0, incomplete: 0, unknown: 0 };
+  const applied = [];
+  for (const r of proven) {
+    const slug = r.slug;
+    if (canon && !canon.has(slug)) {
+      warn(`overlay un-zonable: ${slug} hors univers canonique 1 106 — ignoré (aucune reclassification N/A).`);
+      continue;
+    }
+    if (r.served_qczonage === true) {
+      warn(`overlay un-zonable: ${slug} classé N-A-PROVEN mais qc-zonage servi=true (contradiction) — ignoré, aucune reclassification N/A.`);
+      continue;
+    }
+    const fromState = stateBySlug.get(slug);
+    if (fromState === undefined) {
+      warn(`overlay un-zonable: ${slug} absent de la matrice zones per-muni — ignoré (état de base inconnu).`);
+      continue;
+    }
+    if (fromState === 'N-A') continue; // déjà N/A dans la base : idempotent, jamais re-compté.
+    if (fromState !== 'complete' && fromState !== 'incomplete' && fromState !== 'unknown') {
+      warn(`overlay un-zonable: ${slug} état de base non décrémentable (${fromState}) — ignoré.`);
+      continue;
+    }
+    decrements[fromState] += 1;
+    applied.push({
+      slug,
+      designation: (r.directory_lookup && r.directory_lookup.designation) || r.classification,
+      from_state: fromState,
+    });
+  }
+
+  const k = applied.length;
+  if (k === 0) return null;
+
+  // Garde de fermeture : jamais de bucket négatif ni de partition non fermée.
+  for (const bucket of ['complete', 'incomplete', 'unknown']) {
+    if (decrements[bucket] > (base[bucket] || 0)) {
+      warn(`overlay un-zonable: décrément ${bucket} (${decrements[bucket]}) > base (${base[bucket] || 0}) — overlay N/A ENTIÈREMENT sauté (partition protégée).`);
+      return null;
+    }
+  }
+  return { k, decrements, applied };
+}
+
 function kpiZones() {
   const sc = SRC.zonesNormes.data?.lanes?.zones?.state_counts;
   if (!sc) return unknownCell();
-  return stdCell({ complete: sc.complete, incomplete: sc.incomplete, unknown: sc.unknown, na: sc['N-A'] || 0 });
+  const base = { complete: sc.complete, incomplete: sc.incomplete, unknown: sc.unknown, na: sc['N-A'] || 0 };
+  const overlay = unzonableNaOverlay(base);
+  if (!overlay) {
+    return stdCell({ complete: base.complete, incomplete: base.incomplete, unknown: base.unknown, na: base.na });
+  }
+  const cell = stdCell({
+    complete: base.complete - (overlay.decrements.complete || 0),
+    incomplete: base.incomplete - (overlay.decrements.incomplete || 0),
+    unknown: base.unknown - (overlay.decrements.unknown || 0),
+    na: base.na + overlay.k,
+  });
+  cell.extra = {
+    unzonable_na_proven_applied: overlay.k,
+    source: SRC.unzonableAttestation.path,
+    base_state_source: SRC.zonesMatrix.path,
+    slugs: overlay.applied, // [{ slug, designation, from_state }] — traçable pour note + JSON.
+  };
+  return cell;
 }
 
 function kpiNormes() {
@@ -603,6 +718,7 @@ function build(todayNum) {
 
   const sourcesMeta = [
     SRC.zonesNormes,
+    SRC.zonesMatrix,
     SRC.pv,
     SRC.regdens,
     SRC.provQuality,
@@ -612,6 +728,7 @@ function build(todayNum) {
     SRC.readback,
     SRC.lotZoneScale,
     SRC.lotZoneConsistency,
+    SRC.unzonableAttestation,
     SRC.cityRegistry,
   ]
     .filter((s) => s.path)
@@ -674,6 +791,16 @@ function renderMarkdown(payload) {
   L.push(
     '- L’univers est de 1 106 villes canoniques pour chaque KPI ville, sauf dénominateur N/A explicitement documenté (les N/A restent dans la partition qui ferme à 1 106).'
   );
+  const zonesRow = payload.kpis.find((k) => k.key === 'zones');
+  if (zonesRow && zonesRow.actuel.extra && zonesRow.actuel.extra.unzonable_na_proven_applied > 0) {
+    const e = zonesRow.actuel.extra;
+    const names = e.slugs.map((s) => `${s.slug} (${s.designation})`).join(' ; ');
+    L.push(
+      `- **Zones — N/A un-zonable prouvé** : ${fmt(e.unzonable_na_proven_applied)} municipalité(s) à désignation autoritative MAMH non-municipale-locale comptée(s) N/A dans le KPI Zones — ${names}. ` +
+        `Source = attestation d’absence committée (\`${e.source}\`, N-A-PROVEN sur preuve positive TNO / Gouvernement régional), pas devinée. ` +
+        'Reclassification ADDITIVE et partition fermée (dénominateur 1 106 − N/A) ; chaque municipalité est retirée du seul bucket de base qu’elle occupait (état lu dans la matrice zones per-muni, non inféré) ; `unknown` reste jamais compté `complete`.'
+    );
+  }
   L.push(
     '- **Alignement présence + qualité/provenance** : le rapport mesure la PRÉSENCE (données servies) ET la QUALITÉ/PROVENANCE (URL de source servie, cohérence lot-zone) ; sans cet axe, la ré-acquisition et le stampage sont invisibles.'
   );
