@@ -16,6 +16,7 @@ import {
   canonInstrumentType,
   DOCUMENT_TYPE_KNOWN,
   INSTRUMENT_TYPE_KNOWN,
+  DECISION_STATE_KNOWN,
   type ZoningEvent,
   type ZoningEventsDocument,
   type ZoningEventsStore,
@@ -94,6 +95,90 @@ function memoryStore(seed: Record<string, ZoningEventsDocument> = {}): {
   };
   return { store, written };
 }
+
+/** A minimal valid lifecycle input (an ODJ avis-de-motion), for the decision_state axis tests. */
+function baseReglementInput(overrides: Partial<ReglementLifecycleInput> = {}): ReglementLifecycleInput {
+  return {
+    muni: "warden",
+    source_ref: "https://example.org/odj.pdf",
+    detection_anchor: "odj-item-9.1",
+    date_iso: "2026-05-12",
+    url_pdf: "https://example.org/odj.pdf",
+    extrait_brut: "« avis de motion — règlement ... »",
+    document_type: null,
+    reglement_number: [],
+    cible_reglement_numero: null,
+    libelles_relation: [],
+    declencheur_type: null,
+    declencheur_date_verbatim: null,
+    provenance: { doc_sha256: "0".repeat(64), retrieved_at: "2026-05-12T00:00:00Z", source_span: "p1 item 9.1" },
+    ...overrides,
+  };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// §11 decision_state — orthogonal axis (owner-ratified 2026-08-31, present-decision A/A)
+// ─────────────────────────────────────────────────────────────────────────────
+
+describe("§11 decision_state (orthogonal axis)", () => {
+  it("PROPAGATES decision_state input→event (never silently dropped)", () => {
+    // Load-bearing anti-invention: a `planned` input must survive to the emitted event, else the ODJ
+    // item emits bare = falsely decided downstream ("vert par omission = rouge", flagged by reglements).
+    expect(buildReglementEvent(baseReglementInput({ decision_state: "planned" })).decision_state).toBe("planned");
+    expect(buildReglementEvent(baseReglementInput({ decision_state: "decided" })).decision_state).toBe("decided");
+  });
+
+  it("defaults to null (not-populated) when omitted — an EXPLICIT null key, never dropped", () => {
+    const event = buildReglementEvent(baseReglementInput());
+    expect(event.decision_state).toBeNull();
+    expect("decision_state" in event).toBe(true);
+  });
+
+  it("validateZoningEvent accepts planned | decided | null | absent", () => {
+    expect(() => validateZoningEvent(baseEvent({ decision_state: "planned" }))).not.toThrow();
+    expect(() => validateZoningEvent(baseEvent({ decision_state: "decided" }))).not.toThrow();
+    expect(() => validateZoningEvent(baseEvent({ decision_state: null }))).not.toThrow();
+    expect(() => validateZoningEvent(baseEvent())).not.toThrow(); // absent key = not-populated
+  });
+
+  it("validateZoningEvent rejects a value outside the pair (never an assumed 'décidé')", () => {
+    expect(() => validateZoningEvent(baseEvent({ decision_state: "adopté" as unknown as "decided" }))).toThrow(
+      /decision_state invalide/,
+    );
+    expect(DECISION_STATE_KNOWN.has("planned")).toBe(true);
+    expect(DECISION_STATE_KNOWN.has("decided")).toBe(true);
+  });
+
+  it("is ORTHOGONAL to document_type and type_instrument (the b2 CPTAQ content-event)", () => {
+    // CPTAQ lislet: a content-event (document_type=null) that declares NO muni instrument → type_instrument
+    // null (because none declared), + decision_state=planned. The three axes are set independently.
+    const cptaq = buildReglementEvent(
+      baseReglementInput({ type: "cptaq", document_type: null, type_instrument_declared: null, decision_state: "planned" }),
+    );
+    expect(cptaq.document_type).toBeNull();
+    expect(cptaq.type).toBe("cptaq");
+    expect(cptaq.type_instrument).toBeNull();
+    expect(cptaq.decision_state).toBe("planned");
+    expect(() => validateZoningEvent(cptaq)).not.toThrow();
+  });
+
+  it("a content-event with a DECLARED instrument KEEPS its token — the axes never collapse", () => {
+    // Regression guard: a dérogation/refus content-event (document_type=null) that DECLARES an instrument
+    // keeps its canonical token — nulling it would discard a declared fact (the anti-invention regression).
+    const derog = buildReglementEvent(
+      baseReglementInput({
+        type: "derogation-mineure",
+        document_type: null,
+        type_instrument_declared: "règlement de lotissement",
+        decision_state: "decided",
+      }),
+    );
+    expect(derog.document_type).toBeNull();
+    expect(derog.type_instrument).toBe("lotissement"); // NOT null — declared, canonicalised, kept
+    expect(derog.decision_state).toBe("decided");
+    expect(() => validateZoningEvent(derog)).not.toThrow();
+  });
+});
 
 // ─────────────────────────────────────────────────────────────────────────────
 // computeEventId — STABLE-AT-DETECTION (spec A1)
