@@ -6,7 +6,7 @@
  * contract, and the normalized acquisition output type.
  */
 
-export const VERSION = "0.6.0";
+export const VERSION = "0.5.1";
 
 export * from "./geojson.js";
 export * from "./crs.js";
