@@ -9,9 +9,9 @@ import { describe, expect, it } from "vitest";
 import {
   buildCampaignExecutionPlan,
   campaignDesignSha256,
-  CAMPAIGN_BUCKET,
   OBJECT_STORE_CAMPAIGN_OWNER_GO_CONTRACT,
   OBJECT_STORE_CAMPAIGN_OWNER_GO_KIND,
+  type CampaignBucket,
   type CampaignScope,
   type ObjectStoreCampaignOwnerGo,
   type Sha256Ref,
@@ -23,6 +23,7 @@ import {
 } from "./k8s-capture-run.js";
 
 const RUNNER_SHA = "a".repeat(40);
+const TEST_BUCKET: CampaignBucket = "sentropic-geo";
 const OWNER_INSTANCE = "owner:direct";
 const GEO_COND_INSTANCE = "claude:geo-cond";
 const ENVELOPE_ID = "env:campaign-go";
@@ -42,7 +43,7 @@ const method = captureCampaignMethod({
 
 function realDesignSha256(): Sha256Ref {
   return campaignDesignSha256(
-    buildCampaignExecutionPlan({ scope: "capture", runnerGitSha: RUNNER_SHA, method, targets }),
+    buildCampaignExecutionPlan({ scope: "capture", bucket: TEST_BUCKET, runnerGitSha: RUNNER_SHA, method, targets }),
   );
 }
 
@@ -54,7 +55,7 @@ function ownerGo(designSha256: Sha256Ref, scope: CampaignScope = "capture"): Obj
     owner_go_direct: true,
     design_sha256: designSha256,
     scope,
-    bucket: CAMPAIGN_BUCKET,
+    bucket: TEST_BUCKET,
     owner_instance: OWNER_INSTANCE,
     geo_cond_instance: GEO_COND_INSTANCE,
     h2a_envelope_id: ENVELOPE_ID,
@@ -95,6 +96,7 @@ describe("assertCaptureStoreAuthorized — gate runner de la campagne capture", 
       assertCaptureStoreAuthorized({
         execution: "local",
         runnerGitSha: RUNNER_SHA,
+        bucket: TEST_BUCKET,
         method,
         targets,
         deps: depsFor(ownerGo(realDesignSha256())),
@@ -107,6 +109,7 @@ describe("assertCaptureStoreAuthorized — gate runner de la campagne capture", 
       assertCaptureStoreAuthorized({
         execution: "cluster",
         runnerGitSha: RUNNER_SHA,
+        bucket: TEST_BUCKET,
         method,
         targets,
         deps: {},
@@ -119,6 +122,7 @@ describe("assertCaptureStoreAuthorized — gate runner de la campagne capture", 
     const result = await assertCaptureStoreAuthorized({
       execution: "cluster",
       runnerGitSha: RUNNER_SHA,
+      bucket: TEST_BUCKET,
       method,
       targets,
       deps: depsFor(ownerGo(designSha256)),
@@ -137,6 +141,7 @@ describe("assertCaptureStoreAuthorized — gate runner de la campagne capture", 
       assertCaptureStoreAuthorized({
         execution: "cluster",
         runnerGitSha: RUNNER_SHA,
+        bucket: TEST_BUCKET,
         method,
         targets: runnerTargets,
         deps: depsFor(ownerGo(staleSha)),
@@ -150,6 +155,7 @@ describe("assertCaptureStoreAuthorized — gate runner de la campagne capture", 
       assertCaptureStoreAuthorized({
         execution: "cluster",
         runnerGitSha: RUNNER_SHA,
+        bucket: TEST_BUCKET,
         method,
         targets,
         deps: depsFor(ownerGo(designSha256, "write-rekey")),

@@ -32,8 +32,20 @@ export const CAMPAIGN_EXECUTION_PLAN_CONTRACT =
 export const OBJECT_STORE_CAMPAIGN_OWNER_GO_KIND =
   "object-store-campaign-owner-go" as const;
 
-/** Le SEUL bucket que cette campagne autorise. Littéral, jamais paramétrable. */
-export const CAMPAIGN_BUCKET = "sentropic-geo" as const;
+/**
+ * Les buckets que cette campagne autorise — ALLOWLIST FERMÉE de 2 valeurs littérales
+ * (prod + préprod), JAMAIS un ENV libre/arbitraire (§6 préprod-strict, owner fork B).
+ * Le bucket RÉELLEMENT ciblé vient de `s3Target().bucket` (config-driven, k8s ns↔bucket)
+ * côté runner, lu UNE fois et passé au plan ET au write ; le gate valide seulement
+ * l'appartenance à cette allowlist fermée (fail-closed). PROD reste `sentropic-geo` ;
+ * la promo prod↔préprod = déploiement (jamais un élargissement de l'allowlist ici).
+ */
+export const CAMPAIGN_BUCKET_ALLOWLIST = ["sentropic-geo", "sentropic-geo-preprod"] as const;
+export type CampaignBucket = (typeof CAMPAIGN_BUCKET_ALLOWLIST)[number];
+/** Garde d'appartenance à l'allowlist FERMÉE (fail-closed : tout bucket hors-liste rejeté). */
+export function isCampaignBucket(value: unknown): value is CampaignBucket {
+  return typeof value === "string" && (CAMPAIGN_BUCKET_ALLOWLIST as readonly string[]).includes(value);
+}
 
 /**
  * Périmètres autorisés — TOUS non destructifs. `write-rekey` = copy-only,
@@ -56,7 +68,7 @@ export type H2aRecordReader = (id: string) => Promise<unknown>;
 export interface CampaignExecutionPlan {
   contract: typeof CAMPAIGN_EXECUTION_PLAN_CONTRACT;
   scope: CampaignScope;
-  bucket: typeof CAMPAIGN_BUCKET;
+  bucket: CampaignBucket;
   /** SHA git 40-hex du CODE réellement exécuté (l'exécutant, pas un manifeste). */
   runner_git_sha: string;
   /** Paramètres de méthode (tag legacy-merge ; mapping re-key ; params capture). */
@@ -77,7 +89,7 @@ export interface ObjectStoreCampaignOwnerGo {
   owner_go_direct: true;
   design_sha256: Sha256Ref;
   scope: CampaignScope;
-  bucket: typeof CAMPAIGN_BUCKET;
+  bucket: CampaignBucket;
   owner_instance: string;
   geo_cond_instance: string;
   h2a_envelope_id: string;
@@ -99,7 +111,7 @@ export interface DirectSessionChatCampaignOwnerGo {
   owner_go_direct: true;
   design_sha256: Sha256Ref;
   scope: CampaignScope;
-  bucket: typeof CAMPAIGN_BUCKET;
+  bucket: CampaignBucket;
   owner_instance: string;
   /** La session EXÉCUTANTE (k8s) où l'owner a donné son go comme tour-user. */
   executor_session: string;
@@ -109,10 +121,18 @@ export interface DirectSessionChatCampaignOwnerGo {
   owner_go_text: string;
 }
 
-/** Ce que le runner exige : le sha qu'il a RECALCULÉ + l'action qu'il exécute. */
+/**
+ * Ce que le runner exige : le sha qu'il a RECALCULÉ + l'action + le BUCKET RÉEL.
+ * `bucket` = `s3Target().bucket` (config-driven, lu UNE fois par le runner et utilisé
+ * pour le plan ET le write) — le gate l'exige EXPLICITEMENT (belt-check §6) en plus
+ * du binding design_sha256 (qui inclut déjà `plan.bucket`), comme garde-fou de régression :
+ * si un refactor futur retirait `bucket` de la préimage de design_sha256, ce check
+ * explicite empêche la coherence de casser en silence.
+ */
 export interface CampaignOwnerGoExpectation {
   designSha256: Sha256Ref;
   scope: CampaignScope;
+  bucket: CampaignBucket;
 }
 
 const SESSION_STATES_OK = ["live", "closed", "draining"] as const;
@@ -229,8 +249,10 @@ export function assertCampaignExecutionPlan(
     throw new Error("campaign plan: contract campaign-execution-plan/v1 requis");
   }
   assertCampaignScope(plan.scope);
-  if (plan.bucket !== CAMPAIGN_BUCKET) {
-    throw new Error(`campaign plan: bucket doit être ${CAMPAIGN_BUCKET}`);
+  if (!isCampaignBucket(plan.bucket)) {
+    throw new Error(
+      `campaign plan: bucket doit être ∈ allowlist fermée (${CAMPAIGN_BUCKET_ALLOWLIST.join(" | ")})`,
+    );
   }
   if (typeof plan.runner_git_sha !== "string" || !/^[0-9a-f]{40}$/.test(plan.runner_git_sha)) {
     throw new Error("campaign plan: runner_git_sha doit être un SHA git complet (40 hex)");
@@ -251,11 +273,18 @@ export function assertCampaignExecutionPlan(
  */
 export function buildCampaignExecutionPlan(input: {
   scope: CampaignScope;
+  /** Le bucket RÉEL ciblé = `s3Target().bucket` (config-driven), passé par le runner. Validé ∈ allowlist. */
+  bucket: CampaignBucket;
   runnerGitSha: string;
   method: Record<string, unknown>;
   targets: readonly unknown[];
 }): CampaignExecutionPlan {
   assertCampaignScope(input.scope);
+  if (!isCampaignBucket(input.bucket)) {
+    throw new Error(
+      `campaign plan: bucket doit être ∈ allowlist fermée (${CAMPAIGN_BUCKET_ALLOWLIST.join(" | ")})`,
+    );
+  }
   if (!/^[0-9a-f]{40}$/.test(input.runnerGitSha)) {
     throw new Error("campaign plan: runner_git_sha doit être un SHA git complet (40 hex)");
   }
@@ -264,7 +293,9 @@ export function buildCampaignExecutionPlan(input: {
   const plan: CampaignExecutionPlan = {
     contract: CAMPAIGN_EXECUTION_PLAN_CONTRACT,
     scope: input.scope,
-    bucket: CAMPAIGN_BUCKET,
+    // Le bucket est DANS la préimage de design_sha256 (canonicalPlanJson) — c'est ce qui
+    // lie l'owner-go au bucket réellement écrit (write = s3Target().bucket = ce plan.bucket).
+    bucket: input.bucket,
     runner_git_sha: input.runnerGitSha,
     method: input.method,
     targets: sortCampaignTargets(input.targets),
@@ -315,9 +346,19 @@ export function assertSharedCampaignOwnerGoFields(
       `campaign owner-go: scope divergent (artefact=${artefact["scope"]}, action=${expected.scope}) — un go ne vaut que pour SON périmètre`,
     );
   }
-  // (6) bucket
-  if (artefact["bucket"] !== CAMPAIGN_BUCKET) {
-    throw new Error(`campaign owner-go: bucket doit être ${CAMPAIGN_BUCKET}`);
+  // (6) bucket : ∈ allowlist FERMÉE (baseline, fail-closed) + === le bucket RÉEL du runner
+  //     (belt-check §6, defense-in-depth par-dessus le binding design_sha256 — cf.
+  //     CampaignOwnerGoExpectation : garde-fou de régression si `bucket` sortait un jour
+  //     de la préimage de design_sha256).
+  if (!isCampaignBucket(artefact["bucket"])) {
+    throw new Error(
+      `campaign owner-go: bucket doit être ∈ allowlist fermée (${CAMPAIGN_BUCKET_ALLOWLIST.join(" | ")})`,
+    );
+  }
+  if (artefact["bucket"] !== expected.bucket) {
+    throw new Error(
+      `campaign owner-go: bucket owner-go (${String(artefact["bucket"])}) ≠ bucket réel du runner s3Target (${expected.bucket}) — owner-go↔write divergent (belt-check §6)`,
+    );
   }
   if (!nonEmpty(artefact["owner_instance"])) {
     throw new Error("campaign owner-go: owner_instance non vide requis");
@@ -420,7 +461,7 @@ async function crossVerifyOwnerGoInStore(
     body["owner_go_direct"] !== true ||
     body["design_sha256"] !== artefact.design_sha256 ||
     body["scope"] !== artefact.scope ||
-    body["bucket"] !== CAMPAIGN_BUCKET ||
+    body["bucket"] !== artefact.bucket ||
     body["owner_instance"] !== artefact.owner_instance ||
     body["geo_cond_instance"] !== artefact.geo_cond_instance ||
     body["h2a_session_id"] !== artefact.h2a_session_id
@@ -457,6 +498,11 @@ export async function assertObjectStoreCampaignOwnerGo(
 ): Promise<void> {
   assertCampaignScope(expected.scope);
   assertSha(expected.designSha256, "campaign owner-go expected.designSha256");
+  if (!isCampaignBucket(expected.bucket)) {
+    throw new Error(
+      `campaign owner-go: expected.bucket doit être ∈ allowlist fermée (${CAMPAIGN_BUCKET_ALLOWLIST.join(" | ")}) — le bucket réel s3Target du runner`,
+    );
+  }
   assertClaimedArtefact(artefact, expected);
   await crossVerifyOwnerGoInStore(artefact, readEnvelope, readSession);
 }

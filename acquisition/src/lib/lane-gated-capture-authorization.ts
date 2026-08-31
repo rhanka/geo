@@ -3,6 +3,7 @@ import {
   assertDirectSessionChatOwnerGo,
   buildCampaignExecutionPlan,
   campaignDesignSha256,
+  type CampaignBucket,
   type DirectSessionChatCampaignOwnerGo,
   type ObjectStoreCampaignOwnerGo,
   type Sha256Ref,
@@ -52,6 +53,8 @@ export type LaneGatedCaptureOwnerGoArtifact =
 export function assertLaneGatedCaptureAuthorized(input: {
   execution: "local" | "cluster";
   runnerGitSha: string;
+  /** Bucket RÉEL config-driven (= `s3Target().bucket`, lu UNE fois par le runner appelant, ∈ allowlist). */
+  bucket: CampaignBucket;
   method: Record<string, unknown>;
   targets: readonly unknown[];
   // Contenu de fichier NON-FIABLE — validé au runtime par assertClaimedArtefact.
@@ -79,6 +82,7 @@ export function assertLaneGatedCaptureAuthorized(input: {
   // Plan résolu réel (scope="capture" HARDCODÉ) → design_sha256 recalculé (CA-G6).
   const plan = buildCampaignExecutionPlan({
     scope: "capture",
+    bucket: input.bucket,
     runnerGitSha: input.runnerGitSha,
     method: input.method,
     targets: input.targets,
@@ -101,9 +105,14 @@ export function assertLaneGatedCaptureAuthorized(input: {
     assertClaimedArtefact(input.ownerGoArtifact as ObjectStoreCampaignOwnerGo, {
       designSha256,
       scope: "capture",
+      bucket: input.bucket,
     });
   } else if (claimedVia === "direct-session-chat") {
-    assertDirectSessionChatOwnerGo(input.ownerGoArtifact, { designSha256, scope: "capture" });
+    assertDirectSessionChatOwnerGo(input.ownerGoArtifact, {
+      designSha256,
+      scope: "capture",
+      bucket: input.bucket,
+    });
   } else {
     throw new Error(
       `lane-gated capture REFUS (via inconnu="${String(claimedVia)}"): ` +

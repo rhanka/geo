@@ -15,7 +15,7 @@ import {
 
 const GIT = "a".repeat(40);
 const build = (method: Record<string, unknown>, targets: unknown[]) =>
-  buildCampaignExecutionPlan({ scope: "capture", runnerGitSha: GIT, method, targets });
+  buildCampaignExecutionPlan({ scope: "capture", bucket: "sentropic-geo", runnerGitSha: GIT, method, targets });
 
 describe("R2 — JSON-total guard on campaign-execution-plan", () => {
   it("accepts a JSON-total plan and hashes it deterministically", () => {
