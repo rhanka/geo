@@ -88,17 +88,51 @@ Contraintes d'exécution : **déterministe**, **0 réseau**, **0 S3**, **0 dépl
 | Immo champs — applicabilité TOD | idem | `…tod_applicability` (denom 39) |
 | Immo champs — complétion TOD | idem | `…tod_completion` (denom 39) |
 
-### Ajouts qualité/provenance (2) — rendent la ré-acquisition/le stampage MESURABLES
+### Ajouts qualité/provenance (3) — rendent la ré-acquisition/le stampage MESURABLES
 
 | KPI | Source | Définition |
 |---|---|---|
 | **Provenance zones — URL source servie** | `work/coverage/zone-source-readback-audit-*.json` (le plus récent par nom) | Nombre de collections servies dont `zone_source_url` est une URL http réelle (`STAMPED`) / total servi (871). `STAMPED_NULL` (champ présent, null) comptés `incomplete` ; `UNSTAMPED` (champ absent) comptés séparément. Ce KPI signale immédiatement un dé-stampage (ré-acquisition sans re-stamp dans la même passe). |
+| **Provenance zones — fraîcheur/millésime** | `work/coverage/zones-sig-freshness-perime-inventory-*.json` (le plus récent par nom) | Unité = collection zonage servie ; dénominateur = total servi LU dans l'inventaire (nombre de lignes `munis`, `served_total`). Mapping AVEC PRÉCÉDENCE par ligne muni : `incomplete` si `vintage_perime.bool = true` (millésime périmé/suspect, même capture-fraîche) ; sinon `complete` si `freshness_class = "fresh"` ; sinon `unknown` si `freshness_class = "source-gap"`. `N/A = 0`. Voir la définition détaillée ci-dessous. |
 | **Zones — cohérence lot-zone** | `work/coverage/lot-zone-consistency-scale-*.json` (le plus récent par nom) ; **repli** sur `work/coverage/lot-zone-consistency.json` si aucune passe à l'échelle n'existe | Si la source couvre assez de villes (≥ 50 % de l'univers, soit 553), ville `complete` ssi `status = "measured"` **ET** `mismatch_pct < 5 %`. Sinon → `donnée insuffisante` (aucune extrapolation). Règles d'exclusion : voir ci-dessous. |
 
 **Registre des villes canoniques** — `work/coverage/coverage-matrix.json` est lu pour son
 **seul ensemble de clés `cities`** (les 1 106 slugs canoniques), jamais pour ses valeurs de
 couverture. Il sert de garde : une ligne de source hors de cet ensemble ne reçoit **aucun
 crédit de complétion** (cf. `l-assomption`, `l-epiphanie`, `sainte-christine-d-auvergne`).
+
+#### Définition du KPI « Provenance zones — fraîcheur/millésime »
+
+- **Source** : l'inventaire committé de fraîcheur/millésime des zonages SIG servis,
+  `work/coverage/zones-sig-freshness-perime-inventory-*.json`, le plus récent par nom daté
+  (`discoverLatest`). Absent → KPI `unknown` (jamais inventé, `Précédent/Δ = —`).
+- **Unité** = collection zonage servie. **Dénominateur** = total servi LU dans l'inventaire :
+  le nombre de lignes du tableau per-muni `munis` (recoupé avec `served_total` ; écart signalé,
+  jamais silencieux). **Jamais codé en dur.**
+- **Mapping AVEC PRÉCÉDENCE**, ligne muni par ligne muni :
+  1. `incomplete` si le booléen de vintage périmé `vintage_perime.bool` est `true` (servi mais
+     millésime périmé/suspect → à re-sourcer), **même capture-fraîche** (la précédence prime) ;
+  2. sinon `complete` si la classe de capture-freshness `freshness_class` vaut `"fresh"`
+     (capture-fraîche ET non périmée) ;
+  3. sinon `unknown` si `freshness_class` vaut `"source-gap"` (fraîcheur non mesurable en
+     lecture seule). `N/A = 0`.
+- Les comptes `complete`/`incomplete`/`unknown` sont **recalculés depuis les lignes muni**
+  (measure > infer), puis **confrontés au bloc `summary`** de l'inventaire (`freshness.fresh`,
+  `freshness.source-gap`, `vintage_perime.marker_suspect`) — tout écart est émis en
+  avertissement, **jamais silencieux**.
+- **Partition fermée** sur le total servi : `complete + incomplete + unknown + N/A =
+  partitionTotal` (= nombre de lignes muni). Toute ligne dont la classe n'est ni `fresh` ni
+  `source-gap` et qui n'est pas périmée (non attendu ; `stale = 0`) rompt la fermeture ⇒ KPI
+  `unknown` + avertissement. `unknown` n'est **jamais** compté `complete`.
+- **Traçabilité** : `actuel.extra` porte `{ fresh, vintage_suspect, source_gap,
+  vintage_suspect_slugs: [{ slug, basis, freshness_class }] }`. Une note Markdown nomme la/les
+  municipalité(s) vintage-suspecte(s) avec leur base (marqueur LU) et la source committée quand
+  `vintage_suspect > 0` — pas deviné.
+- **Exemple mesuré (2026-08-30, inventaire committé)** : `363 / 873` fraîches (`complete`) ·
+  `1` périmé/vintage-suspect (`incomplete`) · `509` source-gap (`unknown`) = 873. La seule
+  municipalité vintage-suspecte est `mont-tremblant` (marqueur `vintage-marker (Ancien)`),
+  capture-fraîche mais millésime périmé : comptée `incomplete` par précédence, donc
+  `complete = 364 fresh − 1 périmé-capture-fraîche = 363`.
 
 #### Règles NON NÉGOCIABLES du KPI « cohérence lot-zone »
 
