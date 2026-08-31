@@ -10,10 +10,11 @@ import {
   buildCampaignExecutionPlan,
   campaignDesignSha256,
   canonicalPlanJson,
-  CAMPAIGN_BUCKET,
+  CAMPAIGN_BUCKET_ALLOWLIST,
   CAMPAIGN_EXECUTION_PLAN_CONTRACT,
   OBJECT_STORE_CAMPAIGN_OWNER_GO_CONTRACT,
   OBJECT_STORE_CAMPAIGN_OWNER_GO_KIND,
+  type CampaignBucket,
   type CampaignExecutionPlan,
   type CampaignScope,
   type H2aRecordReader,
@@ -23,15 +24,19 @@ import {
 
 const RUNNER_SHA = "a".repeat(40);
 const OTHER_SHA = "b".repeat(40);
+/** Bucket de test par défaut = prod (∈ allowlist). Les tests préprod/hors-liste utilisent les autres valeurs. */
+const TEST_BUCKET: CampaignBucket = "sentropic-geo";
+const PREPROD_BUCKET: CampaignBucket = "sentropic-geo-preprod";
 
 const captureTargets = [
   { slug: "sainte-julie", source: "pv", urls: ["https://ville.example/pv/2026-05.pdf"] },
   { slug: "beloeil", source: "pv", urls: ["https://ville.example/pv/2026-04.pdf"] },
 ];
 
-function capturePlan(): CampaignExecutionPlan {
+function capturePlan(bucket: CampaignBucket = TEST_BUCKET): CampaignExecutionPlan {
   return buildCampaignExecutionPlan({
     scope: "capture",
+    bucket,
     runnerGitSha: RUNNER_SHA,
     method: { lane: "pv", egress: "direct", image: "geo-capture:test", max_bytes: 104_857_600 },
     targets: captureTargets,
@@ -46,6 +51,7 @@ const SESSION_ID = "sess:geo-cond";
 function ownerGo(
   designSha256: Sha256Ref,
   scope: CampaignScope = "capture",
+  bucket: CampaignBucket = TEST_BUCKET,
 ): ObjectStoreCampaignOwnerGo {
   return {
     contract: OBJECT_STORE_CAMPAIGN_OWNER_GO_CONTRACT,
@@ -54,7 +60,7 @@ function ownerGo(
     owner_go_direct: true,
     design_sha256: designSha256,
     scope,
-    bucket: CAMPAIGN_BUCKET,
+    bucket,
     owner_instance: OWNER_INSTANCE,
     geo_cond_instance: GEO_COND_INSTANCE,
     h2a_envelope_id: ENVELOPE_ID,
@@ -105,7 +111,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
     const artefact = ownerGo(designSha256);
     const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession("live"));
     await expect(
-      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture" }, readEnvelope, readSession),
+      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
     ).resolves.toBeUndefined();
   });
 
@@ -114,7 +120,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
     const artefact = ownerGo(designSha256);
     const { readEnvelope, readSession } = readers(null, storeSession("live"));
     await expect(
-      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture" }, readEnvelope, readSession),
+      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
     ).rejects.toThrow(/introuvable\/invalide/);
   });
 
@@ -123,7 +129,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
     const artefact = ownerGo(`sha256:${"c".repeat(64)}` as Sha256Ref);
     const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession("live"));
     await expect(
-      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture" }, readEnvelope, readSession),
+      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
     ).rejects.toThrow(/design_sha256 ne vise pas/);
   });
 
@@ -134,7 +140,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
     await expect(
       assertObjectStoreCampaignOwnerGo(
         artefact as unknown as ObjectStoreCampaignOwnerGo,
-        { designSha256, scope: "capture" },
+        { designSha256, scope: "capture", bucket: TEST_BUCKET },
         readEnvelope,
         readSession,
       ),
@@ -146,7 +152,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
     const artefact = ownerGo(designSha256, "write-rekey");
     const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession("live"));
     await expect(
-      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture" }, readEnvelope, readSession),
+      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
     ).rejects.toThrow(/scope divergent/);
   });
 
@@ -157,7 +163,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
     await expect(
       assertObjectStoreCampaignOwnerGo(
         artefact,
-        { designSha256, scope: "write-legacy-merge" },
+        { designSha256, scope: "write-legacy-merge", bucket: TEST_BUCKET },
         readEnvelope,
         readSession,
       ),
@@ -173,7 +179,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
       owner_go_direct: true,
       design_sha256: designSha256,
       scope: "capture",
-      bucket: CAMPAIGN_BUCKET,
+      bucket: TEST_BUCKET,
       owner_instance: OWNER_INSTANCE,
       geo_cond_instance: GEO_COND_INSTANCE,
       h2a_envelope_id: ENVELOPE_ID,
@@ -183,7 +189,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
     await expect(
       assertObjectStoreCampaignOwnerGo(
         relay as unknown as ObjectStoreCampaignOwnerGo,
-        { designSha256, scope: "capture" },
+        { designSha256, scope: "capture", bucket: TEST_BUCKET },
         readEnvelope,
         readSession,
       ),
@@ -199,7 +205,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
     (forged["actor"] as Record<string, unknown>)["role"] = "GEO-COND";
     const { readEnvelope, readSession } = readers(forged, storeSession("live"));
     await expect(
-      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture" }, readEnvelope, readSession),
+      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
     ).rejects.toThrow(/owner DIRECT divergente/);
   });
 
@@ -210,7 +216,7 @@ describe("assertObjectStoreCampaignOwnerGo — CA-G1 gate par construction", () 
     (forged["body"] as Record<string, unknown>)["design_sha256"] = `sha256:${"d".repeat(64)}`;
     const { readEnvelope, readSession } = readers(forged, storeSession("live"));
     await expect(
-      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture" }, readEnvelope, readSession),
+      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
     ).rejects.toThrow(/owner DIRECT divergente/);
   });
 });
@@ -221,6 +227,7 @@ describe("CA-G6 — binding design_sha : cibles/méthode/code liés", () => {
     // Le runner résout un plan RÉEL différent (une cible ajoutée).
     const newPlan = buildCampaignExecutionPlan({
       scope: "capture",
+      bucket: TEST_BUCKET,
       runnerGitSha: RUNNER_SHA,
       method: { lane: "pv", egress: "direct", image: "geo-capture:test", max_bytes: 104_857_600 },
       targets: [...captureTargets, { slug: "carignan", source: "pv", urls: ["https://ville.example/pv/x.pdf"] }],
@@ -231,7 +238,7 @@ describe("CA-G6 — binding design_sha : cibles/méthode/code liés", () => {
     const artefact = ownerGo(oldSha);
     const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession("live"));
     await expect(
-      assertObjectStoreCampaignOwnerGo(artefact, { designSha256: newSha, scope: "capture" }, readEnvelope, readSession),
+      assertObjectStoreCampaignOwnerGo(artefact, { designSha256: newSha, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
     ).rejects.toThrow(/design_sha256 ne vise pas/);
   });
 
@@ -240,6 +247,7 @@ describe("CA-G6 — binding design_sha : cibles/méthode/code liés", () => {
     const methodChanged = campaignDesignSha256(
       buildCampaignExecutionPlan({
         scope: "capture",
+        bucket: TEST_BUCKET,
         runnerGitSha: RUNNER_SHA,
         method: { lane: "pv", egress: "tor:pv", image: "geo-capture:test", max_bytes: 104_857_600 },
         targets: captureTargets,
@@ -248,6 +256,7 @@ describe("CA-G6 — binding design_sha : cibles/méthode/code liés", () => {
     const shaChanged = campaignDesignSha256(
       buildCampaignExecutionPlan({
         scope: "capture",
+        bucket: TEST_BUCKET,
         runnerGitSha: OTHER_SHA,
         method: { lane: "pv", egress: "direct", image: "geo-capture:test", max_bytes: 104_857_600 },
         targets: captureTargets,
@@ -256,6 +265,7 @@ describe("CA-G6 — binding design_sha : cibles/méthode/code liés", () => {
     const scopeChanged = campaignDesignSha256(
       buildCampaignExecutionPlan({
         scope: "write-rekey",
+        bucket: TEST_BUCKET,
         runnerGitSha: RUNNER_SHA,
         method: { lane: "pv", egress: "direct", image: "geo-capture:test", max_bytes: 104_857_600 },
         targets: captureTargets,
@@ -270,7 +280,7 @@ describe("préimage canonique — déterministe et indépendante de l'ordre des 
     const planA: CampaignExecutionPlan = {
       contract: CAMPAIGN_EXECUTION_PLAN_CONTRACT,
       scope: "capture",
-      bucket: CAMPAIGN_BUCKET,
+      bucket: TEST_BUCKET,
       runner_git_sha: RUNNER_SHA,
       method: { lane: "pv", egress: "direct" },
       targets: [{ slug: "a", source: "pv", urls: ["https://x/1"] }],
@@ -280,7 +290,7 @@ describe("préimage canonique — déterministe et indépendante de l'ordre des 
       targets: [{ urls: ["https://x/1"], source: "pv", slug: "a" }],
       method: { egress: "direct", lane: "pv" },
       runner_git_sha: RUNNER_SHA,
-      bucket: CAMPAIGN_BUCKET,
+      bucket: TEST_BUCKET,
       scope: "capture",
       contract: CAMPAIGN_EXECUTION_PLAN_CONTRACT,
     } as CampaignExecutionPlan;
@@ -294,6 +304,7 @@ describe("préimage canonique — déterministe et indépendante de l'ordre des 
     const forward = campaignDesignSha256(
       buildCampaignExecutionPlan({
         scope: "capture",
+        bucket: TEST_BUCKET,
         runnerGitSha: RUNNER_SHA,
         method: { lane: "pv" },
         targets: captureTargets,
@@ -302,6 +313,7 @@ describe("préimage canonique — déterministe et indépendante de l'ordre des 
     const reversed = campaignDesignSha256(
       buildCampaignExecutionPlan({
         scope: "capture",
+        bucket: TEST_BUCKET,
         runnerGitSha: RUNNER_SHA,
         method: { lane: "pv" },
         targets: [...captureTargets].reverse(),
@@ -317,7 +329,7 @@ describe("gating d'état de session h2a", () => {
     const artefact = ownerGo(designSha256);
     const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession(state));
     await expect(
-      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture" }, readEnvelope, readSession),
+      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
     ).resolves.toBeUndefined();
   });
 
@@ -328,7 +340,7 @@ describe("gating d'état de session h2a", () => {
       const artefact = ownerGo(designSha256);
       const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession(state));
       await expect(
-        assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture" }, readEnvelope, readSession),
+        assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
       ).rejects.toThrow(/session h2a geo-cond divergente ou morte/);
     },
   );
@@ -339,7 +351,85 @@ describe("gating d'état de session h2a", () => {
     const session = { sessionId: SESSION_ID, instance: "someone:else", state: "live" };
     const { readEnvelope, readSession } = readers(storeEnvelope(artefact), session);
     await expect(
-      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture" }, readEnvelope, readSession),
+      assertObjectStoreCampaignOwnerGo(artefact, { designSha256, scope: "capture", bucket: TEST_BUCKET }, readEnvelope, readSession),
     ).rejects.toThrow(/session h2a geo-cond divergente/);
+  });
+});
+
+describe("§6 allowlist préprod + coherence owner-go↔write (bucket)", () => {
+  it("accepte le bucket PRÉPROD (∈ allowlist fermée) de bout en bout", async () => {
+    const plan = capturePlan(PREPROD_BUCKET);
+    const designSha256 = campaignDesignSha256(plan);
+    const artefact = ownerGo(designSha256, "capture", PREPROD_BUCKET);
+    const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession("live"));
+    await expect(
+      assertObjectStoreCampaignOwnerGo(
+        artefact,
+        { designSha256, scope: "capture", bucket: PREPROD_BUCKET },
+        readEnvelope,
+        readSession,
+      ),
+    ).resolves.toBeUndefined();
+  });
+
+  it("refuse un bucket HORS allowlist (fail-closed) — au plan", () => {
+    expect(() =>
+      buildCampaignExecutionPlan({
+        scope: "capture",
+        bucket: "sentropic-geo-ROGUE" as CampaignBucket,
+        runnerGitSha: RUNNER_SHA,
+        method: { lane: "pv" },
+        targets: [],
+      }),
+    ).toThrow(/allowlist fermée/);
+  });
+
+  it("refuse un expected.bucket hors allowlist (fail-closed) — au gate", async () => {
+    const designSha256 = campaignDesignSha256(capturePlan());
+    const artefact = ownerGo(designSha256);
+    const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession("live"));
+    await expect(
+      assertObjectStoreCampaignOwnerGo(
+        artefact,
+        { designSha256, scope: "capture", bucket: "sentropic-geo-ROGUE" as CampaignBucket },
+        readEnvelope,
+        readSession,
+      ),
+    ).rejects.toThrow(/expected\.bucket doit être ∈ allowlist/);
+  });
+
+  it("COHERENCE belt-check : owner-go bucket ≠ bucket réel s3Target du runner → REJETÉ", async () => {
+    // Le runner cible PRÉPROD (s3Target=preprod, expected.bucket=preprod) ; l'owner-go DÉCLARE prod
+    // (bucket field). Même avec un design_sha256 qui matcherait, le belt-check §6 exige
+    // owner-go.bucket === expected.bucket (garde-fou de régression par-dessus le binding).
+    const designSha256 = campaignDesignSha256(capturePlan(PREPROD_BUCKET));
+    const artefact = ownerGo(designSha256, "capture", TEST_BUCKET); // TEST_BUCKET = prod, ≠ preprod
+    const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession("live"));
+    await expect(
+      assertObjectStoreCampaignOwnerGo(
+        artefact,
+        { designSha256, scope: "capture", bucket: PREPROD_BUCKET },
+        readEnvelope,
+        readSession,
+      ),
+    ).rejects.toThrow(/owner-go↔write divergent/);
+  });
+
+  it("COHERENCE design_sha256 : un go signé sur un plan PROD ne matche pas un runner PRÉPROD → REJETÉ", async () => {
+    // Le bucket est DANS la préimage de design_sha256 → un plan prod et un plan préprod ont des sha DIFFÉRENTS.
+    const prodSha = campaignDesignSha256(capturePlan(TEST_BUCKET));
+    const preprodSha = campaignDesignSha256(capturePlan(PREPROD_BUCKET));
+    expect(prodSha).not.toBe(preprodSha);
+    // owner-go signé sur le plan PROD ; le runner PRÉPROD recalcule preprodSha ≠ prodSha → mismatch binding.
+    const artefact = ownerGo(prodSha, "capture", TEST_BUCKET);
+    const { readEnvelope, readSession } = readers(storeEnvelope(artefact), storeSession("live"));
+    await expect(
+      assertObjectStoreCampaignOwnerGo(
+        artefact,
+        { designSha256: preprodSha, scope: "capture", bucket: PREPROD_BUCKET },
+        readEnvelope,
+        readSession,
+      ),
+    ).rejects.toThrow(/design_sha256 ne vise pas/);
   });
 });
