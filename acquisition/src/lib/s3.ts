@@ -54,7 +54,22 @@ export function s3Target(): S3Target {
   return cachedTarget;
 }
 
-export const BUCKET = s3Target().bucket;
+/**
+ * Bucket cible — avec override d'environnement `S3_BUCKET` (§6, capture-rule). UNE seule
+ * image capture sert prod ET préprod : `prod` = défaut baké dans `s3-target.json`
+ * (`s3Target().bucket`) ; `préprod` = le déploiement pose `S3_BUCKET=sentropic-geo-preprod`
+ * dans l'env du pod → override. Le runner INJECTE le bucket gated (config-driven) dans le
+ * `S3_BUCKET` du pod (`k8s-capture-run.ts` `jobManifest`), donc le pod écrit là où le gate a
+ * validé : même source côté gate ET côté write, zéro divergence. Une valeur vide/blanche
+ * n'override pas (retombe sur le défaut baké).
+ */
+export function resolveBucket(env: Record<string, string | undefined> = process.env): string {
+  const override = env["S3_BUCKET"]?.trim();
+  return override ? override : s3Target().bucket;
+}
+
+/** Bucket cible par défaut des helpers S3 (override `S3_BUCKET`, voir {@link resolveBucket}). */
+export const BUCKET = resolveBucket();
 
 /**
  * Scaleway Object Storage rejects the AWS SDK's unknown-length `aws-chunked`
