@@ -1,0 +1,51 @@
+{
+  "contract": "reglement-gap2-capture-worklist/v1",
+  "as_of": "2026-08-30",
+  "note": "Gap-2 CAPTURE-BOUND : URLs de PV MINUTÉS à CAPTURER en -pocs (op cluster k8s, OWNER-GATED — stacke derrière le fork §6 + un owner-go dédié ; geo-cond séquence). extraction IDENTIFIE l'url + la résolution votée (analyse READ-ONLY légitime) ; la PROVENANCE d'émission vient de la capture -pocs (sidecar §6), JAMAIS du fetch local (principe fondateur : la capture tourne cluster→-pocs ; les agents ne captent pas). Une fois une url CAPTURÉE en -pocs → je promeus les events tier-DÉCIDÉ (ODJ agenda→décidé) dans la fixture scaling 0a5ebc4a, provenance = manifeste -pocs + resolution_span ci-dessous, re-validés + re-committés.",
+  "provenance_rule": "Le fetch local d'extraction = analyse read-only (dérive url/span/reg#), JAMAIS une provenance §6. Les champs d'émission (provenance.doc_sha256, retrieved_at, source_ref) = le manifeste de capture -pocs APRÈS ingestion cluster. Refuser le fetch local en provenance = ne pas launder « existe uniquement sur une machine » en preuve de production.",
+  "agenda_tier_no_capture": "Les events AVIS = agenda-tier-suffisant : PAS dans cette worklist. Ils promeuvent SANS capture PV, via la provenance -pocs de l'ODJ existante + decision_state='agenda', dès que geo-archi fige le champ (post-§9). Candidats avis (à confirmer par extraction en lisant les spans ODJ) : coteau avis-RO, nantes rec3-avis, sainte-angele 600-avis, saint-raymond ru30-avis, sjsr 2445-avis, dorval PPU-avis.",
+  "pending": "extraction chasse les autres DÉCIDÉ-utile (adoptions + dérogations, où le vote = la décision) au fil de l'eau ; j'append ici à réception. Sites hétérogènes (coteau : PV hors index, navigation manuelle). PV non encore publiés (ex. sjsr 26-mai 2434/2445) → agenda-tier en attendant leur publication.",
+  "capture_worklist": [
+    {
+      "minuted_pv_url": "https://sjsr.ca/wp-content/uploads/2026/03/20260224-proces-verbal.pdf",
+      "muni": "saint-jean-sur-richelieu",
+      "capture_status": "pending-cluster-capture-pocs",
+      "seance_date_iso": "2026-02-24",
+      "unblocks_events": [
+        {
+          "node_id": "event-saint-jean-sur-richelieu-2402-adoption",
+          "target_document_type": "adoption",
+          "target_type_instrument_declared": "Règlement de zonage",
+          "reglement_number": ["2402"],
+          "resolution_span": "CM-20260224-17.1 Adoption du Règlement no 2402 CONSIDÉRANT qu’un projet du Règlement no 2402 a été déposé lors d’une séance antérieure du conseil municipal; CONSIDÉRANT que monsieur le conseiller Daniel Hacherel a procédé aux mentions requises par l’article 356 de la Loi sur les cités et villes du Québec; PROPOSÉ PAR : monsieur le conseiller Daniel Hacherel APPUYÉ PAR : monsieur le conseiller Yvon Godin Que soit adopté, comme il a été soumis, le Règlement no 2402 intitulé « Règlement modifiant le Règlement de zonage no 0651, et ses amendements, afin de modifier les normes de parements extérieurs des murs, de soustraire la zone à l’indice de canopée minimal et d’ajouter la catégorie de zone « J »"
+        },
+        {
+          "node_id": "event-saint-jean-sur-richelieu-2407-adoption",
+          "target_document_type": "adoption",
+          "target_type_instrument_declared": "Règlement de zonage",
+          "reglement_number": ["2407"],
+          "resolution_span": "CM-20260224-17.4 Adoption du Règlement no 2407 CONSIDÉRANT qu’un projet du Règlement no 2407 a été déposé lors d’une séance antérieure du conseil municipal; CONSIDÉRANT que monsieur le conseiller Bruno Santerre a procédé aux mentions requises par l’article 356 de la Loi sur les cités et villes du Québec; PROPOSÉ PAR : monsieur le conseiller Bruno Santerre APPUYÉ PAR : monsieur le conseiller Ian Langlois Que soit adopté, comme il a été soumis, le Règlement no 2407 intitulé « Règlement modifiant le Règlement de zonage n° 0651, et ses amendements, dans le but de corriger une omission relativement à l’autorisation des unités d’habitation accessoires (UHA) détachées dans la zone agricole permanente » — ADOPTÉE À L'UNANIMITÉ"
+        }
+      ]
+    },
+    {
+      "minuted_pv_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/p.v.-09-02-2026.pdf",
+      "muni": "saint-raymond",
+      "capture_status": "pending-cluster-capture-pocs",
+      "seance_date_iso": "2026-02-09",
+      "unblocks_events": [
+        { "node_id": "event-saint-raymond-rezonage-hc13-2026-02-09", "target_document_type": "projet_reglement", "target_type_instrument_declared": "Règlement de zonage", "reglement_number": ["921-26"], "resolution_span": "26-02-059 ADOPTION DU PREMIER PROJET DE RÈGLEMENT 921-26 RÈGLEMENT MODIFIANT LE RÈGLEMENT DE ZONAGE 583-15 AFIN DE CRÉER LA ZONE RÉSIDENTIELLE DE HAUTE DENSITÉ HC-13 (SECTEUR CÔTE JOYEUSE) Attendu qu’une copie du premier projet de règlement 921-26 a été remise aux membres du conseil au plus tard 72 heures avant l’heure fixée pour le début de la présente séance; Attendu la présentation de ce projet de règlement par l’urbaniste de la Ville, Mme Célia Solinas;" },
+        { "node_id": "event-saint-raymond-rezonage-hc15-2026-02-09", "target_document_type": "projet_reglement", "target_type_instrument_declared": "Règlement de zonage", "reglement_number": ["923-26"], "resolution_span": "26-02-063 ADOPTION DU PREMIER PROJET DE RÈGLEMENT 923-26 RÈGLEMENT MODIFIANT LE RÈGLEMENT DE ZONAGE 583-15 AFIN DE CRÉER LA ZONE RÉSIDENTIELLE DE HAUTE DENSITÉ HC-15 ET D’AGRANDIR LES ZONES C-15 ET P-8 (SECTEUR CÔTE JOYEUSE) Attendu qu’une copie du premier projet de règlement 923-26 a été remise aux membres du conseil au plus tard 72 heures avant l’heure fixée pour le début de la présente séance; Attendu la présentation de ce projet de règlement par l’urbaniste de la Ville, Mme Célia Solinas;" }
+      ]
+    },
+    {
+      "minuted_pv_url": "https://villesaintraymond.com/uploads/documents/pieces-jointes/p.v.-11-05-2026.pdf",
+      "muni": "saint-raymond",
+      "capture_status": "pending-cluster-capture-pocs",
+      "seance_date_iso": "2026-05-11",
+      "unblocks_events": [
+        { "node_id": "event-saint-raymond-rezonage-hb9-2026-05-11", "target_document_type": "adoption", "target_type_instrument_declared": "Règlement de zonage", "reglement_number": ["929-26"], "resolution_span": "26-05-190 ADOPTION DU RÈGLEMENT 929-26 RÈGLEMENT MODIFIANT LE RÈGLEMENT DE ZONAGE 583-15 AFIN D’AUTORISER L’USAGE RÉSIDENTIEL MULTIFAMILIAL JUSQU’À 6 LOGEMENTS DANS LA ZONE HB-9 Attendu qu’un premier projet du règlement 929-26 a été adopté lors de la séance tenue le 9 mars 2026, et que des copies de celui-ci ont été mises à la disposition du public suivant son adoption; Attendu qu’un avis de motion a été donné lors de cette même séance; Attendu la tenue d’une assemblée publique de consultation;" }
+      ]
+    }
+  ]
+}
