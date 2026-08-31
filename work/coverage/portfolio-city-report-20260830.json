@@ -1,0 +1,510 @@
+{
+  "contract": "portfolio-city-report/v1",
+  "generatedAt": "2026-08-31T01:07:43.595Z",
+  "reportDate": "2026-08-30",
+  "universe": 1106,
+  "execution": {
+    "mode": "local-cpu-only",
+    "network": false,
+    "s3": false,
+    "deployment": false,
+    "track_edits": false
+  },
+  "previousSnapshotDate": "20260810",
+  "kpis": [
+    {
+      "key": "zones",
+      "kpi": "Zones — complétion",
+      "precedent": "868 / 1 106 complete · 195 incomplete · 43 unknown · 0 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 868,
+        "incomplete": 193,
+        "unknown": 43,
+        "na": 2,
+        "denominator": 1104,
+        "status": "ok",
+        "display": "868 / 1 104 complete · 193 incomplete · 43 unknown · 2 N/A",
+        "extra": {
+          "unzonable_na_proven_applied": 2,
+          "source": "work/coverage/zones-unzonable-absence-attestation-20260830.json",
+          "base_state_source": "work/coverage/completion-1-zones-matrix-20260723.json",
+          "slugs": [
+            {
+              "slug": "caniapiscau",
+              "designation": "Territoire non organisé",
+              "from_state": "incomplete"
+            },
+            {
+              "slug": "eeyou-istchee-james-bay",
+              "designation": "Gouvernement régional",
+              "from_state": "incomplete"
+            }
+          ]
+        },
+        "partitionTotal": 1106
+      },
+      "delta": "-2 incomplete · +2 N/A",
+      "cible": "1 104 (2 N/A explicites)"
+    },
+    {
+      "key": "coherence_lot_zone",
+      "kpi": "Zones — cohérence lot-zone",
+      "precedent": "718 / 1 106 complete · 123 incomplete · 265 unknown · 0 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 817,
+        "incomplete": 28,
+        "unknown": 261,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "817 / 1 106 complete · 28 incomplete · 261 unknown · 0 N/A",
+        "extra": {
+          "source": "work/coverage/lot-zone-consistency-scale-20260824.json",
+          "audited_in_universe": 866,
+          "off_universe_rows": 0,
+          "complete_under_5pct": 817,
+          "incomplete_at_or_over_5pct": 28,
+          "inconclusive_zero_assigned": 21,
+          "not_auditable": 240,
+          "coverage_min": 553,
+          "weighted_mismatch_pct": 1.88,
+          "median_city_mismatch_pct": 1.18,
+          "p90_city_mismatch_pct": 2.64
+        },
+        "partitionTotal": 1106
+      },
+      "delta": "+99 complete · -95 incomplete · -4 unknown",
+      "cible": "1 106"
+    },
+    {
+      "key": "normes",
+      "kpi": "Normes — complétion",
+      "precedent": "501 / 1 106 complete · 290 incomplete · 315 unknown · 0 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 501,
+        "incomplete": 290,
+        "unknown": 315,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "501 / 1 106 complete · 290 incomplete · 315 unknown · 0 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106"
+    },
+    {
+      "key": "pv",
+      "kpi": "PV — complétion",
+      "precedent": "1 062 / 1 106 complete · 1 incomplete · 41 unknown · 2 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 1062,
+        "incomplete": 1,
+        "unknown": 41,
+        "na": 2,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "1 062 / 1 106 complete · 1 incomplete · 41 unknown · 2 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106"
+    },
+    {
+      "key": "reglement_declared",
+      "kpi": "Règlement — complétion déclarée",
+      "precedent": "895 / 1 106 complete · 46 incomplete · 165 unknown · 0 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 895,
+        "incomplete": 46,
+        "unknown": 165,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "895 / 1 106 complete · 46 incomplete · 165 unknown · 0 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106",
+      "definitionChangedAsOf": "20260803"
+    },
+    {
+      "key": "reglement_proven",
+      "kpi": "Règlement — preuve v2",
+      "precedent": "541 / 1 106 complete · 68 incomplete · 497 unknown · 0 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 541,
+        "incomplete": 68,
+        "unknown": 497,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "541 / 1 106 complete · 68 incomplete · 497 unknown · 0 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106",
+      "definitionChangedAsOf": "20260803"
+    },
+    {
+      "key": "usage_dominant",
+      "kpi": "Usage dominant — complétion",
+      "precedent": "710 / 1 106 complete · 179 incomplete · 217 unknown · 0 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 710,
+        "incomplete": 179,
+        "unknown": 217,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "710 / 1 106 complete · 179 incomplete · 217 unknown · 0 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106"
+    },
+    {
+      "key": "effet_densifiant",
+      "kpi": "Effet densifiant — complétion",
+      "precedent": "7 / 1 106 complete · 96 incomplete · 1 003 unknown · 0 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 7,
+        "incomplete": 96,
+        "unknown": 1003,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "7 / 1 106 complete · 96 incomplete · 1 003 unknown · 0 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106"
+    },
+    {
+      "key": "prov_jointure",
+      "kpi": "Provenance zones — jointure exacte",
+      "precedent": "870 / 1 106 jointures exactes · 236 sans jointure",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 870,
+        "incomplete": 0,
+        "unknown": 236,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "870 / 1 106 jointures exactes · 236 sans jointure",
+        "extra": {
+          "jointures_exactes": 870,
+          "sans_jointure": 236
+        },
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106"
+    },
+    {
+      "key": "prov_qualite",
+      "kpi": "Provenance zones — qualité retained",
+      "precedent": "584 acceptable · 168 v2 · 43 candidate · 74 orphan · 237 unknown",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 752,
+        "incomplete": 117,
+        "unknown": 237,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "584 acceptable · 168 v2 · 43 candidate · 74 orphan · 237 unknown",
+        "extra": {
+          "acceptable": 584,
+          "candidate": 43,
+          "orphan": 74,
+          "unknown": 237,
+          "v2": 168
+        },
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106"
+    },
+    {
+      "key": "prov_v2",
+      "kpi": "Provenance zones — preuve v2 exacte",
+      "precedent": "168 / 1 106 v2 · preuve capture+CAS vérifiée uniquement",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 168,
+        "incomplete": 0,
+        "unknown": 938,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "168 / 1 106 v2 · preuve capture+CAS vérifiée uniquement",
+        "extra": {
+          "v2": 168
+        },
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106"
+    },
+    {
+      "key": "prov_url_servie",
+      "kpi": "Provenance zones — URL source servie",
+      "precedent": "47 / 167 collections avec zone_source_url (http) · 62 stamped-null · 1 unstamped · 57 read-error",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 47,
+        "incomplete": 62,
+        "unknown": 58,
+        "na": 0,
+        "denominator": 167,
+        "status": "ok",
+        "display": "47 / 167 collections avec zone_source_url (http) · 62 stamped-null · 1 unstamped · 57 read-error",
+        "extra": {
+          "stamped": 47,
+          "stamped_null": 62,
+          "unstamped": 1,
+          "read_error": 57
+        },
+        "unit": "collection",
+        "partitionTotal": 167
+      },
+      "delta": "0",
+      "cible": "167"
+    },
+    {
+      "key": "immo_lot_zone",
+      "kpi": "Immo — assignation lot-zone",
+      "precedent": "347 / 1 100 complete · 543 incomplete · 210 unknown · 6 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 347,
+        "incomplete": 543,
+        "unknown": 210,
+        "na": 6,
+        "denominator": 1100,
+        "status": "ok",
+        "display": "347 / 1 100 complete · 543 incomplete · 210 unknown · 6 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 100 (6 N/A explicites)"
+    },
+    {
+      "key": "immo_normes_pliees",
+      "kpi": "Immo — normes pliées",
+      "precedent": "52 / 1 100 complete · 815 incomplete · 233 unknown · 6 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 52,
+        "incomplete": 815,
+        "unknown": 233,
+        "na": 6,
+        "denominator": 1100,
+        "status": "ok",
+        "display": "52 / 1 100 complete · 815 incomplete · 233 unknown · 6 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 100 (6 N/A explicites)"
+    },
+    {
+      "key": "immo_lots_servis",
+      "kpi": "Immo champs — lots servis",
+      "precedent": "873 / 1 106 complete · 233 incomplete · 0 unknown · 0 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 873,
+        "incomplete": 233,
+        "unknown": 0,
+        "na": 0,
+        "denominator": 1106,
+        "status": "ok",
+        "display": "873 / 1 106 complete · 233 incomplete · 0 unknown · 0 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 106"
+    },
+    {
+      "key": "immo_surface",
+      "kpi": "Immo champs — surface m²",
+      "precedent": "867 / 1 100 complete · 0 incomplete · 233 unknown · 6 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 867,
+        "incomplete": 0,
+        "unknown": 233,
+        "na": 6,
+        "denominator": 1100,
+        "status": "ok",
+        "display": "867 / 1 100 complete · 0 incomplete · 233 unknown · 6 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 100 (6 N/A explicites)"
+    },
+    {
+      "key": "immo_code_postal",
+      "kpi": "Immo champs — code postal",
+      "precedent": "866 / 1 100 complete · 1 incomplete · 233 unknown · 6 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 866,
+        "incomplete": 1,
+        "unknown": 233,
+        "na": 6,
+        "denominator": 1100,
+        "status": "ok",
+        "display": "866 / 1 100 complete · 1 incomplete · 233 unknown · 6 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 100 (6 N/A explicites)"
+    },
+    {
+      "key": "immo_adresse",
+      "kpi": "Immo champs — adresse civique",
+      "precedent": "803 / 1 100 complete · 0 incomplete · 297 unknown · 6 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 803,
+        "incomplete": 0,
+        "unknown": 297,
+        "na": 6,
+        "denominator": 1100,
+        "status": "ok",
+        "display": "803 / 1 100 complete · 0 incomplete · 297 unknown · 6 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "1 100 (6 N/A explicites)"
+    },
+    {
+      "key": "tod_applicabilite",
+      "kpi": "Immo champs — applicabilité TOD",
+      "precedent": "39 / 39 complete · 0 incomplete · 0 unknown · 1 067 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 39,
+        "incomplete": 0,
+        "unknown": 0,
+        "na": 1067,
+        "denominator": 39,
+        "status": "ok",
+        "display": "39 / 39 complete · 0 incomplete · 0 unknown · 1 067 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "39 (1 067 N/A explicites)"
+    },
+    {
+      "key": "tod_completion",
+      "kpi": "Immo champs — complétion TOD",
+      "precedent": "4 / 39 complete · 28 incomplete · 7 unknown · 1 067 N/A",
+      "precedentDate": "20260810",
+      "actuel": {
+        "complete": 4,
+        "incomplete": 28,
+        "unknown": 7,
+        "na": 1067,
+        "denominator": 39,
+        "status": "ok",
+        "display": "4 / 39 complete · 28 incomplete · 7 unknown · 1 067 N/A",
+        "partitionTotal": 1106
+      },
+      "delta": "0",
+      "cible": "39 (1 067 N/A explicites)"
+    }
+  ],
+  "sources": [
+    {
+      "path": "work/coverage/completion-1-zones-normes-summary-20260723.json",
+      "asOf": "2026-07-23",
+      "sha256": "sha256:fde3a7aab70ed4d38119935aa3e0f740af7b6b41a18bf38c60167fe578bf515f",
+      "present": true
+    },
+    {
+      "path": "work/coverage/completion-1-zones-matrix-20260723.json",
+      "asOf": "2026-07-23",
+      "sha256": "sha256:518e7a7eb1b1626045fd5dc1b9ae0ac23745678752f82ef2e893901ec3488f22",
+      "present": true
+    },
+    {
+      "path": "work/coverage/pv-completion-city-audit.json",
+      "asOf": "2026-06-23T18:41:02.519Z",
+      "sha256": "sha256:0352d5ffb08309ae0516f370c29980ed93f2adbe1459c2825eccc24319a15e25",
+      "present": true
+    },
+    {
+      "path": "work/coverage/completion-regdens-20260808.json",
+      "asOf": "règl. déclarée 2026-08-02 ; règl. preuve v2 2026-08-07T15:37:55.516Z ; usage 2026-07-20T00:11:11.869Z ; effet 2026-07-27",
+      "sha256": "sha256:1e2ad84f68d6a36d5f670490afc9186ff15ca882d0240618e091b22e438054bb",
+      "present": true
+    },
+    {
+      "path": "work/coverage/zone-provenance-quality-matrix-20260810T013417Z-ad1126284740439d.json",
+      "asOf": "2026-08-10",
+      "sha256": "sha256:ad1126284740439db1b5fa36cca1ba01985fefc18d4dea657655f306ea241969",
+      "present": true
+    },
+    {
+      "path": "work/coverage/immo-lot-zone-assignment-matrix-20260810.json",
+      "asOf": "canonical_city_universe: 2026-08-10T08:21:11.844Z ; zero_lot_NA_crosscheck: 2026-07-19T19:07:21.413Z",
+      "sha256": "sha256:cf6205967b3961b42bf1ea6864f9f16d269e6f469ba7bc33b2a002dc46159a10",
+      "present": true
+    },
+    {
+      "path": "work/coverage/immo-folded-normes-city-matrix-20260810.json",
+      "asOf": "couverture 2026-08-10T01:56:41.264Z ; snapshot Immo 2026-07-19T19:07:21.413Z",
+      "sha256": "sha256:51c8e67f8b335c88650595792b1ca9088c81a1a0e6794eee485b8cf3e737dd54",
+      "present": true
+    },
+    {
+      "path": "work/immo-field-completion-matrices/immo-field-completion-matrix.json",
+      "asOf": "non daté dans l’artefact (entrées: coverage-matrix, immo-lots)",
+      "sha256": "sha256:798e4ad82942158727b083a474298f65ce278355ad98e0ae747e2c67994665ef",
+      "present": true
+    },
+    {
+      "path": "work/coverage/zone-source-readback-audit-20260810.json",
+      "asOf": "2026-08-10T01:35:03.601Z",
+      "sha256": "sha256:68799d0696c7e9ad222567ccb2f17b220c80f55465d0bd1c114b6d09d023780e",
+      "present": true
+    },
+    {
+      "path": "work/coverage/lot-zone-consistency-scale-20260824.json",
+      "asOf": "2026-08-24T02:30:36.116Z ; listing S3 2026-08-24T02:08:28.089Z",
+      "sha256": "sha256:8391c1411903b5ca53d4bc1fff6adae717d4e139dc7f647f169788f27929a620",
+      "present": true
+    },
+    {
+      "path": "work/coverage/lot-zone-consistency.json",
+      "asOf": "AUDIT",
+      "sha256": "sha256:8c28487ec1b7f84e9e79a21673942b24e6dab756286534005619588e072419fc",
+      "present": true
+    },
+    {
+      "path": "work/coverage/zones-unzonable-absence-attestation-20260830.json",
+      "asOf": "2026-08-30T23:52:19.215Z",
+      "sha256": "sha256:c82efce7eeaffc0bf78f4dc660dcc684b47304d553f0b548e84da0b3fd7c87ce",
+      "present": true
+    },
+    {
+      "path": "work/coverage/coverage-matrix.json",
+      "asOf": "2026-08-10T08:36:28.730Z",
+      "sha256": "sha256:e886e452ca106d1c2b3e6d9558d0943d42257fecb0a118261fe7848d2a6e999e",
+      "present": true
+    }
+  ],
+  "warnings": []
+}
