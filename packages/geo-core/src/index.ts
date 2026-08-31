@@ -6,7 +6,7 @@
  * contract, and the normalized acquisition output type.
  */
 
-export const VERSION = "0.1.0";
+export const VERSION = "0.6.0";
 
 export * from "./geojson.js";
 export * from "./crs.js";
@@ -15,3 +15,4 @@ export * from "./license.js";
 export * from "./source-manifest.js";
 export * from "./feature.js";
 export * from "./normalize.js";
+export * from "./viewport.js";
