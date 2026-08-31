@@ -70,8 +70,8 @@ Contraintes d'exécution : **déterministe**, **0 réseau**, **0 S3**, **0 dépl
 
 | KPI | Source | Champ |
 |---|---|---|
-| Zones — complétion | `work/coverage/completion-1-zones-normes-summary-20260723.json` | `lanes.zones.state_counts` |
-| Normes — complétion | idem | `lanes.normes.state_counts` |
+| Zones — complétion | `work/coverage/completion-1-zones-normes-summary-20260723.json` ; **overlay N/A** : `work/coverage/zones-unzonable-absence-attestation-*.json` (le plus récent par nom) + état de base per-muni via `deliverables.zonesMatrix` | `lanes.zones.state_counts` + reclassement N/A des `N-A-PROVEN` (voir « Overlay N/A un-zonable » ci-dessous) |
+| Normes — complétion | idem (`completion-1-zones-normes-summary-20260723.json`) | `lanes.normes.state_counts` |
 | PV — complétion | `work/coverage/pv-completion-city-audit.json` | `summary.states` (denom = 1 106) |
 | Règlement — complétion déclarée | `work/coverage/completion-regdens-20260802.json` | `totals.reglement_declared` |
 | Règlement — preuve v2 | idem | `totals.reglement_proven` |
@@ -119,6 +119,41 @@ crédit de complétion** (cf. `l-assomption`, `l-epiphanie`, `sainte-christine-d
 6. **Contexte lots, séparé du KPI ville** : le mismatch pondéré par les lots et le volume de
    lots servis **sans `code_zone`** sont rapportés dans le bloc de notes (comme « normes
    pliées »), **jamais fondus** dans la complétion-ville.
+
+#### Overlay N/A « un-zonable prouvé » du KPI Zones
+
+Une municipalité **prouvée un-zonable** — désignation autoritative MAMH non-municipale-locale
+(`Territoire non organisé` / `Gouvernement régional`), incapable d'un zonage municipal local —
+est comptée **N/A** dans le KPI Zones. La preuve vient de l'attestation d'absence committée
+`work/coverage/zones-unzonable-absence-attestation-*.json` (la plus récente par nom),
+classification `N-A-PROVEN` uniquement. Rien n'est deviné ; sans attestation, aucun N/A n'est
+ajouté (KPI de base inchangé).
+
+Règles NON NÉGOCIABLES de l'overlay :
+
+1. **Source committée seule.** Seules les lignes `classification = "N-A-PROVEN"` de l'attestation
+   déclenchent un N/A. Une `UNKNOWN-source-gap` reste `unknown` (une absence de grille non prouvée
+   n'est jamais N/A) — `unknown` n'est toujours JAMAIS compté `complete`.
+2. **Gate univers canonique.** Chaque slug est confronté à l'ensemble des 1 106 clés `cities`
+   (`coverage-matrix.json`) ; un slug hors-univers est ignoré (avertissement), aucun N/A.
+3. **Anti-contradiction.** Un slug `N-A-PROVEN` dont la grille `qc-zonage` est SERVIE (`served_qczonage = true`)
+   est refusé (avertissement) : une revendication d'inzonabilité contredite par une grille servie ne
+   reclasse jamais en silence.
+4. **Additif et mesuré (measure > infer).** L'état de base de chaque slug est **lu** dans la matrice
+   zones per-muni (`deliverables.zonesMatrix`, verrouillée à la même passe que l'agrégat) ; la
+   municipalité est retirée du **seul bucket qu'elle occupe réellement** (`complete`/`incomplete`/`unknown`)
+   et ajoutée à `N/A`. Le bucket cible n'est jamais supposé. Sans matrice per-muni, l'overlay est
+   **sauté** (aucune inférence).
+5. **Partition fermée, jamais négative.** `complete + incomplete + unknown + N/A = 1 106` ; le
+   dénominateur affiché vaut `1 106 − N/A`. Si un décrément dépasserait le compte de base d'un bucket,
+   l'overlay est **entièrement sauté** (avertissement) — jamais de bucket négatif ni de partition non fermée.
+6. **Traçabilité.** Le champ `actuel.extra` du KPI Zones porte `unzonable_na_proven_applied`, la source,
+   et la liste des slugs reclassés avec leur désignation MAMH verbatim et leur `from_state` ; une note
+   Markdown nomme les municipalités quand le compte est > 0.
+
+Au 2026-08-30, l'overlay reclasse **2** municipalités : `caniapiscau` (Territoire non organisé) et
+`eeyou-istchee-james-bay` (Gouvernement régional), toutes deux `incomplete` en base → `N/A`
+(dénominateur Zones `1 106 − 2 = 1 104`).
 
 ## Schéma JSON de sortie
 
