@@ -21,6 +21,8 @@ import {
   assertObjectStoreCampaignOwnerGo,
   buildCampaignExecutionPlan,
   campaignDesignSha256,
+  isCampaignBucket,
+  type CampaignBucket,
   type CampaignExecutionPlan,
   type H2aRecordReader,
   type ObjectStoreCampaignOwnerGo,
@@ -31,7 +33,7 @@ import {
   SUBMITTED_JOB_EXECUTION,
   type LaneGatedCaptureOwnerGoArtifact,
 } from "./lib/lane-gated-capture-authorization.js";
-import { putBytesIfAbsent, s3Client } from "./lib/s3.js";
+import { putBytesIfAbsent, s3Client, s3Target } from "./lib/s3.js";
 import { assertPinnedImage } from "./lib/capture-image-pin.js";
 
 interface Args {
@@ -403,6 +405,8 @@ function requireRunnerGitSha(args: Pick<Args, "gitSha">): string {
 export async function assertCaptureStoreAuthorized(input: {
   execution: "local" | "cluster";
   runnerGitSha: string;
+  /** Bucket RÉEL config-driven (= `s3Target().bucket`, lu UNE fois par l'appelant, ∈ allowlist). */
+  bucket: CampaignBucket;
   method: Record<string, unknown>;
   targets: readonly CaptureWorklistTarget[];
   deps: CaptureCampaignGateDeps;
@@ -416,6 +420,7 @@ export async function assertCaptureStoreAuthorized(input: {
   // (b) plan résolu réel (cibles exactes + code) → design_sha256 recalculé.
   const plan = buildCampaignExecutionPlan({
     scope: "capture",
+    bucket: input.bucket,
     runnerGitSha: input.runnerGitSha,
     method: input.method,
     targets: input.targets,
@@ -431,7 +436,7 @@ export async function assertCaptureStoreAuthorized(input: {
   const resolution = await resolve({ plan, designSha256 });
   await assertObjectStoreCampaignOwnerGo(
     resolution.ownerGo,
-    { designSha256, scope: "capture" },
+    { designSha256, scope: "capture", bucket: input.bucket },
     resolution.readEnvelope,
     resolution.readSession,
   );
@@ -462,6 +467,15 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   // cet assert est la ceinture par-dessus les bretelles. imagePinOptsForPath("store", …)
   // force allowUnpinned:false — le flag debug est structurellement ignoré ici.
   assertPinnedImage(args.image, imagePinOptsForPath("store", args.allowUnpinnedImage));
+  // Bucket RÉEL config-driven (s3Target), lu UNE fois → plan (→ design_sha256) ET la capture aval :
+  // même source, zéro divergence gate≠write (§6, fail-closed si le s3-target est hors allowlist).
+  const rawBucket = s3Target().bucket;
+  if (!isCampaignBucket(rawBucket)) {
+    throw new Error(
+      `capture store refusé: s3Target().bucket (${rawBucket}) hors de l'allowlist campagne — refus fail-closed`,
+    );
+  }
+  const bucket: CampaignBucket = rawBucket;
   if (args.laneGatedCapture) {
     const ownerGoArtifact = JSON.parse(
       readFileSync(args.ownerGoArtifactPath as string, "utf8"),
@@ -469,6 +483,7 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
     const gate = assertLaneGatedCaptureAuthorized({
       execution: SUBMITTED_JOB_EXECUTION,
       runnerGitSha: requireRunnerGitSha(args),
+      bucket,
       method: captureCampaignMethod(args),
       targets,
       ownerGoArtifact,
@@ -490,6 +505,7 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
     const gate = await assertCaptureStoreAuthorized({
       execution: SUBMITTED_JOB_EXECUTION,
       runnerGitSha: requireRunnerGitSha(args),
+      bucket,
       method: captureCampaignMethod(args),
       targets,
       deps,
