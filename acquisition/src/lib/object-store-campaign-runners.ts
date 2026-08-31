@@ -20,12 +20,13 @@ import { createHash } from "node:crypto";
 
 import type { S3Client } from "@aws-sdk/client-s3";
 
-import { putBytesIfAbsentOrEqual, rekeyObjectIfAbsentOrEqual } from "./s3.js";
+import { putBytesIfAbsentOrEqual, rekeyObjectIfAbsentOrEqual, s3Target } from "./s3.js";
 import {
   assertObjectStoreCampaignOwnerGo,
   buildCampaignExecutionPlan,
   campaignDesignSha256,
-  CAMPAIGN_BUCKET,
+  isCampaignBucket,
+  type CampaignBucket,
   type CampaignExecutionPlan,
   type H2aRecordReader,
   type ObjectStoreCampaignOwnerGo,
@@ -34,6 +35,23 @@ import {
 
 function nonEmpty(value: unknown): value is string {
   return typeof value === "string" && value.trim().length > 0;
+}
+
+/**
+ * Lit le bucket RÉELLEMENT ciblé — `s3Target().bucket` (config-driven, k8s ns↔bucket) —
+ * UNE seule fois par run, et le valide ∈ allowlist campagne (fail-closed : un s3-target
+ * hors-liste, ex. bucket mal configuré, REFUSE le run). La MÊME valeur est ensuite utilisée
+ * pour le plan (→ design_sha256, → gate) ET le write : gate + write = même source, zéro
+ * divergence (§6, évite un TOCTOU si la config bougeait entre 2 reads).
+ */
+function resolveCampaignBucket(): CampaignBucket {
+  const bucket = s3Target().bucket;
+  if (!isCampaignBucket(bucket)) {
+    throw new Error(
+      `campaign runner: s3Target().bucket (${bucket}) hors de l'allowlist campagne — refus fail-closed`,
+    );
+  }
+  return bucket;
 }
 
 function bytesOf(body: Buffer | Uint8Array | string): Buffer {
@@ -100,11 +118,13 @@ function assertRekeyTargets(targets: readonly RekeyTarget[]): void {
 /** Plan résolu re-key : la préimage exacte de `design_sha256` (cibles triées par la gate). */
 export function buildRekeyPlan(
   runnerGitSha: string,
+  bucket: CampaignBucket,
   targets: readonly RekeyTarget[],
 ): CampaignExecutionPlan {
   assertRekeyTargets(targets);
   return buildCampaignExecutionPlan({
     scope: "write-rekey",
+    bucket,
     runnerGitSha,
     method: { kind: "rekey" },
     targets: targets.map((t) => ({ src_key: t.src_key, dest_key: t.dest_key })),
@@ -121,12 +141,14 @@ export function buildRekeyPlan(
  * DESTRUCTIVE hors campagne, owner-gated séparément, jamais sous `write-rekey`.
  */
 export async function runRekeyCampaign(input: RekeyCampaignInput): Promise<RekeyCampaignResult> {
-  const plan = buildRekeyPlan(input.runnerGitSha, input.targets);
+  // Bucket RÉEL config-driven (s3Target), lu UNE fois → plan (→ design_sha256) ET write : même source.
+  const bucket = resolveCampaignBucket();
+  const plan = buildRekeyPlan(input.runnerGitSha, bucket, input.targets);
   const designSha256 = campaignDesignSha256(plan);
   // GATE PAR CONSTRUCTION, AVANT TOUTE ÉCRITURE.
   await assertObjectStoreCampaignOwnerGo(
     input.ownerGo,
-    { designSha256, scope: "write-rekey" },
+    { designSha256, scope: "write-rekey", bucket },
     input.readEnvelope,
     input.readSession,
   );
@@ -141,7 +163,7 @@ export async function runRekeyCampaign(input: RekeyCampaignInput): Promise<Rekey
       input.s3,
       target.src_key,
       target.dest_key,
-      CAMPAIGN_BUCKET,
+      bucket,
     );
     copied.push({ src_key: target.src_key, dest_key: target.dest_key, outcome });
   }
@@ -198,12 +220,14 @@ function toLegacyPlanTargets(targets: readonly LegacyMergeTarget[]): LegacyMerge
 /** Plan résolu legacy-merge : la préimage exacte de `design_sha256`. */
 export function buildLegacyMergePlan(
   runnerGitSha: string,
+  bucket: CampaignBucket,
   tag: string,
   targets: readonly LegacyMergeTarget[],
 ): CampaignExecutionPlan {
   if (!nonEmpty(tag)) throw new Error("campaign legacy-merge: tag méthode requis");
   return buildCampaignExecutionPlan({
     scope: "write-legacy-merge",
+    bucket,
     runnerGitSha,
     method: { kind: "legacy-merge", tag },
     targets: toLegacyPlanTargets(targets),
@@ -221,12 +245,14 @@ export function buildLegacyMergePlan(
 export async function runLegacyMergeCampaign(
   input: LegacyMergeCampaignInput,
 ): Promise<LegacyMergeCampaignResult> {
-  const plan = buildLegacyMergePlan(input.runnerGitSha, input.tag, input.targets);
+  // Bucket RÉEL config-driven (s3Target), lu UNE fois → plan (→ design_sha256) ET write : même source.
+  const bucket = resolveCampaignBucket();
+  const plan = buildLegacyMergePlan(input.runnerGitSha, bucket, input.tag, input.targets);
   const designSha256 = campaignDesignSha256(plan);
   // GATE PAR CONSTRUCTION, AVANT TOUTE ÉCRITURE.
   await assertObjectStoreCampaignOwnerGo(
     input.ownerGo,
-    { designSha256, scope: "write-legacy-merge" },
+    { designSha256, scope: "write-legacy-merge", bucket },
     input.readEnvelope,
     input.readSession,
   );
@@ -240,7 +266,7 @@ export async function runLegacyMergeCampaign(
       target.key,
       body,
       target.content_type ?? undefined,
-      CAMPAIGN_BUCKET,
+      bucket,
     );
     written.push({ key: target.key, outcome });
   }
