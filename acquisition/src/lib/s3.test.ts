@@ -7,8 +7,25 @@ import {
   putBytesIfAbsentOrEqual,
   putStream,
   rekeyObjectIfAbsentOrEqual,
+  resolveBucket,
+  s3Target,
   STREAM_PART_BYTES,
 } from "./s3.js";
+
+describe("resolveBucket — override S3_BUCKET (§6 : une image capture, 2 envs)", () => {
+  it("préprod : retourne l'override S3_BUCKET (trimé)", () => {
+    expect(resolveBucket({ S3_BUCKET: "  sentropic-geo-preprod  " })).toBe("sentropic-geo-preprod");
+  });
+
+  it("prod/défaut : sans S3_BUCKET, retombe sur le bucket baké (s3Target)", () => {
+    expect(resolveBucket({})).toBe(s3Target().bucket);
+  });
+
+  it("S3_BUCKET vide ou blanc n'override pas (retombe sur le défaut baké)", () => {
+    expect(resolveBucket({ S3_BUCKET: "" })).toBe(s3Target().bucket);
+    expect(resolveBucket({ S3_BUCKET: "   " })).toBe(s3Target().bucket);
+  });
+});
 
 describe("objectHead", () => {
   it("should return missing only for an explicit S3 404", async () => {
