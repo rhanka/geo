@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { captureImage, imagePinOptsForPath, parseArgs } from "./k8s-capture-run.js";
+import { captureImage, imagePinOptsForPath, jobManifest, parseArgs } from "./k8s-capture-run.js";
 import { assertPinnedImage, isPinnedCaptureImage } from "./lib/capture-image-pin.js";
 
 const BASE = [
@@ -64,5 +64,22 @@ describe("imagePinOptsForPath — escape-hatch is dry-run-only, storing path is 
     // flag=false → dry-run STILL requires pinned (hatch opens only on explicit flag)
     expect(imagePinOptsForPath("dry-run", false)).toEqual({ allowUnpinned: false });
     expect(() => assertPinnedImage(UNPINNED, imagePinOptsForPath("dry-run", false))).toThrow();
+  });
+});
+
+// §6 : le pod doit écrire là où le gate a validé. Le runner injecte le bucket gated
+// (config-driven) dans S3_BUCKET du pod → une image sert prod ET préprod (l'image bake prod).
+describe("jobManifest — injection S3_BUCKET (§6 : override du bucket baké dans l'image)", () => {
+  const args = parseArgs(BASE);
+  const key = "registry/capture-worklists/normes-x.json";
+
+  it("injecte S3_BUCKET = le bucket gated (préprod) dans l'env du pod", () => {
+    expect(jobManifest(args, key, "sentropic-geo-preprod")).toMatch(
+      /- name: S3_BUCKET\n\s+value: "sentropic-geo-preprod"/,
+    );
+  });
+
+  it("propage aussi le bucket prod quand c'est lui le bucket gated (même image, 2 envs)", () => {
+    expect(jobManifest(args, key, "sentropic-geo")).toMatch(/- name: S3_BUCKET\n\s+value: "sentropic-geo"/);
   });
 });
