@@ -238,7 +238,7 @@ function computeAsOf() {
     s.immoFolded.asOf = parts.join(' ; ') || null;
   }
   if (s.immoField.data) {
-    // L'artefact n'embarque aucune date propre ; on le signale honnêtement.
+    // L'artefact n'embarque aucune date propre ; on le signale explicitement.
     s.immoField.asOf = 'non daté dans l’artefact (entrées: coverage-matrix, immo-lots)';
   }
   if (s.readback.data) s.readback.asOf = s.readback.data.generatedAt || null;
