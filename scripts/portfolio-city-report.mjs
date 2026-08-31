@@ -7,8 +7,8 @@
 // et fige le format validé le 2026-07-23. Chaque KPI mesure la COMPLÉTION-VILLE
 // (unité = la ville) : `N / DENOM complete · X incomplete · Y unknown · Z N/A`,
 // `unknown` n'est JAMAIS compté complete, et chaque partition ferme.
-// Deux KPI "qualité/provenance" sont ajoutés pour rendre la ré-acquisition et le
-// stampage MESURABLES (URL de source servie ; cohérence lot-zone).
+// Trois KPI "qualité/provenance" sont ajoutés pour rendre la ré-acquisition et le
+// stampage MESURABLES (URL de source servie ; fraîcheur/millésime ; cohérence lot-zone).
 //
 // Précédent/Δ proviennent EXCLUSIVEMENT du diff avec le snapshot daté le plus
 // récent ANTÉRIEUR à aujourd'hui dans work/coverage/portfolio-report-history/.
@@ -155,6 +155,10 @@ const immoFoldedRel = discoverLatest(/^immo-folded-normes-city-matrix-.*\.json$/
 // autoritative MAMH : Territoire non organisé / Gouvernement régional). Alimente
 // l'overlay N/A additif du KPI Zones. Découverte déterministe par nom daté ; absent → pas d'overlay.
 const unzonableRel = discoverLatest(/^zones-unzonable-absence-attestation-.*\.json$/);
+// Inventaire committé de fraîcheur/millésime des zonages SIG servis (capture-freshness +
+// marqueurs de vintage périmé), le plus récent par nom daté. Alimente le KPI provenance
+// « fraîcheur/millésime ». Absent → KPI unknown (jamais inventé).
+const freshnessRel = discoverLatest(/^zones-sig-freshness-perime-inventory-.*\.json$/);
 
 const SRC = {
   // Sources datées : discoverLatest (nom daté = ordre déterministe), repli explicite
@@ -175,6 +179,11 @@ const SRC = {
   // MAMH autoritative). Utilisée uniquement pour un overlay N/A additif et gardé du KPI Zones.
   unzonableAttestation: unzonableRel
     ? loadFile(unzonableRel)
+    : { path: null, exists: false, sha256: null, data: null, asOf: null },
+  // Inventaire fraîcheur/millésime des zonages servis (capture-freshness + vintage périmé).
+  // Committé, rejouable ; alimente le KPI provenance « fraîcheur/millésime » (unité collection servie).
+  freshness: freshnessRel
+    ? loadFile(freshnessRel)
     : { path: null, exists: false, sha256: null, data: null, asOf: null },
   // Registre des villes canoniques (UTILISÉ UNIQUEMENT pour l'ensemble des slugs de l'univers 1 106,
   // jamais pour ses valeurs de couverture) : évite de créditer une ligne hors-univers.
@@ -240,6 +249,7 @@ function computeAsOf() {
   }
   if (s.lotZoneConsistency.data) s.lotZoneConsistency.asOf = s.lotZoneConsistency.data.generatedAt || null;
   if (s.unzonableAttestation.data) s.unzonableAttestation.asOf = s.unzonableAttestation.data.generated_at || s.unzonableAttestation.data.generatedAt || null;
+  if (s.freshness.data) s.freshness.asOf = s.freshness.data.generated_at_utc || s.freshness.data.generatedAt || null;
   if (s.zonesMatrix.data) s.zonesMatrix.asOf = s.zonesMatrix.data.analysis_as_of || null;
   if (s.cityRegistry.data) s.cityRegistry.asOf = s.cityRegistry.data.generatedAt || null;
 }
@@ -535,6 +545,101 @@ function kpiUrlSourceServie() {
   };
 }
 
+// AJOUT qualité #3 : fraîcheur / millésime de la provenance des zonages servis
+// (unité = collection zonage servie, dénominateur = total servi LU dans l'inventaire).
+// Source = inventaire committé `zones-sig-freshness-perime-inventory-*.json` (le plus récent
+// par nom), lu par-muni (measure > infer). Mapping AVEC PRÉCÉDENCE, par ligne muni :
+//   1. `incomplete` si le booléen de vintage périmé est vrai (servi mais millésime périmé /
+//      suspect → à re-sourcer), même capture-fraîche ;
+//   2. sinon `complete` si la classe de capture-freshness vaut `fresh` (capture-fraîche ET
+//      non périmée) ;
+//   3. sinon `unknown` si la classe vaut `source-gap` (fraîcheur non mesurable en lecture seule).
+// `na` = 0. Les comptes sont RECALCULÉS depuis les lignes muni, jamais codés en dur, puis
+// confrontés au bloc `summary` de l'inventaire (avertissement, jamais silencieux, si écart).
+// Garde de fermeture : la partition doit sommer au total servi (sinon avertissement + unknown).
+// Inventaire absent → unknown (jamais inventé).
+function kpiProvFraicheur() {
+  const d = SRC.freshness.data;
+  if (!d) return { ...unknownCell(String(UNIVERSE)), unit: 'collection' };
+  const rows = Array.isArray(d.munis) ? d.munis : null;
+  if (!rows) {
+    warn('fraîcheur zones: inventaire sans tableau `munis` par-muni — KPI → unknown (aucune inférence).');
+    return { ...unknownCell(String(UNIVERSE)), unit: 'collection' };
+  }
+  // partitionTotal = nombre de lignes muni réellement partitionnées (LU, jamais codé en dur).
+  const partitionTotal = rows.length;
+  const servedTotal = typeof d.served_total === 'number' ? d.served_total : null;
+  if (servedTotal !== null && servedTotal !== partitionTotal) {
+    warn(`fraîcheur zones: served_total (${servedTotal}) ≠ nombre de lignes muni (${partitionTotal}) — partition sur les lignes muni, écart signalé.`);
+  }
+
+  let complete = 0; // capture-fresh ET non périmé
+  let incomplete = 0; // vintage périmé / suspect (précédence)
+  let unknown = 0; // source-gap de fraîcheur (non périmé)
+  let leftover = 0; // classe ni fresh ni source-gap (ni périmé) — non attendu (stale=0)
+  const suspectSlugs = [];
+  for (const r of rows) {
+    const perime = !!(r && r.vintage_perime && r.vintage_perime.bool === true);
+    if (perime) {
+      incomplete++;
+      suspectSlugs.push({
+        slug: r.slug,
+        basis: (r.vintage_perime && r.vintage_perime.basis) || 'vintage-marker',
+        freshness_class: r.freshness_class || null,
+      });
+    } else if (r.freshness_class === 'fresh') {
+      complete++;
+    } else if (r.freshness_class === 'source-gap') {
+      unknown++;
+    } else {
+      leftover++;
+    }
+  }
+  suspectSlugs.sort((a, b) => String(a.slug).localeCompare(String(b.slug)));
+
+  // Garde de fermeture (fail-loud) : les 3 buckets rapportés doivent sommer au total servi.
+  if (leftover > 0 || complete + incomplete + unknown !== partitionTotal) {
+    warn(`fraîcheur zones: partition non fermée (${complete}+${incomplete}+${unknown}=${complete + incomplete + unknown}, hors-bucket=${leftover}, attendu ${partitionTotal}) — KPI → unknown.`);
+    return { ...unknownCell(String(partitionTotal)), unit: 'collection' };
+  }
+
+  // Cross-check défensif contre le bloc `summary` de l'inventaire (jamais silencieux).
+  const sum = d.summary || {};
+  const freshDeclared = sum.freshness && typeof sum.freshness.fresh === 'number' ? sum.freshness.fresh : null;
+  const gapDeclared = sum.freshness && typeof sum.freshness['source-gap'] === 'number' ? sum.freshness['source-gap'] : null;
+  const suspectDeclared = sum.vintage_perime && typeof sum.vintage_perime.marker_suspect === 'number' ? sum.vintage_perime.marker_suspect : null;
+  const measuredFresh = rows.filter((r) => r.freshness_class === 'fresh').length;
+  const measuredGap = rows.filter((r) => r.freshness_class === 'source-gap').length;
+  if (freshDeclared !== null && freshDeclared !== measuredFresh) {
+    warn(`fraîcheur zones: freshness.fresh recalculé (${measuredFresh}) ≠ summary (${freshDeclared}).`);
+  }
+  if (gapDeclared !== null && gapDeclared !== measuredGap) {
+    warn(`fraîcheur zones: freshness.source-gap recalculé (${measuredGap}) ≠ summary (${gapDeclared}).`);
+  }
+  if (suspectDeclared !== null && suspectDeclared !== incomplete) {
+    warn(`fraîcheur zones: vintage_perime.marker_suspect recalculé (${incomplete}) ≠ summary (${suspectDeclared}).`);
+  }
+
+  return {
+    status: 'ok',
+    unit: 'collection',
+    complete,
+    incomplete,
+    unknown,
+    na: 0,
+    denominator: partitionTotal,
+    partitionTotal,
+    display: `${fmt(complete)} / ${fmt(partitionTotal)} fraîches · ${fmt(incomplete)} périmé/vintage-suspect · ${fmt(unknown)} source-gap`,
+    cible: fmt(partitionTotal),
+    extra: {
+      fresh: complete,
+      vintage_suspect: incomplete,
+      source_gap: unknown,
+      vintage_suspect_slugs: suspectSlugs,
+    },
+  };
+}
+
 function kpiImmoLotZone() {
   const cs = SRC.immoLotZone.data?.summary?.city_states;
   return closedCityStateCell(cs, { naKey: 'N/A', sourceLabel: 'immo lot-zone summary.city_states' });
@@ -673,6 +778,7 @@ const KPIS = [
   { key: 'prov_qualite', label: 'Provenance zones — qualité retained', extract: kpiProvQualite },
   { key: 'prov_v2', label: 'Provenance zones — preuve v2 exacte', extract: kpiProvV2 },
   { key: 'prov_url_servie', label: 'Provenance zones — URL source servie', extract: kpiUrlSourceServie },
+  { key: 'prov_fraicheur', label: 'Provenance zones — fraîcheur/millésime', extract: kpiProvFraicheur },
   { key: 'immo_lot_zone', label: 'Immo — assignation lot-zone', extract: kpiImmoLotZone },
   { key: 'immo_normes_pliees', label: 'Immo — normes pliées', extract: kpiImmoFolded },
   { key: 'immo_lots_servis', label: 'Immo champs — lots servis', extract: () => immoFieldCell('lots_served') },
@@ -787,6 +893,7 @@ function build(todayNum) {
     SRC.immoFolded,
     SRC.immoField,
     SRC.readback,
+    SRC.freshness,
     SRC.lotZoneScale,
     SRC.lotZoneConsistency,
     SRC.unzonableAttestation,
@@ -893,6 +1000,24 @@ function renderMarkdown(payload) {
         `${fmt(url.actuel.extra.stamped_null)} sont stamped-null et ${fmt(url.actuel.extra.unstamped)} unstamped. ` +
         'Toute ré-acquisition qui n’écrit pas la source de preuve dans la même passe fait CHUTER ce KPI (dé-stampage détectable).'
     );
+  }
+  const fr = payload.kpis.find((k) => k.key === 'prov_fraicheur');
+  if (fr && fr.actuel.status === 'ok') {
+    const e = fr.actuel.extra || {};
+    const suspects = Array.isArray(e.vintage_suspect_slugs) ? e.vintage_suspect_slugs : [];
+    const frSrc = payload.sources.find((s) => /zones-sig-freshness-perime-inventory-.*\.json$/.test(s.path || ''));
+    L.push(
+      `- **Fraîcheur / millésime** : ${fmt(e.fresh)} / ${fmt(fr.actuel.denominator)} collections servies capture-fraîches ET non périmées (\`complete\`) · ` +
+        `${fmt(e.vintage_suspect)} périmé/vintage-suspect (\`incomplete\`, précédence sur la fraîcheur) · ${fmt(e.source_gap)} source-gap de fraîcheur (\`unknown\`, non mesurable en lecture seule). ` +
+        '`unknown` reste jamais compté `complete` ; une capture périmée compte `incomplete` même si elle est capture-fraîche.'
+    );
+    if (suspects.length > 0) {
+      const names = suspects.map((s) => `${s.slug} (${s.basis})`).join(' ; ');
+      L.push(
+        `- **Fraîcheur — vintage périmé/suspect** : ${fmt(suspects.length)} municipalité(s) servie(s) à millésime périmé/suspect comptée(s) \`incomplete\` (précédence) — ${names}. ` +
+          `Base = inventaire de fraîcheur committé (\`${frSrc ? frSrc.path : '—'}\`, marqueur de vintage LU par-muni), pas deviné.`
+      );
+    }
   }
   const coh = payload.kpis.find((k) => k.key === 'coherence_lot_zone');
   if (coh && coh.actuel.status === 'insufficient') {
