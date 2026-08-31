@@ -19,7 +19,8 @@ import {
 } from "../../packages/qc-sources/src/capture/index.js";
 import { CAPTURE_USER_AGENT, openCaptureRun } from "./lib/capture-s3.js";
 import { capturedRobotsFetch } from "./lib/captured-robots-fetch.js";
-import { getBytes, s3Client } from "./lib/s3.js";
+import { isCampaignBucket, type CampaignBucket } from "./lib/object-store-campaign-gate.js";
+import { getBytes, resolveBucket, s3Client } from "./lib/s3.js";
 
 function requireEnv(name: string): string {
   const value = process.env[name]?.trim();
@@ -59,7 +60,28 @@ function errorText(error: unknown): string {
 
 export { capturedRobotsFetch } from "./lib/captured-robots-fetch.js";
 
+/**
+ * §6 fail-closed (pod-side) : le bucket EFFECTIF du pod — `resolveBucket()` = `S3_BUCKET`
+ * (injecté par le runner gaté) OU le défaut baké config-driven — DOIT appartenir à l'allowlist
+ * campagne FERMÉE. Introduire l'override `S3_BUCKET` rend le bucket env-influençable ; cette
+ * garde re-valide le résultat AVANT tout I/O pour que le pod n'écrive JAMAIS hors allowlist,
+ * quelle que soit la provenance de `S3_BUCKET` (préserve « JAMAIS un ENV arbitraire », gate #293/§6).
+ */
+export function assertPodCaptureBucket(env: Record<string, string | undefined> = process.env): CampaignBucket {
+  const bucket = resolveBucket(env);
+  if (!isCampaignBucket(bucket)) {
+    throw new Error(
+      `capture pod refusé: bucket cible (${bucket}) hors de l'allowlist campagne — refus fail-closed (S3_BUCKET non-validé)`,
+    );
+  }
+  return bucket;
+}
+
 async function main(): Promise<void> {
+  // §6 fail-closed : re-valide le bucket EFFECTIF du pod (S3_BUCKET | config baké) contre
+  // l'allowlist campagne AVANT toute lecture/écriture — le pod n'écrit JAMAIS hors allowlist,
+  // quelle que soit la provenance de S3_BUCKET (defense-in-depth, gate #293/§6).
+  assertPodCaptureBucket();
   const lane = captureLane(requireEnv("LANE"));
   const worklistKey = requireEnv("WORKLIST");
   // `k8s-capture-run` publishes RUN_STAMP as the immutable, operator-visible
