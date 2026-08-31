@@ -7,12 +7,13 @@ import {
 import {
   buildCampaignExecutionPlan,
   campaignDesignSha256,
-  CAMPAIGN_BUCKET,
   OBJECT_STORE_CAMPAIGN_OWNER_GO_CONTRACT,
+  type CampaignBucket,
   type Sha256Ref,
 } from "./lib/object-store-campaign-gate.js";
 
 const RUNNER_SHA = "a".repeat(40);
+const TEST_BUCKET: CampaignBucket = "sentropic-geo";
 const method = {
   lane: "pv",
   egress: "direct",
@@ -28,6 +29,7 @@ function expectedDesignSha256(): Sha256Ref {
   return campaignDesignSha256(
     buildCampaignExecutionPlan({
       scope: "capture",
+      bucket: TEST_BUCKET,
       runnerGitSha: RUNNER_SHA,
       method,
       targets,
@@ -43,7 +45,7 @@ function validOwnerGo(): Record<string, unknown> {
     owner_go_direct: true,
     design_sha256: expectedDesignSha256(),
     scope: "capture",
-    bucket: CAMPAIGN_BUCKET,
+    bucket: TEST_BUCKET,
     owner_instance: "owner:direct",
     geo_cond_instance: "claude:geo-cond",
     // h2a_* REQUIS en mode lane-gated (hook provenance, delta-2/F2) : ils lient
@@ -57,6 +59,7 @@ function authorize(ownerGoArtifact: unknown, execution: "local" | "cluster" = "c
   return assertLaneGatedCaptureAuthorized({
     execution,
     runnerGitSha: RUNNER_SHA,
+    bucket: TEST_BUCKET,
     method,
     targets,
     ownerGoArtifact,
@@ -102,10 +105,38 @@ describe("assertLaneGatedCaptureAuthorized — CA-G8 capture-only lane gate", ()
     );
   });
 
-  it("throws when bucket is not sentropic-geo", () => {
+  it("throws when the owner-go bucket is not in the allowlist (fail-closed)", () => {
     expect(() => authorize({ ...validOwnerGo(), bucket: "another-bucket" })).toThrow(
-      /bucket doit être sentropic-geo/,
+      /allowlist fermée/,
     );
+  });
+
+  it("accepts a préprod owner-go on a préprod runner (allowlist + coherence)", () => {
+    // Runner préprod : bucket=preprod dans le plan (→ design_sha) ET dans l'input auth.
+    const preprodDesign = campaignDesignSha256(
+      buildCampaignExecutionPlan({
+        scope: "capture",
+        bucket: "sentropic-geo-preprod",
+        runnerGitSha: RUNNER_SHA,
+        method,
+        targets,
+      }),
+    );
+    const preprodOwnerGo = {
+      ...validOwnerGo(),
+      design_sha256: preprodDesign,
+      bucket: "sentropic-geo-preprod",
+    };
+    expect(() =>
+      assertLaneGatedCaptureAuthorized({
+        execution: "cluster",
+        runnerGitSha: RUNNER_SHA,
+        bucket: "sentropic-geo-preprod",
+        method,
+        targets,
+        ownerGoArtifact: preprodOwnerGo,
+      }),
+    ).not.toThrow();
   });
 
   it("throws hard when the owner-go scope is write-rekey", () => {
@@ -138,7 +169,7 @@ function validDirectChatOwnerGo(): Record<string, unknown> {
     owner_go_direct: true,
     design_sha256: s,
     scope: "capture",
-    bucket: CAMPAIGN_BUCKET,
+    bucket: TEST_BUCKET,
     owner_instance: "owner:direct",
     // Provenance path-A : go owner comme tour-user DANS la session exécutante (k8s) —
     // PAS de h2a_* (N/A : la provenance est le transcript, pas une enveloppe inbox).
