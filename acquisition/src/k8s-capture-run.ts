@@ -182,7 +182,7 @@ function worklistKey(args: Args): string {
   return `registry/capture-worklists/${args.lane}-${args.runStamp}.json`;
 }
 
-function jobManifest(args: Args, key: string): string {
+function jobManifest(args: Args, key: string, bucket: string): string {
   return `apiVersion: batch/v1
 kind: Job
 metadata:
@@ -247,6 +247,11 @@ spec:
               value: "--dns-result-order=ipv4first"
             - name: AWS_MAX_ATTEMPTS
               value: "10"
+            # Bucket cible injecté depuis le runner (bucket gated, config-driven §6). L'image
+            # bake le bucket prod par défaut ; cet override fait qu'UNE image sert les 2 envs
+            # (le pod écrit là où le gate a validé — même source, zéro divergence).
+            - name: S3_BUCKET
+              value: "${bucket}"
             - name: POD_UID
               valueFrom:
                 fieldRef:
@@ -447,7 +452,18 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   const args = parseArgs(process.argv.slice(2));
   const targets = parseCaptureWorklist(JSON.parse(readFileSync(args.worklistPath, "utf8")));
   const key = worklistKey(args);
-  const manifest = jobManifest(args, key);
+  // Bucket RÉEL config-driven (s3Target), lu UNE fois → plan (→ design_sha256), env du pod
+  // (S3_BUCKET injecté dans le manifest) ET la capture aval : même source, zéro divergence
+  // gate≠write (§6, fail-closed si le s3-target est hors allowlist campagne). Résolu ici (avant
+  // le dry-run) pour que le manifest — imprimé en dry-run — porte le S3_BUCKET réel du pod.
+  const rawBucket = s3Target().bucket;
+  if (!isCampaignBucket(rawBucket)) {
+    throw new Error(
+      `capture store refusé: s3Target().bucket (${rawBucket}) hors de l'allowlist campagne — refus fail-closed`,
+    );
+  }
+  const bucket: CampaignBucket = rawBucket;
+  const manifest = jobManifest(args, key, bucket);
   process.stderr.write(
     `[capture-orch] lane=${args.lane} targets=${targets.length} shards=${args.shards} concurrency=${args.concurrency}\n` +
       `[capture-orch] image=${args.image}\n` +
@@ -467,15 +483,6 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   // cet assert est la ceinture par-dessus les bretelles. imagePinOptsForPath("store", …)
   // force allowUnpinned:false — le flag debug est structurellement ignoré ici.
   assertPinnedImage(args.image, imagePinOptsForPath("store", args.allowUnpinnedImage));
-  // Bucket RÉEL config-driven (s3Target), lu UNE fois → plan (→ design_sha256) ET la capture aval :
-  // même source, zéro divergence gate≠write (§6, fail-closed si le s3-target est hors allowlist).
-  const rawBucket = s3Target().bucket;
-  if (!isCampaignBucket(rawBucket)) {
-    throw new Error(
-      `capture store refusé: s3Target().bucket (${rawBucket}) hors de l'allowlist campagne — refus fail-closed`,
-    );
-  }
-  const bucket: CampaignBucket = rawBucket;
   if (args.laneGatedCapture) {
     const ownerGoArtifact = JSON.parse(
       readFileSync(args.ownerGoArtifactPath as string, "utf8"),
@@ -514,7 +521,10 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   }
   // Ne jamais écraser une worklist portant le même identifiant : l'objet auquel
   // run.json fait référence reste le contrat exact soumis au cluster.
-  await putBytesIfAbsent(s3Client(), key, `${JSON.stringify(targets, null, 2)}\n`, "application/json");
+  // Écriture sur le bucket GATED (`bucket` = s3Target validé) EXPLICITEMENT — MÊME source que
+  // le gate + le S3_BUCKET injecté au pod : le pod lit la worklist là où l'orchestrateur l'écrit,
+  // zéro divergence même si l'env de l'orchestrateur portait un S3_BUCKET ≠ s3Target (§6, cohérence).
+  await putBytesIfAbsent(s3Client(), key, `${JSON.stringify(targets, null, 2)}\n`, "application/json", bucket);
   apply(args, manifest);
   process.stderr.write("[capture-orch] Job soumis; le contrôleur Kubernetes gère la concurrence. Aucun polling local.\n");
 }

@@ -64,14 +64,14 @@ describe("capture worklist job contract", () => {
       dryRun: false,
       laneGatedCapture: false,
     };
-    const manifest = jobManifest(args, "registry/capture-worklists/normes-20260726T120000Z.json");
+    const manifest = jobManifest(args, "registry/capture-worklists/normes-20260726T120000Z.json", "sentropic-geo");
     expect(manifest).toContain("securityContext:\n        # The capture image declares USER 1000:1000. EmptyDir is\n        # mounted at /scratch for its redacted temporary log, so grant that\n        # group ownership before the non-root entrypoint starts.\n        fsGroup: 1000\n        runAsNonRoot: true");
     expect(manifest).toContain("memory: 176Mi");
     expect(manifest).toContain("memory: 120Mi");
     expect(manifest).toContain("cpu: 60m");
     expect(manifest).toContain("cpu: 150m");
 
-    expect(jobManifest({ ...args, memoryLimitMi: 512 }, "registry/capture-worklists/normes-20260726T120000Z.json"))
+    expect(jobManifest({ ...args, memoryLimitMi: 512 }, "registry/capture-worklists/normes-20260726T120000Z.json", "sentropic-geo"))
       .toContain("memory: 512Mi");
 
     const dockerfile = readFileSync(resolve(import.meta.dirname, "../../../deploy/capture-job/Dockerfile"), "utf8");
