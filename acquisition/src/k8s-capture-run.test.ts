@@ -13,7 +13,7 @@ describe("captureImage", () => {
   it("reads the pinned GHCR digest declared in acquisition/config/capture-image.json", () => {
     const cfg = captureImage();
     expect(cfg.image).toBe(
-      "ghcr.io/rhanka/geo-capture@sha256:60f048b5ac667805bf90b3e1a1e75b3b85fd2a4dc634aa11c13fee8b27fa629b",
+      "ghcr.io/rhanka/geo-capture@sha256:d027f973c67aa4a0902e1c56673c74a2c82dba55933993757a50dcce9bcc47e9",
     );
     // The declared default is itself PINNED by construction — no mutable tag ships.
     expect(isPinnedCaptureImage(cfg.image)).toBe(true);
