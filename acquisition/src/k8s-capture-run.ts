@@ -521,7 +521,10 @@ async function main(deps: CaptureCampaignGateDeps = {}): Promise<void> {
   }
   // Ne jamais écraser une worklist portant le même identifiant : l'objet auquel
   // run.json fait référence reste le contrat exact soumis au cluster.
-  await putBytesIfAbsent(s3Client(), key, `${JSON.stringify(targets, null, 2)}\n`, "application/json");
+  // Écriture sur le bucket GATED (`bucket` = s3Target validé) EXPLICITEMENT — MÊME source que
+  // le gate + le S3_BUCKET injecté au pod : le pod lit la worklist là où l'orchestrateur l'écrit,
+  // zéro divergence même si l'env de l'orchestrateur portait un S3_BUCKET ≠ s3Target (§6, cohérence).
+  await putBytesIfAbsent(s3Client(), key, `${JSON.stringify(targets, null, 2)}\n`, "application/json", bucket);
   apply(args, manifest);
   process.stderr.write("[capture-orch] Job soumis; le contrôleur Kubernetes gère la concurrence. Aucun polling local.\n");
 }
