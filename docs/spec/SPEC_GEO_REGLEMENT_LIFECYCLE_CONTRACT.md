@@ -375,3 +375,61 @@ absent/ambigu → `unknown`. geo n'arbitre pas (déclaré-source). `validateZoni
 `01M1A25HKYSH2MK67K2CXH4Q1Q`, 2026-08-30) ; **§10 = le design geo revu-fable qui l'implémente, PAS
 séparément owner-ratifié**. Livrable LOT 1 = ce contrat ; l'impl émission + consommation immo (surface
 plan distincte) = raccord ADDITIF (i-arch drive).
+
+## 11. Extension `decision_state` — l'axe ÉTAT-DE-DÉCISION (planifié vs décidé)
+
+> **✅ RATIFIÉ owner — 2026-08-31, A/A.** Owner (rhanka) a ratifié **DIRECTEMENT** via AskUserQuestion
+> (present-decision geo-cond→i-cond→owner, réponse « Ratifier A/A maintenant ») les DEUX décisions
+> contrat bundlées : **b1 = cet axe `decision_state`** (reco A = nouvel axe orthogonal) + **b2 = le
+> régime CPTAQ content-event** (reco A ; §11.3). ⚠ **Pas de `decisionId` track** : la ratification est
+> venue d'un **reply chat direct owner, PAS un dossier track-enregistré** — **aucun `decisionId` /
+> `comprehension` minté** (un reply chat ≠ attestation signée, règle present-decision Step 6). **Le
+> record autoritatif EST ce texte gravé dans le contrat gelé lui-même : « owner via geo-cond
+> present-decision, 2026-08-31, A/A ratifié ».** Double-instruction NON retenue (owner a choisi
+> ratify-now). Design geo-archi ; confirmations `reglements` (chiffre consommateur + fixture). §1–§10
+> INCHANGÉS ; §11 = extension ADDITIVE §9-minor (nouvel axe orthogonal, politique par-valeur inchangée).
+
+**§11.1 Le champ.** `decision_state: 'planned' | 'decided' | null` émis PAR EVENT = l'état-de-décision
+que la SOURCE atteste : **`'planned'`** = un point d'**ordre-du-jour / agenda** (séance à venir, pas
+encore décidé) ; **`'decided'`** = attesté **décidé** dans un PV minuté / adopté. `null`/absent =
+**non-peuplé** (legacy / axe non-renseigné), **JAMAIS lu comme `decided`**.
+
+**§11.2 ORTHOGONAL — les trois axes ne se collapsent JAMAIS** (garde load-bearing, catchée par
+`reglements` avant le gel). `decision_state` est **INDÉPENDANT** de `document_type` (§1, stage
+bylaw-lifecycle) ET de `type_instrument` (§10, instrument déclaré) :
+- un event porte un `document_type` ET/OU un `type_instrument` ET/OU un `decision_state`
+  **indépendamment** — aucun ne dérive d'un autre ;
+- en particulier un **content-event** (`document_type=null`) **garde** son `decision_state` propre ET
+  son `type_instrument` **déclaré** propre. ⚠ **NE JAMAIS graver « content-event → `type_instrument`
+  null »** : un content-event dérogation/refus DÉCLARE souvent un instrument (« dérogation mineure »→
+  `derogation`, « règlement de lotissement »→`lotissement`, « règlement de zonage »→`zonage`) et **le
+  GARDE** (canonicalisé verbatim→token, §10.3) — le null-er JETTERAIT un fait déclaré = **régression
+  anti-invention**. `type_instrument` est `null` **UNIQUEMENT si la source ne déclare AUCUN instrument**
+  (cf. §11.3 CPTAQ), jamais « parce que content-event ».
+
+**§11.3 CPTAQ = content-event (b2, ratifié A).** Une **reco CPTAQ provinciale** (ex. lislet) n'est PAS
+une décision de règlement municipal (aucun cycle avis→projet→adoption) → régime **content-event** :
+`document_type=null` · `type='cptaq'` · **`type_instrument=null`** (la reco provinciale ne déclare AUCUN
+instrument d'urbanisme muni — `null` par **absence-de-déclaration**, PAS « parce que content-event »,
+cf. §11.2) · `decision_state='planned'` (tant que la reco n'est pas actée). ⚠ Une reco CPTAQ
+(content-event, zoning-event) est **DISTINCTE** de la **géométrie-contrainte CPTAQ zone-agricole** du
+§9-env (`ca-qc-constraints` `cptaq-zone-agricole`) — la reco ≠ la zone-géométrie ; immo les route sur
+des surfaces DIFFÉRENTES. (Question d'autorité provincial-vs-muni : différée, hors ce champ.)
+
+**§11.4 Anti-invention — verbatim-ou-`planned`, JAMAIS assumé `decided`.** La VALEUR de l'axe n'est PAS
+de vider un backlog (il est petit et **décroissant** — 8 records agenda-tier au gel → plancher ~5-6,
+mesuré `reglements`) mais une **correctness PERMANENTE** : un point d'ODJ ne doit JAMAIS être promu
+`decided` sans attestation-source (un PV minuté). `geo` émet VERBATIM ; il ne promeut jamais
+`planned`→`decided`.
+
+**§11.5 Émission + validation.** `ReglementLifecycleInput.decision_state` (optionnel) est **PROPAGÉ**
+input→event par `buildReglementEvent` (comme `document_type`/`type_instrument`) — un drop silencieux
+émettrait l'ODJ nu = **faussement décidé** en aval (« vert par omission = rouge », flag `reglements`).
+`validateZoningEvent` **accepte** `'planned' | 'decided' | null | absent` et **rejette** toute autre
+valeur (jamais un `decided` implicite). Impl : `acquisition/src/zoning-events-emit.ts` (`DecisionState`,
+`DECISION_STATE_KNOWN`, propagation dans `buildReglementEvent` + guard dans `validateZoningEvent`) ;
+tests `acquisition/src/zoning-events-emit.test.ts` (propagation input→event + orthogonalité non-régression).
+
+**§11.6 Migration / back-compat.** Champ **ADDITIF, safe-default `null`** (comme §10.7) : `null`/absent
+sur les events existants = rétro-compat. Les producteurs peuplent `'planned'` sur les points d'ODJ,
+`'decided'` sur les faits attestés-PV. immo : `nullable` défaut, §9-tolérant. **§9-minor, non-breaking.**
