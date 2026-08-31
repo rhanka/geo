@@ -161,6 +161,25 @@ export function canonInstrumentType(declared: string): string {
   return asToken;
 }
 
+/**
+ * §11 `decision_state` — the DECISION-STATE axis (OWNER-RATIFIED 2026-08-31, present-decision
+ * A/A). Is this event a PLANNED item (an ordre-du-jour / agenda point, séance à venir) or a
+ * DECIDED one (attested in a minuted PV / adopted)? It is ORTHOGONAL to BOTH `document_type`
+ * (bylaw-lifecycle STAGE) and `type_instrument` (declared instrument): an event carries a
+ * document_type AND/OR a type_instrument AND/OR a decision_state INDEPENDENTLY — none derives
+ * from another. In particular a content-event (`document_type: null`) still carries its own
+ * decision_state and its own declared `type_instrument`; the axes never collapse into each other.
+ *
+ * ANTI-INVENTION (the load-bearing reason the axis exists — NOT to clear a backlog): an ODJ item
+ * is `planned` VERBATIM; `decided` is emitted ONLY when the source attests the decision (a minuted
+ * PV). geo NEVER promotes a planned/agenda item to `decided` — an assumed adoption is a fabricated
+ * fact. `null`/absent = not-populated (legacy / axis unset), and is NEVER read as `decided`.
+ */
+export type DecisionState = "planned" | "decided";
+
+/** The known decision-state values (validation guard). `null`/absent = not-populated, never `decided`. */
+export const DECISION_STATE_KNOWN: ReadonlySet<string> = new Set<DecisionState>(["planned", "decided"]);
+
 /** Discovery, distinct from revision (`state`). */
 export type ZoningDetectionState = "detected" | "detection_incomplete" | "no-event";
 
@@ -269,6 +288,13 @@ export interface ZoningEvent {
   declencheur_type?: DeclencheurType | null;
   /** Verbatim trigger date (contract §2.1). `null`/absent = UNKNOWN — NEVER the adoption date by default. ADDITIVE §10.7 — optional. */
   declencheur_date_verbatim?: string | null;
+  /**
+   * §11 the DECISION-STATE axis — `planned` (ODJ/agenda) | `decided` (attested in a minuted
+   * PV / adopted) | `null`/absent (not-populated). ORTHOGONAL to `document_type` and
+   * `type_instrument` (owner-ratified 2026-08-31). ANTI-INVENTION: `decided` requires source
+   * attestation; an ODJ item is `planned`, NEVER assumed decided. ADDITIVE §10.7/§11 — OPTIONAL KEY.
+   */
+  decision_state?: DecisionState | null;
 
   /** YYYY-MM-DD */
   date_iso: string;
@@ -379,6 +405,12 @@ export interface ReglementLifecycleInput {
   declencheur_type: DeclencheurType | null;
   /** Verbatim trigger date (§2.1); `null` = UNKNOWN. */
   declencheur_date_verbatim: string | null;
+  /**
+   * §11 the decision-state the SOURCE attests: `'planned'` for an ordre-du-jour / agenda item,
+   * `'decided'` ONLY when a minuted PV attests the decision. Omitted/`null` = not-populated.
+   * geo emits VERBATIM — it NEVER promotes `planned`→`decided` without source attestation.
+   */
+  decision_state?: DecisionState | null;
   /** Content taxonomy: a suspensive/content type, else defaults to `"autre"` for a pure lifecycle doc. */
   type?: ZoningEventType;
   /** Optional EXACT-resolved zone links (already resolved by the caller via {@link resolveZonesExact}). */
@@ -439,6 +471,9 @@ export function buildReglementEvent(input: ReglementLifecycleInput): ZoningEvent
     libelles_relation: input.libelles_relation,
     declencheur_type: input.declencheur_type,
     declencheur_date_verbatim: input.declencheur_date_verbatim,
+    // §11 PROPAGATE the decision-state input→event (like document_type/type_instrument). Dropping it
+    // would emit a planned ODJ item as a bare event = falsely decided downstream (the exact regression).
+    decision_state: input.decision_state ?? null,
     date_iso: input.date_iso,
     detection_state: "detected",
     zone_codes_resolus: input.zone_codes_resolus ?? [],
@@ -682,6 +717,14 @@ export function validateZoningEvent(event: ZoningEvent): void {
   if (event.declencheur_date_verbatim != null && typeof event.declencheur_date_verbatim !== "string") {
     throw new Error(
       `zoning-event ${id}: declencheur_date_verbatim invalide — string verbatim ou null (JAMAIS l'adoption par défaut)`,
+    );
+  }
+  // §11 decision_state — orthogonal axis (owner-ratified): 'planned' | 'decided' | null/absent.
+  // ADDITIVE optional (like the other §10.7 fields). ANTI-INVENTION: never a value outside the pair,
+  // and a null/absent value is not-populated, NEVER an implicit 'decided'.
+  if (event.decision_state != null && !DECISION_STATE_KNOWN.has(event.decision_state)) {
+    throw new Error(
+      `zoning-event ${id}: decision_state invalide (${String(event.decision_state)}) — 'planned' | 'decided' | null (jamais assumé décidé, §11)`,
     );
   }
   // §6 source-vivante : un event LIFECYCLE geo-émis PORTE sa preuve v2 (url réelle + retrieved_at + sha256).
