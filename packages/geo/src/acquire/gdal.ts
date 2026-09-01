@@ -137,24 +137,26 @@ export async function run7zExtract(
  * applying Douglas–Peucker simplification with `tolerance` (in source-SRS
  * units). `-lco RFC7946=YES` yields lon/lat 2D coordinates and right-hand-rule
  * winding; `-lco COORDINATE_PRECISION` trims coordinate noise to keep the
- * emitted file lean; `-skipfailures` is intentionally NOT set so geometry
+ * emitted file lean. `tolerance:null` deliberately omits `-simplify` for exact
+ * geometry workflows. `-skipfailures` is intentionally NOT set so geometry
  * errors surface.
  */
 export function buildOgr2OgrArgs(opts: {
   source: string;
   layer: string;
   outPath: string;
-  tolerance: number;
+  tolerance: number | null;
   coordinatePrecision?: number;
 }): string[] {
   const precision = opts.coordinatePrecision ?? DEFAULT_COORDINATE_PRECISION;
-  return [
+  const args = [
     "-f",
     "GeoJSON",
     "-t_srs",
     "EPSG:4326",
-    "-simplify",
-    String(opts.tolerance),
+  ];
+  if (opts.tolerance !== null) args.push("-simplify", String(opts.tolerance));
+  args.push(
     "-lco",
     "RFC7946=YES",
     "-lco",
@@ -162,7 +164,8 @@ export function buildOgr2OgrArgs(opts: {
     opts.outPath,
     opts.source,
     opts.layer,
-  ];
+  );
+  return args;
 }
 
 /** A layer discovered inside a bulk dataset via `ogrinfo`. */
@@ -212,6 +215,61 @@ export async function listLayers(
   return parseOgrinfoLayers(result.stdout);
 }
 
+/** Parse the source CRS WKT reported by `ogrinfo -json` for one layer.
+ * GDAL obtains this value from the shapefile's internal `.prj`; an absent CRS
+ * is a hard error because callers must never infer it. */
+export function parseOgrinfoSourceCrs(stdout: string): string {
+  let parsed: unknown;
+  try {
+    parsed = JSON.parse(stdout) as unknown;
+  } catch (error) {
+    throw new Error("ogrinfo source CRS output is not valid JSON", { cause: error });
+  }
+  if (typeof parsed !== "object" || parsed === null) {
+    throw new Error("ogrinfo source CRS output must be an object");
+  }
+  const layers = (parsed as { layers?: unknown }).layers;
+  if (!Array.isArray(layers) || layers.length !== 1) {
+    throw new Error(
+      `ogrinfo source CRS expected exactly one layer, received ${Array.isArray(layers) ? layers.length : 0}`,
+    );
+  }
+  const layer = layers[0];
+  const coordinateSystem =
+    typeof layer === "object" && layer !== null
+      ? (layer as { coordinateSystem?: unknown }).coordinateSystem
+      : undefined;
+  const wkt =
+    typeof coordinateSystem === "object" && coordinateSystem !== null
+      ? (coordinateSystem as { wkt?: unknown }).wkt
+      : undefined;
+  if (typeof wkt !== "string" || wkt.trim().length === 0) {
+    throw new Error("ogrinfo source CRS is absent; the internal .prj must be readable");
+  }
+  return wkt;
+}
+
+/** Read one layer's effective source CRS through GDAL. */
+export async function inspectLayerSourceCrs(
+  source: string,
+  layer: string,
+  runner: CommandRunner = defaultRunner,
+): Promise<string> {
+  try {
+    const result = await runner("ogrinfo", ["-ro", "-so", "-json", source, layer]);
+    return parseOgrinfoSourceCrs(result.stdout);
+  } catch (error) {
+    if (isEnoent(error)) throw gdalMissingError("ogrinfo", error);
+    if (error instanceof Error && error.message.startsWith("ogrinfo source CRS")) throw error;
+    const stderr = (error as { stderr?: string }).stderr ?? "";
+    throw new Error(
+      `ogrinfo failed to read source CRS for layer "${layer}" of "${source}": ` +
+        `${stderr || (error as Error).message}`,
+      { cause: error },
+    );
+  }
+}
+
 /**
  * Reproject `layer` from `source` to WGS84 GeoJSON at `outPath` via `ogr2ogr`.
  *
@@ -219,7 +277,7 @@ export async function listLayers(
  *   error when the `ogr2ogr` binary is absent.
  */
 export async function runOgr2Ogr(
-  opts: { source: string; layer: string; outPath: string; tolerance: number },
+  opts: { source: string; layer: string; outPath: string; tolerance: number | null },
   runner: CommandRunner = defaultRunner,
 ): Promise<void> {
   const args = buildOgr2OgrArgs(opts);
@@ -242,6 +300,8 @@ export interface ExtractResult {
   geojson: unknown;
   /** Layers discovered in the archive (for diagnostics). */
   layers: DiscoveredLayer[];
+  /** Effective source CRS WKT read by GDAL from the dataset's `.prj`. */
+  sourceCrs?: string;
 }
 
 /** Options for {@link extractLayerToGeoJson}. */
@@ -250,8 +310,8 @@ export interface ExtractOptions {
   archivePath: string;
   /** Layer name to extract (e.g. `"regio_s"`). */
   layer: string;
-  /** Douglas–Peucker tolerance in source-SRS units. */
-  tolerance: number;
+  /** Douglas–Peucker tolerance in source-SRS units; `null` means NONE. */
+  tolerance: number | null;
   /**
    * Inner dataset path within the archive (e.g. `"SDA.gpkg"`). For `zip` it may
    * be omitted (GDAL opens the sole contained dataset); for `7z` it is REQUIRED
@@ -264,6 +324,8 @@ export interface ExtractOptions {
   runner?: CommandRunner;
   /** Injected JSON reader for the emitted file (tests); defaults to reading `outPath`. */
   readJson?: (outPath: string) => Promise<unknown>;
+  /** Read and return the effective source CRS WKT from the internal `.prj`. */
+  inspectSourceCrs?: boolean;
 }
 
 /**
@@ -304,6 +366,9 @@ export async function extractLayerToGeoJson(
     }
 
     const layers = await listLayers(source, runner);
+    const sourceCrs = opts.inspectSourceCrs
+      ? await inspectLayerSourceCrs(source, opts.layer, runner)
+      : undefined;
 
     const outPath = join(work, "out.geojson");
     await runOgr2Ogr(
@@ -319,7 +384,11 @@ export async function extractLayerToGeoJson(
       });
     const geojson = await readJson(outPath);
 
-    return { geojson, layers };
+    return {
+      geojson,
+      layers,
+      ...(sourceCrs !== undefined ? { sourceCrs } : {}),
+    };
   } finally {
     await rm(work, { recursive: true, force: true });
   }
