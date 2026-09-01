@@ -1,0 +1,53 @@
+# §9 stage-2 SERVE (light-gate). Runs the ratified cptaq-runner (#302 + #303 fast-follow) in the
+# geo-api root image (gdal-bin). Light-gate = the runner's constructive guards (assertCptaqPreprodBucket +
+# CAS-proof-bound-input + assertCptaqWritableKey + proof-v2 + no-PII); no design_sha/owner-go for
+# the preprod-serve. Rendered per run from stage-1 capture output by render-cptaq-serve.ts.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cptaq-serve-REPLACE_RUNSTAMP        # substituted per run by render-cptaq-serve.ts
+  namespace: geo-preprod
+  labels: { app.kubernetes.io/component: constraints-serve, geo.stage: s9-cptaq-serve }
+spec:
+  backoffLimit: 1
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels: { app.kubernetes.io/component: constraints-serve, geo.stage: s9-cptaq-serve }
+    spec:
+      restartPolicy: Never
+      imagePullSecrets: [ { name: geo-registry-pull } ]
+      containers:
+      - name: cptaq-serve
+        # geo-api ROOT image (gdal-bin), built from main #303 merge 4ea405414a20baf1b2a22ef3bfccce3f0c7b72c0
+        # ("feat/cptaq-served-metadata") by CD Preprod run 33477567079 (that run's BUILD+PUSH succeeded; its
+        # DEPLOY step failed on a transient rate-limit, so the DEPLOYED preprod image stayed #302 — this
+        # serve-job pins the ≥#303 image by DIGEST directly, no re-deploy needed). ≥ #303 REQUIRED + VERIFIED:
+        # a #302 image writes the old `snapshots/` (phantom mis-indexed collections) + no `.meta.json` (no
+        # CC-BY). Digest = the multi-arch containerimage.digest from the CD build --metadata-file (i-infra),
+        # cross-checked live by a k8s pod-probe (PULL OK + dist carries `_snapshots/` + `.meta.json`).
+        image: rg.fr-par.scw.cloud/sentropic-geo/geo-api@sha256:83b67d0d8d6f3621f8f7f17f34f40dd2a739730eda87b02ea19749a9d31fbbae
+        # Prod image prunes tsx → run compiled dist. WORKDIR=/app (probe-verified self-exec + Usage guard).
+        command: ["node","packages/geo/dist/constraints/cptaq-runner.js"]
+        args:
+          # raw-cas-key + capture-manifest-key substituted from stage-1's proof-bound output by
+          # render-cptaq-serve.ts (Q2=(a); never hand-typed; runner re-validates rawCasKey at runtime).
+          - "--raw-cas-key"
+          - "raw/cptaq/cas/REPLACE_RAW_SHA.zip"
+          - "--capture-manifest-key"
+          - "capture/_runs/constraints-REPLACE_RUN/manifest.jsonl"
+          # boundaries default = normalized/qc-admin-boundaries/qc-municipalites.geojson (omit --boundaries-key)
+          - "--publish"
+        env:
+          # geo-s3-credentials has ENDPOINT/REGION/ACCESS/SECRET but NOT S3_BUCKET → inject explicitly.
+          - { name: S3_BUCKET, value: "sentropic-geo-preprod" }
+        envFrom:
+          - { secretRef: { name: geo-s3-credentials } }   # ref only, no values
+        resources:
+          # GDAL on the province-wide ZA_transposee zip → generous mem (learned from §6 shard-10 OOM @176Mi).
+          requests: { cpu: "250m", memory: "512Mi" }
+          limits:   { cpu: "1",    memory: "2Gi" }
+# Served output (cptaq.test.ts): normalized/ca-qc-constraints/ca-qc-constraints-<slug>.geojson + .meta.json
+#   for the 4 code-baked CPTAQ_PHASE1_CITIES (warden, saint-stanislas-de-kostka, sutton, coaticook); no --cities.
+# Residency: geo-s3-credentials = deny-prod (i-infra probed) + assertCptaqWritableKey confines to
+#   normalized/ca-qc-constraints/ → doubly held.
