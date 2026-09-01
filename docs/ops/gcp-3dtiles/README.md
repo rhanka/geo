@@ -19,6 +19,7 @@ dépense GCP **ne PEUT PAS** dépasser ~50 €/mois.
 - **`${BILLING_ACCOUNT}` = owner-direct à l'exec, JAMAIS committé** (repo public).
 - **La clé (H) n'est PAS un script** — création owner-direct inline, `keyString` jamais `echo`.
 - **`50-test-kill` PROUVE le cap AVANT toute clé** : si le billing n'est pas détaché → `exit 1`, on ne crée pas la clé.
+- **Rôle SA `billing.projectManager` project-scope** : la Function peut *détacher* le billing mais **pas** le rétablir → ré-attach = owner humain obligé (least-priv).
 
 ## Ordre (non-négociable)
 
@@ -77,3 +78,11 @@ gcloud services api-keys create --project radar-3dtiles-preprod \
 3. rôle `billing.projectManager` **project-scope** (least-priv detach) ;
 4. `50` prouve `billingEnabled=false` **AVANT** toute clé ;
 5. `60` no-echo (stdin→kubectl) + le déploiement lit bien `MAPTILES_API_KEY` du secret.
+
+## Contrat d'injection `60` (render lane)
+
+- **env `MAPTILES_API_KEY` ← secret k8s `maptiles-3dtiles-key`** = le contrat que l'app UI
+  consomme (render lane geo-socle). N'est PLUS un placeholder.
+- **Consumer réel = l'adapter raster basemap §5, v2-HELD** (n'existe pas encore) → `60`
+  **provisionne en avance** ; le mount `secret→env` = **CD (geo-archi)**, câblé au §5-land.
+- **Gate SEULEMENT `60`** (dernier step) — n'impacte pas 10-50 / A / test-kill / H.
