@@ -32,6 +32,7 @@ export const CAPTURE_LANES = [
   "effet-densifiant",
   "cadastre",
   "immo-lots",
+  "constraints",
 ] as const;
 export type CaptureLane = (typeof CAPTURE_LANES)[number];
 

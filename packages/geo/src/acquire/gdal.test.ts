@@ -5,8 +5,10 @@ import {
   build7zExtractArgs,
   buildOgr2OgrArgs,
   extractLayerToGeoJson,
+  inspectLayerSourceCrs,
   listLayers,
   parseOgrinfoLayers,
+  parseOgrinfoSourceCrs,
   run7zExtract,
   runOgr2Ogr,
   vsizipPath,
@@ -56,6 +58,18 @@ describe("buildOgr2OgrArgs", () => {
       coordinatePrecision: 5,
     });
     expect(args).toContain("COORDINATE_PRECISION=5");
+  });
+
+  it("reprojects to RFC7946 without any simplification when tolerance is null", () => {
+    const args = buildOgr2OgrArgs({
+      source: "/vsizip//tmp/ZA_transposee.zip",
+      layer: "zone_agricole_s",
+      outPath: "/tmp/out.geojson",
+      tolerance: null,
+    });
+    expect(args).toContain("EPSG:4326");
+    expect(args).toContain("RFC7946=YES");
+    expect(args).not.toContain("-simplify");
   });
 });
 
@@ -143,6 +157,35 @@ describe("listLayers", () => {
   });
 });
 
+describe("inspectLayerSourceCrs", () => {
+  const wkt = 'PROJCRS["NAD83 / Quebec Lambert"]';
+
+  it("reads the selected layer CRS WKT reported from its .prj", async () => {
+    const runner = fakeRunner({
+      ogrinfo: { stdout: JSON.stringify({ layers: [{ coordinateSystem: { wkt } }] }) },
+    });
+    await expect(
+      inspectLayerSourceCrs("/vsizip//tmp/ZA_transposee.zip", "zone_agricole_s", runner),
+    ).resolves.toBe(wkt);
+    expect(runner.calls[0]).toEqual({
+      file: "ogrinfo",
+      args: [
+        "-ro",
+        "-so",
+        "-json",
+        "/vsizip//tmp/ZA_transposee.zip",
+        "zone_agricole_s",
+      ],
+    });
+  });
+
+  it("rejects an absent source CRS instead of guessing", () => {
+    expect(() => parseOgrinfoSourceCrs(JSON.stringify({ layers: [{}] }))).toThrow(
+      /internal \.prj must be readable/,
+    );
+  });
+});
+
 describe("runOgr2Ogr", () => {
   it("invokes ogr2ogr with the built args", async () => {
     const runner = fakeRunner({ ogr2ogr: {} });
@@ -153,6 +196,15 @@ describe("runOgr2Ogr", () => {
     expect(runner.calls[0]?.file).toBe("ogr2ogr");
     expect(runner.calls[0]?.args).toContain("regio_s");
     expect(runner.calls[0]?.args).toContain("0.001");
+  });
+
+  it("does not pass -simplify for an exact geometry run", async () => {
+    const runner = fakeRunner({ ogr2ogr: {} });
+    await runOgr2Ogr(
+      { source: "/vsizip//tmp/a.zip", layer: "zone_agricole_s", outPath: "/tmp/o.geojson", tolerance: null },
+      runner,
+    );
+    expect(runner.calls[0]?.args).not.toContain("-simplify");
   });
 
   it("throws a clear GDAL-required error when ogr2ogr is absent (ENOENT)", async () => {
