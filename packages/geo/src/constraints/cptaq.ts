@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 
+import { LICENSES, WGS84, type CollectionMeta } from "@sentropic/geo-core";
 import { featureCollection } from "@turf/helpers";
 import intersect from "@turf/intersect";
 import type {
@@ -22,6 +23,10 @@ export const CPTAQ_UPSTREAM_URI =
   "https://carto.cptaq.gouv.qc.ca/data/shapefiles/ZA_transposee.zip";
 export const CPTAQ_CONSTRAINT_KIND = "cptaq-zone-agricole";
 export const CPTAQ_CAVEAT = "transposee != plan legal officiel";
+const CPTAQ_SOURCE_ID = "ca-qc/cptaq-zone-agricole";
+const CPTAQ_ATTRIBUTION = "© CPTAQ, Gouvernement du Québec (CC-BY-4.0)";
+const CPTAQ_USAGE_NOTICE =
+  "Transposée au cadastre — n'est PAS le plan légal officiel (D07)";
 export const CPTAQ_TARGET_CRS = "EPSG:4326";
 export const CPTAQ_SERVED_PREFIX = "normalized/ca-qc-constraints";
 export const CPTAQ_PREPROD_BUCKET = "sentropic-geo-preprod";
@@ -124,6 +129,8 @@ export interface CptaqLayout {
   collection: string;
   flatCollectionKey: string;
   nestedCollectionKey: string;
+  flatMetaKey: string;
+  nestedMetaKey: string;
   snapshotPrefix: string;
   flatLatestKey: string;
   nestedLatestKey: string;
@@ -133,6 +140,7 @@ export interface CptaqPublication {
   citySlug: CptaqCitySlug;
   collection: CptaqServedCollection;
   collectionBytes: Uint8Array;
+  metaBytes: Uint8Array;
   snapshotSha256: `sha256:${string}`;
   snapshotKey: string;
   pointerBytes: Uint8Array;
@@ -192,7 +200,9 @@ export function cptaqLayout(citySlug: CptaqCitySlug): CptaqLayout {
     collection,
     flatCollectionKey: `${root}.geojson`,
     nestedCollectionKey: `${root}/${collection}.geojson`,
-    snapshotPrefix: `${root}/snapshots/`,
+    flatMetaKey: `${root}.meta.json`,
+    nestedMetaKey: `${root}/${collection}.meta.json`,
+    snapshotPrefix: `${root}/_snapshots/`,
     flatLatestKey: `${root}.latest.json`,
     nestedLatestKey: `${root}/latest.json`,
   };
@@ -204,6 +214,8 @@ export function assertCptaqWritableKey(key: string): void {
     return (
       key === layout.flatCollectionKey ||
       key === layout.nestedCollectionKey ||
+      key === layout.flatMetaKey ||
+      key === layout.nestedMetaKey ||
       key === layout.flatLatestKey ||
       key === layout.nestedLatestKey ||
       (key.startsWith(layout.snapshotPrefix) && /^[a-f0-9]{64}\.geojson$/.test(key.slice(layout.snapshotPrefix.length)))
@@ -592,6 +604,21 @@ export function prepareCptaqPublications(
     const collectionBytes = new TextEncoder().encode(`${canonicalJson(collection)}\n`);
     const snapshotSha256 = sha256(collectionBytes);
     const snapshotKey = `${layout.snapshotPrefix}${snapshotSha256.slice("sha256:".length)}.geojson`;
+    const meta: CollectionMeta = {
+      sourceId: CPTAQ_SOURCE_ID,
+      datasetId: layout.collection,
+      title: `Zone agricole protégée (CPTAQ transposée) — ${city.name}`,
+      license: LICENSES["cc-by-4.0"],
+      attribution: CPTAQ_ATTRIBUTION,
+      crs: WGS84,
+      fetchedAt: collection.proof.geometry_source.retrieved_at,
+      count: collection.features.length,
+      rights: {
+        profile: "open",
+        licenseStatus: "explicit",
+        usageNotice: CPTAQ_USAGE_NOTICE,
+      },
+    };
     const pointer = {
       schema_version: "1.0.0",
       contract: "ca-qc-constraints-latest",
@@ -608,6 +635,7 @@ export function prepareCptaqPublications(
       citySlug: city.slug,
       collection,
       collectionBytes,
+      metaBytes: new TextEncoder().encode(`${canonicalJson(meta)}\n`),
       snapshotSha256,
       snapshotKey,
       pointerBytes: new TextEncoder().encode(`${canonicalJson(pointer)}\n`),
@@ -662,10 +690,12 @@ export async function publishCptaqPublications(
     assertCptaqWritableKey(publication.snapshotKey);
     assertCptaqWritableKey(publication.layout.flatCollectionKey);
     assertCptaqWritableKey(publication.layout.nestedCollectionKey);
+    assertCptaqWritableKey(publication.layout.flatMetaKey);
+    assertCptaqWritableKey(publication.layout.nestedMetaKey);
     assertCptaqWritableKey(publication.layout.flatLatestKey);
     assertCptaqWritableKey(publication.layout.nestedLatestKey);
   }
-  const objectCount = publications.length * 5;
+  const objectCount = publications.length * 7;
   if (dryRun) return { dryRun: true, objectCount };
 
   for (const publication of publications) await putSnapshot(store, publication);
@@ -678,9 +708,21 @@ export async function publishCptaqPublications(
     );
     await replaceCurrent(
       store,
+      publication.layout.flatMetaKey,
+      publication.metaBytes,
+      "application/json",
+    );
+    await replaceCurrent(
+      store,
       publication.layout.nestedCollectionKey,
       publication.collectionBytes,
       "application/geo+json",
+    );
+    await replaceCurrent(
+      store,
+      publication.layout.nestedMetaKey,
+      publication.metaBytes,
+      "application/json",
     );
   }
   for (const publication of publications) {
