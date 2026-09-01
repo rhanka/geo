@@ -1,8 +1,9 @@
 # SPEC — geo-map-engine v2.0 : basemap satellite 2D renderer-neutre (source abstrait · attribution dynamique · policy)
 
-> **Statut : DRAFT — design pass geo-archi (wp6), reworké après 2e avis fable-5
-> (NEEDS-REWORK borné → correctifs intégrés). En attente (a) re-check fable-5 focalisé
-> sur ce scope + (b) ratification geo-cond→owner (present-decision).** Additif au contrat
+> **Statut : DRAFT — design pass geo-archi (wp6). Double-instruction PASSÉE : 2e avis fable-5
+> full-draft (NEEDS-REWORK borné) → SPLIT + rework → re-check fable-5 focalisé = RATIFY-WITH-FIXES
+> (3 fixes + 1 nit, tous intégrés). En attente (b) ratification geo-cond→owner (present-decision)
+> + (c) mini-gate wp7 (§5) AVANT gel.** Additif au contrat
 > FIGÉ v1 (`SPEC_GEO_MAP_ENGINE §1`, ADR-0026) → **version MAJEURE v2.0** : ajoute **un** kind
 > de basemap (`raster-source`) + ses types support ; **ne touche AUCUN membre gelé v1**.
 > Auteur : geo-archi. Périmètre **wp6 = le CONTRAT (le *quoi*, renderer-neutre), PAS le build**
@@ -140,6 +141,10 @@ GeoMapEvents (additif v2.0):
 Le moteur **DOIT** émettre `onError` **et** rendre un **repli déclaré** (basemap vide + notice
 d'attribution), **jamais un blanc silencieux** (vert par omission = rouge).
 
+- **`GeoMapError.kind` est EXTENSIBLE** : de nouveaux `kind` peuvent s'ajouter additivement (**MINOR**,
+  non-breaking). Les consommateurs **NE DOIVENT PAS** faire un `switch` exhaustif dessus (branche
+  `default` obligatoire) — pas de piège d'exhaustivité au prochain `kind`.
+
 ## 3. Règles de CONFORMITÉ (load-bearing — pas déclaratif)
 
 ### 3.1 Attribution REQUISE **et RENDUE** ; qui la rend (fable S8)
@@ -148,8 +153,9 @@ d'attribution), **jamais un blanc silencieux** (vert par omission = rouge).
   à l'écran**. **Refus fail-closed** = **absence de mécanisme d'attribution** : `{mode:"static", text:""}`
   (vide) **OU** `{mode:"dynamic"}` sans mécanisme dynamique câblé (fable B4 — le refus ne porte plus
   seulement sur « string vide » mais sur « aucun mécanisme »).
-- **Qui rend (S8)** : le **moteur** possède tout ce qui est dans le host (surface.ts:47-52) ⟹ **le moteur
-  rend le contrôle d'attribution** ; l'adaptateur **alimente** le flux dynamique. **Interdit** :
+- **Qui rend (S8)** : le **moteur** possède tout ce qui est dans le host (surface.ts:72-77 : « The engine
+  owns everything inside the host ») ⟹ **le moteur rend le contrôle d'attribution** ; l'adaptateur
+  **alimente** le flux dynamique. **Interdit** :
   `attributionControl:false` (maplibre) — attribution portée mais invisible = **violation qui a l'air
   conforme** (catch `app`, `GeoMap.svelte`). **Garde exécutable nommée** : un test de conformance
   assert que l'attribution est **dans le DOM ET visible** (pas seulement dans la source) — c'est la
@@ -167,6 +173,16 @@ d'attribution), **jamais un blanc silencieux** (vert par omission = rouge).
   un **test CI qui ÉCHOUE** si la garde est contournée (comme `assertVisionModelAllowed` +
   `vision-engine-policy.test.ts`). §3.2 n'est **pas** déclaratif : sans cette garde+test, la règle n'est
   pas satisfaite.
+- **Chokepoint de provenance (comment put-S3 sait)** : la provenance **voyage sur le manifeste de
+  capture** (`source_id` + `source_policy`) — comme le model-id d'ADR-0024 passe un unique constructeur.
+  La garde put-S3 **refuse sur `manifest.source_policy === "live-embed-only"`** : c'est la cible
+  exécutable de wp7 (pas une re-dérivation par chemin d'URL contournable). Le mini-gate (§5) prouve ce
+  refus sur des octets réels.
+- **Policy = résolution AUTORITAIRE (anti-mal-déclaration)** : `policy` non-optionnelle ferme l'oubli,
+  mais une source **mal étiquetée `cacheable`** (ex. un provider live-embed déclaré cacheable) passerait
+  la garde qui lit la provenance déclarée. ⟹ la **config d'adaptateur/résolution est autoritaire** : la
+  résolution **refuse fail-closed** si la policy déclarée au spec est **plus faible** que la policy du
+  registre provider pour l'`id` résolu (par-construction, pas par-déclaration).
 - **Artefacts dérivés (S7)** : les preuves de conformance v2 (attribution rendue, etc.) **ne déposent
   jamais d'octets d'imagerie provider sur S3** — **assertions / logs**, pas d'octets d'imagerie.
 - ⚠ **Distinction du principe fondateur** : « rien uniquement sur une machine / toute donnée captée sur
@@ -210,7 +226,9 @@ La clé API + les entrées CSP sont des concerns **adaptateur/déploiement** (wp
 
 ## 6. Attendus / suite
 
-- **Design pass** : re-check fable-5 **focalisé sur ce scope** (les correctifs 2D landés) AVANT gel.
+- **Design pass** : ✅ double-instruction passée — 2e avis fable-5 full-draft (NEEDS-REWORK borné) →
+  SPLIT + rework → re-check focalisé = **RATIFY-WITH-FIXES** (fixes §3.1 cite, §3.2 chokepoint+policy
+  autoritaire, `GeoMapError.kind` extensible — **tous intégrés**). Freezable.
 - **Ratification** geo-cond→owner (present-decision), comme v1 ADR-0026 + §9.
 - Post-ratif : **wp7/Codex (geo-socle)** build l'adaptateur Google 2D + la garde policy committée + le
   mini-gate ; geo-archi ratifie la **conformance** (attribution dynamique rendue + `live-embed-only`
