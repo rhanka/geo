@@ -87,12 +87,24 @@ CAS, pas ville-slug) — mon acquire LIT ce raw, il ne re-fetch pas :
 CRS source du `.prj` · emprise réelle bbox/polygon · inventaire d'attributs COMPLET → whitelist
 finale · feature counts + proof-v2. Le manifeste de capture EST la preuve (CLAUDE.md).
 
-## 7. Scope Phase 1 + liste villes (source-gap, PAS inventée)
+## 7. Scope Phase 1 + liste villes (SOURCÉE — contrat committé, PAS inventée)
 
-- Villes = **warden** (ancre G02 reproductible) + **quelques villes prioritaires Steve**.
-- ⚠ **La liste top-priorité Steve** (opportunités <6mo / WP B) = **immo / opportunity-scoring
-  (i-cond/i-arch)** — **SOURCE-GAP, jamais inventée**. Stopgap possible : **warden + saint-stanislas**
-  (ancres démo §9 ratifiées, `no-hit-covered`/`not-covered` visibles) jusqu'à la vraie liste immo.
+- **Liste top-priorité Steve = RÉSOLUE** (i-arch ; source = contrat committé+testé
+  `api/src/services/graph/bprime-recette.fixture.ts:139-170` `BPRIME_STEVE30_CONTRACT_CITIES` —
+  anti-invention, pas dérivé/deviné). Steve ≥6/10, slugs **EXACTS** :
+  `saint-stanislas-de-kostka`(10) · `sutton`(10) · `saint-raphael`(10) · `saint-raymond`(9) ·
+  `saint-boniface`(8) · `coaticook`(8) · `saint-mathieu-de-beloeil`(7) · `saint-amable`(7) ·
+  `mont-saint-hilaire`(7) · `saint-gilbert`(6).
+- ⚠ **CORRECTION slug (i-arch)** : le Steve-10 = **`saint-stanislas-de-kostka` EXACT**, **PAS
+  `saint-stanislas`** bare (= une AUTRE ville). 4 slugs distincts (`saint-stanislas` /
+  `saint-stanislas-de-kostka` / `saint-stanislas--des-chenaux` / `saint-stanislas--maria-chapdelaine`) ;
+  cross-check oracle-72 `bylaw-saint-stanislas-de-kostka-451-2025`.
+- **Ordre 1er livrable (le plus SOLIDE, i-arch)** : (1) **warden** (pilote env-layer désigné par Steve,
+  raw meeting l.95) → (2) **sutton + coaticook** (offline-PROUVÉS = nœuds réels committés) →
+  (3) **saint-stanislas-de-kostka + saint-raphael** (Steve-10) → (4) saint-raymond / saint-boniface /
+  saint-mathieu-de-beloeil / saint-amable / mont-saint-hilaire / saint-gilbert. Runner **city-agnostic**
+  → re-run sur la liste. (Priorité DOCUMENTÉE Steve = la recette, pas le live-scoring `opportunites.ts` —
+  i-cond le redemande si l'owner veut le live-computed <6-mois.)
 
 ## 8. WHEN réaliste (minimal few-city, §6 réutilisé)
 
@@ -106,8 +118,21 @@ quelques villes, **dominé par le build acquire-delta, PAS la data**. « Jours-s
 - ✅ **geo-cond** : stopgap **warden + saint-stanislas = GO** (villes ratifiées, runner city-agnostic →
   1er visible réel, re-run sur la liste Steve après). Runner-assemblage = **Codex** (geo-cond coordonne
   le lancement du brief consolidé : acquire=moi + serving=geo-archi + gate/job=k8s/§6).
-- **geo-archi** : confirmer transposée = source AUTORISÉE §9 (vs plan légal, D07) — non-bloquant.
-- **immo / i-cond** : liste villes top-priorité Steve (source-gap ; stopgap ratifié entre-temps).
+- ✅ **geo-archi** : **served-family/taxonomie `ca-qc-constraints` CONFIRMÉE** (distincte de `qc-zonage` ;
+  mon acquire la produit) + **transposée = source §9 AUTORISÉE CONFIRMÉE** (seul vecteur dispo + produit
+  officiel CPTAQ + cadastre-alignée → join EXACT_GEOM plus propre ; caveat servi). ⚠ Contingence : usage
+  **légal-autorité** ultérieur = plan décrété = **source SÉPARÉE** (hors §9-coverage) Phase-later.
+- ✅ **CAPTURE-lane = `constraints` APPROUVÉ (geo-cond)** : le runner déployé @37c9ce49 n'avait PAS
+  `constraints` dans `CAPTURE_LANES` (pv) → **Codex l'AJOUTE à l'enum** (coût mineur deploy accepté vs le
+  `zones`-ready-now, pour la propreté + future-proof BDZI/GRHQ). ⟹ **nouveau `runner_git`** post-enum-add
+  + deploy → **le design_sha pv se RECOMPUTE** pour `lane=constraints` (le candidat `7a3c9374` calculé pour
+  `lane=zones` est SUPERSEDÉ). La capture séquence **après** le build+deploy Codex (qui ajoute la lane).
+  CAS source-keyed `raw/cptaq/…` ; served-taxonomie `ca-qc-constraints` (mon acquire) inchangée.
+- ⚠ **Worklist RUNNER = bare-array `[{slug,source,urls}]` STRICT** (pv, `parseCaptureWorklist` =
+  `z.array(TargetSchema.strict())`) : métadonnées (license/caveat/byte-validation/…) → **sidecar**, PAS
+  dans le worklist runner. Fichier runner = `work/coverage/cptaq-capture-worklist-runner-20260831.json` ;
+  sidecar riche = `cptaq-capture-worklist-20260831.json`.
+- **immo / i-cond** : liste villes top-priorité Steve (source-gap ; stopgap warden+saint-stanislas ratifié entre-temps).
 
 Anti-invention : chaque fait de source (CRS, emprise, whitelist, villes) vient de D07/byte-validation
 ou est explicitement **différé au tier-2 / source-gap** — jamais gravé comme acquis.
