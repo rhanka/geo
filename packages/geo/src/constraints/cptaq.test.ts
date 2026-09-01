@@ -1,9 +1,11 @@
 import { writeFile } from "node:fs/promises";
 
+import { LICENSES } from "@sentropic/geo-core";
 import type { FeatureCollection, Polygon } from "geojson";
 import { describe, expect, it } from "vitest";
 
 import type { CommandRunner } from "../acquire/gdal.js";
+import { isCanonicalGeojsonKey } from "../storage/canonical-key.js";
 import {
   assertCptaqPreprodBucket,
   assertCptaqSourceProperties,
@@ -266,7 +268,13 @@ describe("CPTAQ served publication", () => {
     expect(first.layout.nestedCollectionKey).toBe(
       "normalized/ca-qc-constraints/ca-qc-constraints-warden/ca-qc-constraints-warden.geojson",
     );
-    expect(first.snapshotKey).toMatch(/\/snapshots\/[a-f0-9]{64}\.geojson$/);
+    expect(first.layout.flatMetaKey).toBe(
+      "normalized/ca-qc-constraints/ca-qc-constraints-warden.meta.json",
+    );
+    expect(first.layout.nestedMetaKey).toBe(
+      "normalized/ca-qc-constraints/ca-qc-constraints-warden/ca-qc-constraints-warden.meta.json",
+    );
+    expect(first.snapshotKey).toMatch(/\/_snapshots\/[a-f0-9]{64}\.geojson$/);
     const pointer = JSON.parse(new TextDecoder().decode(first.pointerBytes));
     expect(pointer).toMatchObject({
       schema_version: "1.0.0",
@@ -298,9 +306,60 @@ describe("CPTAQ served publication", () => {
     );
     expect(one.map((item) => item.snapshotSha256)).toEqual(two.map((item) => item.snapshotSha256));
     expect([...one[0]!.collectionBytes]).toEqual([...two[0]!.collectionBytes]);
+    expect(one.map((item) => [...item.metaBytes])).toEqual(
+      two.map((item) => [...item.metaBytes]),
+    );
   });
 
-  it("writes snapshot first then both collection layouts and both pointers", async () => {
+  it.each(CPTAQ_PHASE1_CITIES)(
+    "writes canonical $slug metadata beside both served layouts",
+    async (city) => {
+      const publication = prepareCptaqPublications(collections, CPTAQ_PREPROD_BUCKET)
+        .find((item) => item.citySlug === city.slug)!;
+      const store = memoryStore();
+      await publishCptaqPublications(store, [publication], false);
+
+      const flatMetaKey = publication.layout.flatMetaKey;
+      const nestedMetaKey = publication.layout.nestedMetaKey;
+      const flatMetaBytes = store.objects.get(flatMetaKey)?.bytes;
+      const nestedMetaBytes = store.objects.get(nestedMetaKey)?.bytes;
+      expect(flatMetaBytes).toEqual(publication.metaBytes);
+      expect(nestedMetaBytes).toEqual(publication.metaBytes);
+
+      const meta = JSON.parse(new TextDecoder().decode(flatMetaBytes));
+      expect(meta).toEqual({
+        attribution: "© CPTAQ, Gouvernement du Québec (CC-BY-4.0)",
+        count: publication.collection.features.length,
+        crs: "EPSG:4326",
+        datasetId: `ca-qc-constraints-${city.slug}`,
+        fetchedAt: context.proof.retrieved_at,
+        license: LICENSES["cc-by-4.0"],
+        rights: {
+          licenseStatus: "explicit",
+          profile: "open",
+          usageNotice: "Transposée au cadastre — n'est PAS le plan légal officiel (D07)",
+        },
+        sourceId: "ca-qc/cptaq-zone-agricole",
+        title: `Zone agricole protégée (CPTAQ transposée) — ${city.name}`,
+      });
+      expect(meta.license.id).toBe(LICENSES["cc-by-4.0"].id);
+    },
+  );
+
+  it("keeps served collections canonical while excluding pointers and snapshots", () => {
+    for (const publication of prepareCptaqPublications(collections, CPTAQ_PREPROD_BUCKET)) {
+      expect(isCanonicalGeojsonKey(publication.layout.flatCollectionKey)).toBe(true);
+      expect(isCanonicalGeojsonKey(publication.layout.nestedCollectionKey)).toBe(true);
+      expect(isCanonicalGeojsonKey(publication.layout.flatLatestKey)).toBe(false);
+      expect(isCanonicalGeojsonKey(publication.layout.nestedLatestKey)).toBe(false);
+      expect(isCanonicalGeojsonKey(publication.snapshotKey)).toBe(false);
+      expect(isCanonicalGeojsonKey(
+        publication.snapshotKey.replace("/_snapshots/", "/snapshots/"),
+      )).toBe(true);
+    }
+  });
+
+  it("writes snapshot first then both collection/metadata layouts and both pointers", async () => {
     const store = memoryStore();
     const publications = prepareCptaqPublications(collections, CPTAQ_PREPROD_BUCKET);
     await publishCptaqPublications(store, publications, false);
@@ -308,6 +367,8 @@ describe("CPTAQ served publication", () => {
       expect(store.objects.has(publication.snapshotKey)).toBe(true);
       expect(store.objects.has(publication.layout.flatCollectionKey)).toBe(true);
       expect(store.objects.has(publication.layout.nestedCollectionKey)).toBe(true);
+      expect(store.objects.has(publication.layout.flatMetaKey)).toBe(true);
+      expect(store.objects.has(publication.layout.nestedMetaKey)).toBe(true);
       expect(store.objects.has(publication.layout.flatLatestKey)).toBe(true);
       expect(store.objects.has(publication.layout.nestedLatestKey)).toBe(true);
       expect(store.writes.indexOf(publication.snapshotKey)).toBeLessThan(
