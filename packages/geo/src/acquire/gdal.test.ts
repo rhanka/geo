@@ -71,6 +71,18 @@ describe("buildOgr2OgrArgs", () => {
     expect(args).toContain("RFC7946=YES");
     expect(args).not.toContain("-simplify");
   });
+
+  it("can omit coordinate rounding for an EXACT_GEOM workflow", () => {
+    const args = buildOgr2OgrArgs({
+      source: "/vsizip//tmp/ZA_transposee.zip",
+      layer: "zone_agricole_s",
+      outPath: "/tmp/out.geojson",
+      tolerance: null,
+      coordinatePrecision: null,
+    });
+    expect(args).not.toContain("-simplify");
+    expect(args.some((arg) => arg.startsWith("COORDINATE_PRECISION="))).toBe(false);
+  });
 });
 
 describe("parseOgrinfoLayers", () => {
