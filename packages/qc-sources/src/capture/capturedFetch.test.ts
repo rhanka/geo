@@ -19,6 +19,7 @@ import {
   assertCasKeyMatchesBytes,
   assertCasKeyMatchesSha256,
   assertCaptureWritableKey,
+  CAPTURE_LANES,
   buildCaptureRunId,
   captureProofFields,
   captureRunKeys,
@@ -169,6 +170,10 @@ describe("identité du run", () => {
     expect(buildCaptureRunId("normes", { now: new Date("2026-07-25T12:34:56Z") })).toBe(
       "normes-20260725T123456Z-0",
     );
+  });
+
+  it("accepts the dedicated constraints capture lane", () => {
+    expect(CAPTURE_LANES).toContain("constraints");
   });
 
   it("place manifest/log/run.json sous capture/_runs/<run-id>/", () => {
