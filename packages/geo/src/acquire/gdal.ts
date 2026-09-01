@@ -146,9 +146,11 @@ export function buildOgr2OgrArgs(opts: {
   layer: string;
   outPath: string;
   tolerance: number | null;
-  coordinatePrecision?: number;
+  coordinatePrecision?: number | null;
 }): string[] {
-  const precision = opts.coordinatePrecision ?? DEFAULT_COORDINATE_PRECISION;
+  const precision = opts.coordinatePrecision === undefined
+    ? DEFAULT_COORDINATE_PRECISION
+    : opts.coordinatePrecision;
   const args = [
     "-f",
     "GeoJSON",
@@ -156,15 +158,9 @@ export function buildOgr2OgrArgs(opts: {
     "EPSG:4326",
   ];
   if (opts.tolerance !== null) args.push("-simplify", String(opts.tolerance));
-  args.push(
-    "-lco",
-    "RFC7946=YES",
-    "-lco",
-    `COORDINATE_PRECISION=${precision}`,
-    opts.outPath,
-    opts.source,
-    opts.layer,
-  );
+  args.push("-lco", "RFC7946=YES");
+  if (precision !== null) args.push("-lco", `COORDINATE_PRECISION=${precision}`);
+  args.push(opts.outPath, opts.source, opts.layer);
   return args;
 }
 
@@ -277,7 +273,13 @@ export async function inspectLayerSourceCrs(
  *   error when the `ogr2ogr` binary is absent.
  */
 export async function runOgr2Ogr(
-  opts: { source: string; layer: string; outPath: string; tolerance: number | null },
+  opts: {
+    source: string;
+    layer: string;
+    outPath: string;
+    tolerance: number | null;
+    coordinatePrecision?: number | null;
+  },
   runner: CommandRunner = defaultRunner,
 ): Promise<void> {
   const args = buildOgr2OgrArgs(opts);
@@ -312,6 +314,8 @@ export interface ExtractOptions {
   layer: string;
   /** Douglas–Peucker tolerance in source-SRS units; `null` means NONE. */
   tolerance: number | null;
+  /** Decimal rounding; `null` omits GDAL coordinate truncation for EXACT_GEOM. */
+  coordinatePrecision?: number | null;
   /**
    * Inner dataset path within the archive (e.g. `"SDA.gpkg"`). For `zip` it may
    * be omitted (GDAL opens the sole contained dataset); for `7z` it is REQUIRED
@@ -372,7 +376,15 @@ export async function extractLayerToGeoJson(
 
     const outPath = join(work, "out.geojson");
     await runOgr2Ogr(
-      { source, layer: opts.layer, outPath, tolerance: opts.tolerance },
+      {
+        source,
+        layer: opts.layer,
+        outPath,
+        tolerance: opts.tolerance,
+        ...(opts.coordinatePrecision !== undefined
+          ? { coordinatePrecision: opts.coordinatePrecision }
+          : {}),
+      },
       runner,
     );
 
