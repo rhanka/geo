@@ -164,7 +164,7 @@ describe("CPTAQ proof-bound S3 runner", () => {
       raw_sha256: `sha256:${rawDigest}`,
       dry_run: true,
       simplify: "NONE",
-      publication_object_count: 20,
+      publication_object_count: 28,
     });
     expect(summary.collections.map((item) => item.city_slug)).toEqual([
       "warden",
@@ -177,7 +177,7 @@ describe("CPTAQ proof-bound S3 runner", () => {
     expect(extractArchive).toHaveBeenCalledOnce();
   });
 
-  it("publishes exactly snapshot + flat/nested objects + flat/nested CAS pointers", async () => {
+  it("publishes exactly snapshot + flat/nested objects and metadata + CAS pointers", async () => {
     const store = repository();
     const summary = await runCptaqNormalizeServe(
       { rawCasKey, captureManifestKey: manifestKey, publish: true },
@@ -191,10 +191,11 @@ describe("CPTAQ proof-bound S3 runner", () => {
       },
     );
     expect(summary.dry_run).toBe(false);
-    expect(store.writes).toHaveLength(20);
+    expect(store.writes).toHaveLength(28);
     expect(store.writes.filter((key) => key.endsWith("/latest.json"))).toHaveLength(4);
     expect(store.writes.filter((key) => key.endsWith(".latest.json"))).toHaveLength(4);
-    expect(store.writes.filter((key) => key.includes("/snapshots/"))).toHaveLength(4);
+    expect(store.writes.filter((key) => key.endsWith(".meta.json"))).toHaveLength(8);
+    expect(store.writes.filter((key) => key.includes("/_snapshots/"))).toHaveLength(4);
   });
 
   it("fails before GDAL when the S3 bytes do not match the raw CAS key", async () => {
