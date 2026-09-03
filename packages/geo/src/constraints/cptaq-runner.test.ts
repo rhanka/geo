@@ -39,7 +39,7 @@ function source(): FeatureCollection<Polygon, Record<string, unknown>> {
     features: [{
       type: "Feature",
       geometry: square(-75, 44.5, -71, 46),
-      properties: { Mrc: "Test", Date_maj: "2026-08-31", Zonage: "A" },
+      properties: { id: 1, mrc: null, zonage: "Zone agricole", date_maj: "2026-08-31" },
     }],
   };
 }
