@@ -21,7 +21,7 @@
 
 ## Un « budget cap » GCP = ALERTE, pas hard-cap
 
-4 couches ; la **(2) = le hard-cap réel** (une Cloud Function **désactive l'API billable Map Tiles `tile.googleapis.com`** quand la dépense atteint le seuil — coupe le spend **sans toucher au billing account** ; détacher le billing exigerait un scope billing-account-wide qu'on refuse → path B i-infra). Méthode = **gcloud CLI** (pas Playwright ; le deploy de la Function est trop critique).
+4 couches ; la **(2) = le hard-cap réel** (une Cloud Function **met le quota consumer à 0** sur les 4 métriques billables de `tile.googleapis.com` quand la dépense atteint le seuil — l'API sert alors 0 req/min = spend coupé, **sans toucher au billing account ni désactiver l'API** ; path A (détacher billing) exigeait un scope billing-account refusé, path B (disable API) impossible pour une SA → **path C1** i-infra/k8s, prouvé empiriquement). Méthode = **gcloud CLI** (pas Playwright ; le deploy de la Function est trop critique).
 
 ## Étapes
 
@@ -47,14 +47,14 @@
     --threshold-rule=percent=0.5 --threshold-rule=percent=0.9 --threshold-rule=percent=1.0 \
     --notifications-rule-pubsub-topic="projects/radar-3dtiles-preprod/topics/billing-guardrail"
   ```
-- **E — service account + rôle least-priv (path B, PROJECT-scope)** — la SA peut UNIQUEMENT désactiver des services (kill), jamais les ré-activer ni toucher au billing :
+- **E — service account + rôle least-priv (path C1, PROJECT-scope)** — la SA peut UNIQUEMENT poser des quota-overrides ; kill-only est enforced au **CODE** (la Function ne pose que 0 ; remonter le quota = step humain), car `quotas.update` est bidirectionnel (grain minimal GCP) :
   ```
   gcloud iam service-accounts create cap-billing-sa
-  gcloud iam roles create capBillingApiDisabler --project=radar-3dtiles-preprod \
-    --permissions=serviceusage.services.disable,serviceusage.services.get --stage=GA
+  gcloud iam roles create capBillingQuotaCapper --project=radar-3dtiles-preprod \
+    --permissions=serviceusage.quotas.update,serviceusage.quotas.get --stage=GA
   gcloud projects add-iam-policy-binding radar-3dtiles-preprod \
     --member="serviceAccount:cap-billing-sa@radar-3dtiles-preprod.iam.gserviceaccount.com" \
-    --role="projects/radar-3dtiles-preprod/roles/capBillingApiDisabler"
+    --role="projects/radar-3dtiles-preprod/roles/capBillingQuotaCapper"
   # run.invoker (post-deploy) : le gen2 = Cloud Run ; sinon la Function n'est jamais invoquée
   gcloud run services add-iam-policy-binding cap-billing --region=europe-west1 --project=radar-3dtiles-preprod \
     --member="serviceAccount:cap-billing-sa@radar-3dtiles-preprod.iam.gserviceaccount.com" --role="roles/run.invoker"
@@ -72,10 +72,11 @@
 - **🔴 J — TEST-KILL, AVANT LA CLÉ** (prouve le hard-cap) :
   ```
   gcloud pubsub topics publish billing-guardrail --message='{"costAmount":51,"budgetAmount":50}'
-  # attendu : tile.googleapis.com ABSENT des services enabled (l'API billable a été coupée)
-  gcloud services list --enabled --project radar-3dtiles-preprod --filter="config.name:tile.googleapis.com"
-  # ré-enable = HUMAIN, project-scoped (PAS un ré-attach billing ; la SA ne peut pas ré-enable) :
-  gcloud services enable tile.googleapis.com --project radar-3dtiles-preprod
+  # attendu : quota consumer=0 sur les 4 métriques billables de tile.googleapis.com (0 req/min)
+  gcloud alpha services quota list --service=tile.googleapis.com --consumer=projects/radar-3dtiles-preprod --format=json
+  # ré-enable = HUMAIN, project-scoped (remonter le quota par métrique ; la SA ne pose que 0) :
+  gcloud alpha services quota update --service=tile.googleapis.com --consumer=projects/radar-3dtiles-preprod \
+    --metric=tile.googleapis.com/twodtiles --unit="1/min/{project}" --value=6000
   ```
 - **H — clé, EN DERNIER (si J OK)** :
   ```
@@ -88,4 +89,4 @@
 
 ## Source de la Function
 
-[`./cap-billing/index.js`](./cap-billing/index.js) + [`./cap-billing/package.json`](./cap-billing/package.json) — la Function **désactive l'API billable `tile.googleapis.com`** (`serviceusage.services.disable`) quand `costAmount >= budgetAmount` (path B : coupe le spend sans toucher au billing account). 0 secret dans la source.
+[`./cap-billing/index.js`](./cap-billing/index.js) + [`./cap-billing/package.json`](./cap-billing/package.json) — la Function **met le quota consumer à 0** sur les 4 métriques billables de `tile.googleapis.com` (`serviceusage` v1beta1 `consumerOverrides`, `overrideValue:"0"` HARDCODÉ = kill-only-code) quand `costAmount >= budgetAmount` (path C1 : coupe le spend sans toucher au billing account). 0 secret dans la source.
