@@ -4,7 +4,9 @@ Décisions prises **en autonomie** par le conductor (`claude:geo`, Opus 4.8) en 
 chacune validée par **double consensus** de deux conseillers Opus-4.8 indépendants quand elle
 est structurante. Elles sont **révisables** : ce journal existe pour la revue a posteriori.
 
-Format : `ADR-NNNN — titre · statut · date`. Statut ∈ {accepted, superseded, revisit}.
+Format : `ADR-NNNN — titre · statut · date`. Statut ∈ {proposed, accepted, superseded, revisit}
+(`proposed` = record durable rédigé mais **pas encore ratifié owner** ; flip `accepted` UNIQUEMENT en
+référençant la ratification **owner-directe capturée** — jamais sur un relais ni un say-so conducteur).
 
 ---
 
@@ -612,6 +614,91 @@ coherence_id servi, parité miroir-plein, isolation A2) sont **inchangés**.
 
 **Réf.** `DESIGN_GEO_DEPLOYMENT_PLANE_ADOPTION_2026-08-19.md` (#230) ; ADR-0027 §8 ; standard s-archi `ARCH-17`/`BR-55`
 (`SPEC_DECISION_DEPLOYMENT_PLANE.md`, hors repo geo) ; réf RBAC immo `radar-immobilier:deploy/k8s/11-ci-deployer-preprod-rbac.yaml`.
+
+## ADR-0029 — **Adoption geo-map-engine v2.0 (basemap satellite 2D scopé, renderer-neutre)** · proposed · 2026-08-31
+
+**⚠ Statut `proposed`** — record durable rédigé, **PAS ratifié**. Flip `accepted` **uniquement** en
+référençant la ratification **owner-directe capturée** (owner présent à la session bundlée, ses mots
+capturés durablement, ex. un id de décision track comme le §9 `01M1A0GDF3NRZT6CQSGW8AXMAF`) — **jamais**
+sur un relais conducteur ni un say-so.
+
+**Contexte.** Le seam moteur **v1 est GELÉ** (ADR-0026) : basemap `blank | raster | vector`, où `raster` v1
+= `{ tiles: readonly string[]; attribution: string }` — un **XYZ statique à attribution statique**. Correct
+pour un bare-XYZ ouvert, mais **incapable** d'exprimer un provider satellite à **clé + session + attribution
+dynamique**. L'owner a choisi **Voie A = Google** (2026-08-31) et veut le **fond satellite vite**. Le draft
+v2 photoréel complet a reçu un 2e avis **fable-5 = NEEDS-REWORK (borné)** (8 blockers + 9 should-fix) → le
+conducteur (geo-cond) a **splitté** (2026-08-31) : le **2D part d'abord et seul** (ratifiable en jours), le
+**3D photoréel suit sur son track** (mini-gate wp7). ADR-0026 grave : « toute évolution du seam gelé =
+nouvelle version (semver) + ADR » → cet ADR EST le record requis pour le MAJOR.
+
+**Décision (proposed).** Adopter **`SPEC_GEO_MAP_ENGINE_V2_BASEMAP_2D.md`** comme **v2.0 (MAJOR)** :
+1. **Nouveau membre basemap `raster-source`** — **additif PUR** : les 3 membres v1 (`blank`/`raster`/`vector`)
+   restent **inchangés** (vérifié byte-for-byte contre `basemap.ts`) ⟹ pas de re-piège de laxité (NOTE W5).
+2. **`RasterSource { id, imageryType, attribution, policy }`** — source **ABSTRAITE** (l'adaptateur résout
+   `id`→URL/clé, jamais un provider/secret au contrat) ⟹ **provider-neutre** (Google **ni** aucun autre
+   n'apparaît dans le contrat public).
+3. **`AttributionSpec = static{text≠∅} | dynamic`** — l'attribution peut être **dynamique** (Google 2D =
+   par-viewport) ; **refus fail-closed sur ABSENCE DE MÉCANISME** (pas seulement « string vide »).
+4. **`policy: SourcePolicy` REQUISE** (`live-embed-only | cacheable`) — absence **non représentable** (pas de
+   fail-open) ; **garde committée + test CI MANDATÉS** (pattern ADR-0024) refusant tout octet d'une source
+   `live-embed-only`, provenance portée par le **manifeste de capture** (`source_policy`).
+5. **Canal d'erreur `onError` / `GeoMapError`** — additif à `GeoMapEvents` ; live-embed = refus runtime NORMAL
+   (session/quota/clé) → repli déclaré obligatoire, **jamais un blanc silencieux**.
+**Double-instruction PASSÉE** : fable-5 full-draft (NEEDS-REWORK) → split + rework → **re-check focalisé =
+RATIFY-WITH-FIXES** (3 fixes + 1 nit intégrés, commit `fc054803`).
+
+**Conditions de GEL (avant que le contrat soit marqué FIGÉ + que wp7 build dessus).** (b) **ratification
+owner-directe** (le flip `accepted` de cet ADR) ; (c) **mini-gate wp7** — Google 2D réel : tuiles rendues +
+attribution dynamique **visible dans le DOM** + garde policy **refuse** une tentative de capture S3 + **zéro
+octet d'imagerie provider sur S3**. Doctrine v1 « **gel gagné sur preuve** » (ADR-0026 / SPEC §9).
+
+**Conséquence.** Additif : v1 intact, rollback = retirer `raster-source`. **wp6** = ce contrat + les règles ;
+**wp7/geo-socle** = l'adaptateur (session/clé/CSP/résolution/flux-attribution) + la garde policy committée +
+le mini-gate. Le **track 3D** (`tileset-3d`/`terrain`/drape/caméra) réutilise ces types comme fondation et
+ouvre son **propre PR** (après merge du §9-runner ; cap ≤2 PR).
+
+**Réf.** `SPEC_GEO_MAP_ENGINE_V2_BASEMAP_2D.md` (PR #301, commit `fc054803`) ; `SPEC_GEO_MAP_ENGINE.md` §1/§1.5.1/§9 ;
+ADR-0026 (règle semver+ADR sur le seam gelé) ; ADR-0024 (pattern garde+test par-construction) ; ADR-0030
+(ODbL-reversal, décision jumelle) ; `SPEC_WORKPACKAGES.md` §1 (frontière wp6/wp7).
+
+## ADR-0030 — **ODbL-reversal : fond satellite Google live-embed 2D (Voie A) supersède la posture blank-ODbL-safe** · proposed · 2026-08-31
+
+**⚠ Statut `proposed`** — record durable rédigé, **PAS ratifié**. **CET ADR EST le record durable
+owner-ratifié que geo-socle exige pour wirer Google sans laundering** → son flip `accepted` **DOIT** être
+grounded dans la **parole directe de l'owner capturée** (owner présent à la session bundlée), **jamais** sur
+un relais ni un say-so conducteur.
+
+**Contexte.** `GeoMap.svelte:292` grave **délibérément** la posture « Tokenized blank background — **NO
+external tiles** (ODbL-safe ; PMTiles basemap is a later increment) », avec `attributionControl: false`
+(`:305`). C'était le choix **ODbL-safe** (aucune tuile externe, aucune obligation d'attribution externe).
+L'owner (2026-08-31) : « le geo-map 3D ne présente aucun intérêt sur de la donnée non géographie … **on
+cherche déjà à faire le fond** » → il veut un **vrai fond satellite** et a choisi **Voie A = Google**.
+
+**Décision (proposed).** **Reverser** la posture blank-ODbL-safe → adopter un **fond satellite Google
+live-embed 2D** (Voie A), sous les invariants du contrat v2.0 (ADR-0029) :
+1. **live-embed / no-cache / no-redistribution** — les tuiles vont **navigateur → Google en direct**,
+   **jamais capturées / cachées / proxifiées sur S3** (ToS Google ; précédent `SPEC_WORKPACKAGES §2` Google
+   Street View « cache/rediffusion interdits »). Distinct du principe fondateur S3 (qui régit la donnée
+   **capturée** ; un embed vif sous licence n'est **pas** une capture) — gravé par `policy: live-embed-only`
+   + garde put-S3 (ADR-0029).
+2. **attribution DYNAMIQUE rendue** — l'adoption **corrige le trap `attributionControl:false`**
+   (`GeoMap.svelte:305`) : quand le `raster-source` Google lande, l'attribution Google (par-viewport) **DOIT**
+   être rendue et visible (sinon = violation licencielle qui a l'air conforme).
+3. **coût tenu par quota-cap** — usage Google 2D Map Tiles ; préprod = free-tier/faible ; garde-fou budgétaire
+   à capitaliser (runbook `GCP_BUDGET_GUARDRAIL_3DTILES.md`, routé i-infra → repo GEO).
+4. **RÉVERSIBILITÉ PRÉSERVÉE par le `source` abstrait** (ADR-0029) — un switch ultérieur vers l'**open**
+   (Sentinel-2/EOX bare-XYZ, ou PMTiles auto-hébergé `cacheable`) ne change **QUE** le `source`, pas le
+   contrat. La reversal est donc elle-même réversible (décision coût/licence owner, sans rework).
+
+**Conséquence.** Supersède la posture « blank-only / no-external-tiles » de `GeoMap.svelte:292` **pour le
+basemap** (les couches data continuent de porter le sens). N'entre en vigueur qu'au **flip `accepted`**
+(owner-direct) ; jusque-là geo-socle **prépare** le wiring contre le contrat (ADR-0029) mais **n'active**
+Google qu'après ce record ratifié. Le **mini-gate wp7** (ADR-0029) prouve l'attribution rendue + le no-cache
+avant gel.
+
+**Réf.** `GeoMap.svelte:292` (posture blank-ODbL-safe) / `:305` (`attributionControl:false`) ; ADR-0029
+(contrat v2.0 + `source` abstrait/réversibilité) ; `SPEC_WORKPACKAGES.md` §2 (précédent Google no-cache) ;
+turn owner 2026-08-31 (« on cherche déjà à faire le fond », Voie A = Google).
 
 ## Méthode de décision
 
