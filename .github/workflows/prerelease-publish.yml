@@ -1,0 +1,99 @@
+name: NPM Prerelease Publish (single package, dist-tag)
+
+# Manual, SINGLE-package PRERELEASE publish to a NON-latest dist-tag (e.g. `next`).
+# Stages a package against a downstream consumer in a SEPARATE repo (ADR-0029-sanctioned;
+# the prerelease activates NOTHING) WITHOUT cutting a synchronized all-packages `latest`
+# release — the stable `latest` publish stays EXCLUSIVELY on the tag-driven `npm-publish.yml`
+# (all 6 @sentropic/geo-* packages, version == tag).
+#
+# Trigger MANUALLY (workflow_dispatch). The chosen package must already be at its intended
+# PRERELEASE version in package.json on a commit that is ON the default branch. FAIL-CLOSED:
+# refuses an un-merged commit, a `latest` dist-tag, a private package, AND a non-prerelease
+# version — so it can never clobber the stable `latest` tag nor publish un-reviewed code.
+#
+# Auth: npm Trusted Publishing (OIDC). The package must ALREADY EXIST on the registry (a
+# brand-new name uses `bootstrap-npm-publish.yml` first), AND a trusted publisher must be
+# configured on npm for THIS workflow + the package — a registry-admin / package-owner setup
+# that this workflow does NOT and cannot perform. `--provenance` attaches a signed statement.
+on:
+  workflow_dispatch:
+    inputs:
+      package_dir:
+        description: "Package directory to prerelease-publish (e.g. packages/geo-map-engine)"
+        required: true
+        default: "packages/geo-map-engine"
+      dist_tag:
+        description: "npm dist-tag — NON-latest (e.g. next)"
+        required: true
+        default: "next"
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: prerelease-publish-${{ inputs.package_dir }}-${{ inputs.dist_tag }}
+  cancel-in-progress: false
+
+jobs:
+  prerelease-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          registry-url: "https://registry.npmjs.org"
+
+      - name: Guard — merged-to-default + non-latest tag + prerelease version (fail-closed)
+        id: guard
+        env:
+          PACKAGE_DIR: ${{ inputs.package_dir }}
+          DIST_TAG: ${{ inputs.dist_tag }}
+          RELEASE_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          # 1. Never publish un-merged code: the checked-out commit must be on the default branch.
+          git fetch origin "${RELEASE_BRANCH}:refs/remotes/origin/${RELEASE_BRANCH}"
+          if ! git merge-base --is-ancestor "$GITHUB_SHA" "origin/${RELEASE_BRANCH}"; then
+            echo "::error::Refusing: $GITHUB_SHA is not merged into origin/$RELEASE_BRANCH."
+            exit 1
+          fi
+          # 2. NON-latest only — the stable `latest` release goes through the tag-driven npm-publish.yml.
+          if [ -z "$DIST_TAG" ] || [ "$DIST_TAG" = "latest" ]; then
+            echo "::error::Refusing: NON-latest prerelease tags only (latest goes through npm-publish.yml, all 6 packages, version==tag)."
+            exit 1
+          fi
+          PKG_JSON="./${PACKAGE_DIR}/package.json"
+          NAME="$(node -p "require('$PKG_JSON').name")"
+          VERSION="$(node -p "require('$PKG_JSON').version")"
+          PRIVATE="$(node -p "String(!!require('$PKG_JSON').private)")"
+          # 3. Never publish a private package.
+          if [ "$PRIVATE" = "true" ]; then
+            echo "::error::Refusing: $NAME is private (not publishable)."
+            exit 1
+          fi
+          # 4. The version MUST be a prerelease (contains a dash) so it can never become `latest`.
+          case "$VERSION" in
+            *-*) : ;;
+            *) echo "::error::Refusing: $NAME@$VERSION is not a prerelease (no dash); a prerelease dist-tag ($DIST_TAG) requires a prerelease version."; exit 1 ;;
+          esac
+          echo "OK: $NAME@$VERSION -> dist-tag $DIST_TAG"
+          echo "pkg_name=$NAME" >> "$GITHUB_OUTPUT"
+          echo "pkg_version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Upgrade npm for Trusted Publishing
+        run: npm install -g npm@11.16.0
+
+      - name: Install and build
+        run: |
+          npm ci
+          npm run build
+
+      - name: Prerelease-publish (OIDC, single package, NON-latest dist-tag)
+        run: |
+          npm publish --workspace "${{ steps.guard.outputs.pkg_name }}" --tag "${{ inputs.dist_tag }}" --access public --provenance
+          echo "Published ${{ steps.guard.outputs.pkg_name }}@${{ steps.guard.outputs.pkg_version }} -> dist-tag ${{ inputs.dist_tag }}"
