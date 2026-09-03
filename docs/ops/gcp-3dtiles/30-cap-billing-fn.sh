@@ -7,10 +7,10 @@
 # dead (A needed a billing-account grant we refuse; B — a SA cannot disable tile even with
 # serviceUsageAdmin). C1: at the cap the Function sets the CONSUMER QUOTA to 0 on the charged Map
 # Tiles metrics (proven: a SA CAN — k8s probe rc=0). The SA needs only:
-#  - a PROJECT-scoped CUSTOM role with cloudquotas.quotas.get + .update (the Cloud Quotas API grain;
-#    legacy serviceusage.quotas.* measured INSUFFICIENT — k8s). ⚠ quotas.update is BIDIRECTIONAL (the
-#    MINIMAL grain — GCP has no decrease-only): kill-only is enforced in the COMMITTED Function
-#    (hardcoded overrideValue "0"), NOT by the permission. See cap-billing/index.js.
+#  - a PROJECT-scoped CUSTOM role with serviceusage.quotas.update + .get (the consumerOverrides
+#    grain — measured PASS with serviceusage.* alone; cloudquotas.* is NOT required, k8s). ⚠ quotas.update
+#    is BIDIRECTIONAL (the MINIMAL grain — GCP has no decrease-only): kill-only is enforced in the
+#    COMMITTED Function (hardcoded overrideValue "0"), NOT by the permission. See cap-billing/index.js.
 #  - roles/run.invoker on the deployed Cloud Run service (gen2 = Cloud Run).
 source "$(dirname "$0")/env.sh"
 
@@ -18,14 +18,16 @@ gcloud iam service-accounts create cap-billing-sa --project "$PROJECT_ID" 2>/dev
 
 # Least-priv PROJECT-scoped custom role: set/read consumer quota overrides ONLY. Idempotent AND
 # CONVERGENT (create-or-update) so an already-existing role is realigned to THIS permission set —
-# state=script, no drift (any ad-hoc grant is replaced by ROLE_PERMS on update).
-# The grain is the Cloud Quotas API (cloudquotas.quotas.*): the serviceusage v1beta1 consumerOverrides
-# call the Function makes is IAM-checked against cloudquotas.* — legacy serviceusage.quotas.* was
-# measured INSUFFICIENT after 19min propagation (k8s). cloudquotas.googleapis.com is enabled in
-# 10-enable-apis.sh. quotas.update is BIDIRECTIONAL (MINIMAL grain — GCP has no decrease-only):
-# kill-only is enforced in the COMMITTED Function (hardcoded overrideValue "0"), not by the perm.
+# state=script, no drift (any ad-hoc grant is replaced by ROLE_PERMS on update). This convergence is
+# the real fix: the #318 role already had the right perms; its runtime failure was OPERATIONAL (IAM
+# propagation + a stale Cloud Run instance started before the binding propagated, never redeployed) —
+# resolved by re-apply (settled propagation) + a FRESH Function redeploy, NOT by changing perms. The
+# grain is serviceusage.quotas.* (the consumerOverrides create/list the Function makes): measured PASS
+# with serviceusage.* alone, cloudquotas.* NOT required (k8s narrow+final tests). quotas.update is
+# BIDIRECTIONAL (MINIMAL grain — GCP has no decrease-only): kill-only is enforced in the COMMITTED
+# Function (hardcoded overrideValue "0"), not by the perm.
 ROLE_ID="capBillingQuotaCapper"
-ROLE_PERMS="cloudquotas.quotas.get,cloudquotas.quotas.update"
+ROLE_PERMS="serviceusage.quotas.get,serviceusage.quotas.update"
 if ! gcloud iam roles describe "$ROLE_ID" --project "$PROJECT_ID" >/dev/null 2>&1; then
   gcloud iam roles create "$ROLE_ID" --project "$PROJECT_ID" \
     --title="Cap-billing quota capper" \

@@ -6,12 +6,9 @@ source "$(dirname "$0")/env.sh"
 gcloud config set project "$PROJECT_ID"
 # billingbudgets.googleapis.com → `gcloud billing budgets create` (phase 20). eventarc +
 # artifactregistry → gen2 Cloud Function deploy (phase 30; without them the deploy hits an eventarc
-# PERMISSION_DENIED). cloudquotas.googleapis.com → the C1 cap-billing Function enforces via the Cloud
-# Quotas API grain (cloudquotas.quotas.*, not legacy serviceusage.quotas.*); without it enabled the
-# consumer-quota override is denied. Without any of these the matching phase fails "API not enabled".
-# Measured on the real test-kill (k8s). project-scope enable.
+# PERMISSION_DENIED). Without any of these the matching phase fails "API not enabled". Measured on
+# the real test-kill (k8s). project-scope enable.
 gcloud services enable cloudbilling.googleapis.com billingbudgets.googleapis.com \
   cloudfunctions.googleapis.com pubsub.googleapis.com cloudbuild.googleapis.com \
   run.googleapis.com eventarc.googleapis.com artifactregistry.googleapis.com \
-  cloudquotas.googleapis.com \
   --project "$PROJECT_ID"
