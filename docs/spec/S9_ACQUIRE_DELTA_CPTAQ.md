@@ -77,11 +77,12 @@ CAS, pas ville-slug) — mon acquire LIT ce raw, il ne re-fetch pas :
    - Champs `.dbf` = **MINUSCULE verbatim** : `id`(Integer), `mrc`(String), `zonage`(String),
      `date_maj`(Date). ⚠ L'ancien `{Mrc,Date_maj,Zonage}` (uppercase-first) était **PROVISOIRE/FAUX**
      → les 2 gardes (`assertCptaqSourceProperties` transform + `assertCptaqDepositGuard` dépôt) keyant
-     sur les noms exacts droppaient/rejetaient les props (bug latent). Whitelist servie =
-     **`{mrc, zonage, date_maj}`** (casse verbatim) ; **drop `id`** (Integer volatile, hors servi+hash).
+     sur les noms exacts droppaient/rejetaient les props (bug latent). **Whitelist servie (RATIFIÉE) =
+     `{zonage, date_maj}`** (casse verbatim) ; **special-drop `{id, mrc}`** (champs connus, non-PII : `id`
+     Integer volatile ; `mrc` = null ×1446 → drop, re-add si un refresh le peuple) ; **reject tout champ
+     INCONNU** (PII-guard préservé). `id`/`mrc`/`date_maj` tous HORS hash.
    - Faits mesurés : `mrc = null` sur les **1446** features ; `zonage ∈ {"Zone agricole":510,
      "Zone non agricole":936}` ; géométries **100% Polygon** → promues MultiPolygon post-clip.
-   - ⏳ 2 décisions geo-archi pending : `mrc`=null → serve-null vs drop ; `constraint_ref` (voir §6).
 6. **Provenance stamp** : `source{dataset:"zone-agricole-transposee", version, artifact_uri:<S3 raw>,
    upstream_uri:ZA_transposee.zip}` + **proof-v2-ref** + **caveat « transposée ≠ plan légal officiel »**
    (D07 ; ⚠ **confirmer que la transposée-au-cadastre est la source AUTORISÉE §9** vs plan légal) +
@@ -96,17 +97,18 @@ Mesure indépendante de k8s (préprod+gdal ; schéma OBJECTIF, distinct du seal 
 sur cred RO) ; réconciliée + engravée par geo-zones (runner-owner) ; ratifiée par geo-archi (G02).
 
 - **Schéma `.dbf`** (verbatim minuscule) : `id`(Integer) / `mrc`(String) / `zonage`(String) /
-  `date_maj`(Date). Whitelist finale SERVIE = `{mrc, zonage, date_maj}` (casse verbatim) ; **drop `id`**.
+  `date_maj`(Date). Whitelist finale SERVIE (RATIFIÉE) = **`{zonage, date_maj}`** ; **special-drop
+  `{id, mrc}`** (mrc=null×1446, re-add si peuplé) ; reject inconnu (PII-guard).
 - **Attributs mesurés** : `mrc = null` ×1446 ; `zonage ∈ {"Zone agricole":510, "Zone non agricole":936}` ;
   géométries **100% Polygon** (→ MultiPolygon post-clip, contrat servi).
 - **G02 ruling (a) — RATIFIÉ geo-archi** : features servies = **`zonage == "Zone agricole"`** (510) ;
   **emprise = dataset COMPLET (1446, les 2 classes)** → couverture 3-états `no-hit-covered` prouvée par
   l'emprise (PAS par des features non-agricole servies, qui seraient trompeuses sous `cptaq-zone-agricole`).
-  `date_maj` + `mrc` = **servis métadonnée, HORS hash**.
-- **constraint_ref** = `sha256(géométrie RAW canonique [+ zonage])` — ⏳ zonage-in-hash **REDONDANT**
-  sous agricole-only (zonage constant) → résolution geo-archi pending : `sha256(géométrie)` seule
-  (reco geo-zones, cohérent mrc-out) vs zonage-tag-constant explicite.
-- ⏳ pending geo-archi : `mrc`=null → serve-null (fidèle-schéma) vs drop-du-servi.
+  `date_maj` = **servi métadonnée, HORS hash** ; `mrc` = **DROP du servi** (null×1446, existence engravée
+  ici — re-add si un refresh le peuple), HORS hash ; `id` = drop.
+- **constraint_ref = `sha256(géométrie RAW canonique)` SEULE — RATIFIÉ geo-archi** : zonage constant sous
+  agricole-only → zonage-in-hash retiré (redondant, cohérent mrc-out) ; **identité = géométrie pure**
+  (zonage / mrc / date_maj / id TOUS hors hash).
 - **Sémantique zonage** : « Zone agricole » = DANS la zone protégée LPTAA (la contrainte) ;
   « Zone non agricole » = HORS/non-protégé (inférence domaine geo-zones ; sens EXACT — zone blanche vs
   îlots déstructurés — dans `A_Lire_zone_agricole_transposee.pdf`, NON-LU : préprod AccessDenied + pas de
