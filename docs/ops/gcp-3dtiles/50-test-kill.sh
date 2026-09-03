@@ -18,11 +18,14 @@ echo "over-budget simulé publié ; attente du cap quota=0 sur les 4 métriques 
 ALL_ZERO="no"
 for attempt in $(seq 1 8); do
   sleep 15
-  # Assert the REAL enforced cap, not just an override's presence: each quotaBucket carries
-  # `effectiveLimit` — the limit enforced AFTER overrides, always in the list JSON — and an
-  # override=0 lowers it to the string "0" (measured, i-infra). Stronger than presence/overrideValue,
-  # and it subsumes the LIMIT_ID de-risk (a metric lacking the exact /min/project limit → no match →
-  # fail-loud). i-infra validates the same effectiveLimit=0 independently at re-test-kill.
+  # Assert the PRESENCE of a consumerOverride on the /min/project bucket of each charged metric — the
+  # only READABLE signal that the cap is set. When an override EXISTS the bucket shows
+  # {consumerOverride:{name}, defaultLimit} with NO effectiveLimit and NO overrideValue (measured on a
+  # REAL override, i-infra; a bucket WITHOUT override shows {defaultLimit, effectiveLimit}, and a GET
+  # on the override → 404). The Function writes ONLY overrideValue "0" (hardcoded, co-val'd), so a
+  # present override on a charged metric = capped at 0. i-infra reads the same presence + the
+  # Function's "override=0 créé/patché" logs independently. Still keyed on the /min/project limit so a
+  # metric lacking it → no bucket → fail-loud (LIMIT_ID de-risk preserved).
   QUOTA_JSON=$(gcloud alpha services quota list --service=tile.googleapis.com \
     --consumer="projects/${PROJECT_ID}" --project "$PROJECT_ID" --format=json 2>/dev/null || echo "[]")
   MISSING=$(printf '%s' "$QUOTA_JSON" | METRICS="$METRICS" node -e '
@@ -41,10 +44,11 @@ for attempt in $(seq 1 8); do
       const lim = (item.consumerQuotaLimits || []).find((l) => l.unit === "1/min/{project}");
       if (!lim) continue;
       // The default (project-wide) bucket carries NO `dimensions` key (regional buckets have
-      // dimensions={region:...}); it is the one the dimensionless override caps. effectiveLimit is
-      // a STRING → compare === "0".
+      // dimensions={region:...}); it is the one the dimensionless override caps. A present
+      // consumerOverride.name on it = capped (the value is unreadable, but the Function only ever
+      // writes 0 — hardcoded OVERRIDE_VALUE).
       const b = (lim.quotaBuckets || []).find((x) => !x.dimensions || Object.keys(x.dimensions).length === 0);
-      if (b && b.effectiveLimit === "0") capped.add(m);
+      if (b && b.consumerOverride && b.consumerOverride.name) capped.add(m);
     }
     process.stdout.write(want.filter((m) => !capped.has(m)).join(","));
   ')
