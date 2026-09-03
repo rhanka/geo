@@ -1,0 +1,131 @@
+name: basemap activate-serve
+# §5 GO#2 — ACTIVATION du fond satellite Google 2D (owner-approuvé). KEYLESS (WIF → geo-cap-executor).
+# Ne tourne QUE sur workflow_dispatch dans l'Environment geo-preprod (required-reviewer=owner) → chaque run
+# = approbation owner explicite. Ordre fail-closed :
+#   assert ADR-0030=accepted (GO#1 flip ODbL, decisions.md) → money-gate READ-ONLY (cap-billing ARMÉE) →
+#   ré-attach quota (51) → mint clé 2D restreinte → écrit geo-tile-key (apply, no-log) → rollout restart
+#   geo-api → verify /basemap/2d/session=200.
+#
+# LE FLAG BASEMAP_2D_ENABLED="1" = un CHANGE GIT (la PR ADR-0030→accepted flippe l'overlay, DURABLE ; un
+# patch runtime serait écrasé au prochain cd-preprod). Ce workflow NE flippe PAS le flag — il assert que
+# GO#1 (accepted) est fait, mint la clé, écrit le secret, restart. Le flag "1" arrive via la PR GO#1.
+#
+# L'exécuteur NE s'auto-certifie PAS : i-infra [c9beeb] certifie POST-run (override=none×4 + Function armée
+# + restrictions clé + secret), indépendamment, de ses propres lectures. Les asserts in-step = self-GATES.
+#
+# ⚠ INVARIANT i-infra : `environment: geo-preprod` sur le job → (a) satisfait la trust-condition WIF #53
+# (assertion.environment) ⇒ fédération GCP possible ET (b) arme required-reviewer=owner ⇒ fédérer = dispatch
+# owner-approuvé, PAR CONSTRUCTION. AUCUN job ne fédère GCP sans environment: geo-preprod.
+on:
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: "Raison de l'activation (trace d'audit) — ex: GO owner AAAA-MM-JJ"
+        required: true
+        type: string
+permissions:
+  contents: read
+  id-token: write # WIF OIDC → impersonation geo-cap-executor (keyless)
+concurrency:
+  group: basemap-activate
+  cancel-in-progress: false
+jobs:
+  activate:
+    runs-on: ubuntu-latest
+    environment: geo-preprod # INVARIANT : gate owner (required-reviewer) + trust-condition WIF #53
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. GO#1 fail-closed : ADR-0030 (flip ODbL) DOIT être 'accepted' (decisions.md) — geo-archi Q2.
+      - name: assert ADR-0030=accepted (GO#1 flip ODbL — record de gouvernance owner-direct)
+        run: |
+          grep -qE '^## ADR-0030 .*·[[:space:]]*accepted[[:space:]]*·' docs/decisions.md \
+            || { echo "::error::ADR-0030 n'est pas 'accepted' dans docs/decisions.md — GO#1 (flip ODbL, owner-direct capturé) requis AVANT activation. Fail-closed."; exit 1; }
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: setup gcloud
+        uses: google-github-actions/setup-gcloud@v2
+      - name: WIF auth → impersonation geo-cap-executor (keyless, 0 clé SA téléchargée)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.WIF_PROVIDER }}
+          service_account: ${{ vars.CAP_EXECUTOR_SA }}
+      - name: gcloud alpha (ops quota de 51)
+        run: gcloud components install alpha --quiet || true
+
+      # 2. MONEY-GATE (leg1, #329) — READ-ONLY, fail-closed AVANT toute op de dépense. La cap-billing
+      #    Function doit être ACTIVE + abonnée au topic billing-guardrail (le filet re-cape au dépassement).
+      #    Self-gate de l'exécuteur (cloudfunctions.functions.get, #52) — DISTINCT de la certif i-infra.
+      - name: money-gate — cap-billing Function ARMÉE (fail-closed)
+        run: |
+          source docs/ops/gcp-3dtiles/env.sh
+          read -r STATE TRIGGER < <(gcloud functions describe cap-billing \
+            --project "$PROJECT_ID" --region "$REGION" --gen2 \
+            --format="value(state,eventTrigger.pubsubTopic)")
+          echo "cap-billing state=$STATE trigger=$TRIGGER"
+          [ "$STATE" = "ACTIVE" ] || { echo "::error::cap-billing state=$STATE (attendu ACTIVE) — money-gate fail-closed, PAS de clé."; exit 1; }
+          case "$TRIGGER" in
+            */topics/"$TOPIC") ;;
+            *) echo "::error::cap-billing trigger=$TRIGGER (attendu .../topics/$TOPIC) — money-gate fail-closed, PAS de clé."; exit 1 ;;
+          esac
+
+      # 3. RÉ-ATTACH quota (51) — restaure le quota tile (cap-test override=0 → défaut) pour qu'une clé serve.
+      #    Owner-gated par construction (ce dispatch approuvé). Le cap-billing reste ARMÉ (re-cape au budget).
+      - name: reattach quota (51)
+        run: bash docs/ops/gcp-3dtiles/51-reattach-quota.sh
+
+      # 4. MINT clé 2D restreinte (idempotent). Restrictions co-val i-infra : API = Map Tiles
+      #    (tile.googleapis.com) SEULE + referrer sent-tech.ca. keyString JAMAIS lu à cette étape.
+      - name: mint restricted 2D key (idempotent)
+        id: mintkey
+        run: |
+          source docs/ops/gcp-3dtiles/env.sh
+          NAME="geo-basemap-2d-preprod-key"
+          KEY_RES="$(gcloud services api-keys list --project "$PROJECT_ID" \
+            --filter="displayName=${NAME}" --format="value(name)" | head -1)"
+          if [ -z "$KEY_RES" ]; then
+            KEY_RES="$(gcloud services api-keys create --project "$PROJECT_ID" \
+              --display-name="${NAME}" \
+              --api-target=service=tile.googleapis.com \
+              --allowed-referrers="${REFERRER}" \
+              --format="value(name)")"
+          fi
+          test -n "$KEY_RES" || { echo "::error::échec mint/résolution clé 2D"; exit 1; }
+          echo "key_res=$KEY_RES" >> "$GITHUB_OUTPUT"
+
+      # 5. Kubeconfig geo-ci-runner (env-scopé geo-preprod, derrière required-reviewer).
+      - name: kubeconfig (geo-ci-runner)
+        run: |
+          test -n "${{ secrets.KUBE_CONFIG_GEO }}" || { echo "::error::KUBE_CONFIG_GEO absent (env geo-preprod)."; exit 1; }
+          printf '%s' "${{ secrets.KUBE_CONFIG_GEO }}" | base64 -d > "$RUNNER_TEMP/kubeconfig"
+          echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
+
+      # 6. Écrit le keyString dans geo-tile-key (apply UPDATE-only sur le secret PRÉ-CRÉÉ vide ; RBAC
+      #    secrets{get,patch} resourceNames:[geo-tile-key]). ⚠ NO-LOG : pas de set -x ; keyString
+      #    stdin→yaml-en-mémoire→apply, JAMAIS var/echo/disque/argv (design no-leak i-infra).
+      - name: write geo-tile-key secret (keyString jamais loggé)
+        run: |
+          source docs/ops/gcp-3dtiles/env.sh
+          gcloud services api-keys get-key-string "${{ steps.mintkey.outputs.key_res }}" \
+            --project "$PROJECT_ID" --format="value(keyString)" \
+            | kubectl create secret generic geo-tile-key -n geo-preprod \
+                --from-file=GOOGLE_TILE_KEY=/dev/stdin --dry-run=client -o yaml \
+            | kubectl apply -f -
+
+      # 7. Rollout restart geo-api pour recharger la clé (le flag est déjà "1" via la PR GO#1).
+      - name: rollout restart geo-api
+        run: |
+          kubectl -n geo-preprod rollout restart deployment/geo-api
+          kubectl -n geo-preprod rollout status deployment/geo-api --timeout=180s
+
+      # 8. VERIFY : /basemap/2d/session = 200 (flag ON + clé présente). 503 = GO#1 flag pas mergé OU clé absente.
+      - name: verify serve (/basemap/2d/session = 200)
+        run: |
+          URL="${{ vars.PREPROD_OGC_URL }}"
+          test -n "$URL" || { echo "::error::PREPROD_OGC_URL (Variable) absent."; exit 1; }
+          CODE="$(curl -sS -o /dev/null -w '%{http_code}' "${URL%/}/basemap/2d/session" || true)"
+          echo "GET ${URL%/}/basemap/2d/session → $CODE"
+          [ "$CODE" = "200" ] || { echo "::error::attendu 200, obtenu $CODE — flag BASEMAP_2D_ENABLED=1 mergé (GO#1 ODbL PR) ? clé présente ? Fail-loud (jamais un blanc silencieux, #313)."; exit 1; }
+          echo "✅ /basemap/2d/session sert. i-infra [c9beeb] certifie POST-run (override=none×4 + Function armée + restrictions clé + secret) — l'exécuteur ne s'auto-certifie PAS."
