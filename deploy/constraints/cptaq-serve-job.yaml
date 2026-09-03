@@ -47,12 +47,17 @@ spec:
         env:
           # geo-s3-credentials has ENDPOINT/REGION/ACCESS/SECRET but NOT S3_BUCKET → inject explicitly.
           - { name: S3_BUCKET, value: "sentropic-geo-preprod" }
+          # Cap the V8 old-space below the container limit so a GC pass reclaims before the cgroup
+          # OOM-kills the pod. 2560Mi heap < 3Gi limit leaves headroom for GDAL native (off-heap) allocs.
+          - { name: NODE_OPTIONS, value: "--max-old-space-size=2560" }
         envFrom:
           - { secretRef: { name: geo-s3-credentials } }   # ref only, no values
         resources:
           # GDAL on the province-wide ZA_transposee zip → generous mem (learned from §6 shard-10 OOM @176Mi).
+          # 3Gi limit stays within the namespace quota (4Gi − 768Mi geo-api); NODE_OPTIONS caps the JS
+          # heap at 2560Mi so GC runs before the cgroup OOM-kills, leaving ~500Mi for GDAL native + RSS.
           requests: { cpu: "250m", memory: "512Mi" }
-          limits:   { cpu: "1",    memory: "2Gi" }
+          limits:   { cpu: "1",    memory: "3Gi" }
 # Served output (cptaq.test.ts): normalized/ca-qc-constraints/ca-qc-constraints-<slug>.geojson + .meta.json
 #   for the 4 code-baked CPTAQ_PHASE1_CITIES (warden, saint-stanislas-de-kostka, sutton, coaticook); no --cities.
 # Residency: geo-s3-credentials = deny-prod (i-infra probed) + assertCptaqWritableKey confines to
