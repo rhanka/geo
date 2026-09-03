@@ -1,0 +1,77 @@
+name: geo-jobs
+# Autonomous CI/CD: GitHub Actions launches geo PREPROD jobs (starting with cptaq-serve; reindex /
+# projections / 3D-tiles as their render scripts land), replacing operator `kubectl apply`.
+#
+# PREPROD-ONLY BY CONSTRUCTION: the geo-ci-runner SA is scoped to ns geo-preprod (deploy/ci/geo-ci-rbac.yaml)
+# AND S3_BUCKET is hardcoded to sentropic-geo-preprod → prod is out of reach by construction.
+# INERT until the owner/infra-provisioned secrets (KUBE_CONFIG_GEO, GEO_S3_ENV) exist: manual dispatch
+# only (no push/PR/schedule trigger) + fail-closed if a secret is absent → safe to commit/merge.
+# `--dry-run=server` is a BLOCKING gate before apply.
+on:
+  workflow_dispatch:
+    inputs:
+      job:
+        description: "Job to render + launch (render-<job>.ts must exist)"
+        required: true
+        default: cptaq-serve
+        type: choice
+        options:
+          - cptaq-serve
+  # schedule:                       # enable per-job once render-<job>.ts lands (reindex/projections)
+  #   - cron: "0 4 * * 1"
+permissions:
+  contents: read
+  # id-token: write                 # enable IF OVH MKS OIDC federation is adopted (no stored kubeconfig)
+concurrency: geo-jobs-${{ github.event.inputs.job }}
+jobs:
+  launch:
+    runs-on: ubuntu-latest
+    # GitHub Environment: attach protection rules / required-reviewer here (owner-gated dispatch).
+    environment: geo-preprod
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - run: npm ci --ignore-scripts
+      # kubeconfig — owner/infra-provisioned secret, consumed AGNOSTICALLY so TokenRequest↔OIDC can be
+      # swapped without touching workflow logic. Fail-closed if absent (workflow inert until provisioned).
+      - name: kubeconfig (geo-ci-runner SA, ns geo-preprod)
+        run: |
+          if [ -z "${{ secrets.KUBE_CONFIG_GEO }}" ]; then
+            echo "::error::KUBE_CONFIG_GEO absent — workflow inerte tant que le secret n'est pas provisionné (owner/infra)."
+            exit 1
+          fi
+          printf '%s' "${{ secrets.KUBE_CONFIG_GEO }}" | base64 -d > "$RUNNER_TEMP/kubeconfig"
+          echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
+      # S3 READ-ONLY cred: render-<job>.ts reads S3 to find the latest capture manifest (proof-bound).
+      # Read-only, owner/infra-provisioned. (Design note: the launched Job does its own S3 I/O in-cluster
+      # via geo-s3-credentials; the CI only needs READ to render.)
+      - name: s3 read env
+        run: |
+          if [ -z "${{ secrets.GEO_S3_ENV }}" ]; then
+            echo "::error::GEO_S3_ENV absent — provisionner un cred S3 READ-ONLY (owner/infra)."
+            exit 1
+          fi
+          printf '%s' "${{ secrets.GEO_S3_ENV }}" | base64 -d > "$RUNNER_TEMP/s3.env"
+          echo "S3_ENV_FILE=$RUNNER_TEMP/s3.env" >> "$GITHUB_ENV"
+      - name: render (${{ github.event.inputs.job }})
+        env:
+          S3_BUCKET: sentropic-geo-preprod   # PRÉPROD-ONLY EN DUR
+        run: npx tsx "deploy/constraints/render-${{ github.event.inputs.job }}.ts" > "$RUNNER_TEMP/job.yaml"
+      - name: dry-run GATE (server-side — must pass before apply)
+        run: kubectl apply --dry-run=server -f "$RUNNER_TEMP/job.yaml"
+      - name: apply
+        run: kubectl apply -f "$RUNNER_TEMP/job.yaml"
+      - name: wait + logs
+        run: |
+          # Target the Job EXPLICITLY: a future render may emit multiple docs (e.g. ConfigMap + Job),
+          # and `wait --for=condition=complete` on a ConfigMap is invalid (k8s-archi nit).
+          jobref=$(kubectl -n geo-preprod get -f "$RUNNER_TEMP/job.yaml" -o name | grep '^job\.batch/' | head -1)
+          test -n "$jobref" || { echo "::error::aucun Job (job.batch/*) dans le manifest rendu"; exit 1; }
+          kubectl -n geo-preprod wait --for=condition=complete --timeout=1800s "$jobref"
+          kubectl -n geo-preprod logs --tail=-1 "$jobref" || true
+      - name: verify served
+        env:
+          PREPROD_OGC_URL: ${{ vars.PREPROD_OGC_URL }}   # preprod geo-api ingress (repo variable, non-secret)
+        run: ./deploy/ci/verify-served.sh "${{ github.event.inputs.job }}"

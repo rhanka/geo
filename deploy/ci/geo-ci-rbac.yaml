@@ -1,0 +1,51 @@
+# CI job-launcher RBAC for the geo autonomous CI/CD (GitHub Actions launches geo preprod jobs,
+# replacing operator `kubectl apply`). Owner directive: geo autonomous on its ops, CI/CD launches jobs.
+#
+# ns geo-preprod ONLY — aligned to deploy/constraints/cptaq-serve-job.yaml `metadata.namespace`
+# (geo-preprod, NOT geo). The SA can act ONLY in geo-preprod → PROD OUT OF REACH BY CONSTRUCTION.
+# Least-priv (k8s-archi): launch/watch/delete Jobs + read pods/logs + write configmaps (render output).
+# NO `secrets` read: the Jobs reference the existing geo-s3-credentials secret via envFrom/secretRef;
+# the CI runner NEVER reads secret values.
+#
+# Provisioning of the SA token → kubeconfig secret KUBE_CONFIG_GEO = owner/infra (NOT this repo).
+# This manifest only declares the in-cluster RBAC; the workflow consumes the secret. Apply it once
+# (owner/infra, or a bootstrap) — the SA + Role + binding are the durable least-priv surface.
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: geo-ci-runner
+  namespace: geo-preprod
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: geo-ci-job-launcher
+  namespace: geo-preprod
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create", "get", "list", "watch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create", "get", "update", "patch"]
+  # NO `secrets`: Jobs reference geo-s3-credentials via envFrom/secretRef; the CI never reads secrets.
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: geo-ci-runner-job-launcher
+  namespace: geo-preprod
+subjects:
+  - kind: ServiceAccount
+    name: geo-ci-runner
+    namespace: geo-preprod
+roleRef:
+  kind: Role
+  name: geo-ci-job-launcher
+  apiGroup: rbac.authorization.k8s.io
