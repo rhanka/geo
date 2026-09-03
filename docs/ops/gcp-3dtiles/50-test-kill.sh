@@ -18,22 +18,33 @@ echo "over-budget simulé publié ; attente du cap quota=0 sur les 4 métriques 
 ALL_ZERO="no"
 for attempt in $(seq 1 8); do
   sleep 15
-  # `services quota list --format=json` exposes only the override NAME per bucket, NOT its value
-  # (measured, k8s), and there is no simple get-by-name. The Function hardcodes overrideValue "0"
-  # (OVERRIDE_VALUE), so a PRESENT consumerOverride on a charged metric = capped at 0. Assert on
-  # presence (i-infra re-reads the same list JSON independently).
+  # Assert the REAL enforced cap, not just an override's presence: each quotaBucket carries
+  # `effectiveLimit` — the limit enforced AFTER overrides, always in the list JSON — and an
+  # override=0 lowers it to the string "0" (measured, i-infra). Stronger than presence/overrideValue,
+  # and it subsumes the LIMIT_ID de-risk (a metric lacking the exact /min/project limit → no match →
+  # fail-loud). i-infra validates the same effectiveLimit=0 independently at re-test-kill.
   QUOTA_JSON=$(gcloud alpha services quota list --service=tile.googleapis.com \
     --consumer="projects/${PROJECT_ID}" --project "$PROJECT_ID" --format=json 2>/dev/null || echo "[]")
   MISSING=$(printf '%s' "$QUOTA_JSON" | METRICS="$METRICS" node -e '
     const data = JSON.parse(require("fs").readFileSync(0, "utf8"));
     const want = process.env.METRICS.split(/\s+/).map((m) => "tile.googleapis.com/" + m);
+    const items = Array.isArray(data) ? data : [];
     const capped = new Set();
-    for (const item of (Array.isArray(data) ? data : [])) {
-      for (const lim of (item.consumerQuotaLimits || [])) {
-        for (const b of (lim.quotaBuckets || [])) {
-          if (b.consumerOverride && b.consumerOverride.name) capped.add(item.metric);
-        }
-      }
+    for (const m of want) {
+      const item = items.find((i) => i.metric === m);
+      if (!item) continue; // metric absent from list → not capped → stays in MISSING (fail-loud)
+      // The Function caps the per-project-per-minute limit (LIMIT_ID /min/project). Its `unit` is
+      // exactly "1/min/{project}" — the consumerQuotaLimit carries no `name` in CLI JSON, so `unit`
+      // is the selector (measured, i-infra). Unit forms vary (1/{project}, 1/{project}/{region},
+      // 1/min/{project}/{region}), so the exact match also CATCHES the LIMIT_ID de-risk: a metric
+      // lacking exactly this unit → no limit → not capped → fail-loud (no false PASS).
+      const lim = (item.consumerQuotaLimits || []).find((l) => l.unit === "1/min/{project}");
+      if (!lim) continue;
+      // The default (project-wide) bucket carries NO `dimensions` key (regional buckets have
+      // dimensions={region:...}); it is the one the dimensionless override caps. effectiveLimit is
+      // a STRING → compare === "0".
+      const b = (lim.quotaBuckets || []).find((x) => !x.dimensions || Object.keys(x.dimensions).length === 0);
+      if (b && b.effectiveLimit === "0") capped.add(m);
     }
     process.stdout.write(want.filter((m) => !capped.has(m)).join(","));
   ')
