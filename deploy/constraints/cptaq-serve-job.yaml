@@ -24,16 +24,18 @@ spec:
       imagePullSecrets: [ { name: geo-registry-pull } ]
       containers:
       - name: cptaq-serve
-        # geo-api ROOT image (gdal-bin, GDAL 3.6.2), built from main #309 merge
-        # 9171ffa76cfd5ee856d16e3be4cac2e241f43ee7 (geo-socle/gdal-crs-version-robust) by CD Preprod run
-        # 33709577514 (BUILD+PUSH+deploy-preprod = success; this IS the live preprod geo-api).
-        # ≥#309 REQUIRED + VERIFIED: the CRS read is version-robust (`ogrinfo -ro -so` TEXT, no `-json`) —
-        # a pre-#309 image (e.g. 83b67d0d) fails at runtime on GDAL 3.6.2's `Unknown option name '-json'`;
-        # ≥#303 too (`_snapshots/` + `.meta.json` CC-BY). Digest = the containerimage.digest from the CD
-        # build --metadata-file (i-infra; amd64-only single digest, no manifest-list), tag main-9171ffa76…,
-        # cross-checked by a k8s in-image probe (dist/acquire/gdal.js: "Layer SRS WKT" ×2, no `-json`,
-        # `_snapshots/` + `.meta.json` present).
-        image: rg.fr-par.scw.cloud/sentropic-geo/geo-api@sha256:25bdd9d6d6905c447f68b0dea2fb4ddea472444a3472a9e4537d5b94737da00b
+        # geo-api ROOT image (gdal-bin, GDAL 3.6.2), built from main #311 merge
+        # abefa1e889d6120e9f2e3b6584f894c529c65ccf (geo-socle/cptaq-whitelist-constraint-ref) by CD Preprod
+        # run 33715003122 (BUILD+PUSH+deploy-preprod = success; this IS the live preprod geo-api).
+        # ≥#311 REQUIRED + VERIFIED (served identity): agricole-only filter (zonage == "Zone agricole"),
+        # full-1446 emprise (filter after emprise), constraint_ref = sha256(RAW geometry) ALONE, served
+        # {zonage,date_maj} + SPECIAL-DROP {id,mrc}. Still ≥#309 (GDAL `ogrinfo -ro -so` TEXT, no `-json`)
+        # + ≥#303 (`_snapshots/` + `.meta.json` CC-BY). Digest = the containerimage.digest from the CD build
+        # --metadata-file (i-infra; amd64-only single digest, no manifest-list), cross-checked by a k8s
+        # in-image DRY-SERVE on this digest (fix present: grep "Zone agricole"=2, whitelist
+        # ["zonage","date_maj"]; 4 agricole-only collections, 0 S3 writes, `_snapshots/` present, emprise
+        # full 1446) + geo-socle CD-run headSha = abefa1e8 (= the #311 merge commit).
+        image: rg.fr-par.scw.cloud/sentropic-geo/geo-api@sha256:8e572cb5e16a04509738b71a2019d141958cd20ed2c704a7bb0bf3ff5e0bc827
         # Prod image prunes tsx → run compiled dist. WORKDIR=/app (probe-verified self-exec + Usage guard).
         command: ["node","packages/geo/dist/constraints/cptaq-runner.js"]
         args:
