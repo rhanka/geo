@@ -188,8 +188,10 @@ describe("CPTAQ exact GDAL extraction", () => {
     const wkt = 'PROJCRS["NAD83 / Quebec Lambert"]';
     const runner: CommandRunner = async (file, args) => {
       calls.push({ file, args: [...args] });
-      if (file === "ogrinfo" && args.includes("-json")) {
-        return { stdout: JSON.stringify({ layers: [{ coordinateSystem: { wkt } }] }), stderr: "" };
+      // inspectLayerSourceCrs now calls `ogrinfo -ro -so <source> <layer>` (TEXT, no -json;
+      // the layer is the last arg). listLayers omits the layer arg. Mirror real GDAL 3.6.2 output.
+      if (file === "ogrinfo" && args.at(-1) === CPTAQ_LAYER) {
+        return { stdout: `Layer SRS WKT:\n${wkt}\nData axis to CRS axis mapping: 1,2\n`, stderr: "" };
       }
       if (file === "ogrinfo") return { stdout: `1: ${CPTAQ_LAYER} (Polygon)`, stderr: "" };
       const outPath = args.at(-3);
@@ -211,8 +213,9 @@ describe("CPTAQ exact GDAL extraction", () => {
 
   it("rejects the cartographic line layer", async () => {
     const runner: CommandRunner = async (file, args) => {
-      if (file === "ogrinfo" && args.includes("-json")) {
-        return { stdout: JSON.stringify({ layers: [{ coordinateSystem: { wkt: "WKT" } }] }), stderr: "" };
+      // CRS read succeeds (valid WKT via TEXT); the layer is then rejected as non-Polygon downstream.
+      if (file === "ogrinfo" && args.at(-1) === CPTAQ_LAYER) {
+        return { stdout: `Layer SRS WKT:\nPROJCRS["NAD83"]\nData axis to CRS axis mapping: 1,2\n`, stderr: "" };
       }
       if (file === "ogrinfo") return { stdout: `1: ${CPTAQ_LAYER} (Line String)`, stderr: "" };
       const outPath = args.at(-3)!;
