@@ -10,8 +10,13 @@
  * Any change to the frozen public types = a new major version (semver) + an ADR — never silent.
  */
 
-/** Frozen contract version (§1, ADR-0026). */
-export const CONTRACT_VERSION = "1.0.0" as const;
+/**
+ * Contract version (§1, ADR-0026). **v2.0.0** (SPEC_GEO_MAP_ENGINE_V2_BASEMAP_2D) adds ONE additive
+ * basemap member (`raster-source`) + its support types (`RasterSource`/`AttributionSpec`/
+ * `SourcePolicy`) + the `onError`/`GeoMapError` channel. A new union member of a frozen type = MAJOR
+ * + ADR (§2.1); the three v1 basemap members and every other v1 type are unchanged.
+ */
+export const CONTRACT_VERSION = "2.0.0" as const;
 
 export * from "./encodings.js";
 export * from "./basemap.js";

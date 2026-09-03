@@ -36,12 +36,31 @@ export interface GeoMapMountOptions {
   options?: Readonly<Record<string, unknown>>;
 }
 
+/**
+ * A runtime error surfaced by the engine (SPEC_GEO_MAP_ENGINE_V2_BASEMAP_2D §2.4, fable B3). A
+ * live-embed provider makes runtime refusal a NORMAL mode (session expired, quota, revoked key,
+ * network). `kind` is EXTENSIBLE: new kinds may be added additively (MINOR, non-breaking) — a
+ * consumer MUST NOT `switch` exhaustively on it and MUST carry a `default` branch.
+ */
+export interface GeoMapError {
+  source: "basemap" | "layer";
+  sourceId?: string;
+  kind: "resolve-failed" | "session-expired" | "quota" | "forbidden" | "network";
+  recoverable: boolean;
+  message: string;
+}
+
 /** Event callbacks (§1.3.4). Viewport is non-controlled by default (`onViewportChange`). */
 export interface GeoMapEvents {
   onReady?: () => void;
   onHover?: (hit: GeoFeatureHit | null) => void;
   onSelect?: (hit: GeoFeatureHit) => void;
   onViewportChange?: (viewport: GeoViewport) => void;
+  /**
+   * v2.0 additive (§2.4). The engine MUST emit this AND render a DECLARED fallback (blank basemap +
+   * attribution notice) on a runtime source failure — never a silent blank (green-by-omission = red).
+   */
+  onError?: (err: GeoMapError) => void;
 }
 
 /**

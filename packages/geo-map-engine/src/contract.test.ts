@@ -6,11 +6,14 @@ import {
   COLOR_ENCODING_KINDS,
   LAYER_KINDS,
   RENDERER_KINDS,
+  BASEMAP_KINDS,
   NORMALIZED_ZOOM,
   type BasemapSpec,
   type GeoLayerSpec,
   type GeoViewport,
   type TokenMap,
+  type GeoMapError,
+  type GeoMapEvents,
 } from "./index.js";
 
 // A FeatureCollection from the geo-core GeoJSON model (the engine's `data` type).
@@ -71,9 +74,9 @@ const basemap: BasemapSpec = { kind: "blank", background: "surface-default" };
 const vp2d: GeoViewport = { center: [-71.5, 47], zoom: 6, bearing: 0, pitch: 0 };
 const vp3d: GeoViewport = { center: [-71.5, 47], zoom: 6, bearing: 30, pitch: 55 };
 
-describe("@sentropic/geo-map-engine — frozen v1 contract (ADR-0026)", () => {
-  it("exposes the frozen contract version", () => {
-    expect(CONTRACT_VERSION).toBe("1.0.0");
+describe("@sentropic/geo-map-engine — contract (ADR-0026 v1 frozen + v2.0 additive)", () => {
+  it("exposes the contract version (v2.0.0 — raster-source additive)", () => {
+    expect(CONTRACT_VERSION).toBe("2.0.0");
   });
 
   it("accepts a conforming choropleth + points layer set (DS consumer payload)", () => {
@@ -100,5 +103,36 @@ describe("@sentropic/geo-map-engine — frozen v1 contract (ADR-0026)", () => {
     expect(LAYER_KINDS).toEqual(["choropleth", "points", "geojson"]);
     expect(COLOR_ENCODING_KINDS).toContain("valueStep");
     expect(NORMALIZED_ZOOM.tileSize).toBe(512);
+  });
+
+  it("adds the v2.0 raster-source member additively (v1 kinds intact)", () => {
+    expect(BASEMAP_KINDS).toEqual(["blank", "raster", "vector", "raster-source"]);
+    // v2.0 provider source, exact contract shape (§2.2): logical id + dynamic attribution + required policy
+    const satellite: BasemapSpec = {
+      kind: "raster-source",
+      source: { id: "sat-2d", imageryType: "provider-2d", attribution: { mode: "dynamic" }, policy: "live-embed-only" },
+    };
+    expect(satellite.kind === "raster-source" && satellite.source.policy).toBe("live-embed-only");
+    expect(satellite.kind === "raster-source" && satellite.source.attribution.mode).toBe("dynamic");
+    // an open self-hosted PMTiles source (static attribution + cacheable) is equally expressible — same neutral contract
+    const openPmtiles: BasemapSpec = {
+      kind: "raster-source",
+      source: { id: "open-sat", imageryType: "pmtiles", attribution: { mode: "static", text: "© Contributors" }, policy: "cacheable" },
+    };
+    expect(openPmtiles.kind === "raster-source" && openPmtiles.source.imageryType).toBe("pmtiles");
+  });
+
+  it("carries the v2.0 onError channel + an extensible GeoMapError (default-branch consumers)", () => {
+    const err: GeoMapError = { source: "basemap", sourceId: "sat-2d", kind: "session-expired", recoverable: true, message: "session token expired" };
+    // §2.4: `kind` is EXTENSIBLE — a consumer must NOT switch exhaustively on it and MUST carry a default branch
+    const classify = (e: GeoMapError): string => {
+      switch (e.kind) {
+        case "resolve-failed": return "resolve";
+        default: return "other";
+      }
+    };
+    expect(classify(err)).toBe("other");
+    const events: GeoMapEvents = { onError: (e) => void e };
+    expect(typeof events.onError).toBe("function");
   });
 });
