@@ -14,7 +14,29 @@ contiennent le project-number vont en **GitHub Variable/Secret**, jamais dans le
 
 ---
 
-## Option A — autonomie durable (CI/CD keyless via WIF) — RECOMMANDÉE
+## ⭐ Le geste owner UNIQUE (forme GO-only)
+
+L'owner ne lance qu'**UNE commande**, dans **son propre terminal** (son login iam-admin + github-admin —
+jamais une session agent : geo-socle ne manie jamais les creds root) :
+```bash
+bash docs/ops/gcp-3dtiles/50-owner-bootstrap-all.sh
+```
+Prérequis one-time (le wrapper les vérifie + fail-loud sinon) : `gcloud auth login` + `gh auth login`.
+Le wrapper chaîne [a]→[d] ci-dessous **idempotent + fail-loud (STOP au 1er échec) + self-verify**, pose
+lui-même les GitHub Secrets/Variables (0 collage manuel), et émet les sorties porteuses de project-number
+en **Variables** (jamais committées).
+
+**C'est le SEUL geste irréductible** (le 1er grant iam-admin+github-admin = racine de confiance
+non-auto-grantable : un système ne peut pas se donner son propre iam-admin). **Après ce geste unique**,
+TOUT (reattach/clé/deploy/activation) = **GO-pur** : merge OU dispatch approuvé (Environment
+required-reviewer=owner), **0 terminal, à vie** — via le(s) workflow(s) auto-exec GitHub Actions (keyless
+WIF ; PR séparée). Le seul « 0-terminal-même-pour-le-bootstrap » alternatif = ~30 clics console fragiles
+(rejeté) OU confier l'iam-admin root à un agent (casse la separation) : la 1-commande-terminal est le
+minimal honnête.
+
+---
+
+## Option A — détail des étapes [a]→[d] (ce que le wrapper 50 chaîne ; ou step-by-step manuel)
 
 Ordre exact, une passe. Chaque script est idempotent + self-verifying (relançable).
 
@@ -63,11 +85,23 @@ S3_BUCKET=sentropic-geo-preprod
 S3_ACCESS_KEY=<access key RO>
 S3_SECRET_KEY=<secret key RO>
 ```
-Le couple ACCESS/SECRET = une **clé API Scaleway READ-ONLY** scopée au bucket `sentropic-geo-preprod`
-(prod DENY). Mint (console Scaleway → IAM, ou `scw` CLI) : créer une Application + une Policy ObjectStorage
-**read-only** sur le projet portant `sentropic-geo-preprod`, puis générer une API key. Un pattern RO existe
-déjà en cluster (`geo-s3-credentials-prod-ro`) ; **i-infra possède la frontière S3-provider** et confirme
-le permission-set exact. Puis pose + shred (jamais committé, jamais gardé en clair) :
+Le couple ACCESS/SECRET = une **clé API Scaleway READ-ONLY**. Recette autoritative (i-infra, frontière
+S3-provider), 2 couches :
+- **Couche 1 — Scaleway IAM (contrôle primaire)** : une **IAM Application DÉDIÉE** (identité machine, PAS
+  un user) → l'API key s'y attache. UNE Policy sur cette Application : SCOPE = le **PROJET preprod
+  UNIQUEMENT** (celui portant `sentropic-geo-preprod` ; PAS org-wide — c'est ce scope-projet qui rend la
+  prod DENY, le bucket prod étant hors du projet policé) ; PERMISSION SET = `ObjectStorageReadOnly`
+  (built-in ; granulaire équivalent `ObjectStorageObjectRead` + `ObjectStorageBucketRead`) ; **JAMAIS**
+  `ObjectStorageFullAccess` / `ObjectStorageObjectWrite` / aucun set write/delete. Générer l'API key SOUS
+  cette Application (Preferred Project = preprod) → `ACCESS_KEY` (SCW…) + `SECRET_KEY`.
+- **Couche 2 — bucket policy S3 (défense-en-profondeur ; IAM reste l'autorité)** : Allow au principal de
+  l'Application UNIQUEMENT `s3:GetObject` + `s3:ListBucket` (+ option `s3:GetBucketLocation`) sur
+  `sentropic-geo-preprod` et `/*`. Aucun `s3:PutObject` / `s3:DeleteObject` / `s3:PutBucketPolicy`.
+
+i-infra **certifie le scope au provisioning** (5 probes RO : ListBucket preprod OK · GetObject OK ·
+PutObject 403 · DeleteObject 403 · toute op bucket PROD DENIED). **GUARDRAIL** : GEO_S3_ENV = RO pour le
+chemin render-lit-S3 ; un job SERVE qui écrit S3 = une cred **SÉPARÉE scopée-write**, JAMAIS élargir
+GEO_S3_ENV en RW (deux chemins = deux creds). Puis pose + shred (jamais committé, jamais gardé en clair) :
 ```bash
 gh secret set GEO_S3_ENV -R rhanka/geo < geo-s3-ro.env   # dotenv des 5 lignes ci-dessus
 shred -u geo-s3-ro.env
