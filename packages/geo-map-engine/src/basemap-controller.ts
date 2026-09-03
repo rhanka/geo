@@ -125,6 +125,14 @@ function compileBasemap(spec: BasemapSpec, tokens: TokenMap): MaplibreBasemapSty
 
     case "vector":
       throw new Error("vector basemap not yet supported — pending contract ratification");
+
+    case "raster-source":
+      // v2.0 additive member (SPEC_GEO_MAP_ENGINE_V2_BASEMAP_2D §2.1). FAIL-CLOSED by construction:
+      // the provider adapter (id→URL/key/session resolution, dynamic-attribution flux, live-embed
+      // policy guard) is wp7 increment-2 and is NOT wired here — so a `raster-source` spec cannot be
+      // activated by this build (flag-OFF by construction). Refuses loudly rather than rendering a
+      // silent blank (green-by-omission = red).
+      throw new Error("raster-source basemap not yet supported — provider adapter is wp7 increment-2 (flag-OFF by construction)");
   }
 }
 
