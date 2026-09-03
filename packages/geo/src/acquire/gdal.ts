@@ -211,48 +211,52 @@ export async function listLayers(
   return parseOgrinfoLayers(result.stdout);
 }
 
-/** Parse the source CRS WKT reported by `ogrinfo -json` for one layer.
- * GDAL obtains this value from the shapefile's internal `.prj`; an absent CRS
- * is a hard error because callers must never infer it. */
+/** Parse the source CRS WKT from `ogrinfo -ro -so <source> <layer>` TEXT output for one
+ * layer — VERSION-ROBUST (works on GDAL <3.7, which lacks the `-json` option; the prod
+ * geo-api image ships GDAL 3.6.2). GDAL prints the WKT (from the shapefile's internal
+ * `.prj`) in a `Layer SRS WKT:` block; the WKT is a single balanced-bracket expression,
+ * so we collect the lines after the header until the brackets close — the block is then
+ * followed by `Data axis to CRS axis mapping:` and the field list. An absent CRS is a hard
+ * error (an unset `.prj` prints `(unknown)`/no bracket) because callers must never infer it.
+ *
+ * Version-robust by construction: WKT1 (`GEOGCS[...]`) and WKT2 (`GEOGCRS[...]`) are both
+ * balanced-bracket expressions, so the parser tolerates the format GDAL emits per version. */
 export function parseOgrinfoSourceCrs(stdout: string): string {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(stdout) as unknown;
-  } catch (error) {
-    throw new Error("ogrinfo source CRS output is not valid JSON", { cause: error });
+  const lines = stdout.split(/\r?\n/);
+  const headerIdx = lines.findIndex((l) => l.trimStart().startsWith("Layer SRS WKT:"));
+  if (headerIdx === -1) {
+    throw new Error("ogrinfo source CRS is absent; the internal .prj must be readable");
   }
-  if (typeof parsed !== "object" || parsed === null) {
-    throw new Error("ogrinfo source CRS output must be an object");
+  const parts: string[] = [];
+  let depth = 0;
+  let started = false;
+  for (let i = headerIdx + 1; i < lines.length; i++) {
+    const trimmed = lines[i]!.trim();
+    if (!started && trimmed.length === 0) continue; // skip blanks before the WKT begins
+    for (const ch of trimmed) {
+      if (ch === "[") depth++;
+      else if (ch === "]") depth--;
+    }
+    parts.push(trimmed);
+    started = true;
+    if (depth <= 0) break; // brackets balanced → the WKT expression is complete
   }
-  const layers = (parsed as { layers?: unknown }).layers;
-  if (!Array.isArray(layers) || layers.length !== 1) {
-    throw new Error(
-      `ogrinfo source CRS expected exactly one layer, received ${Array.isArray(layers) ? layers.length : 0}`,
-    );
-  }
-  const layer = layers[0];
-  const coordinateSystem =
-    typeof layer === "object" && layer !== null
-      ? (layer as { coordinateSystem?: unknown }).coordinateSystem
-      : undefined;
-  const wkt =
-    typeof coordinateSystem === "object" && coordinateSystem !== null
-      ? (coordinateSystem as { wkt?: unknown }).wkt
-      : undefined;
-  if (typeof wkt !== "string" || wkt.trim().length === 0) {
+  const wkt = parts.join("");
+  if (!started || depth !== 0 || !wkt.includes("[")) {
     throw new Error("ogrinfo source CRS is absent; the internal .prj must be readable");
   }
   return wkt;
 }
 
-/** Read one layer's effective source CRS through GDAL. */
+/** Read one layer's effective source CRS through GDAL. Uses `ogrinfo -ro -so` TEXT output
+ * (NOT `-json`, a GDAL 3.7+ option absent from the prod image's GDAL 3.6.2). */
 export async function inspectLayerSourceCrs(
   source: string,
   layer: string,
   runner: CommandRunner = defaultRunner,
 ): Promise<string> {
   try {
-    const result = await runner("ogrinfo", ["-ro", "-so", "-json", source, layer]);
+    const result = await runner("ogrinfo", ["-ro", "-so", source, layer]);
     return parseOgrinfoSourceCrs(result.stdout);
   } catch (error) {
     if (isEnoent(error)) throw gdalMissingError("ogrinfo", error);
