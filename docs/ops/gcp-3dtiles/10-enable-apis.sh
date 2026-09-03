@@ -4,5 +4,8 @@
 source "$(dirname "$0")/env.sh"
 
 gcloud config set project "$PROJECT_ID"
-gcloud services enable cloudbilling.googleapis.com cloudfunctions.googleapis.com \
-  pubsub.googleapis.com cloudbuild.googleapis.com run.googleapis.com --project "$PROJECT_ID"
+# billingbudgets.googleapis.com is REQUIRED for `gcloud billing budgets create` (phase 20);
+# without it phase 20 fails "API not enabled". project-scope enable.
+gcloud services enable cloudbilling.googleapis.com billingbudgets.googleapis.com \
+  cloudfunctions.googleapis.com pubsub.googleapis.com cloudbuild.googleapis.com \
+  run.googleapis.com --project "$PROJECT_ID"
