@@ -24,14 +24,16 @@ spec:
       imagePullSecrets: [ { name: geo-registry-pull } ]
       containers:
       - name: cptaq-serve
-        # geo-api ROOT image (gdal-bin), built from main #303 merge 4ea405414a20baf1b2a22ef3bfccce3f0c7b72c0
-        # ("feat/cptaq-served-metadata") by CD Preprod run 33477567079 (that run's BUILD+PUSH succeeded; its
-        # DEPLOY step failed on a transient rate-limit, so the DEPLOYED preprod image stayed #302 — this
-        # serve-job pins the ≥#303 image by DIGEST directly, no re-deploy needed). ≥ #303 REQUIRED + VERIFIED:
-        # a #302 image writes the old `snapshots/` (phantom mis-indexed collections) + no `.meta.json` (no
-        # CC-BY). Digest = the multi-arch containerimage.digest from the CD build --metadata-file (i-infra),
-        # cross-checked live by a k8s pod-probe (PULL OK + dist carries `_snapshots/` + `.meta.json`).
-        image: rg.fr-par.scw.cloud/sentropic-geo/geo-api@sha256:83b67d0d8d6f3621f8f7f17f34f40dd2a739730eda87b02ea19749a9d31fbbae
+        # geo-api ROOT image (gdal-bin, GDAL 3.6.2), built from main #309 merge
+        # 9171ffa76cfd5ee856d16e3be4cac2e241f43ee7 (geo-socle/gdal-crs-version-robust) by CD Preprod run
+        # 33709577514 (BUILD+PUSH+deploy-preprod = success; this IS the live preprod geo-api).
+        # ≥#309 REQUIRED + VERIFIED: the CRS read is version-robust (`ogrinfo -ro -so` TEXT, no `-json`) —
+        # a pre-#309 image (e.g. 83b67d0d) fails at runtime on GDAL 3.6.2's `Unknown option name '-json'`;
+        # ≥#303 too (`_snapshots/` + `.meta.json` CC-BY). Digest = the containerimage.digest from the CD
+        # build --metadata-file (i-infra; amd64-only single digest, no manifest-list), tag main-9171ffa76…,
+        # cross-checked by a k8s in-image probe (dist/acquire/gdal.js: "Layer SRS WKT" ×2, no `-json`,
+        # `_snapshots/` + `.meta.json` present).
+        image: rg.fr-par.scw.cloud/sentropic-geo/geo-api@sha256:25bdd9d6d6905c447f68b0dea2fb4ddea472444a3472a9e4537d5b94737da00b
         # Prod image prunes tsx → run compiled dist. WORKDIR=/app (probe-verified self-exec + Usage guard).
         command: ["node","packages/geo/dist/constraints/cptaq-runner.js"]
         args:
