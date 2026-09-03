@@ -26,6 +26,11 @@ if ! gcloud iam roles describe "$ROLE_ID" --project "$PROJECT_ID" >/dev/null 2>&
 fi
 gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --member="serviceAccount:${SA_EMAIL}" --role="projects/${PROJECT_ID}/roles/${ROLE_ID}"
+# Remove any OLD project-scope roles/billing.projectManager a prior (path-A) run granted this SA, so
+# a MIGRATED live SA ends with ONLY the least-priv custom role — not just a fresh replay. This is a
+# project-scope REMOVE (never a billing-account grant); idempotent — a no-op (|| true) if absent.
+gcloud projects remove-iam-policy-binding "$PROJECT_ID" \
+  --member="serviceAccount:${SA_EMAIL}" --role="roles/billing.projectManager" 2>/dev/null || true
 
 gcloud functions deploy cap-billing --gen2 --runtime=nodejs20 --region="$REGION" \
   --project "$PROJECT_ID" --trigger-topic="$TOPIC" --entry-point=capBilling \
