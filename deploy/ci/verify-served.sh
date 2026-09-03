@@ -10,9 +10,10 @@ echo "=== verify-served: ${JOB} ==="
 case "$JOB" in
   cptaq-serve)
     if [ -z "${PREPROD_OGC_URL:-}" ]; then
-      echo "  PREPROD_OGC_URL non défini — vérif OGC /collections sautée (le Job a déjà atteint condition=complete)."
-      echo "  TODO: fournir PREPROD_OGC_URL (ingress geo-api preprod) pour asserter ca-qc-constraints servi."
-      exit 0
+      echo "❌ PREPROD_OGC_URL non défini — vérif servie IMPOSSIBLE. 'deploy-done ≠ flux vérifié' (principe repo,"
+      echo "   vert-par-omission=rouge) : fournir la variable repo PREPROD_OGC_URL (ingress geo-api preprod) pour"
+      echo "   asserter réellement ca-qc-constraints servi. Le Job condition=complete ne PROUVE pas le served."
+      exit 1
     fi
     body=$(curl -fsS "${PREPROD_OGC_URL%/}/collections") || { echo "❌ /collections injoignable"; exit 1; }
     if printf '%s' "$body" | grep -q "ca-qc-constraints"; then
