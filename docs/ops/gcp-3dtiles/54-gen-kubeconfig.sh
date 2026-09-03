@@ -54,5 +54,19 @@ gh secret list -R "$GH_REPO" | grep -q '^KUBE_CONFIG_GEO' || { echo "❌ secret 
 kubectl --kubeconfig "$KCFG" -n "$NS" auth can-i list jobs >/dev/null \
   || { echo "❌ le kubeconfig généré ne peut pas list jobs dans ${NS} (RBAC #327 ?)"; exit 1; }
 
-echo "✅ KUBE_CONFIG_GEO posé (SA ${NS}/${SA}, token borné ${TOKEN_TTL}, cred admin JAMAIS incluse)."
-echo "   Rotation : re-lancer ce script avant expiry du token (${TOKEN_TTL})."
+# Expiry RÉELLEMENT accordé (note i-infra) : --duration est PLAFONNÉ par l'apiserver
+# (--service-account-max-token-expiration, souvent 24-48h en managed) → le TTL accordé peut être < TOKEN_TTL.
+# Best-effort : décoder l'exp du JWT pour une rotation exacte (le token n'est JAMAIS imprimé — il passe par
+# le pipe, seul l'exp numérique en ressort).
+GRANTED_EXP=""
+if command -v python3 >/dev/null 2>&1; then
+  GRANTED_EXP="$(kubectl --kubeconfig "$KCFG" config view --raw -o jsonpath='{.users[0].user.token}' \
+    | python3 -c 'import sys,base64,json;t=sys.stdin.read().strip().split(".")[1];t+="="*(-len(t)%4);print(json.loads(base64.urlsafe_b64decode(t)).get("exp",""))' 2>/dev/null || true)"
+fi
+echo "✅ KUBE_CONFIG_GEO posé (SA ${NS}/${SA}, cred admin JAMAIS incluse)."
+if [ -n "$GRANTED_EXP" ]; then
+  echo "   Rotation : expiry ACCORDÉ (epoch)=${GRANTED_EXP} (TTL demandé=${TOKEN_TTL}, plafonné apiserver). Re-lancer AVANT."
+else
+  echo "   ⚠ Rotation : TTL demandé=${TOKEN_TTL} mais PLAFONNÉ par l'apiserver (souvent 24-48h en managed) →"
+  echo "     expiry réel peut être <. Vérifier l'expiry accordé et re-lancer AVANT (la CI échoue loud à expiry)."
+fi
