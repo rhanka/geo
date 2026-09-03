@@ -11,7 +11,11 @@ import {
   computeSetHash,
   DEFAULT_MAX_DELETE_FRACTION,
   destKeyForMirror,
+  isPreprodNativeCollectionId,
+  isPreprodNativeKey,
   planFullMirror,
+  PREPROD_NATIVE_FAMILIES,
+  prodMirrorCollectionIds,
   pruneBoundExceeded,
 } from "./mirror.js";
 
@@ -134,6 +138,49 @@ describe("computeSetHash", () => {
     const base = computeSetHash(["a", "b", "c"]);
     const dropAdd = computeSetHash(["a", "b", "d"]); // same count, different set
     expect(dropAdd).not.toBe(base);
+  });
+});
+
+describe("preprod-native families (ADR-0027 (b) exclude-from-parity)", () => {
+  it("names CPTAQ as preprod-native — a committed list, not a silent substring filter", () => {
+    expect(PREPROD_NATIVE_FAMILIES.map((f) => f.collectionId)).toEqual(["ca-qc-constraints"]);
+    // each entry is auditable (key prefix + reason present)
+    expect(PREPROD_NATIVE_FAMILIES.every((f) => f.keyPrefix.length > 0 && f.reason.length > 0)).toBe(true);
+  });
+
+  it("isPreprodNativeCollectionId matches the family root + its slug children, not siblings (fail-closed)", () => {
+    expect(isPreprodNativeCollectionId("ca-qc-constraints")).toBe(true);
+    expect(isPreprodNativeCollectionId("ca-qc-constraints-warden")).toBe(true);
+    expect(isPreprodNativeCollectionId("ca-qc-constraints-saint-stanislas-de-kostka")).toBe(true);
+    // NOT excluded — real prod-mirror / unknown families stay IN the parity check (never silently dropped)
+    expect(isPreprodNativeCollectionId("ca-qc-sda")).toBe(false);
+    expect(isPreprodNativeCollectionId("qc-zonage-abercorn")).toBe(false);
+    expect(isPreprodNativeCollectionId("ca-qc-constraintsX")).toBe(false); // no "-" boundary → not a family child
+  });
+
+  it("prodMirrorCollectionIds drops preprod-native, keeps prod-mirror — CPTAQ transparent to parity", () => {
+    const live = ["abercorn", "qc-lots-montreal", "ca-qc-constraints-warden", "ca-qc-constraints-sutton"];
+    expect(prodMirrorCollectionIds(live)).toEqual(["abercorn", "qc-lots-montreal"]);
+    // the parity hash over the mirror subset is UNCHANGED by CPTAQ's presence in the live set
+    expect(computeSetHash(prodMirrorCollectionIds(live))).toBe(computeSetHash(["abercorn", "qc-lots-montreal"]));
+  });
+
+  it("isPreprodNativeKey matches served keys under the family prefix (mirror prune protection)", () => {
+    expect(isPreprodNativeKey("normalized/ca-qc-constraints/ca-qc-constraints-warden.geojson")).toBe(true);
+    expect(isPreprodNativeKey("normalized/ca-qc-constraints/ca-qc-constraints-sutton/ca-qc-constraints-sutton.geojson")).toBe(true);
+    expect(isPreprodNativeKey("normalized/abercorn.geojson")).toBe(false);
+  });
+
+  it("planFullMirror never prunes a preprod-native canonical key — a re-sync must not wipe CPTAQ", () => {
+    const srcKeys = ["normalized/abercorn.geojson"]; // prod source (no CPTAQ — CPTAQ is 0 in prod)
+    const destKeys = [
+      "normalized/abercorn.geojson", // mirrored — keep
+      "normalized/ca-qc-constraints/ca-qc-constraints-warden.geojson", // preprod-native canonical — PRESERVE
+      "normalized/qc-zonage-stale.geojson", // real canonical surplus — PRUNE
+    ];
+    const plan = planFullMirror(srcKeys, "normalized", "normalized", destKeys);
+    expect(plan.deletes).toEqual(["normalized/qc-zonage-stale.geojson"]);
+    expect(plan.deletes).not.toContain("normalized/ca-qc-constraints/ca-qc-constraints-warden.geojson");
   });
 });
 
