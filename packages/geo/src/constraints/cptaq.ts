@@ -30,7 +30,26 @@ const CPTAQ_USAGE_NOTICE =
 export const CPTAQ_TARGET_CRS = "EPSG:4326";
 export const CPTAQ_SERVED_PREFIX = "normalized/ca-qc-constraints";
 export const CPTAQ_PREPROD_BUCKET = "sentropic-geo-preprod";
-export const CPTAQ_PROPERTY_WHITELIST = ["Mrc", "Date_maj", "Zonage"] as const;
+/** Served property whitelist: source attributes that survive into the served collection.
+ * {zonage, date_maj} only. `zonage` is constant on the served subset (agricole-only, see
+ * CPTAQ_AGRICOLE_ZONAGE) but is retained as a served property for schema fidelity; it is NOT a
+ * constraint_ref identity input (see constraintRef). */
+export const CPTAQ_PROPERTY_WHITELIST = ["zonage", "date_maj"] as const;
+
+/** SPECIAL-DROP: known source fields deliberately NOT served, dropped SILENTLY (never rejected) —
+ * this is what keeps assertCptaqSourceProperties no-PII-by-construction (known non-PII → drop;
+ * any OTHER unknown key → REJECT/fail-closed as potential PII).
+ * - `id`: volatile source row id (churns on refresh, no serving value, never an identity input).
+ * - `mrc`: measured null across all 1446 source features (0 information). The field's EXISTENCE stays
+ *   engraved in the D07 schema — move it back into CPTAQ_PROPERTY_WHITELIST if a future refresh populates it. */
+export const CPTAQ_SOURCE_DROP_KEYS = ["id", "mrc"] as const;
+
+/** Verbatim measured value (k8s, byteLen=13) of the `zonage` field marking a protected agricultural
+ * zone (LPTAA) — the served subset (510 of 1446). The complement "Zone non agricole" (byteLen=17, 936)
+ * is NOT served as a constraint but DOES count toward the coverage emprise: a lot inside a non-agricole
+ * zone is no-hit-COVERED, not a source gap (§3). The filter therefore applies to served features AFTER
+ * the full-dataset emprise is computed. */
+export const CPTAQ_AGRICOLE_ZONAGE = "Zone agricole";
 
 export const CPTAQ_PHASE1_CITIES = [
   { slug: "warden", code: "47030", name: "Warden" },
@@ -64,10 +83,8 @@ export interface CptaqBuildContext {
 }
 
 export interface CptaqSourceProperties {
-  [key: string]: unknown;
-  Mrc: unknown;
-  Date_maj: unknown;
-  Zonage: unknown;
+  zonage: unknown;
+  date_maj: unknown;
 }
 
 export interface CptaqServedProperties extends CptaqSourceProperties {
@@ -116,7 +133,7 @@ export interface CptaqServedCollection
       clip: { method: "EXACT_GEOM/intersection" };
       emprise: { method: "source bbox polygon intersect municipal boundary" };
       property_whitelist: typeof CPTAQ_PROPERTY_WHITELIST;
-      constraint_ref_method: "sha256(canonical source geometry + whitelisted properties)";
+      constraint_ref_method: "sha256(canonical source geometry)";
     };
   };
   cas_pointer: {
@@ -299,16 +316,17 @@ function datasetExtent(
 
 export function assertCptaqSourceProperties(value: unknown): CptaqSourceProperties {
   if (!isRecord(value)) throw new Error("CPTAQ source feature properties must be an object");
-  const unexpected = Object.keys(value).filter(
-    (key) => !(CPTAQ_PROPERTY_WHITELIST as readonly string[]).includes(key),
-  );
+  // no-PII by construction: a known source key is either SERVED (whitelist) or SPECIAL-DROPped
+  // ({id, mrc}, known non-PII, dropped silently). Any OTHER key is unknown → REJECT (fail-closed,
+  // potential PII). Never widen the drop set to silence an unknown field.
+  const known = new Set<string>([...CPTAQ_PROPERTY_WHITELIST, ...CPTAQ_SOURCE_DROP_KEYS]);
+  const unexpected = Object.keys(value).filter((key) => !known.has(key));
   if (unexpected.length > 0) {
     throw new Error(`CPTAQ property whitelist rejected: ${unexpected.sort().join(", ")}`);
   }
   return {
-    Mrc: value["Mrc"] ?? null,
-    Date_maj: value["Date_maj"] ?? null,
-    Zonage: value["Zonage"] ?? null,
+    zonage: value["zonage"] ?? null,
+    date_maj: value["date_maj"] ?? null,
   };
 }
 
@@ -351,11 +369,11 @@ export function selectCptaqPhase1Boundaries(
   return selected;
 }
 
-function constraintRef(
-  geometry: PolygonalGeometry,
-  properties: CptaqSourceProperties,
-): string {
-  const digest = sha256(canonicalJson({ geometry, properties })).slice("sha256:".length);
+function constraintRef(geometry: PolygonalGeometry): string {
+  // Identity = the RAW canonical geometry ALONE. Volatile props (id, date_maj) and constant props
+  // (zonage, since the served subset is agricole-only) are excluded so the ref is stable across
+  // refreshes and carries no redundant salt.
+  const digest = sha256(canonicalJson(geometry)).slice("sha256:".length);
   return `${CPTAQ_CONSTRAINT_KIND}:${digest}`;
 }
 
@@ -396,9 +414,12 @@ function collectionForCity(
   const extent = datasetExtent(source);
   const attrsByRef = new Map<string, CptaqSourceProperties>();
   const geometryByRef = new Map<string, PolygonalGeometry>();
+  // Emprise (extent above) is computed on the FULL dataset (agricole + non-agricole) — the coverage
+  // proof (§3). The agricole filter applies HERE, to the served features only, AFTER the emprise.
   for (const [index, feature] of source.features.entries()) {
     const attrs = assertCptaqSourceProperties(feature.properties);
-    const ref = constraintRef(feature.geometry, attrs);
+    if (attrs.zonage !== CPTAQ_AGRICOLE_ZONAGE) continue;
+    const ref = constraintRef(feature.geometry);
     if (attrsByRef.has(ref)) throw new Error(`CPTAQ duplicate deterministic constraint_ref at feature ${index}: ${ref}`);
     attrsByRef.set(ref, attrs);
     geometryByRef.set(ref, feature.geometry);
@@ -421,9 +442,8 @@ function collectionForCity(
       properties: {
         constraint_kind: CPTAQ_CONSTRAINT_KIND,
         constraint_ref: ref,
-        Mrc: attrs.Mrc,
-        Date_maj: attrs.Date_maj,
-        Zonage: attrs.Zonage,
+        zonage: attrs.zonage,
+        date_maj: attrs.date_maj,
         source: {
           dataset: CPTAQ_DATASET,
           version: context.proof.sha256,
@@ -473,7 +493,7 @@ function collectionForCity(
         clip: { method: "EXACT_GEOM/intersection" },
         emprise: { method: "source bbox polygon intersect municipal boundary" },
         property_whitelist: CPTAQ_PROPERTY_WHITELIST,
-        constraint_ref_method: "sha256(canonical source geometry + whitelisted properties)",
+        constraint_ref_method: "sha256(canonical source geometry)",
       },
     },
     cas_pointer: {
@@ -499,9 +519,8 @@ export function buildCptaqServedCollections(input: {
 const CPTAQ_SERVED_PROPERTY_KEYS = [
   "constraint_kind",
   "constraint_ref",
-  "Mrc",
-  "Date_maj",
-  "Zonage",
+  "zonage",
+  "date_maj",
   "source",
   "caveat",
 ] as const;

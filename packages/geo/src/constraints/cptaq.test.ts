@@ -41,9 +41,10 @@ function square(minX: number, minY: number, maxX: number, maxY: number): Polygon
 
 function source(
   properties: Record<string, unknown> = {
-    Mrc: "Test MRC",
-    Date_maj: "2026-08-31",
-    Zonage: "zone agricole",
+    id: 1,
+    mrc: null,
+    zonage: "Zone agricole",
+    date_maj: "2026-08-31",
   },
 ): FeatureCollection<Polygon, Record<string, unknown>> {
   return {
@@ -135,9 +136,8 @@ describe("CPTAQ Phase-1 transform", () => {
     const properties = first[0]?.features[0]?.properties;
     expect(properties).toMatchObject({
       constraint_kind: CPTAQ_CONSTRAINT_KIND,
-      Mrc: "Test MRC",
-      Date_maj: "2026-08-31",
-      Zonage: "zone agricole",
+      zonage: "Zone agricole",
+      date_maj: "2026-08-31",
       caveat: CPTAQ_CAVEAT,
       source: {
         dataset: "zone-agricole-transposee",
@@ -146,28 +146,71 @@ describe("CPTAQ Phase-1 transform", () => {
         upstream_uri: CPTAQ_UPSTREAM_URI,
       },
     });
+    // mrc + id are dropped from the served properties (SPECIAL-DROP; mrc measured null ×1446)
+    expect(properties).not.toHaveProperty("mrc");
+    expect(properties).not.toHaveProperty("id");
     expect(properties?.constraint_ref).toMatch(/^cptaq-zone-agricole:[a-f0-9]{64}$/);
     expect(properties?.constraint_ref).toBe(second[0]?.features[0]?.properties.constraint_ref);
     expect(first[0]?.proof).toEqual({ schema_version: "2.0", geometry_source: context.proof });
   });
 
+  it("serves agricole-only features but proves coverage from the FULL dataset emprise (§3)", () => {
+    // Full dataset: one agricole zone over Warden + one NON-agricole zone spanning the province.
+    // Warden serves the agricole feature (1); the other cities serve 0 agricole features yet stay
+    // COVERED (no-hit-covered), because the emprise is the full-dataset extent — the agricole filter
+    // applies to served features AFTER the emprise is computed. This is the §3 coverage proof.
+    const mixed: FeatureCollection<Polygon, Record<string, unknown>> = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          geometry: square(-72.60, 45.30, -72.45, 45.45),
+          properties: { id: 1, mrc: null, zonage: "Zone agricole", date_maj: "2026-08-31" },
+        },
+        {
+          type: "Feature",
+          geometry: square(-75, 44.5, -71, 46),
+          properties: { id: 2, mrc: null, zonage: "Zone non agricole", date_maj: "2026-08-31" },
+        },
+      ],
+    };
+    const collections = buildCptaqServedCollections({ source: mixed, boundaries: boundaries(), context });
+    const warden = collections.find((c) => c.name.includes("warden"))!;
+    const sutton = collections.find((c) => c.name.includes("sutton"))!;
+    // Warden: the agricole feature is served (1); the non-agricole is never served.
+    expect(warden.features).toHaveLength(1);
+    expect(warden.features[0]!.properties.zonage).toBe("Zone agricole");
+    // Sutton: 0 agricole features, but STILL built + covered from the full-dataset emprise.
+    expect(sutton.features).toHaveLength(0);
+    expect(sutton.emprise.polygon.type).toBe("MultiPolygon");
+    // No served feature anywhere carries the non-agricole class.
+    for (const collection of collections) {
+      for (const feature of collection.features) {
+        expect(feature.properties.zonage).toBe("Zone agricole");
+      }
+    }
+  });
+
   it("rejects every out-of-whitelist source property, including PII", () => {
     expect(() =>
       buildCptaqServedCollections({
-        source: source({ Mrc: "MRC", Date_maj: "2026-08-31", Zonage: "A", proprietaire: "Personne" }),
+        source: source({ zonage: "Zone agricole", date_maj: "2026-08-31", proprietaire: "Personne" }),
         boundaries: boundaries(),
         context,
       }),
     ).toThrow(/property whitelist rejected: proprietaire/);
   });
 
-  it("keeps missing whitelisted values explicit as null", () => {
-    expect(assertCptaqSourceProperties({ Mrc: "MRC" })).toEqual({
-      Mrc: "MRC",
-      Date_maj: null,
-      Zonage: null,
-    });
-    expect(CPTAQ_PROPERTY_WHITELIST).toEqual(["Mrc", "Date_maj", "Zonage"]);
+  it("special-drops {id, mrc} silently, rejects unknown, keeps missing values null", () => {
+    // {id, mrc} are known non-PII → dropped silently (not served, not rejected)
+    expect(assertCptaqSourceProperties({ id: 42, mrc: null, zonage: "Zone agricole", date_maj: "2026-08-31" }))
+      .toEqual({ zonage: "Zone agricole", date_maj: "2026-08-31" });
+    // missing whitelisted values stay explicit null
+    expect(assertCptaqSourceProperties({ mrc: null })).toEqual({ zonage: null, date_maj: null });
+    // any OTHER key is unknown → REJECT (fail-closed, potential PII)
+    expect(() => assertCptaqSourceProperties({ proprietaire: "Personne" }))
+      .toThrow(/property whitelist rejected: proprietaire/);
+    expect(CPTAQ_PROPERTY_WHITELIST).toEqual(["zonage", "date_maj"]);
   });
 
   it("rejects the production bucket before building any output", () => {
