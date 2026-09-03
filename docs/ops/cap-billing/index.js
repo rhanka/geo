@@ -32,7 +32,14 @@ const LIMIT_ID = "%2Fmin%2Fproject";
 exports.capBilling = async (pubsubEvent) => {
   const data = JSON.parse(Buffer.from(pubsubEvent.data, "base64").toString());
   if (!(data.costAmount >= data.budgetAmount)) return;
-  const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+  // ⚠ gen2 (Cloud Run) does NOT auto-inject GOOGLE_CLOUD_PROJECT (that was a gen1-only env var —
+  // measured, k8s: the Function logged `projet=undefined` and the client fell back to a WRONG default
+  // quota project (a project-number that is NOT this project's), so serviceusage.quotas.update was
+  // denied THERE). Pin the project EXPLICITLY at deploy via CAP_PROJECT_ID (30-cap-billing-fn.sh
+  // --set-env-vars); keep GOOGLE_CLOUD_PROJECT as a fallback for a gen1/local run. FAIL-CLOSE if
+  // neither is set — never attribute the quota-update call to a default project.
+  const projectId = process.env.CAP_PROJECT_ID || process.env.GOOGLE_CLOUD_PROJECT;
+  if (!projectId) throw new Error("cap-billing: CAP_PROJECT_ID non défini — refus (jamais de projet par défaut)");
   // The serviceusage consumerOverrides call is IAM-checked against the QUOTA/user project of the
   // request (x-goog-user-project), NOT the consumer in the parent path. Without an explicit quota
   // project the ADC client attributes the call to a WRONG default project (measured, k8s: the enhanced
