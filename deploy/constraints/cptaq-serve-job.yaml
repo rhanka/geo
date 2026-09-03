@@ -1,19 +1,24 @@
 # §9 stage-2 SERVE (light-gate). Runs the ratified cptaq-runner (#302 + #303 fast-follow) in the
 # geo-api root image (gdal-bin). Light-gate = the runner's constructive guards (assertCptaqPreprodBucket +
 # CAS-proof-bound-input + assertCptaqWritableKey + proof-v2 + no-PII); no design_sha/owner-go for
-# the preprod-serve. Rendered per run from stage-1 capture output by render-cptaq-serve.ts.
+# the preprod-serve. Rendered per run from stage-1 capture output by render-cptaq-serve.ts; the render
+# (name/label ≤63 bounds + placeholder substitution) is unit-tested in acquisition/src/lib/cptaq-serve-render.test.ts.
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: cptaq-serve-REPLACE_RUNSTAMP        # substituted per run by render-cptaq-serve.ts
+  # metadata.name = cptaq-serve-<12hex sha256(runStamp)> (render). MUST be ≤63: a Job's pod template gets
+  # an auto-injected `batch.kubernetes.io/job-name` label = metadata.name, and a label value >63 makes the
+  # server-side apply reject the Job. Full run identity is kept in the run-id annotation (no length cap).
+  name: cptaq-serve-REPLACE_JOB_SLUG
   namespace: geo-preprod
-  labels: { app.kubernetes.io/component: constraints-serve, geo.stage: s9-cptaq-serve }
+  annotations: { geo.sentropic/run-id: "REPLACE_RUN_ID" }
+  labels: { app.kubernetes.io/component: constraints-serve, geo.stage: s9-cptaq-serve, geo.run: "REPLACE_JOB_SLUG" }
 spec:
   backoffLimit: 1
   ttlSecondsAfterFinished: 86400
   template:
     metadata:
-      labels: { app.kubernetes.io/component: constraints-serve, geo.stage: s9-cptaq-serve }
+      labels: { app.kubernetes.io/component: constraints-serve, geo.stage: s9-cptaq-serve, geo.run: "REPLACE_JOB_SLUG" }
     spec:
       restartPolicy: Never
       imagePullSecrets: [ { name: geo-registry-pull } ]
@@ -31,12 +36,11 @@ spec:
         command: ["node","packages/geo/dist/constraints/cptaq-runner.js"]
         args:
           # raw-cas-key + capture-manifest-key substituted from stage-1's proof-bound output by
-          # render-cptaq-serve.ts (Q2=(a); never hand-typed; runner re-validates rawCasKey at runtime).
+          # render-cptaq-serve.ts (never hand-typed; runner re-validates rawCasKey at runtime).
           - "--raw-cas-key"
-          - "raw/cptaq/cas/REPLACE_RAW_SHA.zip"
+          - "REPLACE_RAW_KEY"
           - "--capture-manifest-key"
-          - "capture/_runs/constraints-REPLACE_RUN/manifest.jsonl"
-          # boundaries default = normalized/qc-admin-boundaries/qc-municipalites.geojson (omit --boundaries-key)
+          - "REPLACE_MANIFEST_KEY"
           - "--publish"
         env:
           # geo-s3-credentials has ENDPOINT/REGION/ACCESS/SECRET but NOT S3_BUCKET → inject explicitly.
