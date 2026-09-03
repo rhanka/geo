@@ -65,8 +65,13 @@ jobs:
         run: kubectl apply -f "$RUNNER_TEMP/job.yaml"
       - name: wait + logs
         run: |
-          jobref=$(kubectl -n geo-preprod get -f "$RUNNER_TEMP/job.yaml" -o name)
+          # Target the Job EXPLICITLY: a future render may emit multiple docs (e.g. ConfigMap + Job),
+          # and `wait --for=condition=complete` on a ConfigMap is invalid (k8s-archi nit).
+          jobref=$(kubectl -n geo-preprod get -f "$RUNNER_TEMP/job.yaml" -o name | grep '^job\.batch/' | head -1)
+          test -n "$jobref" || { echo "::error::aucun Job (job.batch/*) dans le manifest rendu"; exit 1; }
           kubectl -n geo-preprod wait --for=condition=complete --timeout=1800s "$jobref"
           kubectl -n geo-preprod logs --tail=-1 "$jobref" || true
       - name: verify served
+        env:
+          PREPROD_OGC_URL: ${{ vars.PREPROD_OGC_URL }}   # preprod geo-api ingress (repo variable, non-secret)
         run: ./deploy/ci/verify-served.sh "${{ github.event.inputs.job }}"
