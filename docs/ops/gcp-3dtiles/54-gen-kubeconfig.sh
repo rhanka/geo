@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Phase 54 / runbook — GÉNÈRE le secret GitHub KUBE_CONFIG_GEO (kubeconfig du SA CI geo-ci-runner).
 #
-# ⚠ À LANCER PAR L'OWNER (admin cluster + admin repo GitHub), après [c] du OWNER-BOOTSTRAP.md.
+# ⚠ À LANCER PAR L'OWNER (admin cluster + admin repo GitHub), APRÈS que l'Environment geo-preprod existe ([c]).
 # Mint un token BORNÉ (TokenRequest — PAS un token éternel, boundary i-infra) pour le SA k8s
 # geo-ci-runner (ns geo-preprod, RBAC #327), assemble un kubeconfig minimal (token SA seul, AUCUNE
 # cred admin), le pousse en secret GitHub, puis SHRED le fichier. Le token n'est JAMAIS imprimé
@@ -11,13 +11,15 @@
 # AVANT expiry = rotation (rien d'éternel). La CI échoue loud à expiry (pas de dégradation silencieuse).
 #
 # Variables : SA (défaut geo-ci-runner). NS (défaut geo-preprod). GH_REPO (défaut rhanka/geo).
-#   TOKEN_TTL (défaut 720h = 30j ; honoré jusqu'au plafond du cluster). CLUSTER_NAME (défaut geo-preprod).
+#   TOKEN_TTL (défaut 720h ; plafonné cluster). CLUSTER_NAME (défaut geo-preprod).
+#   SECRET_ENV (défaut geo-preprod) = l'Environment GitHub qui SCOPE le secret (gate required-reviewer).
 set -euo pipefail
 SA="${SA:-geo-ci-runner}"
 NS="${NS:-geo-preprod}"
 GH_REPO="${GH_REPO:-rhanka/geo}"
 TOKEN_TTL="${TOKEN_TTL:-720h}"
 CLUSTER_NAME="${CLUSTER_NAME:-geo-preprod}"
+SECRET_ENV="${SECRET_ENV:-geo-preprod}" # ENV-scope le secret (derrière required-reviewer=owner) — PAS repo-scopé (sinon lisible hors-gate sur repo public, MUST i-infra)
 
 command -v kubectl >/dev/null || { echo "❌ kubectl absent"; exit 1; }
 command -v gh >/dev/null || { echo "❌ gh CLI absent"; exit 1; }
@@ -46,11 +48,15 @@ CADATA="$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.
   kubectl --kubeconfig "$KCFG" config use-context geo-ci >/dev/null
 }
 
-# Pousse le secret GitHub (contenu du fichier, jamais echo) + shred (le trap couvre aussi les sorties d'erreur).
-gh secret set KUBE_CONFIG_GEO -R "$GH_REPO" < "$KCFG"
+# L'Environment DOIT exister d'abord (secret ENV-scopé = derrière required-reviewer=owner). 50 le crée avant
+# 54 ; en standalone, crée-le d'abord (runbook [d]).
+gh api "repos/${GH_REPO}/environments/${SECRET_ENV}" >/dev/null 2>&1 \
+  || { echo "❌ Environment ${SECRET_ENV} absent — crée-le d'abord (50-owner-bootstrap-all.sh, ou runbook [d])"; exit 1; }
+# Pousse le secret GitHub ENV-scopé (contenu du fichier, jamais echo) + shred (le trap couvre aussi les erreurs).
+gh secret set KUBE_CONFIG_GEO -R "$GH_REPO" --env "$SECRET_ENV" < "$KCFG"
 
-# self-verify : le secret existe côté GitHub + le kubeconfig est fonctionnel (RBAC #327 = list jobs dans le ns).
-gh secret list -R "$GH_REPO" | grep -q '^KUBE_CONFIG_GEO' || { echo "❌ secret KUBE_CONFIG_GEO non posé"; exit 1; }
+# self-verify : le secret existe (env-scopé) + le kubeconfig est fonctionnel (RBAC #327 = list jobs dans le ns).
+gh secret list -R "$GH_REPO" --env "$SECRET_ENV" | grep -q '^KUBE_CONFIG_GEO' || { echo "❌ secret KUBE_CONFIG_GEO (env-scopé) non posé"; exit 1; }
 kubectl --kubeconfig "$KCFG" -n "$NS" auth can-i list jobs >/dev/null \
   || { echo "❌ le kubeconfig généré ne peut pas list jobs dans ${NS} (RBAC #327 ?)"; exit 1; }
 
