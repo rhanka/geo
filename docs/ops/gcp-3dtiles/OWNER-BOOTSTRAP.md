@@ -62,18 +62,26 @@ BASE_IDENTITY='<principalSet de [a]>' GRANT_KEY_CREATION=yes \
 > derrière le GO activation séparé + la cert i-infra POST-run (ré-attach + cap-billing Function armée,
 > finding #329). Lire « **armer la capacité** », pas « créer la clé ».
 
-**[c] Secrets GitHub** (owner/infra ; jamais committés) — repo `rhanka/geo` → Settings → Secrets :
+**[c] GitHub Environment + Variables** — repo → Settings → Environments → `geo-preprod`. **À FAIRE AVANT
+[d]** : les secrets sont ENV-scopés (derrière le gate) → l'Environment doit exister d'abord.
+- **required reviewer = owner** (⇒ gate owner sur chaque dispatch de job/ops, même après activation) ;
+- Variables (env-scopées) : `WIF_PROVIDER` = sortie [a] ; `CAP_EXECUTOR_SA` = sortie [a] ; `PREPROD_OGC_URL`
+  = l'ingress geo-api preprod (pour que `verify-served.sh` soit réelle).
+
+**[d] Secrets GitHub — ENV-scopés `geo-preprod`** (owner/infra ; jamais committés). ⚠ **ENV-scopés =
+derrière le gate required-reviewer, PAS repo-scopés** : un secret repo-scopé serait lisible par TOUT
+workflow (hors gate) sur ce repo public → une cred cluster contournerait le gate owner (MUST i-infra).
 
 `KUBE_CONFIG_GEO` — kubeconfig du SA k8s `geo-ci-runner` (ns `geo-preprod`, RBAC #327), **token BORNÉ
-(TokenRequest, PAS de token éternel** — boundary i-infra). Généré + poussé + shreddé par le script dédié
-(token JAMAIS imprimé) :
+(TokenRequest, PAS de token éternel** — boundary i-infra). Généré + poussé (env-scopé) + shreddé par le
+script dédié (token JAMAIS imprimé) :
 ```bash
-bash docs/ops/gcp-3dtiles/54-gen-kubeconfig.sh
+bash docs/ops/gcp-3dtiles/54-gen-kubeconfig.sh   # pose KUBE_CONFIG_GEO --env geo-preprod (exige l'Environment [c])
 ```
-Le script mint un token borné (`TOKEN_TTL=720h` par défaut, plafonné par le max cluster), assemble un
-kubeconfig minimal (token SA seul, **0 cred admin**), `gh secret set KUBE_CONFIG_GEO`, shred, self-verify
-(secret posé + `auth can-i list jobs`). **Token borné ⇒ rotation** : re-lancer `54` avant expiry (la CI
-échoue loud à expiry — pas de dégradation silencieuse).
+Le script mint un token borné (`TOKEN_TTL=720h` demandé, **plafonné par le max cluster** — il émet l'expiry
+ACCORDÉ pour la rotation), assemble un kubeconfig minimal (token SA seul, **0 cred admin**),
+`gh secret set KUBE_CONFIG_GEO --env geo-preprod`, shred, self-verify (secret env-scopé + `auth can-i list
+jobs`). **Token borné ⇒ rotation** : re-lancer `54` avant l'expiry accordé (la CI échoue loud à expiry).
 
 `GEO_S3_ENV` — cred S3 **READ-ONLY** pour que le render CI lise S3 (`render-cptaq-serve.ts` lit le
 manifeste de capture). Provider = **Scaleway Object Storage** ; le secret = un blob dotenv des 5 variables
@@ -101,15 +109,11 @@ S3-provider), 2 couches :
 i-infra **certifie le scope au provisioning** (5 probes RO : ListBucket preprod OK · GetObject OK ·
 PutObject 403 · DeleteObject 403 · toute op bucket PROD DENIED). **GUARDRAIL** : GEO_S3_ENV = RO pour le
 chemin render-lit-S3 ; un job SERVE qui écrit S3 = une cred **SÉPARÉE scopée-write**, JAMAIS élargir
-GEO_S3_ENV en RW (deux chemins = deux creds). Puis pose + shred (jamais committé, jamais gardé en clair) :
+GEO_S3_ENV en RW (deux chemins = deux creds). Puis pose (env-scopé) + shred (jamais committé) :
 ```bash
-gh secret set GEO_S3_ENV -R rhanka/geo < geo-s3-ro.env   # dotenv des 5 lignes ci-dessus
+gh secret set GEO_S3_ENV -R rhanka/geo --env geo-preprod < geo-s3-ro.env   # dotenv des 5 lignes ci-dessus
 shred -u geo-s3-ro.env
 ```
-
-**[d] GitHub Environment + Variables** — repo → Settings → Environments → `geo-preprod` :
-- **required reviewer = owner** (⇒ gate owner sur chaque dispatch de job/ops, même après activation) ;
-- Variables : `WIF_PROVIDER` = sortie [a] ; `CAP_EXECUTOR_SA` = sortie [a] ; `PREPROD_OGC_URL` = l'ingress geo-api preprod (pour que la vérif `verify-served.sh` soit réelle).
 
 ➡ Résultat : la CI/CD geo (workflow `geo-jobs.yml`, #327) peut lancer les jobs preprod, et l'exécuteur §5
 peut faire les ops quota/clé — **keyless, owner-gated par dispatch, least-priv**. Le DEPLOY de l'adaptateur

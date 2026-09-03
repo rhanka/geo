@@ -14,10 +14,13 @@
 # comme GitHub Variables (jamais committées/loggées). 0 littéral secret/project-number/billing-account
 # (repo PUBLIC).
 #
-# Ordre (dépendances i-infra) : 53 (WIF → BASE_IDENTITY) → 52 (executor, consomme BASE_IDENTITY) →
-#   54 (kubeconfig ; EXIGE le SA geo-ci-runner = RBAC #327 déjà appliqué) → Environment + gh secret/variable.
+# Ordre (i-infra) : préflight → assert login==owner → Environment (le GATE, AVANT tout secret env-scopé) →
+#   53 (WIF → BASE_IDENTITY) → 52 (executor) → 54 (kubeconfig, secret ENV-scopé) → Variables → self-verify.
+# ⚠ L'Environment vient AVANT 54 : KUBE_CONFIG_GEO est ENV-scopé (derrière required-reviewer=owner) — un
+# secret repo-scopé serait lisible par TOUT workflow hors-gate (repo public) → contournerait le gate owner.
 #
 # Variables : PROJECT_ID (env.sh). GH_REPO (défaut rhanka/geo). WIF_ENV (défaut geo-preprod).
+#   EXPECT_OWNER (défaut rhanka = username GitHub public) = le login gh attendu (le wrapper POSE le gate).
 #   GRANT_KEY_CREATION (défaut yes = ARME la CAPACITÉ de créer la clé — PAS la clé, PAS l'activation ; le
 #   mint réel reste money-gated derrière le GO activation séparé + la cert i-infra ré-attach+Function-armée).
 #   PREPROD_OGC_URL (optionnel : posé comme Variable si fourni).
@@ -28,6 +31,7 @@ GH_REPO="${GH_REPO:-rhanka/geo}"
 WIF_ENV="${WIF_ENV:-geo-preprod}"
 WIF_POOL="${WIF_POOL:-geo-ci-pool}"
 WIF_PROVIDER_ID="${WIF_PROVIDER_ID:-github}"
+EXPECT_OWNER="${EXPECT_OWNER:-rhanka}"
 GRANT_KEY_CREATION="${GRANT_KEY_CREATION:-yes}"
 export GH_REPO WIF_ENV WIF_POOL WIF_PROVIDER_ID # les sous-scripts héritent des mêmes noms
 
@@ -41,9 +45,20 @@ gh auth status >/dev/null 2>&1 \
   || { echo "❌ gh non authentifié. Lance d'abord (UNE fois, ton login github-admin) : gh auth login"; exit 1; }
 kubectl -n "$WIF_ENV" get serviceaccount geo-ci-runner >/dev/null 2>&1 \
   || { echo "❌ SA ${WIF_ENV}/geo-ci-runner absent — applique d'abord la RBAC CI (#327, deploy/ci/geo-ci-rbac.yaml)"; exit 1; }
-echo "✅ préflight OK (gcloud+gh authentifiés owner, kubectl, RBAC #327 présente)."
 
-# ── 1. WIF pool + provider (53) → produit BASE_IDENTITY. ─────────────────────────────────────────────
+# ── 0b. Assert que le login gh EST l'owner attendu (le wrapper POSE le gate — ne pas viser la mauvaise personne). ──
+AUTHED_LOGIN="$(gh api user --jq '.login')"
+[ "$AUTHED_LOGIN" = "$EXPECT_OWNER" ] \
+  || { echo "❌ gh authentifié comme '${AUTHED_LOGIN}', attendu '${EXPECT_OWNER}' — refus (le reviewer pointerait la mauvaise personne)"; exit 1; }
+OWNER_ID="$(gh api user --jq '.id')"
+echo "✅ préflight OK (gcloud+gh authentifiés owner=${AUTHED_LOGIN}, kubectl, RBAC #327 présente)."
+
+# ── 1. Environment GitHub geo-preprod : required-reviewer=owner (LE GATE) — AVANT tout secret env-scopé. ──
+gh api --method PUT "repos/${GH_REPO}/environments/${WIF_ENV}" --input - >/dev/null <<EOF
+{"reviewers":[{"type":"User","id":${OWNER_ID}}]}
+EOF
+
+# ── 2. WIF pool + provider (53) → produit BASE_IDENTITY. ─────────────────────────────────────────────
 bash "$HERE/53-bootstrap-wif.sh"
 # Re-dérive les valeurs (mêmes noms/defaults que 53) plutôt que parser l'echo ; project-number = runtime-only.
 PROJECT_NUMBER="$(gcloud projects describe "$PROJECT_ID" --format='value(projectNumber)')"
@@ -52,23 +67,18 @@ BASE_IDENTITY="principalSet://iam.googleapis.com/${POOL_RES}/attribute.repositor
 WIF_PROVIDER="${POOL_RES}/providers/${WIF_PROVIDER_ID}"
 CAP_EXECUTOR_SA="geo-cap-executor@${PROJECT_ID}.iam.gserviceaccount.com"
 
-# ── 2. Executor least-priv (52), consomme BASE_IDENTITY. ─────────────────────────────────────────────
+# ── 3. Executor least-priv (52), consomme BASE_IDENTITY. ─────────────────────────────────────────────
 BASE_IDENTITY="$BASE_IDENTITY" GRANT_KEY_CREATION="$GRANT_KEY_CREATION" bash "$HERE/52-bootstrap-geo-executor.sh"
 
-# ── 3. Kubeconfig CI borné (54) → pose le secret KUBE_CONFIG_GEO (token borné, cred admin jamais incluse). ──
-bash "$HERE/54-gen-kubeconfig.sh"
+# ── 4. Kubeconfig CI borné (54) → pose KUBE_CONFIG_GEO ENV-scopé (l'Environment existe déjà, étape 1). ──
+SECRET_ENV="$WIF_ENV" bash "$HERE/54-gen-kubeconfig.sh"
 
-# ── 4. Environment GitHub geo-preprod : required-reviewer=owner (gate owner par dispatch) + Variables WIF. ──
-OWNER_ID="$(gh api user --jq '.id')"
-gh api --method PUT "repos/${GH_REPO}/environments/${WIF_ENV}" --input - >/dev/null <<EOF
-{"reviewers":[{"type":"User","id":${OWNER_ID}}]}
-EOF
-# WIF_PROVIDER / CAP_EXECUTOR_SA contiennent le project-number → Variables (jamais committées).
+# ── 5. Variables GitHub env-scopées : WIF_PROVIDER / CAP_EXECUTOR_SA (portent le project-number → Variables). ──
 gh variable set WIF_PROVIDER    -R "$GH_REPO" --env "$WIF_ENV" --body "$WIF_PROVIDER"
 gh variable set CAP_EXECUTOR_SA -R "$GH_REPO" --env "$WIF_ENV" --body "$CAP_EXECUTOR_SA"
 if [ -n "${PREPROD_OGC_URL:-}" ]; then gh variable set PREPROD_OGC_URL -R "$GH_REPO" --env "$WIF_ENV" --body "$PREPROD_OGC_URL"; fi
 
-# ── 5. GEO_S3_ENV (Scaleway RO) : cred owner-fournie (console IAM), guidée, jamais capturée ici. ──────
+# ── 6. GEO_S3_ENV (Scaleway RO) : cred owner-fournie (console IAM), guidée, jamais capturée ici. ──────
 if gh secret list -R "$GH_REPO" --env "$WIF_ENV" 2>/dev/null | grep -q '^GEO_S3_ENV'; then
   echo "  (GEO_S3_ENV déjà posé — laissé tel quel)"
 else
@@ -78,16 +88,18 @@ else
 fi
 [ -n "${PREPROD_OGC_URL:-}" ] || echo "  ↳ PREPROD_OGC_URL non fourni : gh variable set PREPROD_OGC_URL -R ${GH_REPO} --env ${WIF_ENV} --body '<ingress geo-api preprod>' (quand il existe)."
 
-# ── 6. Self-verify end-to-end (fail-loud). ───────────────────────────────────────────────────────────
+# ── 7. Self-verify end-to-end (fail-loud) — dont LE GATE lui-même (required-reviewer). ───────────────
 gcloud iam service-accounts describe "$CAP_EXECUTOR_SA" >/dev/null || { echo "❌ executor SA absent"; exit 1; }
-gh secret list -R "$GH_REPO" | grep -q '^KUBE_CONFIG_GEO' || { echo "❌ KUBE_CONFIG_GEO non posé"; exit 1; }
-gh variable list -R "$GH_REPO" --env "$WIF_ENV" | grep -q '^WIF_PROVIDER' || { echo "❌ WIF_PROVIDER non posé"; exit 1; }
+gh secret list   -R "$GH_REPO" --env "$WIF_ENV" | grep -q  '^KUBE_CONFIG_GEO' || { echo "❌ KUBE_CONFIG_GEO (env-scopé) non posé"; exit 1; }
+gh variable list -R "$GH_REPO" --env "$WIF_ENV" | grep -q  '^WIF_PROVIDER'    || { echo "❌ WIF_PROVIDER non posé"; exit 1; }
+gh api "repos/${GH_REPO}/environments/${WIF_ENV}" --jq '.protection_rules[].reviewers[].reviewer.id' | grep -qx "$OWNER_ID" \
+  || { echo "❌ required-reviewer=owner ABSENT sur l'Environment ${WIF_ENV} — le GATE n'est pas en place"; exit 1; }
 
 echo ""
-echo "✅ BOOTSTRAP COMPLET (idempotent, self-verified). Accès keyless armé :"
-echo "   • Environment ${WIF_ENV} : required-reviewer=owner (gate owner par dispatch)."
-echo "   • Variables : WIF_PROVIDER, CAP_EXECUTOR_SA (portent le project-number — Variables, jamais committées)."
-echo "   • Secret : KUBE_CONFIG_GEO (token borné). GEO_S3_ENV / PREPROD_OGC_URL : voir ci-dessus si non posés."
+echo "✅ BOOTSTRAP COMPLET (idempotent, self-verified, gate vérifié). Accès keyless armé :"
+echo "   • Environment ${WIF_ENV} : required-reviewer=owner (gate owner par dispatch) — RE-LU et confirmé."
+echo "   • Secret + Variables ENV-scopés (derrière le gate) : KUBE_CONFIG_GEO, WIF_PROVIDER, CAP_EXECUTOR_SA."
+echo "     (WIF_PROVIDER porte le project-number — Variable, jamais committée.) GEO_S3_ENV/PREPROD_OGC_URL : voir ci-dessus si non posés."
 echo "   ⇒ Désormais : TOUT (reattach/clé/deploy/activation) = GO-pur (merge OU dispatch approuvé), 0 terminal."
 echo "   ⚠ GRANT_KEY_CREATION=${GRANT_KEY_CREATION} = capacité de créer la clé ARMÉE (PAS la clé, PAS l'activation ;"
 echo "     mint réel money-gated derrière le GO activation séparé + la cert i-infra ré-attach+Function-armée)."
