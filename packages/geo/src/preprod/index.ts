@@ -11,7 +11,12 @@ export {
   DEFAULT_MAX_DELETE_FRACTION,
   buildCoherenceManifest,
   computeSetHash,
+  PREPROD_NATIVE_FAMILIES,
+  isPreprodNativeCollectionId,
+  isPreprodNativeKey,
+  prodMirrorCollectionIds,
   type MirrorCopy,
   type MirrorPlan,
   type CoherenceManifest,
+  type PreprodNativeFamily,
 } from "./mirror.js";
