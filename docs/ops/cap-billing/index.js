@@ -49,7 +49,25 @@ exports.capBilling = async (pubsubEvent) => {
       await overrides.create({ parent, force: true, requestBody: { overrideValue: OVERRIDE_VALUE } });
       console.log(`cap-billing: consumer override=${OVERRIDE_VALUE} créé sur ${metric}`);
     } catch (err) {
-      // Idempotent: a re-fired budget event finds an existing override → patch it back to 0.
+      // ONLY ALREADY_EXISTS (a re-fired budget event) is the idempotent case → patch existing to 0.
+      // Any OTHER create error (e.g. a role/permission gap) is the REAL failure: log it explicitly
+      // and re-throw. A blind list() fallback would fail for the same reason and MASK the true cause
+      // — measured: a create-path role gap surfaced only as a "get quota" denial from this catch's
+      // list(), hiding the create error. Surface create first so the cause is diagnosable in one line.
+      const status = err && (err.code || (err.response && err.response.status));
+      const alreadyExists = status === 409 || /already exists/i.test((err && err.message) || "");
+      if (!alreadyExists) {
+        // Log the COMPLETE Google API error (status + details[] ErrorInfo → reason + the exact
+        // `permission` GCP demands), not just err.message ("Permission denied to get quota" is too
+        // vague to name the missing role permission). Surfaces the precise perm in one log line if a
+        // role hypothesis misses.
+        const apiErr = err && err.response && err.response.data && err.response.data.error;
+        console.error(
+          `cap-billing: ÉCHEC create override sur ${metric}: ` +
+            (apiErr ? JSON.stringify(apiErr) : (err && err.message) || String(err))
+        );
+        throw err;
+      }
       const list = await overrides.list({ parent });
       const existing = list.data.overrides || [];
       if (existing.length === 0) throw err;
