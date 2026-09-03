@@ -12,17 +12,34 @@
 # la base ne peut QU'impersoner l'exécuteur least-priv, 0 permission GCP directe). Idempotent
 # (create-or-update convergent = state=script) + self-verifying + fail-loud.
 #
+# AUTH END-TO-END keyless (design i-infra) — comment l'exécuteur s'authentifie SANS clé téléchargée :
+#   Chemin prêt = GitHub Actions + Workload Identity Federation (WIF). Le workflow §5 (permissions
+#   id-token:write) émet un OIDC token GitHub → google-github-actions/auth@v2 l'échange au WIF provider
+#   → le principalSet WIF (principalSet://iam.googleapis.com/projects/<PROJECT_NUMBER>/locations/global/
+#   workloadIdentityPools/<POOL>/attribute.repository/rhanka/geo), doté de tokenCreator sur geo-cap-executor
+#   par CE script → token COURT-VÉCU impersonant geo-cap-executor (least-priv) → ops quota (+ clé si opt-in).
+#   AUCUNE clé SA téléchargée ; token éphémère scopé au workflow. ⟹ BASE_IDENTITY = CE principalSet WIF
+#   (PAS le geo-ci-runner k8s de #327 = un ServiceAccount KUBERNETES, PAS une identité GCP, ne s'auth pas
+#   aux API GCP). PRÉREQUIS owner-bootstrap (EN PLUS de ce script) : créer le WIF Pool + Provider (trust
+#   assertion.repository=='rhanka/geo' + condition environment protégé) — companion owner-run. ⚠ Le nom du
+#   WIF provider (comme BASE_IDENTITY) CONTIENT le PROJECT_NUMBER → GitHub Variable/Secret, JAMAIS committé
+#   (${vars.WIF_PROVIDER}, ${vars.CAP_EXECUTOR_SA}). [Alternative non-adoptée : exécuteur in-cluster OVH
+#   MKS via OIDC→WIF ; le chemin actuel = GitHub Actions + WIF.]
+#
 # Variables :
 #   PROJECT_ID       (env.sh)
-#   BASE_IDENTITY    le principal de base qui impersonera l'exécuteur, tokenCreator-ONLY sur la SA
-#                    (ex: "serviceAccount:geo-ci-runner@${PROJECT_ID}.iam.gserviceaccount.com", ou une
-#                    identité fédérée OIDC GitHub). REQUIS.
+#   BASE_IDENTITY    le principalSet WIF (cf AUTH ci-dessus) qui impersonera l'exécuteur, tokenCreator
+#                    -ONLY sur la SA. VAR RUNTIME — contient le PROJECT_NUMBER (nom du pool WIF) → JAMAIS
+#                    committée (l'owner met le principalSet réel à l'exécution), comme BILLING_ACCOUNT.
+#                    REQUIS. Doit être minimal : le script grant le tokenCreator mais ne peut PAS enforcer
+#                    que la base n'a rien d'autre — l'owner choisit une base minimale (le principalSet WIF
+#                    scopé au repo l'est par construction).
 #   GRANT_KEY_CREATION=yes  provisionne AUSSI le role de création de clé (plus gaté ; step distinct).
 #                           Défaut = quota-executor SEUL (conservateur).
 set -euo pipefail
 source "$(dirname "$0")/env.sh"
 
-: "${BASE_IDENTITY:?BASE_IDENTITY requis — le principal de base tokenCreator-only (ex: serviceAccount:geo-ci-runner@${PROJECT_ID}.iam.gserviceaccount.com)}"
+: "${BASE_IDENTITY:?BASE_IDENTITY requis — le principalSet WIF tokenCreator-only (principalSet://.../attribute.repository/rhanka/geo). VAR RUNTIME, jamais committee (contient le PROJECT_NUMBER).}"
 EXECUTOR_SA="geo-cap-executor@${PROJECT_ID}.iam.gserviceaccount.com"
 ROLE_QUOTA="geoCapQuotaExecutor"
 ROLE_KEY="geoCapKeyCreation"
