@@ -11,6 +11,30 @@ spec:
           env:
             - name: GEO_DATA_URI
               value: s3://sentropic-geo-preprod/normalized
+            # ── §5 basemap 2D (Google Map Tiles) — preprod, FLAG-OFF par construction ──
+            # L'endpoint /basemap/2d répond 503 tant que BASEMAP_2D_ENABLED != "1" ET la clé est absente
+            # (double fail-closed, ruling geo-archi Q3). Le pré-GO 503 = repli blanc déclaré (ODbL-safe :
+            # ADR-0030 n'entre en vigueur qu'au flip). Activation = GO owner SÉPARÉ (flip ODbL + clé) via le
+            # workflow activate-serve — JAMAIS au deploy. immo-preprod (consommateur de geo-api.geo-preprod)
+            # est inchangé : /collections intact, ces env sont additifs et inertes tant que flag-OFF.
+            - name: BASEMAP_2D_ENABLED
+              value: "0"
+            - name: BASEMAP_2D_MAP_TYPE
+              value: satellite
+            - name: BASEMAP_2D_LANGUAGE
+              value: fr-CA
+            - name: BASEMAP_2D_REGION
+              value: CA
+            # Clé restreinte Google, montée depuis le secret geo-tile-key (LE KEY_SECRET réel — ns
+            # geo-preprod, clé GOOGLE_TILE_KEY — créé à l'activation par le workflow activate-serve /
+            # 60-owner-finish). optional:true ⇒ le pod démarre SANS (flag-OFF → 503 fail-closed) ; la clé
+            # n'existe pas avant le GO owner.
+            - name: GOOGLE_TILE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: geo-tile-key
+                  key: GOOGLE_TILE_KEY
+                  optional: true
           envFrom:
             - secretRef:
                 name: geo-s3-credentials-preprod
