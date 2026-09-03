@@ -143,6 +143,22 @@ describe("MaplibreBasemapController", () => {
     expect(map.styles).toEqual([]);
   });
 
+  it("should fail closed for the v2.0 raster-source basemap (flag-OFF, adapter is increment-2)", () => {
+    const map = new FakeBasemapMap();
+    const controller = makeController(map);
+
+    expect(() => controller.setBasemap({
+      kind: "raster-source",
+      source: {
+        id: "sat-2d",
+        imageryType: "provider-2d",
+        attribution: { mode: "dynamic" },
+        policy: "live-embed-only",
+      },
+    })).toThrow("raster-source basemap not yet supported — provider adapter is wp7 increment-2 (flag-OFF by construction)");
+    expect(map.styles).toEqual([]);
+  });
+
   it.each<readonly [string, MaplibreStyleReadyEvent, BasemapSpec]>([
     ["blank", "styledata", { kind: "blank", background: "surface-default" }],
     ["raster", "load", {
