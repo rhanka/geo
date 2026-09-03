@@ -67,6 +67,10 @@
       "types": "./dist/zones/index.d.ts",
       "import": "./dist/zones/index.js"
     },
+    "./constraints": {
+      "types": "./dist/constraints/index.d.ts",
+      "import": "./dist/constraints/index.js"
+    },
     "./zonage": {
       "types": "./dist/zonage/index.d.ts",
       "import": "./dist/zonage/index.js"
@@ -83,6 +87,7 @@
     "dev": "tsx watch src/api/server.ts",
     "start": "node dist/api/server.js",
     "cli": "tsx src/cli/cli.ts",
+    "cptaq:normalize-serve": "tsx src/constraints/cptaq-runner.ts",
     "build": "tsc -p tsconfig.build.json",
     "check": "tsc -p tsconfig.json --noEmit",
     "typecheck": "tsc -p tsconfig.json --noEmit",
