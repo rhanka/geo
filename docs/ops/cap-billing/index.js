@@ -32,14 +32,23 @@ const LIMIT_ID = "%2Fmin%2Fproject";
 exports.capBilling = async (pubsubEvent) => {
   const data = JSON.parse(Buffer.from(pubsubEvent.data, "base64").toString());
   if (!(data.costAmount >= data.budgetAmount)) return;
-  const auth = await google.auth.getClient({
+  const projectId = process.env.GOOGLE_CLOUD_PROJECT;
+  // The serviceusage consumerOverrides call is IAM-checked against the QUOTA/user project of the
+  // request (x-goog-user-project), NOT the consumer in the parent path. Without an explicit quota
+  // project the ADC client attributes the call to a WRONG default project (measured, k8s: the enhanced
+  // catch's PreconditionFailure.subject = projectnumbers/316838101533, not this project) →
+  // serviceusage.quotas.update denied there. Pin the quota project to THIS project so the perm check
+  // lands where the SA holds the role (gcloud impersonation with the right consumer succeeds — the
+  // mechanism is sound; only the client's quota-project was unwired).
+  const auth = await new google.auth.GoogleAuth({
     scopes: ["https://www.googleapis.com/auth/cloud-platform"],
-  });
+    clientOptions: { quotaProjectId: projectId },
+  }).getClient();
+  console.log(`cap-billing: projet=${projectId} (quota-project pinné pour le check serviceusage.quotas.update)`);
   // consumerQuotaMetrics / consumerOverrides live in the v1beta1 Service Usage API (v1 has only
   // services.enable/disable/list). GOOGLE_CLOUD_PROJECT is the project ID — the API resolves it to
-  // the number (measured, k8s), so no resource-manager lookup is needed.
+  // the number, so no resource-manager lookup is needed.
   const serviceusage = google.serviceusage({ version: "v1beta1", auth });
-  const projectId = process.env.GOOGLE_CLOUD_PROJECT;
   const overrides = serviceusage.services.consumerQuotaMetrics.limits.consumerOverrides;
   for (const metric of CHARGED_METRICS) {
     const parent =
@@ -63,7 +72,7 @@ exports.capBilling = async (pubsubEvent) => {
         // role hypothesis misses.
         const apiErr = err && err.response && err.response.data && err.response.data.error;
         console.error(
-          `cap-billing: ÉCHEC create override sur ${metric}: ` +
+          `cap-billing: ÉCHEC create override sur ${metric} (projet=${projectId}): ` +
             (apiErr ? JSON.stringify(apiErr) : (err && err.message) || String(err))
         );
         throw err;
