@@ -12,9 +12,9 @@ set -euo pipefail
 : "${TOPIC:=billing-guardrail}"
 : "${REFERRER:=https://*.sent-tech.ca/*}"
 # BUDGET_AMOUNT is a PLAIN number in the BILLING ACCOUNT's OWN currency — NO currency
-# suffix ("50EUR" on a non-EUR account = INVALID_ARGUMENT; the billing account here is CAD).
-# Default 50 (account currency); the owner overrides for the intended headroom (e.g. ~75 on a
-# CAD account for a ~50€ cap). Stays a hard CAP (no spend).
+# suffix (a hardcoded currency suffix on a non-matching account = INVALID_ARGUMENT; the
+# billing account here is CAD). Default 50 (account currency); the owner overrides for the
+# intended headroom (e.g. ~75 on a CAD account for a ~50 EUR cap). Stays a hard CAP (no spend).
 : "${BUDGET_AMOUNT:=50}"
 : "${KEY_DISPLAY_NAME:=3dtiles-preprod-key}"
 SA_EMAIL="cap-billing-sa@${PROJECT_ID}.iam.gserviceaccount.com"
