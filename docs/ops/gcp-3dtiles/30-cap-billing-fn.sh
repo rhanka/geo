@@ -7,21 +7,33 @@
 # dead (A needed a billing-account grant we refuse; B — a SA cannot disable tile even with
 # serviceUsageAdmin). C1: at the cap the Function sets the CONSUMER QUOTA to 0 on the charged Map
 # Tiles metrics (proven: a SA CAN — k8s probe rc=0). The SA needs only:
-#  - a PROJECT-scoped CUSTOM role with serviceusage.quotas.update + .get. ⚠ quotas.update is
-#    BIDIRECTIONAL (the MINIMAL grain — GCP has no decrease-only): kill-only is enforced in the
-#    COMMITTED Function (hardcoded overrideValue "0"), NOT by the permission. See cap-billing/index.js.
+#  - a PROJECT-scoped CUSTOM role with cloudquotas.quotas.get + .update (the Cloud Quotas API grain;
+#    legacy serviceusage.quotas.* measured INSUFFICIENT — k8s). ⚠ quotas.update is BIDIRECTIONAL (the
+#    MINIMAL grain — GCP has no decrease-only): kill-only is enforced in the COMMITTED Function
+#    (hardcoded overrideValue "0"), NOT by the permission. See cap-billing/index.js.
 #  - roles/run.invoker on the deployed Cloud Run service (gen2 = Cloud Run).
 source "$(dirname "$0")/env.sh"
 
 gcloud iam service-accounts create cap-billing-sa --project "$PROJECT_ID" 2>/dev/null || true
 
-# Least-priv PROJECT-scoped custom role: set/read consumer quota overrides ONLY. Idempotent.
+# Least-priv PROJECT-scoped custom role: set/read consumer quota overrides ONLY. Idempotent AND
+# CONVERGENT (create-or-update) so an already-existing role is realigned to THIS permission set —
+# state=script, no drift (any ad-hoc grant is replaced by ROLE_PERMS on update).
+# The grain is the Cloud Quotas API (cloudquotas.quotas.*): the serviceusage v1beta1 consumerOverrides
+# call the Function makes is IAM-checked against cloudquotas.* — legacy serviceusage.quotas.* was
+# measured INSUFFICIENT after 19min propagation (k8s). cloudquotas.googleapis.com is enabled in
+# 10-enable-apis.sh. quotas.update is BIDIRECTIONAL (MINIMAL grain — GCP has no decrease-only):
+# kill-only is enforced in the COMMITTED Function (hardcoded overrideValue "0"), not by the perm.
 ROLE_ID="capBillingQuotaCapper"
+ROLE_PERMS="cloudquotas.quotas.get,cloudquotas.quotas.update"
 if ! gcloud iam roles describe "$ROLE_ID" --project "$PROJECT_ID" >/dev/null 2>&1; then
   gcloud iam roles create "$ROLE_ID" --project "$PROJECT_ID" \
     --title="Cap-billing quota capper" \
     --description="Least-priv: set consumer quota overrides to cut billable spend at the budget cap (project-scoped)." \
-    --permissions=serviceusage.quotas.update,serviceusage.quotas.get --stage=GA
+    --permissions="$ROLE_PERMS" --stage=GA
+else
+  gcloud iam roles update "$ROLE_ID" --project "$PROJECT_ID" \
+    --permissions="$ROLE_PERMS" --stage=GA
 fi
 gcloud projects add-iam-policy-binding "$PROJECT_ID" \
   --member="serviceAccount:${SA_EMAIL}" --role="projects/${PROJECT_ID}/roles/${ROLE_ID}"
