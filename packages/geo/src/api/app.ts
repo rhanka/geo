@@ -36,6 +36,8 @@ import {
 } from "./ogc.js";
 import type { FeatureProvider, ItemsQuery, ItemsStream, ServedFeature } from "./provider.js";
 
+import { createBasemapApp } from "../basemap/endpoint.js";
+
 /** Default page size and the hard cap enforced on `?limit=`. */
 const DEFAULT_LIMIT = 100;
 const MAX_LIMIT = 10000;
@@ -297,6 +299,12 @@ export function createApp(
     c.header("Content-Type", MEDIA_GEOJSON);
     return c.body(JSON.stringify(body));
   });
+
+  // ── Basemap 2D mint (§5, FLAG-OFF by construction) ────────────────────────────
+  // Mounts the Google Map Tiles 2D session-mint endpoint. INERT until the owner GO:
+  // /basemap/2d/session answers 503 unless BASEMAP_2D_ENABLED=1 AND the restricted key is present
+  // (double fail-closed, geo-archi ruling). Pre-GO 503 = the front's declared blank fallback (ODbL-safe).
+  app.route("/basemap/2d", createBasemapApp());
 
   return app;
 }
