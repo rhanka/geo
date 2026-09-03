@@ -73,6 +73,12 @@ BASE_IDENTITY="$BASE_IDENTITY" GRANT_KEY_CREATION="$GRANT_KEY_CREATION" bash "$H
 # ── 4. Kubeconfig CI borné (54) → pose KUBE_CONFIG_GEO ENV-scopé (l'Environment existe déjà, étape 1). ──
 SECRET_ENV="$WIF_ENV" bash "$HERE/54-gen-kubeconfig.sh"
 
+# ── 4b. Pré-crée le secret geo-tile-key VIDE (ns geo-preprod) — pour que le workflow activate-serve l'UPDATE
+#        seulement (RBAC least-priv resourceNames:[geo-tile-key], PAS de secrets-create ; choix i-infra (b)).
+#        Idempotent (apply). VIDE = 0 clé → l'adaptateur 503 fail-closed jusqu'à l'activation (GO#2 mint+update).
+kubectl create secret generic geo-tile-key -n "$WIF_ENV" --dry-run=client -o yaml | kubectl apply -f - >/dev/null
+echo "  ↳ secret geo-tile-key (vide) pré-créé ns ${WIF_ENV} — activate-serve l'update-only à l'activation."
+
 # ── 5. Variables GitHub env-scopées : WIF_PROVIDER / CAP_EXECUTOR_SA (portent le project-number → Variables). ──
 gh variable set WIF_PROVIDER    -R "$GH_REPO" --env "$WIF_ENV" --body "$WIF_PROVIDER"
 gh variable set CAP_EXECUTOR_SA -R "$GH_REPO" --env "$WIF_ENV" --body "$CAP_EXECUTOR_SA"
