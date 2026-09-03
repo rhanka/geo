@@ -51,9 +51,13 @@ gcloud projects remove-iam-policy-binding "$PROJECT_ID" \
   --member="serviceAccount:${SA_EMAIL}" --role="projects/${PROJECT_ID}/roles/capBillingApiDisabler" 2>/dev/null || true
 gcloud iam roles delete capBillingApiDisabler --project "$PROJECT_ID" 2>/dev/null || true
 
+# gen2 does NOT auto-inject GOOGLE_CLOUD_PROJECT (gen1-only) — pin it EXPLICITLY so the Function's
+# serviceusage quota-project lands on THIS project (measured k8s: without it the client attributed the
+# quotas.update check to a WRONG default project → PERMISSION_DENIED; index.js fails closed if unset).
 gcloud functions deploy cap-billing --gen2 --runtime=nodejs20 --region="$REGION" \
   --project "$PROJECT_ID" --trigger-topic="$TOPIC" --entry-point=capBilling \
-  --service-account="$SA_EMAIL" --source="$(dirname "$0")/../cap-billing"
+  --service-account="$SA_EMAIL" --source="$(dirname "$0")/../cap-billing" \
+  --set-env-vars="CAP_PROJECT_ID=${PROJECT_ID}"
 # gen2 Function = Cloud Run under the hood: the trigger's SA needs run.invoker on the service,
 # else the Function is deployed but NEVER invoked. Granted AFTER deploy (the service must exist).
 gcloud run services add-iam-policy-binding cap-billing --region="$REGION" --project "$PROJECT_ID" \
