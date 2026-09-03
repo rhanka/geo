@@ -18,23 +18,24 @@ echo "over-budget simulé publié ; attente du cap quota=0 sur les 4 métriques 
 ALL_ZERO="no"
 for attempt in $(seq 1 8); do
   sleep 15
-  # `services quota list` (JSON) carries per-metric consumerOverride.overrideValue; every charged
-  # metric must read "0". The list shows the override NAME, but its overrideValue is in the bucket.
+  # `services quota list --format=json` exposes only the override NAME per bucket, NOT its value
+  # (measured, k8s), and there is no simple get-by-name. The Function hardcodes overrideValue "0"
+  # (OVERRIDE_VALUE), so a PRESENT consumerOverride on a charged metric = capped at 0. Assert on
+  # presence (i-infra re-reads the same list JSON independently).
   QUOTA_JSON=$(gcloud alpha services quota list --service=tile.googleapis.com \
     --consumer="projects/${PROJECT_ID}" --project "$PROJECT_ID" --format=json 2>/dev/null || echo "[]")
   MISSING=$(printf '%s' "$QUOTA_JSON" | METRICS="$METRICS" node -e '
     const data = JSON.parse(require("fs").readFileSync(0, "utf8"));
     const want = process.env.METRICS.split(/\s+/).map((m) => "tile.googleapis.com/" + m);
-    const zero = new Set();
+    const capped = new Set();
     for (const item of (Array.isArray(data) ? data : [])) {
       for (const lim of (item.consumerQuotaLimits || [])) {
         for (const b of (lim.quotaBuckets || [])) {
-          const ov = b.consumerOverride && b.consumerOverride.overrideValue;
-          if (ov === "0" || ov === 0) zero.add(item.metric);
+          if (b.consumerOverride && b.consumerOverride.name) capped.add(item.metric);
         }
       }
     }
-    process.stdout.write(want.filter((m) => !zero.has(m)).join(","));
+    process.stdout.write(want.filter((m) => !capped.has(m)).join(","));
   ')
   echo "  tentative ${attempt}: métriques non-cappées = ${MISSING:-<aucune>}"
   if [ -z "$MISSING" ]; then ALL_ZERO="yes"; break; fi
