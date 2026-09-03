@@ -7,11 +7,11 @@
  * `createSession`, and cache/refresh the session before expiry. The key is read ONCE and never
  * returned to callers here.
  *
- * ⚠ CONTRACT-HELD: how a minted session is SERIALISED to the front (a TokenMap extension vs a
- * separate SessionResolution input, and whether the key rides the browser tile URL under the
- * referrer restriction) is the geo-map-engine token contract — owned by the geo-map-engine lane
- * (TBD via geo-archi), frozen there, NOT decided here. This module exposes the minted session; the
- * HTTP endpoint + front serialisation land once that contract is frozen.
+ * ⚠ SEAM (RESOLVED — geo-archi ruling, ADR-0026/0029): a minted session is serialised as a SEPARATE
+ * SessionResolution (NOT a TokenMap extension); the public descriptor drops session/key; the key + session
+ * ride the browser tile URL PER-TILE via the engine's transform-request closure under the referrer
+ * restriction. The token-contract is owned by wp6/geo-archi. The serialisation lands in serialize.ts +
+ * endpoint.ts (inc-2); the compileBasemap un-stub + transform-request injection is PR-B (wp7).
  */
 
 /** Google `createSession` response (the fields we rely on). `expiry` is an epoch-seconds string. */
@@ -60,8 +60,9 @@ export async function createSession(
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       mapType: opts.mapType,
-      language: opts.language ?? "en-US",
-      region: opts.region ?? "US",
+      // QC deployment default (geo-archi nit 2): fr-CA / CA for correct language + attribution. Overridable via opts.
+      language: opts.language ?? "fr-CA",
+      region: opts.region ?? "CA",
       ...(opts.layerTypes ? { layerTypes: opts.layerTypes } : {}),
     }),
   });
