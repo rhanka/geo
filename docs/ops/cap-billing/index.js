@@ -49,7 +49,17 @@ exports.capBilling = async (pubsubEvent) => {
       await overrides.create({ parent, force: true, requestBody: { overrideValue: OVERRIDE_VALUE } });
       console.log(`cap-billing: consumer override=${OVERRIDE_VALUE} créé sur ${metric}`);
     } catch (err) {
-      // Idempotent: a re-fired budget event finds an existing override → patch it back to 0.
+      // ONLY ALREADY_EXISTS (a re-fired budget event) is the idempotent case → patch existing to 0.
+      // Any OTHER create error (e.g. a role/permission gap) is the REAL failure: log it explicitly
+      // and re-throw. A blind list() fallback would fail for the same reason and MASK the true cause
+      // — measured: a create-path role gap surfaced only as a "get quota" denial from this catch's
+      // list(), hiding the create error. Surface create first so the cause is diagnosable in one line.
+      const status = err && (err.code || (err.response && err.response.status));
+      const alreadyExists = status === 409 || /already exists/i.test((err && err.message) || "");
+      if (!alreadyExists) {
+        console.error(`cap-billing: ÉCHEC create override sur ${metric}: ${(err && err.message) || err}`);
+        throw err;
+      }
       const list = await overrides.list({ parent });
       const existing = list.data.overrides || [];
       if (existing.length === 0) throw err;
