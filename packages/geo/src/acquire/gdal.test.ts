@@ -169,32 +169,89 @@ describe("listLayers", () => {
   });
 });
 
-describe("inspectLayerSourceCrs", () => {
-  const wkt = 'PROJCRS["NAD83 / Quebec Lambert"]';
+// REAL fixture — verbatim `ogrinfo -ro -so <raw> zone_agricole_s` from the PROD geo-api image
+// (GDAL 3.6.2), captured by a k8s in-image pod-probe. This is the ACTUAL parse path GDAL emits;
+// it is what makes this test exercise the real behaviour (not an invented shape) and closes the
+// "green in CI / broken in image" REX for the CRS read.
+const REAL_OGRINFO_SO_GDAL362 = [
+  "INFO: Open of `/vsizip/{/vsis3/sentropic-geo-preprod/raw/cptaq/cas/<sha256>.bin}'",
+  "      using driver `ESRI Shapefile' successful.",
+  "",
+  "Layer name: zone_agricole_s",
+  "Metadata:",
+  "  DBF_DATE_LAST_UPDATE=2026-05-01",
+  "Geometry: Polygon",
+  "Feature Count: 1446",
+  "Extent: (-79.765324, 44.991358) - (-56.934927, 62.582466)",
+  "Layer SRS WKT:",
+  'GEOGCRS["NAD83",',
+  '    DATUM["North American Datum 1983",',
+  '        ELLIPSOID["GRS 1980",6378137,298.257222101,',
+  '            LENGTHUNIT["metre",1]]],',
+  '    PRIMEM["Greenwich",0,',
+  '        ANGLEUNIT["degree",0.0174532925199433]],',
+  "    CS[ellipsoidal,2],",
+  '        AXIS["latitude",north,',
+  "            ORDER[1],",
+  '            ANGLEUNIT["degree",0.0174532925199433]],',
+  '        AXIS["longitude",east,',
+  "            ORDER[2],",
+  '            ANGLEUNIT["degree",0.0174532925199433]],',
+  '    ID["EPSG",4269]]',
+  "Data axis to CRS axis mapping: 2,1",
+  "id: Integer (9.0)",
+  "mrc: String (100.0)",
+  "zonage: String (25.0)",
+  "date_maj: Date (10.0)",
+].join("\n");
 
-  it("reads the selected layer CRS WKT reported from its .prj", async () => {
-    const runner = fakeRunner({
-      ogrinfo: { stdout: JSON.stringify({ layers: [{ coordinateSystem: { wkt } }] }) },
-    });
-    await expect(
-      inspectLayerSourceCrs("/vsizip//tmp/ZA_transposee.zip", "zone_agricole_s", runner),
-    ).resolves.toBe(wkt);
-    expect(runner.calls[0]).toEqual({
-      file: "ogrinfo",
-      args: [
-        "-ro",
-        "-so",
-        "-json",
-        "/vsizip//tmp/ZA_transposee.zip",
-        "zone_agricole_s",
-      ],
-    });
+describe("parseOgrinfoSourceCrs (text, version-robust)", () => {
+  it("extracts the WKT block from real GDAL 3.6.2 text output, stopping at the WKT close", () => {
+    const wkt = parseOgrinfoSourceCrs(REAL_OGRINFO_SO_GDAL362);
+    expect(wkt.startsWith('GEOGCRS["NAD83"')).toBe(true);
+    expect(wkt).toContain('ID["EPSG",4269]]');
+    expect(wkt).not.toContain("Data axis"); // terminated at the balanced-bracket close
+    expect(wkt).not.toContain("Feature Count"); // did not slurp the pre-WKT header
+    const open = (wkt.match(/\[/g) ?? []).length;
+    const close = (wkt.match(/\]/g) ?? []).length;
+    expect(open).toBe(close); // brackets balanced
   });
 
-  it("rejects an absent source CRS instead of guessing", () => {
-    expect(() => parseOgrinfoSourceCrs(JSON.stringify({ layers: [{}] }))).toThrow(
+  it("tolerates WKT1 (GEOGCS[...]) as well as WKT2 (GEOGCRS[...])", () => {
+    const wkt1 = [
+      "Layer SRS WKT:",
+      'GEOGCS["NAD83",',
+      '    AUTHORITY["EPSG","4269"]]',
+      "Data axis to CRS axis mapping: 2,1",
+    ].join("\n");
+    expect(parseOgrinfoSourceCrs(wkt1)).toBe('GEOGCS["NAD83",AUTHORITY["EPSG","4269"]]');
+  });
+
+  it("rejects an absent source CRS instead of guessing (no header, or (unknown))", () => {
+    expect(() => parseOgrinfoSourceCrs("Layer name: x\nGeometry: Polygon\n")).toThrow(
       /internal \.prj must be readable/,
     );
+    expect(() =>
+      parseOgrinfoSourceCrs("Layer SRS WKT:\n(unknown)\nData axis to CRS axis mapping: 2,1"),
+    ).toThrow(/internal \.prj must be readable/);
+  });
+});
+
+describe("inspectLayerSourceCrs", () => {
+  it("reads the layer CRS WKT via `ogrinfo -ro -so` TEXT (no -json; GDAL <3.7 compatible)", async () => {
+    const runner = fakeRunner({ ogrinfo: { stdout: REAL_OGRINFO_SO_GDAL362 } });
+    const wkt = await inspectLayerSourceCrs(
+      "/vsizip//tmp/ZA_transposee.zip",
+      "zone_agricole_s",
+      runner,
+    );
+    expect(wkt).toContain('ID["EPSG",4269]]');
+    expect(runner.calls[0]).toEqual({
+      file: "ogrinfo",
+      args: ["-ro", "-so", "/vsizip//tmp/ZA_transposee.zip", "zone_agricole_s"],
+    });
+    // Regression guard: `-json` (GDAL 3.7+) must NEVER be used — the prod image ships GDAL 3.6.2.
+    expect(runner.calls[0]?.args).not.toContain("-json");
   });
 });
 
