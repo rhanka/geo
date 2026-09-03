@@ -30,6 +30,59 @@ export function computeSetHash(ids: readonly string[]): string {
   return createHash("sha256").update(canonical).digest("hex");
 }
 
+/**
+ * A collection family served in PREPROD but NOT part of the prod mirror (preprod-native, ADR-0027
+ * (b), geo-archi ruling). The coherence triad (served_count/set_hash) is stamped PROD-MIRROR-ONLY,
+ * so two prod-mirror mechanisms must exclude these families:
+ *   1. the completeness/parity gate EXCLUDES them from the LIVE served set before comparing to the
+ *      stamped triad (else the +N preprod-native collections false-fail count/set_hash), and
+ *   2. the mirror PRUNE must NOT delete them (else a re-sync — which mirrors prod, where they are
+ *      absent — would wipe them from preprod).
+ * This is a NAMED, COMMITTED list — never a silent substring filter: a new preprod-native family is a
+ * DELIBERATE, AUDITABLE addition here (anti green-by-omission / laundering). Each family's OWN
+ * integrity is covered by its OWN seal (e.g. CPTAQ: geo-zones OGC couche-1 + proof-v2/CAS runner),
+ * not by the prod-mirror gate — exclusion here is separation of scope, not blindness.
+ */
+export interface PreprodNativeFamily {
+  /** Collection-id family: matched as `id === collectionId` or `id.startsWith(collectionId + "-")`. */
+  collectionId: string;
+  /** Served S3 key prefix under the data root: a dest key at/under this prefix is preprod-native. */
+  keyPrefix: string;
+  /** One-line audit reason. */
+  reason: string;
+}
+
+export const PREPROD_NATIVE_FAMILIES: readonly PreprodNativeFamily[] = [
+  {
+    collectionId: "ca-qc-constraints",
+    keyPrefix: "normalized/ca-qc-constraints/",
+    reason:
+      "CPTAQ zone agricole (§9) — served preprod-native, not mirrored from prod (0 in prod); own seal = geo-zones OGC couche-1 + proof-v2/CAS runner.",
+  },
+] as const;
+
+/** True if a COLLECTION ID belongs to a preprod-native family (excluded from prod-mirror parity). */
+export function isPreprodNativeCollectionId(id: string): boolean {
+  return PREPROD_NATIVE_FAMILIES.some(
+    (f) => id === f.collectionId || id.startsWith(`${f.collectionId}-`),
+  );
+}
+
+/** True if a served S3 KEY belongs to a preprod-native family (excluded from the mirror prune). */
+export function isPreprodNativeKey(key: string): boolean {
+  return PREPROD_NATIVE_FAMILIES.some((f) => key.startsWith(f.keyPrefix));
+}
+
+/**
+ * The PROD-MIRROR subset of served collection ids: the live set minus preprod-native families
+ * (ADR-0027 (b)). The completeness/parity gate hashes + counts THIS subset against the
+ * prod-mirror-only stamped triad, so preprod-native families (e.g. CPTAQ) are transparent to the
+ * mirror parity check while a real mirror drift (a missing/substituted PROD collection) still fails.
+ */
+export function prodMirrorCollectionIds(ids: readonly string[]): string[] {
+  return ids.filter((id) => !isPreprodNativeCollectionId(id));
+}
+
 /** Trim leading/trailing slashes from a key prefix. */
 function trimPrefix(prefix: string): string {
   return prefix.replace(/^\/+|\/+$/g, "");
@@ -114,14 +167,19 @@ export function planFullMirror(
   }
   // Prune plan: delete ONLY canonical surplus (a served-eligible dest key matching
   // no mirrored source key). Non-canonical keys (backups/prebackups/sidecars/the
-  // manifest) are PRESERVED — provenance, and not served anyway. Refuse to prune
-  // when the source is empty (mass-delete guard #1).
+  // manifest) are PRESERVED — provenance, and not served anyway. Preprod-native
+  // families ({@link PREPROD_NATIVE_FAMILIES}) are ALSO preserved: they are served in
+  // preprod BEYOND the prod mirror (ADR-0027 (b)), match no prod source key, and so a
+  // re-sync must never wipe them (they carry their own seal). Refuse to prune when the
+  // source is empty (mass-delete guard #1).
   const expected = new Set(copies.map((c) => c.destKey));
   expected.add(coherenceKey);
   const deletes =
     srcKeys.length === 0
       ? []
-      : destKeys.filter((k) => isCanonicalGeojsonKey(k) && !expected.has(k));
+      : destKeys.filter(
+          (k) => isCanonicalGeojsonKey(k) && !expected.has(k) && !isPreprodNativeKey(k),
+        );
   return { copies, coherenceKey, skipped, deletes };
 }
 
