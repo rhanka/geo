@@ -22,6 +22,7 @@ WIF_ENV="${WIF_ENV:-geo-preprod}"
 GH_REPO="${GH_REPO:-rhanka/geo}"
 EXECUTOR_SA="geo-cap-executor@${PROJECT_ID}.iam.gserviceaccount.com"
 COND="assertion.repository=='${GH_REPO}' && assertion.environment=='${WIF_ENV}'"
+MAPPING="google.subject=assertion.sub,attribute.repository=assertion.repository,attribute.environment=assertion.environment,attribute.ref=assertion.ref"
 
 echo "=== BOOTSTRAP WIF — projet ${PROJECT_ID} (owner/iam-admin, une fois) ==="
 
@@ -33,14 +34,15 @@ gcloud iam workload-identity-pools create "$WIF_POOL" --project "$PROJECT_ID" --
 #    attribute-condition = LA garde: seul rhanka/geo depuis l'env protégé peut fédérer (pas repo-only).
 if gcloud iam workload-identity-pools providers describe "$WIF_PROVIDER_ID" --project "$PROJECT_ID" \
      --location=global --workload-identity-pool="$WIF_POOL" >/dev/null 2>&1; then
+  # N2 (i-infra) : la branche update ré-applique mapping ET condition (convergence pleine, pas juste la condition).
   gcloud iam workload-identity-pools providers update-oidc "$WIF_PROVIDER_ID" --project "$PROJECT_ID" \
-    --location=global --workload-identity-pool="$WIF_POOL" --attribute-condition="$COND"
+    --location=global --workload-identity-pool="$WIF_POOL" \
+    --attribute-mapping="$MAPPING" --attribute-condition="$COND"
 else
   gcloud iam workload-identity-pools providers create-oidc "$WIF_PROVIDER_ID" --project "$PROJECT_ID" \
     --location=global --workload-identity-pool="$WIF_POOL" --display-name="GitHub Actions (${GH_REPO})" \
     --issuer-uri="https://token.actions.githubusercontent.com" \
-    --attribute-mapping="google.subject=assertion.sub,attribute.repository=assertion.repository,attribute.environment=assertion.environment,attribute.ref=assertion.ref" \
-    --attribute-condition="$COND"
+    --attribute-mapping="$MAPPING" --attribute-condition="$COND"
 fi
 
 # 3. Résout le principalSet (= BASE_IDENTITY de #328) + les noms de ressources. Ils CONTIENNENT le
