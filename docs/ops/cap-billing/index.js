@@ -57,7 +57,15 @@ exports.capBilling = async (pubsubEvent) => {
       const status = err && (err.code || (err.response && err.response.status));
       const alreadyExists = status === 409 || /already exists/i.test((err && err.message) || "");
       if (!alreadyExists) {
-        console.error(`cap-billing: ÉCHEC create override sur ${metric}: ${(err && err.message) || err}`);
+        // Log the COMPLETE Google API error (status + details[] ErrorInfo → reason + the exact
+        // `permission` GCP demands), not just err.message ("Permission denied to get quota" is too
+        // vague to name the missing role permission). Surfaces the precise perm in one log line if a
+        // role hypothesis misses.
+        const apiErr = err && err.response && err.response.data && err.response.data.error;
+        console.error(
+          `cap-billing: ÉCHEC create override sur ${metric}: ` +
+            (apiErr ? JSON.stringify(apiErr) : (err && err.message) || String(err))
+        );
         throw err;
       }
       const list = await overrides.list({ parent });
