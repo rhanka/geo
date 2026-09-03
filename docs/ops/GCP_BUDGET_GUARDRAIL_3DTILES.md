@@ -21,7 +21,7 @@
 
 ## Un « budget cap » GCP = ALERTE, pas hard-cap
 
-4 couches ; la **(2) = le hard-cap réel** (une Cloud Function détache le billing quand la dépense atteint le seuil). Méthode = **gcloud CLI** (pas Playwright ; le deploy de la Function est trop critique).
+4 couches ; la **(2) = le hard-cap réel** (une Cloud Function **désactive l'API billable Map Tiles `tile.googleapis.com`** quand la dépense atteint le seuil — coupe le spend **sans toucher au billing account** ; détacher le billing exigerait un scope billing-account-wide qu'on refuse → path B i-infra). Méthode = **gcloud CLI** (pas Playwright ; le deploy de la Function est trop critique).
 
 ## Étapes
 
@@ -34,24 +34,30 @@
   ```
 - **B — APIs** :
   ```
-  gcloud services enable cloudbilling.googleapis.com cloudfunctions.googleapis.com pubsub.googleapis.com cloudbuild.googleapis.com run.googleapis.com
+  gcloud services enable cloudbilling.googleapis.com billingbudgets.googleapis.com cloudfunctions.googleapis.com pubsub.googleapis.com cloudbuild.googleapis.com run.googleapis.com eventarc.googleapis.com artifactregistry.googleapis.com
   ```
 - **C — topic Pub/Sub** : `gcloud pubsub topics create billing-guardrail`
 - **D — budget + notifications** :
   ```
+  # --budget-amount is a PLAIN number in the billing ACCOUNT's currency (no EUR suffix — breaks on a CAD account)
   gcloud billing budgets create --billing-account="${BILLING_ACCOUNT}" \
-    --display-name="3dtiles-50eur-hardcap" \
+    --display-name="3dtiles-budget-hardcap" \
     --filter-projects="projects/radar-3dtiles-preprod" \
-    --budget-amount=50EUR \
+    --budget-amount=50 \
     --threshold-rule=percent=0.5 --threshold-rule=percent=0.9 --threshold-rule=percent=1.0 \
     --notifications-rule-pubsub-topic="projects/radar-3dtiles-preprod/topics/billing-guardrail"
   ```
-- **E — service account + rôle** :
+- **E — service account + rôle least-priv (path B, PROJECT-scope)** — la SA peut UNIQUEMENT désactiver des services (kill), jamais les ré-activer ni toucher au billing :
   ```
   gcloud iam service-accounts create cap-billing-sa
+  gcloud iam roles create capBillingApiDisabler --project=radar-3dtiles-preprod \
+    --permissions=serviceusage.services.disable,serviceusage.services.get --stage=GA
   gcloud projects add-iam-policy-binding radar-3dtiles-preprod \
     --member="serviceAccount:cap-billing-sa@radar-3dtiles-preprod.iam.gserviceaccount.com" \
-    --role="roles/billing.projectManager"
+    --role="projects/radar-3dtiles-preprod/roles/capBillingApiDisabler"
+  # run.invoker (post-deploy) : le gen2 = Cloud Run ; sinon la Function n'est jamais invoquée
+  gcloud run services add-iam-policy-binding cap-billing --region=europe-west1 --project=radar-3dtiles-preprod \
+    --member="serviceAccount:cap-billing-sa@radar-3dtiles-preprod.iam.gserviceaccount.com" --role="roles/run.invoker"
   ```
 - **F — deploy la Function** (source = [`./cap-billing/`](./cap-billing/), co-locée) **AVANT la clé** :
   ```
@@ -66,9 +72,10 @@
 - **🔴 J — TEST-KILL, AVANT LA CLÉ** (prouve le hard-cap) :
   ```
   gcloud pubsub topics publish billing-guardrail --message='{"costAmount":51,"budgetAmount":50}'
-  gcloud billing projects describe radar-3dtiles-preprod   # attendu : billingEnabled=false
-  # ré-attacher (OWNER-DIRECT) :
-  gcloud billing projects link radar-3dtiles-preprod --billing-account="${BILLING_ACCOUNT}"
+  # attendu : tile.googleapis.com ABSENT des services enabled (l'API billable a été coupée)
+  gcloud services list --enabled --project radar-3dtiles-preprod --filter="config.name:tile.googleapis.com"
+  # ré-enable = HUMAIN, project-scoped (PAS un ré-attach billing ; la SA ne peut pas ré-enable) :
+  gcloud services enable tile.googleapis.com --project radar-3dtiles-preprod
   ```
 - **H — clé, EN DERNIER (si J OK)** :
   ```
@@ -81,4 +88,4 @@
 
 ## Source de la Function
 
-[`./cap-billing/index.js`](./cap-billing/index.js) + [`./cap-billing/package.json`](./cap-billing/package.json) — la Function détache le billing (`updateBillingInfo` avec `billingAccountName:''`) quand `costAmount >= budgetAmount`. 0 secret dans la source.
+[`./cap-billing/index.js`](./cap-billing/index.js) + [`./cap-billing/package.json`](./cap-billing/package.json) — la Function **désactive l'API billable `tile.googleapis.com`** (`serviceusage.services.disable`) quand `costAmount >= budgetAmount` (path B : coupe le spend sans toucher au billing account). 0 secret dans la source.
