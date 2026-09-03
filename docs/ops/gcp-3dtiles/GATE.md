@@ -19,12 +19,12 @@ rediffusion, prod intouchée).
 |---|-------|--------|--------|
 | 1 | Projet `radar-3dtiles-preprod` + **billing-link** (argent, **owner-direct**) | projet créé + lié | owner |
 | 2 | `20-budget-pubsub` — budget 50€ + alertes 50/90/100% + topic | budget listé, **`--filter-projects=projects/radar-3dtiles-preprod`** (pas billing-account-wide) [couche 1] | k8s/owner |
-| 3 | `30-cap-billing-fn` — SA custom role **project-scope** (`serviceusage.services.disable`+`.get`) + `run.invoker` + Function abonnée au topic | `describe` : state ACTIVE + eventTrigger=topic [couche 2 = le vrai hard-cap] | k8s/owner |
+| 3 | `30-cap-billing-fn` — SA custom role **project-scope** (`serviceusage.quotas.update`+`.get`) + `run.invoker` + Function abonnée au topic | `describe` : state ACTIVE + eventTrigger=topic [couche 2 = le vrai hard-cap] | k8s/owner |
 | 4 | `40-quota` — quota Map Tiles ~300/j (console) | quota posé [couche 3, ceinture secondaire] | k8s/owner |
-| 5 | **`50-test-kill` (J) = LE GATE** — publie `{costAmount:51,budgetAmount:50}` → assert `tile.googleapis.com` **disabled** → ré-enable API (humain, project-scoped) | **API billable COUPÉE prouvée** (poll borné) | k8s/owner |
+| 5 | **`50-test-kill` (J) = LE GATE** — publie `{costAmount:51,budgetAmount:50}` → assert **quota=0** sur les 4 métriques tile → remonter le quota (humain, project-scoped) | **quota billable=0 prouvé** (poll borné) | k8s/owner |
 | 6 | **Clé H — EN DERNIER, seulement si J=PASS** — restreinte (`api-target=tile.googleapis.com` + `allowed-referrers=https://*.sent-tech.ca/*`, **owner-direct**), `keyString` jamais `echo` → `60-k8s-secret` (stdin→kubectl, préprod) | clé restreinte créée + secret k8s posé | owner (+ k8s pour 60 si kubectl) |
 
-**Gate global** : **FAIL** si un de 1–5 manque **OU** si J ne prouve pas `tile.googleapis.com` disabled.
+**Gate global** : **FAIL** si un de 1–5 manque **OU** si J ne prouve pas **quota=0** sur les 4 métriques tile.
 **La clé (6) ne se crée QUE sur A=PASS.**
 
 ## B) Intégration Immo — critères CI/runtime (contrat §5, PR #301 / ADR-0029-0030)
@@ -36,7 +36,7 @@ rediffusion, prod intouchée).
 
 ## C) Conditions de STOP (on ne procède pas / on arrête)
 
-1. Un garde-fou **A** échoue — **surtout J ne coupe pas** (`tile.googleapis.com` reste enabled) → STOP, pas de clé.
+1. Un garde-fou **A** échoue — **surtout J ne coupe pas** (quota tile pas mis à 0) → STOP, pas de clé.
 2. **Parole owner-direct absente** pour billing-link ou clé (un relais ≠ autorisation) → STOP.
 3. **Accès/intent GCP de l'exécutant non résolu** → STOP (exec bloquée).
 4. **Un octet d'imagerie atteint S3** (garde `live-embed-only` déclenchée) → STOP (violation licence).
