@@ -1,0 +1,70 @@
+{
+  "contract": "constraints-acquisition-assessment/bdzi-grhq",
+  "generated_by": "geo-zones (WP2) — prep read-only pour geo-cond / plan §9 i-cond",
+  "generated_at": "2026-09-04",
+  "context": "CPTAQ servi préprod (4 villes ca-qc-constraints-*). BDZI + GRHQ = NON servis, dormants en manifestes pkg-v2 (packages/geo-sources-americas/src/ca-qc-constraints/{bdzi,grhq}/manifest.ts). geo-cond demande : voie d'acquisition mesurée + like/effort par couche + proposition de worklist capture (owner-gated, cluster→S3, StoreProvider expose auto). LOW-PRIO, non-bloquant, owner a dit BDZI/GRHQ « plus tard ».",
+  "method": "MESURE LIVE read-only (WebFetch) : returnCountOnly par couche + métadonnées de couche (maxRecordCount, geometryType). measure>infer ; capture jamais locale (owner-gated cluster).",
+  "shared_service": "https://www.servicesgeo.enviroweb.gouv.qc.ca/donnees/rest/services/Public/Themes_publics/MapServer (EnviroWeb/CEHQ public themes ; maxRecordCount=1000 mesuré sur couche 101)",
+  "layers_measured": [
+    {
+      "constraint": "bdzi-flood-zones",
+      "collection": "qc-bdzi-flood-zones",
+      "layer": 22,
+      "name": "Zones inondables — polygones (BDZI)",
+      "geometry": "polygon",
+      "count_MEASURED": 621,
+      "maxRecordCount": 1000,
+      "pages_estimate": 1,
+      "liveness": "LIVE (HTTP 200, returnCountOnly=621)",
+      "effort": "LOW — 1 page, une seule requête couvre tout (621 < maxRecordCount 1000). La recette manifeste `where=1=1&outSR=4326&f=geojson` + ogr2ogr simplify 0.0005 s'applique DIRECTEMENT (comme §7 mais 1 entrée province-wide, pas per-muni).",
+      "like": "HAUTE — contrainte inondation provinciale propre, petite, CC-BY-4.0, champs utiles (Description zone grand/faible courant, No_rapport). Quick win.",
+      "ready": "OUI — capturable maintenant (§7-style)."
+    },
+    {
+      "constraint": "grhq-hydrography",
+      "collection": "qc-grhq-waterbodies",
+      "layer": 104,
+      "name": "Plans d'eau — surfaces hydrographiques (GRHQ)",
+      "geometry": "polygon",
+      "count_MEASURED": 3756479,
+      "maxRecordCount": 1000,
+      "pages_estimate": 3757,
+      "liveness": "LIVE (HTTP 200, returnCountOnly=3 756 479)",
+      "effort": "HAUTE — ~3,76 M polygones = ~3757 pages REST @1000/page. Le `where=1=1&f=geojson` en un pull EST UNVIABLE (le serveur cape à 1000 features/requête ; GeoJSON multi-Go même simplifié). Nécessite une stratégie PAGÉE (resultOffset/resultRecordCount) OU le BULK FGDB/GPKG (que le manifeste écarte pour BDZI à ~376 Mo, mais qui à l'échelle-province EST le bon outil vs 3757 pages REST) OU tuilage par bloc (GRHQ a un index CSV de blocs).",
+      "like": "MOYENNE — proximité riveraine (pas la bande réglementaire elle-même ; interprétation bylaw locale requise, cf. manifeste). Enrichissement environnemental.",
+      "ready": "NON — décision de design paging/bulk REQUISE avant worklist."
+    },
+    {
+      "constraint": "grhq-hydrography",
+      "collection": "qc-grhq-network",
+      "layer": 101,
+      "name": "GRHQ - Ordre de Strahler (réseau linéaire)",
+      "geometry": "polyline",
+      "count_MEASURED": "UNMEASURED — returnCountOnly a TIMEOUT (>60s). Couche LIVE (métadonnées OK : Feature Layer polyline, maxRecordCount 1000, supportsPagination=Yes, supportsStatistics=Yes). Le timeout du count = signal de très grande taille (réseau hydro linéaire de tout le Québec, vraisemblablement millions de segments).",
+      "maxRecordCount": 1000,
+      "pages_estimate": "élevé (à borner via une requête statistics ou bbox si un chiffre exact est requis)",
+      "liveness": "LIVE (métadonnées 200) mais count non-borné (>60s)",
+      "effort": "HAUTE — même classe que la 104 (paging/bulk). Re-mesure du count via statistics/bbox si i-cond veut un chiffre.",
+      "like": "MOYENNE (idem 104).",
+      "ready": "NON — même décision paging/bulk que la 104."
+    }
+  ],
+  "worklist_proposal": {
+    "bdzi_ready_s7_style": {
+      "note": "Prêt : entrée bare-array STRICT §7-style. lane=constraints (déjà ajoutée §9 CPTAQ). source enum = À CONFIRMER avec pv (comme §9 a confirmé 'cptaq'). Post-capture acquire = ogr2ogr simplify 0.0005 + tag constraint=bdzi-flood-zones + serve qc-bdzi-flood-zones (StoreProvider expose /collections/qc-bdzi-flood-zones/items auto).",
+      "entry_shape": {
+        "slug": "qc-bdzi-flood-zones",
+        "source": "<constraints-source-TBD-pv>",
+        "urls": ["https://www.servicesgeo.enviroweb.gouv.qc.ca/donnees/rest/services/Public/Themes_publics/MapServer/22/query?where=1%3D1&outFields=*&returnGeometry=true&outSR=4326&f=geojson"]
+      }
+    },
+    "grhq_needs_design_first": "PAS de worklist naïve where=1=1 (exploserait : 3.76M+ features). Décision requise AVANT worklist : (A) PAGÉ REST (resultOffset, ~3757+ pages/couche — fragile, lent, risque throttle), (B) BULK FGDB/GPKG → ogr2ogr → GeoJSON (pragmatique à l'échelle-province ; endpoints bulk dans le manifeste), (C) tuilage par bloc (index CSV GRHQ). Reco : B (bulk) pour GRHQ, sinon A avec un capture-runner paginé dédié (nouveau code capture, pas le fetch simple §6). Effort = jours, pas heures."
+  },
+  "timing_sequencing": {
+    "bdzi": "QUICK WIN — capturable maintenant, §7-style, owner-gated (design_sha+owner-paste, lane=constraints), séquencé APRÈS §5/§7 (creux owner). Effort ~heures (build acquire-delta BDZI trivial : 621 polys).",
+    "grhq": "PLUS LOURD — nécessite (1) décision paging vs bulk, (2) build capture paginé/bulk (nouveau, pas le §6 simple), (3) re-mesure count 101. Séquencer APRÈS BDZI. Effort ~jours.",
+    "recommendation": "Découpler : porter BDZI en premier (win rapide, prouve la voie constraints-non-CPTAQ), GRHQ en phase-later avec design paging/bulk dédié. Ne PAS bundler les deux dans un même owner-paste."
+  },
+  "anti_invention": "Tous les counts = MESURÉS live (BDZI 621, GRHQ-104 3 756 479) ou explicitement UNMEASURED (GRHQ-101 timeout, jamais projeté). Endpoints verbatim des manifestes committés + re-vérifiés live 2026-09-04. Capture = cluster owner-gated, JAMAIS locale.",
+  "next": "geo-cond porte le plan §9 (BDZI/GRHQ) à i-cond + owner (owner-gated, séquencé après §5/§7). Si GO BDZI → je confirme source enum avec pv + émets le runner + sidecar (comme §7) → geo-cond porte le paste owner → capture cluster → acquire → serve qc-bdzi-flood-zones. GRHQ = design paging/bulk d'abord."
+}
