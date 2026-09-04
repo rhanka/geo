@@ -13,7 +13,7 @@
 
 import { Hono } from "hono";
 
-import { SessionMinter, type CreateSessionOptions } from "./session-mint.js";
+import { SessionMinter, readTileKey, type CreateSessionOptions } from "./session-mint.js";
 import { serializeMint, type AttributionSpec, type SerializeConfig } from "./serialize.js";
 
 export interface BasemapConfig {
@@ -54,25 +54,32 @@ function readAttribution(env: NodeJS.ProcessEnv): AttributionSpec {
  */
 export function createBasemapApp(
   config: BasemapConfig = readBasemapConfig(),
-  deps: { minter?: SessionMinter } = {},
+  deps: { minter?: SessionMinter; key?: string } = {},
 ): Hono {
   const app = new Hono();
 
+  // Read the restricted key ONCE (geo-archi ruling (a): it rides the adapter-internal SessionResolution).
+  // Fail-closed: an absent key surfaces as a 503, never a boot crash. `deps.key`/`deps.minter` for tests.
   let minter: SessionMinter | undefined = deps.minter;
+  let sessionKey: string | undefined = deps.key;
   let initError: string | undefined;
-  if (!minter && config.enabled) {
+  if (config.enabled && (sessionKey === undefined || !minter)) {
     try {
-      minter = new SessionMinter(config.session); // reads the restricted key fail-closed
+      if (sessionKey === undefined) sessionKey = readTileKey();
+      if (!minter) minter = new SessionMinter(config.session, { key: sessionKey });
     } catch (e) {
-      initError = (e as Error).message; // key absent → surfaced as 503 below
+      initError = (e as Error).message; // key absent → 503 below
     }
   }
 
   app.get("/session", async (c) => {
+    // (geo-archi cond 2) the response carries key+session → NEVER cached (proxy/CDN/browser). Set no-store
+    // on EVERY /session response, before any branch.
+    c.header("Cache-Control", "no-store");
     if (!config.enabled) {
       return c.json({ code: "BasemapDisabled", description: "basemap 2D non activé (flag-OFF pré-GO owner)" }, 503);
     }
-    if (!minter) {
+    if (!minter || sessionKey === undefined) {
       return c.json(
         { code: "BasemapKeyAbsent", description: initError ?? "clé restreinte absente — refus fail-closed" },
         503,
@@ -80,7 +87,7 @@ export function createBasemapApp(
     }
     try {
       const session = await minter.get();
-      return c.json(serializeMint(session, config.serialize));
+      return c.json(serializeMint(session, config.serialize, sessionKey));
     } catch (e) {
       // Genuine failure (session-expired|forbidden|quota|network) — fail-LOUD, never a silent blank (#313).
       return c.json({ code: "BasemapMintFailed", description: (e as Error).message.slice(0, 200) }, 502);
