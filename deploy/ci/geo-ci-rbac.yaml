@@ -49,3 +49,39 @@ roleRef:
   kind: Role
   name: geo-ci-job-launcher
   apiGroup: rbac.authorization.k8s.io
+---
+# §5 basemap ACTIVATION RBAC (activate-serve workflow, GO#2). SEPARATE Role from the job-launcher —
+# scoped to the SINGLE secret geo-tile-key (write the minted 2D key) + the geo-api deployment (rollout
+# restart to pick up the key). k8s RBAC cannot scope `create` by resourceName, so the secret is
+# PRE-CREATED empty at owner bootstrap (50-owner-bootstrap-all.sh) → this Role needs only get/update on
+# that ONE name (NEVER create/list/all-secrets). Usable ONLY via the owner-approved geo-preprod-Environment
+# dispatch (KUBE_CONFIG_GEO is env-scoped behind required-reviewer=owner). Co-val i-infra [c9beeb]
+# (resourceNames scope [geo-tile-key]+[geo-api], never all-secrets).
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: geo-ci-basemap-activation
+  namespace: geo-preprod
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "patch"] # `kubectl apply` on the PRE-CREATED geo-tile-key does get + 3-way-merge PATCH
+    resourceNames: ["geo-tile-key"] # the SINGLE key secret — never all-secrets, never create/list
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "patch"]
+    resourceNames: ["geo-api"] # rollout restart to pick up the key — never other deployments
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: geo-ci-runner-basemap-activation
+  namespace: geo-preprod
+subjects:
+  - kind: ServiceAccount
+    name: geo-ci-runner
+    namespace: geo-preprod
+roleRef:
+  kind: Role
+  name: geo-ci-basemap-activation
+  apiGroup: rbac.authorization.k8s.io

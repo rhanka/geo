@@ -1,0 +1,142 @@
+name: CD Prod
+
+# Déploiement PROD versionné, OWNER-GATÉ — le mécanisme du fresh-deploy prod (remplace le hand-built
+# hors-bande, ADR-0028 promotion same-digest). Sert api.geo.sent-tech.ca (immo en dépend) → geste
+# HARD-TO-REVERSE : JAMAIS auto sur push. UN GO owner = approuver le déploiement de l'Environment
+# `geo-prod` (required-reviewer=owner). Promeut un DIGEST déjà buildé+poussé (validé preprod par
+# cd-preprod, same-digest) — JAMAIS un rebuild ici.
+#
+# ⭐ PURE-GO (0 collage) : par défaut, cd-prod AUTO-RÉSOUT le digest à promouvoir depuis le tag que
+# cd-preprod build pour le commit main courant (`<IMAGE>:main-<github.sha>`, immuable-par-commit). L'owner
+# ne fournit RIEN : il lance le workflow sur `main` + approuve l'Environment = 1 seul GO. (Input `digest`
+# = override optionnel avancé pour épingler un digest précis.)
+# ⚠ Auto-résout promeut le commit main HEAD au moment du dispatch → déployer quand main HEAD = le commit
+# gate/serving/CORS voulu (les go-lines pv sont keyées sur runner_git_sha).
+#
+# ⚠ PRÉREQUIS (owner/repo-admin, one-time — docs/ops/cd-prod/) :
+#   • Environment GitHub `geo-prod` AVEC required-reviewer=owner (= le gate du GO) — cd-prod-owner-setup.sh.
+#   • Secret `KUBE_CONFIG_DATA` ENV-scopé à `geo-prod` = kubeconfig SA least-priv ns `geo` (hlhedx) —
+#     cd-prod-kubeconfig.sh (poc-k8s). ENV-scopé (pas repo) : sinon lisible hors-gate (MUST i-infra, §5).
+#   L'`environment: geo-prod` (a) PAUSE le run jusqu'à l'approbation owner ET (b) scope le secret → un
+#   déploiement ⟹ owner-approuvé PAR CONSTRUCTION (invariant i-infra §5).
+#
+# L'exécuteur déploie ; i-infra CERTIFIE post-deploy (digest servi == promu, gate présent, served-sha,
+# runner_git). Executeur ≠ certificateur.
+on:
+  workflow_dispatch:
+    inputs:
+      digest:
+        description: "OVERRIDE optionnel : digest précis à promouvoir (sha256:<64hex>). Vide = auto-résout main-<sha>."
+        required: false
+        type: string
+
+permissions:
+  contents: read
+  actions: read # lire les runs cd-preprod (pour résoudre le dernier commit préprod-validé)
+
+concurrency:
+  group: cd-prod
+  cancel-in-progress: false
+
+env:
+  REGISTRY: rg.fr-par.scw.cloud
+  IMAGE: rg.fr-par.scw.cloud/sentropic-geo/geo-api
+
+jobs:
+  deploy-prod:
+    runs-on: ubuntu-latest
+    # ⭐ LE GATE OWNER : required-reviewer=owner sur l'Environment `geo-prod`. Le run PAUSE jusqu'à
+    # l'approbation owner ; KUBE_CONFIG_DATA n'est lisible QUE dans ce contexte approuvé.
+    environment: geo-prod
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install kubectl + kustomize
+        run: |
+          curl -sSLo /tmp/kubectl "https://dl.k8s.io/release/$(curl -sL https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          install -m 0755 /tmp/kubectl /usr/local/bin/kubectl
+          curl -sSL "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh" | bash
+          install -m 0755 kustomize /usr/local/bin/kustomize
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # nologin = LITTÉRAL (convention Scaleway, cf. docker-publish.yml) ; pas un secret.
+      - name: Log in to Scaleway Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: nologin
+          password: ${{ secrets.SCW_SECRET_KEY }}
+
+      # PURE-GO : override input si fourni, sinon AUTO-RÉSOUT le digest de l'image cd-preprod-buildée pour
+      # CE commit main (`<IMAGE>:main-<github.sha>`, tag immuable-par-commit). Fail-loud si le tag n'existe
+      # pas (cd-preprod pas encore passé sur ce commit → promouvoir un non-buildé serait un ImagePullBackOff).
+      - name: Résout le digest à promouvoir
+        id: resolve
+        env:
+          OVERRIDE: ${{ github.event.inputs.digest }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          if [ -n "$OVERRIDE" ]; then
+            echo "$OVERRIDE" | grep -Eq '^sha256:[0-9a-f]{64}$' \
+              || { echo "::error::digest override invalide (attendu sha256:<64 hex>) : $OVERRIDE"; exit 1; }
+            DIGEST="$OVERRIDE"
+            echo "Override fourni → promotion du digest : $DIGEST"
+          else
+            # Le commit réellement VALIDÉ-PREPROD = le head_sha du DERNIER run cd-preprod SUCCÈS (build+deploy
+            # preprod verts). Robuste + indépendant de main HEAD : un commit qui ne touche PAS le path-filter
+            # cd-preprod (workflow/docs seuls) n'est jamais buildé — on promeut ce qui est RÉELLEMENT validé,
+            # pas un pari sur main HEAD. La promotion reste digest-pinnée (0 moving-tag).
+            SHA="$(gh api "repos/${REPO}/actions/workflows/cd-preprod.yml/runs?status=success&branch=main&per_page=1" --jq '.workflow_runs[0].head_sha')"
+            echo "$SHA" | grep -Eq '^[0-9a-f]{40}$' \
+              || { echo "::error::aucun run cd-preprod SUCCÈS sur main (head_sha='$SHA') — rien de validé-preprod à promouvoir"; exit 1; }
+            DIGEST="$(docker buildx imagetools inspect "${IMAGE}:main-${SHA}" --format '{{.Manifest.Digest}}')"
+            echo "$DIGEST" | grep -Eq '^sha256:[0-9a-f]{64}$' \
+              || { echo "::error::digest introuvable pour ${IMAGE}:main-${SHA} (le run cd-preprod a-t-il poussé l'image ?) : $DIGEST"; exit 1; }
+            echo "Auto-résolu = dernier commit préprod-validé (main-${SHA}) → digest : $DIGEST"
+          fi
+          echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
+
+      # Anti-ImagePullBackOff + anti-typo : le digest DOIT exister en registry avant l'apply.
+      - name: Assert digest en registry
+        run: docker buildx imagetools inspect "${IMAGE}@${{ steps.resolve.outputs.digest }}" > /dev/null
+
+      # Provenance : quel commit tourne (label OCI revision du digest promu). Best-effort — les images
+      # pré-bake-GIT_SHA n'ont pas le label (→ vide, non-fatal) ; les images CD futures l'ont.
+      - name: Revision du digest promu (label OCI)
+        run: |
+          docker buildx imagetools inspect "${IMAGE}@${{ steps.resolve.outputs.digest }}" \
+            --format '{{ index .Image.Config.Labels "org.opencontainers.image.revision" }}' || true
+
+      # Kubeconfig SA least-priv ns geo (hlhedx), ENV-scopé geo-prod (derrière le required-reviewer).
+      - name: Configure kubeconfig (prod)
+        run: |
+          mkdir -p "$HOME/.kube"
+          printf '%s' "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+          # Fail-fast clair si le secret est absent/vide (vert-par-omission = rouge).
+          test -s "$HOME/.kube/config" || { echo "::error::KUBE_CONFIG_DATA absent ou vide — kubeconfig requis pour deploy-prod (env geo-prod)"; exit 1; }
+
+      # Promeut le digest : kustomize set image dans l'overlay prod + apply + rollout status (ns geo).
+      - name: Deploy prod (same-digest promotion)
+        run: make k8s-deploy-prod GEO_DIGEST="${{ steps.resolve.outputs.digest }}"
+
+      # Auto-diagnostic sur échec (rollout timeout, apply, …) : surface le POURQUOI sans check manuel
+      # cluster. Chaque dump tolère l'absence de droit/ressource (|| true) ; n'échoue jamais (if: failure()).
+      - name: Diagnostics (on failure)
+        if: failure()
+        run: |
+          echo "::group::pods (STATUS = ImagePullBackOff / Pending / CrashLoop / Running-not-Ready ?)"
+          kubectl -n geo get pods -o wide || true
+          echo "::endgroup::"
+          echo "::group::describe pods geo-api"
+          kubectl -n geo describe pods -l app.kubernetes.io/name=geo-api || true
+          echo "::endgroup::"
+          echo "::group::deployment geo-api"
+          kubectl -n geo get deployment geo-api -o wide || true
+          echo "::endgroup::"
+          echo "::group::events (30 derniers)"
+          kubectl -n geo get events --sort-by=.lastTimestamp | tail -30 || true
+          echo "::endgroup::"

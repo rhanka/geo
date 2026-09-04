@@ -43,7 +43,11 @@ source "$(dirname "$0")/env.sh"
 EXECUTOR_SA="geo-cap-executor@${PROJECT_ID}.iam.gserviceaccount.com"
 ROLE_QUOTA="geoCapQuotaExecutor"
 ROLE_KEY="geoCapKeyCreation"
-QUOTA_PERMS="serviceusage.quotas.get,serviceusage.quotas.update"
+# + cloudfunctions.functions.get : le workflow activate-serve LIT l'état de la cap-billing Function
+# (money-gate self-gate READ-ONLY, #329 : state=ACTIVE + eventTrigger .../topics/billing-guardrail) AVANT
+# de créer la clé. Read-only, non-mutant ; c'est le self-gate de l'exécuteur (≠ la certif i-infra, qui lit
+# indépendamment de ses propres accès). Co-val i-infra [c9beeb].
+QUOTA_PERMS="serviceusage.quotas.get,serviceusage.quotas.update,cloudfunctions.functions.get"
 KEY_PERMS="apikeys.keys.create,apikeys.keys.get,apikeys.keys.getKeyString,apikeys.keys.delete,apikeys.keys.list,serviceusage.services.enable,serviceusage.services.get"
 
 echo "=== BOOTSTRAP exécuteur geo — projet ${PROJECT_ID} (owner/iam-admin, une fois) ==="
