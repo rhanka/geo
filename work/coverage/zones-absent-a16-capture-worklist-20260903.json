@@ -2,7 +2,7 @@
   "product": "ca-qc-zonage-capture — absent-coverage fix, bucket (a)",
   "generated_by": "geo-zones (WP2 zones acquisition QC)",
   "generated_at": "2026-09-03",
-  "context": "Plainte owner §7 « 0 règlement/zonage téléchargé » sur des villes. Root cause = trou de couverture qc-zonage EN AMONT (geo, ma lane) : sans zonage servi, immo n'a rien à afficher. Audit-source des 238 villes absent = commit 8da8863d (work/coverage/zones-absent-source-audit-20260903.json). Ce worklist = le bucket (a) = 16 villes capturables via 2 providers PROUVÉS → fix immédiat de 16 villes (dont sainte-martine ∈ contexte owner).",
+  "context": "Plainte owner §7 « 0 règlement/zonage téléchargé » sur des villes. Root cause = trou de couverture qc-zonage EN AMONT (geo, ma lane) : sans zonage servi, immo n'a rien à afficher. Audit-source des 238 villes absent = commit 8da8863d (work/coverage/zones-absent-source-audit-20260903.json). Ce worklist = le bucket (a) = 16 villes capturables via 2 providers PROUVÉS → fix immédiat de CES 16 villes. CORRECTIF : sainte-martine (nommée par l'owner §7) n'est PAS dans ces 16 — elle est en bucket unknown/needs-discovery (audit 8da8863d, mamhCode 70012, MRC Beauharnois-Salaberry), confirmée geocentralis-WFS-négatif, couverte par le discovery-pass 217 en cours ; son statut source-capturable reste À MESURER. Ce batch ne la répare PAS (ne pas prétendre le contraire à l'owner).",
   "method": {
     "pipeline": "§6 k8s capture-run (worklist bare-array STRICT, capturedFetch) → CAS raw/ + manifest proof-v2 (url+retrieved_at+sha256) → deposit v2 servi",
     "lane": "zones — DÉJÀ dans CAPTURE_LANES (pv) → 0 deploy, ready-now (contrairement à §9 constraints qui a exigé l'ajout d'enum + deploy)",
