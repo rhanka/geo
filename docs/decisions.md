@@ -667,8 +667,21 @@ ADR-0026 (règle semver+ADR sur le seam gelé) ; ADR-0024 (pattern garde+test pa
 la **parole directe de l'owner CAPTURÉE durablement** (record ci-dessous, porté par geo-cond) — **JAMAIS** un
 say-so peer, un relais, ni un record synthétisé (anti-laundering ; header decisions.md + ligne geo-archi wp6).
 
-> **Record owner-direct** : `<À RENSEIGNER par geo-cond AVANT merge — id/citation de la parole owner
-> capturée autorisant l'activation ODbL (Voie A Google)>`
+> **Record owner-direct** — **capturé par geo-cond, 1re main.** Session Claude Code
+> `session_01BoKz6A5PUiLxg4shntStXu` (geo-cond [a0e6b7]), **2026-09-04** (horodatage = commit de ce record),
+> question fermée (modal `AskUserQuestion`, 3 options) : « GO#1 — Autorises-tu le flip ODbL (ADR-0030 →
+> accepted) + flag préprod ON, c'est-à-dire afficher le fond satellite Google Map Tiles 2D en direct sur
+> preprod.immo.sent-tech.ca (préprod seulement, prod intouchée, plafond <50€/mois, clé restreinte) ? » —
+> **réponse owner, verbatim (option sélectionnée) : « Oui — j'autorise GO#1 : flip ODbL + Google 2D live en
+> préprod »**.
+> **Corroboration antérieure, 1re main i-cond** (session `session_01RRZqXjiQE9rEV61i7Gx1yg`, 2026-09-04
+> ~21:05Z, modal fermée) : « Pour afficher la 2D satellite en préprod, geo a besoin de 2 GO dans le repo
+> geo : (1) merger #335 = accepter l'ADR-0030 (licence ODbL) + flag préprod ON ; (2) approuver le mint de la
+> clé Google (#334). Tu confirmes ? » — **réponse owner, verbatim : « Oui les deux — exécute (Recommandé) »**.
+> **Désambiguïsation** : « les deux » = (1) **GO#1** = ce flip (Voie A Google, fond satellite 2D live-embed,
+> préprod-only) — **c'est ce record** ; (2) **GO#2** = mint de la clé (#334, dispatch `basemap-activate.yml`
+> owner-approuvé), consentement enregistré ici, exécution gatée séparément (bootstrap owner + mini-gate wp7).
+> Les deux captures convergent. **Aucune synthèse, aucun relais** : deux paroles owner directes, citées verbatim.
 
 Cette PR est authorée en **DRAFT par geo-socle** (flip MÉCANIQUE : statut + flag overlay) et reste
 **non-mergée** tant que (1) le record ci-dessus n'est pas renseigné par geo-cond ET (2) le contenu est
