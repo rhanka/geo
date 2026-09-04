@@ -340,3 +340,35 @@ describe("single feature", () => {
     expect(res.status).toBe(404);
   });
 });
+
+describe("basemap 2D CORS scoping (§5, geo-archi ADR-0015 override)", () => {
+  const IMMO_PREPROD_ORIGIN = "https://preprod.immo.sent-tech.ca";
+
+  function appWithBasemapOrigin(origin: string) {
+    const prev = process.env.BASEMAP_2D_CORS_ORIGIN;
+    process.env.BASEMAP_2D_CORS_ORIGIN = origin;
+    try {
+      return createApp(makeProvider(), INVENTORY);
+    } finally {
+      if (prev === undefined) delete process.env.BASEMAP_2D_CORS_ORIGIN;
+      else process.env.BASEMAP_2D_CORS_ORIGIN = prev;
+    }
+  }
+
+  it("scopes /basemap/2d to the configured preprod-immo origin, never the open * policy", async () => {
+    const app2 = appWithBasemapOrigin(IMMO_PREPROD_ORIGIN);
+    // The scoped origin is STATIC: /basemap/2d serves session+key, so ACAO is the single allowed origin
+    // regardless of the caller's Origin — a foreign origin is thereby blocked by the browser.
+    for (const caller of [IMMO_PREPROD_ORIGIN, "https://evil.example.com"]) {
+      const res = await app2.request("/basemap/2d/session", { headers: { Origin: caller } });
+      expect(res.headers.get("access-control-allow-origin")).toBe(IMMO_PREPROD_ORIGIN);
+      expect(res.headers.get("access-control-allow-origin")).not.toBe("*");
+    }
+  });
+
+  it("keeps the open * CORS on the public OGC routes (ADR-0015)", async () => {
+    const app2 = appWithBasemapOrigin(IMMO_PREPROD_ORIGIN);
+    const res = await app2.request("/", { headers: { Origin: "https://anything.example" } });
+    expect(res.headers.get("access-control-allow-origin")).toBe("*");
+  });
+});

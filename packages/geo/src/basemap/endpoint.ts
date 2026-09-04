@@ -16,11 +16,23 @@ import { Hono } from "hono";
 import { SessionMinter, readTileKey, type CreateSessionOptions } from "./session-mint.js";
 import { serializeMint, type AttributionSpec, type SerializeConfig } from "./serialize.js";
 
+/**
+ * §5 preprod-only CORS default (geo-archi ADR-0015 override). `/basemap/2d` mints a session + serves the
+ * restricted key, so it is scoped to the SINGLE preprod-immo origin where the bespoke map runs — never `*`,
+ * never the prod origin. i-cond owns the exact immo-preprod host; overridable via `BASEMAP_2D_CORS_ORIGIN`.
+ */
+export const BASEMAP_2D_DEFAULT_CORS_ORIGIN = "https://preprod.immo.sent-tech.ca";
+
 export interface BasemapConfig {
   /** Master flag — OFF by default (pre-owner-GO). */
   readonly enabled: boolean;
   readonly session: CreateSessionOptions;
   readonly serialize: SerializeConfig;
+  /**
+   * The SINGLE allowed CORS origin for `/basemap/2d` (§5). The endpoint serves session+key, so — unlike the
+   * open `*` OGC API (ADR-0015) — it is origin-scoped. Defaults to {@link BASEMAP_2D_DEFAULT_CORS_ORIGIN}.
+   */
+  readonly corsOrigin?: string;
 }
 
 /**
@@ -34,7 +46,12 @@ export function readBasemapConfig(env: NodeJS.ProcessEnv = process.env): Basemap
     ...(env.BASEMAP_2D_LANGUAGE ? { language: env.BASEMAP_2D_LANGUAGE } : {}),
     ...(env.BASEMAP_2D_REGION ? { region: env.BASEMAP_2D_REGION } : {}),
   };
-  return { enabled: env.BASEMAP_2D_ENABLED === "1", session, serialize: { attribution: readAttribution(env) } };
+  return {
+    enabled: env.BASEMAP_2D_ENABLED === "1",
+    session,
+    serialize: { attribution: readAttribution(env) },
+    corsOrigin: (env.BASEMAP_2D_CORS_ORIGIN ?? "").trim() || BASEMAP_2D_DEFAULT_CORS_ORIGIN,
+  };
 }
 
 /**
@@ -57,6 +74,25 @@ export function createBasemapApp(
   deps: { minter?: SessionMinter; key?: string } = {},
 ): Hono {
   const app = new Hono();
+
+  // §5 CORS (geo-archi override of the open `*` OGC policy, ADR-0015): this route mints a session + serves
+  // the restricted key, so it is scoped to the SINGLE preprod-immo origin — never `*`. Headers are set
+  // EXPLICITLY (after the handler) so they survive the mounted-sub-app response, and the preflight is
+  // answered here with the same scoped origin.
+  const corsOrigin = config.corsOrigin ?? BASEMAP_2D_DEFAULT_CORS_ORIGIN;
+  app.use("*", async (c, next) => {
+    if (c.req.method === "OPTIONS") {
+      return c.body(null, 204, {
+        "Access-Control-Allow-Origin": corsOrigin,
+        "Access-Control-Allow-Methods": "GET, OPTIONS",
+        "Access-Control-Allow-Headers": c.req.header("Access-Control-Request-Headers") ?? "content-type",
+        Vary: "Origin",
+      });
+    }
+    await next();
+    c.res.headers.set("Access-Control-Allow-Origin", corsOrigin);
+    c.res.headers.set("Vary", "Origin");
+  });
 
   // Read the restricted key ONCE (geo-archi ruling (a): it rides the adapter-internal SessionResolution).
   // Fail-closed: an absent key surfaces as a 503, never a boot crash. `deps.key`/`deps.minter` for tests.

@@ -92,8 +92,14 @@ export function createApp(
 
   // Public, read-only open-data API: allow any origin so the static site
   // (GitHub Pages geo.sent-tech.ca) and third-party consumers can fetch
-  // cross-origin. No credentials are used, so a permissive policy is safe.
-  app.use("*", cors());
+  // cross-origin. No credentials are used, so a permissive policy is safe (ADR-0015).
+  // EXCEPTION — `/basemap/2d` mints a session + serves the restricted key (§5): it must NOT get the open
+  // `*` policy. SKIP it here so ONLY its own origin-scoped CORS (inside createBasemapApp) applies — this
+  // also lets that sub-app own its preflight (geo-archi §5 ruling).
+  const openCors = cors();
+  app.use("*", (c, next) =>
+    c.req.path.startsWith("/basemap/2d") ? next() : openCors(c, next),
+  );
 
   // ── Landing page ──────────────────────────────────────────────────────────
   app.get("/", async (c) => {

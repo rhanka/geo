@@ -98,6 +98,9 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
+          # Bake the git commit as the OCI revision label ("which commit runs in prod?").
+          build-args: |
+            GIT_SHA=${{ github.sha }}
           # Push only for a tag build or an explicit manual dispatch. Anything
           # else (should not occur given the triggers) builds without pushing.
           push: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
