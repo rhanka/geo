@@ -44,6 +44,14 @@ export interface BasemapSourceDescriptor {
 export interface SessionResolution {
   readonly session: string;
   readonly expirySeconds: number;
+  /**
+   * The restricted key (adapter-internal, §3.3 — NEVER in the public descriptor). geo-archi ruling (a):
+   * live-embed = key browser-side under the referrer restriction (the guard), so the key rides the
+   * adapter-internal SessionResolution alongside the session it minted; the engine transform-request
+   * injects session+key per-tile (PR-B). The endpoint serves this envelope `Cache-Control: no-store`
+   * (key+session ⇒ never cached/proxied/CDN'd).
+   */
+  readonly key: string;
 }
 
 /** The mint endpoint envelope: the PUBLIC descriptor + the adapter-internal session, kept SEPARATE. */
@@ -60,11 +68,17 @@ export interface SerializeConfig {
 }
 
 /**
- * Serialise a minted Google session into the mint envelope: the PUBLIC descriptor (template base + tile
- * size + image format + attribution) and, SEPARATELY, the adapter-internal session. The session token +
- * key are NEVER folded into the descriptor's URL — the engine injects them per-tile (transform-request).
+ * Serialise a minted Google session + the restricted key into the mint envelope: the PUBLIC descriptor
+ * (template base + tile size + image format + attribution) and, SEPARATELY, the adapter-internal session
+ * (token + expiry + KEY). The session token + key are NEVER folded into the public descriptor — the engine
+ * injects them per-tile (transform-request, PR-B). geo-archi ruling (a): the key rides the adapter-internal
+ * SessionResolution (browser-side is correct for live-embed), never the public descriptor.
  */
-export function serializeMint(session: GoogleSession, config: SerializeConfig): MintResolution {
+export function serializeMint(
+  session: GoogleSession,
+  config: SerializeConfig,
+  key: string,
+): MintResolution {
   return {
     source: {
       tileUrlTemplateBase: config.tileUrlTemplateBase ?? GOOGLE_2D_TILE_TEMPLATE,
@@ -72,6 +86,6 @@ export function serializeMint(session: GoogleSession, config: SerializeConfig): 
       imageFormat: session.imageFormat,
       attribution: config.attribution,
     },
-    session: { session: session.session, expirySeconds: session.expirySeconds },
+    session: { session: session.session, expirySeconds: session.expirySeconds, key },
   };
 }
