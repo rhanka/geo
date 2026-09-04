@@ -56,7 +56,7 @@ export interface Google2dBasemapAdapter {
 export interface Google2dBasemapAdapterOptions {
   /** The geo-api mint endpoint (e.g. `/basemap/2d/session`), absolute or same-origin relative. */
   readonly mintUrl: string;
-  /** Logical source id carried by the BasemapSpec (default `google-2d`). */
+  /** Logical source id carried by the BasemapSpec (default `sat-2d` — a role-scoped, provider-NEUTRAL id per §2.3; the provider lives in the adapter, never the contract id). */
   readonly sourceId?: string;
   /** Injected for tests / non-browser callers (defaults to the global `fetch`). */
   readonly fetch?: typeof fetch;
@@ -68,7 +68,7 @@ export interface Google2dBasemapAdapterOptions {
   readonly refreshSkewSeconds?: number;
 }
 
-const DEFAULT_SOURCE_ID = "google-2d";
+const DEFAULT_SOURCE_ID = "sat-2d";
 const DEFAULT_VIEWPORT_INFO_URL = "https://tile.googleapis.com/tile/v1/viewport";
 const DEFAULT_REFRESH_SKEW_SECONDS = 300;
 

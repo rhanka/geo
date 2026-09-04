@@ -27,5 +27,8 @@ export * from "./layers.js";
 export * from "./viewport.js";
 export * from "./surface.js";
 export * from "./tool-context.js";
+// Provider-specific §5 adapter (optional, tree-shakeable). It depends on the neutral core, never the
+// reverse — the engine stays provider-neutral. FORWARD-NOTE (geo-archi): if more providers land, extract
+// these into a separate `@sentropic/geo-basemap-<provider>` package to keep this engine package pure-neutral.
 export * from "./basemap-google2d-adapter.js";
 export { mount } from "./mount.js";

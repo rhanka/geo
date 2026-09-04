@@ -42,7 +42,7 @@ describe("createGoogle2dBasemapAdapter", () => {
     expect(adapter.basemap).toEqual({
       kind: "raster-source",
       source: {
-        id: "google-2d",
+        id: "sat-2d",
         imageryType: "provider-2d",
         attribution: { mode: "dynamic" },
         policy: "live-embed-only",
