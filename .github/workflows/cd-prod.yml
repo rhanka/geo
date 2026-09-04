@@ -32,6 +32,7 @@ on:
 
 permissions:
   contents: read
+  actions: read # lire les runs cd-preprod (pour résoudre le dernier commit préprod-validé)
 
 concurrency:
   group: cd-prod
@@ -75,7 +76,8 @@ jobs:
         id: resolve
         env:
           OVERRIDE: ${{ github.event.inputs.digest }}
-          GIT_SHA: ${{ github.sha }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
         run: |
           if [ -n "$OVERRIDE" ]; then
             echo "$OVERRIDE" | grep -Eq '^sha256:[0-9a-f]{64}$' \
@@ -83,10 +85,17 @@ jobs:
             DIGEST="$OVERRIDE"
             echo "Override fourni → promotion du digest : $DIGEST"
           else
-            DIGEST="$(docker buildx imagetools inspect "${IMAGE}:main-${GIT_SHA}" --format '{{.Manifest.Digest}}')"
+            # Le commit réellement VALIDÉ-PREPROD = le head_sha du DERNIER run cd-preprod SUCCÈS (build+deploy
+            # preprod verts). Robuste + indépendant de main HEAD : un commit qui ne touche PAS le path-filter
+            # cd-preprod (workflow/docs seuls) n'est jamais buildé — on promeut ce qui est RÉELLEMENT validé,
+            # pas un pari sur main HEAD. La promotion reste digest-pinnée (0 moving-tag).
+            SHA="$(gh api "repos/${REPO}/actions/workflows/cd-preprod.yml/runs?status=success&branch=main&per_page=1" --jq '.workflow_runs[0].head_sha')"
+            echo "$SHA" | grep -Eq '^[0-9a-f]{40}$' \
+              || { echo "::error::aucun run cd-preprod SUCCÈS sur main (head_sha='$SHA') — rien de validé-preprod à promouvoir"; exit 1; }
+            DIGEST="$(docker buildx imagetools inspect "${IMAGE}:main-${SHA}" --format '{{.Manifest.Digest}}')"
             echo "$DIGEST" | grep -Eq '^sha256:[0-9a-f]{64}$' \
-              || { echo "::error::digest auto-résolu invalide depuis ${IMAGE}:main-${GIT_SHA} — cd-preprod a-t-il buildé+validé ce commit main ? ($DIGEST)"; exit 1; }
-            echo "Auto-résolu (commit main ${GIT_SHA}) → promotion du digest : $DIGEST"
+              || { echo "::error::digest introuvable pour ${IMAGE}:main-${SHA} (le run cd-preprod a-t-il poussé l'image ?) : $DIGEST"; exit 1; }
+            echo "Auto-résolu = dernier commit préprod-validé (main-${SHA}) → digest : $DIGEST"
           fi
           echo "digest=$DIGEST" >> "$GITHUB_OUTPUT"
 

@@ -33,16 +33,18 @@ After **both** (Environment + `KUBE_CONFIG_DATA`): every prod deploy is a single
 ## Each deploy (owner GO — pure GO, no paste)
 
 1. **Actions → CD Prod → Run workflow** on `main` — leave the inputs **empty**. cd-prod AUTO-RESOLVES the
-   digest to promote from the image cd-preprod built for the current main HEAD (`<IMAGE>:main-<sha>`,
-   immutable-per-commit). No digest to paste. (The `digest` input is an optional advanced override to pin a
-   specific digest.)
+   digest to promote = the image cd-preprod built for the **last preprod-validated commit** (the `head_sha`
+   of the latest *successful* cd-preprod run), decoupled from main HEAD. No digest to paste. (The `digest`
+   input is an optional advanced override to pin a specific digest.)
 2. Approve the `geo-prod` Environment when prompted (the required-reviewer gate). **This approval is the GO.**
 3. The workflow resolves + asserts the digest in-registry, pins it in `overlays/prod`, applies, and waits for
    the rollout.
 
-⚠ Auto-resolve promotes the **main HEAD at dispatch time** — dispatch when main HEAD is the intended
-gate/serving commit (the `design_sha` go-lines are keyed on `runner_git_sha`). Ensure cd-preprod has already
-built+validated that commit (else the `main-<sha>` tag is absent and the run fails loud, no bad deploy).
+⚠ cd-prod promotes the **latest preprod-validated image** (the last successful cd-preprod build), **not main
+HEAD** — so a workflow/docs-only commit on main HEAD never blocks the deploy (the resolve is decoupled from
+what main HEAD touches). The deployed commit is that last cd-preprod-validated commit; i-infra certifies it
+post-deploy and pv computes the `design_sha` go-lines for that certified `runner_git_sha`. Fail-loud if no
+successful cd-preprod run exists (nothing to promote — no deploy on an empty digest).
 
 **Executor ≠ certifier.** The deploy runs here; i-infra **certifies post-deploy** independently (served
 digest == promoted, gate present, served-sha, runner_git). Provenance: images built by CD carry the git
