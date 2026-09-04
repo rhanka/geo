@@ -35,6 +35,8 @@ import {
   type Link,
 } from "./ogc.js";
 import type { FeatureProvider, ItemsQuery, ItemsStream, ServedFeature } from "./provider.js";
+import type { ReglementDocProvider } from "./reglement-provider.js";
+import type { ByteStream } from "../storage/index.js";
 
 import { createBasemapApp } from "../basemap/endpoint.js";
 
@@ -84,13 +86,20 @@ function parseBBox(
 export function createApp(
   provider: FeatureProvider,
   inventory: InventoryEntry[] = [],
+  reglementProvider?: ReglementDocProvider,
 ): Hono {
   const app = new Hono();
 
   // Public, read-only open-data API: allow any origin so the static site
   // (GitHub Pages geo.sent-tech.ca) and third-party consumers can fetch
-  // cross-origin. No credentials are used, so a permissive policy is safe.
-  app.use("*", cors());
+  // cross-origin. No credentials are used, so a permissive policy is safe (ADR-0015).
+  // EXCEPTION — `/basemap/2d` mints a session + serves the restricted key (§5): it must NOT get the open
+  // `*` policy. SKIP it here so ONLY its own origin-scoped CORS (inside createBasemapApp) applies — this
+  // also lets that sub-app own its preflight (geo-archi §5 ruling).
+  const openCors = cors();
+  app.use("*", (c, next) =>
+    c.req.path.startsWith("/basemap/2d") ? next() : openCors(c, next),
+  );
 
   // ── Landing page ──────────────────────────────────────────────────────────
   app.get("/", async (c) => {
@@ -306,7 +315,75 @@ export function createApp(
   // (double fail-closed, geo-archi ruling). Pre-GO 503 = the front's declared blank fallback (ODbL-safe).
   app.route("/basemap/2d", createBasemapApp());
 
+  // ── Downloadable règlement (geo-archi ruling — Phase-1 zonage) ────────────────
+  // `GET /reglement/:slug`           → stream the captured PDF as an attachment.
+  // `GET /reglement/:slug.meta.json` → proof-v2 + identity + licence. A single
+  //   path segment carries both, so one route parses the `.meta.json` suffix.
+  //   Registered only when a ReglementDocProvider is injected — the OGC surface
+  //   is unaffected otherwise.
+  if (reglementProvider) {
+    app.get("/reglement/:slug", async (c) => {
+      const rawSlug = c.req.param("slug");
+      const isMeta = rawSlug.endsWith(".meta.json");
+      const slug = isMeta ? rawSlug.slice(0, -".meta.json".length) : rawSlug;
+
+      const meta = await reglementProvider.getMeta(slug);
+      if (!meta) {
+        return c.json({ code: "NotFound", description: `Unknown règlement: ${slug}` }, 404);
+      }
+      if (isMeta) return c.json(meta);
+
+      // Licence restreinte ⇒ link-only (ADR-0013) : jamais les octets, on renvoie la source.
+      if (!meta.downloadable) {
+        return c.json(
+          {
+            code: "LinkOnly",
+            description: `Règlement ${slug} sous licence restreinte — source uniquement`,
+            licence: meta.licence,
+            source_url: meta.proof.source_url,
+          },
+          409,
+        );
+      }
+
+      const stream = await reglementProvider.streamPdf(slug);
+      if (!stream) {
+        return c.json({ code: "NotFound", description: `Octets absents pour règlement ${slug}` }, 404);
+      }
+
+      // Nom de fichier = numéro verbatim (assaini), défaut = slug.
+      const safe = (meta.numero ?? slug).replace(/[^A-Za-z0-9._-]/g, "_");
+      c.header("Content-Type", "application/pdf");
+      c.header("Content-Disposition", `attachment; filename="${safe}.pdf"`);
+      // Preuve-v2 en en-tête pour l'auditabilité (le .meta.json porte le détail).
+      c.header("X-Reglement-Sha256", meta.proof.sha256);
+      return c.body(byteStreamToReadable(stream));
+    });
+  }
+
   return app;
+}
+
+/** Adapte un {@link ByteStream} (AsyncIterable) en `ReadableStream` pour `c.body`. */
+function byteStreamToReadable(stream: ByteStream): ReadableStream<Uint8Array> {
+  const iterator = stream[Symbol.asyncIterator]();
+  return new ReadableStream<Uint8Array>({
+    async pull(controller) {
+      try {
+        const next = await iterator.next();
+        if (next.done) {
+          controller.close();
+          return;
+        }
+        controller.enqueue(next.value);
+      } catch (err) {
+        controller.error(err instanceof Error ? err : new Error(String(err)));
+      }
+    },
+    async cancel() {
+      await iterator.return?.();
+    },
+  });
 }
 
 interface StreamResponseContext {

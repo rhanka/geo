@@ -101,6 +101,9 @@ export const mount: MountGeoMap<MapContainer> = (host, options): GeoMapHandle =>
       reconciler?.reinjectAfterStyle();
       syncReconciler?.reinjectAfterStyle();
     },
+    // v2 raster-source seam (§2.5): the adapter resolves the logical id; the engine renders + attributes.
+    ...(options.resolveRasterSource ? { resolveRasterSource: options.resolveRasterSource } : {}),
+    ...(options.onError ? { onError: options.onError } : {}),
   });
   const applyInitialState = (): void => {
     if (destroyed) return;
@@ -256,6 +259,8 @@ class MaplibreMountTarget implements
   readonly #map: Map;
   readonly #sourceData: ReadonlyMap<string, InlineLayerData>;
   #interactionState: MaplibreToolInteractionState = { hover: true, select: true };
+  /** Lazily-created DOM node for the dynamic attribution (§3.1); typed via MapLibre's own container type. */
+  #attributionEl: ReturnType<Map["getContainer"]> | undefined;
 
   constructor(map: Map, sourceData: Readonly<Record<string, InlineLayerData>>) {
     this.#map = map;
@@ -281,6 +286,38 @@ class MaplibreMountTarget implements
 
   setStyle(style: MaplibreBasemapStyle): void {
     this.#map.setStyle(style as never);
+  }
+
+  getViewport(): GeoViewport {
+    const center = this.#map.getCenter();
+    return {
+      center: [center.lng, center.lat],
+      zoom: this.#map.getZoom(),
+      bearing: this.#map.getBearing(),
+      pitch: this.#map.getPitch(),
+    };
+  }
+
+  // DOM-visible dynamic-attribution sink (§3.1/§S8): a node appended into MapLibre's bottom-right control
+  // corner, created lazily on the first dynamic basemap. `null`/"" clears it. The session/key never pass here.
+  // The DOM handles are typed through MapLibre's own container (the engine's tsconfig omits the DOM lib).
+  setDynamicAttribution(text: string | null): void {
+    if (text === null || text === "") {
+      if (this.#attributionEl) {
+        this.#attributionEl.textContent = "";
+        this.#attributionEl.hidden = true;
+      }
+      return;
+    }
+    if (!this.#attributionEl) {
+      const container = this.#map.getContainer();
+      const el = container.ownerDocument.createElement("div");
+      el.className = "maplibregl-ctrl maplibregl-ctrl-attrib geo-basemap-dynamic-attrib";
+      (container.querySelector(".maplibregl-ctrl-bottom-right") ?? container).appendChild(el);
+      this.#attributionEl = el;
+    }
+    this.#attributionEl.textContent = text;
+    this.#attributionEl.hidden = false;
   }
 
   setData(id: string, data: GeoLayerSpec["data"]): void {
