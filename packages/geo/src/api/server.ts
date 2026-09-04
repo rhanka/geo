@@ -27,6 +27,7 @@ import { serve } from "@hono/node-server";
 
 import { createApp } from "./app.js";
 import { makeProvider } from "./providers/make-provider.js";
+import { makeReglementProvider } from "./providers/make-reglement-provider.js";
 import { buildInventory } from "../catalog/index.js";
 import { loadContinentRegistries } from "../cli/continents.js";
 
@@ -42,7 +43,12 @@ const provider = makeProvider(dataLocation);
 // Inject the source catalog (optional continents, dynamically loaded) so
 // `/sources` is populated in Docker/k8s without a hard dependency edge.
 const inventory = buildInventory(await loadContinentRegistries());
-const app = createApp(provider, inventory);
+// Downloadable-règlement routes: a bucket-root store over the CAS + serving
+// registry (outside `normalized/`). `undefined` in local-dir dev — the OGC
+// surface is unaffected. Registry is loaded once at boot (post-capture back-fill
+// is picked up at the next deploy).
+const reglementProvider = await makeReglementProvider(dataLocation);
+const app = createApp(provider, inventory, reglementProvider);
 
 const port = Number(process.env.PORT ?? 8787);
 
