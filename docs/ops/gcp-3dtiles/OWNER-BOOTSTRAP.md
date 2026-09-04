@@ -14,31 +14,56 @@ contiennent le project-number vont en **GitHub Variable/Secret**, jamais dans le
 
 ---
 
-## ⭐ Le geste owner UNIQUE (forme GO-only)
+## ⭐ Le bootstrap = un SPLIT (owner + poc-k8s)
 
-L'owner ne lance qu'**UNE commande**, dans **son propre terminal** (son login iam-admin + github-admin —
-jamais une session agent : geo-socle ne manie jamais les creds root) :
+Le bootstrap se SCINDE en 2 acteurs (mesuré : l'owner a GCP + GitHub mais **PAS d'accès kubectl OVH** ; le
+cluster preprod = **OVH poc-ca/bhs5**, tenant poc-k8s). Split ratifié geo-archi + i-infra. « **Poser ≠
+activer** ».
+
+**A. Owner — UNE commande** (son terminal ; login iam-admin GCP + github-admin ; jamais une session agent —
+geo-socle ne manie jamais les creds root) :
 ```bash
 bash docs/ops/gcp-3dtiles/50-owner-bootstrap-all.sh
 ```
-Prérequis one-time (le wrapper les vérifie + fail-loud sinon) : `gcloud auth login` + `gh auth login`.
-Le wrapper chaîne [a]→[d] ci-dessous **idempotent + fail-loud (STOP au 1er échec) + self-verify**, pose
-lui-même les GitHub Secrets/Variables (0 collage manuel), et émet les sorties porteuses de project-number
-en **Variables** (jamais committées).
+Prérequis one-time (le wrapper vérifie + fail-loud) : `gcloud auth login` + `gh auth login`. Le wrapper fait
+la part **GCP + GitHub SEULEMENT** — [a] WIF (53) + [b] executor (52) + [c] Environment required-reviewer +
+Variables (WIF_PROVIDER/CAP_EXECUTOR_SA) + GEO_S3_ENV guidé — idempotent + fail-loud + self-verify.
 
-**C'est le SEUL geste irréductible** (le 1er grant iam-admin+github-admin = racine de confiance
-non-auto-grantable : un système ne peut pas se donner son propre iam-admin). **Après ce geste unique**,
-TOUT (reattach/clé/deploy/activation) = **GO-pur** : merge OU dispatch approuvé (Environment
-required-reviewer=owner), **0 terminal, à vie** — via le(s) workflow(s) auto-exec GitHub Actions (keyless
-WIF ; PR séparée). Le seul « 0-terminal-même-pour-le-bootstrap » alternatif = ~30 clics console fragiles
-(rejeté) OU confier l'iam-admin root à un agent (casse la separation) : la 1-commande-terminal est le
-minimal honnête.
+**B. poc-k8s — le hand-off OVH k8s** (SEUL poc-k8s a l'admin OVH ; les scripts committés sont la SOURCE,
+poc-k8s exécute) : applique le §5 RBAC + pose l'identité **INERTE**. Voir **§ Hand-off poc-k8s** ci-dessous.
+
+**Après A + B** (l'identité posée, inerte), TOUT le reste = **GO-pur owner** : GO#1 = merge la PR ODbL #335
+(flip flag) ; GO#2 = approuve le dispatch activate-serve #334 (mint clé + secret + restart). **0 terminal
+owner** au-delà de la commande A. Le 1er grant (A : iam-admin GCP + github-admin ; B : admin OVH poc-k8s) =
+la racine de confiance non-auto-grantable.
 
 ---
 
-## Option A — détail des étapes [a]→[d] (ce que le wrapper 50 chaîne ; ou step-by-step manuel)
+## § Hand-off poc-k8s (OVH k8s — pose l'identité §5 INERTE)
 
-Ordre exact, une passe. Chaque script est idempotent + self-verifying (relançable).
+poc-k8s (admin OVH poc-ca/bhs5, tenant geo-preprod) exécute, dans SA session (contexte OVH) :
+1. **RBAC §5** : `kubectl apply -f deploy/ci/geo-ci-rbac.yaml` — SA `geo-ci-runner` + Role job-launcher (#327)
+   + **Role activation** (secrets{get,patch} resourceNames:[geo-tile-key] + deployments{get,patch}
+   resourceNames:[geo-api], ns geo-preprod ; **0 all-secrets/create**).
+2. **KUBE_CONFIG_GEO (ATOMIQUE, no-leak)** : `bash docs/ops/gcp-3dtiles/54-gen-kubeconfig.sh` — mint un token
+   BORNÉ du SA geo-ci-runner **ET** `gh secret set KUBE_CONFIG_GEO --env geo-preprod` **dans la MÊME session**
+   (le token borné ne quitte JAMAIS la session poc-k8s = pas de handoff = pas de fuite ; i-infra). Env-scopé
+   `geo-preprod` = derrière required-reviewer → le SA n'est utilisable QUE via le dispatch owner-approuvé #334.
+3. **Secret geo-tile-key VIDE** (placeholder) : `kubectl create secret generic geo-tile-key -n geo-preprod
+   --dry-run=client -o yaml | kubectl apply -f -`. VIDE ⇒ /basemap/2d/session = **503 fail-closed** jusqu'à ce
+   que #334 (owner-GO#2) écrive la vraie clé. **poc-k8s N'écrit JAMAIS la vraie clé** (poser ≠ activer).
+
+⚠ poc-k8s pose la **CAPACITÉ INERTE**. L'**ACTIVATION** (vraie clé + flag-ON) = **owner-GO uniquement**
+(#335 merge + #334 dispatch approuvé qui asserte ADR-0030=accepted). i-infra certifie le scope RBAC runtime
+(`can-i`) avec un kubeconfig OVH read-only (à provisionner par poc-k8s/i-cond).
+
+---
+
+## Option A — détail des étapes [a]→[d] (référence)
+
+Ordre exact, une passe. Chaque script est idempotent + self-verifying (relançable). ⚠ **Répartition SPLIT** :
+[a] WIF + [b] executor = **owner/50** (GCP) ; [c] Environment + Variables + GEO_S3_ENV = **owner/50** (GitHub) ;
+`KUBE_CONFIG_GEO` (via 54) + le RBAC §5 + le secret `geo-tile-key` VIDE = **poc-k8s** (OVH — cf § Hand-off poc-k8s ci-dessus). Le wrapper 50 ne fait QUE la part owner (GCP+GitHub).
 
 **[a] WIF Pool + Provider** (produit `BASE_IDENTITY`) :
 ```bash
