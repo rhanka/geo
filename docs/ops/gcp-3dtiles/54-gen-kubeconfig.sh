@@ -48,10 +48,16 @@ CADATA="$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.
   kubectl --kubeconfig "$KCFG" config use-context geo-ci >/dev/null
 }
 
-# L'Environment DOIT exister d'abord (secret ENV-scopé = derrière required-reviewer=owner). 50 le crée avant
-# 54 ; en standalone, crée-le d'abord (runbook [d]).
+# ⚠ L'Environment DOIT exister AVEC required-reviewer=owner AVANT de poser le secret ENV-scopé (flag geo-archi,
+# enforcement DURE). Sinon `gh secret set --env` pourrait AUTO-CRÉER un Environment SANS reviewer → KUBE_CONFIG_GEO
+# sur un gate ABSENT = lisible hors-gate = BYPASS. Fail-closed si l'env manque OU n'a pas de required-reviewer.
+# (50 crée l'env AVEC le reviewer AVANT ce script — ordre A→B ; ce guard = défense-en-profondeur contre B-avant-A.)
 gh api "repos/${GH_REPO}/environments/${SECRET_ENV}" >/dev/null 2>&1 \
-  || { echo "❌ Environment ${SECRET_ENV} absent — crée-le d'abord (50-owner-bootstrap-all.sh, ou runbook [d])"; exit 1; }
+  || { echo "❌ Environment ${SECRET_ENV} absent — crée-le d'abord AVEC required-reviewer=owner (50-owner-bootstrap-all.sh, ou runbook [c])"; exit 1; }
+REQ_REVIEWERS="$(gh api "repos/${GH_REPO}/environments/${SECRET_ENV}" \
+  --jq '[.protection_rules[]? | select(.type=="required_reviewers") | .reviewers[]?] | length' 2>/dev/null || echo 0)"
+[ "${REQ_REVIEWERS:-0}" -ge 1 ] 2>/dev/null \
+  || { echo "❌ Environment ${SECRET_ENV} SANS required-reviewer — refus (secret env-scopé sur un gate absent = BYPASS ; flag geo-archi). Pose le reviewer d'abord (50, ou runbook [c])."; exit 1; }
 # Pousse le secret GitHub ENV-scopé (contenu du fichier, jamais echo) + shred (le trap couvre aussi les erreurs).
 gh secret set KUBE_CONFIG_GEO -R "$GH_REPO" --env "$SECRET_ENV" < "$KCFG"
 
