@@ -145,6 +145,60 @@ d'attribution), **jamais un blanc silencieux** (vert par omission = rouge).
   non-breaking). Les consommateurs **NE DOIVENT PAS** faire un `switch` exhaustif dessus (branche
   `default` obligatoire) — pas de piège d'exhaustivité au prochain `kind`.
 
+## 2.5 Seam de résolution adaptateur↔moteur (RÉCORD — implémenté + ratifié)
+
+> Consolide les rulings de seam geo-archi (wp6) pour le flux `raster-source` / `provider-2d`. **Implémenté**
+> par les PR §5 (mint `packages/geo` inc-1/2/3 ; moteur `packages/geo-map-engine` PR-B) et **ratifié** au
+> code. Additif au contrat v2.0 (§2). GEL owner-gated (ADR-0029/0030).
+
+### 2.5.1 Descriptor public engine-facing — no-secret (§3.3)
+`BasemapSourceDescriptor = { tileUrlTemplateBase ({z}/{x}/{y}, SANS ?session=&key=), tileSize:{width,height},
+imageFormat, attribution: AttributionSpec }`. Le moteur configure la source raster depuis ça. **Aucun secret.**
+
+### 2.5.2 `SessionResolution` — separate-input, adapter-interne
+`SessionResolution = { session, expirySeconds, key }` = **input SÉPARÉ** (PAS une TokenMap-extension ; TokenMap
+reste thème-only). session **ET** clé = **adapter-internes**, injectés par-tuile via le **transform-request** ;
+n'atteignent JAMAIS le `BasemapSourceDescriptor` public ni le moteur (§3.3). Le key (projet-level,
+referrer-restricted) est porté par la SessionResolution (source-unique de la paire session+key), délivré
+**uniquement via la réponse du mint gaté** (double-gate flag+clé) — plus fail-closed qu'un front-config standalone.
+
+### 2.5.3 Endpoint mint — double fail-closed + `no-store`
+`GET /basemap/2d/session` : (1) flag `BASEMAP_2D_ENABLED` testé **EN PREMIER** (≠ `"1"` → **503**, défaut OFF,
+strict `=== "1"`) ; (2) clé `readTileKey` fail-closed (absente → 503) ; (3) échec mint genuine → **502 fail-loud**.
+`Cache-Control: no-store` sur **CHAQUE** réponse (porte key+session ⇒ jamais cachée). Pré-GO 503 = **repli blanc
+déclaré (ODbL-safe** ; ADR-0030 n'entre en vigueur qu'au flip). Servir EXIGE flag ON **ET** clé.
+
+### 2.5.4 Seam moteur mount — `resolveRasterSource` / `ResolvedRasterSource` ; fail-closed → onError (PAS throw)
+Membre **additif-optionnel top-level TYPÉ** de `GeoMapMountOptions` : `resolveRasterSource?: (source: RasterSource)
+=> ResolvedRasterSource` où `ResolvedRasterSource = { tileUrlTemplateBase, tileSize, imageFormat, attributionResolver?:
+(v: GeoViewport) => Promise<string> }` (**NI session NI key**). `compileBasemap(raster-source)` résout via ce hook.
+**Refus runtime = mode NORMAL, PAS un crash** : `raster-source` sans `resolveRasterSource`, ou `resolveRasterSource`
+qui throw, ou `dynamic` sans `attributionResolver` (B4) → le moteur **émet `onError` ET rend le repli déclaré
+(blank + notice)** — **jamais un throw, jamais un blanc silencieux** (§2.4, corrige le stub-throw v1). CONTRACT_VERSION
+reste 2.0.0 (membre additif-optionnel = non-breaking).
+
+### 2.5.5 Attribution dynamique per-viewport — DOM-visible (§3.1/§S8)
+`attribution.mode === "dynamic"` ⟹ le moteur (qui possède le host, §S8) rend un contrôle d'attribution
+**DOM-visible** et le **rafraîchit au `moveend`** via `attributionResolver(viewport)` (per-viewport). Teardown au
+changement de basemap (off moveend + clear) ; race-safe (un resolver stale est ignoré). **JAMAIS `attributionControl:
+false` ni un « © Google » statique** = la violation-qui-a-l'air-conforme. Rejet genuine du resolver → `onError{kind}`
+(session-expired|quota|forbidden|network) + repli. `static` → string dans la source, 0 contrôle dynamique.
+
+### 2.5.6 Refresh + injection — adapter-interne
+Le minter refresh **proactif** (~5 min skew, single-flight) ; le `transformRequest` (fourni par l'adaptateur via
+`options.options`) injecte `?session=&key=` par-tuile sur les URLs provider (passthrough sinon) ; **le moteur ne voit
+jamais l'expiry**. Tuiles **browser→Google LIVE** (referrer-restricted), **0-octet-S3** (§3.2). L'attribution
+dynamique vient de l'endpoint viewport Google (gratuit/non-billable — hors les métriques tuiles cappées).
+
+### 2.5.7 Frontière wp6/wp7 + adaptateur agnostique + activation
+**Contrat** (types + shapes + règles fail-closed) = **wp6/geo-archi**. **Adaptateur AGNOSTIQUE** (mint-fetch +
+`transformRequest` + `attributionResolver`, plain TS framework-neutre — ex. `createGoogle2dBasemapAdapter`) +
+**build moteur** = **wp7/geo-socle**. Le **wiring framework** (svelte GeoMap DS-repo, ou bespoke immo) **consomme
+l'adaptateur ZÉRO-COPIE** — ne ré-implémente jamais session/clé/attribution (ADR-0025). **Activation** = GO owner
+SÉPARÉ (flip ODbL ADR-0030 + clé), jamais au deploy ; le mini-gate (§5) prouve le rendu réel (attribution dynamique
+per-viewport DOM-visible + 0-octet-S3) avant GEL. **Provider-neutralité** : le contrat/core ne nomme jamais Google ;
+un adaptateur provider-spécifique reste hors du contrat (à extraire en package séparé s'ils grandissent).
+
 ## 3. Règles de CONFORMITÉ (load-bearing — pas déclaratif)
 
 ### 3.1 Attribution REQUISE **et RENDUE** ; qui la rend (fable S8)
