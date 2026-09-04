@@ -54,6 +54,14 @@ ENV NODE_ENV=production \
     PORT=8787 \
     GEO_DATA_DIR=/data/normalized
 
+# Build provenance: the git commit this image was built from, baked as the standard OCI revision
+# label so "which commit runs in prod?" is always answerable from the image/registry alone (the
+# hand-built stream-tag images had NO such marker — that is the freshness gap this closes). The CD
+# passes `--build-arg GIT_SHA=$GITHUB_SHA`; a local build leaves the default `unknown`.
+ARG GIT_SHA=unknown
+LABEL org.opencontainers.image.revision="${GIT_SHA}"
+ENV GEO_GIT_SHA="${GIT_SHA}"
+
 # gdal-bin provides ogr2ogr / ogrinfo, required by `geo fetch` for bulk vector
 # formats (see packages/geo/src/acquire/gdal.ts). ca-certificates is needed for
 # HTTPS downloads during acquisition.
