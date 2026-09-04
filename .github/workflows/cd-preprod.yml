@@ -70,6 +70,9 @@ jobs:
           context: .
           file: ./Dockerfile
           platforms: linux/amd64
+          # Bake the git commit as the OCI revision label ("which commit runs?").
+          build-args: |
+            GIT_SHA=${{ github.sha }}
           push: true
           tags: ${{ env.IMAGE }}:main-${{ github.sha }}
           provenance: true
