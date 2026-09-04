@@ -663,12 +663,18 @@ ADR-0026 (règle semver+ADR sur le seam gelé) ; ADR-0024 (pattern garde+test pa
 
 ## ADR-0030 — **ODbL-reversal : fond satellite Google live-embed 2D (Voie A) supersède la posture blank-ODbL-safe** · accepted · 2026-08-31
 
-**⚠ Statut `accepted`** — flip ratifié par la **parole directe de l'owner capturée** au moment de
-l'activation (record porté par geo-cond ; **le MERGE owner de cette PR EST l'attestation** — jamais un
-relais ni un say-so conducteur). Le contenu (posture licence) est ratifié par **geo-archi (wp6)**. Cette PR
-est authorée en **DRAFT par geo-socle** (flip mécanique : statut + flag overlay) et reste **non-mergée**
-jusqu'au GO#1 owner-direct. ⟹ **GO#1 = ce merge** (owner) ; **GO#2 = le dispatch activate-serve approuvé**
-(mint clé + secret). Entre les deux : flag-ON + clé absente → **503 fail-closed** (double-gate, 0 tuile live).
+**⚠ Statut `accepted` — CONDITIONNÉ à un RECORD owner-direct GENUINE.** Le flip `accepted` NE TIENT QUE sur
+la **parole directe de l'owner CAPTURÉE durablement** (record ci-dessous, porté par geo-cond) — **JAMAIS** un
+say-so peer, un relais, ni un record synthétisé (anti-laundering ; header decisions.md + ligne geo-archi wp6).
+
+> **Record owner-direct** : `<À RENSEIGNER par geo-cond AVANT merge — id/citation de la parole owner
+> capturée autorisant l'activation ODbL (Voie A Google)>`
+
+Cette PR est authorée en **DRAFT par geo-socle** (flip MÉCANIQUE : statut + flag overlay) et reste
+**non-mergée** tant que (1) le record ci-dessus n'est pas renseigné par geo-cond ET (2) le contenu est
+ratifié par **geo-archi (wp6)**. geo-archi VÉRIFIE à l'ouverture que le record est genuine (pas synthétisé).
+⟹ **GO#1 = le merge owner APRÈS record renseigné** ; **GO#2 = le dispatch activate-serve approuvé** (mint
+clé + secret). Entre les deux : flag-ON + clé absente → **503 fail-closed** (double-gate, 0 tuile live).
 
 **Contexte.** `GeoMap.svelte:292` grave **délibérément** la posture « Tokenized blank background — **NO
 external tiles** (ODbL-safe ; PMTiles basemap is a later increment) », avec `attributionControl: false`
