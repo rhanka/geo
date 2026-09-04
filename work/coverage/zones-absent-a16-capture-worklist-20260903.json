@@ -1,0 +1,74 @@
+{
+  "product": "ca-qc-zonage-capture — absent-coverage fix, bucket (a)",
+  "generated_by": "geo-zones (WP2 zones acquisition QC)",
+  "generated_at": "2026-09-03",
+  "context": "Plainte owner §7 « 0 règlement/zonage téléchargé » sur des villes. Root cause = trou de couverture qc-zonage EN AMONT (geo, ma lane) : sans zonage servi, immo n'a rien à afficher. Audit-source des 238 villes absent = commit 8da8863d (work/coverage/zones-absent-source-audit-20260903.json). Ce worklist = le bucket (a) = 16 villes capturables via 2 providers PROUVÉS → fix immédiat de 16 villes (dont sainte-martine ∈ contexte owner).",
+  "method": {
+    "pipeline": "§6 k8s capture-run (worklist bare-array STRICT, capturedFetch) → CAS raw/ + manifest proof-v2 (url+retrieved_at+sha256) → deposit v2 servi",
+    "lane": "zones — DÉJÀ dans CAPTURE_LANES (pv) → 0 deploy, ready-now (contrairement à §9 constraints qui a exigé l'ajout d'enum + deploy)",
+    "gate": "design_sha (pv RECOMPUTE au submit sur worklist+lane+image) + owner-paste (§6, JAMAIS local). geo-cond porte le GO owner. geo-zones ne self-grant rien.",
+    "cluster_only": true,
+    "runner_schema": "bare-array [{slug,source,urls}] STRICT (pv parseCaptureWorklist = z.array(TargetSchema.strict())) — métadonnées ICI (sidecar), jamais dans le runner (ref S9_ACQUIRE_DELTA_CPTAQ.md §9)",
+    "post_capture_deposit": {
+      "geocentralis": "recette dépôt geocentralis lot-D (WFS natif ; champ code-zone résolu par recouvrement ≥90% avec le servi ; valeur brute, aucune dérivation) → putServedZoneGeojson proof-v2 + re-stamp provenance",
+      "victoriaville": "acquisition/src/_zones-vnatif-deposit-victoriaville-20260810.ts (MapServer partagé Arthabaska ; champ Disposition_spéciale résolu ; anti-troncature returnCountOnly[where=Code_mun]==feature_count & exceededTransferLimit!==true) → putServedZoneGeojson proof-v2 + re-stamp provenance",
+      "both_layouts": "dépôt sur flat ET sous-dossier (geo-api sert le sous-dossier quand les deux coexistent)"
+    }
+  },
+  "batches": {
+    "geocentralis-wfs": {
+      "runner_file": "work/coverage/zones-absent-a16-capture-worklist-runner-geocentralis-20260903.json",
+      "provider": "geoserver.geocentralis.com WFS 2.0.0 — layer evb:siadmin_pzon_99_s, filtre id_municipalite (code MAMH)",
+      "url_template_source": "COMMITTÉ VERBATIM (acquisition/config/usage-dominant-map/la-visitation-de-lile-dupas.json — forme PLEINE GÉOMÉTRIE, sans propertyName ; propertyName striperait la géométrie et est réservé aux dumps d'étiquettes)",
+      "count": 11,
+      "measured_status": "geo-zones a spot-vérifié lorraine (73025) = numberMatched 110 MultiPolygon, description=zonage, etiquette_1=code (WebFetch, read-only). Les 10 autres = classées (a) par le worker via numberMatched>0 (MESURÉ WORKER, non re-vérifié individuellement par geo-zones).",
+      "anti_truncation": "le payload WFS GetFeature JSON porte numberMatched ET numberReturned → le dépôt vérifie numberMatched==numberReturned avant serve (garde-fou de complétude).",
+      "cities": [
+        {"slug":"mcmasterville","name":"McMasterville","mamhCode":"57025","classification":"worker: numberMatched>0"},
+        {"slug":"saint-marc-sur-richelieu","name":"Saint-Marc-sur-Richelieu","mamhCode":"57050","classification":"worker: numberMatched>0"},
+        {"slug":"calixa-lavallee","name":"Calixa-Lavallée","mamhCode":"59030","classification":"worker: numberMatched>0"},
+        {"slug":"lorraine","name":"Lorraine","mamhCode":"73025","classification":"geo-zones spot-vérifié = numberMatched 110 MultiPolygon"},
+        {"slug":"richelieu","name":"Richelieu","mamhCode":"55057","classification":"worker: numberMatched>0"},
+        {"slug":"saint-edouard","name":"Saint-Édouard","mamhCode":"68045","classification":"worker: numberMatched>0"},
+        {"slug":"saint-jacques-le-mineur","name":"Saint-Jacques-le-Mineur","mamhCode":"68040","classification":"worker: numberMatched>0"},
+        {"slug":"saint-patrice-de-sherrington","name":"Saint-Patrice-de-Sherrington","mamhCode":"68025","classification":"worker: numberMatched>0"},
+        {"slug":"saint-michel","name":"Saint-Michel","mamhCode":"68050","classification":"worker: numberMatched>0 — homonyme (plusieurs Saint-Michel QC) : filtre id_municipalite 68050 + garde anti-homonyme nearestMuni au dépôt"},
+        {"slug":"saint-remi","name":"Saint-Rémi","mamhCode":"68055","classification":"worker: numberMatched>0 — distinct de saint-remi-de-tingwick (39020, déjà servi batch victoriaville 2026-08-10)"},
+        {"slug":"sainte-anne-des-plaines","name":"Sainte-Anne-des-Plaines","mamhCode":"73035","classification":"worker: numberMatched>0"}
+      ]
+    },
+    "victoriaville-mapserver": {
+      "runner_file": "work/coverage/zones-absent-a16-capture-worklist-runner-victoriaville-20260903.json",
+      "provider": "geo.victoriaville.ca ArcGIS MapServer IntranetMRC/ZonageMunicipal/MapServer/3 — couche PARTAGÉE MRC d'Arthabaska, filtre Code_mun (code MAMH)",
+      "url_template_source": "COMMITTÉ VERBATIM (work/coverage/zones-vnatif-capture-worklist-victoriaville-20260810.json — batch PROUVÉ 2026-08-10 : 12 munis Arthabaska capturés+servis via CETTE couche)",
+      "count": 5,
+      "measured_status": "les 5 villes = MRC d'Arthabaska (codes 39xxx), MÊME couche partagée que le batch prouvé du 2026-08-10 ; classées (a) par le worker. Endpoint+couche prouvés par le batch antérieur ; per-city non re-vérifié individuellement par geo-zones.",
+      "anti_truncation": "payload geojson ArcGIS sans numberMatched → le dépôt oppose exceededTransferLimit!==true ET une requête returnCountOnly[where=Code_mun] LIVE == feature_count.",
+      "cities": [
+        {"slug":"notre-dame-de-ham","name":"Notre-Dame-de-Ham","mamhCode":"39015","classification":"worker: (a) — MRC Arthabaska, couche prouvée"},
+        {"slug":"saint-norbert-darthabaska","name":"Saint-Norbert-d'Arthabaska","mamhCode":"39043","classification":"worker: (a) — MRC Arthabaska, couche prouvée"},
+        {"slug":"saint-samuel","name":"Saint-Samuel","mamhCode":"39130","classification":"worker: (a) — MRC Arthabaska, couche prouvée"},
+        {"slug":"sainte-helene-de-chester","name":"Sainte-Hélène-de-Chester","mamhCode":"39035","classification":"worker: (a) — MRC Arthabaska, couche prouvée"},
+        {"slug":"saints-martyrs-canadiens","name":"Saints-Martyrs-Canadiens","mamhCode":"39005","classification":"worker: (a) — MRC Arthabaska, couche prouvée"}
+      ]
+    }
+  },
+  "les_cedres_followup": {
+    "slug": "les-cedres",
+    "status": "servi-mais-vide (qc-zonage-les-cedres feature_count=0) — HORS des 238 (compté comme servi), mais owner-affecté (0 zone à afficher).",
+    "action": "re-mesurer le zone_source_url d'origine du collection servi AVANT toute re-capture — NE PAS inventer de source. N'entre PAS dans le worklist runner (a) faute de source mesurée. geo-cond a demandé de le suivre à part.",
+    "anti_invention": "source d'origine non re-lue dans ce tick (lecture S3 servi requise) → laissé en TODO mesuré, jamais rempli par supposition."
+  },
+  "anti_invention": "unknown≠capturable : les 217 unknown ne sont JAMAIS projetés en (a). Les URLs sont COPIÉES VERBATIM de gisements committés/prouvés (la-visitation pour geocentralis ; batch 2026-08-10 pour victoriaville), jamais construites par supposition d'endpoint. Le DRY-RUN de dépôt (count-check complétude + overlap≥90% source-identité + anti-homonyme nearestMuni + géométrie 100% polygonale) est le garde-fou obligatoire AVANT tout serve : une capture ambiguë/vide/tronquée = SKIP, jamais un serve douteux.",
+  "handoff": {
+    "to": "geo-cond",
+    "provides": "2 worklists runner STRICT (geocentralis 11 + victoriaville 5) + ce sidecar + sha256 byte-anchors",
+    "design_sha": "pv RECOMPUTE au submit (lane=zones + worklist + image) — geo-zones ne le fige pas ; sha256 des fichiers runner fournis comme byte-anchors de revue",
+    "next": "geo-cond porte le paste owner (design_sha+owner-paste) → §6 capture cluster→S3 → deposit → serve qc-zonage-<slug> + grille + provenance règlement sur 2 layouts"
+  },
+  "inputs": {
+    "audit": "work/coverage/zones-absent-source-audit-20260903.json @ commit 8da8863d",
+    "municipal-directory.qc.json_sha256_prefix": "9d0f5854",
+    "completion-1-zones-matrix-20260723_sha256_prefix": "518e7a7e"
+  }
+}
