@@ -10,7 +10,10 @@ set -euo pipefail
 : "${PROJECT_ID:=radar-3dtiles-preprod}"   # préprod-first : CE projet = garde-fou ET dépense
 : "${REGION:=europe-west1}"
 : "${TOPIC:=billing-guardrail}"
-: "${REFERRER:=https://*.sent-tech.ca/*}"
+# §5 = preprod-only : referrer de la clé restreinte SCOPÉ au domaine immo-préprod où le map bespoke tourne
+# (Path B). JAMAIS `*.sent-tech.ca` (autoriserait aussi prod immo.sent-tech.ca = hors scope §5 + élargit la
+# surface de la clé). i-cond confirme le hostname immo-préprod EXACT ; overridable via l'env REFERRER.
+: "${REFERRER:=https://preprod.immo.sent-tech.ca/*}"
 # BUDGET_AMOUNT is a PLAIN number in the BILLING ACCOUNT's OWN currency — NO currency
 # suffix (a hardcoded currency suffix on a non-matching account = INVALID_ARGUMENT; the
 # billing account here is CAD). Default 50 (account currency); the owner overrides for the
