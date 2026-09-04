@@ -1,29 +1,26 @@
 #!/usr/bin/env bash
-# Phase 50 / runbook — WRAPPER owner-bootstrap ALL (le SEUL geste irréductible du pivot GO-only).
+# Phase 50 / runbook — WRAPPER owner-bootstrap (part OWNER du SPLIT : GCP + GitHub SEULEMENT).
 #
-# ⚠⚠ À LANCER PAR L'OWNER, UNE FOIS, dans SON PROPRE terminal (son login iam-admin + github-admin —
+# ⚠⚠ À LANCER PAR L'OWNER, UNE FOIS, dans SON PROPRE terminal (son login iam-admin GCP + github-admin —
 # JAMAIS une session agent/geo-socle/SA/CI ; geo-socle ne manie jamais les creds root). C'est le 1er grant
-# = racine de confiance NON-AUTO-GRANTABLE (un système ne peut pas se donner son propre iam-admin). APRÈS
-# ce run unique, TOUTES les ops (reattach/clé/deploy/activation) tournent en GitHub Actions keyless (WIF),
-# déclenchées par un GO owner = merge OU dispatch approuvé (Environment required-reviewer=owner) — 0
-# terminal, à vie.
+# = racine de confiance NON-AUTO-GRANTABLE. APRÈS, TOUTES les ops (reattach/clé/deploy/activation) tournent
+# en GitHub Actions keyless (WIF), déclenchées par un GO owner = merge OU dispatch approuvé — 0 terminal.
 #
-# Ce wrapper CHAÎNE les sous-scripts committés + co-val'd END-TO-END, idempotent + fail-loud (set -e : STOP
-# au 1er échec — jamais de bootstrap partiel demi-privilégié) + self-verify. Il n'imprime AUCUN
-# secret/keyString ; les sorties porteuses de project-number (BASE_IDENTITY, WIF_PROVIDER) sont posées
-# comme GitHub Variables (jamais committées/loggées). 0 littéral secret/project-number/billing-account
-# (repo PUBLIC).
+# ⚠ SPLIT (mesuré : l'owner n'a PAS d'accès kubectl OVH ; le cluster preprod = OVH poc-ca/bhs5, tenant
+# poc-k8s). Ce wrapper fait UNIQUEMENT ce que l'owner PEUT : GCP (WIF + executor) + GitHub
+# (Environment/Variables/GEO_S3_ENV). Les parts K8S (RBAC §5 geo-ci-runner + Role activation ; KUBE_CONFIG_GEO
+# via 54 ; secret geo-tile-key VIDE) = HAND-OFF poc-k8s (OVH admin) — cf OWNER-BOOTSTRAP.md §hand-off. Modèle
+# repo « socle construit ; poc-k8s applique ». Split ratifié geo-archi + i-infra. « Poser ≠ activer ».
 #
-# Ordre (i-infra) : préflight → assert login==owner → Environment (le GATE, AVANT tout secret env-scopé) →
-#   53 (WIF → BASE_IDENTITY) → 52 (executor) → 54 (kubeconfig, secret ENV-scopé) → Variables → self-verify.
-# ⚠ L'Environment vient AVANT 54 : KUBE_CONFIG_GEO est ENV-scopé (derrière required-reviewer=owner) — un
-# secret repo-scopé serait lisible par TOUT workflow hors-gate (repo public) → contournerait le gate owner.
+# CHAÎNE END-TO-END, idempotent + fail-loud (set -e) + self-verify. 0 secret/keyString imprimé ; les sorties
+# porteuses de project-number (WIF_PROVIDER) → GitHub Variables (jamais committées). 0 littéral (repo PUBLIC).
 #
-# Variables : PROJECT_ID (env.sh). GH_REPO (défaut rhanka/geo). WIF_ENV (défaut geo-preprod).
-#   EXPECT_OWNER (défaut rhanka = username GitHub public) = le login gh attendu (le wrapper POSE le gate).
-#   GRANT_KEY_CREATION (défaut yes = ARME la CAPACITÉ de créer la clé — PAS la clé, PAS l'activation ; le
-#   mint réel reste money-gated derrière le GO activation séparé + la cert i-infra ré-attach+Function-armée).
-#   PREPROD_OGC_URL (optionnel : posé comme Variable si fourni).
+# Ordre : préflight (gcloud+gh auth owner) → Environment (le GATE) → 53 (WIF) → 52 (executor) → Variables →
+#   GEO_S3_ENV guidé → self-verify.
+#
+# Variables : PROJECT_ID (env.sh). GH_REPO (défaut rhanka/geo). WIF_ENV (défaut geo-preprod = nom de
+#   l'Environment GitHub — DISTINCT du ns k8s homonyme sur OVH). EXPECT_OWNER (défaut rhanka). GRANT_KEY_CREATION
+#   (défaut yes = ARME la capacité clé, PAS la clé/activation). PREPROD_OGC_URL (optionnel).
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 source "$HERE/env.sh"
@@ -33,25 +30,23 @@ WIF_POOL="${WIF_POOL:-geo-ci-pool}"
 WIF_PROVIDER_ID="${WIF_PROVIDER_ID:-github}"
 EXPECT_OWNER="${EXPECT_OWNER:-rhanka}"
 GRANT_KEY_CREATION="${GRANT_KEY_CREATION:-yes}"
-export GH_REPO WIF_ENV WIF_POOL WIF_PROVIDER_ID # les sous-scripts héritent des mêmes noms
+export GH_REPO WIF_ENV WIF_POOL WIF_PROVIDER_ID
 
-echo "=== 50 · owner-bootstrap ALL — projet ${PROJECT_ID}, repo ${GH_REPO} (owner-run, une fois) ==="
+echo "=== 50 · owner-bootstrap (GCP + GitHub) — projet ${PROJECT_ID}, repo ${GH_REPO} (owner-run, une fois) ==="
 
-# ── 0. Préflight : auth owner (fail-loud, JAMAIS d'auto-login) + outils + prérequis. ──────────────────
-for t in gcloud gh kubectl; do command -v "$t" >/dev/null || { echo "❌ ${t} absent"; exit 1; }; done
+# ── 0. Préflight : auth owner (fail-loud, JAMAIS d'auto-login). PAS de kubectl (les parts k8s = poc-k8s/OVH). ──
+for t in gcloud gh; do command -v "$t" >/dev/null || { echo "❌ ${t} absent"; exit 1; }; done
 gcloud auth list --filter=status:ACTIVE --format='value(account)' | grep -q . \
   || { echo "❌ gcloud non authentifié. Lance d'abord (UNE fois, ton login iam-admin) : gcloud auth login"; exit 1; }
 gh auth status >/dev/null 2>&1 \
   || { echo "❌ gh non authentifié. Lance d'abord (UNE fois, ton login github-admin) : gh auth login"; exit 1; }
-kubectl -n "$WIF_ENV" get serviceaccount geo-ci-runner >/dev/null 2>&1 \
-  || { echo "❌ SA ${WIF_ENV}/geo-ci-runner absent — applique d'abord la RBAC CI (#327, deploy/ci/geo-ci-rbac.yaml)"; exit 1; }
 
 # ── 0b. Assert que le login gh EST l'owner attendu (le wrapper POSE le gate — ne pas viser la mauvaise personne). ──
 AUTHED_LOGIN="$(gh api user --jq '.login')"
 [ "$AUTHED_LOGIN" = "$EXPECT_OWNER" ] \
   || { echo "❌ gh authentifié comme '${AUTHED_LOGIN}', attendu '${EXPECT_OWNER}' — refus (le reviewer pointerait la mauvaise personne)"; exit 1; }
 OWNER_ID="$(gh api user --jq '.id')"
-echo "✅ préflight OK (gcloud+gh authentifiés owner=${AUTHED_LOGIN}, kubectl, RBAC #327 présente)."
+echo "✅ préflight OK (gcloud+gh authentifiés owner=${AUTHED_LOGIN})."
 
 # ── 1. Environment GitHub geo-preprod : required-reviewer=owner (LE GATE) — AVANT tout secret env-scopé. ──
 gh api --method PUT "repos/${GH_REPO}/environments/${WIF_ENV}" --input - >/dev/null <<EOF
@@ -70,36 +65,33 @@ CAP_EXECUTOR_SA="geo-cap-executor@${PROJECT_ID}.iam.gserviceaccount.com"
 # ── 3. Executor least-priv (52), consomme BASE_IDENTITY. ─────────────────────────────────────────────
 BASE_IDENTITY="$BASE_IDENTITY" GRANT_KEY_CREATION="$GRANT_KEY_CREATION" bash "$HERE/52-bootstrap-geo-executor.sh"
 
-# ── 4. Kubeconfig CI borné (54) → pose KUBE_CONFIG_GEO ENV-scopé (l'Environment existe déjà, étape 1). ──
-SECRET_ENV="$WIF_ENV" bash "$HERE/54-gen-kubeconfig.sh"
-
-# ── 5. Variables GitHub env-scopées : WIF_PROVIDER / CAP_EXECUTOR_SA (portent le project-number → Variables). ──
+# ── 4. Variables GitHub env-scopées : WIF_PROVIDER / CAP_EXECUTOR_SA (portent le project-number → Variables). ──
 gh variable set WIF_PROVIDER    -R "$GH_REPO" --env "$WIF_ENV" --body "$WIF_PROVIDER"
 gh variable set CAP_EXECUTOR_SA -R "$GH_REPO" --env "$WIF_ENV" --body "$CAP_EXECUTOR_SA"
 if [ -n "${PREPROD_OGC_URL:-}" ]; then gh variable set PREPROD_OGC_URL -R "$GH_REPO" --env "$WIF_ENV" --body "$PREPROD_OGC_URL"; fi
 
-# ── 6. GEO_S3_ENV (Scaleway RO) : cred owner-fournie (console IAM), guidée, jamais capturée ici. ──────
+# ── 5. GEO_S3_ENV (Scaleway RO) : cred owner-fournie (console IAM), guidée, jamais capturée ici. ──────
 if gh secret list -R "$GH_REPO" --env "$WIF_ENV" 2>/dev/null | grep -q '^GEO_S3_ENV'; then
   echo "  (GEO_S3_ENV déjà posé — laissé tel quel)"
 else
-  echo "  ↳ GEO_S3_ENV absent. Mint une clé Scaleway RO (OWNER-BOOTSTRAP.md [c], recette i-infra 2-couches),"
+  echo "  ↳ GEO_S3_ENV absent. Mint une clé Scaleway RO (OWNER-BOOTSTRAP.md [d], recette i-infra 2-couches),"
   echo "    écris les 5 lignes S3_ENDPOINT/S3_REGION/S3_BUCKET/S3_ACCESS_KEY/S3_SECRET_KEY dans un .env, puis :"
   echo "    gh secret set GEO_S3_ENV -R ${GH_REPO} --env ${WIF_ENV} < ce.env && shred -u ce.env"
 fi
 [ -n "${PREPROD_OGC_URL:-}" ] || echo "  ↳ PREPROD_OGC_URL non fourni : gh variable set PREPROD_OGC_URL -R ${GH_REPO} --env ${WIF_ENV} --body '<ingress geo-api preprod>' (quand il existe)."
 
-# ── 7. Self-verify end-to-end (fail-loud) — dont LE GATE lui-même (required-reviewer). ───────────────
+# ── 6. Self-verify end-to-end (fail-loud) — GCP executor + le GATE lui-même (required-reviewer). ──────
 gcloud iam service-accounts describe "$CAP_EXECUTOR_SA" >/dev/null || { echo "❌ executor SA absent"; exit 1; }
-gh secret list   -R "$GH_REPO" --env "$WIF_ENV" | grep -q  '^KUBE_CONFIG_GEO' || { echo "❌ KUBE_CONFIG_GEO (env-scopé) non posé"; exit 1; }
-gh variable list -R "$GH_REPO" --env "$WIF_ENV" | grep -q  '^WIF_PROVIDER'    || { echo "❌ WIF_PROVIDER non posé"; exit 1; }
+gh variable list -R "$GH_REPO" --env "$WIF_ENV" | grep -q '^WIF_PROVIDER' || { echo "❌ WIF_PROVIDER non posé"; exit 1; }
 gh api "repos/${GH_REPO}/environments/${WIF_ENV}" --jq '.protection_rules[].reviewers[].reviewer.id' | grep -qx "$OWNER_ID" \
   || { echo "❌ required-reviewer=owner ABSENT sur l'Environment ${WIF_ENV} — le GATE n'est pas en place"; exit 1; }
 
 echo ""
-echo "✅ BOOTSTRAP COMPLET (idempotent, self-verified, gate vérifié). Accès keyless armé :"
-echo "   • Environment ${WIF_ENV} : required-reviewer=owner (gate owner par dispatch) — RE-LU et confirmé."
-echo "   • Secret + Variables ENV-scopés (derrière le gate) : KUBE_CONFIG_GEO, WIF_PROVIDER, CAP_EXECUTOR_SA."
-echo "     (WIF_PROVIDER porte le project-number — Variable, jamais committée.) GEO_S3_ENV/PREPROD_OGC_URL : voir ci-dessus si non posés."
-echo "   ⇒ Désormais : TOUT (reattach/clé/deploy/activation) = GO-pur (merge OU dispatch approuvé), 0 terminal."
-echo "   ⚠ GRANT_KEY_CREATION=${GRANT_KEY_CREATION} = capacité de créer la clé ARMÉE (PAS la clé, PAS l'activation ;"
-echo "     mint réel money-gated derrière le GO activation séparé + la cert i-infra ré-attach+Function-armée)."
+echo "✅ BOOTSTRAP OWNER (GCP + GitHub) COMPLET (idempotent, self-verified, gate vérifié)."
+echo "   • Environment ${WIF_ENV} : required-reviewer=owner (gate owner par dispatch) — RE-LU + confirmé."
+echo "   • Variables ENV-scopées : WIF_PROVIDER (porte le project-number), CAP_EXECUTOR_SA. GEO_S3_ENV : voir ci-dessus si absent."
+echo "   ⚠ HAND-OFF poc-k8s (OVH — cf OWNER-BOOTSTRAP.md §hand-off) pour COMPLÉTER le bootstrap :"
+echo "       applique deploy/ci/geo-ci-rbac.yaml (SA §5 geo-ci-runner + Role activation) + lance 54-gen-kubeconfig.sh"
+echo "       (pose KUBE_CONFIG_GEO --env ${WIF_ENV}, ATOMIQUE même session) + pré-crée le secret geo-tile-key VIDE."
+echo "       poc-k8s pose l'identité INERTE ; l'ACTIVATION reste owner-GO (merge #335 ODbL + approve #334 dispatch)."
+echo "   ⚠ GRANT_KEY_CREATION=${GRANT_KEY_CREATION} = capacité de créer la clé ARMÉE (PAS la clé/activation ; mint réel money-gated)."
