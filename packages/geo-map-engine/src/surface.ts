@@ -6,7 +6,7 @@
  * resolves theme tokens → {@link TokenMap}. Zero duplicated logic across the N adapters.
  */
 
-import type { BasemapSpec } from "./basemap.js";
+import type { BasemapSpec, RasterSource } from "./basemap.js";
 import type { GeoLayerSpec } from "./layers.js";
 import type { TokenMap } from "./encodings.js";
 import type { GeoViewport, RendererKind } from "./viewport.js";
@@ -26,6 +26,29 @@ export interface GeoBounds {
   north: number;
 }
 
+/**
+ * The adapter's resolution of a {@link RasterSource} logical id to concrete render inputs
+ * (SPEC_GEO_MAP_ENGINE_V2_BASEMAP_2D §2.5, ADR-0029). Produced by the (framework-neutral) adapter at
+ * mount and consumed by the engine when it compiles a `raster-source` basemap.
+ *
+ * §3.3 NO-SECRET INVARIANT: this descriptor carries the tile URL TEMPLATE BASE only (`{z}/{x}/{y}`,
+ * NEVER `?session=&key=`). The minted session + restricted key live SOLELY in the adapter's closures
+ * — the per-tile `transformRequest` (passed via {@link GeoMapMountOptions.options}) and the
+ * `attributionResolver` below — so the engine NEVER sees them.
+ */
+export interface ResolvedRasterSource {
+  /** `{z}/{x}/{y}` template WITHOUT session/key — the adapter injects those per-tile (transformRequest). */
+  readonly tileUrlTemplateBase: string;
+  readonly tileSize: { readonly width: number; readonly height: number };
+  readonly imageFormat: string;
+  /**
+   * The DYNAMIC per-viewport copyright resolver (§3.1/§S8). REQUIRED at runtime when the spec's
+   * {@link RasterSource.attribution} is `{ mode: "dynamic" }` — the engine fail-closes to `onError` if
+   * a dynamic source resolves without it (never renders tiles with no live attribution, fable B4).
+   */
+  readonly attributionResolver?: (viewport: GeoViewport) => Promise<string>;
+}
+
 /** Options passed to {@link MountGeoMap}. */
 export interface GeoMapMountOptions {
   basemap: BasemapSpec;
@@ -33,6 +56,14 @@ export interface GeoMapMountOptions {
   viewport: GeoViewport;
   renderer: RendererKind;
   tokens: TokenMap;
+  /**
+   * Resolves a `raster-source` basemap's logical id to its concrete render inputs (§2.5, ADR-0029). A
+   * FIRST-CLASS TYPED contract member (geo-archi ruling): it is load-bearing — the engine invokes it and
+   * the §3.1 fail-closed depends on it — so it is NOT smuggled through the untyped {@link options}
+   * escape-hatch. Additive-optional to the frozen surface (non-breaking; the v2 MAJOR is ADR-0029's
+   * `raster-source` union member). Absent ⇒ a `raster-source` spec fail-closes to `onError`.
+   */
+  resolveRasterSource?: (source: RasterSource) => ResolvedRasterSource;
   options?: Readonly<Record<string, unknown>>;
 }
 
