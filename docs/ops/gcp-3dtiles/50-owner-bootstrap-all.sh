@@ -43,8 +43,13 @@ gcloud auth list --filter=status:ACTIVE --format='value(account)' | grep -q . \
   || { echo "❌ gcloud non authentifié. Lance d'abord (UNE fois, ton login iam-admin) : gcloud auth login"; exit 1; }
 gh auth status >/dev/null 2>&1 \
   || { echo "❌ gh non authentifié. Lance d'abord (UNE fois, ton login github-admin) : gh auth login"; exit 1; }
+# Applique la RBAC CI (deploy/ci/geo-ci-rbac.yaml : SA geo-ci-runner + Role job-launcher #327 + Role
+# activation #334) — idempotent (apply), owner-full kubectl. Rend 50 SELF-CONTAINED : crée le SA + les
+# Roles/Bindings AVANT de les utiliser (54 mint le token du SA ; activate-serve utilise les Roles). Le RBAC
+# n'est PAS auto-appliqué par cd-preprod (il est hors du kustomize overlay) → 50 est son point d'apply.
+kubectl apply -f "$HERE/../../../deploy/ci/geo-ci-rbac.yaml"
 kubectl -n "$WIF_ENV" get serviceaccount geo-ci-runner >/dev/null 2>&1 \
-  || { echo "❌ SA ${WIF_ENV}/geo-ci-runner absent — applique d'abord la RBAC CI (#327, deploy/ci/geo-ci-rbac.yaml)"; exit 1; }
+  || { echo "❌ SA ${WIF_ENV}/geo-ci-runner absent après apply de deploy/ci/geo-ci-rbac.yaml — vérifier l'accès cluster owner"; exit 1; }
 
 # ── 0b. Assert que le login gh EST l'owner attendu (le wrapper POSE le gate — ne pas viser la mauvaise personne). ──
 AUTHED_LOGIN="$(gh api user --jq '.login')"
