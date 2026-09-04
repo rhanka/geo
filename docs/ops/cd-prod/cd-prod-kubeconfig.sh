@@ -64,10 +64,16 @@ REQ_REVIEWERS="$(gh api "repos/${GH_REPO}/environments/${SECRET_ENV}" \
 # Pousse le secret GitHub ENV-scopé (contenu du fichier, jamais echo) + shred (le trap couvre les erreurs).
 gh secret set "$SECRET_NAME" -R "$GH_REPO" --env "$SECRET_ENV" < "$KCFG"
 
-# self-verify : le secret existe (env-scopé) + le kubeconfig peut DÉPLOYER (patch deployments ns geo).
+# self-verify : le secret existe (env-scopé) + le kubeconfig peut DÉPLOYER les 3 KINDS de l'overlay prod
+# (Deployment+Service+Ingress). On valide le RBAC COMPLET au provisioning (co-val i-infra) : un check
+# `patch deployments` SEUL passerait même si services/ingresses manquent au RBAC → le deploy échouerait
+# alors à l'apply, pas ici. Les 3 checks couvrent `kubectl apply -k overlays/prod`.
 gh secret list -R "$GH_REPO" --env "$SECRET_ENV" | grep -q "^${SECRET_NAME}" || { echo "❌ secret ${SECRET_NAME} (env-scopé) non posé"; exit 1; }
-kubectl --kubeconfig "$KCFG" -n "$NS" auth can-i patch deployments >/dev/null \
-  || { echo "❌ le kubeconfig généré ne peut pas patch deployments dans ${NS} (RBAC deploy least-priv ?)"; exit 1; }
+for CHECK in "patch deployments" "patch services" "create ingresses.networking.k8s.io"; do
+  # shellcheck disable=SC2086
+  kubectl --kubeconfig "$KCFG" -n "$NS" auth can-i $CHECK >/dev/null \
+    || { echo "❌ le kubeconfig généré ne peut pas '${CHECK}' dans ${NS} — RBAC deploy least-priv INCOMPLET (les 3 kinds Deployment/Service/Ingress sont requis pour apply -k overlays/prod)"; exit 1; }
+done
 
 echo "✅ ${SECRET_NAME} posé (SA ${NS}/${SA}, cred admin JAMAIS incluse, env-scopé ${SECRET_ENV})."
 echo "   Rotation : token BORNÉ (TTL demandé=${TOKEN_TTL}, PLAFONNÉ par l'apiserver) → re-lancer AVANT expiry."
