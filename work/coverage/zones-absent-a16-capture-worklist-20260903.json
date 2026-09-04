@@ -62,8 +62,8 @@
   "anti_invention": "unknown≠capturable : les 217 unknown ne sont JAMAIS projetés en (a). Les URLs sont COPIÉES VERBATIM de gisements committés/prouvés (la-visitation pour geocentralis ; batch 2026-08-10 pour victoriaville), jamais construites par supposition d'endpoint. Le DRY-RUN de dépôt (count-check complétude + overlap≥90% source-identité + anti-homonyme nearestMuni + géométrie 100% polygonale) est le garde-fou obligatoire AVANT tout serve : une capture ambiguë/vide/tronquée = SKIP, jamais un serve douteux.",
   "handoff": {
     "to": "geo-cond",
-    "provides": "2 worklists runner STRICT (geocentralis 11 + victoriaville 5) + ce sidecar + sha256 byte-anchors",
-    "design_sha": "pv RECOMPUTE au submit (lane=zones + worklist + image) — geo-zones ne le fige pas ; sha256 des fichiers runner fournis comme byte-anchors de revue",
+    "provides": "runner GATÉ = FUSIONNÉ 16-villes zones-absent-a16-capture-worklist-runner-20260903.json (1 seul paste owner, choix geo-cond) ; les 2 sous-runners providers (geocentralis 11 + victoriaville 5) conservés pour la provenance ; + ce sidecar + byte-anchors",
+    "design_sha": "pv calcule 1 sha sur le runner FUSIONNÉ ; bucket=sentropic-geo (PROD — cible établie zonage, cf. s3-target.json + batch victoriaville 2026-08-10 capture+serve prod ; les 16 = collections NET-NEW additives, rien d'écrasé) ; lane=zones ; image pv ; runner_git = commit main déployé (i-infra confirme) — geo-zones ne fige pas le sha",
     "next": "geo-cond porte le paste owner (design_sha+owner-paste) → §6 capture cluster→S3 → deposit → serve qc-zonage-<slug> + grille + provenance règlement sur 2 layouts"
   },
   "inputs": {
