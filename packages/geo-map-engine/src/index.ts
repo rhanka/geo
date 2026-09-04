@@ -13,8 +13,11 @@
 /**
  * Contract version (§1, ADR-0026). **v2.0.0** (SPEC_GEO_MAP_ENGINE_V2_BASEMAP_2D) adds ONE additive
  * basemap member (`raster-source`) + its support types (`RasterSource`/`AttributionSpec`/
- * `SourcePolicy`) + the `onError`/`GeoMapError` channel. A new union member of a frozen type = MAJOR
- * + ADR (§2.1); the three v1 basemap members and every other v1 type are unchanged.
+ * `SourcePolicy`) + the `onError`/`GeoMapError` channel + the additive-optional mount member
+ * `resolveRasterSource`/`ResolvedRasterSource` seam (§2.5, ADR-0029) that resolves a `raster-source`
+ * logical id to concrete tiles + dynamic attribution. A new union member of a frozen type = MAJOR + ADR
+ * (§2.1); an additive-OPTIONAL member is non-breaking; the three v1 basemap members and every other v1
+ * type are unchanged.
  */
 export const CONTRACT_VERSION = "2.0.0" as const;
 
@@ -24,4 +27,8 @@ export * from "./layers.js";
 export * from "./viewport.js";
 export * from "./surface.js";
 export * from "./tool-context.js";
+// Provider-specific §5 adapter (optional, tree-shakeable). It depends on the neutral core, never the
+// reverse — the engine stays provider-neutral. FORWARD-NOTE (geo-archi): if more providers land, extract
+// these into a separate `@sentropic/geo-basemap-<provider>` package to keep this engine package pure-neutral.
+export * from "./basemap-google2d-adapter.js";
 export { mount } from "./mount.js";
