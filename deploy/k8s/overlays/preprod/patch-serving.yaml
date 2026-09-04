@@ -17,8 +17,10 @@ spec:
             # ADR-0030 n'entre en vigueur qu'au flip). Activation = GO owner SÉPARÉ (flip ODbL + clé) via le
             # workflow activate-serve — JAMAIS au deploy. immo-preprod (consommateur de geo-api.geo-preprod)
             # est inchangé : /collections intact, ces env sont additifs et inertes tant que flag-OFF.
+            # GO#1 (ADR-0030 accepted, owner-merge) : flag flippé ON — la forme déploiement du flip ODbL
+            # (durable/git). Pod flag-ON ; clé absente → 503 fail-closed jusqu'à GO#2 (activate-serve mint+secret).
             - name: BASEMAP_2D_ENABLED
-              value: "0"
+              value: "1"
             - name: BASEMAP_2D_MAP_TYPE
               value: satellite
             - name: BASEMAP_2D_LANGUAGE
