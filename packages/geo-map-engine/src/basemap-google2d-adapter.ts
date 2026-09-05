@@ -135,7 +135,10 @@ export async function createGoogle2dBasemapAdapter(
   const transformRequest: TileRequestTransform = (url) => {
     if (!url.startsWith(tilePrefix)) return undefined; // not a provider tile — leave untouched
     const creds = state.current();
-    void state.refreshIfStale(); // fire-and-forget; the current session is still valid until its expiry
+    // fire-and-forget; swallow a failed re-mint (e.g. 429 quota) so it is not an unhandled rejection —
+    // the current session stays valid until its expiry, and a truly dead session surfaces as tile errors
+    // (MapLibre → the mount's onError), not here.
+    state.refreshIfStale()?.catch(() => {});
     const separator = url.includes("?") ? "&" : "?";
     return { url: `${url}${separator}session=${encodeURIComponent(creds.session)}&key=${encodeURIComponent(creds.key)}` };
   };
