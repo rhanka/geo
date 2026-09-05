@@ -54,10 +54,12 @@ Only-necessary = **ONE** orchestrator substrate + **ONE** reconcile brain (s3dag
 manifests (see prune).
 
 ## (iii) Cluster-mesh integration + the deploy→mesh SEAM
-- Serving on the mesh: geo-api per-cluster replicated vs single + mesh-routed (Q3, i-infra/mesh). netpol A2 extends to cross-cluster egress (S3, provider) + ingress (mesh routing).
-- Capture/stage jobs: run where compute is; **S3 is the shared cross-cluster substrate** (pods hold no local state, `SPEC_CAPTURE_ON_CLUSTER.md`) → mesh-native by construction.
-- atomic-PG-writer as a mesh singleton: exactly ONE writer mesh-wide (cross-cluster lease/singleton), self-heal without grounding loss — the hard mesh invariant. Deploy owns the singleton guarantee; logic = immo E5 (`canonical-graph-writer.ts`). geo never writes `graph_nodes`.
-- **THE SEAM (deploy → cluster-mesh):** where geo's workload manifests (base/overlays/netpols/jobs/CronJobs) meet the mesh substrate — cluster/namespace targeting, cross-cluster service discovery, mesh netpols. **i-infra/mesh owns the substrate; geo-socle owns the geo-workload manifests that run on it.**
+Resolved with i-infra (`PIPELINE_FULLAUTO_orchestration-i-infra.md §10`); adopted in the geo workload-manifests:
+- **Serving geo-api = per-cluster replicated (RESOLVED, Q3).** geo-api is a STATELESS reader of the shared S3 data, so per-cluster replicas give isolation (a cluster outage doesn't affect others, 0 routing SPOF), 0 cross-cluster latency on the tile hot-path, and low marginal cost (compute-only — the data is shared, not duplicated). single + mesh-routed is rejected (a routing SPOF for 0 data gain).
+- **netpol cross-cluster = EXTENSION of A2.** default-deny PRESERVED + allows PER ROLE: the writer → shared PG + shared MinIO; geo-api per-cluster → PG/S3 in READ. Impl: netpol by service-mesh identity + mTLS IF a ClusterMesh CNI (Cilium/Istio) is installed, ELSE a scoped `ipBlock` (the S3-BHS `54.39.60.208/32` pattern extended to the cross-cluster endpoints).
+- **atomic-PG-writer singleton = `pg_advisory_lock`** on the shared PG (the cross-cluster coordination point): the writer is deployable per-cluster but only the lock-holder writes → exactly-1 mesh-wide, self-heal on disconnect; the existing `canonical-graph-writer.ts` If-Match check is the safety-net. NO new primitive (a k8s `Lease` is cluster-scoped → rejected). Logic = immo E5.
+- **Capture/stage jobs:** S3 is the shared cross-cluster substrate (pods hold no local state, `SPEC_CAPTURE_ON_CLUSTER.md`) → mesh-native by construction.
+- **THE SEAM (invariant-4):** i-infra owns the MESH SUBSTRATE (the ClusterMesh CNI, cross-cluster service identity); geo-socle owns the geo WORKLOAD-MANIFESTS (base/overlays/netpols/jobs/CronJobs) that run on it — cluster/namespace targeting, per-role netpols, the writer singleton deploy. ⚠ RESERVE: installing a ClusterMesh CNI is an **owner cross-tenant gate**.
 
 ## Prune-audit (only-necessary) — read-only result; DELETION HELD for a design PR
 Both CD paths use kustomize `base/` (preprod & prod overlays → `../../base`), so the flat serving manifests are **CD-unused (superseded by base/, ADR-0028 deployment-plane adoption)** — but **doc-entangled**, so deletion is NOT trivial. The superseded set is **6 files** (two parallel lines of Deployment/Service/Ingress); note there is NO `deploy/k8s/service.yaml` — `base/service.yaml` is the kept kustomize source:
@@ -70,5 +72,5 @@ Both CD paths use kustomize `base/` (preprod & prod overlays → `../../base`), 
 ## Open questions (converge)
 - Q1 Trigger substrate: in-cluster CronJob (mesh-native, GH-independent) **[lean]** vs GH schedule. *(emerging consensus, pending i-cond/i-infra cross-check)*
 - Q2 Chaining: reconcile desired-state (s3dag, idempotent/self-heal, "rejouable") **[lean]** vs per-stage completion-hooks. *(emerging consensus)*
-- Q3 Mesh serving boundary: per-cluster replicated vs single + mesh-routed. → i-infra/mesh.
-- Q4 geo↔immo seam: exact deposit→immo-consume + S3→PG-projection handoff point. → i-cond/i-arch.
+- Q3 Mesh serving boundary: **RESOLVED (i-infra §10)** — per-cluster replicated (stateless S3 reader; isolation, no routing SPOF, 0 hot-path cross-cluster latency). netpol = A2 extension per-role; singleton = `pg_advisory_lock`.
+- Q4 geo↔immo seam: **RESOLVED (i-cond)** — geo deposits S3 + serves ConstraintHit/OGC; immo consumes at E4 canonical-merge; atomic-PG-writer LOGIC = immo E5 (`canonical-graph-writer.ts`); geo never writes `graph_nodes`.
