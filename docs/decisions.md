@@ -723,6 +723,49 @@ restart). Le **mini-gate wp7** (ADR-0029) prouve l'attribution **DYNAMIQUE** ren
 (contrat v2.0 + `source` abstrait/réversibilité) ; `SPEC_WORKPACKAGES.md` §2 (précédent Google no-cache) ;
 turn owner 2026-08-31 (« on cherche déjà à faire le fond », Voie A = Google).
 
+## ADR-0031 — **§5 basemap : mint côté CLIENT (B) — l'adaptateur minte la session Map Tiles depuis le navigateur ; l'endpoint geo-api devient un descripteur public flag-gaté** · accepted · 2026-09-05
+
+**Décision TECHNIQUE** (choix d'implémentation DANS le scope §5 owner-autorisé d'ADR-0030), consensus geo-archi
+(§3.3) + i-infra (egress/sécurité) + i-cond + geo-cond. **PAS owner-gated** (≠ ADR-0030 = scope owner) :
+scope/coût/restriction inchangés, MOINS de surface ⟹ **aucun nouveau GO owner**.
+
+**Contexte.** §2.5 posait le mint **serveur** (geo-api `createSession` → Google). Mesuré 2026-09-05 :
+`/basemap/2d/session` server-mint → **502 `BasemapMintFailed` "fetch failed"** ; `/collections` 200 (geo-api UP).
+Cause : netpol serving préprod (`overlays/preprod/netpol.yaml`) = egress **kube-dns + S3-BHS /32:443 SEULEMENT**
+(isolation **A2** : le serving n'atteint jamais prod/internet) ; CNI **Calico** ⇒ **pas de FQDN policy**. Le seam
+server-mint exigeait un egress geo-api→Google jamais prévu.
+
+**Décision.** Mint **côté CLIENT (B)**. L'endpoint devient un **descripteur public flag-gaté**
+`{ key, mapType, language?, region? }` (0 appel serveur→Google) ; l'adaptateur fait `createSession` + tuiles
+**côté navigateur**. **§3.3** : la clé referrer-restreinte côté client est un **identifiant public restreint**
+(referrer + API + quota), **pas un secret serveur** — déjà exposée dans chaque URL de tuile par le live-embed §3.2,
+donc B ajoute **0 exposition**. Risque résiduel (spoof Referer par un client non-navigateur) **backstoppé par le
+guardrail quota** (<50€, override×4).
+
+**Alternative A (mint serveur) — REJETÉE.** Exigerait : (i) **brèche A2** — egress **large `0.0.0.0/0:443`**
+pod-scopé (Calico = pas de FQDN policy) ; (ii) **2 clés** — IP-restreinte serveur (IP d'egress incertaine, nœuds
+autoscalés) + referrer-restreinte browser (les tuiles portent `?key=`) ; (iii) `Referer` serveur = **spoof
+INTERDIT** (clé fuitée + Referer forgé = illimitée). Plus lourd, plus de surface, moins least-priv.
+
+**Conséquences.** 0 egress serveur ; **A2 intacte** ; pattern Map Tiles natif ; **1 clé** ; referrer-restriction
+signifiante. Préserve double-gate 503 fail-closed + `no-store` + activation-par-flag owner. `SPEC §2.5.8` révise
+§2.5.2/3/6. Semver+ADR (ADR-0026). **Robustesse (0.6.1, #354)** : bounded-retry descripteur `[200,400,800]ms`
+(`BasemapDisabled`→OSM-immédiat / autre-503→retry / persistant→OSM) — couvre le cold-503 de warm-up rollout ;
+refine le fail-closed, non-contrat.
+
+**GEL empirique — RATIFIÉ 2026-09-05** (mini-gate P1.1–P1.6, geo-archi, **3/3 cold loads** `about:blank`→navigate) :
+P1.1 descripteur 200 + **createSession navigateur→Google 200** (viabilité B confirmée au run) · P1.2 2dtiles Québec
+peignent (3/3, screenshot) · P1.3 browser→Google direct + **0-S3 / 0-OSM** · P1.4 attribution **DYNAMIQUE
+« Imagerie ©2026 NASA »** + refresh `moveend` (viewport-info per-bbox distinctes) · P1.6 clé QUE browser→Google ·
+0 erreur console. **Nuance latence (consignée, PAS un défaut)** : rend cleanly **après ~5-8s de warm-up cold**
+(1-replica geo-api + chaîne descripteur→createSession→viewport→20 tuiles) — pas « instantané » ; optim = fast-follow
+conso/vues (non tracé en work sans demande owner). Preuve visuelle = **screenshot** (canvas WebGL sans
+`preserveDrawingBuffer` → pixel-readback inexploitable).
+
+**Réfs.** ADR-0030 (reversal ODbL, scope owner) · ADR-0029 (contrat v2 + `source` abstrait/réversibilité) · ADR-0026
+(semver+ADR sur seam) · `SPEC §2.5.8` · #341 (CORS/referrer préprod-immo) · `overlays/preprod/netpol.yaml` (A2) ·
+#352 (client-mint 0.6.0) · #354 (retry 0.6.1) · mesures 502 + GEL 3/3 du 2026-09-05.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
