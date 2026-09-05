@@ -59,6 +59,17 @@ export const PREPROD_NATIVE_FAMILIES: readonly PreprodNativeFamily[] = [
     reason:
       "CPTAQ zone agricole (§9) — served preprod-native, not mirrored from prod (0 in prod); own seal = geo-zones OGC couche-1 + proof-v2/CAS runner.",
   },
+  {
+    // BDZI is a PROVINCE-WIDE overlay: its served id (scope) is standalone `qc-bdzi-flood-zones`, not a
+    // `ca-qc-constraints-<slug>` member (geo-archi ruling: id=scope, S3 prefix=family). Its KEY is already
+    // preprod-native via the CPTAQ prefix above (prune preserves it), but the ID-based parity check needs
+    // this standalone entry — else `prodMirrorCollectionIds` would keep `qc-bdzi-flood-zones` in the
+    // prod-mirror subset and false-fail "in preprod, missing in prod".
+    collectionId: "qc-bdzi-flood-zones",
+    keyPrefix: "normalized/ca-qc-constraints/qc-bdzi-flood-zones",
+    reason:
+      "BDZI zones inondables (env-B, §9) — served preprod-native, not mirrored from prod (0 in prod, tier-2-gated); province overlay under the ca-qc-constraints family prefix. Remove this entry if BDZI ever becomes prod-served.",
+  },
 ] as const;
 
 /** True if a COLLECTION ID belongs to a preprod-native family (excluded from prod-mirror parity). */
