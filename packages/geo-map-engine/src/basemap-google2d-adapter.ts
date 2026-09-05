@@ -80,7 +80,12 @@ const DEFAULT_REFRESH_SKEW_SECONDS = 300;
 export async function createGoogle2dBasemapAdapter(
   options: Google2dBasemapAdapterOptions,
 ): Promise<Google2dBasemapAdapter> {
-  const doFetch = options.fetch ?? globalThis.fetch;
+  // Bind the native fallback to `globalThis`: the stored fetch is later called as `this.#fetch(...)`
+  // (a method call whose receiver would be the SessionState instance) — a browser's native fetch then
+  // throws `TypeError: Illegal invocation` BEFORE any I/O, so no `/session` request is ever emitted.
+  // An injected test fetch ignores its receiver, so this path was latent ("vert par omission") until the
+  // adapter was first constructed on preprod. The injected fetch stays UNBOUND so tests can assert the receiver.
+  const doFetch = options.fetch ?? globalThis.fetch.bind(globalThis);
   const now = options.now ?? Date.now;
   const sourceId = options.sourceId ?? DEFAULT_SOURCE_ID;
   const viewportInfoUrl = options.viewportInfoUrl ?? DEFAULT_VIEWPORT_INFO_URL;
@@ -176,7 +181,10 @@ class SessionState {
   }
 
   async #fetchEnvelope(): Promise<MintEnvelope> {
-    const response = await this.#fetch(this.#mintUrl, { cache: "no-store" });
+    // Belt to the capture-time bind: call via a local so the receiver is never this SessionState
+    // instance, even if a future fetch is captured unbound (native fetch requires a global receiver).
+    const doFetch = this.#fetch;
+    const response = await doFetch(this.#mintUrl, { cache: "no-store" });
     if (!response.ok) {
       throw taggedError(`mint ${response.status}`, response.status);
     }
