@@ -29,6 +29,12 @@ permissions:
 concurrency:
   group: basemap-activate
   cancel-in-progress: false
+# fail-fast : gcloud ne prompt JAMAIS "API not enabled — enable and retry?" (une invite interactive
+# pendrait le run). L'enable d'API reste un geste bootstrap ADMIN owner (10-enable-apis.sh) — JAMAIS
+# dans ce workflow : `gcloud services enable` exigerait serviceusage.services.enable sur
+# geo-cap-executor = élargir l'executor least-priv (i-infra l'a certifié absent, à raison).
+env:
+  CLOUDSDK_CORE_DISABLE_PROMPTS: "1"
 jobs:
   activate:
     runs-on: ubuntu-latest
