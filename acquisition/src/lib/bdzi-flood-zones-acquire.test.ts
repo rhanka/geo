@@ -12,14 +12,17 @@ import type { CaptureManifestLine } from "../../../packages/qc-sources/src/captu
 import { proofFromCaptureEntry, type GeometrySourceProof } from "./zonage-proof.js";
 import {
   BDZI_CONSTRAINTS_PREFIX,
+  BDZI_META_CRS,
   BDZI_SERVED_COLLECTION_ID,
   buildBdziSimplifyArgs,
+  buildOverlayMeta,
   buildServedBdziOverlay,
   confirmWgs84,
   geometryDigest,
   normalizeBdziCapture,
   overlayBackupKey,
   overlayKeys,
+  overlayMetaKey,
   readbackLayout,
   simplifyGeoJson,
 } from "./bdzi-flood-zones-acquire.js";
@@ -269,6 +272,32 @@ describe("overlayKeys / overlayBackupKey", () => {
   it("honours a --prefix override", () => {
     expect(overlayKeys("normalized/custom/").flat).toBe("normalized/custom/qc-bdzi-flood-zones.geojson");
   });
+
+  it("meta key is the sibling <geojson>.meta.json", () => {
+    expect(overlayMetaKey(overlayKeys().flat)).toBe("normalized/ca-qc-constraints/qc-bdzi-flood-zones.meta.json");
+    expect(overlayMetaKey(overlayKeys().nested)).toBe(
+      "normalized/ca-qc-constraints/qc-bdzi-flood-zones/qc-bdzi-flood-zones.meta.json",
+    );
+  });
+});
+
+describe("buildOverlayMeta", () => {
+  it("creates a minimal-correct meta when none exists (datasetId/count/crs)", () => {
+    const w = buildOverlayMeta(7);
+    expect(w.hadExisting).toBe(false);
+    expect(w.meta).toEqual({ datasetId: BDZI_SERVED_COLLECTION_ID, count: 7, crs: BDZI_META_CRS });
+    expect(w.meta.datasetId).toBe("qc-bdzi-flood-zones");
+  });
+
+  it("preserve-merges an existing meta: only datasetId is (re)set, other fields kept", () => {
+    const w = buildOverlayMeta(7, { datasetId: "stale", count: 999, crs: "EPSG:4326", title: "BDZI" });
+    expect(w.hadExisting).toBe(true);
+    expect(w.meta.datasetId).toBe("qc-bdzi-flood-zones");
+    // Existing count/crs/title preserved verbatim (never silently impoverished).
+    expect(w.meta.count).toBe(999);
+    expect(w.meta.title).toBe("BDZI");
+    expect(w.preservedFields.sort()).toEqual(["count", "crs", "title"]);
+  });
 });
 
 describe("readbackLayout (G5)", () => {
@@ -276,18 +305,19 @@ describe("readbackLayout (G5)", () => {
     const normalized = normalizeBdziCapture(rawFloodZoneFc());
     const proof = proofFromCaptureEntry(captureLine(), { type: "arcgis", method: "natif", reliability: "directe" });
     const served = buildServedBdziOverlay(normalized, proof);
+    const meta = buildOverlayMeta(served.features.length).meta;
     const expectation = {
       featureCount: served.features.length,
       geometryDigest: geometryDigest(served.features),
       proofUrl: proof.url,
       proofSha256: proof.sha256,
     };
-    return { served, expectation };
+    return { served, meta, expectation };
   }
 
-  it("passes when the served bytes match the expectation", () => {
-    const { served, expectation } = servedFixture();
-    const rb = readbackLayout("nested", overlayKeys().nested, served, expectation);
+  it("passes when the served bytes AND the sibling meta match", () => {
+    const { served, meta, expectation } = servedFixture();
+    const rb = readbackLayout("nested", overlayKeys().nested, served, meta, expectation);
     expect(rb.ok).toBe(true);
     expect(rb.feature_count_matches).toBe(true);
     expect(rb.geometry_digest_byte_exact).toBe(true);
@@ -296,29 +326,48 @@ describe("readbackLayout (G5)", () => {
     expect(rb.proof_sha_matches).toBe(true);
     expect(rb.level_documented_all).toBe(true);
     expect(rb.constraint_tag_all).toBe(true);
+    expect(rb.meta_present).toBe(true);
+    expect(rb.meta_datasetId_ok).toBe(true);
+    expect(rb.meta_key).toBe(overlayMetaKey(overlayKeys().nested));
   });
 
   it("fails on an absent object", () => {
-    const { expectation } = servedFixture();
-    const rb = readbackLayout("flat", overlayKeys().flat, null, expectation);
+    const { meta, expectation } = servedFixture();
+    const rb = readbackLayout("flat", overlayKeys().flat, null, meta, expectation);
     expect(rb.present).toBe(false);
     expect(rb.ok).toBe(false);
   });
 
   it("fails on a feature-count / geometry mismatch", () => {
-    const { served, expectation } = servedFixture();
+    const { served, meta, expectation } = servedFixture();
     const tampered = { ...served, features: [] };
-    const rb = readbackLayout("nested", overlayKeys().nested, tampered, expectation);
+    const rb = readbackLayout("nested", overlayKeys().nested, tampered, meta, expectation);
     expect(rb.feature_count_matches).toBe(false);
     expect(rb.ok).toBe(false);
   });
 
   it("fails when a feature loses the documented level", () => {
-    const { served, expectation } = servedFixture();
+    const { served, meta, expectation } = servedFixture();
     const tampered = JSON.parse(JSON.stringify(served)) as typeof served;
     tampered.features[0]!.properties.zone_source_level = "candidate";
-    const rb = readbackLayout("nested", overlayKeys().nested, tampered, expectation);
+    const rb = readbackLayout("nested", overlayKeys().nested, tampered, meta, expectation);
     expect(rb.level_documented_all).toBe(false);
+    expect(rb.ok).toBe(false);
+  });
+
+  it("fails when the sibling meta is ABSENT (geo-socle contract)", () => {
+    const { served, expectation } = servedFixture();
+    const rb = readbackLayout("nested", overlayKeys().nested, served, null, expectation);
+    expect(rb.meta_present).toBe(false);
+    expect(rb.meta_datasetId_ok).toBe(false);
+    expect(rb.ok).toBe(false);
+  });
+
+  it("fails when the sibling meta has the WRONG datasetId", () => {
+    const { served, expectation } = servedFixture();
+    const rb = readbackLayout("nested", overlayKeys().nested, served, { datasetId: "qc-zonage-foo", count: 1 }, expectation);
+    expect(rb.meta_present).toBe(true);
+    expect(rb.meta_datasetId_ok).toBe(false);
     expect(rb.ok).toBe(false);
   });
 });
