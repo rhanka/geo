@@ -199,6 +199,34 @@ SÉPARÉ (flip ODbL ADR-0030 + clé), jamais au deploy ; le mini-gate (§5) prou
 per-viewport DOM-visible + 0-octet-S3) avant GEL. **Provider-neutralité** : le contrat/core ne nomme jamais Google ;
 un adaptateur provider-spécifique reste hors du contrat (à extraire en package séparé s'ils grandissent).
 
+### 2.5.8 RÉVISION — mint côté CLIENT (B) supersède le mint SERVEUR de §2.5.2/§2.5.3/§2.5.6 (ADR-0031, GEL 2026-09-05)
+
+**Superseded** : le mint SERVEUR (`SessionResolution` adapter-interne §2.5.2 · endpoint mint §2.5.3 · refresh serveur
+§2.5.6) — **conflit MESURÉ** avec l'isolation réseau **A2** du serving préprod (netpol egress = kube-dns + S3-BHS
+seulement ; CNI **Calico** = pas de FQDN policy) : `/basemap/2d/session` server-mint → **502 `BasemapMintFailed`
+"fetch failed"** (geo-api ne peut atteindre `tile.googleapis.com`). Voir **ADR-0031**.
+
+**Nouveau seam (client-mint, #352=0.6.0 / #354=0.6.1)** :
+- **Endpoint = descripteur PUBLIC flag-gaté** `{ key, mapType, language?, region? }` — **0 appel serveur→Google** ;
+  double-gate 503 fail-closed préservé (flag-first `BASEMAP_2D_ENABLED` → clé `readTileKey` ; sinon `BasemapDisabled` /
+  `BasemapKeyAbsent`) ; `Cache-Control: no-store` ; **ACAO mono-origine** (préprod-immo, #341).
+- **L'adaptateur minte côté NAVIGATEUR** : fetch descripteur → `POST tile.googleapis.com/v1/createSession?key=` →
+  session client-side → `transformRequest` injecte `?session=&key=` par tuile → **navigateur→Google direct, 0-S3**.
+  `SessionState` = token + refresh single-flight ; **`expiry` = epoch-seconds ABSOLU** (`expiresAtMs = expiry*1000`,
+  pas `now()+`). **Bounded-retry descripteur** (`[200,400,800]ms` : `BasemapDisabled`→OSM-immédiat / autre-503→retry /
+  persistant→OSM) = robustesse warm-up rollout, **refine** le fail-closed sans le violer.
+- **§3.3 no-secret** : la clé referrer-restreinte côté client = **identifiant public restreint** (referrer+API+quota),
+  PAS un secret serveur — déjà exposée par tuile en live-embed (§3.2), **0 exposition ajoutée** ; risque résiduel
+  (spoof Referer) backstoppé par le guardrail quota. `AttributionSpec` reste au contrat (neutralité provider) ; le
+  google-2d **hardcode `mode:"dynamic"`** (§2.5.5 / ADR-0031 ruling b).
+
+**GEL empirique RATIFIÉ (2026-09-05, mini-gate P1.1–P1.6, 3/3 cold loads)** : createSession navigateur→Google 200 ·
+2dtiles Québec peignent (screenshot) · attribution **DYNAMIQUE « Imagerie ©2026 NASA »** + refresh `moveend`
+(viewport-info per-bbox) · **0-S3 / 0-OSM** · clé QUE browser→Google · 0 erreur console. **Latence** : rend cleanly
+**après ~5-8s de warm-up cold** (1-replica geo-api + chaîne descripteur→createSession→viewport→20 tuiles) — **pas
+« instantané »**. Optim future (NON-worked sans owner-GO) = **(a) geo-side `geo-api scale≥2`** (levier PRIMAIRE) +
+**(b) vues-side perceived-perf** ; **distinct** du cold-503 ingress (Traefik SPOF = i-infra).
+
 ## 3. Règles de CONFORMITÉ (load-bearing — pas déclaratif)
 
 ### 3.1 Attribution REQUISE **et RENDUE** ; qui la rend (fable S8)
