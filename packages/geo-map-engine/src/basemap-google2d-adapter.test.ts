@@ -143,4 +143,53 @@ describe("createGoogle2dBasemapAdapter", () => {
 
     await expect(resolved.attributionResolver?.(VIEWPORT)).rejects.toMatchObject({ kind: "forbidden" });
   });
+
+  // Regression: the mint fetch was called as `this.#fetch(...)`, making the receiver the SessionState
+  // instance → a browser's native fetch throws `TypeError: Illegal invocation` before any I/O, so no
+  // `/session` request is emitted and the satellite never renders. The adapter must only ever call fetch
+  // with a global-safe receiver. (Node's fetch does not brand-check, so we assert the receiver directly.)
+  it("emits GET <mintUrl> with a global-safe fetch receiver (never the adapter instance)", async () => {
+    const calls: { receiver: unknown; url: string }[] = [];
+    // A NON-arrow fetch so `this` is observable; injected fetch stays unbound so we see the real receiver.
+    const recordingFetch = function (this: unknown, input: Parameters<typeof fetch>[0]) {
+      const url = typeof input === "string" ? input : input.toString();
+      calls.push({ receiver: this, url });
+      return Promise.resolve(url.startsWith(MINT) ? json(envelope("S1")) : json({ copyright: "©X" }));
+    } as typeof fetch;
+
+    const adapter = await createGoogle2dBasemapAdapter({
+      mintUrl: MINT,
+      viewportInfoUrl: VIEWPORT_INFO,
+      fetch: recordingFetch,
+    });
+    // Exercise the second fetch call site (viewport-info) too.
+    const resolved = adapter.resolveRasterSource(
+      adapter.basemap.kind === "raster-source" ? adapter.basemap.source : ({} as never),
+    );
+    await resolved.attributionResolver?.(VIEWPORT);
+
+    expect(calls.some((c) => c.url.startsWith(MINT))).toBe(true); // a GET <mintUrl> was actually emitted
+    for (const call of calls) {
+      expect([undefined, globalThis]).toContain(call.receiver); // never the SessionState instance
+    }
+  });
+
+  // Regression companion: when NO fetch is injected, the adapter must bind the global fetch to
+  // `globalThis` (not call it detached), so the native fallback path itself carries a valid receiver.
+  it("binds the default global fetch to globalThis (native fallback receiver)", async () => {
+    const savedFetch = globalThis.fetch;
+    const receivers: unknown[] = [];
+    try {
+      globalThis.fetch = function (this: unknown, input: Parameters<typeof fetch>[0]) {
+        const url = typeof input === "string" ? input : input.toString();
+        receivers.push(this);
+        return Promise.resolve(url.startsWith(MINT) ? json(envelope("S1")) : json({ copyright: "©X" }));
+      } as typeof fetch;
+      await createGoogle2dBasemapAdapter({ mintUrl: MINT }); // no `fetch` option → default path
+    } finally {
+      globalThis.fetch = savedFetch;
+    }
+    expect(receivers.length).toBeGreaterThanOrEqual(1);
+    for (const receiver of receivers) expect(receiver).toBe(globalThis);
+  });
 });
