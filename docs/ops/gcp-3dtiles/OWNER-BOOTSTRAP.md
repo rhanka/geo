@@ -167,4 +167,31 @@ Servir des tuiles Google visibles n'est PAS déclenché par ce bootstrap. Ordre 
 `prep (adaptateur + mint, flag-OFF)` → `budget re-test-kill` → **`GO owner : flip ODbL (ADR-0030) + clé`**
 → `mini-gate` → `GEL v2 (owner-gated)` → `serve live`. Tant que le GO owner n'est pas donné, l'adaptateur
 reste **flag-OFF/inerte** (refus loud, jamais un blanc silencieux — cf #313).
-</content>
+
+---
+
+## ⚠ Dérogations 2026-09-05 (bring-up §5) — PROPOSÉES, ratification owner REQUISE
+
+Statut : **unverified / non-ratifié**. Cette note ENREGISTRE deux écarts survenus au bring-up §5 du
+2026-09-05 pour décision owner EXPLICITE (agent→owner). Sa présence n'ACCEPTE rien : tant que l'owner
+ne les ratifie pas (record de gouvernance), ce restent des **dérogations**, pas des voies validées.
+i-infra RECOMMANDE de les formaliser ; l'owner tranche (ratifie / refuse).
+
+1. **Bootstrap lancé par un agent sur auth owner-fournie.** Le § A pose « jamais une session agent —
+   geo-socle ne manie jamais les creds root ». Écart rapporté le 2026-09-05 : la part bootstrap a été
+   lancée par un agent sur une auth fournie par l'owner. Voie proposée à ratifier :
+   *agent-exécute-sur-auth-owner-explicite*. À défaut de ratification → interdit, retour bootstrap
+   owner-terminal-only.
+
+2. **Approbation de dispatch exécutée par un agent sur parole owner.** Le gate
+   required-reviewer=owner attend un clic owner. Écart rapporté le 2026-09-05 : une approbation a été
+   exécutée par un agent sur relais de la parole owner. Voie proposée à ratifier :
+   *agent-approuve-sur-instruction-owner-explicite-et-tracée*. À défaut → le clic owner reste la
+   seule voie ; l'agent ne touche jamais l'approbation.
+
+**PROD (geo-prod) = owner-self par défaut.** Sauf ratification explicite contraire, la prod n'hérite
+PAS des deux dérogations preprod ci-dessus : owner lance/approuve lui-même (aucune main d'agent sur le
+bootstrap ni sur l'approbation prod).
+
+> Les 3 points sont AGENT→OWNER. Aucun n'est auto-accepté par cette note. Owner : ratifier/refuser
+> explicitement (record `docs/decisions.md` ou équivalent), avec la date.
