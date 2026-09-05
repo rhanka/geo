@@ -5,8 +5,8 @@
   "context": "Owner GO env-B (track 01M1RW3P2RZQD2AF1HPJ18T3ED) : couches env = geo-side overlays. BDZI = quick-win (621 poly mesuré). Runner gaté = bdzi-capture-worklist-runner-20260905.json (bare-array STRICT 1-entry province-wide).",
   "method": {
     "pipeline": "§6 k8s capture-run (worklist bare-array STRICT) → CAS raw + manifest proof-v2 → acquire → serve overlay",
-    "lane": "constraints (déjà ajoutée §9 CPTAQ)",
-    "source_enum": "bdzi — À CONFIRMER pv (comme §9 a confirmé 'cptaq' ; sinon réutiliser l'enum constraints existant)",
+    "lane": "zones (REUSE — mesuré : 'constraints' PAS dans CAPTURE_LANES [zones,normes,pv,reglement,usage-dominant,effet-densifiant,cadastre,immo-lots]. reuse zones = 0-code, dans la liste ; source=bdzi discrimine ; acquire-runner lane-agnostic. Alt = ajouter 'constraints' (code manifest.ts + redeploy → change geo-capture runner_git → recompute design_sha + PR gate). Choix lane = geo-cond/pv, reco reuse-zones. Le lane n'est PAS dans le worklist bare-array = bytes inchangés.)",
+    "source_enum": "bdzi — VALIDE (mesuré : CaptureWorklistTargetSchema.source = z.string().regex(SOURCE_RE=/^[a-z0-9][a-z0-9._-]*$/), FREE-STRING pas un enum ; 'bdzi' matche ; pas de confirm pv nécessaire ; c'est pourquoi §9 'cptaq' passait)",
     "gate": "design_sha (pv, keyé worklist+lane+geo-capture-image+runner_git) + owner-paste (§6, jamais local) — geo-cond porte le GO owner quand le runner acquire est bâti",
     "cluster_only": true,
     "capture_url_source": "packages/geo-sources-americas/src/ca-qc-constraints/bdzi/manifest.ts (BDZI_SERVICE_URL + couche 22 + query where=1=1&outFields=*&returnGeometry=true&outSR=4326&f=geojson)"
