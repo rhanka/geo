@@ -49,6 +49,7 @@ import {
   BDZI_CONSTRAINTS_PREFIX,
   BDZI_SERVED_COLLECTION_ID,
   buildBdziSimplifyArgs,
+  buildOverlayMeta,
   buildServedBdziOverlay,
   confirmWgs84,
   geometryDigest,
@@ -56,6 +57,7 @@ import {
   overlayBackupKey,
   overlayBackupStamp,
   overlayKeys,
+  overlayMetaKey,
   readbackLayout,
   simplifyGeoJson,
   type LayoutReadback,
@@ -279,7 +281,14 @@ async function main(): Promise<void> {
     const servedBytes = Buffer.from(JSON.stringify(served));
     const servedGeomDigest = geometryDigest(served.features);
     const keys = overlayKeys(prefix);
+    // Sibling `.meta.json` per layout (geo-socle: geo-api reads the served
+    // collection id from meta.datasetId). Minimal content previewed here; on
+    // --commit an existing meta is preserve-merged (only datasetId (re)set).
+    const plannedMetaFlat = buildOverlayMeta(served.features.length).meta;
+    const metaKeys = { flat: overlayMetaKey(keys.flat), nested: overlayMetaKey(keys.nested) };
     entry.served_keys = keys;
+    entry.served_meta_keys = metaKeys;
+    entry.planned_meta = { flat: { key: metaKeys.flat, content: plannedMetaFlat }, nested: { key: metaKeys.nested, content: plannedMetaFlat } };
     entry.proof = { url: proof.url, retrieved_at: proof.retrieved_at, sha256: proof.sha256, type: proof.type };
     entry.served_bytes = servedBytes.length;
     entry.served_geometry_digest = servedGeomDigest;
@@ -287,7 +296,7 @@ async function main(): Promise<void> {
     if (!commit) {
       entry.statut = simplifyApplied ? "DRY-RUN-OK" : "DRY-RUN-OK-SIMPLIFY-DEFERRED";
       entry.raison =
-        `prêt au dépôt overlay ${BDZI_SERVED_COLLECTION_ID} (2 layouts) : ${served.features.length} features, proof-v2 (${proof.sha256.slice(0, 20)}…), ` +
+        `prêt au dépôt overlay ${BDZI_SERVED_COLLECTION_ID} (2 layouts .geojson + sibling .meta.json datasetId=${BDZI_SERVED_COLLECTION_ID}) : ${served.features.length} features, proof-v2 (${proof.sha256.slice(0, 20)}…), ` +
         `simplify ${tolerance}° ${simplifyApplied ? "appliqué" : "DIFFÉRÉ (GDAL absent local → cluster)"} ; relancer ON-CLUSTER avec --commit`;
       return finish(entry, out);
     }
@@ -295,6 +304,7 @@ async function main(): Promise<void> {
     // ── 6. Deposit (ON-CLUSTER/CI ONLY) + readback G5 ────────────────────────
     const stamp = overlayBackupStamp();
     const replaced: string[] = [];
+    const metaWrites: Array<Record<string, unknown>> = [];
     for (const [layout, key] of [["flat", keys.flat], ["nested", keys.nested]] as const) {
       if (await exists(s3, key)) {
         const backup = overlayBackupKey(layout, stamp, prefix);
@@ -302,8 +312,23 @@ async function main(): Promise<void> {
         replaced.push(backup);
       }
       await putBytes(s3, key, servedBytes, "application/geo+json");
+      // Sibling `.meta.json` (geo-socle): pins the served collection id. Read any
+      // existing meta and preserve-merge (only datasetId (re)set), else minimal.
+      const metaKey = overlayMetaKey(key);
+      let existingMeta: Record<string, unknown> | null = null;
+      if (await exists(s3, metaKey)) {
+        try {
+          existingMeta = JSON.parse((await getBytes(s3, metaKey)).toString("utf8")) as Record<string, unknown>;
+        } catch {
+          existingMeta = null;
+        }
+      }
+      const built = buildOverlayMeta(served.features.length, existingMeta);
+      await putBytes(s3, metaKey, `${JSON.stringify(built.meta, null, 2)}\n`, "application/json");
+      metaWrites.push({ layout, meta_key: metaKey, had_existing_meta: built.hadExisting, preserved_fields: built.preservedFields, meta_written: built.meta });
     }
     entry.replaced_backups = replaced;
+    entry.meta_writes = metaWrites;
 
     const expectation = {
       featureCount: served.features.length,
@@ -315,15 +340,24 @@ async function main(): Promise<void> {
     for (const [layout, key] of [["flat", keys.flat], ["nested", keys.nested]] as const) {
       let back: unknown = null;
       if (await exists(s3, key)) back = JSON.parse((await getBytes(s3, key)).toString("utf8"));
-      readbacks.push(readbackLayout(layout, key, back, expectation));
+      const metaKey = overlayMetaKey(key);
+      let metaObj: unknown = null;
+      if (await exists(s3, metaKey)) {
+        try {
+          metaObj = JSON.parse((await getBytes(s3, metaKey)).toString("utf8"));
+        } catch {
+          metaObj = null;
+        }
+      }
+      readbacks.push(readbackLayout(layout, key, back, metaObj, expectation));
     }
     entry.readback = readbacks;
     const allOk = readbacks.length === 2 && readbacks.every((r) => r.ok);
     entry.readback_ok = allOk;
     entry.statut = allOk ? "DEPOSITED" : "DEPOSITED_READBACK_FAIL";
     entry.raison = allOk
-      ? `overlay ${BDZI_SERVED_COLLECTION_ID} déposé v2 byte-exact sur 2 layouts (proof url+retrieved_at+sha256), level=documented, simplify ${tolerance}° tracé ; backups=${replaced.length}`
-      : "DÉPÔT effectué mais readback G5 inattendu — VÉRIFIER";
+      ? `overlay ${BDZI_SERVED_COLLECTION_ID} déposé v2 byte-exact sur 2 layouts (.geojson + sibling .meta.json datasetId=${BDZI_SERVED_COLLECTION_ID}), level=documented, simplify ${tolerance}° tracé ; backups=${replaced.length}`
+      : "DÉPÔT effectué mais readback G5 inattendu (geojson ou meta.datasetId) — VÉRIFIER";
     return finish(entry, out);
   } catch (e) {
     entry.statut = "ERROR";
