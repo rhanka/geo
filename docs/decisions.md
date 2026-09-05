@@ -661,12 +661,33 @@ ouvre son **propre PR** (après merge du §9-runner ; cap ≤2 PR).
 ADR-0026 (règle semver+ADR sur le seam gelé) ; ADR-0024 (pattern garde+test par-construction) ; ADR-0030
 (ODbL-reversal, décision jumelle) ; `SPEC_WORKPACKAGES.md` §1 (frontière wp6/wp7).
 
-## ADR-0030 — **ODbL-reversal : fond satellite Google live-embed 2D (Voie A) supersède la posture blank-ODbL-safe** · proposed · 2026-08-31
+## ADR-0030 — **ODbL-reversal : fond satellite Google live-embed 2D (Voie A) supersède la posture blank-ODbL-safe** · accepted · 2026-08-31
 
-**⚠ Statut `proposed`** — record durable rédigé, **PAS ratifié**. **CET ADR EST le record durable
-owner-ratifié que geo-socle exige pour wirer Google sans laundering** → son flip `accepted` **DOIT** être
-grounded dans la **parole directe de l'owner capturée** (owner présent à la session bundlée), **jamais** sur
-un relais ni un say-so conducteur.
+**⚠ Statut `accepted` — CONDITIONNÉ à un RECORD owner-direct GENUINE.** Le flip `accepted` NE TIENT QUE sur
+la **parole directe de l'owner CAPTURÉE durablement** (record ci-dessous, porté par geo-cond) — **JAMAIS** un
+say-so peer, un relais, ni un record synthétisé (anti-laundering ; header decisions.md + ligne geo-archi wp6).
+
+> **Record owner-direct** — **capturé par geo-cond, 1re main.** Session Claude Code
+> `session_01BoKz6A5PUiLxg4shntStXu` (geo-cond [a0e6b7]), **2026-09-04** (horodatage = commit de ce record),
+> question fermée (modal `AskUserQuestion`, 3 options) : « GO#1 — Autorises-tu le flip ODbL (ADR-0030 →
+> accepted) + flag préprod ON, c'est-à-dire afficher le fond satellite Google Map Tiles 2D en direct sur
+> preprod.immo.sent-tech.ca (préprod seulement, prod intouchée, plafond <50€/mois, clé restreinte) ? » —
+> **réponse owner, verbatim (option sélectionnée) : « Oui — j'autorise GO#1 : flip ODbL + Google 2D live en
+> préprod »**.
+> **Corroboration antérieure, 1re main i-cond** (session `session_01RRZqXjiQE9rEV61i7Gx1yg`, 2026-09-04
+> ~21:05Z, modal fermée) : « Pour afficher la 2D satellite en préprod, geo a besoin de 2 GO dans le repo
+> geo : (1) merger #335 = accepter l'ADR-0030 (licence ODbL) + flag préprod ON ; (2) approuver le mint de la
+> clé Google (#334). Tu confirmes ? » — **réponse owner, verbatim : « Oui les deux — exécute (Recommandé) »**.
+> **Désambiguïsation** : « les deux » = (1) **GO#1** = ce flip (Voie A Google, fond satellite 2D live-embed,
+> préprod-only) — **c'est ce record** ; (2) **GO#2** = mint de la clé (#334, dispatch `basemap-activate.yml`
+> owner-approuvé), consentement enregistré ici, exécution gatée séparément (bootstrap owner + mini-gate wp7).
+> Les deux captures convergent. **Aucune synthèse, aucun relais** : deux paroles owner directes, citées verbatim.
+
+Cette PR est authorée en **DRAFT par geo-socle** (flip MÉCANIQUE : statut + flag overlay) et reste
+**non-mergée** tant que (1) le record ci-dessus n'est pas renseigné par geo-cond ET (2) le contenu est
+ratifié par **geo-archi (wp6)**. geo-archi VÉRIFIE à l'ouverture que le record est genuine (pas synthétisé).
+⟹ **GO#1 = le merge owner APRÈS record renseigné** ; **GO#2 = le dispatch activate-serve approuvé** (mint
+clé + secret). Entre les deux : flag-ON + clé absente → **503 fail-closed** (double-gate, 0 tuile live).
 
 **Contexte.** `GeoMap.svelte:292` grave **délibérément** la posture « Tokenized blank background — **NO
 external tiles** (ODbL-safe ; PMTiles basemap is a later increment) », avec `attributionControl: false`
@@ -674,7 +695,7 @@ external tiles** (ODbL-safe ; PMTiles basemap is a later increment) », avec `at
 L'owner (2026-08-31) : « le geo-map 3D ne présente aucun intérêt sur de la donnée non géographie … **on
 cherche déjà à faire le fond** » → il veut un **vrai fond satellite** et a choisi **Voie A = Google**.
 
-**Décision (proposed).** **Reverser** la posture blank-ODbL-safe → adopter un **fond satellite Google
+**Décision (accepted).** **Reverser** la posture blank-ODbL-safe → adopter un **fond satellite Google
 live-embed 2D** (Voie A), sous les invariants du contrat v2.0 (ADR-0029) :
 1. **live-embed / no-cache / no-redistribution** — les tuiles vont **navigateur → Google en direct**,
    **jamais capturées / cachées / proxifiées sur S3** (ToS Google ; précédent `SPEC_WORKPACKAGES §2` Google
@@ -691,10 +712,12 @@ live-embed 2D** (Voie A), sous les invariants du contrat v2.0 (ADR-0029) :
    contrat. La reversal est donc elle-même réversible (décision coût/licence owner, sans rework).
 
 **Conséquence.** Supersède la posture « blank-only / no-external-tiles » de `GeoMap.svelte:292` **pour le
-basemap** (les couches data continuent de porter le sens). N'entre en vigueur qu'au **flip `accepted`**
-(owner-direct) ; jusque-là geo-socle **prépare** le wiring contre le contrat (ADR-0029) mais **n'active**
-Google qu'après ce record ratifié. Le **mini-gate wp7** (ADR-0029) prouve l'attribution rendue + le no-cache
-avant gel.
+basemap** (les couches data continuent de porter le sens). Prend effet à ce **flip `accepted`** (owner-direct
+= le merge de cette PR) : la PR flippe AUSSI l'overlay préprod `BASEMAP_2D_ENABLED` 0→1 = la **forme
+déploiement** du flip (durable, git — non écrasée par cd-preprod). Le pod devient flag-ON mais **clé absente
+→ 503 fail-closed** (double-gate) jusqu'à **GO#2** (dispatch activate-serve : mint clé restreinte + secret +
+restart). Le **mini-gate wp7** (ADR-0029) prouve l'attribution **DYNAMIQUE** rendue (endpoint viewport —
+**gratuit/non-billable**, cf `usage-and-billing` : 0 fuite coût) + le no-cache avant gel.
 
 **Réf.** `GeoMap.svelte:292` (posture blank-ODbL-safe) / `:305` (`attributionControl:false`) ; ADR-0029
 (contrat v2.0 + `source` abstrait/réversibilité) ; `SPEC_WORKPACKAGES.md` §2 (précédent Google no-cache) ;
