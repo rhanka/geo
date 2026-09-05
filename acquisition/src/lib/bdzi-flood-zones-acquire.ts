@@ -86,6 +86,52 @@ export function overlayKeys(prefix: string = BDZI_CONSTRAINTS_PREFIX): OverlayLa
   };
 }
 
+const GEOJSON_SUFFIX = ".geojson";
+const META_SUFFIX = ".meta.json";
+/** CRS declared in the sibling meta (geo-socle directive). */
+export const BDZI_META_CRS = "EPSG:4326";
+
+/**
+ * geo-api derives the served collection id from a SIBLING `<geojson-key>.meta.json`
+ * (`meta?.datasetId ?? stem` — store-provider.ts:113,231-234). Mirror of
+ * `metaKeyOf` (zones-bareslug-alias-20260821.ts:170).
+ */
+export function overlayMetaKey(geojsonKey: string): string {
+  return `${geojsonKey.slice(0, -GEOJSON_SUFFIX.length)}${META_SUFFIX}`;
+}
+
+export interface OverlayMetaWrite {
+  meta: Record<string, unknown>;
+  hadExisting: boolean;
+  preservedFields: string[];
+}
+
+/**
+ * Build the sibling `.meta.json` content that pins the served collection id to
+ * `qc-bdzi-flood-zones`. Mirrors `writeMetaForKey`
+ * (zones-bareslug-alias-20260821.ts:196-210): preserve-merge onto an existing
+ * meta (only `datasetId` is (re)set; every other field — count/crs/… — is
+ * preserved), else a minimal-correct `{ datasetId, count, crs }`.
+ */
+export function buildOverlayMeta(
+  servedFeatureCount: number,
+  existingMeta?: Record<string, unknown> | null,
+): OverlayMetaWrite {
+  if (existingMeta && typeof existingMeta === "object" && !Array.isArray(existingMeta)) {
+    const preservedFields = Object.keys(existingMeta).filter((k) => k !== "datasetId");
+    return {
+      meta: { ...existingMeta, datasetId: BDZI_SERVED_COLLECTION_ID },
+      hadExisting: true,
+      preservedFields,
+    };
+  }
+  return {
+    meta: { datasetId: BDZI_SERVED_COLLECTION_ID, count: servedFeatureCount, crs: BDZI_META_CRS },
+    hadExisting: false,
+    preservedFields: [],
+  };
+}
+
 /** Non-destructive pre-overwrite backup key, under a `_`-prefixed segment
  *  (mirrors the zonage `_replaced/` convention). `layout` keeps the two layouts
  *  of the same overlay from colliding. */
@@ -447,6 +493,7 @@ export function geometryDigest(features: ReadonlyArray<{ geometry?: unknown }>):
 export interface LayoutReadback {
   layout: "flat" | "nested";
   key: string;
+  meta_key: string;
   present: boolean;
   feature_count: number;
   feature_count_matches: boolean;
@@ -456,6 +503,8 @@ export interface LayoutReadback {
   proof_sha_matches: boolean;
   level_documented_all: boolean;
   constraint_tag_all: boolean;
+  meta_present: boolean;
+  meta_datasetId_ok: boolean;
   ok: boolean;
 }
 
@@ -478,12 +527,16 @@ export function readbackLayout(
   layout: "flat" | "nested",
   key: string,
   served: unknown,
+  meta: unknown,
   expected: ReadbackExpectation,
 ): LayoutReadback {
   const fc = served as OverlayFeatureCollection | null;
+  const metaObj = meta && typeof meta === "object" && !Array.isArray(meta) ? (meta as Record<string, unknown>) : null;
+  const metaDatasetOk = metaObj?.["datasetId"] === BDZI_SERVED_COLLECTION_ID;
   const base: LayoutReadback = {
     layout,
     key,
+    meta_key: overlayMetaKey(key),
     present: false,
     feature_count: 0,
     feature_count_matches: false,
@@ -493,6 +546,8 @@ export function readbackLayout(
     proof_sha_matches: false,
     level_documented_all: false,
     constraint_tag_all: false,
+    meta_present: metaObj !== null,
+    meta_datasetId_ok: metaDatasetOk,
     ok: false,
   };
   if (!fc || fc.type !== "FeatureCollection" || !Array.isArray(fc.features)) return base;
@@ -509,6 +564,7 @@ export function readbackLayout(
   const result: LayoutReadback = {
     layout,
     key,
+    meta_key: overlayMetaKey(key),
     present: true,
     feature_count: feats.length,
     feature_count_matches: feats.length === expected.featureCount,
@@ -518,6 +574,8 @@ export function readbackLayout(
     proof_sha_matches: shaBare(gs?.sha256) === shaBare(expected.proofSha256),
     level_documented_all: levelAll,
     constraint_tag_all: constraintAll,
+    meta_present: metaObj !== null,
+    meta_datasetId_ok: metaDatasetOk,
     ok: false,
   };
   result.ok =
@@ -527,6 +585,8 @@ export function readbackLayout(
     result.proof_url_matches &&
     result.proof_sha_matches &&
     result.level_documented_all &&
-    result.constraint_tag_all;
+    result.constraint_tag_all &&
+    result.meta_present &&
+    result.meta_datasetId_ok;
   return result;
 }
