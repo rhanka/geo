@@ -1,47 +1,51 @@
-# Dossier de décision — remplaçant de la route VISION d'extraction (ADR-0024)
+# Dossier de décision — route VISION d'extraction (ADR-0024) — **reformulé sur directive owner**
 
 > **Type** : present-decision (agent→owner, via i-cond). **Auteur** : geo-archi (wp6, owner ADR-0024).
-> **Nature** : approuver le **PROCESS de remplacement** (candidat → benchmark → ratif → nouvel ADR) + l'**intérim**,
-> pour débloquer la couche vision-résidu de l'extraction full-auto. **Lien hosting (question egress OUVERTE, pas
-> une décision rendue)** : le modèle vision sanctionné **tournera À TRAVERS le LLM-serving** dont la FORME est traitée
-> dans l'**enrichissement du dossier egress** (`DECISION_LLM_EGRESS_STANDARD_PATH`, pending) ; le **budget/quota
-> par-appelant first-class** y est porté et **s'applique aussi ici** — c'est le même risque-facture.
+> **⚠ Reformulé (directive owner)** : l'owner **REJETTE le benchmark-de-sélection** et **résout le candidat** —
+> verbatim : « *un enrôlement codex avec llm mesh (éventuellement via cluster mesh) avec un codex 5.3* ». Ce dossier
+> ne re-litige PAS le candidat — il traite ce qui RESTE : **la VALIDATION (ADR-0024) ≠ la sélection**, la
+> **résolution de l'id modèle**, et les **variantes de livraison**. **Corrections mesh [8f35d4] (mesuré) intégrées**
+> (gate, id-catalogue, attribution enrôlement).
 
 ## 1. Décision demandée
-Comment débloquer la **route vision d'extraction** (résidu de cellules de grille que natif+OCR ne résolvent pas),
-**bannie et inopérante** depuis ADR-0024 ? Approuver **(1) le process de sélection d'un modèle vision sanctionné**
-+ **(2) l'intérim** en attendant.
+La route vision (résidu de cellules de grille que natif+OCR ne résolvent pas) est **bannie/inopérante** depuis
+ADR-0024. L'owner a **tranché le candidat** (Codex 5.3 via llm-mesh). Restent **3 questions owner** : **(1)** la
+**validation-qualité ADR-0024** s'applique-t-elle (confirmer, ou waive explicite) ? **(2)** **quel id modèle** «
+codex 5.3 » désigne (voir §3) ? **(3)** l'**intérim** jusqu'à validation ?
 
-## 2. Contexte — FAITS / JUGEMENTS
-- **[FAIT]** ADR-0024 **BANNIT** `mistral-medium-latest`/vision-chat (incident **€480**, « n'a jamais fonctionné ») ; garde `vision-engine-policy.ts` **live** + CI-test ; **seul `mistral-ocr-latest` (`/v1/ocr`) sanctionné**.
-- **[FAIT — geo-confirmé]** Route vision **INOPÉRANTE par construction** : `grille-vision-extractor.ts:351` → `assertVisionModelAllowed(model)` **throw** sans modèle sanctionné explicite ; **aucun modèle remplaçant câblé** ; **aucun ADR de suivi**.
-- **[FAIT]** La cascade d'extraction (`SPEC_PIPELINES_TARGET_ARCH` stage 5) = **LLM-minimal** : natif → `pdftotext` → **OCR conditionnel** → **modèle fort UNIQUEMENT sur résidu mesuré**. Le « modèle fort » résiduel EST la route vision à remplacer.
-- **[JUGEMENT]** Candidat *a priori* (ADR-0024) : **modèle vision fort derrière gateway** (`gpt-5.6-terra`/`luna` xhigh), **prompt JSON strict PAR CELLULE** + **gardes anti-décalage** conservées.
-- **[FAIT]** Un corpus de **grilles DÉJÀ extraites** (gold) existe → **benchmark SANS re-payer Mistral**.
+## 2. Contexte — FAITS
+- **[FAIT]** ADR-0024 bannit `mistral-medium-latest`/vision-chat. **Cause (verbatim, `docs/decisions.md:483-489`)** : modèle « **codé en dur comme défaut** », jamais le vision-chat sanctionné → « **dérive de code au-delà du décidé** », **non détectée avant la facture €480** (319 munis, preuve `work/coverage/normes-provenance.json`). Garde `vision-engine-policy.ts` live + CI ; seul `mistral-ocr-latest` sanctionné.
+- **[FAIT — geo-confirmé]** Route vision **INOPÉRANTE par construction** (`grille-vision-extractor.ts:351` → `assertVisionModelAllowed` throw ; aucun modèle câblé ; aucun ADR de suivi).
+- **[FAIT — directive owner]** Candidat résolu = **Codex 5.3**, mécanisme = enrôlement codex via llm-mesh (éventuellement cluster-mesh). Plus de benchmark-de-sélection.
+- **[FAIT]** Cascade extraction (`SPEC_PIPELINES_TARGET_ARCH` stage 5) = **LLM-minimal** : modèle fort **sur résidu mesuré seulement**. **[FAIT]** Corpus **grilles-gold** existe → validation SANS re-payer Mistral.
 
-## 3. Enjeux
-Le full-auto de l'extraction **dépend** de la route vision-résidu (feed graphe des normes/grilles). **Coût** = le risque récurrent (**€480 Mistral**, **€50/mois §5**) → un mauvais modèle/absence de garde = **une facture**. **Précédent ADR-0024** : tout modèle vision doit être **explicite + sanctionné + double-consensus + ratif geo-archi**.
+## 3. ⚠ Ce qui RESTE (distinctions d'intégrité — corrections mesh)
+- **SÉLECTION = résolue owner** (Codex 5.3). Je **ne re-litige pas**.
+- **VALIDATION ≠ sélection.** Cœur d'ADR-0024 = la leçon €480 : **un modèle utilisé sans PROUVER qu'il marche → dérive non-détectée → facture**. Donc, sur le modèle retenu : **valider qu'il extrait les grilles-gold correctement** (0-Mistral) + gardes (JSON-strict-par-cellule, anti-décalage, **`unknown`-on-failure**). **« Pas de benchmark » (owner) = pas de SÉLECTION, PAS « pas de VALIDATION ».** *(Surface owner en CLARIFICATION, pas re-litige : confirmer la validation, ou waive explicite — risque €480 exposé.)*
+- **⚠ ID MODÈLE : « codex 5.3 » NE RÉSOUT PAS au catalogue** (mesh mesuré : `gpt-5.6-sol/terra/luna`, `gpt-5.5`, `gpt-5.4-nano`, `gpt-4.1-nano` ; aucun `5.3` ; CLI = `codex-cli 0.153.4`). ⟹ **NE PAS écrire `codex-5.3` dans l'allowlist `vision-engine-policy`** — un id qui ne résout pas = **contrôle-fantôme** (apparence de contrôle, correspond à rien, ou pire à autre chose si résolveur permissif) = le défaut que la maison démonte. **Résoudre AVANT tout id** : soit un **modèle catalogue réel** (owner désigne : `gpt-5.6-*` ?), soit — si « codex 5.3 » = un modèle fournisseur réel que le catalogue ignore — un **ACTE DE CONTRAT (décision D3 : addition = update conseil d'équivalence OU exclusion explicite justifiée)**, **owner-décidé**. **Tant que non-résolu, la route reste inopérante (garde), pas un id-fantôme.**
+- **ENRÔLEMENT (attribution corrigée)** : « llm-mesh enroll » n'est PAS une commande mesh. La **commande d'enrôlement = h2a-runtime** (`account enroll`, `packages/h2a-runtime/src/index.ts`) ; la **logique = lib `@sentropic/llm-mesh`** (`src/enrollment/codex.ts`, ids `enr_codex_*`). L'acte opérationnel d'enrôler un compte appartient à **h2a**.
 
-## 4. Options
+## 4. ⚠ VARIANTES DE LIVRAISON (correction gate — la route N'est PAS bloquée)
+« Codex via llm-mesh » a **2 variantes**, et **une est livrable AUJOURD'HUI** :
+- **(a) HOST-SIDE** = le **chemin de PRODUCTION ACTUEL** (pipeline citations : `codex exec -m <model>` → mesh → pool, host-side). **L'instruction owner est DÉJÀ satisfaite host-side** → **variante livrable maintenant, 0 dépendance au dossier egress**.
+- **(b) IN-CLUSTER** (le pod appelle le mesh) = **la jambe qui n'existe pas** → **GATÉE sur GATE#2/egress** (LLM-serving in-cluster décidé+bâti + pilote egress).
+⟹ **La route vision N'est PAS bloquée derrière l'egress** : host-side dispo now ; l'in-cluster (cible full-auto k8s) est gatée. *(J'avais over-gaté « pas livrable avant » — corrigé par mesh.)*
+
+## 5. Options (ce qui reste à trancher)
 | id | option | POUR | CONTRE |
 |----|--------|------|--------|
-| **(A)** | **process : benchmark candidats sur grilles-gold (0-Mistral) → double-consensus + ratif geo-archi → nouvel ADR** ; **intérim = OCR-only** (résidu → `unknown`) | respecte ADR-0024 (sanctionné, prouvé, ratifié) ; 0 re-paiement Mistral ; intérim sûr (LLM-minimal, jamais un vert fabriqué) | débloque le résidu **plus tard** (après benchmark) |
-| **(B)** | **câbler un candidat *a priori* MAINTENANT** (sans benchmark) | rapide | **VIOLE ADR-0024** (pas de double-consensus/benchmark) → **REJETÉ** |
-| **(C)** | **OCR-only permanent** (pas de modèle fort) | 0 modèle vision à gérer | perd le résidu que seul un modèle fort résout ; acceptable **SEULEMENT si le résidu mesuré est négligeable** |
+| **(A)** | **résoudre l'id + VALIDER sur grilles-gold (0-Mistral)** + gardes/allowlist ; livrer **host-side** ; **intérim OCR-only** jusqu'à validation | honore ADR-0024 (€480-safety) sans re-litiger le candidat ; host-side dispo now ; 0 re-paiement | in-cluster (full-auto) plus tard (egress) |
+| **(B)** | **reliance SANS validation** (waive owner explicite) | immédiat | **rouvre le risque €480** — waive explicite requis, risque exposé |
+| **(C)** | **OCR-only** si **résidu mesuré négligeable** | 0 modèle vision | perd le résidu — **mesurer d'abord** |
 
-## 5. Recommandation (fidèle)
-**[JUGEMENT] (A)** : approuver le **process** (benchmark grilles-gold → double-consensus → **ma ratif** → nouvel ADR) + **intérim OCR-only** (résidu = `unknown`, jamais inventé). **Le candidat est CHOISI PAR le benchmark**, pas *a priori* — `gpt-5.6-terra/luna` est l'hypothèse de départ, à **prouver sur gold**, pas à graver. **Mesurer d'abord le résidu réel** : si négligeable, (C) suffit et 0 modèle-fort n'est nécessaire (LLM-minimal poussé au bout).
+## 6. Recommandation (fidèle)
+**[JUGEMENT] (A)** : **résoudre l'id** (owner/D3) → **valider** (validation, PAS sélection) sur grilles-gold + gardes ; **livrer host-side** (dispo now) ; **intérim OCR-only** ; l'in-cluster suit l'egress. **Mesurer le résidu réel d'abord** (si négligeable → C). Candidat non-rediscuté — seule la **preuve-qu'il-marche** l'est.
 
-## 6. ⚠ Réversibilité / coût / BLOCKER honnête
-- **Réversible** : le modèle est **swappable derrière la garde** (`vision-engine-policy`) — un choix de modèle, pas d'architecture.
-- **Coût** : benchmark = **0 Mistral** (grilles-gold) + usage gateway des candidats ; intérim OCR-only = faible. Le modèle-fort retenu passe par le **LLM-serving D-moteur-2** → **budget/quota par-appelant first-class** s'applique (anti-facture).
-- **⚠ BLOCKER RUN (honnête, à graver dans l'escalade)** : l'**exécution du benchmark exige le gateway/Codex** (candidats `gpt-5.6-*` derrière gateway) — **actuellement DOWN (crédits Codex →6/09)**. ⟹ **design + critères de ratif MAINTENANT ; run du benchmark APRÈS gateway**. L'owner approuve le **principe** (process + intérim) maintenant ; le run suit dès gateway rétabli.
+## 7. Réversibilité / coût / BLOCKERS + Attendus
+- **Réversible** (modèle swappable derrière la garde). **Coût** : validation 0-Mistral + usage Codex via mesh ; **budget/quota par-appelant first-class** (risque €480/€50 — porté au dossier egress).
+- **⚠ BLOCKER (Codex down →6/09)** : design + critères de validation **maintenant** ; **run validation post-gateway**. *(Ne bloque PAS le host-side une fois Codex revenu ; n'attend PAS l'egress.)*
+- **Attendus** : no-Mistral-vision · **id modèle résolu** (owner/D3, PAS fantôme) · qualité validée grilles-gold · gardes (`unknown`-on-failure) · budget/quota borné.
 
-## 7. Attendus owner (critères de ratif geo-archi)
-- **No-Mistral-vision** (ADR-0024, garde live) · **modèle explicite + sanctionné** · **qualité prouvée sur grilles-gold** (IoU/exactitude cellule vs Mistral-gold, sans re-payer) · **double-consensus** (2 passes indép.) · **budget/quota borné** (lié D-moteur-2 #5) · **prompt JSON strict par cellule + gardes anti-décalage** · **échec = `unknown`, jamais un vert fabriqué**.
-
-## 8. Ce que je demande + pré-mortem + disclosure
-**Ce que je demande** : approuver **(A)** — le process + l'intérim OCR-only. Le **run** attend le gateway ; le **candidat** attend le benchmark ; **ma ratif** attend les 2. Décision de **principe** maintenant.
-**Strongest-case-CONTRE (A)** : si le résidu réel est **gros** et l'OCR-only laisse trop d'`unknown`, l'intérim dégrade la couverture normes jusqu'au benchmark → mesurer le résidu **tôt** (avant de conclure que l'intérim suffit).
-**Pré-mortem** : « le benchmark, une fois le gateway revenu, montre qu'AUCUN candidat gateway ne bat l'OCR sur les grilles-gold → on a attendu pour rien ». Mitigation : le **résidu mesuré** décide (si petit → (C) ; le benchmark n'est lancé que si le résidu le justifie).
-**Disclosure d'intérêt-agent** : le plus facile pour moi = graver `gpt-5.6-terra` comme LE candidat. **Signalé** : je ne le grave PAS — le **benchmark tranche**, la garde reste, le résidu-mesuré gouverne. Intérêt owner = coût borné + qualité prouvée + 0 re-incident Mistral.
+## 8. Ce que je demande + disclosure
+**Ce que je demande** : **(1)** confirmer que la **validation ADR-0024 s'applique** (ou waive explicite, risque €480 exposé) ; **(2)** **résoudre « codex 5.3 »** (modèle catalogue réel OU acte-de-contrat D3) — **avant tout id d'allowlist** ; **(3)** intérim OCR-only. **Coordination : mesh [8f35d4]** (logique enrôlement `llm-mesh` + catalogue) **+ h2a** (commande `account enroll`).
+**Disclosure intérêt-agent** : **0 intérêt** à re-débattre le candidat (owner-résolu) ni à choisir un modèle (je n'en ai pas) ; je porte **uniquement** la validation-€480-safety + l'anti-id-fantôme (mon rôle ADR-0024). Intérêt owner = ne pas re-vivre 2024.
