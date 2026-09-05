@@ -1,0 +1,37 @@
+{
+  "product": "ca-qc-constraints-capture — BDZI zones inondables (env overlay, Phase-2)",
+  "generated_by": "geo-zones (lane acquisition)",
+  "generated_at": "2026-09-05",
+  "context": "Owner GO env-B (track 01M1RW3P2RZQD2AF1HPJ18T3ED) : couches env = geo-side overlays. BDZI = quick-win (621 poly mesuré). Runner gaté = bdzi-capture-worklist-runner-20260905.json (bare-array STRICT 1-entry province-wide).",
+  "method": {
+    "pipeline": "§6 k8s capture-run (worklist bare-array STRICT) → CAS raw + manifest proof-v2 → acquire → serve overlay",
+    "lane": "constraints (déjà ajoutée §9 CPTAQ)",
+    "source_enum": "bdzi — À CONFIRMER pv (comme §9 a confirmé 'cptaq' ; sinon réutiliser l'enum constraints existant)",
+    "gate": "design_sha (pv, keyé worklist+lane+geo-capture-image+runner_git) + owner-paste (§6, jamais local) — geo-cond porte le GO owner quand le runner acquire est bâti",
+    "cluster_only": true,
+    "capture_url_source": "packages/geo-sources-americas/src/ca-qc-constraints/bdzi/manifest.ts (BDZI_SERVICE_URL + couche 22 + query where=1=1&outFields=*&returnGeometry=true&outSR=4326&f=geojson)"
+  },
+  "measured": {
+    "layer": 22,
+    "feature_count": 621,
+    "measured_at": "2026-09-04 (returnCountOnly live, geo-zones)",
+    "geometry": "Polygon (zones inondables : grand/faible courant, crue 0-100 ans)",
+    "fields": "OBJECTID, Description, No_rapport, Nm_rapport (spike immo)"
+  },
+  "post_capture_acquire": {
+    "owner": "geo-zones (acquire-runner BDZI — BUILD délégué sous-agent Claude + revue geo-zones ; Codex creditless)",
+    "normalizer": "packages/geo-sources-americas/src/ca-qc-constraints/bdzi/normalizer.ts (bdziNormalizer — tag constraint=bdzi-flood-zones, whitelist props)",
+    "steps": [
+      "read CAS attesté (geojson layer 22) + vérif byte-exact vs sha256 manifest",
+      "ogr2ogr/GDAL simplify Douglas-Peucker 0.0005° (BDZI_SIMPLIFY) — tracé en provenance",
+      "reproject WGS84/EPSG:4326 (déjà outSR=4326 à la capture ; confirmer)",
+      "normalize via bdziNormalizer (constraint.kind=bdzi-flood-zones)",
+      "serve UNE collection province-wide qc-bdzi-flood-zones (2 layouts flat+nested) + proof-v2 (url+retrieved_at+sha256 du manifest capture)",
+      "readback G5 + OGC (read-only, geo-zones)"
+    ],
+    "served_collection": "qc-bdzi-flood-zones (OVERLAY, PAS un nœud Zone ; immo spatial-join within → overlay::bdzi::<muni>::<featureId>)",
+    "write_discipline": "acquire+deposit --commit = ON-CLUSTER/CI owner-gated, JAMAIS agent local ; le build (code+test+dry-run) est délégué read-only, le --commit prod tourne on-cluster"
+  },
+  "anti_invention": "count 621 MESURÉ live (pas supposé) ; endpoint verbatim du manifest committé ; simplify tracé ; CRS confirmé à la capture. Overlay geo-side (immo consomme).",
+  "next": "geo-cond porte l'owner-paste (design_sha calculé par pv sur ce worklist) quand le runner acquire BDZI est bâti+revu → capture cluster→S3 → acquire on-cluster → serve qc-bdzi-flood-zones → readback."
+}
