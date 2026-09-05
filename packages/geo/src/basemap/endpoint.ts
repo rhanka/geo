@@ -1,44 +1,47 @@
 /**
- * §5 basemap adapter — mint HTTP endpoint (FLAG-OFF BY CONSTRUCTION).
+ * §5 basemap adapter — public DESCRIPTOR endpoint (FLAG-OFF BY CONSTRUCTION, CLIENT-MINT seam §3.3).
  *
- * `GET /session` mints (or returns the cached) Google Map Tiles 2D session and serves the mint envelope
- * (public descriptor + adapter-internal session, see serialize.ts). It is INERT until the owner GO:
+ * `GET /session` serves the flag-gated PUBLIC DESCRIPTOR `{ key, mapType, language?, region? }` that the
+ * ENGINE adapter uses to mint a Google session CLIENT-SIDE (the browser calls Google `createSession` with
+ * the referrer-restricted key — a server-side call would be a Referer spoof, forbidden; geo-archi §3.3
+ * ruling). geo-api makes ZERO outbound call to Google. It is INERT until the owner GO:
  *   • `enabled` off (BASEMAP_2D_ENABLED ≠ "1")  → 503 (flag-OFF, the pre-GO default);
- *   • restricted key absent (readTileKey fail-closed) → 503 (never calls Google unauthenticated);
- *   • a genuine mint failure (session-expired|forbidden|quota|network) → 502 fail-LOUD.
+ *   • restricted key absent (readTileKey fail-closed) → 503 (never serves a blank/empty key).
  * Serving live Google tiles is an ACTIVATION requiring the owner GO (ODbL flip ADR-0030 + key) — until
- * then this endpoint refuses loud, NEVER a silent blank (#313). The engine's declared fallback
- * (blank+notice) is PR-B's concern, downstream of this refusal.
+ * then this endpoint refuses loud, NEVER a silent blank (#313).
+ *
+ * Attribution is NOT in the descriptor: §3.1 (geo-archi §2.5 ruling b) mandates DYNAMIC per-viewport
+ * copyright for Google 2D, hardcoded in the engine adapter — a static string would be a "looks-compliant"
+ * violation. The response carries the key ⇒ `Cache-Control: no-store` + a SINGLE origin-scoped CORS.
  */
 
 import { Hono } from "hono";
 
-import { SessionMinter, readTileKey, type CreateSessionOptions } from "./session-mint.js";
-import { serializeMint, type AttributionSpec, type SerializeConfig } from "./serialize.js";
+import { readTileKey, type CreateSessionOptions } from "./session-mint.js";
 
 /**
- * §5 preprod-only CORS default (geo-archi ADR-0015 override). `/basemap/2d` mints a session + serves the
- * restricted key, so it is scoped to the SINGLE preprod-immo origin where the bespoke map runs — never `*`,
- * never the prod origin. i-cond owns the exact immo-preprod host; overridable via `BASEMAP_2D_CORS_ORIGIN`.
+ * §5 preprod-only CORS default (geo-archi ADR-0015 override). `/basemap/2d` serves the restricted key, so it
+ * is scoped to the SINGLE preprod-immo origin where the bespoke map runs — never `*`, never the prod origin.
+ * i-cond owns the exact immo-preprod host; overridable via `BASEMAP_2D_CORS_ORIGIN`.
  */
 export const BASEMAP_2D_DEFAULT_CORS_ORIGIN = "https://preprod.immo.sent-tech.ca";
 
 export interface BasemapConfig {
   /** Master flag — OFF by default (pre-owner-GO). */
   readonly enabled: boolean;
+  /** createSession params served in the descriptor (the browser mints with them). */
   readonly session: CreateSessionOptions;
-  readonly serialize: SerializeConfig;
   /**
-   * The SINGLE allowed CORS origin for `/basemap/2d` (§5). The endpoint serves session+key, so — unlike the
-   * open `*` OGC API (ADR-0015) — it is origin-scoped. Defaults to {@link BASEMAP_2D_DEFAULT_CORS_ORIGIN}.
+   * The SINGLE allowed CORS origin for `/basemap/2d` (§5). The endpoint serves the key, so — unlike the open
+   * `*` OGC API (ADR-0015) — it is origin-scoped. Defaults to {@link BASEMAP_2D_DEFAULT_CORS_ORIGIN}.
    */
   readonly corsOrigin?: string;
 }
 
 /**
- * Read the FLAG-OFF-by-default config from env. QC deployment defaults: `fr-CA`/`CA` (geo-archi nit 2)
- * and `satellite`. The restricted key is NOT read here — the {@link SessionMinter} reads it fail-closed
- * at construction, so an absent key surfaces as a 503 rather than a boot crash.
+ * Read the FLAG-OFF-by-default config from env. QC deployment defaults: `fr-CA`/`CA` (geo-archi nit 2) and
+ * `satellite`. The restricted key is NOT read here — {@link createBasemapApp} reads it fail-closed at
+ * construction, so an absent key surfaces as a 503 rather than a boot crash.
  */
 export function readBasemapConfig(env: NodeJS.ProcessEnv = process.env): BasemapConfig {
   const session: CreateSessionOptions = {
@@ -49,36 +52,25 @@ export function readBasemapConfig(env: NodeJS.ProcessEnv = process.env): Basemap
   return {
     enabled: env.BASEMAP_2D_ENABLED === "1",
     session,
-    serialize: { attribution: readAttribution(env) },
     corsOrigin: (env.BASEMAP_2D_CORS_ORIGIN ?? "").trim() || BASEMAP_2D_DEFAULT_CORS_ORIGIN,
   };
 }
 
 /**
- * Attribution from env (MANDATORY, §3.1). A static baseline "Imagery ©Google" applies when unset; the
- * DYNAMIC per-viewport copyright is the engine's mechanism (PR-B, geo-archi) — not wired at the mint.
- */
-function readAttribution(env: NodeJS.ProcessEnv): AttributionSpec {
-  const text = (env.BASEMAP_2D_ATTRIBUTION ?? "").trim();
-  return { mode: "static", text: text || "Imagery ©Google" };
-}
-
-/**
- * Build the basemap mint sub-app. Mount under a path (e.g. `/basemap/2d`) in the geo-api. The
- * {@link SessionMinter} is constructed ONCE here (cache + refresh + single-flight span requests); a
- * flag-OFF config or an absent key leaves it unbuilt, so `/session` answers 503. `deps.minter` injects a
- * minter for tests.
+ * Build the basemap descriptor sub-app. Mount under a path (e.g. `/basemap/2d`) in the geo-api. The
+ * restricted key is read ONCE here (fail-closed → a 503, never a boot crash); `deps.key` injects it for
+ * tests. No SessionMinter, no outbound Google call — the mint is client-side (§3.3).
  */
 export function createBasemapApp(
   config: BasemapConfig = readBasemapConfig(),
-  deps: { minter?: SessionMinter; key?: string } = {},
+  deps: { key?: string } = {},
 ): Hono {
   const app = new Hono();
 
-  // §5 CORS (geo-archi override of the open `*` OGC policy, ADR-0015): this route mints a session + serves
-  // the restricted key, so it is scoped to the SINGLE preprod-immo origin — never `*`. Headers are set
-  // EXPLICITLY (after the handler) so they survive the mounted-sub-app response, and the preflight is
-  // answered here with the same scoped origin.
+  // §5 CORS (geo-archi override of the open `*` OGC policy, ADR-0015): this route serves the restricted key,
+  // so it is scoped to the SINGLE preprod-immo origin — never `*`. Headers are set EXPLICITLY (after the
+  // handler) so they survive the mounted-sub-app response, and the preflight is answered here with the same
+  // scoped origin.
   const corsOrigin = config.corsOrigin ?? BASEMAP_2D_DEFAULT_CORS_ORIGIN;
   app.use("*", async (c, next) => {
     if (c.req.method === "OPTIONS") {
@@ -94,40 +86,37 @@ export function createBasemapApp(
     c.res.headers.set("Vary", "Origin");
   });
 
-  // Read the restricted key ONCE (geo-archi ruling (a): it rides the adapter-internal SessionResolution).
-  // Fail-closed: an absent key surfaces as a 503, never a boot crash. `deps.key`/`deps.minter` for tests.
-  let minter: SessionMinter | undefined = deps.minter;
-  let sessionKey: string | undefined = deps.key;
+  // Read the restricted key ONCE. Fail-closed: an absent key surfaces as a 503, never a boot crash.
+  let key: string | undefined = deps.key;
   let initError: string | undefined;
-  if (config.enabled && (sessionKey === undefined || !minter)) {
+  if (config.enabled && key === undefined) {
     try {
-      if (sessionKey === undefined) sessionKey = readTileKey();
-      if (!minter) minter = new SessionMinter(config.session, { key: sessionKey });
+      key = readTileKey();
     } catch (e) {
       initError = (e as Error).message; // key absent → 503 below
     }
   }
 
-  app.get("/session", async (c) => {
-    // (geo-archi cond 2) the response carries key+session → NEVER cached (proxy/CDN/browser). Set no-store
-    // on EVERY /session response, before any branch.
+  app.get("/session", (c) => {
+    // The descriptor carries the restricted key → NEVER cached (proxy/CDN/browser). Set no-store on EVERY
+    // response, before any branch.
     c.header("Cache-Control", "no-store");
     if (!config.enabled) {
       return c.json({ code: "BasemapDisabled", description: "basemap 2D non activé (flag-OFF pré-GO owner)" }, 503);
     }
-    if (!minter || sessionKey === undefined) {
+    if (key === undefined) {
       return c.json(
         { code: "BasemapKeyAbsent", description: initError ?? "clé restreinte absente — refus fail-closed" },
         503,
       );
     }
-    try {
-      const session = await minter.get();
-      return c.json(serializeMint(session, config.serialize, sessionKey));
-    } catch (e) {
-      // Genuine failure (session-expired|forbidden|quota|network) — fail-LOUD, never a silent blank (#313).
-      return c.json({ code: "BasemapMintFailed", description: (e as Error).message.slice(0, 200) }, 502);
-    }
+    // PUBLIC descriptor — the browser mints the Google session client-side (§3.3). 0 server call to Google.
+    return c.json({
+      key,
+      mapType: config.session.mapType,
+      ...(config.session.language ? { language: config.session.language } : {}),
+      ...(config.session.region ? { region: config.session.region } : {}),
+    });
   });
 
   return app;
