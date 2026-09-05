@@ -84,6 +84,8 @@ export interface Google2dBasemapAdapterOptions {
   readonly viewportInfoUrl?: string;
   /** Refresh the session this many seconds BEFORE its expiry (single-flight, default 300s). */
   readonly refreshSkewSeconds?: number;
+  /** Injected delay for deterministic descriptor-retry tests (defaults to a real `setTimeout` sleep). */
+  readonly sleep?: (ms: number) => Promise<void>;
 }
 
 const DEFAULT_SOURCE_ID = "sat-2d";
@@ -91,6 +93,13 @@ const CREATE_SESSION_URL = "https://tile.googleapis.com/v1/createSession";
 const TILE_URL_TEMPLATE_BASE = "https://tile.googleapis.com/v1/2dtiles/{z}/{x}/{y}";
 const DEFAULT_VIEWPORT_INFO_URL = "https://tile.googleapis.com/tile/v1/viewport";
 const DEFAULT_REFRESH_SKEW_SECONDS = 300;
+/**
+ * Bounded retry of the descriptor fetch at construction: the descriptor endpoint can 503 TRANSIENTLY during
+ * the activation rollout (key secret mounting, cold pod) even though the basemap IS enabled — retry so the
+ * user is not stuck on OSM for the first transient. An INTENTIONAL flag-off (503 `BasemapDisabled`) is NEVER
+ * retried. Each value is the backoff (ms) before a retry; the array length is the number of retries.
+ */
+const DESCRIPTOR_RETRY_BACKOFFS_MS = [200, 400, 800];
 
 /**
  * Builds the §5 Google-2D adapter. ASYNC because it fetches the descriptor AND mints the initial session up
@@ -110,9 +119,11 @@ export async function createGoogle2dBasemapAdapter(
   const sourceId = options.sourceId ?? DEFAULT_SOURCE_ID;
   const viewportInfoUrl = options.viewportInfoUrl ?? DEFAULT_VIEWPORT_INFO_URL;
   const refreshSkewMs = (options.refreshSkewSeconds ?? DEFAULT_REFRESH_SKEW_SECONDS) * 1000;
+  const sleep = options.sleep ?? ((ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms)));
 
-  // 1. Fetch the flag-gated public descriptor (503 pre-GO / key-absent → reject → OSM fallback).
-  const descriptor = await fetchDescriptor(doFetch, options.mintUrl);
+  // 1. Fetch the flag-gated public descriptor with a BOUNDED retry over transient 503s (rollout/cold);
+  //    an intentional flag-off (503 BasemapDisabled) is NOT retried. Persistent failure → reject → OSM.
+  const descriptor = await fetchDescriptor(doFetch, options.mintUrl, sleep);
 
   // 2. Client-side session mint + refresh (single-flight).
   const state = new SessionState(descriptor, doFetch, now, refreshSkewMs);
@@ -159,10 +170,38 @@ export async function createGoogle2dBasemapAdapter(
   return { basemap, resolveRasterSource, options: { transformRequest } };
 }
 
-/** Fetches the flag-gated public descriptor (no-store). A non-2xx (503 pre-GO / key-absent) throws a `.kind`-tagged error. */
-async function fetchDescriptor(doFetch: typeof fetch, mintUrl: string): Promise<BasemapDescriptor> {
+/**
+ * Fetches the flag-gated public descriptor (no-store) with a BOUNDED retry over TRANSIENT failures. An
+ * INTENTIONAL flag-off (503 `{code:"BasemapDisabled"}`) is terminal → thrown immediately (→ OSM, no retry).
+ * A transient 503 (`BasemapKeyAbsent` during rollout, a bare/cold gateway 503, a non-JSON body) or a network
+ * error is retried with a short backoff; when the retries are exhausted the last error is thrown (→ onError →
+ * OSM). This REFINES the fail-closed (the final state still falls back), it does NOT weaken it.
+ */
+async function fetchDescriptor(
+  doFetch: typeof fetch,
+  mintUrl: string,
+  sleep: (ms: number) => Promise<void>,
+): Promise<BasemapDescriptor> {
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      return await fetchDescriptorOnce(doFetch, mintUrl);
+    } catch (error) {
+      const err = error as Error & { kind: string; disabled?: boolean };
+      // Intentional flag-off is not transient → no retry. Retries exhausted → give up (→ OSM).
+      if (err.disabled === true || attempt >= DESCRIPTOR_RETRY_BACKOFFS_MS.length) throw err;
+      await sleep(DESCRIPTOR_RETRY_BACKOFFS_MS[attempt]!);
+    }
+  }
+}
+
+/** One descriptor fetch. Tags a 503 `BasemapDisabled` body `disabled` (terminal) vs any other failure (transient). */
+async function fetchDescriptorOnce(doFetch: typeof fetch, mintUrl: string): Promise<BasemapDescriptor> {
   const response = await doFetch(mintUrl, { cache: "no-store" });
   if (!response.ok) {
+    if (response.status === 503 && (await readErrorCode(response)) === "BasemapDisabled") {
+      // Intentional flag-off (pre-GO) — terminal, never retried.
+      throw Object.assign(taggedError("descriptor 503 BasemapDisabled", 503), { disabled: true });
+    }
     throw taggedError(`descriptor ${response.status}`, response.status);
   }
   const body = (await response.json()) as Partial<BasemapDescriptor>;
@@ -170,6 +209,16 @@ async function fetchDescriptor(doFetch: typeof fetch, mintUrl: string): Promise<
     throw taggedError("descriptor: no key/mapType", undefined);
   }
   return body as BasemapDescriptor;
+}
+
+/** Reads `{ code }` from a JSON error body; undefined for a non-JSON (bare/cold) body → treated as transient. */
+async function readErrorCode(response: Response): Promise<string | undefined> {
+  try {
+    const body = (await response.json()) as { code?: unknown };
+    return typeof body.code === "string" ? body.code : undefined;
+  } catch {
+    return undefined;
+  }
 }
 
 /**
