@@ -59,7 +59,10 @@ REQ_REVIEWERS="$(gh api "repos/${GH_REPO}/environments/${SECRET_ENV}" \
 [ "${REQ_REVIEWERS:-0}" -ge 1 ] 2>/dev/null \
   || { echo "❌ Environment ${SECRET_ENV} SANS required-reviewer — refus (secret env-scopé sur un gate absent = BYPASS ; flag geo-archi). Pose le reviewer d'abord (50, ou runbook [c])."; exit 1; }
 # Pousse le secret GitHub ENV-scopé (contenu du fichier, jamais echo) + shred (le trap couvre aussi les erreurs).
-gh secret set KUBE_CONFIG_GEO -R "$GH_REPO" --env "$SECRET_ENV" < "$KCFG"
+# base64 -w0 : le workflow (basemap-activate.yml step 5) fait `base64 -d` du secret → il ATTEND du base64
+# (cohérent avec le pattern cd-preprod). Poser le YAML EN CLAIR → `base64: invalid input` côté workflow
+# (mesuré run 33963774228). Le kubeconfig temp reste en clair pour le self-verify `auth can-i` ci-dessous.
+base64 -w0 < "$KCFG" | gh secret set KUBE_CONFIG_GEO -R "$GH_REPO" --env "$SECRET_ENV"
 
 # self-verify : le secret existe (env-scopé) + le kubeconfig est fonctionnel (RBAC #327 = list jobs dans le ns).
 gh secret list -R "$GH_REPO" --env "$SECRET_ENV" | grep -q '^KUBE_CONFIG_GEO' || { echo "❌ secret KUBE_CONFIG_GEO (env-scopé) non posé"; exit 1; }
