@@ -1,0 +1,74 @@
+# deposit-job — INERT SKELETON template (LOT-1 served-zonage deposit). NOT APPLIED / NOT GATED-OPEN.
+#
+# ⚠ A′ ISOLATION: `envFrom.secretRef.name` below is a PLACEHOLDER for the DEDICATED served-zonage deposit
+#   secret, scoped to `normalized/ca-qc-zonage/*` ONLY — provisioned by the OWNER at LOT-1 go-line, co-val'd
+#   least-priv by i-infra. It is DELIBERATELY NOT `geo-s3-credentials` (the broad capture cred): binding the
+#   broad cred would re-introduce the capture→served blast-radius this dedicated Job exists to isolate.
+# ⚠ INERT: MODE=inspect (no write); the image tag is a placeholder (no real build/push yet); RUNNER_ARGS is
+#   empty. Flipping to a real deposit run is owner-gated (go-line + A′ secret) + i-infra co-val. The keyString
+#   / cred never travels the coordination channel.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-deposit-served-zonage-PLACEHOLDER
+  namespace: geo
+  labels:
+    app: geo-deposit
+    lane: zones
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 604800
+  template:
+    metadata:
+      labels:
+        app: geo-deposit
+        lane: zones
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: geo-registry-pull
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: deposit
+          # PLACEHOLDER image — built + pushed only at LOT-1 go-line (deploy/deposit-job/Dockerfile).
+          image: rg.fr-par.scw.cloud/sentropic-geo/geo-deposit:PLACEHOLDER
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: RUNNER
+              value: "zones-arcgis-replace.ts" # any committed proven acquisition/src/zones-*-replace.ts
+            - name: MODE
+              value: "inspect" # INERT default — NO write. `deposit` is owner-gated (go-line + A′ secret).
+            - name: RUNNER_ARGS
+              value: "" # runner flags (e.g. --slug .. --layer <url> --zone-field ..) — set at go-line, never --inspect/--deposit
+            - name: NODE_OPTIONS
+              value: "--dns-result-order=ipv4first"
+            - name: AWS_MAX_ATTEMPTS
+              value: "10"
+          envFrom:
+            # ⚠ A′ DEDICATED secret (scoped normalized/ca-qc-zonage/* ONLY) — PLACEHOLDER name, provisioned at
+            #   go-line. NEVER geo-s3-credentials (the broad capture cred A′ isolates from).
+            - secretRef:
+                name: geo-served-zonage-deposit-cred
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: scratch
+              mountPath: /scratch
+      volumes:
+        - name: scratch
+          emptyDir:
+            sizeLimit: 2Gi
