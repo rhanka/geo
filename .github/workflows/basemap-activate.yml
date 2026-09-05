@@ -120,11 +120,28 @@ jobs:
                 --from-file=GOOGLE_TILE_KEY=/dev/stdin --dry-run=client -o yaml \
             | kubectl apply -f -
 
-      # 7. Rollout restart geo-api pour recharger la clé (le flag est déjà "1" via la PR GO#1).
-      - name: rollout restart geo-api
+      # 7. Rollout restart geo-api (PATCH — RBAC deployments[patch] resourceNames=[geo-api]) pour recharger
+      #    la clé (le flag est déjà "1" via la PR GO#1), puis attendre la complétion par un POLL get-based.
+      #    ⚠ PAS `kubectl rollout status` : il ouvre un informer list/watch, or `list` n'est PAS scopable par
+      #    resourceName → `geo-ci-runner cannot list deployments` (mesuré run 33964039874). `get` EST
+      #    resourceName-scopé → RBAC least-priv inchangée (voie endossée i-infra ; NE PAS élargir à list/watch).
+      - name: rollout restart + wait geo-api (get-based poll, least-priv)
         run: |
           kubectl -n geo-preprod rollout restart deployment/geo-api
-          kubectl -n geo-preprod rollout status deployment/geo-api --timeout=180s
+          get() { kubectl -n geo-preprod get deployment geo-api -o "jsonpath={$1}" 2>/dev/null || true; }
+          deadline=$((SECONDS + 180))
+          while [ "$SECONDS" -lt "$deadline" ]; do
+            OBSERVED="$(get .status.observedGeneration)"; GEN="$(get .metadata.generation)"
+            UPDATED="$(get .status.updatedReplicas)"; READY="$(get .status.readyReplicas)"
+            SPEC="$(get .spec.replicas)"
+            echo "rollout geo-api: observed=${OBSERVED:-} gen=${GEN:-} updated=${UPDATED:-0} ready=${READY:-0} spec=${SPEC:-}"
+            if [ "${SPEC:-0}" -gt 0 ] && [ "${OBSERVED:-0}" -ge "${GEN:-0}" ] \
+               && [ "${UPDATED:-0}" -eq "${SPEC:-0}" ] && [ "${READY:-0}" -eq "${SPEC:-0}" ]; then
+              echo "✅ geo-api rollout complété"; exit 0
+            fi
+            sleep 5
+          done
+          echo "::error::geo-api rollout pas complété en 180s (get-based poll) — fail-loud (jamais un hang silencieux, #313)."; exit 1
 
       # 8. VERIFY : /basemap/2d/session = 200 (flag ON + clé présente). 503 = GO#1 flag pas mergé OU clé absente.
       - name: verify serve (/basemap/2d/session = 200)
