@@ -143,7 +143,7 @@ describe("computeSetHash", () => {
 
 describe("preprod-native families (ADR-0027 (b) exclude-from-parity)", () => {
   it("names CPTAQ as preprod-native — a committed list, not a silent substring filter", () => {
-    expect(PREPROD_NATIVE_FAMILIES.map((f) => f.collectionId)).toEqual(["ca-qc-constraints"]);
+    expect(PREPROD_NATIVE_FAMILIES.map((f) => f.collectionId)).toEqual(["ca-qc-constraints", "qc-bdzi-flood-zones"]);
     // each entry is auditable (key prefix + reason present)
     expect(PREPROD_NATIVE_FAMILIES.every((f) => f.keyPrefix.length > 0 && f.reason.length > 0)).toBe(true);
   });
@@ -152,6 +152,7 @@ describe("preprod-native families (ADR-0027 (b) exclude-from-parity)", () => {
     expect(isPreprodNativeCollectionId("ca-qc-constraints")).toBe(true);
     expect(isPreprodNativeCollectionId("ca-qc-constraints-warden")).toBe(true);
     expect(isPreprodNativeCollectionId("ca-qc-constraints-saint-stanislas-de-kostka")).toBe(true);
+    expect(isPreprodNativeCollectionId("qc-bdzi-flood-zones")).toBe(true); // BDZI province overlay — standalone preprod-native id
     // NOT excluded — real prod-mirror / unknown families stay IN the parity check (never silently dropped)
     expect(isPreprodNativeCollectionId("ca-qc-sda")).toBe(false);
     expect(isPreprodNativeCollectionId("qc-zonage-abercorn")).toBe(false);
@@ -159,15 +160,16 @@ describe("preprod-native families (ADR-0027 (b) exclude-from-parity)", () => {
   });
 
   it("prodMirrorCollectionIds drops preprod-native, keeps prod-mirror — CPTAQ transparent to parity", () => {
-    const live = ["abercorn", "qc-lots-montreal", "ca-qc-constraints-warden", "ca-qc-constraints-sutton"];
+    const live = ["abercorn", "qc-lots-montreal", "ca-qc-constraints-warden", "ca-qc-constraints-sutton", "qc-bdzi-flood-zones"];
     expect(prodMirrorCollectionIds(live)).toEqual(["abercorn", "qc-lots-montreal"]);
-    // the parity hash over the mirror subset is UNCHANGED by CPTAQ's presence in the live set
+    // the parity hash over the mirror subset is UNCHANGED by CPTAQ + BDZI presence in the live set
     expect(computeSetHash(prodMirrorCollectionIds(live))).toBe(computeSetHash(["abercorn", "qc-lots-montreal"]));
   });
 
   it("isPreprodNativeKey matches served keys under the family prefix (mirror prune protection)", () => {
     expect(isPreprodNativeKey("normalized/ca-qc-constraints/ca-qc-constraints-warden.geojson")).toBe(true);
     expect(isPreprodNativeKey("normalized/ca-qc-constraints/ca-qc-constraints-sutton/ca-qc-constraints-sutton.geojson")).toBe(true);
+    expect(isPreprodNativeKey("normalized/ca-qc-constraints/qc-bdzi-flood-zones.geojson")).toBe(true);
     expect(isPreprodNativeKey("normalized/abercorn.geojson")).toBe(false);
   });
 
