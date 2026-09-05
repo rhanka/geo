@@ -159,11 +159,55 @@ describe("createGoogle2dBasemapAdapter (client-side mint, §3.3)", () => {
     expect(adapter.options.transformRequest(`${TILE}/2/0/0`)?.url).toContain("session=S2");
   });
 
-  it("rejects a flag-OFF / key-absent descriptor (503) so the caller can fall back to OSM", async () => {
+  // Descriptor bounded-retry (0.6.1, geo-archi ruling): a TRANSIENT 503 during the activation rollout must
+  // not stick the user on OSM when the basemap IS enabled; an INTENTIONAL flag-off must NOT be retried.
+  it("(i) retries a TRANSIENT 503 then renders Google on the 200 (basemap IS activated)", async () => {
+    let descriptorCalls = 0;
+    const adapter = await createGoogle2dBasemapAdapter({
+      mintUrl: MINT,
+      sleep: () => Promise.resolve(), // deterministic: no real backoff wait
+      fetch: routeFetch([
+        {
+          prefix: MINT,
+          respond: () => {
+            descriptorCalls += 1;
+            // First hit = a bare/cold gateway 503 (transient); then the descriptor is served.
+            return descriptorCalls === 1 ? new Response("cold", { status: 503 }) : json(descriptor());
+          },
+        },
+        { prefix: CREATE_SESSION, respond: () => json(sessionBody("S1")) },
+      ]),
+    });
+    expect(descriptorCalls).toBe(2); // retried once, then 200
+    expect(adapter.basemap.kind).toBe("raster-source"); // constructed against Google, NOT OSM
+  });
+
+  it("(ii) does NOT retry an intentional flag-off (503 BasemapDisabled) → OSM immediately", async () => {
+    let descriptorCalls = 0;
     await expect(createGoogle2dBasemapAdapter({
       mintUrl: MINT,
-      fetch: routeFetch([{ prefix: MINT, respond: () => new Response("disabled", { status: 503 }) }]),
+      sleep: () => Promise.resolve(),
+      fetch: routeFetch([
+        {
+          prefix: MINT,
+          respond: () => {
+            descriptorCalls += 1;
+            return json({ code: "BasemapDisabled", description: "flag-off pré-GO" }, 503);
+          },
+        },
+      ]),
+    })).rejects.toMatchObject({ message: "descriptor 503 BasemapDisabled" });
+    expect(descriptorCalls).toBe(1); // intentional flag-off is terminal — 0 retry
+  });
+
+  it("(iii) gives up a PERSISTENT transient 503 after the bounded retries → OSM", async () => {
+    let descriptorCalls = 0;
+    await expect(createGoogle2dBasemapAdapter({
+      mintUrl: MINT,
+      sleep: () => Promise.resolve(),
+      fetch: routeFetch([{ prefix: MINT, respond: () => { descriptorCalls += 1; return new Response("cold", { status: 503 }); } }]),
     })).rejects.toMatchObject({ kind: "network", message: "descriptor 503" });
+    expect(descriptorCalls).toBe(4); // initial + 3 bounded retries, then reject (fail-closed holds)
   });
 
   it("tags a client createSession 403 as forbidden for the engine's onError mapping", async () => {
