@@ -174,18 +174,23 @@ flowchart LR
 **État** : PV pilot **existe** ; généralisation zonage/règlements = **à créer** (typed-linking gaté externe).
 
 ### §2.6 OCR / vision — extraction cascade (**LLM-minimal**)
-**[FAIT]** Cascade **natif → `pdftotext` → OCR (`mistral-ocr`, `/v1/ocr` sanctionné) → modèle-fort sur RÉSIDU mesuré
-seulement**. **[FAIT]** Vision-chat Mistral **BANNI** (ADR-0024, facture €480) ; garde `vision-engine-policy.ts` live+CI.
-Remplaçant vision = **benchmark `{luna, sonnet-5, terra}`** (protocole **#362** : coût/page co-égal, gold-corpus bloquant,
-`unknown`-on-failure) — **décision §7 GATE#1**.
+**[FAIT]** Cascade **natif → `pdftotext` → OCR/vision (modèle-fort sur RÉSIDU mesuré seulement)**. **[FAIT]** `mistral-medium`
+(vision-chat) reste **BANNI** (ADR-0024) — mais le ban visait l'**API vision-chat MÉTRÉE** (facturée au token → €480),
+**PAS** le **CLI enrôlé**. **[FAIT — reframe owner]** OCR/vision via **CLI enrôlée = GRATUITE** (quota-compte), et **le coût
+est déjà contenu par ADR-0032** (compte-par-lane, 429 fail-closed) → passer de `mistral-ocr` à un modèle-fort CLI
+(luna/terra) = **amélioration** (qualité), pas une régression coût. ⟹ **garde-fou coût/page MOOT** — non pas supprimé mais
+**subsumé par la containment ADR-0032** (structurelle, pas une estimation par-page) ; **l'axe de validation = QUALITÉ**
+(protocole **#362** : gold-corpus bloquant, `unknown`-on-failure, no-drift). **Défaut OCR = CLI-vision (gratuite) au meilleur
+score qualité #362.**
 ```mermaid
 flowchart LR
   DOC["Document (PV, grille de normes)"] --> N["natif / pdftotext"]
-  N -->|"residu"| OCR["OCR /v1/ocr (mistral-ocr)"]
-  OCR -->|"residu mesure"| VIS["vision-residu (remplacant benchmark #362)"]
-  VIS -. gate .-> G["Gates : cout/page · gold-corpus · unknown-on-failure"]
+  N -->|"residu"| VIS["OCR/vision via CLI enrolee (gratuite, quota-compte = contenu ADR-0032)"]
+  VIS -. gate .-> G["Gate = QUALITE (#362) : gold-corpus · unknown-on-failure · no-drift"]
 ```
-**État** : natif/OCR **opérationnels** ; **vision inopérante (ban) jusqu'au remplaçant validé** (§7 GATE#1).
+**État** : natif **opérationnel** ; le **remplaçant CLI-vision** attend la **finalisation #362** (métriques déjà là — **à
+finaliser, pas refaire**) + les **ids callables 200-réels** (benchmark **HOLD**, i-cond route). Garde `vision-engine-policy.ts`
+reste (un id vision doit être **explicite et sanctionné**).
 
 ## §3 — Orchestration DATA-CITY-AWARE + config par ville (1106 munis)
 
@@ -296,10 +301,12 @@ flowchart LR
 - **[D-cadre] Ratifier le CADRE** : **geo = MOTEUR de traitement, immo = CONFIGURATION** (client configuré), avec la
   **frontière fidèle** E4/E5 (assemblage-graphe immo, immo-owned, en aval — non aplati). C'est la décision structurante
   du dossier.
-- **[GATE #1 — vision-remplaçant (ADR-0024)]** — décision owner-précoce, chemin critique IA. La route vision est
-  **inopérante par construction** (ban €480). **Décision** : ratifier le **candidat + méthode** (benchmark
-  `{luna, sonnet-5, terra}` sur grilles-gold, 0-Mistral, coût/page co-égal, `unknown`-on-failure — protocole **#362**) ;
-  **run gaté** post-restauration Codex/`:3002`. Design+critères **maintenant**, run **après**.
+- **[GATE #1 — vision-remplaçant (ADR-0024), REFRAMÉ owner]** — décision owner-précoce, chemin critique IA. **Reframe** :
+  le ban €480 visait l'**API vision-chat MÉTRÉE** (`mistral-medium`) ; la **CLI enrôlée est GRATUITE** (quota-compte,
+  **coût déjà contenu par ADR-0032**) → **garde-fou coût/page MOOT** (subsumé par la containment, pas supprimé), **axe =
+  QUALITÉ**. **Décision** : ratifier le **remplaçant CLI-vision** au **meilleur score qualité #362** (grilles-gold,
+  `unknown`-on-failure, no-drift — métriques **déjà là ; #362 à FINALISER, pas refaire**). **Benchmark HOLD** : attend les
+  **ids callables 200-réels** (i-cond route). Design+critères prêts, run après.
 - **[GATE #2 — cluster-mesh-hosting (D-moteur-2)]** — **CONFIRMER la direction owner** (LLM-serving in-cluster) +
   **trade-off exposé**, **PAS re-litiger**. **⚠ Term-lift gravé** : le `@sentropic/cluster-mesh` existant = **identité,
   route 0 LLM** (§2.1) → « cluster-mesh LLM-hosting » = un **serving à bâtir** (§2.2), pas ce package. La **jambe
