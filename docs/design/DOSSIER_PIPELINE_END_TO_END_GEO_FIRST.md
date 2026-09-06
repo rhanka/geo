@@ -321,33 +321,6 @@ flowchart LR
   frontière fidèle E4/E5** (contre ma propre thèse) précisément pour ne pas sur-vendre le geo-first. Intérêt **owner** =
   logique capitalisée (moins de duplication) + représentation fidèle.
 
-## §4 — Les COUCHES (ordre owner : **pv-signaux FIRST**) — *[à remplir]*
-
-> **Ordre owner-spécifié** : (1) **pv-signaux (scrap récurrents) = LEAD** → (2) zones → (3) règlement → (4)
-> usage-dominant / effet-densifiant / cadastre-rôle / immo-lots → (5) env (CPTAQ/BDZI/GRHQ) → (6) satellite/3D VIEW.
-> Chaque couche = un schéma (source, capture, extraction, serving, provenance).
-
-- **§4.1 pv-signaux (scrap récurrents) — COUCHE-LEAD** : scrap worker-live → détection → OCR/vision → signaux (`qc-zoning-events`, avis-motion-lifecycle, 5 marques Steve). Schéma.
-- **§4.2 zones (règlementaires réelles, #632)** · **§4.3 règlement** · **§4.4 usage/densif/cadastre-rôle/lots** · **§4.5 env (CPTAQ servi / BDZI+GRHQ Phase-2)** · **§4.6 satellite 2D (0.6.1) / 3D (track séparé)**.
-
-## §5 — Colonne repro / preuve-v2 (capture-on-cluster → S3 → serving) — *[à remplir]*
-
-> Le principe fondateur en schéma : **JAMAIS de capture locale** ; scrape sur **cluster** → écrit **S3** (octets +
-> manifeste `url/retrieved_at/sha256/statut` = **preuve v2**) → normalize → serving OGC S3-only. « Vert par omission
-> = rouge ». Schéma : capture-cluster → S3(preuve) → normalize → serving.
-
-## §6 — IMMO = client configuré (config-view — absorbe #634) — *[à remplir]*
-
-> La vue-config immo dans le moteur geo. **Sélection** : ~528 munis · PV/avis-motion/séances · signaux · les couches
-> geo superposées (zones réelles, satellite, env). **Assemblage graphe** : E4 merge → E5 projection PG (immo-owned,
-> en aval — frontière honnête §0). Source : #634 `PIPELINE_FULLAUTO_CLUSTER_MESH.md`. Schéma : config → moteur →
-> assemblage-graphe-immo.
-
-## §7 — Décision demandée / attendus / options / disclosure *(present-decision — geo-cond présente)* — *[à remplir]*
-
-> Ce que l'owner ratifie : le **cadre geo=moteur/immo=config** + l'archi end-to-end schématisée. Stakes · options ·
-> attendus (checklist) · strongest-case-against · pré-mortem · disclosure d'intérêt-agent.
-
 ---
 
 ## Notes de reprise (traçabilité)
