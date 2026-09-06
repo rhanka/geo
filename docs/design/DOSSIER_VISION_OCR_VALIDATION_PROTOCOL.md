@@ -10,6 +10,21 @@
 > capté** (i-cond) — verbatim + session-id + timestamp + question exacte ; le relais verbatim est une preuve forte,
 > mais le flip d'un doc à historique €480 ride sur le record réel, pas sur un résumé.
 
+> **⚠⚠ REFRAME OWNER (2026-09-06) — SUPERSÈDE le « coût/page premier-rang » de ce protocole.** Autorité courante = le
+> **dossier pipeline** (`DOSSIER_PIPELINE_END_TO_END_GEO_FIRST.md` §2.6 / §7-GATE#1). Corrections :
+> 1. **Coût/page N'EST PLUS un critère.** OCR/vision via **CLI enrôlée = GRATUITE** (quota-compte) ; le coût est
+>    **SUBSUMÉ par la containment ADR-0032** (compte-par-lane, 429 fail-closed = structurel) → le scénario €480
+>    (facturation métrée qui s'emballe) **ne peut pas se produire** sur ce chemin ⟹ l'estimation par-page est
+>    **redondante, pas ignorée**. **⟹ Route B « coût/page co-égal » + le §5 « gate coût/page » ci-dessous sont
+>    PÉRIMÉS.** **Les 4 protections €480 RESTENT** (ban `mistral-medium` + id-vision-explicite `vision-engine-policy`
+>    + containment-quota ADR-0032 + validation-QUALITÉ).
+> 2. **Axe unique = QUALITÉ** (gold-corpus, `unknown`-on-failure, no-drift).
+> 3. **Set candidats = `{luna, terra}`** (`sonnet-5` = **alias→luna** ; `gemini` **gaté** Cloud Code ; `codex-spark`
+>    gaté codex-restore). Défaut OCR = CLI-vision (gratuite) au **meilleur score qualité**.
+> 4. **#362 à FINALISER (métriques déjà là), pas refaire** : geo-cond pilote le **runner luna/terra** (build+run) →
+>    résultats → finalisation. **Benchmark HOLD** (ids callables 200-réels). **Alignement inline complet des sections
+>    ci-dessous à la finalisation** (avec les scores).
+
 ## 0. Disciplines qui cadrent ce protocole
 - **[FAIT]** ADR-0024 = doc gouvernance **à historique €480** (`docs/decisions.md:483-489`). Cause verbatim : modèle
   cher « **codé en dur comme défaut** » des 3 classes vision, jamais le vision-chat sanctionné → « **dérive de code
