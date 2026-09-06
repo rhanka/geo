@@ -964,10 +964,18 @@ satellite `fill-opacity` → **0** (ou ≤0.08 tint) + contour couleur-famille b
 (inchangée)** ; boutons **Plan/Satellite**, défaut **Plan**, **host-gated GO#2**. **DS ratifie l'exact** ; le dossier validé
 antérieur non-gité (lien pending) peut superséder les valeurs.
 
-**Conséquences.** **§5 satellite HORS PROD** tant que non-conforme+vérifié : le **mini-gate wp7** (ADR-0026/0029,
-« gel gagné sur preuve ») **AJOUTE** la condition « **satellite → surfaces transparentes/contour, imagerie visible, 0 aplat
-opaque** » + boutons présents. **Conformité visuelle = validation owner/geo-archi** (Playwright vues bloqué). Seam immédiat :
-`GeoCityMapBase` `selected-zones-fill` / `zoneFillOpacity`.
+**Conséquences + PHASING (contrainte technique mesurée vues).** Le `transformRequest` MapLibre (session/clé satellite par
+tuile) **n'est PAS modifiable post-création** → un toggle runtime Plan↔Satellite impose un **re-init map** (ou
+transformRequest toujours-armé). ⟹ **SPLIT** :
+- **PR1 = le RENDU 2-modes** (satellite transparent + contour/casing sur le booléen `buildSatelliteBasemap` ; plan =
+  expression immo inchangée) = **le fix owner du défaut aplats** → satisfait le mini-gate « **0 aplat opaque, imagerie
+  visible** » → **débloque §5** (le grief owner explicite). Livrable maintenant.
+- **PR2 = les BOUTONS de switch** (toggle, avec **re-init / always-armed** pour la contrainte `transformRequest`) —
+  **phasé après** ; complète la conformité (point 3 de la décision).
+**§5 satellite HORS PROD** tant que **PR1 non-conforme+vérifié** (aplats) ; **PR2 (boutons)** complète la spec. Le
+**mini-gate wp7** (ADR-0026/0029, « gel gagné sur preuve ») **AJOUTE** : « satellite → transparent/contour, imagerie
+visible, 0 aplat » **(PR1)** + « boutons présents » **(PR2)**. **Conformité visuelle = validation owner/geo-archi**
+(Playwright vues bloqué). Seam : `GeoCityMapBase` `selected-zones-fill` / `zoneFillOpacity` / booléen `buildSatelliteBasemap`.
 
 **Réfs.** ADR-0030 (`:714-715`, volet superseded) · ADR-0029/0026 (contrat v2 + gel-sur-preuve + mini-gate) · ADR-0025
 (boundary sémantique-wp6 / tokens-DS) · `GeoCityMapBase.svelte` (`selected-zones-fill`, `zoneFillOpacity=withHoverOpacityBoost`
