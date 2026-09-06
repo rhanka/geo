@@ -304,9 +304,10 @@ flowchart LR
 - **[GATE #1 — vision-remplaçant (ADR-0024), REFRAMÉ owner]** — décision owner-précoce, chemin critique IA. **Reframe** :
   le ban €480 visait l'**API vision-chat MÉTRÉE** (`mistral-medium`) ; la **CLI enrôlée est GRATUITE** (quota-compte,
   **coût déjà contenu par ADR-0032**) → **garde-fou coût/page MOOT** (subsumé par la containment, pas supprimé), **axe =
-  QUALITÉ**. **Décision** : ratifier le **remplaçant CLI-vision** au **meilleur score qualité #362** (grilles-gold,
-  `unknown`-on-failure, no-drift — métriques **déjà là ; #362 à FINALISER, pas refaire**). **Benchmark HOLD** : attend les
-  **ids callables 200-réels** (i-cond route). Design+critères prêts, run après.
+  QUALITÉ**. **Décision** : ratifier le **remplaçant CLI-vision** — **candidats `{luna, terra}`** (`sonnet-5` = **alias→luna** ;
+  `gemini` **gaté** Cloud Code) — au **meilleur score qualité #362** (grilles-gold, `unknown`-on-failure, no-drift —
+  métriques **déjà là ; #362 à FINALISER, pas refaire**). **Benchmark HOLD** : attend les **ids callables 200-réels** +
+  le **runner luna/terra** (geo-cond pilote le build+run). Design+critères prêts, run après.
 - **[GATE #2 — cluster-mesh-hosting (D-moteur-2)]** — **CONFIRMER la direction owner** (LLM-serving in-cluster) +
   **trade-off exposé**, **PAS re-litiger**. **⚠ Term-lift gravé** : le `@sentropic/cluster-mesh` existant = **identité,
   route 0 LLM** (§2.1) → « cluster-mesh LLM-hosting » = un **serving à bâtir** (§2.2), pas ce package. La **jambe
