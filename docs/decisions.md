@@ -907,6 +907,73 @@ contrainte-sélection) = **l'ajout** ; **gemini** = **in-pod-direct** (D1=A excl
 `cloud-code-transport.ts` (`buildCloudCodeRequest`), **requiert `8aee7f615`** (`provider-connections.ts:1139-1140` =
 cause directe du mode €480 « enrôlement passe / appels échouent ») + no-gateway-properties.
 
+## ADR-0033 — **Rendu des surfaces (overlays de zones) : 2 modes DISTINCTS selon le basemap — SATELLITE = transparent/contour (imagerie visible), PLAN = rempli ; principe geo-owned + boutons de switch** (amende ADR-0030) · accepted (ratifié owner, verbatim capté 1re-main i-cond) · 2026-09-06
+
+> **⚠ Portée** : cet ADR grave la **SÉMANTIQUE** owner-attestée. Les **tokens chiffrés exacts** (fill-opacity par mode,
+> contour couleur/épaisseur/opacité/halo, valeurs plan par-vue, boutons) = **DS-authoritative** (ADR-0025 §2-6). **⚠
+> L'owner référence un DOSSIER VALIDÉ ANTÉRIEUR non-gité** (« on avait validé dans le dossier geo ») dont le **lien est en
+> cours de récupération** (i-cond→owner) : s'il porte des valeurs/nuances plus précises, elles **RÉCONCILIENT/RAFFINENT**
+> les valeurs ; la **sémantique** ci-dessous est **owner-verbatim-claire** et tient.
+
+> **Record owner-direct** — **capturé 1re main par i-cond** (conducteur ayant porté la correction ; l'owner a répondu dans
+> sa session), **relayé verbatim à geo-archi ; jugé genuine par geo-archi** (verbatim + session + date ; registre owner
+> non-synthétisé ; **i-cond n'a PAS instruit le flip** = pas de laundering — le jugement de suffisance est geo-archi).
+> **Décideur = l'OWNER.**
+> - **Session** : `session_016HbmM38GS7JcSCWVVRaVVW` (conducteur i-cond) · **Date** : 2026-09-06.
+> - **Verbatim owner** : « *on ne va pas passer en prod la merde que tu as fait sur le satellite. on a tres clairement
+>   cadré j'avais validé pour que ca soit pas une merde comme ca : [capture: aplats jaune/orange opaques sur vue
+>   satellite]. dans le dossier geo on avait validé d'avoir deux modes bien distinct pour le rendu des surfaces quand on
+>   est en satellite vs plan. retrouve le impérativement. c geo qui doi retrouver ca. … c'est relatif au fait de pas
+>   mettre des applats non transparents sur de la vue satellite. … on avait aussi spécifier les putain de bouton pour
+>   switch de layer* ».
+> - **Sémantique owner-attestée** : SATELLITE = surfaces **transparentes/contour** (PAS d'aplat non-transparent, imagerie
+>   visible) · PLAN = **remplies** · **+ boutons de switch de layer**.
+
+**Contexte — décision non-gitée + grounding CORRIGÉ (mesuré geo-cond).**
+- **[FAIT — sweep 2026-09-06]** Non attestée en git : aucun ADR/spec/`proposed` pour le 2-mode. **ADR-0030** (`:714-715`)
+  dit l'**inverse** (« couches data inchangées … pour le basemap »).
+- **[FAIT — grounding corrigé]** La **vue satellite rejetée = `GeoCityMapBase.svelte`** (immo, SignauxMapView,
+  **MapLibre-standalone**) : fill = couche `selected-zones-fill`, opacité via **`zoneFillOpacity=withHoverOpacityBoost`**
+  (expression immo, hover min 0.55), **non conditionnée au basemap** ; elle **n'utilise PAS le moteur geo**. Le moteur geo
+  (`geo-ui-svelte GeoMap.svelte:420-427`, `GeoBasemapSwitcher`) sert `GeoView` **qui n'a PAS de satellite** → le moteur
+  **non plus** ne porte la règle par-mode. ⟹ **aucun des 2 chemins ne gitait le principe** = cause racine des aplats.
+
+**Décision (propriétaire — amende ADR-0030) — PRINCIPE geo-owned.** Le rendu des **surfaces d'overlay de zones** est
+**conditionné au basemap**, en 2 modes distincts, comme **principe geo-owned** (capitalisé dans le moteur geo pour
+réutilisation — cohérent geo=moteur/immo=config) :
+1. **PLAN** : surfaces **REMPLIES** — **valeurs par-vue existantes INCHANGÉES** (immo `GeoCityMapBase` :
+   `withHoverOpacityBoost` ; moteur geo : 0.28/hover 0.55). **On n'impose PAS une valeur commune.**
+2. **SATELLITE** : surfaces **TRANSPARENTES/CONTOUR** — **fill → 0** (pas d'aplat non-transparent, **imagerie visible**) ;
+   la **meaning passe au CONTOUR** (couleur-famille sur le trait, contraste suffisant sur imagerie).
+3. **Boutons de switch de layer** : contrôle utilisateur **spécifié**, pilote **le mode de rendu des surfaces** (pas
+   seulement le type de basemap).
+**Supersede** le volet « couches data inchangées quand satellite » d'**ADR-0030** (`:714-715`).
+
+**Scope & convergence (geo-first).**
+- **Fix owner IMMÉDIAT = `GeoCityMapBase.svelte`** (vue satellite immo rejetée) : garder l'expression plan immo + **ajouter
+  la branche satellite** (fill → 0 + contour-famille) + les boutons.
+- **Capitalisation moteur = follow-up** : le principe 2-mode se capitalise dans le moteur geo (`geo-ui-svelte GeoMap`) pour
+  réutilisation.
+- **⚠ DETTE geo-first (flaggée)** : la vue satellite immo **bypasse le moteur geo** (MapLibre-standalone) → c'est
+  **exactement** la divergence que le cadre **geo=moteur/immo=config** adresse. **Cible de convergence** : la vue satellite
+  immo devrait **utiliser/configurer le moteur geo**. Tant que non-convergé, le principe vit **aux 2 endroits** (risque de
+  divergence) = dette à résorber.
+
+**Boundary (ADR-0025).** Sémantique = wp6/owner (cet ADR) ; **tokens exacts = DS**. Proposition geo-archi interim (vues) :
+satellite `fill-opacity` → **0** (ou ≤0.08 tint) + contour couleur-famille bumpé + halo ; **plan = expression existante
+(inchangée)** ; boutons **Plan/Satellite**, défaut **Plan**, **host-gated GO#2**. **DS ratifie l'exact** ; le dossier validé
+antérieur non-gité (lien pending) peut superséder les valeurs.
+
+**Conséquences.** **§5 satellite HORS PROD** tant que non-conforme+vérifié : le **mini-gate wp7** (ADR-0026/0029,
+« gel gagné sur preuve ») **AJOUTE** la condition « **satellite → surfaces transparentes/contour, imagerie visible, 0 aplat
+opaque** » + boutons présents. **Conformité visuelle = validation owner/geo-archi** (Playwright vues bloqué). Seam immédiat :
+`GeoCityMapBase` `selected-zones-fill` / `zoneFillOpacity`.
+
+**Réfs.** ADR-0030 (`:714-715`, volet superseded) · ADR-0029/0026 (contrat v2 + gel-sur-preuve + mini-gate) · ADR-0025
+(boundary sémantique-wp6 / tokens-DS) · `GeoCityMapBase.svelte` (`selected-zones-fill`, `zoneFillOpacity=withHoverOpacityBoost`
+— vue rejetée) · `geo-ui-svelte GeoMap.svelte:420-427` + `GeoBasemapSwitcher` (moteur geo, sans satellite/per-mode) · dossier
+validé antérieur non-gité (lien pending, i-cond→owner).
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
