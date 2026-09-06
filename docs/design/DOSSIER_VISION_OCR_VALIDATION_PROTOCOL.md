@@ -10,6 +10,28 @@
 > capté** (i-cond) — verbatim + session-id + timestamp + question exacte ; le relais verbatim est une preuve forte,
 > mais le flip d'un doc à historique €480 ride sur le record réel, pas sur un résumé.
 
+> **✅ FINALISÉ (2026-09-06) — reframe owner appliqué + benchmark intégré.** Coût/page **retiré** (OCR/vision via CLI
+> enrôlée = **gratuite**, coût **subsumé par la containment ADR-0032** ; **4 protections €480 maintenues** : ban
+> `mistral-medium` + id-vision-explicite `vision-engine-policy` + containment-quota ADR-0032 + validation-QUALITÉ).
+> **Axe unique = QUALITÉ.** Autorité = ce doc + le dossier pipeline (§2.6 / §7-GATE#1).
+>
+> **RÉSULTATS BENCHMARK** — corpus GOLD `sample-20` (≤2 pages/ville), transport **codex-CLI** (gratuit, **pas gateway**) ;
+> runner + rapport committés `bd010c90` :
+>
+> | modèle | villes | zones | publiés ≥0.85 | anti-invention | recoupSig | vitesse |
+> |---|---|---|---|---|---|---|
+> | **`gpt-5.6-luna`** | 16/20 | 333 | **1083/2331 = 46.5 %** | **0 fabriqué ✅** | 0.216 | **~2.5× terra** |
+> | `gpt-5.6-terra` | 16/20 | 329 | 747/2303 = 32.4 % | 0 fabriqué ✅ | 0.216 | 1× |
+>
+> **VERDICT geo-archi** : **`gpt-5.6-luna` = défaut vision-résidu** — net supérieur (46.5 % vs 32.4 %, **same-corpus**),
+> correctness SIG **égale** (recoupSig 0.216 les 2, overlap 313≈314), **~2.5× plus rapide**, **0 anti-invention** (les 2
+> passent). **Caveat mesuré** : recoupSig absolu bas (~0.22) = **artefact de fenêtre** (≤2 pages vs SIG complet),
+> identique aux 2 → **pas un échec modèle**. **vs `mistral-ocr` = DIRECTIONNEL seulement** (`BENCH-OCR.md` = 8 villes
+> **DIFFÉRENTES**, 27.3 %, pas same-corpus, pas 1:1) — **ne pas sur-affirmer**.
+> **RATIFICATION** : geo-archi **ratifie `luna` comme MODÈLE** (délégation ADR-0024 « à ratifier par geo-archi » +
+> benchmark `bd010c90`) ; l'**ACTIVATION de la route vision** reste **gatée sur GATE#1 owner** (dossier §7). **ADR de
+> suivi (decisions.md) à graver post-merge #363** (headroom PR + numérotation).
+
 ## 0. Disciplines qui cadrent ce protocole
 - **[FAIT]** ADR-0024 = doc gouvernance **à historique €480** (`docs/decisions.md:483-489`). Cause verbatim : modèle
   cher « **codé en dur comme défaut** » des 3 classes vision, jamais le vision-chat sanctionné → « **dérive de code
@@ -58,36 +80,24 @@ s'applique à **chaque candidat**, **chaque chemin d'invocation**, **chaque rout
   ligne/colonne) ; (iii) **`unknown`-on-failure** (jamais deviner — anti-invention ; un silent-guess = **échec**).
 - **Barre** : le candidat doit **BATTRE ce que natif+OCR font déjà sur le résidu** — sinon il ajoute du coût **sans
   gain**. (Barre exacte = §9a, owner-ratifiable.)
-- **Candidats RÉSOLUS-NOW** : {`gpt-5.6-luna`, `claude-sonnet-5`}. **SLOTS GATÉS** : codex-spark (codex-restore
-  6/09), gemini (owner-resolution + agy-fix). *(terra = benchmark OCR §4B.)*
+- **Candidats** : **`{luna, terra}`** — **défaut = `gpt-5.6-luna`** (benchmark `bd010c90`, voir en-tête). *(`sonnet-5` =
+  alias→luna ; `gemini` gaté Cloud Code ; `codex-spark` gaté codex-restore.)*
 
-### Route B — OCR (**BENCHMARK owner-sanctionné**, coût/page **PREMIER-RANG**)
-- **[FAIT]** L'owner a **sanctionné un benchmark OCR** (verbatim : « *gemini 3.8 en agy enroll pour le benchmark ocr* »).
-  Critère = **qualité-extraction ET coût/page CO-ÉGAUX au premier rang**.
-- **[FAIT — baseline groundée]** À battre/justifier : **mistral-ocr `/v1/ocr` DÉDIÉ = ~$0.001/page**
-  (`packages/qc-sources/src/sources/grille-ocr-extractor.ts:74`, `OCR_USD_PER_PAGE` défaut 0.001).
-- **[JUGEMENT — catch ②, le mécanisme]** luna/terra/sonnet/gemini = **vision-chat généralistes**, **PAS d'endpoint
-  `/v1/ocr`**. « OCR par un 5.6 » = **extraction vision-chat pleine-page** = potentiellement **100–1000× le coût/page
-  du dédié** (tokens × image pleine-page × volume). **C'est EXACTEMENT la forme €480** (coût/page × volume × 319 munis).
-- **Le benchmark DOIT produire, PAR candidat** : **(a)** qualité vs gold ; **(b)** **$/page estimé AVANT le run**
-  (pricing-tokens × page-token-count typique) ; **(c)** **coût-projeté total** au volume `319 munis × pages/muni`.
-  **[JUGEMENT]** L'owner tranche **luna-vs-terra** (et **garder/éteindre mistral-ocr**) avec **(a)+(b)+(c) sous les
-  yeux** — on **ne tranche pas à sa place** (décision owner **différée**, verbatim « à recheck »).
-- **Candidats RÉSOLUS-NOW** : {`gpt-5.6-luna`, `gpt-5.6-terra`, `claude-sonnet-5`}. **SLOTS GATÉS** : codex-spark
-  (codex-restore), gemini (owner + agy-fix).
-- **⚠ Garde-fou AMONT (catch ④)** : si **gemini résout en PRO** (`gemini-3-pro`, PAS un flash) → **re-estimer
-  coût/page SUR LE PRO** — un pro ≫ un flash ; substituer l'attendu-flash par un pro **sans re-estimer** = **dérive
-  ADR-0024 en amont** (l'estimation-avant devient fausse **avant même le run**). Même vigilance pour tout candidat
-  dont l'id résolu diffère en tier de l'id nommé.
+### Route B — OCR (**UNIFIÉE avec Route A : axe QUALITÉ, coût RETIRÉ**)
+- **[FINALISÉ — reframe owner]** Le « coût/page premier-rang » **est RETIRÉ** : OCR/vision via **CLI enrôlée = gratuite**
+  (quota-compte, coût **subsumé par ADR-0032**). ⟹ **Route B se confond avec Route A** — un seul axe = **QUALITÉ**
+  (exact-match/cellule, no-drift, `unknown`-on-failure). Le mécanisme est **extraction vision-chat** (pas `/v1/ocr`
+  dédié) — **assumé** (gratuit via CLI, qualité **mesurée** : voir en-tête, luna 46.5 % vs terra 32.4 %).
+- **Défaut = `gpt-5.6-luna`** (benchmark) ; **`mistral-ocr`** reste disponible (cheap, dédié) comme fallback OCR-natif.
+- *(PÉRIMÉS par le reframe : l'ancien « catch② coût 100–1000× » et le « garde-fou-amont pro-vs-flash » — **moot** sous CLI
+  gratuit + containment ADR-0032. La comparaison vs mistral-ocr reste **directionnelle** — corpus différent, voir en-tête.)*
 
-## 5. Gate coût (précondition **go-live** — le remède €50/GATE)
-- **[JUGEMENT]** Aucun candidat ne **sert en live** sans **budget/quota par-appelant + kill-switch PROUVÉ-PAR-REFUS
-  AVANT activation** — le pattern déjà pratiqué maison (`docs/ops/gcp-3dtiles/GATE.md:10-14` + `50-test-kill.sh` :
-  `costAmount:51/budgetAmount:50 → quota=0`).
-- **gateway** (luna/terra/sonnet) : budget **par-appelant**. **enroll** (codex-spark, gemini-agy) : **cap quota-COMPTE**
-  + kill-switch.
-- Le **coût/page estimé** (§4B-b) **EST une sortie de ce gate** : **pas d'activation OCR-généraliste sans
-  l'estimation-avant** (anti-€480 opérationnel).
+## 5. Gate coût (go-live) — **SUBSUMÉ par ADR-0032** (estimation coût/page retirée)
+- **[FINALISÉ]** L'estimation coût/page-avant-activation **est retirée** (moot : CLI enrôlée **gratuite**). Le gate coût
+  go-live **= la containment ADR-0032** (compte-par-lane : **quota externe = cap** · **révocation-compte = kill-switch** ·
+  **429 fail-closed**). C'est le pattern **€50/GATE** (`GATE.md:10-14` : cap **externe** prouvé-par-refus) porté au
+  niveau **compte-par-lane** — structurel, **pas** un émetteur coût/page. Le scénario €480 (facturation métrée
+  emballée) **ne peut pas se produire** sur le chemin CLI enrôlé (quota capé, fail-closed).
 
 ## 6. Carte des points d'enforcement (contrat) — **le livrable central wp6**
 - **gateway vision** (`gpt-5.6-luna`, `gpt-5.6-terra`, `claude-sonnet-5`) → `assertVisionModelAllowed` : **ajouter les
