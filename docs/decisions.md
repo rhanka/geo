@@ -769,6 +769,66 @@ d'amélioration future, NON-worked sans owner-GO** : **(a) geo-side [levier PRIM
 (semver+ADR sur seam) · `SPEC §2.5.8` · #341 (CORS/referrer préprod-immo) · `overlays/preprod/netpol.yaml` (A2) ·
 #352 (client-mint 0.6.0) · #354 (retry 0.6.1) · mesures 502 + GEL 3/3 du 2026-09-05.
 
+## ADR-0032 — **Moteur LLM d'extraction : credential IN-POD (D1=A, override owner de la reco B) ; D4=α (cap quota-compte + kill-switch + gate DAG `needs_llm`) OBLIGATOIRE = LA containment d'A** · proposed · 2026-09-06
+
+**⚠ Statut `proposed`** — record durable rédigé, **PAS ratifié**. Flip `accepted` **uniquement** en référençant la
+ratification **owner-directe capturée** (batch `AskUserQuestion` D1–D8, porté par i-cond : verbatim + session-id +
+horodatage + question fermée + options), **jamais** sur un relais ni un say-so conducteur (header decisions.md, ligne
+wp6). **Record à renseigner ci-dessous par i-cond/geo-cond, vérifié genuine par geo-archi** (pattern ADR-0030).
+
+> **Record owner-direct** — *À RENSEIGNER (1re main i-cond, batch `AskUserQuestion` D1 ; non encore en main
+> geo-archi — placeholder, PAS un record)* : session `session_…`, 2026-09-…, question fermée D1 (options A/B),
+> **réponse owner verbatim (option A sélectionnée)** : « … ». **Override assumé** : la classe-de-risque €480 (in-pod
+> = révocation-indépendance perdue) était **visible dans l'option** au moment du choix. *Tant que ce bloc n'est pas
+> renseigné+vérifié genuine, l'ADR reste `proposed`.*
+
+**Contexte.** Le dossier D-moteur-2 (`DOSSIER_DMOTEUR2_LLM_HOSTING.md`) posait la FORME du LLM-serving d'extraction
+(axes : frontière d'identité, opérateur) sur 2 options : **(A)** identité in-cluster / **credential IN-POD** (le pod
+exécute la CLI, la creds vit dans le pod) vs **(B)** **egress central gateway** (workspace-JWT → gateway distante).
+La reco geo-archi (fidèle, au-niveau-des-enjeux) **penchait B**, motif décisif : **B porte NATIVEMENT la
+containment** — enrôlement central 1×, budget/quota/kill-switch centraux, et surtout **révocation-indépendance**
+(révoquer la creds centrale coupe tous les pods, indépendamment de tout pod). geo-archi avait **explicitement gardé A
+ouvert** + **disclosé** que la facilité-présentateur pouvait teinter la reco B.
+
+**Décision (propriétaire — override, D1=A).** L'owner **choisit A** : **le pod exécute la CLI, le credential vit DANS
+le pod** — override assumé de la reco B (risque €480 visible). geo **adopte A** pour ses pods d'extraction LLM.
+**Substance-contrat geo-archi (wp6) — l'INVERSION de containment qu'A impose :**
+1. **A PERD la révocation-indépendance** (creds in-pod = pas de coupe centrale ; un pod compromis/emballé détient une
+   creds vive) ⟹ **la SEULE containment restante est D4=α.**
+2. **D4=α est OBLIGATOIRE — invariant LIÉ (A ⟹ α).** α = **cap quota-COMPTE** + **kill-switch** + **gate DAG
+   `needs_llm`** (nœud déterministe autorise ; le LLM n'ordonnance jamais — D8=a). **Le cap EST la containment** :
+   sous A, **A-sans-α ou α-affaibli = le retour €480, INTERDIT par construction.** D1=A et D4=α **ne sont pas 2
+   décisions indépendantes** — α est le **prix non-négociable** d'A. *(La reco B reposait sur « B porte la
+   containment » ; l'override A la reporte intégralement sur α, désormais obligatoire.)*
+3. **Least-priv IN-POD (ligne wp6, RENFORCÉE sous A).** La creds in-pod ne pouvant être révoquée centralement, elle
+   **DOIT** être **(i)** étroitement **scopée** (le seul quota du compte enrôlé, rien de plus large) ; **(ii)**
+   **courte-vie + rotative** (jamais long-vécu) ; **(iii)** **jamais écrite sur S3 ni dans les logs** (discipline de
+   capture). « scopé/tournant idéalement » (mandat) est **remonté au rang d'EXIGENCE** — c'est la compensation
+   least-priv de la révocation-indépendance perdue.
+4. **Gates d'admission = ceux du protocole #362, RATIFIÉS par la base D-decisions** : **D5=a** double-barre coût/page
+   (vs baseline mistral-ocr $0.001/page) · **D6=a** gold-corpus **bloquant** (reproductible, committé/S3) · **D8=a**
+   déterministe-d'abord. Le kill-switch α est **prouvé-par-refus AVANT service** (pattern €50/GATE `GATE.md:10-14`).
+   **PAS de path `CallerAuthPort`/host-side** dans A (creds in-pod, pas un port d'auth appelant distant).
+5. **D7=a (in-cluster) — conséquence, GATÉE plateforme.** Matcher A exige le **levier capacité cluster** (98-99% CPU,
+   board) = **prérequis infra/plateforme**, hors substance-contrat geo → **différé/gaté**. **La jambe host-side reste
+   disponible maintenant** (Act-1 du protocole vision : `codex exec -m` host-side, enroll host-side déjà satisfait) ;
+   **l'in-cluster (Act-2) est gaté** sur ce levier + egress.
+
+**Frontière (ce que geo NE décide PAS).** L'**emplacement physique** de la creds, la **mécanique d'enrôlement
+in-pod** et le **levier capacité in-cluster** sont **plateforme (mesh/h2a/sentropic/infra)** — cet ADR **adopte** la
+décision (pattern ADR-0028 : geo enregistre son adoption + ses invariants-contrat, référence la décision plateforme)
+sans la re-décider. **mesh** ajuste l'enroll in-pod ; **geo-cond** fait l'attribution inter-lane.
+
+**Conséquences.** α devient une **exigence gravée** de tout chemin LLM d'extraction (généralise l'invariant #362 :
+*tout chemin hors-gateway porte son propre cap quota-compte + kill-switch + gate DAG ; non-plafonné = défaut*).
+Réversibilité A→B possible (backend/`source` abstrait) mais **rework** (frontière d'identité). Ce record **flip
+`accepted`** sur le batch `AskUserQuestion` D1 capté (i-cond).
+
+**Réfs.** `DOSSIER_DMOTEUR2_LLM_HOSTING.md` (options A/B, reco B, disclosure) · `DOSSIER_VISION_OCR_VALIDATION_PROTOCOL.md`
+(#362 : invariant hors-gateway = α ; gates D5/D6/D8) · ADR-0024 (classe €480) · `docs/ops/gcp-3dtiles/GATE.md:10-14` +
+`50-test-kill.sh` (kill-switch prouvé-par-refus) · base D-decisions D2=a/D3=i/**D4=α**/D5=a/D6=a/**D7=a**/D8=a (adoptée,
+révisable owner) · pattern ADR-0028 (geo adopte une décision plateforme + réf hors-repo).
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
