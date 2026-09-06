@@ -769,25 +769,29 @@ d'amélioration future, NON-worked sans owner-GO** : **(a) geo-side [levier PRIM
 (semver+ADR sur seam) · `SPEC §2.5.8` · #341 (CORS/referrer préprod-immo) · `overlays/preprod/netpol.yaml` (A2) ·
 #352 (client-mint 0.6.0) · #354 (retry 0.6.1) · mesures 502 + GEL 3/3 du 2026-09-05.
 
-## ADR-0032 — **Moteur LLM d'extraction : credential IN-POD (D1=A, override owner de la reco B) ; D4=α = COMPTE ENRÔLÉ PAR LANE (quota + révocation EXTERNES) = LA containment d'A — le containment ne peut PAS vivre dans le pod** · proposed · 2026-09-06
+## ADR-0032 — **Moteur LLM d'extraction : credential IN-POD (D1=A, override owner de la reco B) ; D4=α = COMPTE ENRÔLÉ PAR LANE (quota + révocation EXTERNES) = LA containment d'A — le containment ne peut PAS vivre dans le pod** · accepted (ratifié owner, vérifié 1re-main i-cond) · 2026-09-06
 
-**⚠ Statut `proposed`.** Le **record owner-direct D1 est CAPTURÉ ci-dessous** (D1=A owner-ratifié, 1re main i-cond) et le
-**containment-CADRE est FINALISÉ** (invariant **compte-par-lane** · 3e terme **job-launch-seul** · gemini = open-design-item
-**non-bloquant**). **Le flip `proposed → accepted` reste GATÉ sur UNE précondition** : la **vérification genuine par geo-archi
-du record contre la CAPTURE RÉELLE** d'i-cond (session ci-dessous) — **PAS** sur le relais ni le say-so conducteur. geo-cond
-dit « flip OK sur le cadre » ; **mais le flip RÉFÉRENCE la ratification owner-directe CAPTURÉE, jamais un relais** (discipline
-anti-laundering, header decisions.md, ligne wp6) → j'attends l'**attestation 1re-main d'i-cond** (ou la capture committée).
-**Flip DÈS cette vérification** (pattern ADR-0030).
+**✅ Statut `accepted` — RATIFIÉ OWNER, vérifié 1re-main (2026-09-06).** Le **record owner-direct D1 (D1=A)** est **attesté
+EN 1re MAIN par i-cond** = la **SOURCE** : l'owner a répondu **dans la session d'i-cond** (`session_016HbmM38GS7JcSCWVVRaVVW`,
+qui a porté le surface `AskUserQuestion`), i-cond l'a **attesté directement à geo-archi** — **pas un relais ni un say-so
+conducteur**. L'attestation a même **corrigé la troncature du relais** (verbatim complet ci-dessous) = preuve d'un
+vrai check-à-la-source, pas d'un rubber-stamp. Le **containment-CADRE est FINALISÉ** (invariant compte-par-lane · gemini
+in-pod-direct + requiert `8aee7f615` · 3e terme sans objet dès le per-lane-binding · parité/cap-gateway MOOT). ⟹ **flip
+`accepted`** : record genuine **vérifié à la source** **+** cadre final (pattern ADR-0030). *(Corroboration durable : artefact
+track committé demandé à i-cond.)*
 
-> **Record owner-direct D1** — **capturé 1re main par i-cond** (qui a porté le surface `AskUserQuestion` à l'owner),
-> **relayé verbatim par geo-cond**. **Décideur = l'OWNER** (ni i-cond ni geo-cond — le porteur/relayeur ≠ le décideur).
-> - **Session** : `session_016HbmM38GS7JcSCWVVRaVVW` · **Horodatage** : 2026-09-06.
-> - **Question fermée (verbatim)** : « **D1 — où vit le credential du compte enrôlé quand cluster-mesh pilote la CLI ?** »
+> **Record owner-direct D1 — ATTESTÉ EN 1re MAIN PAR i-cond (`i-cond [2622d1]`, la SOURCE), vérifié genuine par
+> geo-archi.** L'owner a répondu **dans la session d'i-cond** (i-cond a porté le surface `AskUserQuestion`) ; i-cond a
+> **attesté directement à geo-archi** — **pas un relais**. **Décideur = l'OWNER** (le porteur ≠ le décideur).
+> - **Session** : `session_016HbmM38GS7JcSCWVVRaVVW` (session d'i-cond, modale D1) · **Horodatage** : 2026-09-06.
+> - **Question fermée (verbatim COMPLET — l'attestation 1re-main a corrigé la troncature du relais)** : « **D1 — le cœur
+>   du dossier credential/egress : où vit le credential du compte enrôlé quand cluster-mesh pilote la CLI ?** »
+>   *(parenthèse : « approuver B adopte aussi la reco D2–D8 »)*.
 > - **Options** : **A** = « pod exec la CLI » (credential dans le pod) · **B** = « host-side + reco D2–D8 » · **C** = « différer ».
-> - **Réponse owner : A.** **Override assumé** (la classe-de-risque €480 était visible dans l'option).
-> **⚠ genuine-verification PENDING au flip** : geo-archi confirme ce record **contre la capture réelle** de la session
-> ci-dessus (i-cond) **avant** le flip — le relais est haute-fidélité (« verbatim, rien fabriqué ») mais la discipline
-> exige la **capture, pas le résumé**. **Flip gaté** = genuine-vérifié **+** containment finalisé (verdict cloud-code).
+> - **Réponse owner sélectionnée : A** — confirmée 1re-main. **Override assumé** (classe-de-risque €480 visible dans l'option).
+> **Genuine-verification SATISFAITE** : attestation d'i-cond (source — l'owner a répondu dans sa session), **directe** à
+> geo-archi, pas un relais ni un say-so ; verbatim **vérifié + corrigé à la source**. **Corroboration durable** : artefact
+> track committé demandé à i-cond (à référencer quand créé).
 
 **Contexte.** Le dossier D-moteur-2 (`DOSSIER_DMOTEUR2_LLM_HOSTING.md`) posait la FORME du LLM-serving d'extraction
 (axes : frontière d'identité, opérateur) sur 2 options : **(A)** identité in-cluster / **credential IN-POD** (le pod
