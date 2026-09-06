@@ -769,6 +769,144 @@ d'amélioration future, NON-worked sans owner-GO** : **(a) geo-side [levier PRIM
 (semver+ADR sur seam) · `SPEC §2.5.8` · #341 (CORS/referrer préprod-immo) · `overlays/preprod/netpol.yaml` (A2) ·
 #352 (client-mint 0.6.0) · #354 (retry 0.6.1) · mesures 502 + GEL 3/3 du 2026-09-05.
 
+## ADR-0032 — **Moteur LLM d'extraction : credential IN-POD (D1=A, override owner de la reco B) ; D4=α = COMPTE ENRÔLÉ PAR LANE (quota + révocation EXTERNES) = LA containment d'A — le containment ne peut PAS vivre dans le pod** · accepted (ratifié owner, vérifié 1re-main i-cond) · 2026-09-06
+
+**✅ Statut `accepted` — RATIFIÉ OWNER, vérifié 1re-main (2026-09-06).** Le **record owner-direct D1 (D1=A)** est **attesté
+EN 1re MAIN par i-cond** = la **SOURCE** : l'owner a répondu **dans la session d'i-cond** (`session_016HbmM38GS7JcSCWVVRaVVW`,
+qui a porté le surface `AskUserQuestion`), i-cond l'a **attesté directement à geo-archi** — **pas un relais ni un say-so
+conducteur**. L'attestation a même **corrigé la troncature du relais** (verbatim complet ci-dessous) = preuve d'un
+vrai check-à-la-source, pas d'un rubber-stamp. Le **containment-CADRE est FINALISÉ** (invariant compte-par-lane · gemini
+in-pod-direct + requiert `8aee7f615` · 3e terme sans objet dès le per-lane-binding · parité/cap-gateway MOOT). ⟹ **flip
+`accepted`** : record genuine **vérifié à la source** **+** cadre final (pattern ADR-0030). *(Record durable = CE commit git,
+`decisions.md` = source-of-truth des décisions geo, ADR-0001 ; view-ref de la PRÉSENTATION = Artefact dossier pipeline `0a947e61`.)*
+
+> **Record owner-direct D1 — ATTESTÉ EN 1re MAIN PAR i-cond (`i-cond [2622d1]`, la SOURCE), vérifié genuine par
+> geo-archi.** L'owner a répondu **dans la session d'i-cond** (i-cond a porté le surface `AskUserQuestion`) ; i-cond a
+> **attesté directement à geo-archi** — **pas un relais**. **Décideur = l'OWNER** (le porteur ≠ le décideur).
+> - **Session** : `session_016HbmM38GS7JcSCWVVRaVVW` (session d'i-cond, modale D1) · **Horodatage** : 2026-09-06.
+> - **Question fermée (verbatim COMPLET — l'attestation 1re-main a corrigé la troncature du relais)** : « **D1 — le cœur
+>   du dossier credential/egress : où vit le credential du compte enrôlé quand cluster-mesh pilote la CLI ?** »
+>   *(parenthèse : « approuver B adopte aussi la reco D2–D8 »)*.
+> - **Options** : **A** = « pod exec la CLI » (credential dans le pod) · **B** = « host-side + reco D2–D8 » · **C** = « différer ».
+> - **Réponse owner sélectionnée : A** — confirmée 1re-main. **Override assumé** (classe-de-risque €480 visible dans l'option).
+> **Genuine-verification SATISFAITE** : attestation d'i-cond (source — l'owner a répondu dans sa session), **directe** à
+> geo-archi, pas un relais ni un say-so ; verbatim **vérifié + corrigé à la source**. **Record durable = CE commit ADR**
+> (git ; `decisions.md` = source-of-truth des décisions geo, ADR-0001) — **pas de track record fabriqué** (geo est
+> file-based ; ne pas inventer un `--targets`, même discipline que le refus de fabriquer des preuves track). **View-ref de
+> la PRÉSENTATION** (D1 surfacé en §2.4/§7-GATE#2 du dossier pipeline) :
+> `https://claude.ai/code/artifact/0a947e61-1a56-4be6-bd9a-0fce3ca946ab` — corroboration de présentation, **distincte** du
+> record de capture ci-dessus (qui, lui, est l'autorité).
+
+**Contexte.** Le dossier D-moteur-2 (`DOSSIER_DMOTEUR2_LLM_HOSTING.md`) posait la FORME du LLM-serving d'extraction
+(axes : frontière d'identité, opérateur) sur 2 options : **(A)** identité in-cluster / **credential IN-POD** (le pod
+exécute la CLI, la creds vit dans le pod) vs **(B)** **egress central gateway** (workspace-JWT → gateway distante).
+La reco geo-archi (fidèle, au-niveau-des-enjeux) **penchait B**, motif décisif : **B porte NATIVEMENT la
+containment** — enrôlement central 1×, budget/quota/kill-switch centraux, et surtout **révocation-indépendance**
+(révoquer la creds centrale coupe tous les pods, indépendamment de tout pod). geo-archi avait **explicitement gardé A
+ouvert** + **disclosé** que la facilité-présentateur pouvait teinter la reco B.
+
+**Décision (propriétaire — override, D1=A).** L'owner **choisit A** : **le pod exécute la CLI, le credential vit DANS
+le pod** — override assumé de la reco B (risque €480 visible). geo **adopte A** pour ses pods d'extraction LLM.
+**Substance-contrat geo-archi (wp6) — le containment d'A vit HORS du pod ; codex RÉSOLU, gemini PENDING**
+*(mesh-mesuré, corrections en cascade intégrées 2026-09-06)* **:**
+
+> **✅ CONTAINMENT-CADRE FINALISÉ (geo-archi).** Sous A, **les 2 jambes sont IN-POD-DIRECT** (le pod appelle le fournisseur
+> lui-même ; **le démon host-side `:3002` = credential-sur-l'hôte = forme B, EXCLUE par D1=A**). Mesuré : k8s base = 0
+> gateway/mesh/Service ⟹ **parité-(b) / cap-gateway / caller-auth-gateway = MOOT** (le pod ne traverse aucun gateway).
+> **Invariant compte-par-lane externe = le cap**, dans les 2 jambes ; fail-closed = **429 fournisseur** (appel direct).
+> **codex** = CLI-direct (`auth.json`) ; **gemini** = HTTP in-pod via `cloud-code-transport.ts` (**requiert `8aee7f615`** =
+> cause directe du mode d'échec €480-class — point 6). **1 credential in-pod/lane → épinglage intrinsèque → 3e terme
+> `selectAccountWithFallback` SANS OBJET** dès le per-lane-binding. **Reste à spécifier (non bloquant)** : per-lane-binding +
+> les no-gateway-properties de gemini. **Flip gaté SEULEMENT sur genuine-verification du record D1** (voir statut).
+
+1. **Le containment d'un chemin off-gateway ne peut PAS vivre dans le code que ce chemin exécute.** Un cap **appliqué
+   in-pod** est appliqué par la chose même qu'il contraint (pod bogué le contourne, pod redémarré le perd) ; un **garde
+   que le chemin bypasse** (`assertVisionModelAllowed`, gateway) **ne peut pas contenir** ce chemin (le gateway ne
+   mesure pas ce qui le bypasse). ⟹ **le containment doit être EXTERNE au pod.**
+2. **D4=α = COMPTE FOURNISSEUR ENRÔLÉ PAR LANE (externe), tenu par 2 MÉCANISMES** — **fail-closed-sur-épuisement** (le
+   quota est un **PLAFOND**, pas un point de redirection) **+ épinglage PAR LANE** (une lane ⇒ un compte). Invariant LIÉ
+   **A ⟹ α** : cap = quota-compte externe · kill-switch = révocation-compte externe **par lane** · compteur in-pod =
+   **courtoisie seulement**. **A-sans-α = retour €480, INTERDIT par construction** ; α = prix non-négociable d'A.
+3. **Fail-closed-sur-épuisement — sous A, appel fournisseur DIRECT (0 gateway) ; 3e terme SANS OBJET avec le
+   per-lane-binding.** Mesuré : k8s base = 0 gateway/mesh/Service → le pod appelle le fournisseur **lui-même**. **Chemins
+   sous A :**
+   - **(a) codex** = CLI-direct in-pod (`~/.codex/auth.json`, 0 proxy) — containment = **429 FOURNISSEUR + compte-par-lane**.
+   - **(b) gemini** = HTTP in-pod via `cloud-code-transport.ts` (0 proxy) — containment = **429 FOURNISSEUR + compte-par-lane**
+     (point 6).
+   - **(c) démon host-side `:3002`** = credential-sur-l'hôte = **forme B → EXCLU par D1=A** (pas un chemin sous A).
+   - **Chemin runtime poolé `selectAccountWithFallback`** (`index.ts:1465/1868`, clé `job.id`) = là où le **débordement
+     cross-fournisseur est RÉEL** — **mais 1 credential in-pod/lane (épinglage intrinsèque) ne le traverse pas** ⟹ le **3e
+     terme (repli désactivé) devient SANS OBJET dès le per-lane-binding** (ceinture-bretelles si un job-launch poolé
+     subsistait). ⟹ **L'invariant compte-par-lane + 429-fournisseur tient les 2 jambes.**
+4. **Épinglage PAR LANE = LE VRAI AJOUT (câblage + provisionnement, PAS un flag).** Aujourd'hui le sticky binding est
+   **PER-SESSION** gateway (`sessionId` HMAC ; `stickyBind`/`getBinding`), **PAS per-lane**. Le containment per-lane
+   exige : **(i)** binder par le **PRINCIPAL de lane** (pas `sessionId`) · **(ii)** **pré-provisionner** lane → **compte
+   unique** · **(iii)** **contraindre la sélection des nouvelles sessions** à ce compte. = **la dépendance
+   « enroll-comptes-par-lane »** (build-lane + mesh) — c'est ce qui reste à construire, pas un flag.
+5. **A ne PERD pas la révocation-indépendance — elle en DÉPLACE le locus ; le compte-par-lane la RESTAURE** (par lane,
+   chirurgicale) = **demande owner** (« inclus au quota du compte »). *(Reco B = enrôlement central ; A = enrôlement PAR
+   LANE — externe dans les deux cas, jamais in-pod. Endossé geo-cond.)*
+6. **gemini sous A = IN-POD-DIRECT (DÉTERMINÉ par D1=A, PAS un open-item).** Le démon host-side `:3002` =
+   credential-sur-l'hôte = **forme B écartée par l'owner** → sous A, gemini = **in-pod-direct**, déterminé (la seule
+   « question » était la cohérence D1=A sur les 2 jambes = **OUI**). Le pod fait le HTTP lui-même via `cloud-code-transport.ts`
+   (**constructeur de requête, pas un client** : `buildCloudCodeRequest → {url,headers,body}`). **À réunir dans le pod** :
+   endpoint interne Google `…/v1internal:streamGenerateContent?alt=sse` (**SSE uniquement**) · credential enrôlé ·
+   **`cloudaicompanionProject`** dans les métadonnées (**le transport LÈVE si absent**) · **User-Agent figé
+   `antigravity/cli/1.1.10`** (se présente comme la CLI Antigravity = **dépendance fragile, à surveiller**).
+   **3 conséquences** : **(1)** 1 credential in-pod → **aucune sélection de compte** → **3e terme SANS OBJET** (comme codex) ·
+   **(2)** aucun proxy → le verdict fail-closed-proxy **NE S'APPLIQUE PAS** → containment = **429 fournisseur + compte-par-lane**
+   · **(3)** bibliothèque **pas service** → **ni caller-auth, ni plafond, ni attestation** du gateway (le pod ne le traverse
+   pas) → **À ÉCRIRE EXPLICITEMENT** (sinon supposé acquis).
+   **⚠ CRITIQUE — `8aee7f615` = la CAUSE DIRECTE du mode d'échec gemini (classe-€480), pas un prérequis parmi d'autres.**
+   Enrôlement cassé (`provider-connections.ts:1139-1140` avale les échecs de découverte, jeton pas rafraîchi) → l'enrôlement
+   « réussit » **SANS `cloudaicompanionProject`** → le transport **LÈVE À L'APPEL** (pas à l'enrôlement) = exactement
+   « enrôlement passe, appels échouent » = **le pattern €480**. **La jambe gemini REQUIERT `8aee7f615` mergé** (déjà écrit).
+   **codex = solide** (CLI-direct : 429-fournisseur + compte-par-lane).
+7. **Conséquence provisionnement (actée).** Sans repli, un compte **manquant** ne **dégrade plus** — il **ARRÊTE la
+   lane** (fail-closed **voulu** ; missing-account = lane-stop, **PAS** silent-degrade).
+8. **Least-priv IN-POD (convergent).** Le compte enrôlé **scopé à la lane** = least-priv ET cap ; creds in-pod
+   **courte-vie + rotative + jamais-S3/logs** (durcissement) ; **révocation-compte = containment PRIMAIRE**.
+9. **Gates d'admission = #362 (inchangés)** : **D5=a** coût/page · **D6=a** gold-corpus **bloquant** · **D8=a**
+   déterministe-d'abord — **gate DAG `needs_llm`** = souveraineté d'ordonnancement, **DISTINCT** du containment-coût.
+   Cap externe **prouvé-par-refus AVANT service** (**€50/GATE** `GATE.md:10-14`). **PAS de `CallerAuthPort`/host-side** dans A.
+10. **D7=a (in-cluster) — conséquence, GATÉE plateforme.** Levier capacité cluster (98-99% CPU, board) = prérequis
+    infra/plateforme, hors substance-contrat geo → **différé/gaté**. **Host-side dispo now** (Act-1 : `codex exec -m`,
+    enroll host-side satisfait) ; **in-cluster (Act-2) gaté** sur ce levier + egress.
+
+**Frontière (ce que geo NE décide PAS).** L'**emplacement physique** de la creds, la **mécanique d'enrôlement
+in-pod** et le **levier capacité in-cluster** sont **plateforme (mesh/h2a/sentropic/infra)** — cet ADR **adopte** la
+décision (pattern ADR-0028 : geo enregistre son adoption + ses invariants-contrat, référence la décision plateforme)
+sans la re-décider. **mesh** ajuste l'enroll in-pod ; **geo-cond** fait l'attribution inter-lane. **Domicile plateforme
+de la mécanique** (A⟹α, least-priv-in-pod, compte-par-lane) = `spec/DECISION_LLM_EGRESS_STANDARD_PATH.md` sur
+**origin/main de sentropic** (orphelin + périmé juillet). **NE PAS y injecter la substance septembre avant que son §3
+soit rafraîchi** (mesh/plateforme) — sinon 2 strates indiscernables ; **section datée autonome** quand prêt, pas
+d'édition inline §3. **Jusque-là, ADR-0032 (geo-side) reste l'autorité courante** de la mécanique de containment.
+
+**Conséquences.** Invariant gravé (**corrige/supersède la formulation plus lâche de #362** « chaque chemin *porte* son
+propre cap ») : **sous A, le cap de tout chemin LLM = le quota de son COMPTE ENRÔLÉ PAR LANE (externe,
+non-contournable) + la révocation-compte externe par lane** ; un **cap in-pod**, un **cap gateway**, ou un **garde
+bypassable** (`assertVisionModelAllowed`) **NE SONT PAS des containments** sous A. **L'ajout d'IMPLÉMENTATION** = binder
+**par lane** (aujourd'hui per-session) + **pré-provisionner** lane→compte-unique + **fail-close explicite sur le chemin
+de LANCEMENT DE JOB uniquement** (`selectAccountWithFallback` ; codex-CLI-in-pod et requête-gateway sont épinglés/
+fail-closed **par construction** = 2 termes) — porté **build-lane + mesh**. **gemini = in-pod-direct** (déterminé par D1=A ;
+démon `:3002` = forme B écartée) → **requiert `8aee7f615`** (cause directe du mode €480 « enrôlement passe / appels échouent »)
++ **no-gateway-properties à écrire explicitement** ; containment = 429 fournisseur + compte-par-lane (0 proxy, 3e terme sans objet). Réversibilité A→B possible (backend abstrait) mais **rework** (frontière d'identité). Ce record **flip
+`accepted`** sur le batch `AskUserQuestion` D1 capté (i-cond).
+
+**Réfs.** `DOSSIER_DMOTEUR2_LLM_HOSTING.md` (options A/B, reco B, disclosure) · `DOSSIER_VISION_OCR_VALIDATION_PROTOCOL.md`
+(#362 : gates D5/D6/D8 ; son invariant « chaque chemin *porte* son cap » est **corrigé ici** → cap = **compte externe par
+lane**) · ADR-0024 (classe €480) · `docs/ops/gcp-3dtiles/GATE.md:10-14` + `50-test-kill.sh` (cap **externe** prouvé-par-refus)
+· base D-decisions D2=a/D3=i/**D4=α**/D5=a/D6=a/**D7=a**/D8=a (adoptée, révisable owner) · pattern ADR-0028 (geo adopte une
+décision plateforme + réf hors-repo) · **correction containment mesh-mesurée + i-cond-adoptée 2026-09-06** (cap = compte
+enrôlé par lane EXTERNE, PAS in-pod/gateway ; kill-switch = révocation-compte, PAS drapeau in-pod) · **verdict h-runtime
+(i-cond, 2026-09-06)** : codex **fail-closed-par-construction** (gateway non-anthropic ; spill = `proxy-anthropic.ts`
+seul) ; le spill `account-pool.ts::selectAccountWithFallback` = **runtime job-launch (clé `job.id`), PAS gateway** → 3e terme
+**job-launch-scopé** ; **sous A (in-pod-direct) le pod ne traverse AUCUN gateway → 3e terme SANS OBJET dès le
+per-lane-binding** ; **per-lane-binding** (sticky per-session → per-lane : principal-de-lane + pré-provision +
+contrainte-sélection) = **l'ajout** ; **gemini** = **in-pod-direct** (D1=A exclut le démon `:3002` = forme B) via
+`cloud-code-transport.ts` (`buildCloudCodeRequest`), **requiert `8aee7f615`** (`provider-connections.ts:1139-1140` =
+cause directe du mode €480 « enrôlement passe / appels échouent ») + no-gateway-properties.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
