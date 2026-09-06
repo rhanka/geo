@@ -3,9 +3,10 @@
 > **Type** : protocole QA-rules / contrat (wp6). **Auteur** : geo-archi (owner ADR-0024). **Amont** : l'owner a
 > **nommé le pool** de candidats et **sanctionné le benchmark OCR** (verbatim relayés via i-cond → geo-cond). Ce
 > document est **le PROTOCOLE de validation**, PAS la sélection : l'owner a désigné le pool ; la validation **gate
-> quels candidats qualifient**. **Corrections mesh/owner intégrées** : gemini-3.8 **lifted** (AGY-enrolled, modèle
-> réel via CLI-enroll, PAS phantom), **coût/page = critère premier-rang** (route OCR), **coordination cross-lane =
-> geo-cond**. **Statut : DRAFT `proposed`.** Le **flip ADR-0024 → `accepted`** ride sur le **record owner-direct
+> quels candidats qualifient**. **Corrections mesh/owner intégrées** : **coût/page = critère premier-rang** (route OCR), **coordination
+> cross-lane = geo-cond**. **⚠ Statut de résolution (mesh set-wide 2026-09-05)** : **RÉSOLU-PRÊT** {luna, terra,
+> sonnet-5} ; **SLOTS GATÉS** codex-spark (codex-restore 6/09) + gemini (**non-résolu** : AGY sans flash → owner).
+> **`gemini-3.8-flash` et `codex-5.3` ne sont PAS écrits en dur** (anti-id-fantôme). **Statut : DRAFT `proposed`.** Le **flip ADR-0024 → `accepted`** ride sur le **record owner-direct
 > capté** (i-cond) — verbatim + session-id + timestamp + question exacte ; le relais verbatim est une preuve forte,
 > mais le flip d'un doc à historique €480 ride sur le record réel, pas sur un résumé.
 
@@ -20,13 +21,13 @@
 
 ## 1. Candidats résolus + **3 chemins d'invocation** (⚠ 2 hors-garde)
 
-| candidat | chemin d'invocation | enrôlement | gardé par |
-|----------|--------------------|-----------|-----------|
-| `gpt-5.6-luna` | gateway-catalogue | — | `assertVisionModelAllowed` ✓ |
-| `gpt-5.6-terra` | gateway-catalogue | — | `assertVisionModelAllowed` ✓ (benchmark OCR) |
-| `claude-sonnet-5` | gateway-catalogue | — | `assertVisionModelAllowed` ✓ |
-| **codex-spark** (« codex 5.3 ») | **codex CLI** (graphify) | `h2a account enroll` (quota-compte) | ⚠ **HORS garde gateway** |
-| **gemini-3.8-flash** | **gemini-agy CLI** | `gemini-agy account enroll` (quota-compte) | ⚠ **HORS garde gateway** |
+| candidat | chemin d'invocation | gardé par | résolution (mesh set-wide, 2026-09-05) |
+|----------|--------------------|-----------|----------------------------------------|
+| `gpt-5.6-luna` | gateway-catalogue | `assertVisionModelAllowed` ✓ | **RÉSOLU-PRÊT** (`catalog.ts:285`) |
+| `gpt-5.6-terra` | gateway-catalogue | `assertVisionModelAllowed` ✓ | **RÉSOLU-PRÊT** (`catalog.ts:277`, OCR) |
+| `claude-sonnet-5` | gateway-catalogue | `assertVisionModelAllowed` ✓ | **RÉSOLU-PRÊT** (`catalog.ts:345`) |
+| **codex-spark** (« codex 5.3 ») | **codex CLI** (h2a enroll, quota-compte) | ⚠ **HORS garde gateway** | **SLOT — GATÉ codex-restore** : mesh ne résout pas (CLI `-m string`→provider) ; `codex exec -m spark` sous compte enrôlé confirme post-6/09 |
+| **gemini** (« 3.8 flash ») | **gemini-agy CLI** *(si elle existe)* (quota-compte) | ⚠ **HORS garde gateway** | **SLOT — NON-RÉSOLU** : l'AGY-mesh-transport ne porte **aucun flash** (`providers.ts:93-99` = `gemini-3-pro-high/low`). Résolution owner (d), 3 voies : **(i)** gemini-agy CLI si elle existe (bypass provider comme codex-spark → provider-confirm) · **(ii)** `gemini-3-pro` (catalogue) · **(iii)** étendre la flotte (acte) ; + **agy-fix `8aee7f615`** |
 
 - **[FAIT — groundé]** La garde `assertVisionModelAllowed` (`packages/qc-sources/src/sources/vision-engine-policy.ts:45`)
   garde **uniquement les 3 constructeurs vision gateway** (`grille-vision-{extractor,multizone,zoneheader}.ts`), sur une
@@ -57,7 +58,8 @@ s'applique à **chaque candidat**, **chaque chemin d'invocation**, **chaque rout
   ligne/colonne) ; (iii) **`unknown`-on-failure** (jamais deviner — anti-invention ; un silent-guess = **échec**).
 - **Barre** : le candidat doit **BATTRE ce que natif+OCR font déjà sur le résidu** — sinon il ajoute du coût **sans
   gain**. (Barre exacte = §9a, owner-ratifiable.)
-- **Candidats** : {codex-spark, `gpt-5.6-luna`, `claude-sonnet-5`, gemini-3.8} (+ terra optionnel).
+- **Candidats RÉSOLUS-NOW** : {`gpt-5.6-luna`, `claude-sonnet-5`}. **SLOTS GATÉS** : codex-spark (codex-restore
+  6/09), gemini (owner-resolution + agy-fix). *(terra = benchmark OCR §4B.)*
 
 ### Route B — OCR (**BENCHMARK owner-sanctionné**, coût/page **PREMIER-RANG**)
 - **[FAIT]** L'owner a **sanctionné un benchmark OCR** (verbatim : « *gemini 3.8 en agy enroll pour le benchmark ocr* »).
@@ -71,7 +73,12 @@ s'applique à **chaque candidat**, **chaque chemin d'invocation**, **chaque rout
   (pricing-tokens × page-token-count typique) ; **(c)** **coût-projeté total** au volume `319 munis × pages/muni`.
   **[JUGEMENT]** L'owner tranche **luna-vs-terra** (et **garder/éteindre mistral-ocr**) avec **(a)+(b)+(c) sous les
   yeux** — on **ne tranche pas à sa place** (décision owner **différée**, verbatim « à recheck »).
-- **Candidats** : {`gpt-5.6-luna`, `gpt-5.6-terra`, codex-spark, `claude-sonnet-5`, gemini-3.8}.
+- **Candidats RÉSOLUS-NOW** : {`gpt-5.6-luna`, `gpt-5.6-terra`, `claude-sonnet-5`}. **SLOTS GATÉS** : codex-spark
+  (codex-restore), gemini (owner + agy-fix).
+- **⚠ Garde-fou AMONT (catch ④)** : si **gemini résout en PRO** (`gemini-3-pro`, PAS un flash) → **re-estimer
+  coût/page SUR LE PRO** — un pro ≫ un flash ; substituer l'attendu-flash par un pro **sans re-estimer** = **dérive
+  ADR-0024 en amont** (l'estimation-avant devient fausse **avant même le run**). Même vigilance pour tout candidat
+  dont l'id résolu diffère en tier de l'id nommé.
 
 ## 5. Gate coût (précondition **go-live** — le remède €50/GATE)
 - **[JUGEMENT]** Aucun candidat ne **sert en live** sans **budget/quota par-appelant + kill-switch PROUVÉ-PAR-REFUS
@@ -111,7 +118,11 @@ s'applique à **chaque candidat**, **chaque chemin d'invocation**, **chaque rout
   résidu** » ; Route B « **coût/page justifié vs $0.001 mistral-ocr** + qualité ≥ baseline ».
 - **(b) Route B, post-chiffré** : trancher **luna-vs-terra** + **garder/éteindre mistral-ocr** (avec (a)(b)(c)).
 - **(c) Précondition gold-corpus reproductible** (committé/S3) — **pas optionnelle** (§3).
-- **(d) Gemini-3.8** : id AGY-enrolled confirmé par owner (lift du hold) — reste à **fixer l'id AGY exact** (mesh+agy).
+- **(d) Gemini** : ⚠ **NON-RÉSOLU** — l'AGY-mesh-transport ne porte **aucun flash** (`providers.ts:93-99` =
+  `gemini-3-pro-high/low`). Résolution owner, **3 voies** : **(i)** une **gemini-agy CLI** si elle existe (bypass
+  provider comme codex-spark → **provider-confirm** requis) ; **(ii)** **`gemini-3-pro`** (→ §4B garde-fou pro-coût) ;
+  **(iii)** **étendre la flotte AGY** (acte). + **agy-enroll fix `8aee7f615`**. **Ne pas écrire `gemini-3.8-flash`**
+  (id-fantôme tant que non-résolu).
 
 ## 10. Disclosure d'intérêt-agent
 **0 intérêt** à choisir un modèle (je n'en ai pas) ni à re-débattre le pool (owner-nommé). Je porte **uniquement** :
