@@ -188,9 +188,9 @@ flowchart LR
   N -->|"residu"| VIS["OCR/vision via CLI enrolee (gratuite, quota-compte = contenu ADR-0032)"]
   VIS -. gate .-> G["Gate = QUALITE (#362) : gold-corpus · unknown-on-failure · no-drift"]
 ```
-**État** : natif **opérationnel** ; le **remplaçant CLI-vision** attend la **finalisation #362** (métriques déjà là — **à
-finaliser, pas refaire**) + les **ids callables 200-réels** (benchmark **HOLD**, i-cond route). Garde `vision-engine-policy.ts`
-reste (un id vision doit être **explicite et sanctionné**).
+**État** : natif **opérationnel** ; **remplaçant vision = `gpt-5.6-luna`** (benchmark `bd010c90` : **46.5 % ≥ terra 32.4 %**,
+**0 anti-invention** ; **ratifié geo-archi** par délégation ADR-0024, **activation gatée GATE#1 owner** §7). Garde
+`vision-engine-policy.ts` reste (id vision **explicite et sanctionné** = luna).
 
 ## §3 — Orchestration DATA-CITY-AWARE + config par ville (1106 munis)
 
@@ -301,13 +301,13 @@ flowchart LR
 - **[D-cadre] Ratifier le CADRE** : **geo = MOTEUR de traitement, immo = CONFIGURATION** (client configuré), avec la
   **frontière fidèle** E4/E5 (assemblage-graphe immo, immo-owned, en aval — non aplati). C'est la décision structurante
   du dossier.
-- **[GATE #1 — vision-remplaçant (ADR-0024), REFRAMÉ owner]** — décision owner-précoce, chemin critique IA. **Reframe** :
-  le ban €480 visait l'**API vision-chat MÉTRÉE** (`mistral-medium`) ; la **CLI enrôlée est GRATUITE** (quota-compte,
-  **coût déjà contenu par ADR-0032**) → **garde-fou coût/page MOOT** (subsumé par la containment, pas supprimé), **axe =
-  QUALITÉ**. **Décision** : ratifier le **remplaçant CLI-vision** — **candidats `{luna, terra}`** (`sonnet-5` = **alias→luna** ;
-  `gemini` **gaté** Cloud Code) — au **meilleur score qualité #362** (grilles-gold, `unknown`-on-failure, no-drift —
-  métriques **déjà là ; #362 à FINALISER, pas refaire**). **Benchmark HOLD** : attend les **ids callables 200-réels** +
-  le **runner luna/terra** (geo-cond pilote le build+run). Design+critères prêts, run après.
+- **[GATE #1 — vision-remplaçant (ADR-0024), REFRAMÉ owner + BENCHMARK FAIT]** — décision owner-précoce, chemin
+  critique IA. **Reframe** : ban €480 = API vision-chat **MÉTRÉE** ; **CLI enrôlée = GRATUITE** (coût contenu ADR-0032) →
+  **coût/page MOOT** (subsumé, pas supprimé), **axe = QUALITÉ**. **Benchmark FAIT** (`bd010c90`, corpus gold same-corpus,
+  transport codex-CLI) : **`gpt-5.6-luna` = 46.5 % ≥ `terra` 32.4 %**, **0 anti-invention** (les 2), luna **~2.5× plus
+  rapide**. **Décision demandée** : ratifier la **RÉ-OUVERTURE de la route vision** avec **`gpt-5.6-luna` = défaut**
+  (modèle **ratifié geo-archi** par délégation ADR-0024 + benchmark) ; l'**activation** = ce GATE#1 owner. *(vs
+  mistral-ocr = directionnel, corpus différent — non sur-affirmé ; #362 finalisé.)*
 - **[GATE #2 — cluster-mesh-hosting (D-moteur-2)]** — **CONFIRMER la direction owner** (LLM-serving in-cluster) +
   **trade-off exposé**, **PAS re-litiger**. **⚠ Term-lift gravé** : le `@sentropic/cluster-mesh` existant = **identité,
   route 0 LLM** (§2.1) → « cluster-mesh LLM-hosting » = un **serving à bâtir** (§2.2), pas ce package. La **jambe
