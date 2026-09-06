@@ -777,8 +777,8 @@ qui a porté le surface `AskUserQuestion`), i-cond l'a **attesté directement à
 conducteur**. L'attestation a même **corrigé la troncature du relais** (verbatim complet ci-dessous) = preuve d'un
 vrai check-à-la-source, pas d'un rubber-stamp. Le **containment-CADRE est FINALISÉ** (invariant compte-par-lane · gemini
 in-pod-direct + requiert `8aee7f615` · 3e terme sans objet dès le per-lane-binding · parité/cap-gateway MOOT). ⟹ **flip
-`accepted`** : record genuine **vérifié à la source** **+** cadre final (pattern ADR-0030). *(Corroboration durable : artefact
-track committé demandé à i-cond.)*
+`accepted`** : record genuine **vérifié à la source** **+** cadre final (pattern ADR-0030). *(Record durable = CE commit git,
+`decisions.md` = source-of-truth des décisions geo, ADR-0001 ; view-ref de la PRÉSENTATION = Artefact dossier pipeline `0a947e61`.)*
 
 > **Record owner-direct D1 — ATTESTÉ EN 1re MAIN PAR i-cond (`i-cond [2622d1]`, la SOURCE), vérifié genuine par
 > geo-archi.** L'owner a répondu **dans la session d'i-cond** (i-cond a porté le surface `AskUserQuestion`) ; i-cond a
@@ -790,8 +790,12 @@ track committé demandé à i-cond.)*
 > - **Options** : **A** = « pod exec la CLI » (credential dans le pod) · **B** = « host-side + reco D2–D8 » · **C** = « différer ».
 > - **Réponse owner sélectionnée : A** — confirmée 1re-main. **Override assumé** (classe-de-risque €480 visible dans l'option).
 > **Genuine-verification SATISFAITE** : attestation d'i-cond (source — l'owner a répondu dans sa session), **directe** à
-> geo-archi, pas un relais ni un say-so ; verbatim **vérifié + corrigé à la source**. **Corroboration durable** : artefact
-> track committé demandé à i-cond (à référencer quand créé).
+> geo-archi, pas un relais ni un say-so ; verbatim **vérifié + corrigé à la source**. **Record durable = CE commit ADR**
+> (git ; `decisions.md` = source-of-truth des décisions geo, ADR-0001) — **pas de track record fabriqué** (geo est
+> file-based ; ne pas inventer un `--targets`, même discipline que le refus de fabriquer des preuves track). **View-ref de
+> la PRÉSENTATION** (D1 surfacé en §2.4/§7-GATE#2 du dossier pipeline) :
+> `https://claude.ai/code/artifact/0a947e61-1a56-4be6-bd9a-0fce3ca946ab` — corroboration de présentation, **distincte** du
+> record de capture ci-dessus (qui, lui, est l'autorité).
 
 **Contexte.** Le dossier D-moteur-2 (`DOSSIER_DMOTEUR2_LLM_HOSTING.md`) posait la FORME du LLM-serving d'extraction
 (axes : frontière d'identité, opérateur) sur 2 options : **(A)** identité in-cluster / **credential IN-POD** (le pod
