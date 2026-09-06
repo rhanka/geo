@@ -795,15 +795,24 @@ le pod** — override assumé de la reco B (risque €480 visible). geo **adopte
 **Substance-contrat geo-archi (wp6) — le containment d'A NE PEUT PAS vivre dans le pod** *(formulation corrigée : mesh
 a mesuré A, i-cond a adopté)* **:**
 
-> **⚠ SECTION containment EN COURS DE FINALISATION — garde-fou 3-TERMES (mesh-raffiné ; verdict `sticky.ts` PENDING —
-> NE PAS traiter comme finale).** α a évolué au-delà de (compte + révocation) vers **3 termes indissociables** :
-> **(1)** compte enrôlé **par lane** · **(2)** **épinglage STICKY par lane** (`affinityKey ⇒ lane`, compare-and-set ;
-> aujourd'hui per-session/per-job → **à câbler** vers la lane) · **(3)** **REPLI-SUR-ÉPUISEMENT DÉSACTIVÉ = FAIL-CLOSED**
-> — un compte épuisé **échoue visiblement au point de sélection**, ne **déborde JAMAIS** sur un autre compte/fournisseur.
-> **Sans (3), (1)+(2) ne font que RETARDER le débordement** (une lane emballée épuise son compte puis déborde → le rayon
-> s'échappe de la lane) = exactement « vert par omission = rouge ». **codex = solide** (`~/.codex/auth.json` unique =
-> épinglage auto) ; **gemini = CONDITIONNEL** sur (3) + agy-fix `8aee7f615`. **Verdict bloquant** : read `sticky.ts` (le
-> repli est-il désactivable sur gemini ?) via i-cond → geo-cond. **Je finalise les 3 termes ici quand le verdict arrive.**
+> **⚠ SECTION containment EN COURS DE FINALISATION — garde-fou 3-TERMES (mesh-mesuré ; verdict « repli désactivable
+> par-appelant ? » PENDING — NE PAS traiter comme finale).**
+> **Défaut mesuré** (`account-pool.ts::selectAccountWithFallback`, **verbatim** mesh) : **(i)** sticky binding si présent
+> ET compte non-épuisé → **(ii)** round-robin du fournisseur préféré (saute les épuisés) → **(iii)** **fallback
+> cross-fournisseur** : si TOUS les comptes du fournisseur préféré sont épuisés, essaie l'autre fournisseur
+> (claude-code ↔ codex). ⟹ **le quota ne cappe PAS : à l'épuisement le pool REDIRIGE** (autre compte → autre
+> fournisseur) = **débordement sur les autres lanes**.
+> **Garde-fou à encoder = 3 termes indissociables** : **(1)** compte enrôlé **par lane** · **(2)** épinglage **sticky**
+> (existe : `stickyBind`/`getBinding`, clé `affinityKey` ; per-session/job aujourd'hui → **à câbler** vers la lane) ·
+> **(3)** **REPLI (round-robin (ii) + cross-fournisseur (iii)) DÉSACTIVÉ pour ces appelants = FAIL-CLOSED** — un compte
+> épuisé **échoue au point de sélection**, ne déborde JAMAIS. **Le 3e terme transforme le quota en PLAFOND ; sans lui,
+> (1)+(2) ne font que RETARDER le débordement** = « vert par omission = rouge ».
+> **Conséquence provisionnement (à ACTER dans l'ADR)** : sans repli, un compte **manquant** ne **dégrade plus** — il
+> **ARRÊTE la lane** (fail-closed **voulu** ; explicite : missing-account = lane-stop, PAS silent-degrade).
+> **codex = solide** (`~/.codex/auth.json` unique = épinglage auto) ; **gemini = CONDITIONNEL** sur (3) + agy-fix
+> `8aee7f615`. **Borne mesh** : lu = **LE CODE** (h2a branche `docs/org-raci-wp7-hinfra`), **PAS le comportement du
+> démon** → **verdict bloquant** : « le repli est-il désactivable par-appelant (esp. gemini) ? » = read h-runtime final,
+> **PENDING** (i-cond → geo-cond). **Je finalise les 3 termes ici quand le verdict arrive.**
 
 1. **Le containment d'un chemin off-gateway ne peut PAS vivre dans le code que ce chemin exécute.** Un cap **appliqué
    in-pod** est appliqué par la chose même qu'il contraint → un pod bogué le **contourne sans intention**, un pod
