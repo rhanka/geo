@@ -794,6 +794,17 @@ ouvert** + **disclosé** que la facilité-présentateur pouvait teinter la reco 
 le pod** — override assumé de la reco B (risque €480 visible). geo **adopte A** pour ses pods d'extraction LLM.
 **Substance-contrat geo-archi (wp6) — le containment d'A NE PEUT PAS vivre dans le pod** *(formulation corrigée : mesh
 a mesuré A, i-cond a adopté)* **:**
+
+> **⚠ SECTION containment EN COURS DE FINALISATION — garde-fou 3-TERMES (mesh-raffiné ; verdict `sticky.ts` PENDING —
+> NE PAS traiter comme finale).** α a évolué au-delà de (compte + révocation) vers **3 termes indissociables** :
+> **(1)** compte enrôlé **par lane** · **(2)** **épinglage STICKY par lane** (`affinityKey ⇒ lane`, compare-and-set ;
+> aujourd'hui per-session/per-job → **à câbler** vers la lane) · **(3)** **REPLI-SUR-ÉPUISEMENT DÉSACTIVÉ = FAIL-CLOSED**
+> — un compte épuisé **échoue visiblement au point de sélection**, ne **déborde JAMAIS** sur un autre compte/fournisseur.
+> **Sans (3), (1)+(2) ne font que RETARDER le débordement** (une lane emballée épuise son compte puis déborde → le rayon
+> s'échappe de la lane) = exactement « vert par omission = rouge ». **codex = solide** (`~/.codex/auth.json` unique =
+> épinglage auto) ; **gemini = CONDITIONNEL** sur (3) + agy-fix `8aee7f615`. **Verdict bloquant** : read `sticky.ts` (le
+> repli est-il désactivable sur gemini ?) via i-cond → geo-cond. **Je finalise les 3 termes ici quand le verdict arrive.**
+
 1. **Le containment d'un chemin off-gateway ne peut PAS vivre dans le code que ce chemin exécute.** Un cap **appliqué
    in-pod** est appliqué par la chose même qu'il contraint → un pod bogué le **contourne sans intention**, un pod
    redémarré le **perd**. Un **garde que le chemin bypasse** (`assertVisionModelAllowed`, ou le gateway) **ne peut pas
