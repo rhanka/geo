@@ -1,0 +1,68 @@
+# RBAC du déployeur CD prod `geo-cd-deployer` (ns geo, least-privilege) — ADR-0028 same-digest promotion.
+# Miroir RÉDUIT de deploy/k8s/preprod/deployer-preprod-rbac.yaml : la kustomization prod n'applique que
+# deployment + service + ingress (pas de netpol / Job de sync / sealed-secrets — « prod = source du cycle,
+# pas synchronisée », cf overlays/prod/kustomization.yaml). DROP vs préprod : batch/jobs,
+# bitnami.com/sealedsecrets, networking.k8s.io/networkpolicies. RBAC prod = sous-ensemble strict du préprod.
+#
+# poc-k8s APPLIQUE ce manifest (crée la SA + Role + RoleBinding) DEPUIS le repo (jamais ad-hoc), puis
+# produit le kubeconfig (token TTL borné) → GH secret KUBE_CONFIG_DATA env-scopé `geo-prod`
+# (required-reviewer=owner). Le job cd-prod (cd-prod.yml) fait `make k8s-deploy-prod` = `kubectl apply -k
+# overlays/prod` + `kubectl rollout status deployment/geo-api -n geo` avec cette SA.
+#
+# Least-privilege : ns-scopé geo, ZÉRO verbe `secrets` (le déployeur ne touche jamais geo-tile-key /
+# geo-s3-credentials ; le pod les lit au runtime via kubelet ; créés hors-bande — geo-s3 par infra,
+# geo-tile-key par owner-self à l'activation). Zéro autre ns, zéro cluster-scope.
+# ⚠ list/watch REQUIS (deployments/replicasets/pods) : `make k8s-deploy-prod` utilise `kubectl rollout
+# status` (informer list/watch, non resourceName-scopable). Pour retirer list/watch un jour, basculer
+# k8s-deploy-prod sur un poll get-based (cf .github/workflows/basemap-activate.yml).
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: geo-cd-deployer
+  namespace: geo
+  labels:
+    app.kubernetes.io/part-of: geo
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: geo-cd-deployer
+  namespace: geo
+  labels:
+    app.kubernetes.io/part-of: geo
+rules:
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"] # apply -k + rollout status
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"] # apply -k
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["ingresses"]
+    verbs: ["get", "list", "watch", "create", "update", "patch"] # apply -k (patch host api.geo.sent-tech.ca)
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"] # rollout status
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"] # rollout status + diagnostics on-failure
+  - apiGroups: [""]
+    resources: ["events"]
+    verbs: ["get", "list", "watch"] # diagnostics auto sur échec (read-only)
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: geo-cd-deployer
+  namespace: geo
+  labels:
+    app.kubernetes.io/part-of: geo
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: geo-cd-deployer
+subjects:
+  - kind: ServiceAccount
+    name: geo-cd-deployer
+    namespace: geo
