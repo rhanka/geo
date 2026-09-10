@@ -11,6 +11,39 @@ spec:
           env:
             - name: GEO_DATA_URI
               value: s3://sentropic-geo/normalized
+            # ── §5 basemap 2D (Google Map Tiles) — PROD, flag-ON / clé-absente = 503 fail-closed ──
+            # Miroir de l'overlay préprod (Option B, alignement préprod↔prod, owner-GO). L'endpoint
+            # /basemap/2d répond 503 tant que la clé est absente (double fail-closed, ruling geo-archi Q3) :
+            # ici flag ON mais AUCUNE clé en ns geo ⇒ 503 BasemapKeyAbsent — 0 tuile servie, 0 coût, 0 appel
+            # Google (mint client-side, l'endpoint ne sort jamais vers Google). /collections intact ; ces env
+            # sont additifs et inertes sans clé.
+            # ADR-0030 = accepted (licence ODbL, owner-direct 2026-08-31). Le flag ON = forme-déploiement du
+            # flip ODbL en PROD = CE PR owner-merge (prod = owner-self, cf docs/ops/gcp-3dtiles/OWNER-BOOTSTRAP).
+            # La clé PROD suit un GO SÉPARÉ owner-self (nouveau projet GCP + budget cap + test-kill quota=0 +
+            # clé restreinte referrer immo.sent-tech.ca, secret geo-tile-key en ns geo) — JAMAIS au deploy,
+            # JAMAIS une main d'agent (dérogations préprod 2026-09-05 NON étendues à prod).
+            - name: BASEMAP_2D_ENABLED
+              value: "1"
+            - name: BASEMAP_2D_MAP_TYPE
+              value: satellite
+            - name: BASEMAP_2D_LANGUAGE
+              value: fr-CA
+            - name: BASEMAP_2D_REGION
+              value: CA
+            # CORS §5 : /basemap/2d n'accepte QUE l'origine immo-PROD (override du *-CORS OGC global,
+            # ADR-0015) — l'endpoint sert session+clé, jamais exposé à des origines arbitraires. Prod-only
+            # (JAMAIS wildcard ni préprod). Hostname immo-prod confirmé i-cond.
+            - name: BASEMAP_2D_CORS_ORIGIN
+              value: https://immo.sent-tech.ca
+            # Clé restreinte Google, montée depuis le secret geo-tile-key (ns geo, clé GOOGLE_TILE_KEY —
+            # créé à l'activation owner-self Step 2, PAS par ce deploy). optional:true ⇒ le pod démarre SANS
+            # (clé absente → 503 fail-closed) ; la clé n'existe pas avant le GO owner-self prod.
+            - name: GOOGLE_TILE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: geo-tile-key
+                  key: GOOGLE_TILE_KEY
+                  optional: true
           envFrom:
             - secretRef:
                 name: geo-s3-credentials
