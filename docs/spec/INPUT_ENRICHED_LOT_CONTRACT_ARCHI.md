@@ -44,9 +44,12 @@ distinct** : source-dataset + méthode-de-join + millésime (attributaire), **pa
 alors que **geo calcule déjà `in_tod`**. ⟹ le contrat canonique geo **pré-calcule les 4 champs** et **élimine
 la jointure-au-serve-time immo** (principe : capture-on-cluster, jamais jointure-par-requête).
 
-**Résiduel à lever (grounding, pas assumé)** : le serving `qc-lots-*` **projette/filtre-t-il** les props en
-plus du stale-S3 ? Si pass-through → la re-mat suffit pour `in_tod` ; si projection → **+fix projection OGC**.
-À confirmer : geo-socle via `geo-verify-served-collections.mjs`, ou lecture du chemin serving geo-api.
+**Résiduel LEVÉ (mesuré geo-socle, 2026-09-10)** : le serving `qc-lots-*` est **PASSTHROUGH INTÉGRAL** —
+`parseFeatureCollectionStream` yield chaque feature stockée **telle quelle**, `app.ts` `JSON.stringify(feature)`
+**entier**, **0 whitelist/strip**. ⟹ **PAS de projection OGC** qui droppe les champs. Combiné au stale-S3
+(mesure geo-lot : `in_tod` produit mais S3 servis antérieurs), la cause est **stale-S3 seul** ⟹ **PHASE A
+re-matérialisation SUFFIT pour `in_tod`, sans fix projection**. *(Confirmable via `geo-verify-served-collections.mjs`
+— déjà mesuré côté serving-code.)*
 
 ---
 
@@ -114,8 +117,8 @@ appel-au-serve. (Réf `docs/design/PIPELINE_FULLAUTO_GEO_SECTION.md:81-84`.) Un 
 
 **Migration §7 (dérivé de la currency §1) :**
 - **PHASE A — RE-MATÉRIALISER** : re-run producteur existant (in_tod déjà codé) + re-déployer → ferme le
-  constat sol v3 (`in_tod` absent du payload) **sans build-champ**. *(Si le grounding révèle une projection
-  OGC : +fix projection, cf. §1 résiduel.)*
+  constat sol v3 (`in_tod` absent du payload) **sans build-champ**. *(Résiduel projection **LEVÉ** : serving =
+  passthrough intégral, mesuré geo-socle — **pas de fix projection**, cf. §1.)*
 - **PHASE B — 3 NOUVEAUX (ports)** : intégrer `zoneKindFromCode` (`zone_family`), `zone-allows-4plus`
   (`multifamilial4plus`+source), la règle composite (`priorite`, §6) dans le producteur + matérialiser.
 
