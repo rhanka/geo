@@ -20,7 +20,7 @@ kubectl apply -k deploy/k8s/overlays/preprod      # via le job CI deploy-preprod
 ## Résolution du digest (jamais un tag mutable)
 
 Le nom d'image `geo-api` est la cible du transformer. La CI `deploy-preprod` (C2) fait
-`kustomize edit set image geo-api=rg.fr-par.scw.cloud/sentropic-geo/geo-api@<DIGEST>` (digest
+`kustomize edit set image geo-api=ghcr.io/rhanka/geo-api@<DIGEST>` (digest
 **post-merge**, ADR-0027 §8 / ADR-0028) avant l'apply. `overlays/prod` reçoit le **digest promu**
 (same-digest, `release-prod`, BR-55d).
 
