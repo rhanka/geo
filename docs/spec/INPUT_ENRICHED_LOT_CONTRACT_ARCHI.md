@@ -87,6 +87,15 @@ Vocabulaire `zone_family` fermé (partition nommée, style `ZoneSourceLevel`) = 
 le CollectionInfo admet des propriétés d'extension, et le **précédent existe** — `coherence_id` est **déjà
 servi OGC top-level** sur `/collections/<id>` (ADR-0027 §5). ⟹ `field_provenance` y est un home servi légitime.
 
+> **⚠ Mécanisme = EXTENSION SERVING (B), PAS « as-is » (mesure geo-socle).** Le `CollectionMeta` ACTUEL est
+> un type **FERMÉ** (`{sourceId,datasetId,title,license,attribution,crs,fetchedAt,count,rights?,checksum?}`,
+> **pas** de `[key:string]:unknown`) → un `field_provenance` ajouté sans code serait **silencieusement ignoré /
+> NON-servi** = « vert par omission » banni. ⟹ le bloc exige une **petite extension serving** (CollectionMeta
+> + `buildCollectionInfo` + `CollectionInfo` + `renderCollection`), **additive** (consumers existants inchangés),
+> **owner-gated au build**. *Préférence forme (geo-socle tranche l'impl) : réutiliser le MÊME seam
+> collection-response que `coherence_id` (ADR-0027) plutôt qu'étendre le `CollectionMeta` fermé, si plus propre.*
+> **Fallback A (`field_provenance` per-feature) = REJETÉ** : réintroduit le ~10.3MB Varennes que le split tue.
+
 **NIVEAU FEATURE — `feature.properties`, flat scalaire compact.** **SEULEMENT le VARIABLE-par-lot** : les
 **4 valeurs** + `{overlap_fraction, matched_id, method(area|centroid), zone_join_path, dominant_fraction,
 multi_zone, densite_value, densite_unit, determinable, null_conjoint}`. **Flat scalaire = ma règle
