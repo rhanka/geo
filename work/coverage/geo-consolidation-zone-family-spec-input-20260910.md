@@ -103,3 +103,10 @@ en une unité unique (détruirait la sémantique mesurée : le contrat doit serv
   tagué « dérivé » — à ratifier (geo-cond/owner) car impacte 1106 munis.
 - CPTAQ comme axe overlay additif (pas repli) — à confirmer dans le libellé du chantier.
 - Signal « logements par bâtiment » pour 4+ en zones log/ha = source-gap (acquisition future).
+
+## Convergence 2026-09-10 (geo-jointures, msg 107612 → cf8affba)
+- **Prédicat 4+ adopté VERBATIM** par geo-jointures : `is4plus = (densite_unit ∈ {"logements/terrain","log/terrain"}) && densite_value ≥ 4` ; `log/ha`/`ratio` → indéterminé (null, source-gap), jamais deviné.
+- **Greenfield** : AUCUN calcul multifamilial4plus n'existe dans geo-jointures aujourd'hui → aucune hypothèse d'unité implicite à corriger (le risque #1 est prévenu par construction, pas un bug existant).
+- **PAS de nouvel accesseur `canonicalDensity` côté geo** : `densite_value`+`densite_unit` sont déjà canoniques (0 variante mesurée). Le fix de l'incohérence sol v3 est **CONSOMMATEUR** (radar/navigateur lit value+unit VERBATIM + branche sur unit) → un livrable geo en MOINS.
+- **Correction geo-jointures propagée** : « logements/bâtiment » était le vocab du parser de DOCUMENTS (VerbatimDensityNorm), PAS la grille servie. Autorité = unités SERVIES mesurées {log/ha, logements/terrain, log/terrain, ratio}. Donc « 4+ par bâtiment » = source-gap (null en déf stricte) ; le signal servi disponible = « 4+ par TERRAIN ».
+- **DÉCISION OWNER à figer** (remontée par geo-jointures via geo-cond) : `multifamilial4plus` = « par terrain » (disponible) vs « par bâtiment » (source-gap) — quelle sémantique le champ porte. Non tranché côté geo/zones ; input mesuré fourni.
