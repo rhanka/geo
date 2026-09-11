@@ -73,33 +73,40 @@ Vocabulaire `zone_family` fermé (partition nommée, style `ZoneSourceLevel`) = 
 
 ---
 
-## 3. Forme de provenance canonique — FLAT, alignée sur le vocabulaire enrichi EXISTANT
+## 3. Forme de provenance canonique — SPLIT 2-NIVEAUX (uniforme→collection / variable→feature)
 
-> **Décision de forme (geo-archi) :** provenance **FLAT** `<field>_prov_<attr>`, **pas nested**. Raison
-> décisive (geo-lot concur) : un objet nested est **dropé en tuile MVT + non-filtrable CQL** (ADR-0021
-> tuilage) ⟹ perte de provenance silencieuse = « **vert par omission** » banni. Flat scalaire survit partout.
->
-> **Mesure clé :** le produit enrichi **porte DÉJÀ** de la provenance flat — `assignment_method`,
-> `dominant_fraction`, `multi_zone`, `zone_assignment_status` (join zone) ; les `tod_*` + `dominant_fraction`
-> (TOD) ; `multifamilial4plusSource` (immo). ⟹ **on FORMALISE/ÉTEND ce vocabulaire existant, on n'invente pas
-> un schéma `_prov_` parallèle.** Le contrat canonise les clés per-champ ci-dessous en réutilisant l'existant.
+> **Raffinement post-figeage (geo-lot, sur mesure socle : payload Varennes 10.3MB — prov per-champ ×
+> per-feature explose ; ~8 287 lots × strings source/méthode uniformes = redondance massive).** Le split
+> NORMALISE : l'INVARIANT per-muni → **collection-level** (servi 1×) ; le VARIABLE-par-lot → **feature-level
+> flat**. **Convergent avec ma règle** : moins de clés per-feature ⟹ moins de risque drop-au-tuilage
+> (ADR-0021) + payload compact. **Key-names = geo-lot ; forme/placement/OGC-validité/binding = geo-archi.**
 
-**Core mandaté per-champ** (flat) : `<field>_prov_source`, `<field>_prov_methode`, `<field>_prov_millesime`.
+**NIVEAU COLLECTION — `field_provenance` dans le CollectionInfo servi (`/collections/<id>`).** La part
+**UNIFORME per-muni per-champ** : `{source, method, layer_version, norms_vintage, crs, definition}`.
+**Nested OK ici** (CollectionInfo n'est **ni tuilé ni CQL-filtré**). **Home OGC-valide RATIFIÉ (geo-archi)** :
+le CollectionInfo admet des propriétés d'extension, et le **précédent existe** — `coherence_id` est **déjà
+servi OGC top-level** sur `/collections/<id>` (ADR-0027 §5). ⟹ `field_provenance` y est un home servi légitime.
 
-**Attrs méthode geo-jointures = clés flat OPTIONNELLES additives** (présentes où la méthode le justifie —
-`overlap_fraction`/`dominant_fraction` sur joins spatiaux, `join_method`, `density_key`) :
+**NIVEAU FEATURE — `feature.properties`, flat scalaire compact.** **SEULEMENT le VARIABLE-par-lot** : les
+**4 valeurs** + `{overlap_fraction, matched_id, method(area|centroid), zone_join_path, dominant_fraction,
+multi_zone, densite_value, densite_unit, determinable, null_conjoint}`. **Flat scalaire = ma règle
+CQL-filtrable + tile-safe honorée** ; l'**anti-invention par-lot** (`determinable`, `null_conjoint`, `null`≠`false`)
+reste au feature (elle est variable-par-lot, ne peut PAS remonter en collection).
 
-| Champ | source | methode | attrs optionnels (existants/étendus) |
-|-------|--------|---------|--------------------------------------|
-| `in_tod` | `qc-tod` (CMM PMAD) | `spatial-intersection` (lot×TOD) | `in_tod_prov_dominant_fraction`, `tod_id`/`tod_statut`/… (déjà portés) |
-| `zone_family` | `qc-zonage` | `zone-code-canonicalization` (port `zoneKindFromCode`) | `zone_family_prov_zone_code` (source), `dominant_fraction`, `assignment_method` (déjà portés) |
-| `multifamilial4plus` | `qc-zonage-norms` / grille | `zone-rule` | `multifamilial4plus_prov_source` = `"grille"\|"heuristique"` (= l'actuel `multifamilial4plusSource`) |
-| `priorite` | dérivé (composite) | `composite-rule` (§6) | `priorite_prov_inputs` = les champs conjoints (ex `["multifamilial4plus","in_tod"]`) |
+**CONDITIONS DE GEL (gouvernance geo-archi) :**
+1. **Binding re-dérivable** : le `field_provenance` collection est **keyé par nom-de-champ** matchant les
+   champs feature ; **les 2 niveaux ENSEMBLE = provenance complète re-dérivable** (uniforme = source/méthode/
+   définition/millésime-source ; variable = inputs/overlap/matched). **Ni l'un ni l'autre seul.** Le contrat
+   grave ce join collection↔feature par nom-de-champ.
+2. **Fraîcheur (anti « vert par omission »)** : le `field_provenance` collection est **re-matérialisé dans
+   la MÊME passe** que les features + **rattaché à `coherence_id`/`data_set_hash`** (ADR-0027) → un
+   collection-meta **stale échoue la gate de fraîcheur**. L'uniforme ne doit JAMAIS dériver silencieusement
+   des features.
+3. **4 valeurs + anti-invention** restent **flat scalaire au feature** (filtrables/tileables ; `null`≠`false`).
 
-**Re-dérivabilité (critère geo-cond) :** chaque champ porte {source + méthode + inputs} suffisants pour
-**re-calculer** — la provenance EST la preuve-par-construction du champ (pendant attributaire de la
-preuve-v2 géométrique). Le partagé (`materialized_at`, `lot_contract_version`) est **factorisé collection-level**
-(§4), hors des clés-champ.
+⟹ **Split RATIFIÉ** : il **améliore** mon flat-tout-au-feature (le 10.3MB montrait qu'il était trop lourd)
+tout en honorant flat-où-ça-compte (le variable filtrable/tileable). Le `lot_contract_version` +
+`coherence_id`/`data_set_hash` restent collection-level (§5).
 
 ---
 
