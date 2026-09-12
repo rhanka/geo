@@ -11,8 +11,10 @@ import {
 import { DEFAULT_CAPTURE_USER_AGENT } from "./lib/capture-s3.js";
 import { putBytesIfAbsentOrEqual, s3Client } from "./lib/s3.js";
 
+// geo-capture sorti de Scaleway → GHCR (rebuild frais, main@8faa0de 2026-09-12).
+// Pinné par digest : assertPinnedImage exige ghcr.io/rhanka/geo-capture@sha256:… (package public).
 const DEFAULT_IMAGE =
-  "rg.fr-par.scw.cloud/sentropic-geo/geo-capture:0.1.5-category-a-range";
+  "ghcr.io/rhanka/geo-capture@sha256:5ac84f27afc8b4294cde5ba5ef4bf773bf173a596a97a582e8cfe4eed5acd727";
 
 function value(argv: readonly string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
