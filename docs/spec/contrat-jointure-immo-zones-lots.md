@@ -212,7 +212,7 @@ registre v2 décrit ci-dessous.
 
 Ce dépôt ne contient pas l'implémentation de `geo-api`: la seule référence est
 le manifeste `deploy/k8s/geo-api-deployment.yaml`, qui tire l'image externe
-`rg.fr-par.scw.cloud/sentropic-geo/geo-api:0.1.4`; aucune source de route OGC,
+`ghcr.io/rhanka/geo-api:0.1.5-stream-20260726211332`; aucune source de route OGC,
 Dockerfile ou hook de build API n'est versionné ici. La preuve est un champ de
 propriété GeoJSON, donc l'API OGC qui sert déjà les objets
 `normalized/qc-lots`/`normalized/ca-qc-zonage` l'expose sans nouveau mapping.
