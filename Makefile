@@ -2,7 +2,7 @@
 # (ARCH-17/BR-55, push-CI, ADR-0028) ; la cible `k8s-deploy-preprod` est appelée par le
 # workflow CD `cd-preprod.yml` (jamais à la main en temps normal).
 
-GEO_IMAGE      ?= rg.fr-par.scw.cloud/sentropic-geo/geo-api
+GEO_IMAGE      ?= ghcr.io/rhanka/geo-api
 PREPROD_OVERLAY := deploy/k8s/overlays/preprod
 PROD_OVERLAY    := deploy/k8s/overlays/prod
 
