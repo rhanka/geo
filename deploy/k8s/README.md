@@ -117,15 +117,14 @@ cluster.
 
 ## Image
 
-L'image vit dans le registre Scaleway :
+L'image vit dans le registre GHCR (package public — sortie de Scaleway) :
 
 ```
-rg.fr-par.scw.cloud/sentropic-geo/geo-api:<tag>
+ghcr.io/rhanka/geo-api:<tag>
 ```
 
-Tag actuellement déployé : `0.1.4`. **Le build et le push de l'image ne sont pas
-gérés ici** ; bumper le `image:` du Deployment puis ré-appliquer pour livrer une
-nouvelle version.
+**Le build et le push de l'image ne sont pas gérés ici** ; bumper le `image:` du
+Deployment puis ré-appliquer pour livrer une nouvelle version.
 
 ## Ingress
 
@@ -153,12 +152,12 @@ names). Add a `kustomization.yaml` listing these files if you adopt Kustomize.
 ## Image
 
 ```
-rg.fr-par.scw.cloud/sentropic-geo/geo-api:<tag>
+ghcr.io/rhanka/geo-api:<tag>
 ```
 
-Built and pushed by `.github/workflows/docker-publish.yml` (tag-/manual-driven).
+Built and pushed by `.github/workflows/docker-publish.yml` (tag-/manual-driven, GHCR).
 The manifests use `:latest` as a placeholder — pin a real tag at deploy time
-(e.g. `kubectl -n geo set image deployment/geo-api geo-api=rg.fr-par.scw.cloud/sentropic-geo/geo-api:v0.1.0`,
+(e.g. `kubectl -n geo set image deployment/geo-api geo-api=ghcr.io/rhanka/geo-api:v0.1.0`,
 or `kustomize edit set image`). The same image runs both the API server and the
 `geo-fetch` data-population Job (it bundles `gdal-bin`).
 
