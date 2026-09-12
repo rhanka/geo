@@ -271,9 +271,9 @@ flowchart TB
   `putServedZoneGeojson` (nouvelle géométrie, preuve exigée) / `putServedZoneAdditive` (fold, géométrie inchangée
   octet-pour-octet).
 
-**Registry** : Scaleway `rg.fr-par.scw.cloud/sentropic-geo/geo-api` (+ miroir `ghcr.io/rhanka/geo-api`) ;
-`ghcr.io/rhanka/geo-capture` (GHCR only, par digest) ; `sentropic-geo/geo-acquisition:0.1.0` (Scaleway — tag
-mutable, [cible] : digest).
+**Registry** : geo-api sur GHCR `ghcr.io/rhanka/geo-api` (package public — sorti de Scaleway ; le registre SCW
+reste up pour matchid, geo n'en dépend plus) ; `ghcr.io/rhanka/geo-capture` (GHCR only, par digest) ;
+`sentropic-geo/geo-acquisition:0.1.0` (Scaleway — tag mutable, [cible] : digest + migration GHCR à suivre).
 
 **Serving OGC** : geo-api (Hono + `StoreProvider`) sert `/collections` depuis `s3://<bucket>/normalized` — index
 méta sans parse des corps, stream borné, règle sous-dossier-sur-plat (`store-provider.ts:252-278`). Consommateur
