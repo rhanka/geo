@@ -18,12 +18,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Guard registry migration
-        run: node scripts/check-registry-policy.mjs
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+      - name: Guard registry migration
+        run: node scripts/check-registry-policy.mjs
       # poppler-utils fournit `pdftotext`, que l'image de scrape embarque
       # (api/Dockerfile) et dont dépend l'extraction des PDF de PV : sans lui,
       # l'extraction rend du vide EN SILENCE. Le runner GitHub ne l'a pas par

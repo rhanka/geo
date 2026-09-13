@@ -20,7 +20,7 @@ interface Args {
   dryRun: boolean;
 }
 
-export const DEFAULT_IMAGE = "ghcr.io/rhanka/normes-job@sha256:fd14d123f090205ee25e7538cf1340514c00aa259bb572b93602df5880f81200";
+export const DEFAULT_IMAGE = "ghcr.io/rhanka/normes-job@sha256:057bb84cf94e9efb52d09e81fc4560696ce54410d0be3cdeec54a33e861d9a0b";
 
 function option(argv: string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
