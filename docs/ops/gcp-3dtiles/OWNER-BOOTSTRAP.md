@@ -109,34 +109,30 @@ ACCORDÉ pour la rotation), assemble un kubeconfig minimal (token SA seul, **0 c
 jobs`). **Token borné ⇒ rotation** : re-lancer `54` avant l'expiry accordé (la CI échoue loud à expiry).
 
 `GEO_S3_ENV` — cred S3 **READ-ONLY** pour que le render CI lise S3 (`render-cptaq-serve.ts` lit le
-manifeste de capture). Provider = **Scaleway Object Storage** ; le secret = un blob dotenv des 5 variables
-(mesurées sur `geo-s3-credentials`) :
+manifeste de capture). Provider = **OVH Object Storage** ; le secret contient en base64
+un dotenv des cinq variables (le workflow `geo-jobs.yml` le décode avant lecture) :
 ```
-S3_ENDPOINT=<endpoint Scaleway, ex. https://s3.fr-par.scw.cloud>
-S3_REGION=<region, ex. fr-par>
+S3_ENDPOINT=https://s3.bhs.io.cloud.ovh.net
+S3_REGION=bhs
 S3_BUCKET=sentropic-geo-preprod
 S3_ACCESS_KEY=<access key RO>
 S3_SECRET_KEY=<secret key RO>
 ```
-Le couple ACCESS/SECRET = une **clé API Scaleway READ-ONLY**. Recette autoritative (i-infra, frontière
-S3-provider), 2 couches :
-- **Couche 1 — Scaleway IAM (contrôle primaire)** : une **IAM Application DÉDIÉE** (identité machine, PAS
-  un user) → l'API key s'y attache. UNE Policy sur cette Application : SCOPE = le **PROJET preprod
-  UNIQUEMENT** (celui portant `sentropic-geo-preprod` ; PAS org-wide — c'est ce scope-projet qui rend la
-  prod DENY, le bucket prod étant hors du projet policé) ; PERMISSION SET = `ObjectStorageReadOnly`
-  (built-in ; granulaire équivalent `ObjectStorageObjectRead` + `ObjectStorageBucketRead`) ; **JAMAIS**
-  `ObjectStorageFullAccess` / `ObjectStorageObjectWrite` / aucun set write/delete. Générer l'API key SOUS
-  cette Application (Preferred Project = preprod) → `ACCESS_KEY` (SCW…) + `SECRET_KEY`.
-- **Couche 2 — bucket policy S3 (défense-en-profondeur ; IAM reste l'autorité)** : Allow au principal de
-  l'Application UNIQUEMENT `s3:GetObject` + `s3:ListBucket` (+ option `s3:GetBucketLocation`) sur
-  `sentropic-geo-preprod` et `/*`. Aucun `s3:PutObject` / `s3:DeleteObject` / `s3:PutBucketPolicy`.
+Le couple ACCESS/SECRET est une **clé S3 OVH READ-ONLY dédiée à la préprod**,
+provisionnée et certifiée par `poc-k8s` avec le mécanisme IAM/S3 du projet OVH.
+Les identifiants de politique d'un autre fournisseur ne sont pas transposables.
+Le principal doit permettre uniquement `s3:GetObject` + `s3:ListBucket`
+(+ `s3:GetBucketLocation` si nécessaire) sur `sentropic-geo-preprod` et ses objets.
+Aucune permission d'écriture, de suppression, de changement de policy ou d'accès
+au bucket prod. Le cumul des politiques du principal et du bucket doit respecter
+ces restrictions ; ne pas réutiliser la clé RW `geo-s3-credentials` du serving.
 
 i-infra **certifie le scope au provisioning** (5 probes RO : ListBucket preprod OK · GetObject OK ·
 PutObject 403 · DeleteObject 403 · toute op bucket PROD DENIED). **GUARDRAIL** : GEO_S3_ENV = RO pour le
 chemin render-lit-S3 ; un job SERVE qui écrit S3 = une cred **SÉPARÉE scopée-write**, JAMAIS élargir
 GEO_S3_ENV en RW (deux chemins = deux creds). Puis pose (env-scopé) + shred (jamais committé) :
 ```bash
-gh secret set GEO_S3_ENV -R rhanka/geo --env geo-preprod < geo-s3-ro.env   # dotenv des 5 lignes ci-dessus
+base64 -w0 geo-s3-ro.env | gh secret set GEO_S3_ENV -R rhanka/geo --env geo-preprod
 shred -u geo-s3-ro.env
 ```
 

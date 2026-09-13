@@ -5,7 +5,7 @@
 set -euo pipefail
 # tippecanoe + awscli are BAKED in the image (Kubernetes job has no egress to ubuntu archives).
 echo "[$(date -u +%H:%M:%S)] tippecanoe $(tippecanoe --version 2>&1 | head -1)"
-export AWS_ACCESS_KEY_ID="$S3_ACCESS_KEY" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" AWS_DEFAULT_REGION="${S3_REGION:-fr-par}"
+export AWS_ACCESS_KEY_ID="$S3_ACCESS_KEY" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" AWS_DEFAULT_REGION="${S3_REGION:?S3_REGION required}"
 B="${S3_BUCKET:-sentropic-geo}"
 A=(aws --endpoint-url "$S3_ENDPOINT")
 mkdir -p /w/zones /w/lots /w/out
