@@ -20,7 +20,7 @@ interface Args {
   dryRun: boolean;
 }
 
-export const DEFAULT_IMAGE = "rg.fr-par.scw.cloud/sentropic-geo/normes-job:captured-mistral-ba5b1b69";
+export const DEFAULT_IMAGE = "ghcr.io/rhanka/normes-job@sha256:057bb84cf94e9efb52d09e81fc4560696ce54410d0be3cdeec54a33e861d9a0b";
 
 function option(argv: string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
@@ -79,8 +79,6 @@ spec:
         lane: normes
     spec:
       restartPolicy: Never
-      imagePullSecrets:
-        - name: geo-registry-pull
       securityContext:
         seccompProfile:
           type: RuntimeDefault

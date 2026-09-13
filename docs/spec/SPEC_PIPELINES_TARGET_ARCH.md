@@ -219,7 +219,7 @@ flowchart TB
 4. **Essais pipeline** en preprod : écrits sous `preprod/runs/<merge-sha>/<run-id>/`, jamais dans le baseline [cible].
 
 **Tag `v*` (jambe 2 — EXISTE + [cible])** :
-1. `docker-publish.yml` (EXISTE) : tag-driven only (`:9-18`) → image geo-api (Scaleway + miroir GHCR `:110-121`) ;
+1. `docker-publish.yml` (EXISTE) : tag-driven only (`:9-18`) → images geo-api, geo-capture, geo-acquisition et normes-job sur GHCR ;
    image `geo-capture` **GHCR uniquement, épinglée par digest** (`:143-195`). `npm-publish.yml` (EXISTE) :
    tag-driven, verify → release-guard → publish (`:6-9`).
 2. `release-prod` [cible] : le tag référence un **digest déjà validé en preprod** (same-digest —
@@ -271,17 +271,18 @@ flowchart TB
   `putServedZoneGeojson` (nouvelle géométrie, preuve exigée) / `putServedZoneAdditive` (fold, géométrie inchangée
   octet-pour-octet).
 
-**Registry** : geo-api sur GHCR `ghcr.io/rhanka/geo-api` (package public — sorti de Scaleway ; le registre SCW
-reste up pour matchid, geo n'en dépend plus) ; `ghcr.io/rhanka/geo-capture` (GHCR only, par digest) ;
-`sentropic-geo/geo-acquisition:0.1.0` (Scaleway — tag mutable, [cible] : digest + migration GHCR à suivre).
+**Registry** : les quatre images `ghcr.io/rhanka/{geo-api,geo-capture,geo-acquisition,normes-job}`
+sont publiées sur GHCR, publiques et épinglées par digest au déploiement.
+`docker-publish.yml` construit les quatre depuis le dépôt. Aucun secret de registre
+n’est requis. Le registre historique partagé avec matchid reste hors de cette migration.
 
 **Serving OGC** : geo-api (Hono + `StoreProvider`) sert `/collections` depuis `s3://<bucket>/normalized` — index
 méta sans parse des corps, stream borné, règle sous-dossier-sur-plat (`store-provider.ts:252-278`). Consommateur
 interne : radar-immobilier (preprod : FQDN `geo-api.geo-preprod:8787`). Les Jobs in-cluster appellent le
 **service ClusterIP**, jamais le LoadBalancer public en hairpin.
 
-**À décommissionner (chemin non-cible)** : Serverless Scaleway `deploy/normes-job` (hors cluster, staging local
-recommandé — `README.md:22-34`) ; orchestrateur local `deploy/acquisition-job` (`k8s-shard-run.ts` lancé du
+**À décommissionner (chemin non-cible)** : le chemin Serverless est retiré ; le packaging
+`deploy/normes-job/` est conservé pour Kubernetes (`captured`, PDF pré-stagés). Orchestrateur local `deploy/acquisition-job` (`k8s-shard-run.ts` lancé du
 poste — `README.md:29-40`) ; flotte tmux `geo-fleet.ts` comme moteur de refresh (les agents restent des
 analystes lecture-seule).
 
@@ -348,8 +349,7 @@ flowchart TB
   end
 
   subgraph REG["Registries"]
-    SCW["rg.fr-par.scw.cloud/sentropic-geo<br/>geo-api + geo-acquisition"]:::existe
-    GHCR["ghcr.io/rhanka<br/>geo-api miroir + geo-capture par digest"]:::existe
+    GHCR["ghcr.io/rhanka<br/>geo-api + geo-capture + geo-acquisition + normes-job"]:::existe
   end
 
   subgraph K8S["Cluster k8s poc"]
@@ -379,8 +379,7 @@ flowchart TB
   USERS["clients OGC API"]:::ext
 
   CI -->|"garde le merge"| CDP2
-  CDP2 -->|"pousse digest"| SCW
-  DP -->|"pousse par digest"| SCW
+  CDP2 -->|"pousse digest"| GHCR
   DP -->|"pousse par digest"| GHCR
   RPX -->|"promeut same-digest"| APIP
   CDP2 -->|"apply -k overlay preprod"| APIPP

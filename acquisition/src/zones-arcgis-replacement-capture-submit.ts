@@ -157,8 +157,6 @@ spec:
         geo.run-stamp: "${args.runStamp}"
     spec:
       restartPolicy: Never
-      imagePullSecrets:
-        - name: geo-registry-pull
       securityContext:
         fsGroup: 1000
         runAsNonRoot: true

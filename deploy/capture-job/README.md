@@ -52,8 +52,7 @@ NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
 Secrets requis (noms seulement) : `geo-s3-credentials` avec `S3_ENDPOINT`,
 `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`. L'image geo-capture
 est sur GHCR (package public) → pull anonyme, aucun secret de registre requis ;
-`geo-registry-pull` reste référencé dans les manifestes (inoffensif, retiré au
-balayage final SCW). Aucun secret de modèle n'est requis.
+Aucun secret de modèle n’est requis.
 
 `job-capture.yaml` est le lot de contrôle PV réel (200 URL du snapshot
 `b32de19169bc907c`), à publier d'abord avec
