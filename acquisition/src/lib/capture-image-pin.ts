@@ -31,7 +31,7 @@ export function assertPinnedImage(image: string, opts: { allowUnpinned?: boolean
     throw new Error(
       "--image doit etre epingle par digest GHCR immuable " +
         "(ghcr.io/rhanka/geo-capture@sha256:<64hex>), recu: " +
-        `${image}. Un tag mutable (ex. Scaleway :0.1.1) peut pointer sur une autre ` +
+        `${image}. Un tag mutable (ex. :0.1.1) peut pointer sur une autre ` +
         "image demain sans que rien ne le signale. Passe l'image depuis " +
         "acquisition/config/capture-image.json, ou --allow-unpinned-image pour un debug explicite.",
     );
