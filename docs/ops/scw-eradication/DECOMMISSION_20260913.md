@@ -62,10 +62,11 @@ de données servies. Les identifiants secrets ne figurent pas dans ce dossier.
 | `ovh-history/deletion.log` | Résultats de suppression des 70 objets ciblés. |
 | `scw-sentropic-geo/` | Copie complète du bucket en cours, suivie de `rclone check --download` ; source attendue : 45 378 objets / 48 939 893 150 octets. |
 
-Le Job d'archive a été repris en `v3` pour passer la comparaison des octets à
-16 lecteurs, avec les mêmes limites de 500 mCPU / 512 Mio et buffers de 4 Mio.
+Le Job d'archive a été repris en `v4` avec 32 contrôleurs de métadonnées et
+16 lecteurs pour la comparaison des octets, avec les mêmes limites de
+500 mCPU / 512 Mio et buffers de 4 Mio.
 Les logs des tentatives interrompues sont conservés dans `bucket-archive-v1.log`
-et `bucket-archive-v2.log` ; ils ne constituent pas une preuve de sauvegarde
+et `bucket-archive-v2.log` / `bucket-archive-v3.log` ; ils ne constituent pas une preuve de sauvegarde
 complète. Le Job final reprend les objets existants avec `--immutable` avant
 la vérification intégrale. Aucun compteur intermédiaire n'autorise la purge.
 
