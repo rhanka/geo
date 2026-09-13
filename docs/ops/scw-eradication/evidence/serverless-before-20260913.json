@@ -1,0 +1,96 @@
+{
+  "at": "2026-09-13T14:19:33.165Z",
+  "definitions": [
+    {
+      "id": "ee3b13b6-f844-41d8-9272-f5561f1b3357",
+      "name": "pmtiles-builder",
+      "image_uri": "rg.fr-par.scw.cloud/sentropic-geo/pmtiles-builder:1",
+      "region": "fr-par",
+      "project_id": "85fa7709-911d-4a31-b3b9-fcefdc82bbdf",
+      "cron_schedule": null,
+      "created_at": "2026-06-19T02:14:57.989891Z",
+      "updated_at": "2026-06-19T02:14:57.989891Z",
+      "environment_keys": [
+        "S3_ACCESS_KEY",
+        "S3_BUCKET",
+        "S3_ENDPOINT",
+        "S3_REGION",
+        "S3_SECRET_KEY"
+      ]
+    },
+    {
+      "id": "4550c9d3-e3b9-4213-86b6-1a216e09ded6",
+      "name": "zonage-builder",
+      "image_uri": "rg.fr-par.scw.cloud/sentropic-geo/zonage-builder:1",
+      "region": "fr-par",
+      "project_id": "85fa7709-911d-4a31-b3b9-fcefdc82bbdf",
+      "cron_schedule": null,
+      "created_at": "2026-06-19T14:20:42.37875Z",
+      "updated_at": "2026-06-19T14:26:13.716845Z",
+      "environment_keys": [
+        "AWS_ACCESS_KEY_ID",
+        "AWS_DEFAULT_REGION",
+        "AWS_SECRET_ACCESS_KEY",
+        "DPI",
+        "LOTS_S3",
+        "MERGE",
+        "OUT_S3",
+        "PDF_S3",
+        "S3_ENDPOINT",
+        "SLUG"
+      ]
+    },
+    {
+      "id": "8c4acd86-e447-48db-9e06-12ddb319c2cb",
+      "name": "zonage-ocr",
+      "image_uri": "rg.fr-par.scw.cloud/sentropic-geo/zonage-builder:2",
+      "region": "fr-par",
+      "project_id": "85fa7709-911d-4a31-b3b9-fcefdc82bbdf",
+      "cron_schedule": null,
+      "created_at": "2026-06-19T14:49:10.14179Z",
+      "updated_at": "2026-06-19T15:46:04.515747Z",
+      "environment_keys": [
+        "AMBIG_BAND",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_DEFAULT_REGION",
+        "AWS_SECRET_ACCESS_KEY",
+        "DPI",
+        "DUMP_LABELS_S3",
+        "LOTS_S3",
+        "MINCONF",
+        "OUT_S3",
+        "PDF_S3",
+        "PSM",
+        "S3_ENDPOINT",
+        "SLUG",
+        "SOURCE",
+        "UPSCALE",
+        "WHITE_TEXT"
+      ]
+    },
+    {
+      "id": "062f7684-6067-4151-bfc0-3ed5be3f5da2",
+      "name": "zonage-vision",
+      "image_uri": "rg.fr-par.scw.cloud/sentropic-geo/zonage-builder:vision",
+      "region": "fr-par",
+      "project_id": "85fa7709-911d-4a31-b3b9-fcefdc82bbdf",
+      "cron_schedule": null,
+      "created_at": "2026-06-19T20:24:43.423499Z",
+      "updated_at": "2026-06-19T20:29:27.486069Z",
+      "environment_keys": [
+        "ANCHORS_S3",
+        "AWS_ACCESS_KEY_ID",
+        "AWS_DEFAULT_REGION",
+        "AWS_SECRET_ACCESS_KEY",
+        "KNEAR",
+        "LOTS_S3",
+        "MAXDIST",
+        "OUT_S3",
+        "PNG_S3",
+        "S3_ENDPOINT",
+        "SLUG",
+        "WALL_RUN"
+      ]
+    }
+  ]
+}
