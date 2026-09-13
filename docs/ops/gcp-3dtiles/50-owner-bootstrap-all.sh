@@ -70,13 +70,13 @@ gh variable set WIF_PROVIDER    -R "$GH_REPO" --env "$WIF_ENV" --body "$WIF_PROV
 gh variable set CAP_EXECUTOR_SA -R "$GH_REPO" --env "$WIF_ENV" --body "$CAP_EXECUTOR_SA"
 if [ -n "${PREPROD_OGC_URL:-}" ]; then gh variable set PREPROD_OGC_URL -R "$GH_REPO" --env "$WIF_ENV" --body "$PREPROD_OGC_URL"; fi
 
-# ── 5. GEO_S3_ENV (Scaleway RO) : cred owner-fournie (console IAM), guidée, jamais capturée ici. ──────
+# ── 5. GEO_S3_ENV (OVH RO) : cred fournie par l'infrastructure, guidée, jamais capturée ici. ──────
 if gh secret list -R "$GH_REPO" --env "$WIF_ENV" 2>/dev/null | grep -q '^GEO_S3_ENV'; then
   echo "  (GEO_S3_ENV déjà posé — laissé tel quel)"
 else
-  echo "  ↳ GEO_S3_ENV absent. Mint une clé Scaleway RO (OWNER-BOOTSTRAP.md [d], recette i-infra 2-couches),"
+  echo "  ↳ GEO_S3_ENV absent. Faire provisionner une clé OVH RO dédiée au bucket préprod (OWNER-BOOTSTRAP.md [d]),"
   echo "    écris les 5 lignes S3_ENDPOINT/S3_REGION/S3_BUCKET/S3_ACCESS_KEY/S3_SECRET_KEY dans un .env, puis :"
-  echo "    gh secret set GEO_S3_ENV -R ${GH_REPO} --env ${WIF_ENV} < ce.env && shred -u ce.env"
+  echo "    base64 -w0 ce.env | gh secret set GEO_S3_ENV -R ${GH_REPO} --env ${WIF_ENV} && shred -u ce.env"
 fi
 [ -n "${PREPROD_OGC_URL:-}" ] || echo "  ↳ PREPROD_OGC_URL non fourni : gh variable set PREPROD_OGC_URL -R ${GH_REPO} --env ${WIF_ENV} --body '<ingress geo-api preprod>' (quand il existe)."
 
