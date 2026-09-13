@@ -35,8 +35,6 @@ spec:
         runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
-      imagePullSecrets:
-        - name: geo-registry-pull
       containers:
         - name: geo-api
           image: ghcr.io/rhanka/geo-api:0.1.4

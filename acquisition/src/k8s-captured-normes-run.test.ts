@@ -4,10 +4,10 @@ import { DEFAULT_IMAGE, jobManifest, jobName } from "./k8s-captured-normes-run.j
 
 describe("captured normes Mistral job", () => {
   const referenceKey = "registry/normes-captured-references/run-123/1.json";
-  const image = "rg.fr-par.scw.cloud/sentropic-geo/normes-job:test";
+  const image = "ghcr.io/rhanka/normes-job:test";
 
   it("defaults to the published captured-Mistral bridge image", () => {
-    expect(DEFAULT_IMAGE).toBe("rg.fr-par.scw.cloud/sentropic-geo/normes-job:captured-mistral-ba5b1b69");
+    expect(DEFAULT_IMAGE).toMatch(/^ghcr\.io\/rhanka\/normes-job@sha256:[0-9a-f]{64}$/);
   });
 
   it("derives a stable DNS-safe job name from the exact reference and image", () => {

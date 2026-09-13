@@ -21,7 +21,6 @@ spec:
       labels: { app.kubernetes.io/component: constraints-serve, geo.stage: s9-cptaq-serve, geo.run: "REPLACE_JOB_SLUG" }
     spec:
       restartPolicy: Never
-      imagePullSecrets: [ { name: geo-registry-pull } ]
       containers:
       - name: cptaq-serve
         # geo-api ROOT image (gdal-bin, GDAL 3.6.2), built from main #311 merge
@@ -36,7 +35,7 @@ spec:
         # ["zonage","date_maj"]; 4 agricole-only collections, 0 S3 writes, `_snapshots/` present, emprise
         # full 1446) + geo-socle CD-run headSha = abefa1e8 (= the #311 merge commit).
         # MEME image #311 (digest IDENTIQUE), mirroree SCW->GHCR (sortie Scaleway) — le package
-        # GHCR geo-api est public (pull anonyme OK) ; geo-registry-pull conserve, inoffensif.
+        # GHCR geo-api est public (pull anonyme).
         image: ghcr.io/rhanka/geo-api@sha256:8e572cb5e16a04509738b71a2019d141958cd20ed2c704a7bb0bf3ff5e0bc827
         # Prod image prunes tsx → run compiled dist. WORKDIR=/app (probe-verified self-exec + Usage guard).
         command: ["node","packages/geo/dist/constraints/cptaq-runner.js"]

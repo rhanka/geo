@@ -121,8 +121,6 @@ spec:
         geo.lot: "${lot}"
     spec:
       restartPolicy: Never
-      imagePullSecrets:
-        - name: geo-registry-pull
       securityContext:
         runAsNonRoot: true
         seccompProfile:

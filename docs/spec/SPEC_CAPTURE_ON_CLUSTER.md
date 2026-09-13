@@ -22,7 +22,12 @@ de la preuve.
 
 ## 1. Constat chiffré de l'existant (tout vérifié dans le dépôt)
 
-### 1.1 Où tourne le scraping
+### 1.1 Où tournait le scraping (constat du 25 juillet 2026)
+
+Mise à jour du 13 septembre 2026 : les images et lanceurs sont migrés vers GHCR
+et Kubernetes OVH. `deploy/normes-job/` conserve les modes `captured`, `extract`
+et `full` ; sa présence ne signifie plus un service Serverless. Le constat
+historique ci-dessous décrit l’origine de la migration, pas le déploiement actuel.
 
 | Lane | Où ça tourne aujourd'hui | Manifeste / entrée |
 |---|---|---|
@@ -389,7 +394,7 @@ idempotence par HEAD-skip, aucun secret matérialisé sur disque).
 **`deploy/capture-job/Dockerfile`** — identique à `deploy/acquisition-job/Dockerfile` (base
 `node:22-bookworm-slim`, contournement du sandbox apt ligne 16, `--network=host` au build), plus :
 `chromium` et `tor` pour la variante obscura (§5.4). Image
-`rg.fr-par.scw.cloud/sentropic-geo/geo-capture:<tag>`.
+`ghcr.io/rhanka/geo-capture@sha256:<digest>`.
 
 **`deploy/capture-job/run-capture-job.sh`** — entrypoint paramétré par environnement, sur le modèle
 de `run-acquisition-job.sh` (vérifications de présence de secrets **sans jamais afficher de valeur**,
@@ -414,7 +419,7 @@ Aucune écriture sous `normalized/` — **un Job de capture ne produit jamais de
 - `geo-s3-credentials` — `S3_ENDPOINT S3_BUCKET S3_REGION S3_ACCESS_KEY S3_SECRET_KEY`
   (`deploy/k8s/README.md:75-80`). `lib/s3.ts:74-85` les lit **déjà** depuis `process.env` quand le
   fichier `s3.env` est absent : **aucune modification de code n'est nécessaire côté creds.**
-- `geo-registry-pull` — imagePullSecret.
+- Images GHCR publiques — aucun secret de registre.
 - **PAS** de `mistral-credentials` : un Job de capture n'appelle pas de modèle (§4.2).
 
 **Ressources** : `requests 100m/192Mi`, `limits 500m/256Mi` par défaut — voir §5.3.
@@ -477,15 +482,12 @@ introduit pas. La seule identité tournée est l'IP de sortie. C'est un fait, pa
 en douce : rendre l'UA aléatoire serait un changement de posture de scraping, pas une décision de
 capture (§8-D).
 
-### 5.5 Variante Scaleway Serverless Job
+### 5.5 Exécution des lots volumineux
 
-Pour les lanes **massives et non contraintes par le quota k8s**, la même image PEUT être exécutée en
-Scaleway Serverless Job, comme `deploy/normes-job/`. Contraintes capitalisées :
-`local-storage-capacity` **max 10240 MiB** (dur), `job-timeout` en durée Go (`2h`, pas `7200`),
-`scw jobs definition start <id>` (pas `run create`), et le contournement du sandbox apt
-(`APT::Sandbox::User "root"`). Comme les octets partent vers S3 au fil de l'eau et que rien n'est
-conservé sur disque, le plafond de 10 Gio n'est **pas** un frein pour la capture — c'est précisément
-l'avantage du modèle CAS-vers-S3 sur le modèle « télécharger tout puis traiter ».
+Les images s’exécutent en Jobs sur le cluster OVH déclaré. Le chemin Serverless
+historique est retiré. Les octets partent vers S3 au fil de l’eau ; les limites
+de ressources et le découpage restent ceux du Job Kubernetes. La conservation
+du packaging `deploy/normes-job/` préserve l’extraction CAS et des PDF pré-stagés.
 
 ---
 
@@ -596,8 +598,7 @@ Conséquences à assumer :
 
 Le quota `geo` autorise ~**2 pods simultanés** (§5.3). Avec un `DELAY_MS` de politesse à 2000 ms, une
 passe province-wide multi-lane se compte en **jours**, pas en heures. Trois leviers, tous à arbitrer :
-relever `tenant-quota` (décision poc-k8s, hors de ce dépôt) ; basculer les lanes lourdes en Scaleway
-Serverless Jobs (§5.5, hors quota k8s) ; accepter la durée. Le levier « plus de shards » **ne
+relever `tenant-quota` (décision poc-k8s, hors de ce dépôt) ; dimensionner les Jobs OVH (§5.5) ; accepter la durée. Le levier « plus de shards » **ne
 fonctionne pas** — `deploy/acquisition-job/README.md:88-93` l'écrit explicitement.
 
 ### 7.4 Secrets
@@ -635,7 +636,7 @@ Honnêtement, sur la base de l'existant :
 | **B** | Rétention de `raw/**` | (1) illimitée ; (2) expiration à N mois ; (3) transition classe froide | **Décider APRÈS la première lane migrée**, sur la volumétrie mesurée. Par défaut d'ici là : illimitée |
 | **C** | Sources bloquées depuis une IP datacenter | (1) proxy résidentiel payant ; (2) Tor NEWNYM par ville (déjà prouvé, gratuit, lent) ; (3) carve-out : capture locale mais journalisée sur le même bucket | (2) d'abord ; (3) comme repli documenté ; (1) seulement si le blocage devient bloquant sur une lane à valeur |
 | **D** | Posture de scraping : rotation d'UA ? | (1) statu quo — UA constant honnête ; (2) rotation | (1). `RawDocument.ts:23,26-28` inscrit déjà une posture explicite (« honest user-agent », obscura « for rendering reliability, never for circumventing access »). La changer est une décision de politique, pas d'ingénierie |
-| **E** | Quota `tenant-quota` du namespace `geo` | (1) laisser à 6 pods / 1Gi ; (2) le relever (décision poc-k8s) ; (3) basculer les lanes lourdes en Scaleway Serverless Jobs | (3) pour le volume, (1) pour le reste — (2) crée une dépendance hors dépôt |
+| **E** | Quota `tenant-quota` du namespace `geo` | (1) laisser à 6 pods / 1Gi ; (2) le relever (décision poc-k8s) ; (3) dimensionner les Jobs OVH | (3) pour le volume, (1) pour le reste — (2) crée une dépendance hors dépôt |
 | **F** | `GEO_ALLOW_UNCAPTURED_PROOF` : durée de vie | (1) permanent ; (2) retiré lane par lane (§6.1 étape 4) ; (3) retiré à date fixe | (2). Un échappement permanent vide la règle C-1 de sa substance |
 | **G** | Un backfill (`backfilled: true`) compte-t-il dans le KPI v2 ? | (1) non (règle C-4) ; (2) oui si l'URL est connue | (1). C'est la discipline qui rend le 0/1106 actuel *significatif* ; l'assouplir rendrait le KPI incomparable dans le temps |
 

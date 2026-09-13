@@ -1,7 +1,7 @@
 # acquisition-job — QC mass-acquisition as parallel k8s Jobs
 
 Runs the province-wide QC zonage acquisition **remotely and in parallel** on the
-`poc` k8s cluster instead of the slow LOCAL sequential worker. A TypeScript
+declared OVH `poc-ca` k8s cluster instead of the slow LOCAL sequential worker. A TypeScript
 orchestrator (`acquisition/src/k8s-shard-run.ts`) splits the ~563-muni list into
 N shards, turns each shard into a `batch/v1` Job (namespace `geo`) running this
 image, and monitors them to completion.
@@ -19,7 +19,7 @@ Each Job, for its shard of slugs:
 HEAD-skips any slug already deposited in S3, so a re-run never redoes a paid
 Mistral vision pass.
 
-The image is `rg.fr-par.scw.cloud/sentropic-geo/geo-acquisition:0.1.0` — baked
+The image is `ghcr.io/rhanka/geo-acquisition@sha256:<digest>` — baked
 with `poppler-utils` (`pdftotext` / `pdfinfo` / `pdftoppm`, required by the
 parsers and the vision page renderer) and the `acquisition/` +
 `packages/qc-sources/` TypeScript run via `tsx`.
@@ -55,9 +55,8 @@ Injected via `envFrom` secretRef; nothing is written to disk.
 
 | Secret | Keys | Purpose |
 |--------|------|---------|
-| `geo-s3-credentials` | `S3_ENDPOINT S3_BUCKET S3_REGION S3_ACCESS_KEY S3_SECRET_KEY` | Scaleway Object Storage |
+| `geo-s3-credentials` | `S3_ENDPOINT S3_BUCKET S3_REGION S3_ACCESS_KEY S3_SECRET_KEY` | OVH Object Storage |
 | `mistral-credentials` | `MISTRAL_API_KEY` | vision / multizone extraction |
-| `geo-registry-pull` | imagePullSecret | pull the image from the Scaleway registry |
 
 `lib/s3.ts` reads `S3_*` straight from the pod env when no `s3.env` file exists;
 `zonage-norms-batch.ts` reads `MISTRAL_API_KEY` the same way. Secret values are
@@ -101,18 +100,15 @@ vision render; bump `--lim-mem 512Mi --concurrency 1` for the hardest grilles
 
 ## Building & pushing the image
 
-```bash
-docker build --network=host \
-  -f deploy/acquisition-job/Dockerfile \
-  -t rg.fr-par.scw.cloud/sentropic-geo/geo-acquisition:0.1.0 .
+The committed `.github/workflows/docker-publish.yml` builds this image on a
+release tag or explicit dispatch. It resolves the extraction modules during the
+build; missing source packages, S3 configuration or ESM dependencies fail the build.
 
-# push using the geo-registry-pull creds in an isolated DOCKER_CONFIG
-TMP=$(mktemp -d)
-kubectl get secret geo-registry-pull -n geo \
-  -o jsonpath='{.data.\.dockerconfigjson}' | base64 -d > "$TMP/config.json"
-DOCKER_CONFIG="$TMP" docker push rg.fr-par.scw.cloud/sentropic-geo/geo-acquisition:0.1.0
-rm -rf "$TMP"
+```bash
+gh workflow run docker-publish.yml --ref main -f tag=<tag>
 ```
 
-`--network=host` works around flaky buildkit DNS. The `geo-registry-pull` secret
-has push rights (despite its `nologin` username).
+Use the immutable GHCR digest printed by the build. The package is public and
+requires no registry secret. The launcher remains manual; publishing does not
+start a capture or extraction campaign. Mistral vision-chat remains banned by
+ADR-0024; migration of the image does not authorize a model or a new campaign.
