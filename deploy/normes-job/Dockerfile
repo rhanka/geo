@@ -1,13 +1,12 @@
-# normes-job — Scaleway Serverless Job that runs the QC zonage-norms pipeline
-# REMOTE & DURABLE (survives the laptop being off). Mirrors deploy/pmtiles.
+# normes-job — Kubernetes extraction of captured or S3-staged zoning grids.
+# Published on GHCR; the captured bridge and staged-PDF modes are preserved.
 #
 # poppler-utils (pdftotext / pdfinfo / pdftoppm) is REQUIRED by the parsers and
-# the Mistral-vision page renderer — BAKED in (a Scaleway job may have no apt
+# the page renderer — BAKED in (a Kubernetes job may have no apt
 # egress). Build with `docker build --network=host` (buildkit DNS is flaky).
 #
-# This repo has NO npm workspace root: acquisition/ and packages/qc-sources/ are
-# independent packages, so we `npm ci` inside acquisition/ and resolve qc-sources
-# by relative path (its only runtime dep, zod, is already in acquisition's lock).
+# Install the acquisition lockfile and resolve sibling source dependencies
+# through /geo/node_modules, as in the capture image.
 FROM node:22-bookworm-slim
 
 # poppler-utils + ca-certificates (TLS to S3 + api.mistral.ai). Retry: archive DNS.
@@ -25,7 +24,7 @@ COPY packages/qc-sources/ ./packages/qc-sources/
 # `acquisition/tsconfig.json` maps @sentropic/geo to this source module while
 # tsx runs the bridge. It must therefore be present in the image even though
 # its ignored dist/ output is deliberately rebuilt elsewhere.
-COPY packages/geo/src/ ./packages/geo/src/
+COPY packages/geo/ ./packages/geo/
 
 # Install acquisition deps (tsx, @aws-sdk/client-s3, @dsnp/parquetjs, zod, …)
 # from its committed lockfile, then copy its sources.
@@ -37,6 +36,7 @@ COPY acquisition/tsconfig.json ./acquisition/
 # Static, non-secret S3 endpoint contract read at module load. Credentials stay
 # exclusively in the Kubernetes SecretRef environment.
 COPY acquisition/config/s3-target.json ./acquisition/config/s3-target.json
+COPY acquisition/config/k8s-target.json ./acquisition/config/k8s-target.json
 
 # Regression guard for the captured bridge: its TypeScript source reaches both
 # @sentropic/geo (through the acquisition tsconfig paths) and zod (from the
