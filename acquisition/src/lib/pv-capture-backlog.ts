@@ -476,7 +476,6 @@ export function captureBacklogJobManifest(
         metadata: { labels },
         spec: {
           restartPolicy: "Never",
-          imagePullSecrets: [{ name: "geo-registry-pull" }],
           securityContext: { fsGroup: 1000, runAsNonRoot: true, seccompProfile: { type: "RuntimeDefault" } },
           containers: [{
             name: "capture",
@@ -597,8 +596,6 @@ spec:
         spec:
           serviceAccountName: ${serviceAccount}
           restartPolicy: Never
-          imagePullSecrets:
-            - name: geo-registry-pull
           securityContext:
             runAsNonRoot: true
             seccompProfile:

@@ -65,7 +65,7 @@ Le design produit et le plan sont dans [`PRODUCT.md`](PRODUCT.md) et [`PLAN.md`]
 
 Le site statique (`apps/site`) est publié sur **GitHub Pages** sur le domaine apex
 `geo.sent-tech.ca` (workflow [`.github/workflows/pages.yml`](.github/workflows/pages.yml)).
-L'**API** est conçue pour le cluster partagé [`poc-k8s`](../poc-k8s) (Scaleway Kapsule) et
+L'**API** est conçue pour le cluster partagé [`poc-k8s`](../poc-k8s) (OVH `poc-ca`) et
 est exposée sur le sous-domaine `api.geo.sent-tech.ca`. Les manifests applicatifs vivent dans
 [`deploy/k8s/`](deploy/k8s) ; le contrat de namespace (`requests/geo.md`, `tenants/geo/`) est
 négocié côté `poc-k8s`. Ingress : `api.geo.sent-tech.ca`. Voir [`docs/deploy.md`](docs/deploy.md).
