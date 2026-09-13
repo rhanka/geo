@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Entrypoint of the QC zonage-norms Scaleway Serverless Job (REMOTE, DURABLE).
+# Entrypoint of the QC zonage-norms Kubernetes Job (REMOTE, DURABLE).
 #
 # Reads ITS creds from the job ENV (NEVER printed):
 #   S3_ENDPOINT, S3_BUCKET, S3_REGION, S3_ACCESS_KEY, S3_SECRET_KEY  (S3 access)
@@ -13,7 +13,7 @@
 #            qc-zonage-grilles/ (+ its manifest) then extract+deposit. NO egress
 #            to municipal sites needed → robust default.
 #   full     FULL — run grille discovery (needs OUTBOUND egress to muni sites),
-#            then extract+deposit. Use only if Scaleway egress is confirmed.
+#            then extract+deposit. Requires Kubernetes egress to municipal sites.
 #
 # Tunables (ENV): LIMIT (discovery cap), NORMS_BUDGET_USD (per-muni $ cap),
 #   DELAY_MS (discovery politeness), NORMS_MANIFEST (override manifest path).
