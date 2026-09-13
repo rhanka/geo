@@ -9,6 +9,11 @@ ou dispatch explicite. Le contexte de build est `deploy/pmtiles` : aucune donné
 ni clé locale n'entre dans l'image. Le digest publié doit être vérifié et épinglé
 avant création d'un Job ; aucune image mutable n'est un contrat de déploiement.
 
+Publication vérifiée le 13 septembre 2026 :
+`ghcr.io/rhanka/pmtiles-builder@sha256:b2155a5f8d4b02f3ad127cb856b54bb9208854683051a351117e941dfd4615c5`
+([run 34762013633](https://github.com/rhanka/geo/actions/runs/34762013633),
+source `5a92dc14`, manifeste anonyme HTTP 200). Ce build ne relance aucun Job.
+
 Les cinq variables `S3_ENDPOINT`, `S3_REGION`, `S3_BUCKET`, `S3_ACCESS_KEY` et
 `S3_SECRET_KEY` proviennent du secret OVH du namespace ciblé. `S3_REGION` est
 obligatoire. Dimensionner les ressources et le stockage éphémère avant lancement :
