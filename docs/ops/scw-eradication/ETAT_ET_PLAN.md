@@ -6,10 +6,15 @@ geo utilise GHCR et OVH. Aucun registre partagé ni objet S3 n'est supprimé.
 ## Réalisation au 13 septembre 2026
 
 Livraison du nettoyage : [PR #376](https://github.com/rhanka/geo/pull/376),
-après la fusion de #375. Les images finales contiennent les générateurs sans
-secret de registre historique ; les références du dépôt épinglent leurs digests
-publics vérifiés. L'état du merge et du rollout préprod est consultable dans la
-PR et ses workflows ; cette modification ne déclenche pas de déploiement prod.
+fusionnée après #375 dans `e8a57130e9cf2655adf04d531fbc83eab22ef1c6`.
+Les images finales contiennent les générateurs sans secret de registre historique ;
+les références du dépôt épinglent leurs digests publics vérifiés.
+
+La prod a ensuite été promue sous GO explicite du propriétaire via
+[CD Prod 34759477904](https://github.com/rhanka/geo/actions/runs/34759477904),
+réussi le 13 septembre à 13:19 UTC. Aucun tag de release n'est nécessaire :
+`cd-prod.yml` promeut le digest validé en préprod, sans rebuild, derrière
+l'approbation de l'Environment `geo-prod` (required reviewer `rhanka`, conservé).
 
 | Périmètre | État et preuve |
 |---|---|
@@ -52,20 +57,40 @@ réécrits : ils ne constituent pas une dépendance d'exécution.
 
 ## Vérification opérationnelle
 
-L'inventaire OVH du 13 septembre trouve deux pods actifs : `geo-api` (GHCR) et
-`postgis` (Docker Hub). Aucun CronJob ni extraction active. D'anciens Jobs de
-juillet contiennent encore des références historiques SCW ; leur historique
-n'est pas relancé ni supprimé par la migration.
+L'inventaire OVH du 13 septembre trouve deux pods actifs dans `geo` : `geo-api`
+(GHCR) et `postgis` (Docker Hub). Aucun CronJob ni extraction active.
+
+Quatre anciens Jobs du 28 juillet sont **suspendus, pas terminés**, et gardent
+leur template SCW historique :
+
+- `geo-capture-normes-20260728t144551z` : 3 réussites, 2 échecs, suspendu.
+- `geo-capture-normes-20260728t144553z` : 1 réussite, 2 échecs, suspendu.
+- `geo-density-l2-20260728t053153z` : suspendu, aucun pod actif.
+- `geo-density-l3-20260728t053154z` : suspendu, aucun pod actif.
+
+**Ne pas désuspendre ces anciens Jobs.** Ils restent des tentatives historiques.
+Toute reprise doit relire l'état S3, puis créer de nouveaux Jobs depuis les
+lanceurs actuels (`k8s-capture-run.ts`, `k8s-density-document-discovery-run.ts`)
+avec leurs images GHCR épinglées. La migration ne relance aucune capture et ne
+supprime ni les anciens Jobs ni les objets S3.
 
 Le secret GitHub `SCW_SECRET_KEY` a été supprimé le 13 septembre après vérification
 de l'absence de consommateur dans les workflows de main et de la branche. Son
 absence a été confirmée par relecture de la liste des secrets du dépôt.
 
-Le secret Kubernetes `geo-registry-pull` reste présent dans `geo`, avec une
-référence dans le Deployment prod encore déployé. Son image est déjà publique
-sur GHCR. Le compte `system:serviceaccount:geo:ci-deployer` ne peut pas supprimer
-les Secrets et ne lit pas le namespace geo-preprod. Le retrait dans le dépôt
-ne constitue donc pas une suppression de ce secret sur le cluster.
+Après promotion, le Deployment prod est Ready 1/1 avec `imagePullSecrets` absent.
+L'Astra de `poc-k8s`, contacté via H2A, confirme indépendamment le même état en
+prod et préprod, sans référence dans les pods ou comptes de service. Le compte
+`system:serviceaccount:geo:ci-deployer` ne peut pas supprimer les Secrets ;
+**l'Astra a supprimé `geo-registry-pull` dans les deux namespaces**, après son
+inventaire et sauvegarde d'accès protégée. L'absence du secret dans `geo` a aussi
+été relue par GEO. Aucun producteur de ce secret n'a été trouvé dans `poc-k8s`.
+
+L'inventaire infra conserve 58 références historiques dans `geo` et 12 dans
+`geo-preprod`, dont les quatre Jobs suspendus décrits ci-dessus. Elles ne sont
+pas des consommateurs actifs ; leur conservation ne justifie aucune reprise
+de ces templates retirés. Zéro référence active au secret est confirmé par
+l'inventaire des Deployments, pods et comptes de service.
 
 ## Validation
 
@@ -90,13 +115,33 @@ ne constitue donc pas une suppression de ce secret sur le cluster.
 - Aucun changement de `.track` ; checkout partagé `feat/cadre-acquisition`
   préservé. Travail isolé dans `tmp/worktrees/scw-finalize`.
 
-## Suivi du déploiement et solde infrastructure
+## Déploiement prod et certification indépendante
 
-Le merge de #376 déclenche automatiquement CD préprod par la modification du
-Deployment de base. Le workflow construit geo-api, épingle son digest, applique
-l'overlay et vérifie le rollout. La prod suit son déploiement explicite habituel.
+Le merge de #376 a déclenché automatiquement
+[CD préprod 34758869105](https://github.com/rhanka/geo/actions/runs/34758869105),
+réussi. La [CI main](https://github.com/rhanka/geo/actions/runs/34758869192) et
+[Pages](https://github.com/rhanka/geo/actions/runs/34758869138) ont réussi aussi.
+Le digest promu ensuite en prod est exactement celui validé en préprod :
 
-Le compte d'infrastructure OVH doit retirer `geo-registry-pull` après retrait de
-ses références dans les workloads des namespaces geo et geo-preprod. Le compte
-de cette reprise n'a pas le droit de supprimer ce Secret. Les Jobs terminés
-conservent leur historique ; le registre partagé avec matchid reste en service.
+`ghcr.io/rhanka/geo-api@sha256:ff25bdd58ed314f60936a7c3b0cc01b057ab7508e85681752d463c913f122f82`
+
+Le workflow prod constate `deployment "geo-api" successfully rolled out` à
+13:19:39 UTC ; la relecture du Deployment confirme ce digest, Ready 1/1 et
+l'absence d'`imagePullSecrets`. `https://api.geo.sent-tech.ca/conformance`
+répond HTTP 200 avec trois déclarations OGC. Le code n'expose pas de route HTTP
+de SHA servi : la provenance se vérifie par le digest et la variable embarquée
+`GEO_GIT_SHA` / le label OCI `org.opencontainers.image.revision`.
+
+L'exécution est portée par GEO ; la certification indépendante et le nettoyage
+du secret sont portés par l'Astra `codex:poc-k8s:373dd8474fcd`, fil H2A
+`thr:geo-scw-prod-20260913`. Son constat du 13 septembre à 13:25 UTC confirme
+pour prod et préprod le même digest, Ready 1/1, zéro redémarrage,
+`GEO_GIT_SHA=e8a57130e9cf2655adf04d531fbc83eab22ef1c6`, HTTP 200 sur
+`/conformance` et lecture anonyme GHCR HTTP 200. Les deux suppressions de secret
+sont confirmées. Le registre partagé avec matchid reste en service.
+
+Pour la coordination de capacité, les réservations actuelles dans `geo` sont
+105m CPU / 288Mi mémoire (API + PostGIS), et 180m / 416Mi pendant le surge d'un
+pod API. Ce sont des requests Kubernetes, pas un pic de consommation mesuré.
+Les limites mémoire sont 768Mi par conteneur API/PostGIS ; aucun changement de
+dimensionnement ou de placement n'est réalisé par cette promotion.
