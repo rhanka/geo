@@ -100,3 +100,59 @@ Commit `5a92dc14` successfully eliminates Scaleway (SCW) runtime and configurati
 ### Conclusion
 
 The changes in `5a92dc14` are correct, minimal, well-tested, and satisfy all security and architectural requirements. **GO for merge/deployment.**
+
+## Revue complémentaire du Job d’archivage — eb2361f6
+
+Même modèle demandé, effort high, run H2A `geo-scw-archive-review-20260913`.
+Verdict : GO. Ajustement opérationnel retenu : limite mémoire 512 Mi, CPU 500m,
+buffer de vérification 4M et parallélisme borné, après observation de la première
+copie. Les estimations de durée du relecteur sont hypothétiques. La preuve finale
+reste le résultat du Job et la relecture de l’archive.
+
+# VERDICT: GO
+
+The Job manifest in commit `eb2361f6` is syntactically and semantically sound. It introduces no bugs that would block data preservation or harm live serving data. 
+
+---
+
+### 1. Write Scope & Serving Safety
+- **Prefix Isolation**: The target path is strictly confined to `dst:sentropic-geo/ops/decommission/20260913/scw-sentropic-geo`. It operates in an isolated namespace within the destination bucket and does not overlap with live serving paths.
+- **Non-Destructive Operation**: Uses `rclone copy` (not `sync`), ensuring no deletion or eviction of objects on the destination bucket.
+- **Immutability Guard**: `--immutable` guarantees that rclone will abort rather than overwrite any destination object if an existing object differs.
+- **Serving RW Safety**: Although the destination secret (`geo-s3-credentials`) holds full RW privileges on the serving bucket, the manifest limits its write blast radius strictly to the timestamped decommissioning prefix.
+
+---
+
+### 2. Rclone Command Semantics & Verification
+- **Full Bucket Preservation**: `source=src:sentropic-geo` correctly targets the entire 45,378-object source to capture all pre-divergence objects.
+- **Bit-for-Bit Verification**: Because S3 multipart ETags diverge between providers (Scaleway vs. OVH), `rclone check "$source" "$archive" --download` correctly downloads and verifies byte streams directly without relying on mismatched ETags or metadata hashes.
+- **Verification Gate**: With shell `-e`, any mismatch, checksum failure, or missing file during `rclone check` immediately aborts the pipeline with exit code `1` before reaching the `ARCHIVE_VERIFIED_BY_DOWNLOAD` marker.
+
+---
+
+### 3. Retry Behavior & Idempotency
+- **Pod Restarts (`restartPolicy: Never`, `backoffLimit: 1`)**: If Pod 1 fails mid-run, Kubernetes launches exactly one retry pod.
+- **Idempotency with `--immutable`**: In S3, completed objects are immutable and atomic. On restart, `rclone copy` compares existing identical objects and skips them without triggering `--immutable` errors. Incomplete multipart uploads from a failed attempt remain invisible/uncommitted.
+
+---
+
+### 4. Actionable Findings & Operational Considerations
+
+1. **Tight Active Deadline vs. Transatlantic Latency**:
+   - **Observation**: Transferring 48.94 GB across 45,378 small objects (~1 MB avg) from Scaleway Paris (`fr-par`) to OVH Beauharnois (`bhs`) with `--transfers 2` will take ~60–90 minutes. The subsequent `rclone check --download --checkers 2` must download ~98 GB aggregate over only 2 checker streams, taking ~90–120 minutes.
+   - **Risk**: Total runtime will hover around 2.5–3.5 hours. If transatlantic transit degrades or latency spikes, the job risks hitting `activeDeadlineSeconds: 14400` (4 hours) and terminating with `DeadlineExceeded`.
+   - **Recommendation**: If execution allows adjustment, increase `activeDeadlineSeconds` to `21600` (6 hours) or bump `--transfers` and `--checkers` to `4`.
+
+2. **Memory Limit vs. Unset Check Buffer Size**:
+   - **Observation**: `rclone copy` sets `--buffer-size 4M`, but `rclone check` omits `--buffer-size`, defaulting to rclone's `16M` buffer per stream.
+   - **Risk**: 2 checkers reading both source and destination generate 4 concurrent download streams (64 MiB in stream buffers alone) plus directory metadata for 45k objects. Inside `limits.memory: 256Mi`, Go runtime GC spikes could push close to the OOM threshold.
+   - **Recommendation**: Explicitly pass `--buffer-size 4M` to `rclone check` as well, or increase container memory limit to `512Mi`.
+
+3. **CPU Throttling**:
+   - **Observation**: `limits.cpu: 200m` (0.2 cores) will throttle concurrent TLS decryption and byte/hash stream comparisons during the dual download check phase, extending runtime. Raising the limit to `500m`–`1000m` is recommended if node capacity permits.
+
+---
+
+### Coordinator Record
+- **Target File**: `docs/reviews/scw-provider-retirement.md`
+- **Result**: `GO` — Authorized for execution in namespace `geo`. Write scope confirmed isolated; non-destructive to live serving.

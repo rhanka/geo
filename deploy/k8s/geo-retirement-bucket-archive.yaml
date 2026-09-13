@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: geo-retirement-bucket-archive-20260913
+  name: geo-retirement-bucket-archive-20260913-v2
   namespace: geo
   labels:
     app: geo-retirement-archive
@@ -24,13 +24,13 @@ spec:
               source=src:sentropic-geo
               archive=dst:sentropic-geo/ops/decommission/20260913/scw-sentropic-geo
               rclone size "$source" --json
-              rclone copy "$source" "$archive" --immutable --transfers 2 --checkers 4 --buffer-size 4M --stats 60s --stats-one-line
-              rclone check "$source" "$archive" --download --checkers 2 --stats 60s --stats-one-line
+              rclone copy "$source" "$archive" --immutable --transfers 8 --checkers 8 --buffer-size 4M --s3-upload-concurrency 2 --stats 60s --stats-log-level NOTICE --stats-one-line
+              rclone check "$source" "$archive" --download --checkers 4 --buffer-size 4M --stats 60s --stats-log-level NOTICE --stats-one-line
               rclone size "$archive" --json
               echo 'ARCHIVE_VERIFIED_BY_DOWNLOAD'
           resources:
             requests: {cpu: 10m, memory: 64Mi}
-            limits: {cpu: 200m, memory: 256Mi}
+            limits: {cpu: 500m, memory: 512Mi}
           securityContext:
             allowPrivilegeEscalation: false
             capabilities: {drop: [ALL]}
