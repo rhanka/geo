@@ -37,7 +37,7 @@
  *                     to ALL_PV_CITIES when the file is absent)
  *   --concurrency N   max Jobs running at once (default 2 — quota-bounded)
  *   --run-id ID       deterministic Job-name suffix (default: short timestamp)
- *   --image REF       acquisition image (default ghcr.io/rhanka/geo-acquisition@sha256:30e5aad72ed64d3d227b22437c3d7d664a1ad92abdb5d4eb214625364b6aa820)
+ *   --image REF       acquisition image (default ghcr.io/rhanka/geo-acquisition@sha256:ef583941503667f6ff0ccf3dd8fbc978f658a228bafc7c8731554dc0706ff785)
  *   --namespace NS    k8s namespace (default geo)
  *   --req-mem / --lim-mem / --req-cpu / --lim-cpu  per-pod resources
  *                     (defaults 128Mi / 256Mi / 50m / 400m — fit the quota)
@@ -72,7 +72,7 @@ interface Args {
 }
 
 const DEFAULT_IMAGE =
-  "ghcr.io/rhanka/geo-acquisition@sha256:30e5aad72ed64d3d227b22437c3d7d664a1ad92abdb5d4eb214625364b6aa820";
+  "ghcr.io/rhanka/geo-acquisition@sha256:ef583941503667f6ff0ccf3dd8fbc978f658a228bafc7c8731554dc0706ff785";
 
 function parseArgs(argv: string[]): Args {
   const get = (k: string): string | undefined => {

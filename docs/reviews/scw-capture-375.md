@@ -1,6 +1,6 @@
 # Rapport de Revue de Code — PR #375 (`rhanka/geo`)
 
-**Cible :** commit `f3068dad1d9a8e318a75752e589892e32b00cf43`  
+**Cible :** commit `f3068dad1d9a8e318a75752e589892e32b00cf43`
 **Objet :** Migration du registre d’images `geo-capture` de Scaleway Container Registry vers GitHub Container Registry (GHCR), avec pinning strict par digest SHA-256 sur rebuild frais issu de `main@8faa0de`.
 
 ---
@@ -37,5 +37,5 @@
 
 ### 3. Verdict
 
-**APPROUVÉ (LGTM)**  
+**APPROUVÉ (LGTM)**
 Diff propre, cohérent, sans régression visible, documenté et conforme aux exigences de sécurité (pinning strict par digest sur package public). Prêt pour le merge.
