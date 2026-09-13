@@ -1,0 +1,43 @@
+{
+  "at": "2026-09-13T15:47:27.417Z",
+  "cluster": "https://hlhedx.c1.bhs5.k8s.ovh.net",
+  "namespaces": [
+    {
+      "namespace": "geo",
+      "image": "ghcr.io/rhanka/geo-api@sha256:c35801fe048f6a986aaaa6ae20c6b1fbc4fa214af0bb5694bc74ddf8bce974b0",
+      "availableReplicas": 1,
+      "updatedReplicas": 1,
+      "servedGitSha": "35ebd09ba773ecf97bb8ec5fb1ea6de36037f296",
+      "url": "https://api.geo.sent-tech.ca",
+      "conformanceStatus": 200,
+      "conformanceClasses": 3,
+      "residualObjects": [],
+      "residualSecrets": []
+    },
+    {
+      "namespace": "geo-preprod",
+      "image": "ghcr.io/rhanka/geo-api@sha256:c35801fe048f6a986aaaa6ae20c6b1fbc4fa214af0bb5694bc74ddf8bce974b0",
+      "availableReplicas": 1,
+      "updatedReplicas": 1,
+      "servedGitSha": "35ebd09ba773ecf97bb8ec5fb1ea6de36037f296",
+      "url": "https://api.preprod.geo.sent-tech.ca",
+      "conformanceStatus": 200,
+      "conformanceClasses": 3,
+      "residualObjects": [],
+      "residualSecrets": []
+    }
+  ],
+  "productionWorkflow": {
+    "runId": 34764068058,
+    "conclusion": "success",
+    "gateRequiredReviewer": "rhanka"
+  },
+  "dataProbe": {
+    "at": "2026-09-13T15:44:14.188Z",
+    "url": "https://api.geo.sent-tech.ca/collections/qc-zonage-sainte-cecile-de-milton/items?limit=1",
+    "status": 200,
+    "features": 1,
+    "geometry": "Polygon",
+    "retiredLinks": 0
+  }
+}
