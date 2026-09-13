@@ -27,7 +27,7 @@ owned by **poc-k8s**, not here:
 | Deployment, Service, Ingress                  | Namespace `geo` + ResourceQuota / LimitRange           |
 | PVC (`geo-data`)                              | StorageClass / default class for the namespace         |
 | Job / CronJob (`geo-fetch`)                   | RBAC for the tenant                                     |
-| —                                             | Image-pull secret for `rg.fr-par.scw.cloud/geo/*`      |
+| —                                             | Images publiques GHCR, sans secret de registre       |
 | —                                             | Traefik v3 controller + cert-manager `letsencrypt-prod`|
 | —                                             | DNS `api.geo.sent-tech.ca` → shared LB                  |
 
@@ -96,17 +96,10 @@ kubectl create secret generic geo-s3-credentials -n geo \
   --from-literal=S3_REGION=<valeur-hors-repo>
 ```
 
-### 2. `geo-registry-pull` (imagePullSecret du registre Scaleway)
+### 2. Images publiques GHCR
 
-Permet de tirer l'image depuis le registre privé Scaleway. Type
-`kubernetes.io/dockerconfigjson` :
-
-```bash
-kubectl create secret docker-registry geo-registry-pull -n geo \
-  --docker-server=rg.fr-par.scw.cloud \
-  --docker-username=<valeur-hors-repo> \
-  --docker-password=<valeur-hors-repo>
-```
+Les images `ghcr.io/rhanka/{geo-api,geo-capture,geo-acquisition,normes-job}`
+sont publiques. Aucun secret de registre n’est nécessaire.
 
 ### TLS (`geo-api-tls`)
 
@@ -197,10 +190,7 @@ The geo-api container is configured purely by env (no app secrets required):
 | `GEO_DATA_DIR` | `/data/normalized` | Normalized-data dir read by the server   |
 | `NODE_ENV`     | `production`       | Standard Node runtime mode               |
 
-The only secret involved is the **image-pull secret** for the Scaleway registry,
-which the **poc-k8s** tenant contract must provide in the `geo` namespace
-(referenced via the namespace's default ServiceAccount `imagePullSecrets`, or add
-`imagePullSecrets` to the pod specs once its name is known).
+The images are public on GHCR and require no registry credential.
 
 ## Probes
 
@@ -220,8 +210,7 @@ signal during startup and data refreshes.
   (≈ `175m`/`640Mi` steady-state requests with the Job idle; allow the Job's
   `1000m`/`1Gi` burst).
 - A default StorageClass (or one pinned for `geo`) satisfying a `1Gi` RWO PVC.
-- An **image-pull secret** for `rg.fr-par.scw.cloud/geo/*` wired into the
-  namespace (default ServiceAccount or referenced by name in the pods).
+- Network access to GHCR for anonymous image pulls.
 - Traefik v3 ingress + cert-manager `letsencrypt-prod` ClusterIssuer, and DNS
   for `api.geo.sent-tech.ca` pointing at the shared LB. (The apex
   `geo.sent-tech.ca` is the GitHub Pages site, not this cluster.)

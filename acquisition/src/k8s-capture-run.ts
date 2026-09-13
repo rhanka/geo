@@ -206,8 +206,6 @@ spec:
         geo.run-stamp: "${args.runStamp}"
     spec:
       restartPolicy: Never
-      imagePullSecrets:
-        - name: geo-registry-pull
       securityContext:
         # The capture image declares USER 1000:1000. EmptyDir is
         # mounted at /scratch for its redacted temporary log, so grant that
