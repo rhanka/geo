@@ -12,7 +12,7 @@ const forbidden = new RegExp(`${retiredHost}|\\bSCW_[A-Z_]+\\b|${retiredPullSecr
 
 export function registryViolations(path, source) {
   if (/(?:^|\/)(?:__tests__|fixtures)\//.test(path) || /\.(?:test|spec)\.[cm]?[jt]s$/.test(path)) return [];
-  if (!/\.(?:[cm]?[jt]s|svelte|html|ya?ml|sh)$|(?:^|\/)Dockerfile$|(?:^|\/)Makefile$/.test(path)) return [];
+  if (path !== 'acquisition/config/capture-image.json' && !/\.(?:[cm]?[jt]s|svelte|html|ya?ml|sh)$|(?:^|\/)Dockerfile$|(?:^|\/)Makefile$/.test(path)) return [];
   return source.split('\n').flatMap((line, index) => {
     if (/^\s*(?:#|\/\/|\/\*|\*|<!--)/.test(line)) return [];
     return forbidden.test(line) ? [`${path}:${index + 1}: ${line.trim()}`] : [];
@@ -20,7 +20,7 @@ export function registryViolations(path, source) {
 }
 
 export function checkRegistryPolicy() {
-  const files = execFileSync('git', ['ls-files', '-z', '--', '.github', 'acquisition/src', 'deploy', 'packages', 'apps', 'scripts', 'Makefile', 'docs/index.html'], { encoding: 'utf8' }).split('\0').filter(Boolean);
+  const files = execFileSync('git', ['ls-files', '-z', '--', '.github', 'acquisition/src', 'acquisition/config/capture-image.json', 'deploy', 'packages', 'apps', 'scripts', 'Makefile', 'docs/index.html'], { encoding: 'utf8' }).split('\0').filter(Boolean);
   if (files.length === 0) throw new Error('No tracked sources found: run from the repository root');
   const violations = files.flatMap(path => registryViolations(path, readFileSync(path, 'utf8')));
   if (violations.length) {
