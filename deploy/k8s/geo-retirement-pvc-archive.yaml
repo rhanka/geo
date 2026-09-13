@@ -1,0 +1,54 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-retirement-pvc-archive-20260913
+  namespace: geo
+  labels: {app: geo-retirement-pvc-archive}
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 6600
+  template:
+    metadata:
+      labels: {app: geo-retirement-pvc-archive}
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      containers:
+        - name: archive
+          image: ghcr.io/rhanka/pmtiles-builder@sha256:b2155a5f8d4b02f3ad127cb856b54bb9208854683051a351117e941dfd4615c5
+          command: [/bin/bash, -ec]
+          args:
+            - |
+              set -o pipefail
+              bytes=$(tar --numeric-owner --format=gnu -C /pg -cf - . | wc -c)
+              echo "PVC archive size: $bytes bytes"
+              test "$bytes" -gt 1024
+              test "$bytes" -lt 5000000000
+              mkfifo /work/source-stream
+              sha256sum /work/source-stream > /work/source.sha256 & checksum_pid=$!
+              tar --numeric-owner --format=gnu -C /pg -cf - . | tee /work/source-stream | \
+                curl --fail --silent --show-error --upload-file - -H "Content-Length: $bytes" -H 'Transfer-Encoding:' "$ARCHIVE_PUT_URL"
+              wait "$checksum_pid"
+              curl --fail --silent --show-error "$ARCHIVE_GET_URL" | sha256sum > /work/download.sha256
+              test "$(cut -d' ' -f1 /work/source.sha256)" = "$(cut -d' ' -f1 /work/download.sha256)"
+              curl --fail --silent --show-error "$ARCHIVE_GET_URL" | tar -tf - > /dev/null
+              echo "PVC_ARCHIVE_VERIFIED $(cut -d' ' -f1 /work/source.sha256)"
+          resources:
+            requests: {cpu: 10m, memory: 64Mi}
+            limits: {cpu: 200m, memory: 256Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL], add: [DAC_READ_SEARCH]}
+          env:
+            - name: ARCHIVE_PUT_URL
+              valueFrom: {secretKeyRef: {name: geo-retirement-archive-urls, key: putUrl}}
+            - name: ARCHIVE_GET_URL
+              valueFrom: {secretKeyRef: {name: geo-retirement-archive-urls, key: getUrl}}
+          volumeMounts:
+            - {name: pg, mountPath: /pg, readOnly: true}
+            - {name: work, mountPath: /work}
+      volumes:
+        - name: pg
+          persistentVolumeClaim: {claimName: pg-data-postgis-0, readOnly: true}
+        - name: work
+          emptyDir: {medium: Memory, sizeLimit: 1Mi}

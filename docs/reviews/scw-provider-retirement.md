@@ -111,7 +111,7 @@ reste le résultat du Job et la relecture de l’archive.
 
 # VERDICT: GO
 
-The Job manifest in commit `eb2361f6` is syntactically and semantically sound. It introduces no bugs that would block data preservation or harm live serving data. 
+The Job manifest in commit `eb2361f6` is syntactically and semantically sound. It introduces no bugs that would block data preservation or harm live serving data.
 
 ---
 
