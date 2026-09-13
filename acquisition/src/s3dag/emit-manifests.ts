@@ -36,7 +36,7 @@ function main(): void {
   const runId = env("S3DAG_RUN_ID", "canary");
   const s3SecretName = env("S3DAG_S3_SECRET", "geo-s3-credentials-preprod");
   const quota = env("S3DAG_QUOTA", "tenant-quota");
-  const imagePullSecret = env("S3DAG_PULL_SECRET", "geo-registry-pull");
+  const imagePullSecret = env("S3DAG_PULL_SECRET", "");
 
   const laneSas = laneServiceAccountManifests([...CAPTURE_LANES], namespace);
   const { serviceAccount, role, roleBinding } = reconcilerRbac({

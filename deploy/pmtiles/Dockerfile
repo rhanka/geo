@@ -1,5 +1,5 @@
-# pmtiles-builder — Scaleway Serverless Job. tippecanoe (apt) + AWS CLI v2 (official installer;
-# the ubuntu 24.04 `awscli` apt package was removed). Tools BAKED (Scaleway job has no egress to
+# pmtiles-builder — Kubernetes Job. tippecanoe (apt) + AWS CLI v2 (official installer;
+# the ubuntu 24.04 `awscli` apt package was removed). Tools BAKED (Kubernetes job has no egress to
 # ubuntu archives / aws.amazonaws.com). Build with `docker build --network=host` (buildkit DNS flaky).
 FROM ubuntu:24.04
 RUN echo 'APT::Sandbox::User "root";' > /etc/apt/apt.conf.d/00no-sandbox \

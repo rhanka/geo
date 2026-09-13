@@ -21,7 +21,7 @@ le déploiement PROD reste propriété owner (KUBE_CONFIG_DATA).**
 
 Namespace `geo-preprod` + **ResourceQuota** ; bucket OVH-BHS **`sentropic-geo-preprod`** ;
 Secrets **`geo-s3-credentials-preprod`** (write preprod) + **`geo-s3-credentials-prod-ro`**
-(read prod, source du sync) + pull **`geo-registry-pull`** ; **DNS-A** de
+(read prod, source du sync) ; images publiques GHCR ; **DNS-A** de
 `api.preprod.geo.sent-tech.ca` ; **résolution du digest image post-merge** à l'apply ;
 **ordonnancement** du Job de sync (in-cluster, fenêtre gatée i-cond S00) + injection du
 `COHERENCE_ID` partagé cross-repo (§6.1). L'egress **immo-side** (radar-immobilier-preprod →
@@ -36,7 +36,7 @@ geo-preprod) n'exige AUCUNE action : ce ns a un egress ouvert (vérifié poc-k8s
 | `GEO_DATA_URI` (dest) | `s3://sentropic-geo-preprod/normalized` (région bhs) |
 | source sync (prod) | `s3://sentropic-geo/normalized` (OVH-BHS, cred read-only `geo-s3-credentials-prod-ro`) |
 | secret creds (dest) | `geo-s3-credentials-preprod` |
-| pull secret | `geo-registry-pull` |
+| registre | GHCR public, pull anonyme |
 | S3-BHS ipBlock | `54.39.60.208/32` · prod-API (Job only) `51.79.100.177/32` |
 
 ## Parité + fraîcheur (le « dernier km »)
