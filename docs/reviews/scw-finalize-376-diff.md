@@ -76,3 +76,41 @@ Le diff réalise de manière propre et cohérente le désengagement de Scaleway 
 
 - **Visibilité effective du registre GHCR** : La revue statique valide la suppression des secrets dans les manifests, mais suppose strictement que les packages GHCR (`geo-api`, `normes-job`, `geo-acquisition`, `geo-capture`) ont bien leur visibilité configurée en **Public** dans l'UI GitHub Packages, sous peine d'`ImagePullBackOff` au déploiement.
 - **Ressources K8s in-cluster** : Absence de validation dynamique sur le cluster (aucun test d'application effective des manifests ni de validation du webhook d'admission).
+
+
+## Complément : delta final du 13 septembre
+
+Session `geo-scw-376-gemini-final-delta`, même modèle et effort, lecture directe
+du diff depuis `12080309` : pins, ordre CI et couverture du pin JSON de capture.
+Le modèle a reçu les résultats des 45 tests ciblés et des 11 tests de scripts ;
+il ne les a pas exécutés. Le verdict ci-dessous reste une revue statique, sans
+validation dynamique du futur rollout. Aucun défaut bloquant signalé.
+
+### Verdict : **GO**
+
+L'analyse statique du delta final pour la PR #376 de `rhanka/geo` ne révèle **aucune régression**. La synchronisation des digests, l'ordonnancement CI et l'extension du garde de registre sont rigoureusement alignés.
+
+---
+
+### Points vérifiés
+
+1. **Cohérence des digests & épinglage GHCR** :
+   - L'image `geo-capture` est rigoureusement alignée sur le digest SHA-256 unique `8ea20a8f1709d6251f7758c3697a79532bc36cb75a567fbbff11dd87d0baac53` à travers :
+     - Le fichier autoritaire de configuration : `acquisition/config/capture-image.json` (avec date `pinned_at` au 2026-09-13).
+     - Le test unitaire associé : `acquisition/src/k8s-capture-run.test.ts`.
+     - Les launchers TypeScript : `k8s-category-a-wayback-range-run.ts` et `k8s-density-document-discovery-run.ts`.
+     - Les manifests Kubernetes / CronJobs : `cronjob-capture-refresh.yaml`, `job-capture.yaml` et `pv-probable-backlog-cronjob.yaml`.
+   - L'image `normes-job` est correctement mise à jour vers `057bb84cf94e9efb52d09e81fc4560696ce54410d0be3cdeec54a33e861d9a0b` dans `k8s-captured-normes-run.ts`.
+   - L'image `geo-acquisition` est mise à jour vers `ef583941503667f6ff0ccf3dd8fbc978f658a228bafc7c8731554dc0706ff785` dans `k8s-shard-run.ts` (code et documentation interne synchronisés).
+
+2. **Ordonnancement CI (`.github/workflows/ci.yml`)** :
+   - Le déplacement de l'étape `Guard registry migration` immédiatement après `actions/setup-node@v4` (Node 22) résout le risque d'exécution sur un runtime non configuré ou divergent par rapport à la cible LTS du dépôt.
+
+3. **Garde de politique de registre (`scripts/check-registry-policy.mjs` & test)** :
+   - L'inclusion ciblée de `acquisition/config/capture-image.json` dans le filtre d'exclusion d'extension (`path !== 'acquisition/config/capture-image.json' && !/\.(...)$/...`) et dans la liste des fichiers inspectés par `git ls-files` est syntaxiquement exacte et n'ouvre pas de faux positifs sur les autres fichiers JSON.
+   - Le test d'intégration CLI dans `check-registry-policy.test.mjs` valide hermétiquement le cas passant et le cas rejeté (via un dépôt Git temporaire isolé et nettoyé dans un bloc `finally`).
+
+---
+
+### Conclusion
+Feu vert pour la fusion (merge PR #376). Le déploiement CD préprod peut suivre en toute sécurité.

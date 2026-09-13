@@ -17,7 +17,7 @@ PR et ses workflows ; cette modification ne déclenche pas de déploiement prod.
 | geo-capture | PR #375 fusionnée (`99d4faf4`), revue Gemini demandée archivée dans `docs/reviews/scw-capture-375.md` |
 | geo-acquisition et normes-job | Builds reproductibles ajoutés à `docker-publish.yml`, images publiques GHCR, références par digest |
 | Secrets de registre dans les manifests et générateurs | Retirés ; option de registre privé du générateur S3-DAG conservée, sans défaut legacy |
-| Réintroduction | `node scripts/check-registry-policy.mjs` exécuté en CI, couvre manifests, workflows, générateurs et page HTML |
+| Réintroduction | `node scripts/check-registry-policy.mjs` exécuté en CI, couvre manifests, workflows, générateurs, pin JSON de capture et page HTML |
 | Stockage | OVH depuis le 29 juillet ; `acquisition/config/s3-target.json` et le garde de cible restent autoritaires |
 
 Le build final est le run
@@ -71,7 +71,8 @@ ne constitue donc pas une suppression de ce secret sur le cluster.
 
 - `npm run build` et `node scripts/run-workspaces.mjs check` réussis.
 - `npm test` : 3 998 tests réussis ; 7 tests déjà marqués skipped.
-- `npm run test:scripts` : 10 tests réussis, dont la garde anti-réintroduction.
+- `npm run test:scripts` : 11 tests réussis, dont la garde anti-réintroduction
+  et son exécution complète sur une configuration de capture régressée.
 - `npm run test:mount-e2e --workspace @sentropic/geo-map-engine` : réussi
   après installation du Chromium requis dans le cache Playwright.
 - Trois builds Docker locaux réussis : capture, acquisition et normes.
