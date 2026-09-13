@@ -106,7 +106,7 @@ export function buildWpRows(cov: Coverage): WpRow[] {
       donnee: "PMTiles (tuiles vectorielles)",
       munisOk: `${cov.pmtiles} jeu(x) province`,
       pctProvince: cov.pmtiles > 0 ? "Province" : "—",
-      methode: "Tippecanoe (job Scaleway)",
+      methode: "Tippecanoe (job Kubernetes)",
       etat: cov.pmtiles > 0 ? "Livré (zones + lots)" : "En cours",
     },
     {
@@ -200,7 +200,7 @@ function methods(): string {
     "  lorsqu'il est réellement présent — jamais inventé.",
     "- **Normes (valeurs)** — parser texte pour les grilles horizontales, brique OCR-vision ",
     "  (Mistral) pour les grilles verticales pivotées.",
-    "- **PMTiles** — tuilage vectoriel via Tippecanoe exécuté en job Scaleway (zéro charge ",
+    "- **PMTiles** — tuilage vectoriel via Tippecanoe exécuté en job Kubernetes (zéro charge ",
     "  poste local).",
     "- **PV / signaux** — scrapers de procès-verbaux municipaux (`@geo/qc-sources`).",
     "",

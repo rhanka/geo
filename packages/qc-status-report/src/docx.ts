@@ -216,7 +216,7 @@ export async function renderDocx(cov: Coverage): Promise<Buffer> {
     "**Index immo** — `cadastre ⋈ rôle ⋈ code_zone` matérialisé en parquet zéro-copie.",
     "**Grilles zonage** — cascade AGOL / CKAN / MRC + extraction PDF / vision ; `code_zone` jamais inventé.",
     "**Normes** — parser texte (horizontales) + OCR-vision Mistral (verticales).",
-    "**PMTiles** — Tippecanoe en job Scaleway (zéro charge locale).",
+    "**PMTiles** — Tippecanoe en job Kubernetes (zéro charge locale).",
     "**PV / signaux** — scrapers de procès-verbaux `@geo/qc-sources`.",
   ];
 
