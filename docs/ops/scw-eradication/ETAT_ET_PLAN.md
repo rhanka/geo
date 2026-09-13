@@ -37,6 +37,31 @@ La garde CI couvre désormais aussi les scripts `docs/ops`,
 `acquisition/scripts` et le Dockerfile racine. Le builder PMTiles exige une
 région S3 explicite, sans défaut lié à l'ancien fournisseur.
 
+### Préservation du bucket avant retrait
+
+Le comptage paginé `rclone size` trouve **45 378 objets / 48 939 893 150 octets**
+sur SCW. `scw object bucket get with-size=true` n'en rapportait que 1 000 :
+ce compteur incomplet ne constitue pas une preuve de volume total.
+La comparaison `rclone check --one-way` avec le bucket OVH courant trouve
+43 765 fichiers concordants, 1 613 différences dont deux absents, et 156 hashes
+non vérifiables. Le serving a évolué depuis juillet ; il ne faut pas le réécrire
+avec l'ancien état pour obtenir une comparaison verte.
+
+Le Job versionné `deploy/k8s/geo-retirement-bucket-archive.yaml` préserve donc
+la source entière dans `s3://sentropic-geo/ops/decommission/20260913/scw-sentropic-geo/`
+sur OVH. Il copie sans écraser un objet différent (`--immutable`), puis compare
+les octets des deux côtés (`check --download`). La copie et la vérification
+tournent sur le cluster OVH, pas sur le poste local. Aucun chemin servi n'est
+modifié et aucune suppression source n'est incluse dans ce Job.
+
+Avant application sur le kubeconfig OVH explicite : vérifier que le Secret
+temporaire `geo-retirement-source` contient uniquement la clé S3 GEO historique
+et sa cible source ; la destination et son préfixe sont fixés dans le manifeste.
+Après succès, conserver les logs et inventaires sur OVH, vérifier versions et
+uploads inachevés côté source, puis seulement autoriser son retrait. Supprimer
+le Secret temporaire et le Job une fois leurs preuves archivées. Un Job en cours
+ou une simple égalité des compteurs ne vaut pas certification de sauvegarde.
+
 ## Réalisation au 13 septembre 2026
 
 Livraison du nettoyage : [PR #376](https://github.com/rhanka/geo/pull/376),
