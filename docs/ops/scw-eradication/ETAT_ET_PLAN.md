@@ -7,23 +7,25 @@ Immo pilote sa propre décommission ; TEM, MatchID et les autres projets sont
 hors de ce mandat. Les ressources partagées restent protégées tant que leur
 attribution et leurs consommateurs ne sont pas établis.
 
-## Décommission complète — en cours
+## Décommission complète — terminée
 
-Les PR #371–377 ont livré la bascule des images et du runtime, **pas la purge
-complète du fournisseur**. La certification plus bas porte sur cette bascule.
-L'ancienne consigne de conservation des ressources historiques est remplacée
-par leur archivage vérifié sur OVH puis leur retrait, sans reprise des jobs.
+Les PR #371–377 ont livré la bascule des images et du runtime. La PR #378 a
+capitalisé l'archivage et les contrôles de retrait ; la PR #379 porte la clôture.
+Les ressources GEO historiques sont maintenant archivées sur OVH puis supprimées
+de SCW, sans reprise des campagnes. Dossier final et preuves :
+[DECOMMISSION_20260913.md](DECOMMISSION_20260913.md).
 
-Inventaire de contrôle du 13 septembre, vers 14:10 UTC :
+Contrôles finaux du 13 septembre, entre 15:39 et 15:49 UTC :
 
-| Ressource GEO résiduelle | État constaté / condition de retrait |
+| Ressource GEO | État final vérifié |
 |---|---|
-| Registre `sentropic-geo` (`a20a636f-968a-4ff3-bdb1-9f063dc2a51a`, fr-par) | 6 images ; les 4 images API/capture/acquisition/normes sont migrées. Publier PMTiles depuis sa source ; archiver les anciennes images zonage privées avant retrait. |
-| Serverless `pmtiles-builder`, `zonage-builder`, `zonage-ocr`, `zonage-vision` | 4 définitions fr-par ; aucun run listé en fr-par, aucune définition nl-ams/pl-waw. Export des métadonnées sans secrets et vérification des schedules avant suppression. |
-| Bucket SCW `sentropic-geo` | Toujours présent ; comparer son contenu actuel à OVH et préserver tout résidu utile avant suppression, y compris versions et uploads incomplets. |
-| Ancien namespace SCW `geo` | Infra a constaté API/PostGIS à 0, PVC 5 Gi Bound et ancien Ingress ; sauvegarde vérifiée du PVC avant retrait. Le cluster partagé MatchID reste hors périmètre. |
-| Objets historiques OVH `geo` / `geo-preprod` | 58 / 12 références rapportées par infra ; archiver les preuves utiles sur OVH puis purger les objets obsolètes. |
-| IAM, DNS, autres services provider | Inventaire d'attribution restant à certifier par infra ; aucune absence n'est déduite du seul arrêt des pods. |
+| Registre `sentropic-geo` (`a20a636f-968a-4ff3-bdb1-9f063dc2a51a`, fr-par) | Supprimé après export OCI des 6 images / 69 tags ; 736 fichiers relus sur OVH, zéro différence. Builder PMTiles publié sur GHCR. |
+| Serverless `pmtiles-builder`, `zonage-builder`, `zonage-ocr`, `zonage-vision` | 4 définitions exportées sans secrets puis supprimées ; liste fr-par vide, aucune définition GEO nl-ams/pl-waw. |
+| Bucket SCW `sentropic-geo` | Supprimé ; HTTP 404 `NoSuchBucket` et absent de la liste fournisseur. 45 378 objets / 48 939 893 150 octets archivés, comparaison intégrale : zéro différence. Multipart incomplet de juillet abandonné ; aucune ancienne version ni marqueur. |
+| Ancien namespace SCW `geo` | Supprimé après sauvegarde RO du PVC, relue et validée. PV et volume bloc absents ; zéro ressource globale Kubernetes GEO. Cluster et load balancer partagés préservés. |
+| Objets historiques OVH `geo` / `geo-preprod` | 58 / 12 objets archivés puis supprimés ; zéro référence SCW ou ancien secret de registre dans les workloads, comptes de service, ConfigMaps et Secrets vérifiés. |
+| IAM `geo-s3` | Application et politique supprimées ; zéro clé API restante pour l'application. |
+| Production | CD Prod 34764068058 réussi ; prod et préprod servent `sha256:c35801fe048f6a986aaaa6ae20c6b1fbc4fa214af0bb5694bc74ddf8bce974b0`, révision `35ebd09`, disponibles et HTTP 200. Gate owner conservé. |
 
 Coordination H2A : `thr:geo-scw-full-20260913`, avec Astra `poc-k8s` et le
 conducteur Immo. Le contrat Immo `sentropic-geo/raw/pv-index/cas/` sur OVH
@@ -59,10 +61,11 @@ temporaire `geo-retirement-source` contient uniquement la clé S3 GEO historique
 et sa cible source ; la destination et son préfixe sont fixés dans le manifeste.
 Après succès, conserver les logs et inventaires sur OVH, vérifier versions et
 uploads inachevés côté source, puis seulement autoriser son retrait. Supprimer
-le Secret temporaire et le Job une fois leurs preuves archivées. Un Job en cours
-ou une simple égalité des compteurs ne vaut pas certification de sauvegarde.
+le Secret temporaire et le Job une fois leurs preuves archivées. Cette procédure
+a réussi : 45 378 fichiers concordants, zéro différence, Job Complete à 15:39:36
+UTC. Logs et reçu sont sur OVH ; Job et Secret temporaires sont retirés.
 
-## Réalisation au 13 septembre 2026
+## Historique — première bascule du 13 septembre 2026
 
 Livraison du nettoyage : [PR #376](https://github.com/rhanka/geo/pull/376),
 fusionnée après #375 dans `e8a57130e9cf2655adf04d531fbc83eab22ef1c6`.
@@ -114,24 +117,24 @@ page redirige vers ce site courant : la remplacer par une URL OVH privée (HTTP
 Les rapports datés, décisions historiques et tests négatifs anti-SCW ne sont pas
 réécrits : ils ne constituent pas une dépendance d'exécution.
 
-## Vérification opérationnelle
+## Historique — vérification opérationnelle avant décommission
 
-L'inventaire OVH du 13 septembre trouve deux pods actifs dans `geo` : `geo-api`
+L'inventaire OVH initial du 13 septembre trouvait deux pods actifs dans `geo` : `geo-api`
 (GHCR) et `postgis` (Docker Hub). Aucun CronJob ni extraction active.
 
-Quatre anciens Jobs du 28 juillet sont **suspendus, pas terminés**, et gardent
-leur template SCW historique :
+Quatre anciens Jobs du 28 juillet étaient **suspendus, pas terminés**, avec
+leur template SCW historique. Ils sont désormais archivés et supprimés :
 
 - `geo-capture-normes-20260728t144551z` : 3 réussites, 2 échecs, suspendu.
 - `geo-capture-normes-20260728t144553z` : 1 réussite, 2 échecs, suspendu.
 - `geo-density-l2-20260728t053153z` : suspendu, aucun pod actif.
 - `geo-density-l3-20260728t053154z` : suspendu, aucun pod actif.
 
-**Ne pas désuspendre ces anciens Jobs.** Ce sont des tentatives historiques.
+**Ne pas recréer ces anciens templates.** Ce sont des tentatives historiques.
 Toute reprise doit relire l'état S3, puis créer de nouveaux Jobs depuis les
 lanceurs actuels (`k8s-capture-run.ts`, `k8s-density-document-discovery-run.ts`)
 avec leurs images GHCR épinglées. La bascule des images n'a relancé aucune
-capture. Leur archivage et leur purge font maintenant partie de la décommission
+capture. Leur archivage et leur purge sont achevés dans la décommission
 décrite en tête de document.
 
 Le secret GitHub `SCW_SECRET_KEY` a été supprimé le 13 septembre après vérification
@@ -147,12 +150,11 @@ inventaire et sauvegarde d'accès protégée. L'absence du secret dans `geo` a a
 été relue par GEO. Aucun producteur de ce secret n'a été trouvé dans `poc-k8s`.
 
 L'inventaire infra initial trouvait 58 références historiques dans `geo` et 12 dans
-`geo-preprod`, dont les quatre Jobs suspendus décrits ci-dessus. Elles ne sont
-pas des consommateurs actifs ; leur présence ne justifie aucune reprise
-de ces templates retirés. Zéro référence active au secret est confirmé par
-l'inventaire des Deployments, pods et comptes de service.
+`geo-preprod`, dont les quatre Jobs suspendus décrits ci-dessus. Ces 70 objets
+ont été retirés après archivage. Le contrôle final porte aussi sur les ConfigMaps
+et les Secrets et ne trouve plus de référence résiduelle.
 
-## Validation
+## Validation de la première bascule (#376)
 
 - `npm run build` et `node scripts/run-workspaces.mjs check` réussis.
 - `npm test` : 3 998 tests réussis ; 7 tests déjà marqués skipped.
@@ -175,7 +177,7 @@ l'inventaire des Deployments, pods et comptes de service.
 - Aucun changement de `.track` ; checkout partagé `feat/cadre-acquisition`
   préservé. Travail isolé dans `tmp/worktrees/scw-finalize`.
 
-## Déploiement prod et certification indépendante
+## Historique — première promotion et certification indépendante
 
 Le merge de #376 a déclenché automatiquement
 [CD préprod 34758869105](https://github.com/rhanka/geo/actions/runs/34758869105),
