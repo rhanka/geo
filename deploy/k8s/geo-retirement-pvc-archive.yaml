@@ -23,6 +23,7 @@ spec:
               bytes=$(tar --numeric-owner --format=gnu -C /pg -cf - . | wc -c)
               echo "PVC archive size: $bytes bytes"
               test "$bytes" -gt 1024
+              # Single PUT is bounded to 5 GB; larger archives need multipart.
               test "$bytes" -lt 5000000000
               mkfifo /work/source-stream
               sha256sum /work/source-stream > /work/source.sha256 & checksum_pid=$!
@@ -37,6 +38,7 @@ spec:
             requests: {cpu: 10m, memory: 64Mi}
             limits: {cpu: 200m, memory: 256Mi}
           securityContext:
+            runAsUser: 0
             allowPrivilegeEscalation: false
             capabilities: {drop: [ALL], add: [DAC_READ_SEARCH]}
           env:
