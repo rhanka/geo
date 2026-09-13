@@ -105,7 +105,7 @@ spec:
               # acquisition/config/s3-target.json: l'image ne copiait pas la cible
               # S3 declaree, et `s3Client()` refuse de demarrer sans elle. Le garde
               # avait raison, l'image etait incomplete. Corrige dans le Dockerfile.
-              image: ghcr.io/rhanka/geo-capture@sha256:60f048b5ac667805bf90b3e1a1e75b3b85fd2a4dc634aa11c13fee8b27fa629b
+              image: ghcr.io/rhanka/geo-capture@sha256:8ea20a8f1709d6251f7758c3697a79532bc36cb75a567fbbff11dd87d0baac53
               imagePullPolicy: IfNotPresent
               command: ["tsx", "src/pv-capture-backlog-run.ts"]
               env:

@@ -5,12 +5,11 @@ geo utilise GHCR et OVH. Aucun registre partagé ni objet S3 n'est supprimé.
 
 ## Réalisation au 13 septembre 2026
 
-État de reprise : #375 est fusionnée. Le build d'extraction `1552e087` est
-publié sur `chore/scw-finalize-20260913`. Le nettoyage `1c0f66e4` est committé
-localement, sans publication : l'approbation automatique du push a été refusée
-pour portée/publication insuffisamment autorisées ; accord explicite demandé
-au propriétaire. Le tableau décrit le résultat préparé, pas un déploiement
-déjà effectué du nettoyage.
+Livraison du nettoyage : [PR #376](https://github.com/rhanka/geo/pull/376),
+après la fusion de #375. Les images finales contiennent les générateurs sans
+secret de registre historique ; les références du dépôt épinglent leurs digests
+publics vérifiés. L'état du merge et du rollout préprod est consultable dans la
+PR et ses workflows ; cette modification ne déclenche pas de déploiement prod.
 
 | Périmètre | État et preuve |
 |---|---|
@@ -21,12 +20,14 @@ déjà effectué du nettoyage.
 | Réintroduction | `node scripts/check-registry-policy.mjs` exécuté en CI, couvre manifests, workflows, générateurs et page HTML |
 | Stockage | OVH depuis le 29 juillet ; `acquisition/config/s3-target.json` et le garde de cible restent autoritaires |
 
-Le premier build reproductible des images d'extraction est le run
-[34757742653](https://github.com/rhanka/geo/actions/runs/34757742653).
-Les deux digests publiés ont été lus anonymement avec HTTP 200 avant repoint :
+Le build final est le run
+[34758292002](https://github.com/rhanka/geo/actions/runs/34758292002), réussi
+sur `1208030953417d9ce531719d8994670e882732b0`, tag `registry-clean-20260913`.
+Les trois digests ont été lus anonymement avec HTTP 200 avant repoint :
 
-- `geo-acquisition@sha256:30e5aad72ed64d3d227b22437c3d7d664a1ad92abdb5d4eb214625364b6aa820`
-- `normes-job@sha256:fd14d123f090205ee25e7538cf1340514c00aa259bb572b93602df5880f81200`
+- `ghcr.io/rhanka/geo-capture@sha256:8ea20a8f1709d6251f7758c3697a79532bc36cb75a567fbbff11dd87d0baac53`
+- `ghcr.io/rhanka/geo-acquisition@sha256:ef583941503667f6ff0ccf3dd8fbc978f658a228bafc7c8731554dc0706ff785`
+- `ghcr.io/rhanka/normes-job@sha256:057bb84cf94e9efb52d09e81fc4560696ce54410d0be3cdeec54a33e861d9a0b`
 
 ## Capacités préservées
 
@@ -56,13 +57,17 @@ L'inventaire OVH du 13 septembre trouve deux pods actifs : `geo-api` (GHCR) et
 juillet contiennent encore des références historiques SCW ; leur historique
 n'est pas relancé ni supprimé par la migration.
 
-La suppression du secret GitHub `SCW_SECRET_KEY` et du secret Kubernetes
-`geo-registry-pull` se vérifie séparément du retrait de leurs références. Le
-compte `system:serviceaccount:geo:ci-deployer` peut modifier le Deployment geo,
-mais ne peut pas supprimer les Secrets et ne lit pas le namespace geo-preprod.
-La clôture opérationnelle doit préciser les suppressions effectivement réalisées.
+Le secret GitHub `SCW_SECRET_KEY` a été supprimé le 13 septembre après vérification
+de l'absence de consommateur dans les workflows de main et de la branche. Son
+absence a été confirmée par relecture de la liste des secrets du dépôt.
 
-## Validation du nettoyage local
+Le secret Kubernetes `geo-registry-pull` reste présent dans `geo`, avec une
+référence dans le Deployment prod encore déployé. Son image est déjà publique
+sur GHCR. Le compte `system:serviceaccount:geo:ci-deployer` ne peut pas supprimer
+les Secrets et ne lit pas le namespace geo-preprod. Le retrait dans le dépôt
+ne constitue donc pas une suppression de ce secret sur le cluster.
+
+## Validation
 
 - `npm run build` et `node scripts/run-workspaces.mjs check` réussis.
 - `npm test` : 3 998 tests réussis ; 7 tests déjà marqués skipped.
@@ -72,19 +77,25 @@ La clôture opérationnelle doit préciser les suppressions effectivement réali
 - Trois builds Docker locaux réussis : capture, acquisition et normes.
 - Import des véritables modules de capture/extraction dans ces trois images,
   avec `--network none` : réussi, aucune capture et aucune écriture S3.
+- 45 tests ciblés réussis après mise à jour des digests finaux (pin de capture,
+  lanceurs Kubernetes, backlog PV et générateur S3-DAG).
+- CI de la PR sur `12080309` : réussie, run
+  [34758310847](https://github.com/rhanka/geo/actions/runs/34758310847).
+  Les contrôles de la tête finale sont attachés à la PR #376.
+- Revue statique Gemini 3.8 high : **GO**, archivée dans
+  [scw-finalize-376-diff.md](../../reviews/scw-finalize-376-diff.md), avec
+  réconciliation des observations et limites. La tentative antérieure sans
+  verdict reste documentée séparément et ne compte pas comme approbation.
 - Aucun changement de `.track` ; checkout partagé `feat/cadre-acquisition`
   préservé. Travail isolé dans `tmp/worktrees/scw-finalize`.
 
-## Reprise après autorisation de publication
+## Suivi du déploiement et solde infrastructure
 
-1. Publier `chore/scw-finalize-20260913`, puis relire le diff public et ouvrir la PR.
-2. Dispatcher `docker-publish.yml` sur cette branche avec un tag frais. Republier
-   capture/extraction pour que leurs générateurs embarqués n'injectent plus le
-   secret retiré ; vérifier les digests anonymement et les épingler.
-3. Conduire la PR jusqu'au merge avec CI verte. Les modifications du Deployment
-   de base déclenchent automatiquement CD préprod ; vérifier ce rollout. La prod
-   ne se déploie pas automatiquement.
-4. Retirer `SCW_SECRET_KEY` des secrets GitHub, puis vérifier son absence.
-5. Le compte d'infrastructure OVH doit retirer `geo-registry-pull` après retrait
-   de ses références dans les workloads des namespaces geo et geo-preprod.
-   Le compte de cette reprise n'a pas le droit de supprimer ce Secret.
+Le merge de #376 déclenche automatiquement CD préprod par la modification du
+Deployment de base. Le workflow construit geo-api, épingle son digest, applique
+l'overlay et vérifie le rollout. La prod suit son déploiement explicite habituel.
+
+Le compte d'infrastructure OVH doit retirer `geo-registry-pull` après retrait de
+ses références dans les workloads des namespaces geo et geo-preprod. Le compte
+de cette reprise n'a pas le droit de supprimer ce Secret. Les Jobs terminés
+conservent leur historique ; le registre partagé avec matchid reste en service.

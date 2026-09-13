@@ -25,9 +25,9 @@ interface Args {
   dryRun: boolean;
 }
 
-// geo-capture sorti de Scaleway → GHCR (rebuild frais, main@8faa0de 2026-09-12), pinné digest (package public).
+// geo-capture sorti de Scaleway → GHCR (rebuild frais, build@12080309 2026-09-13), pinné digest (package public).
 const DEFAULT_IMAGE =
-  "ghcr.io/rhanka/geo-capture@sha256:5ac84f27afc8b4294cde5ba5ef4bf773bf173a596a97a582e8cfe4eed5acd727";
+  "ghcr.io/rhanka/geo-capture@sha256:8ea20a8f1709d6251f7758c3697a79532bc36cb75a567fbbff11dd87d0baac53";
 
 function option(argv: readonly string[], name: string): string | undefined {
   const index = argv.indexOf(`--${name}`);
