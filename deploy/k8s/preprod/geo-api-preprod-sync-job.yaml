@@ -86,8 +86,6 @@ spec:
         app.kubernetes.io/instance: preprod
     spec:
       restartPolicy: Never
-      imagePullSecrets:
-        - name: geo-registry-pull
       securityContext:
         runAsNonRoot: true
         seccompProfile:
