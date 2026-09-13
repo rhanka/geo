@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-retirement-bucket-archive-20260913-v2
+  namespace: geo
+  labels:
+    app: geo-retirement-archive
+spec:
+  backoffLimit: 1
+  activeDeadlineSeconds: 14400
+  template:
+    metadata:
+      labels:
+        app: geo-retirement-archive
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      containers:
+        - name: archive
+          image: rclone/rclone@sha256:c08f5e100e1c4fa4deb1315b56a47c0cc0e765222b7c0834bc93305f2e4d85c0
+          command: [/bin/sh, -ec]
+          args:
+            - |
+              source=src:sentropic-geo
+              archive=dst:sentropic-geo/ops/decommission/20260913/scw-sentropic-geo
+              rclone size "$source" --json
+              rclone copy "$source" "$archive" --immutable --transfers 8 --checkers 8 --buffer-size 4M --s3-upload-concurrency 2 --stats 60s --stats-log-level NOTICE --stats-one-line
+              rclone check "$source" "$archive" --download --checkers 4 --buffer-size 4M --stats 60s --stats-log-level NOTICE --stats-one-line
+              rclone size "$archive" --json
+              echo 'ARCHIVE_VERIFIED_BY_DOWNLOAD'
+          resources:
+            requests: {cpu: 10m, memory: 64Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities: {drop: [ALL]}
+          env:
+            - {name: RCLONE_CONFIG, value: /dev/null}
+            - {name: RCLONE_CONFIG_SRC_TYPE, value: s3}
+            - {name: RCLONE_CONFIG_SRC_PROVIDER, value: Other}
+            - name: RCLONE_CONFIG_SRC_ENDPOINT
+              valueFrom: {secretKeyRef: {name: geo-retirement-source, key: S3_ENDPOINT}}
+            - name: RCLONE_CONFIG_SRC_REGION
+              valueFrom: {secretKeyRef: {name: geo-retirement-source, key: S3_REGION}}
+            - name: RCLONE_CONFIG_SRC_ACCESS_KEY_ID
+              valueFrom: {secretKeyRef: {name: geo-retirement-source, key: S3_ACCESS_KEY}}
+            - name: RCLONE_CONFIG_SRC_SECRET_ACCESS_KEY
+              valueFrom: {secretKeyRef: {name: geo-retirement-source, key: S3_SECRET_KEY}}
+            - {name: RCLONE_CONFIG_DST_TYPE, value: s3}
+            - {name: RCLONE_CONFIG_DST_PROVIDER, value: Other}
+            - {name: RCLONE_CONFIG_DST_ENDPOINT, value: 'https://s3.bhs.io.cloud.ovh.net'}
+            - {name: RCLONE_CONFIG_DST_REGION, value: bhs}
+            - name: RCLONE_CONFIG_DST_ACCESS_KEY_ID
+              valueFrom: {secretKeyRef: {name: geo-s3-credentials, key: S3_ACCESS_KEY}}
+            - name: RCLONE_CONFIG_DST_SECRET_ACCESS_KEY
+              valueFrom: {secretKeyRef: {name: geo-s3-credentials, key: S3_SECRET_KEY}}
