@@ -70,8 +70,6 @@ spec:
         geo.run-stamp: "${runStamp}"
     spec:
       restartPolicy: Never
-      imagePullSecrets:
-        - name: geo-registry-pull
       securityContext:
         runAsNonRoot: true
         seccompProfile:

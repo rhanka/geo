@@ -26,8 +26,6 @@ spec:
         geo.sentropic.io/capture-control: pv-probable-20260728-b32de19169bc907c
     spec:
       restartPolicy: Never
-      imagePullSecrets:
-        - name: geo-registry-pull
       securityContext:
         fsGroup: 1000
         runAsNonRoot: true

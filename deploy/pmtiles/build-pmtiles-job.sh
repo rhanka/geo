@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Runs INSIDE a Scaleway Serverless Job (remote) — reads GeoJSON from S3, builds PMTiles
+# Runs INSIDE a Kubernetes Job (remote) — reads GeoJSON from S3, builds PMTiles
 # with modern tippecanoe (bounded tile bytes), writes PMTiles back to S3. Zero local-machine load.
 # Env (job): S3_ENDPOINT, S3_BUCKET, S3_REGION, S3_ACCESS_KEY, S3_SECRET_KEY.
 set -euo pipefail
-# tippecanoe + awscli are BAKED in the image (Scaleway job has no egress to ubuntu archives).
+# tippecanoe + awscli are BAKED in the image (Kubernetes job has no egress to ubuntu archives).
 echo "[$(date -u +%H:%M:%S)] tippecanoe $(tippecanoe --version 2>&1 | head -1)"
 export AWS_ACCESS_KEY_ID="$S3_ACCESS_KEY" AWS_SECRET_ACCESS_KEY="$S3_SECRET_KEY" AWS_DEFAULT_REGION="${S3_REGION:-fr-par}"
 B="${S3_BUCKET:-sentropic-geo}"
@@ -24,7 +24,7 @@ rm -rf /w/zones
 # LOTS — bulk sync once (fast/robust) then tile in batches from local, freeing disk progressively.
 # Rationale: per-file `aws s3 cp` x~1000 caused "Job run exceeded timeout" (2h). One `aws s3 sync`
 # is parallel + retried. Tippecanoe still tiled in batches of N files -> part .pmtiles (bound scratch
-# under Scaleway 10Gi), deleting each batch's GeoJSON after tiling. Best run AFTER province-wide
+# under the 10Gi scratch budget), deleting each batch's GeoJSON after tiling. Best run AFTER province-wide
 # cadastre clip (clipped input is far smaller -> all-on-disk + scratch fits 10Gi comfortably).
 echo "[$(date -u +%H:%M:%S)] LOTS sync (bulk)"
 "${A[@]}" s3 sync "s3://$B/normalized/qc-cadastre-lots/" /w/lots/ --exclude '*' --include '*.geojson' --no-progress

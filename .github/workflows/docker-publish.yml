@@ -157,7 +157,7 @@ jobs:
       # user-scoped GHCR package is PRIVATE by default, so this logs whether
       # ghcr.io/rhanka/geo-api is anonymously pullable — the owner then decides
       # the visibility / pull mechanism (make-public vs a GHCR pull-secret). It
-      # NEVER fails the build; the workloads keep geo-registry-pull until cutover.
+      # NEVER fails the build; anonymous pull is verified before changing a runtime pin.
       - name: Probe GHCR anonymous pull (non-blocking)
         if: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
         run: |
@@ -173,7 +173,7 @@ jobs:
           fi
           code=$(curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer ${tok}" "https://ghcr.io/v2/${repo}/manifests/${ref_tag}")
           if [ "$code" = "200" ]; then
-            echo "::notice::GHCR ${repo}:${ref_tag} anonymously pullable (200) — public read confirmed; workloads can drop geo-registry-pull at cutover."
+            echo "::notice::GHCR ${repo}:${ref_tag} anonymously pullable (200) — public read confirmed; no registry secret required."
           else
             echo "::warning::GHCR ${repo}:${ref_tag} anonymous manifest HTTP ${code} — NOT publicly pullable yet. Owner visibility decision needed. Build NOT failed."
           fi
@@ -181,23 +181,9 @@ jobs:
   # ═══════════════════════════════════════════════════════════════════════════
   # geo-capture — le runner de capture qui tourne sur le cluster.
   #
-  # ⚠️ CETTE IMAGE N'AVAIT AUCUN PIPELINE. Celle que le cluster executait,
-  # `rg.fr-par.scw.cloud/sentropic-geo/geo-capture:6140585ed14a-pvbacklog-v1`,
-  # avait ete construite A LA MAIN et poussee sur Scaleway. Consequence: elle est
-  # restee bloquee sur du code ANTERIEUR au correctif df491b69 (serialisation des
-  # Lease en microtime), et ses CronJobs echouaient en HTTP 400 toutes les deux
-  # minutes sans que personne ne puisse les mettre a jour de facon rejouable.
-  # C'est la meme maladie que le CronJob `geo-pv-backlog` disparu du namespace et
-  # que le quota absent du depot: du reel qui n'existe nulle part en versionne.
-  #
-  # ⭐ GHCR UNIQUEMENT, PAS DE SCALEWAY. Personne ne tire encore cette image
-  # depuis Scaleway; la doubler recreerait exactement la dependance croisee que le
-  # proprietaire demande de fermer. Une image neuve n'a aucune raison de naitre du
-  # mauvais cote.
-  #
-  # Job SEPARE et non matrice avec geo-api: l'equipe k8s demande que le passage de
-  # geo-api a GHCR soit une PR distincte, apres que sa bascule kubeconfig soit
-  # verte. Les melanger ferait basculer les deux ensemble.
+  # Construction reproductible du runner, séparée des images d’extraction.
+  # Les manifestes utilisent le digest GHCR publié ; les déploiements sont
+  # indépendants de ce workflow de construction.
   build-and-push-capture:
     runs-on: ubuntu-latest
     permissions:

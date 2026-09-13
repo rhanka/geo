@@ -25,7 +25,7 @@ export interface S3StoreConfig {
   prefix?: string;
   /** Pre-built client; when present, the connection fields are ignored. */
   client?: S3Client;
-  /** Endpoint URL (Scaleway, e.g. `https://s3.fr-par.scw.cloud`). */
+  /** S3-compatible endpoint URL (OVH in production). */
   endpoint?: string;
   /** Region (Scaleway, e.g. `fr-par`). */
   region?: string;
