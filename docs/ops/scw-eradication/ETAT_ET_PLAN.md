@@ -1,7 +1,66 @@
 # Éradication SCW du périmètre GEO
 
-Directive propriétaire : le registre partagé reste disponible pour matchid ;
-geo utilise GHCR et OVH. Aucun registre partagé ni objet S3 n'est supprimé.
+Directive propriétaire du 13 septembre 2026 : **« GEO uniquement, immo fait sa
+part en coordination avec toi »**. GEO utilise GHCR et OVH et doit supprimer
+ses anciennes ressources SCW après préservation des données et preuves utiles.
+Immo pilote sa propre décommission ; TEM, MatchID et les autres projets sont
+hors de ce mandat. Les ressources partagées restent protégées tant que leur
+attribution et leurs consommateurs ne sont pas établis.
+
+## Décommission complète — en cours
+
+Les PR #371–377 ont livré la bascule des images et du runtime, **pas la purge
+complète du fournisseur**. La certification plus bas porte sur cette bascule.
+L'ancienne consigne de conservation des ressources historiques est remplacée
+par leur archivage vérifié sur OVH puis leur retrait, sans reprise des jobs.
+
+Inventaire de contrôle du 13 septembre, vers 14:10 UTC :
+
+| Ressource GEO résiduelle | État constaté / condition de retrait |
+|---|---|
+| Registre `sentropic-geo` (`a20a636f-968a-4ff3-bdb1-9f063dc2a51a`, fr-par) | 6 images ; les 4 images API/capture/acquisition/normes sont migrées. Publier PMTiles depuis sa source ; archiver les anciennes images zonage privées avant retrait. |
+| Serverless `pmtiles-builder`, `zonage-builder`, `zonage-ocr`, `zonage-vision` | 4 définitions fr-par ; aucun run listé en fr-par, aucune définition nl-ams/pl-waw. Export des métadonnées sans secrets et vérification des schedules avant suppression. |
+| Bucket SCW `sentropic-geo` | Toujours présent ; comparer son contenu actuel à OVH et préserver tout résidu utile avant suppression, y compris versions et uploads incomplets. |
+| Ancien namespace SCW `geo` | Infra a constaté API/PostGIS à 0, PVC 5 Gi Bound et ancien Ingress ; sauvegarde vérifiée du PVC avant retrait. Le cluster partagé MatchID reste hors périmètre. |
+| Objets historiques OVH `geo` / `geo-preprod` | 58 / 12 références rapportées par infra ; archiver les preuves utiles sur OVH puis purger les objets obsolètes. |
+| IAM, DNS, autres services provider | Inventaire d'attribution restant à certifier par infra ; aucune absence n'est déduite du seul arrêt des pods. |
+
+Coordination H2A : `thr:geo-scw-full-20260913`, avec Astra `poc-k8s` et le
+conducteur Immo. Le contrat Immo `sentropic-geo/raw/pv-index/cas/` sur OVH
+reste inchangé. Les identifiants S3 présents dans les anciennes définitions ne
+doivent jamais figurer dans les preuves publiques.
+
+Le bootstrap GCP recommande maintenant une clé **OVH RO dédiée préprod**, au
+format base64 attendu par `geo-jobs.yml`. Le secret `GEO_S3_ENV` reste absent :
+cette correction ne provisionne aucun accès et n'active pas le workflow.
+La garde CI couvre désormais aussi les scripts `docs/ops`,
+`acquisition/scripts` et le Dockerfile racine. Le builder PMTiles exige une
+région S3 explicite, sans défaut lié à l'ancien fournisseur.
+
+### Préservation du bucket avant retrait
+
+Le comptage paginé `rclone size` trouve **45 378 objets / 48 939 893 150 octets**
+sur SCW. `scw object bucket get with-size=true` n'en rapportait que 1 000 :
+ce compteur incomplet ne constitue pas une preuve de volume total.
+La comparaison `rclone check --one-way` avec le bucket OVH courant trouve
+43 765 fichiers concordants, 1 613 différences dont deux absents, et 156 hashes
+non vérifiables. Le serving a évolué depuis juillet ; il ne faut pas le réécrire
+avec l'ancien état pour obtenir une comparaison verte.
+
+Le Job versionné `deploy/k8s/geo-retirement-bucket-archive.yaml` préserve donc
+la source entière dans `s3://sentropic-geo/ops/decommission/20260913/scw-sentropic-geo/`
+sur OVH. Il copie sans écraser un objet différent (`--immutable`), puis compare
+les octets des deux côtés (`check --download`). La copie et la vérification
+tournent sur le cluster OVH, pas sur le poste local. Aucun chemin servi n'est
+modifié et aucune suppression source n'est incluse dans ce Job.
+
+Avant application sur le kubeconfig OVH explicite : vérifier que le Secret
+temporaire `geo-retirement-source` contient uniquement la clé S3 GEO historique
+et sa cible source ; la destination et son préfixe sont fixés dans le manifeste.
+Après succès, conserver les logs et inventaires sur OVH, vérifier versions et
+uploads inachevés côté source, puis seulement autoriser son retrait. Supprimer
+le Secret temporaire et le Job une fois leurs preuves archivées. Un Job en cours
+ou une simple égalité des compteurs ne vaut pas certification de sauvegarde.
 
 ## Réalisation au 13 septembre 2026
 
@@ -68,11 +127,12 @@ leur template SCW historique :
 - `geo-density-l2-20260728t053153z` : suspendu, aucun pod actif.
 - `geo-density-l3-20260728t053154z` : suspendu, aucun pod actif.
 
-**Ne pas désuspendre ces anciens Jobs.** Ils restent des tentatives historiques.
+**Ne pas désuspendre ces anciens Jobs.** Ce sont des tentatives historiques.
 Toute reprise doit relire l'état S3, puis créer de nouveaux Jobs depuis les
 lanceurs actuels (`k8s-capture-run.ts`, `k8s-density-document-discovery-run.ts`)
-avec leurs images GHCR épinglées. La migration ne relance aucune capture et ne
-supprime ni les anciens Jobs ni les objets S3.
+avec leurs images GHCR épinglées. La bascule des images n'a relancé aucune
+capture. Leur archivage et leur purge font maintenant partie de la décommission
+décrite en tête de document.
 
 Le secret GitHub `SCW_SECRET_KEY` a été supprimé le 13 septembre après vérification
 de l'absence de consommateur dans les workflows de main et de la branche. Son
@@ -86,9 +146,9 @@ prod et préprod, sans référence dans les pods ou comptes de service. Le compt
 inventaire et sauvegarde d'accès protégée. L'absence du secret dans `geo` a aussi
 été relue par GEO. Aucun producteur de ce secret n'a été trouvé dans `poc-k8s`.
 
-L'inventaire infra conserve 58 références historiques dans `geo` et 12 dans
+L'inventaire infra initial trouvait 58 références historiques dans `geo` et 12 dans
 `geo-preprod`, dont les quatre Jobs suspendus décrits ci-dessus. Elles ne sont
-pas des consommateurs actifs ; leur conservation ne justifie aucune reprise
+pas des consommateurs actifs ; leur présence ne justifie aucune reprise
 de ces templates retirés. Zéro référence active au secret est confirmé par
 l'inventaire des Deployments, pods et comptes de service.
 
