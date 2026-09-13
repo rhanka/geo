@@ -1,0 +1,27 @@
+{
+  "at": "2026-09-13T15:40:28.954Z",
+  "job": "geo-retirement-bucket-archive-20260913-v4",
+  "jobUid": "65f2cfac-07b1-4834-9e26-007d4a1df7f2",
+  "completedAt": "2026-09-13T15:39:36Z",
+  "source": {
+    "provider": "Scaleway",
+    "region": "fr-par",
+    "bucket": "sentropic-geo",
+    "objects": 45378,
+    "bytes": 48939893150
+  },
+  "archive": {
+    "endpoint": "https://s3.bhs.io.cloud.ovh.net",
+    "region": "bhs",
+    "uri": "s3://sentropic-geo/ops/decommission/20260913/scw-sentropic-geo/",
+    "objects": 45378,
+    "bytes": 48939893150
+  },
+  "verification": {
+    "method": "rclone check --download",
+    "matchingFiles": 45378,
+    "differences": 0,
+    "logSha256": "d9b8d63f1f4708e09f06c779ddd67fc25cef1b6460df754bc78b9c3634eea7d9"
+  },
+  "status": "verified"
+}
