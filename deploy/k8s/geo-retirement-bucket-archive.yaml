@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: geo-retirement-bucket-archive-20260913-v3
+  name: geo-retirement-bucket-archive-20260913-v4
   namespace: geo
   labels:
     app: geo-retirement-archive
@@ -24,7 +24,7 @@ spec:
               source=src:sentropic-geo
               archive=dst:sentropic-geo/ops/decommission/20260913/scw-sentropic-geo
               rclone size "$source" --json
-              rclone copy "$source" "$archive" --immutable --transfers 8 --checkers 8 --buffer-size 4M --s3-upload-concurrency 2 --stats 60s --stats-log-level NOTICE --stats-one-line
+              rclone copy "$source" "$archive" --immutable --transfers 8 --checkers 32 --buffer-size 4M --s3-upload-concurrency 2 --stats 60s --stats-log-level NOTICE --stats-one-line
               rclone check "$source" "$archive" --download --checkers 16 --buffer-size 4M --stats 60s --stats-log-level NOTICE --stats-one-line
               rclone size "$archive" --json
               echo 'ARCHIVE_VERIFIED_BY_DOWNLOAD'
