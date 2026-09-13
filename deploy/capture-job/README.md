@@ -34,20 +34,26 @@ committé (il applique un Job Indexed et se termine immédiatement — aucun
 polling local) :
 
 ```bash
+# L'image geo-capture est buildée+poussée sur GHCR par la CI
+# (.github/workflows/docker-publish.yml, job build-and-push-capture ; sur tag v* ou
+# workflow_dispatch). Package ghcr.io/rhanka/geo-capture PUBLIC → pull anonyme.
+# Override local éventuel (même registre) :
 docker build --network=host -f deploy/capture-job/Dockerfile \
-  -t rg.fr-par.scw.cloud/sentropic-geo/geo-capture:<tag> .
-docker push rg.fr-par.scw.cloud/sentropic-geo/geo-capture:<tag>
+  -t ghcr.io/rhanka/geo-capture:<tag> .
+docker push ghcr.io/rhanka/geo-capture:<tag>
 
 NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
   npx tsx acquisition/src/k8s-capture-run.ts \
   --kubeconfig "$HOME/.kube/ovh.conf" --namespace geo \
   --lane zones --worklist /path/to/targets.json --shards 1 --concurrency 1 \
-  --image rg.fr-par.scw.cloud/sentropic-geo/geo-capture:<tag>
+  --image ghcr.io/rhanka/geo-capture@sha256:<digest>   # pinné par digest (assertPinnedImage)
 ```
 
 Secrets requis (noms seulement) : `geo-s3-credentials` avec `S3_ENDPOINT`,
-`S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, et
-`geo-registry-pull` pour l'image. Aucun secret de modèle n'est requis.
+`S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`. L'image geo-capture
+est sur GHCR (package public) → pull anonyme, aucun secret de registre requis ;
+`geo-registry-pull` reste référencé dans les manifestes (inoffensif, retiré au
+balayage final SCW). Aucun secret de modèle n'est requis.
 
 `job-capture.yaml` est le lot de contrôle PV réel (200 URL du snapshot
 `b32de19169bc907c`), à publier d'abord avec
@@ -72,7 +78,7 @@ NODE_OPTIONS=--dns-result-order=ipv4first AWS_MAX_ATTEMPTS=10 \
 npx tsx acquisition/src/pv-capture-backlog-bootstrap.ts \
   --id pv-YYYYMMDD-<snapshot> \
   --worklist-prefix acquisition/config/pv-capture-YYYYMMDD-<snapshot>-lot- \
-  --image rg.fr-par.scw.cloud/sentropic-geo/geo-capture:<tag> --apply
+  --image ghcr.io/rhanka/geo-capture@sha256:<digest> --apply   # pinné par digest
 ```
 
 Un 404 reste dans le manifeste de run et règle le lot (il ne boucle pas). Un
