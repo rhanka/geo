@@ -23,6 +23,7 @@ SECRET_ENV="${SECRET_ENV:-geo-preprod}" # ENV-scope le secret (derrière require
 
 command -v kubectl >/dev/null || { echo "❌ kubectl absent"; exit 1; }
 command -v gh >/dev/null || { echo "❌ gh CLI absent"; exit 1; }
+command -v node >/dev/null || { echo "❌ node absent"; exit 1; }
 kubectl -n "$NS" get serviceaccount "$SA" >/dev/null 2>&1 \
   || { echo "❌ SA ${NS}/${SA} absent — applique d'abord la RBAC CI (#327, deploy/ci/geo-ci-rbac.yaml)"; exit 1; }
 
@@ -33,6 +34,8 @@ trap 'rm -f "$KCFG"' EXIT
 SERVER="$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.server}')"
 CADATA="$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')"
 [ -n "$SERVER" ] && [ -n "$CADATA" ] || { echo "❌ server/CA introuvables dans le kubeconfig courant"; exit 1; }
+EXPECTED_SERVER="$(node -p 'JSON.parse(require("node:fs").readFileSync(process.argv[1], "utf8")).server' "$(dirname "$0")/../../../acquisition/config/k8s-target.json")"
+[ "$SERVER" = "$EXPECTED_SERVER" ] || { echo "❌ Le kubeconfig ne cible pas le cluster GEO déclaré : aucun token généré."; exit 1; }
 
 # Token BORNÉ via TokenRequest (jamais imprimé — écrit direct dans le kubeconfig temp via --token=@).
 # kubectl >=1.24 : `create token`. Le token part sur stdin de la substitution, capté hors log.
@@ -74,10 +77,8 @@ kubectl --kubeconfig "$KCFG" -n "$NS" auth can-i list jobs >/dev/null \
 # Best-effort : décoder l'exp du JWT pour une rotation exacte (le token n'est JAMAIS imprimé — il passe par
 # le pipe, seul l'exp numérique en ressort).
 GRANTED_EXP=""
-if command -v python3 >/dev/null 2>&1; then
-  GRANTED_EXP="$(kubectl --kubeconfig "$KCFG" config view --raw -o jsonpath='{.users[0].user.token}' \
-    | python3 -c 'import sys,base64,json;t=sys.stdin.read().strip().split(".")[1];t+="="*(-len(t)%4);print(json.loads(base64.urlsafe_b64decode(t)).get("exp",""))' 2>/dev/null || true)"
-fi
+GRANTED_EXP="$(kubectl --kubeconfig "$KCFG" config view --raw -o jsonpath='{.users[0].user.token}' \
+  | node -e 'let token=""; process.stdin.on("data", c => token += c); process.stdin.on("end", () => console.log(JSON.parse(Buffer.from(token.trim().split(".")[1], "base64url")).exp ?? ""));' 2>/dev/null || true)"
 echo "✅ KUBE_CONFIG_GEO posé (SA ${NS}/${SA}, cred admin JAMAIS incluse)."
 if [ -n "$GRANTED_EXP" ]; then
   echo "   Rotation : expiry ACCORDÉ (epoch)=${GRANTED_EXP} (TTL demandé=${TOKEN_TTL}, plafonné apiserver). Re-lancer AVANT."
