@@ -5,6 +5,13 @@ geo utilise GHCR et OVH. Aucun registre partagé ni objet S3 n'est supprimé.
 
 ## Réalisation au 13 septembre 2026
 
+État de reprise : #375 est fusionnée. Le build d'extraction `1552e087` est
+publié sur `chore/scw-finalize-20260913`. Le nettoyage `1c0f66e4` est committé
+localement, sans publication : l'approbation automatique du push a été refusée
+pour portée/publication insuffisamment autorisées ; accord explicite demandé
+au propriétaire. Le tableau décrit le résultat préparé, pas un déploiement
+déjà effectué du nettoyage.
+
 | Périmètre | État et preuve |
 |---|---|
 | geo-api, CD prod/préprod, CPTAQ | GHCR, PR #371 à #374 fusionnées |
@@ -54,3 +61,30 @@ La suppression du secret GitHub `SCW_SECRET_KEY` et du secret Kubernetes
 compte `system:serviceaccount:geo:ci-deployer` peut modifier le Deployment geo,
 mais ne peut pas supprimer les Secrets et ne lit pas le namespace geo-preprod.
 La clôture opérationnelle doit préciser les suppressions effectivement réalisées.
+
+## Validation du nettoyage local
+
+- `npm run build` et `node scripts/run-workspaces.mjs check` réussis.
+- `npm test` : 3 998 tests réussis ; 7 tests déjà marqués skipped.
+- `npm run test:scripts` : 10 tests réussis, dont la garde anti-réintroduction.
+- `npm run test:mount-e2e --workspace @sentropic/geo-map-engine` : réussi
+  après installation du Chromium requis dans le cache Playwright.
+- Trois builds Docker locaux réussis : capture, acquisition et normes.
+- Import des véritables modules de capture/extraction dans ces trois images,
+  avec `--network none` : réussi, aucune capture et aucune écriture S3.
+- Aucun changement de `.track` ; checkout partagé `feat/cadre-acquisition`
+  préservé. Travail isolé dans `tmp/worktrees/scw-finalize`.
+
+## Reprise après autorisation de publication
+
+1. Publier `chore/scw-finalize-20260913`, puis relire le diff public et ouvrir la PR.
+2. Dispatcher `docker-publish.yml` sur cette branche avec un tag frais. Republier
+   capture/extraction pour que leurs générateurs embarqués n'injectent plus le
+   secret retiré ; vérifier les digests anonymement et les épingler.
+3. Conduire la PR jusqu'au merge avec CI verte. Les modifications du Deployment
+   de base déclenchent automatiquement CD préprod ; vérifier ce rollout. La prod
+   ne se déploie pas automatiquement.
+4. Retirer `SCW_SECRET_KEY` des secrets GitHub, puis vérifier son absence.
+5. Le compte d'infrastructure OVH doit retirer `geo-registry-pull` après retrait
+   de ses références dans les workloads des namespaces geo et geo-preprod.
+   Le compte de cette reprise n'a pas le droit de supprimer ce Secret.
