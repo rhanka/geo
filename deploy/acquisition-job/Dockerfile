@@ -7,9 +7,8 @@
 # the Mistral-vision page renderer — BAKED in (the pod has no apt egress).
 # Build with `docker build --network=host` (buildkit DNS is flaky).
 #
-# This repo has NO npm workspace root: acquisition/ and packages/qc-sources/ are
-# independent packages, so we `npm ci` inside acquisition/ and resolve qc-sources
-# by relative path (its only runtime dep, zod, is already in acquisition's lock).
+# Install from the acquisition lockfile, as in the capture image. Sibling source
+# packages resolve ESM dependencies through /geo/node_modules.
 FROM node:22-bookworm-slim
 
 # poppler-utils + ca-certificates (TLS to S3 + api.mistral.ai + municipal sites).
@@ -25,13 +24,20 @@ WORKDIR /geo
 # runtime dep (zod) is hoisted into acquisition/node_modules at `npm ci` time.
 # It provides ALL_PV_CITIES (the canonical muni list the orchestrator shards).
 COPY packages/qc-sources/ ./packages/qc-sources/
+COPY packages/geo/ ./packages/geo/
 
 # Install acquisition deps (tsx, @aws-sdk/client-s3, @dsnp/parquetjs, zod, …)
 # from its committed lockfile, then copy its sources.
 COPY acquisition/package.json acquisition/package-lock.json ./acquisition/
-RUN cd acquisition && npm ci
+RUN cd acquisition && npm ci \
+ && ln -s /geo/acquisition/node_modules /geo/node_modules
 COPY acquisition/src/ ./acquisition/src/
 COPY acquisition/tsconfig.json ./acquisition/
+COPY acquisition/config/s3-target.json ./acquisition/config/s3-target.json
+COPY acquisition/config/k8s-target.json ./acquisition/config/k8s-target.json
+
+# Resolve the real extraction dependencies without fetching or depositing data.
+RUN cd acquisition && ./node_modules/.bin/tsx -e 'import { depositZonageNorms } from "./src/lib/zonage-norms.ts"; if (typeof depositZonageNorms !== "function") process.exit(1)'
 
 # Entrypoint: discover|extract|all over a SLUGS shard, deposit norms to S3.
 COPY deploy/acquisition-job/run-acquisition-job.sh /usr/local/bin/run-acquisition-job.sh
