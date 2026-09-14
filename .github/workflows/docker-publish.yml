@@ -242,3 +242,113 @@ jobs:
       - name: Report immutable digest
         run: |
           echo "ghcr.io/rhanka/geo-capture@${{ steps.build.outputs.digest }}"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # geo-acquisition — Job k8s d'acquisition de masse QC (1 shard par pod), sorti de
+  # Scaleway. Même patron que geo-capture : build reproductible sur GHCR, déploiement
+  # épinglé PAR DIGEST (sortie `digest`) dans acquisition/src/k8s-shard-run.ts.
+  build-and-push-acquisition:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+      image: ghcr.io/rhanka/geo-acquisition
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # SHA court par défaut, jamais `:latest` seul (tag mouvant = panne silencieuse).
+      # Le déploiement s'épingle PAR DIGEST (sortie `digest`).
+      - name: Compute acquisition image tag
+        id: tags
+        run: |
+          short="$(git rev-parse --short HEAD)"
+          requested="${{ inputs.tag }}"
+          tag="${requested:-$short}"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "tags=ghcr.io/rhanka/geo-acquisition:${tag}" >> "$GITHUB_OUTPUT"
+          echo "Will build: ghcr.io/rhanka/geo-acquisition:${tag}"
+
+      - name: Build and push geo-acquisition
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./deploy/acquisition-job/Dockerfile
+          platforms: linux/amd64
+          push: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
+          tags: ${{ steps.tags.outputs.tags }}
+          provenance: true
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Report immutable digest
+        run: |
+          echo "ghcr.io/rhanka/geo-acquisition@${{ steps.build.outputs.digest }}"
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # normes-job — extraction k8s des grilles de zonage (bridge `captured` + PDF
+  # S3-stagés), sortie de Scaleway. C'est la SOURCE de build du chemin k8s `captured`
+  # (acquisition/src/k8s-captured-normes-run.ts). Déploiement épinglé PAR DIGEST.
+  build-and-push-normes:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
+      image: ghcr.io/rhanka/normes-job
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # SHA court par défaut, jamais `:latest` seul (tag mouvant = panne silencieuse).
+      # Le déploiement s'épingle PAR DIGEST (sortie `digest`).
+      - name: Compute normes image tag
+        id: tags
+        run: |
+          short="$(git rev-parse --short HEAD)"
+          requested="${{ inputs.tag }}"
+          tag="${requested:-$short}"
+          echo "tag=${tag}" >> "$GITHUB_OUTPUT"
+          echo "tags=ghcr.io/rhanka/normes-job:${tag}" >> "$GITHUB_OUTPUT"
+          echo "Will build: ghcr.io/rhanka/normes-job:${tag}"
+
+      - name: Build and push normes-job
+        id: build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./deploy/normes-job/Dockerfile
+          platforms: linux/amd64
+          push: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
+          tags: ${{ steps.tags.outputs.tags }}
+          provenance: true
+          sbom: true
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Report immutable digest
+        run: |
+          echo "ghcr.io/rhanka/normes-job@${{ steps.build.outputs.digest }}"
