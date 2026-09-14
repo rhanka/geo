@@ -41,14 +41,22 @@ patches:
       - op: replace
         path: /spec/tls/0/secretName
         value: geo-api-preprod-tls
-      # KEDA scale-to-zero — étape 2/3 : repointe le backend de l'Ingress du Service `geo-api`
-      # (port nommé `http`) vers l'interceptor KEDA HTTP `keda-http-interceptor:8080`. C'est lui
-      # qui met la requête en file et réveille geo-api depuis zéro réplica.
-      # ⚠ ORDRE VITAL : étape 1 = Service keda-http-interceptor posé (i-cond, fait) → étape 2 =
-      # CE repoint live + host répond → étape 3 = objet d'échelle KEDA posé par k8s SEULEMENT
-      # APRÈS vérif du backend live. Poser l'échelle avant que ce repoint soit live = zéro
-      # réplica sans chemin de réveil = le host tombe. Overlay PREPROD uniquement ; la PROD
-      # (api.geo.sent-tech.ca, overlay prod séparé) reste sur le Service geo-api, intouchée.
+      # KEDA scale-to-zero : repointe le backend de l'Ingress du Service `geo-api` (port nommé
+      # `http`) vers l'interceptor KEDA HTTP `keda-http-interceptor:8080`. C'est lui qui met la
+      # requête en file et réveille geo-api depuis zéro réplica.
+      #
+      # ⚠ SÉQUENCE VITALE (corrigée avec k8s — la panne existe AUX DEUX BOUTS). MODÈLE pour les
+      #   autres tenants : respecter l'ordre EXACT.
+      #   1. Service keda-http-interceptor posé (i-cond).
+      #   2. k8s pose l'objet d'échelle KEDA à min:1 (l'interceptor APPREND le host ; geo-api reste
+      #      à 1 réplica, trafic direct ; impact nul — prérequis inoffensif). Mutation cluster → GO owner.
+      #   3. CE repoint mergé → CD `kubectl apply -k` → Ingress live (chez geo, live DÈS le merge,
+      #      pas de fenêtre de rattrapage : d'où min:1 AVANT le merge, pas après).
+      #   4. k8s vérifie : backend == keda-http-interceptor:8080 ET host /conformance == 200.
+      #   5. k8s passe min:1 → min:0 (scale-to-zero effectif).
+      #   ✗ Repoint live SANS objet d'échelle (3 avant 2) = interceptor ignore le host = 404/503.
+      #   ✗ min:0 avant que le repoint soit live = zéro réplica sans chemin de réveil = host tombe.
+      #   Overlay PREPROD uniquement ; la PROD (api.geo.sent-tech.ca, overlay prod séparé) intouchée.
       - op: replace
         path: /spec/rules/0/http/paths/0/backend/service/name
         value: keda-http-interceptor
