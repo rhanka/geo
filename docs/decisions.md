@@ -769,6 +769,54 @@ d'amélioration future, NON-worked sans owner-GO** : **(a) geo-side [levier PRIM
 (semver+ADR sur seam) · `SPEC §2.5.8` · #341 (CORS/referrer préprod-immo) · `overlays/preprod/netpol.yaml` (A2) ·
 #352 (client-mint 0.6.0) · #354 (retry 0.6.1) · mesures 502 + GEL 3/3 du 2026-09-05.
 
+## ADR-0033 — **Consolidation des rôles : 8 → 5** (supersède le volet RÔLES d'ADR-0022 ; les 7 WP restent) · accepted · 2026-09-17
+
+**Contexte.** ADR-0022 a gelé huit rôles de travail : sept rôles de couche (`lot`, `zones`,
+`reglement`, `pv`, `jointures`, `archi`, `socle`) + le transverse `qa`. Le propriétaire demande de
+simplifier — « deux fois moins de rôles ». Les évaluations disponibles (colonne « script de mesure »/maturité
+de `SPEC_WORKPACKAGES §1`, les cinq chiffres à re-mesurer §4, couvertures par lane `acquisition/config/fleet.json`)
+montrent des couplages forts : **pv↔reglement** forment UN workflow (le PV *détecte*, le règlement *qualifie* —
+c'est exactement à cette frontière que « trois effets fabriqués sont partis en prod ») ; **lot↔zones** partagent
+la discipline capture→stamp→readback (deux géométries servies à provenance prouvée) ; **jointures** est une
+fonction de COHÉRENCE aval (lot↔zone, normes repliées), l'inverse de l'acquisition, donc naturellement proche
+de `qa`.
+
+**Décision (propriétaire).** Cinq rôles de travail :
+
+| rôle | consolide (rôles ADR-0022) | WP possédés | porte |
+|---|---|---|---|
+| **socle** | socle | wp7 | le BUILD (GeometryKernel, geo-lib, kernel de capture, API OGC, npm, pmtiles) |
+| **archi** | archi | wp6 | règles + contrats + **conformité/licence** |
+| **reglementaire** | pv + reglement | wp3 + wp4 | événements (détection) + qualification juridique (normes/grilles, n°+millésime, usage dominant, effet densifiant 4a) |
+| **geometrie** | lot + zones | wp1 + wp2 | les deux géométries servies à provenance prouvée (qc-lots + qc-zonage), ré-acquisition, contraintes non-municipales ; **PII (Loi 25)** — état `PII_REFUSED` |
+| **consistance** | jointures + qa | wp5 + fonction qa | cohérence lot↔zone + normes repliées + **vérification** (tout chiffre recalculable, partitions fermées, Δ non fabriqué) |
+
+Transverses inchangés : **propriétaire** (seul arbitre ADR, seul à autoriser un retrait prod) et **conductor**
+(pilotage portfolio).
+
+**Ce qui NE change PAS.** Les **sept WP restent les unités de mesure** : chaque WP garde SA partition fermée et
+SON script de mesure committé (principe « un WP possède sa donnée, sa preuve, son compteur » — ADR-0022 §0). La
+consolidation est au niveau du RÔLE (qui possède/refuse), pas du WP (comment on mesure). Restent en vigueur :
+« pas de WP QA », le premier niveau WP GELÉ (aucun WP racine sans accord propriétaire), l'anti-PII comme état
+nommé de partition, la conformité/licence chez `archi`. **« Acquisition » n'est toujours pas un rôle** : capter
+est un devoir de chaque rôle producteur (`geometrie` capte sa géométrie, `reglementaire` capte ses PV/règlements).
+
+**Deux clauses de frontière (dérivées des règles ADR-0022).**
+- **Anti-auto-notation.** La règle « celui qui produit ne se note pas lui-même » tient. `consistance` porte à la
+  fois la production (jointures) et la vérification (qa) : elle vérifie les rôles **producteurs** (socle, archi,
+  geometrie, reglementaire) ; sa **propre** jointure est vérifiée par **`archi`** (ou le propriétaire), jamais
+  par elle-même.
+- **PII.** La PII (Loi 25) suit les lots → portée par **`geometrie`** (état `PII_REFUSED` de la partition wp1),
+  vérifiée par la fonction qa de `consistance`.
+
+**Supersession.** Supersède le **volet RÔLES** d'ADR-0022 (« sept rôles de couche + qa, gelés ») ; le reste
+d'ADR-0022 (sept WP par artefact, QA intégrée à chaque WP, premier niveau WP gelé, pas de WP QA) **demeure**.
+`AGENTS.md` et `SPEC_WORKPACKAGES.md` (§3 + nouveau §8) mis à jour ; RACI track à re-câbler `accountable =
+role:<consolidé>` et migration des instances/lanes = passe séparée, non-bloquante.
+
+**Réfs.** ADR-0022 (WP + rôles gelés) · `SPEC_WORKPACKAGES.md` §1 (maturité) / §3 (rôles) / §4 (chiffres non
+fiables) / §8 (consolidation) · `acquisition/config/fleet.json` · discussion propriétaire 2026-09-17.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
