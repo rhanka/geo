@@ -61,8 +61,13 @@ for (const lane of lanes) {
   // Logs de session h2a (saute les .git imbriqués)
   const runs = path.join(lane.path, '.h2a', 'runs');
   if (fs.existsSync(runs)) {
-    fs.cpSync(runs, path.join(ARCHIVE, name, 'h2a-runs'), { recursive: true, filter: noGit });
-    rec.archived.push(`.h2a/runs (~${(dirSize(runs) / 1e6).toFixed(1)}MB)`);
+    const rsz = dirSize(runs);
+    if (rsz > 200 * 1024 * 1024) {
+      rec.archived.push(`.h2a/runs SKIPPED (~${(rsz / 1e6).toFixed(1)}MB > 200MB)`);
+    } else {
+      fs.cpSync(runs, path.join(ARCHIVE, name, 'h2a-runs'), { recursive: true, filter: noGit });
+      rec.archived.push(`.h2a/runs (~${(rsz / 1e6).toFixed(1)}MB)`);
+    }
   }
   const h2a = path.join(lane.path, '.h2a');
   if (fs.existsSync(h2a)) {
