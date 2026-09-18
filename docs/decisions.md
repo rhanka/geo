@@ -444,7 +444,7 @@ backlog. En attendant, on sert les lots **par sous-ensembles** de shards.
 (−2,63 Go). 40 shards + 40 meta sur S3. Le runner reste résumable (`_checkpoint.json` conservé) et
 extensible province (40 → 1104 villes) sans changer le modèle de service.
 
-## ADR-0022 — Refonte des WP : 10 « couche/require » → 7 par artefact, QA et provenance intégrées, premier niveau **gelé** · accepted · 2026-07-30
+## ADR-0022 — Refonte des WP : 10 « couche/require » → 7 par artefact, QA et provenance intégrées, premier niveau **gelé** · accepted · 2026-07-30 · ⚠️ **volet RÔLES superseded par ADR-0033 (2026-09-17)** — les WP restent, la liste des rôles est consolidée à 5
 
 **Contexte.** Le découpage track mesurait le *require* (`pv/scraper-configured · <ville>`) et non la
 donnée servie ; 26 des 48 WP étaient des `voie:*` (leviers d'acquisition), d'où 27 WP fantômes. Le
@@ -795,8 +795,9 @@ Transverses inchangés : **propriétaire** (seul arbitre ADR, seul à autoriser 
 (pilotage portfolio).
 
 **Ce qui NE change PAS.** Les **sept WP restent les unités de mesure** : chaque WP garde SA partition fermée et
-SON script de mesure committé (principe « un WP possède sa donnée, sa preuve, son compteur » — ADR-0022 §0). La
-consolidation est au niveau du RÔLE (qui possède/refuse), pas du WP (comment on mesure). Restent en vigueur :
+SON script de mesure committé. La
+consolidation est au niveau du RÔLE (qui possède/refuse), pas du WP (comment on mesure — principe
+« un WP possède sa donnée, sa preuve, son compteur », `SPEC_WORKPACKAGES.md` §0). Restent en vigueur :
 « pas de WP QA », le premier niveau WP GELÉ (aucun WP racine sans accord propriétaire), l'anti-PII comme état
 nommé de partition, la conformité/licence chez `archi`. **« Acquisition » n'est toujours pas un rôle** : capter
 est un devoir de chaque rôle producteur (`geometrie` capte sa géométrie, `reglementaire` capte ses PV/règlements).
@@ -805,14 +806,18 @@ est un devoir de chaque rôle producteur (`geometrie` capte sa géométrie, `reg
 - **Anti-auto-notation.** La règle « celui qui produit ne se note pas lui-même » tient. `consistance` porte à la
   fois la production (jointures) et la vérification (qa) : elle vérifie les rôles **producteurs** (socle, archi,
   geometrie, reglementaire) ; sa **propre** jointure est vérifiée par **`archi`** (ou le propriétaire), jamais
-  par elle-même.
+  par elle-même — et `archi` applique alors à wp5 les critères qa (chiffre recalculable, partition fermée,
+  Δ non fabriqué), que ce rôle possède au titre du volet vérification.
 - **PII.** La PII (Loi 25) suit les lots → portée par **`geometrie`** (état `PII_REFUSED` de la partition wp1),
   vérifiée par la fonction qa de `consistance`.
 
-**Supersession.** Supersède le **volet RÔLES** d'ADR-0022 (« sept rôles de couche + qa, gelés ») ; le reste
-d'ADR-0022 (sept WP par artefact, QA intégrée à chaque WP, premier niveau WP gelé, pas de WP QA) **demeure**.
-`AGENTS.md` et `SPEC_WORKPACKAGES.md` (§3 + nouveau §8) mis à jour ; RACI track à re-câbler `accountable =
-role:<consolidé>` et migration des instances/lanes = passe séparée, non-bloquante.
+**Supersession.** Supersède le **volet RÔLES** d'ADR-0022 (ses rôles propriétaires « lot, zones, reglement, pv,
+jointures, archi, socle » + transverse « qa » ; le *gel* de ces rôles, lui, vit dans `SPEC_WORKPACKAGES.md` §3
+et `AGENTS.md`, pas dans le texte d'ADR-0022 proprement dit) ; le reste d'ADR-0022 (sept WP par artefact, QA
+intégrée à chaque WP, premier niveau WP gelé, pas de WP QA) **demeure**. `AGENTS.md` et `SPEC_WORKPACKAGES.md`
+(pointeurs §1/§3/§7 + nouveau §8) mis à jour ; back-stamp posé sur l'en-tête d'ADR-0022. **Suivi de la passe
+séparée non-bloquante** (RACI track re-câblés `accountable = role:<consolidé>` + migration instances/`.lanes`) :
+item track `01M2TA835K11WSEHKDJFERFACE`.
 
 **Réfs.** ADR-0022 (WP + rôles gelés) · `SPEC_WORKPACKAGES.md` §1 (maturité) / §3 (rôles) / §4 (chiffres non
 fiables) / §8 (consolidation) · `acquisition/config/fleet.json` · discussion propriétaire 2026-09-17.
