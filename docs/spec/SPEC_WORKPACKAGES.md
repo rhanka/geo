@@ -32,6 +32,8 @@ Trois obligations, par construction, dans chaque WP de donnée :
 
 ## 1. Les 7 workpackages
 
+> ⚠️ La colonne **`rôle`** ci-dessous nomme les **anciens rôles ADR-0022** — **superseded sur l'axe RÔLE par ADR-0033 → §8** (rôles consolidés à 5). Les **7 WP** (les lignes) sont **inchangés** ; seul le rôle propriétaire change (report : `lot`+`zones` → **geometrie** ; `pv`+`reglement` → **reglementaire** ; `jointures` → **consistance** ; `archi`/`socle` inchangés).
+
 | # | nom | rôle | ferme quelle classe de problème | frontière — PAS ici | script de mesure |
 |---|---|---|---|---|---|
 | **wp1** | cadastre | `lot` | lot + géométrie + **propriétaire** + évaluation (rôle MAMH), clé = matricule ; source provinciale par ville | pas la jointure lot↔zone (→ wp5) | manquant |
@@ -174,6 +176,8 @@ rôle racine** : chacun se raccroche. La colonne « nature » distingue une
 **acquisition geo** (on capte, on prouve, on sert) d'un **affichage immo** (immo
 embarque la donnée vive) — distinction à confirmer par le rapport de Steve, demande
 envoyée à immo.
+
+> ⚠️ Les `role:*` du tableau nomment les **anciens rôles ADR-0022** → **§8** (report : `role:lot`/`role:zones` → **geometrie** ; `role:jointures` → **consistance** ; `role:socle` inchangé).
 
 | donnée | acquisition → WP | jointure/attribut | outillage | réserve |
 |---|---|---|---|---|
