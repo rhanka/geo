@@ -75,6 +75,10 @@ Trois obligations, par construction, dans chaque WP de donnée :
 
 ## 3. Rôles — qui décide, qui mesure, qui refuse
 
+> ⚠️ **Superseded sur l'axe RÔLE par ADR-0033 (2026-09-17) → voir §8** : les huit rôles ci-dessous
+> (sept de couche + `qa`) sont **consolidés en cinq**. Le tableau reste la référence de « qui refuse
+> quoi » — chaque droit de refus se reporte sur le rôle consolidé (§8). Les **7 WP sont inchangés**.
+
 | rôle | portée | droit de REFUSER |
 |---|---|---|
 | **toi** (propriétaire, cadre h2a) | transverse | tout ; seul à trancher les ADR et à autoriser un retrait prod (`--withdraw`) |
@@ -182,3 +186,39 @@ envoyée à immo.
 référence, ou affichage immo pur ? (2) rôle conformité — chez `archi` (recommandé)
 ou rôle dédié ? Les deux attendent la liste de Steve pour être tranchées sur du
 concret plutôt que sur une intuition.
+
+## 8. Consolidation des rôles — 8 → 5 (ADR-0033, 2026-09-17)
+
+> **Les rôles de travail passent de huit à cinq. Les sept WP restent** les unités de
+> mesure (chaque WP garde sa partition fermée + son script committé — §0). On consolide
+> QUI possède, pas COMMENT on mesure.
+
+Origine : demande du propriétaire (« deux fois moins de rôles »), adossée aux évaluations
+disponibles (§1 maturité, §4 chiffres non fiables, `fleet.json` couvertures par lane).
+
+| rôle consolidé | fusionne (rôles ADR-0022 §3) | WP possédés | ferme quelle classe de problème |
+|---|---|---|---|
+| **socle** | socle | wp7 | le BUILD du socle (kernel, geo-lib, kernel capture, API OGC, npm, pmtiles) |
+| **archi** | archi | wp6 | règles + contrats **uniquement** + conformité/licence |
+| **reglementaire** | pv + reglement | wp3 + wp4 | événements de zonage (**le PV détecte**) + qualification juridique (**le règlement qualifie** : normes/grilles, n°+millésime, usage dominant, effet densifiant 4a) |
+| **geometrie** | lot + zones | wp1 + wp2 | les deux géométries servies à provenance prouvée octet-pour-octet (qc-lots + qc-zonage), ré-acquisition, contraintes non-municipales (inondable/agricole/3D) ; **seul porteur de PII** (Loi 25, état `PII_REFUSED`) |
+| **consistance** | jointures + qa | wp5 + fonction qa | cohérence lot↔zone, normes repliées sur le lot, contrat passthrough OGC **+** la vérification transverse (tout chiffre recalculable, partition qui ferme, Δ non fabriqué) |
+
+Transverses inchangés : **propriétaire** (arbitre ADR, autorise les retraits prod) et
+**conductor** (pilotage). **« Acquisition » n'est pas un rôle** : capter est un devoir de
+chaque rôle producteur (`geometrie` capte sa géométrie, `reglementaire` capte ses PV/règlements).
+
+**Report des droits de refus** (§3 → rôle consolidé) : `pv`+`reglement` → **reglementaire** ;
+`lot`+`zones` → **geometrie** ; `jointures`+`qa` → **consistance** ; `socle`/`archi` inchangés.
+
+**Deux clauses de frontière** (dérivées des règles §3, à ne pas perdre dans la fusion) :
+
+1. **Anti-auto-notation.** « Celui qui produit ne se note pas lui-même » tient. `consistance`
+   porte la production (jointures) **et** la vérification (qa) : elle vérifie les rôles
+   **producteurs** (socle, archi, geometrie, reglementaire) ; sa **propre** jointure est notée
+   par **`archi`** (ou le propriétaire), jamais par elle-même.
+2. **PII.** La PII (Loi 25) suit les lots → portée par **`geometrie`** (état `PII_REFUSED` de la
+   partition wp1), vérifiée par la fonction qa de `consistance`.
+
+Ce qui reste en vigueur d'ADR-0022 : sept WP par artefact, pas de WP « QA », premier niveau WP
+**gelé** (aucun WP racine sans accord propriétaire), conformité/licence chez `archi`.
