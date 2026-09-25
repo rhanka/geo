@@ -1,0 +1,24 @@
+# PLACEHOLDER COMMENTÉ — SealedSecret geo-pra-writer-prod (ns geo).
+# Structure identique à radar-immobilier:deploy/ci/bascule-preprod/radar-pra-admin-prod-sealed.yaml.
+# Writer S3 du bucket backups radar-immobilier-backups-preprod (préfixe geo-postgres/), consommé par
+# l'upload du CronJob geo-db-backup-prod (clés S3_ACCESS_KEY / S3_SECRET_KEY). Endpoint / région / bucket
+# = valeurs NON secrètes dans le CronJob (iso BHS / S3_REGION / DUMP_BUCKET).
+# SCELLÉ PAR k8s (kubeseal strict, lié ns+name) ; le fichier réel est committé par geo-cond à la place de
+# celui-ci. Tant qu'il n'y a pas de document `kind: SealedSecret` actif, bascule-bundle-cd.yml et
+# install-cd-bootstrap.sh REFUSENT d'appliquer le bundle (fail-closed).
+#
+# ---
+# apiVersion: bitnami.com/v1alpha1
+# kind: SealedSecret
+# metadata:
+#   name: geo-pra-writer-prod
+#   namespace: geo
+# spec:
+#   encryptedData:
+#     S3_ACCESS_KEY: <kubeseal>
+#     S3_SECRET_KEY: <kubeseal>
+#   template:
+#     metadata:
+#       name: geo-pra-writer-prod
+#       namespace: geo
+#     type: Opaque
