@@ -3,8 +3,8 @@
 Clone of the immo record (`radar-immobilier:deploy/ci/bascule-preprod/CRED_CYCLE.md`).
 The geo bascule prod bundle references k8s Secrets by NAME. Their material is committed as
 **SealedSecrets** (encrypted, safe in git — `geo-db-ro-prod-sealed.yaml`,
-`geo-pra-writer-prod-sealed.yaml`, committed as COMMENTED PLACEHOLDERS until sealed) and
-materialized in-cluster by the sealed-secrets controller. **No plaintext is ever committed
+`geo-pra-writer-prod-sealed.yaml`, sealed and committed by geo-cond) and materialized
+in-cluster by the sealed-secrets controller. **No plaintext is ever committed
 and no GH secret carries these creds.** A `.env` copy stays the recovery convenience per the
 governed k8s↔tenant cred cycle (CLAUDE.md), so recovery is verifiable at any time — no
 per-act owner GO.
@@ -13,21 +13,21 @@ per-act owner GO.
 
 | secret (k8s name, hyphen) | keys | consumer | sealed by |
 | --- | --- | --- | --- |
-| `geo-db-ro-prod` | `POSTGRES_USER=geo_db_ro_prod`, `POSTGRES_PASSWORD=<openssl rand>`, `POSTGRES_DB=<geo prod DB>` | CronJob `geo-db-backup-prod` (pg_dump RO) + Job `geo-db-ro-role-provision` (`RO_PASSWORD`) | geo-cond |
-| `geo-pra-writer-prod` | `S3_ACCESS_KEY`, `S3_SECRET_KEY` | CronJob upload (PutObject → `radar-immobilier-backups-preprod/geo-postgres/`) | k8s (file committed by geo-cond) |
+| `geo-db-ro-prod` | `POSTGRES_USER=geo_db_ro_prod`, `POSTGRES_PASSWORD=<openssl rand>`, `POSTGRES_DB=geo` | CronJob `geo-db-backup-prod` (pg_dump RO) + Job `geo-db-ro-role-provision` (`RO_PASSWORD`) | sealed + committed by geo-cond |
+| `geo-pra-writer-prod` | `S3_ACCESS_KEY`, `S3_SECRET_KEY` | CronJob upload (PutObject → `radar-immobilier-backups-preprod/geo-postgres/`) | sealed by k8s, committed by geo-cond |
 
 Referenced, not minted here: `geo-postgis-credentials` (ns geo, superuser of the postgis
 StatefulSet — `POSTGRES_DB/USER/PASSWORD`, host `geo-postgis.geo.svc:5432`), used ONLY by the
-RO-role provision Job. The geo prod DB name exists only in this secret: the provision SQL is
-name-agnostic (`current_database()`), and the literal name (`EXPECTED_DATABASE`, dump key
-`geo-postgres/prod/sets/<ISO-ts>/<db>.dump`) is provided by k8s.
+RO-role provision Job. The provision SQL is DB-name agnostic (`current_database()`); the literal
+prod DB name `geo` (from k8s) is `EXPECTED_DATABASE` and names the dump
+`geo-postgres/prod/sets/<ISO-ts>/geo.dump`.
 
 ## Secrets — ns geo-preprod (run Jobs)
 
 | secret | keys | consumer | lifecycle |
 | --- | --- | --- | --- |
-| `geo-backups-reader-preprod` | `S3_ACCESS_KEY`, `S3_SECRET_KEY` | Job freshness (S1, LIST backups) — var `FRESHNESS_CHECK_SECRET` | persistent, minted by k8s |
-| `geo-normalized-reader-preprod` | `S3_ACCESS_KEY`, `S3_SECRET_KEY` | Job recon (S3b, LIST `sentropic-geo` + `sentropic-geo-preprod`) — var `CHECK_DOCS_SECRET` | persistent, minted by k8s |
+| `geo-backups-reader-preprod` | `S3_ACCESS_KEY`, `S3_SECRET_KEY` (+ `S3_BUCKET`/`S3_ENDPOINT`/`S3_REGION`, unused by the Job) | Job freshness (S1, LIST backups) — var `FRESHNESS_CHECK_SECRET` | persistent, deposited by k8s |
+| `geo-normalized-reader-preprod` | `S3_ACCESS_KEY`, `S3_SECRET_KEY` (+ `S3_ENDPOINT`/`S3_REGION`) | Job recon (S3b, RO LIST of both `normalized/`) — var `CHECK_DOCS_SECRET` | persistent, deposited by k8s |
 | `geo-normalized-src-preprod` **(EPHEMERAL)** | `S3_ACCESS_KEY`, `S3_SECRET_KEY` (read `sentropic-geo` + rw `sentropic-geo-preprod`) | copy Job `geo-normalized-sync-prod-to-preprod` ONLY | created by k8s (watch of the Job name, `ownerRef=Job.UID`), GC at the Job TTL (3600 s). **Never referenced by a check Job.** |
 
 GrantFullControl grantee (serving identity preprod, canonical id, not a secret):
@@ -64,6 +64,6 @@ Legacy SA token secrets (non-expiring, like the existing deployers): rotation = 
    `kubectl -n geo-preprod get secret geo-backups-reader-preprod geo-normalized-reader-preprod`.
 2. role usable: last `geo-db-backup-prod` Job `.status` = Complete (or a psql login as
    `geo_db_ro_prod` with the secret password succeeds).
-3. latest dump present: `s3://radar-immobilier-backups-preprod/geo-postgres/prod/sets/<ts>/<db>.dump`
+3. latest dump present: `s3://radar-immobilier-backups-preprod/geo-postgres/prod/sets/<ts>/geo.dump`
    (`pg_restore --list` of it is readable).
 4. `.env` holds the current values (backup) at the documented owner location.

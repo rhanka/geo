@@ -4,16 +4,15 @@
 # Chemin données 100% cluster/S3 : dump PostGIS prod geo (ns geo) → s3://radar-immobilier-backups-preprod/
 #   geo-postgres/prod/sets/<ISO-ts>/<EXPECTED_DATABASE>.dump. Le runner GitHub ne GET JAMAIS le contenu.
 #   Secrets référencés par NOM, matérialisés par le controller sealed-secrets depuis les SealedSecrets committées
-#   (geo-db-ro-prod, geo-pra-writer-prod) — jamais en clair.
+#   par geo-cond (geo-db-ro-prod-sealed.yaml, geo-pra-writer-prod-sealed.yaml) — jamais en clair.
 #
 # HARD-GATE RO : conteneur dump = user DB prod RO STRICT (rôle geo_db_ro_prod, pg_read_all_data) via secretKeyRef
 #   geo-db-ro-prod (rôle provisionné par le Job db-ro-role-provision) — JAMAIS geo-postgis-credentials (superuser).
 # 0 PYTHON : dump = image postgis/postgis:16-3.4 (DÉJÀ dans le cluster = StatefulSet postgis) ; upload = image geo-api
 #   déjà en cluster (Node + @aws-sdk/client-s3 PutObject) — 0 nouvelle image.
 #
-# EXPECTED_DATABASE = nom LITTÉRAL de la DB prod geo : il n'existe que dans le secret geo-postgis-credentials
-#   (POSTGRES_DB) → FOURNI PAR k8s, remplace REPLACE_WITH_GEO_PROD_DB_NAME (2 occurrences). Tant que le placeholder
-#   est là, bascule-bundle-cd.yml et install-cd-bootstrap.sh REFUSENT d'appliquer ce fichier (fail-closed).
+# EXPECTED_DATABASE = "geo" : nom LITTÉRAL de la DB prod geo (= geo-postgis-credentials/POSTGRES_DB), fourni par
+#   k8s (2026-09-25). Clé du dump : geo-postgres/prod/sets/<ISO-ts>/geo.dump.
 #
 # ÉCARTS geo (justifiés) :
 #   - resources requests/limits posés : ns geo a une ResourceQuota (tenant-quota) sur limits.* → sans limites, pod refusé.
@@ -64,7 +63,7 @@ spec:
                 - { name: HOME, value: /work }
                 - { name: PGHOST, value: "geo-postgis.geo.svc" }
                 - { name: PGPORT, value: "5432" }
-                - { name: EXPECTED_DATABASE, value: "REPLACE_WITH_GEO_PROD_DB_NAME" }   # FOURNI PAR k8s (= geo-postgis-credentials/POSTGRES_DB)
+                - { name: EXPECTED_DATABASE, value: "geo" }   # fourni par k8s (= geo-postgis-credentials/POSTGRES_DB)
                 - { name: PGUSER,     valueFrom: { secretKeyRef: { name: "geo-db-ro-prod", key: POSTGRES_USER } } }   # RO SELECT-only
                 - { name: PGPASSWORD, valueFrom: { secretKeyRef: { name: "geo-db-ro-prod", key: POSTGRES_PASSWORD } } }
                 - { name: PGDATABASE, valueFrom: { secretKeyRef: { name: "geo-db-ro-prod", key: POSTGRES_DB } } }
@@ -96,7 +95,7 @@ spec:
                 - { name: S3_ENDPOINT, value: "https://s3.bhs.io.cloud.ovh.net" }      # iso BHS
                 - { name: AWS_REGION, value: "bhs" }                                    # iso S3_REGION
                 - { name: BACKUP_BUCKET, value: "radar-immobilier-backups-preprod" }    # iso DUMP_BUCKET
-                - { name: EXPECTED_DATABASE, value: "REPLACE_WITH_GEO_PROD_DB_NAME" }   # convention clé : .../<db>.dump — FOURNI PAR k8s
+                - { name: EXPECTED_DATABASE, value: "geo" }   # convention clé : geo-postgres/prod/sets/<ts>/geo.dump
                 - { name: NODE_OPTIONS, value: "--dns-result-order=ipv4first" }
                 # Cred = writer backups geo-pra-writer-prod (SealedSecret committée, ns geo, scellée par k8s).
                 - { name: AWS_ACCESS_KEY_ID,     valueFrom: { secretKeyRef: { name: "geo-pra-writer-prod", key: S3_ACCESS_KEY } } }

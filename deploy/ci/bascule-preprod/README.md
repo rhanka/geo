@@ -31,13 +31,13 @@ Tout l'accès object-store/DB vit dans des Jobs verdict-only (creds via `secretK
 | `bascule.selftest.mjs` | Self-test des fonctions pures (0 appel réel). |
 | `s3-check-job.tmpl.yaml` | Checks S3 verdict-only (aws-cli, même pin qu'immo) : `freshness` (S1) et `recon` (S3b). |
 | `docs-sync-job.tmpl.yaml` | Copie `normalized/` prod → préprod (S3) : image geo-api, aws-sdk `CopyObject` server-side ADDITIF + `GrantFullControl`, identité éphémère k8s. |
-| `cronjob-db-backup-prod.yaml` | CronJob `geo-db-backup-prod` (ns geo, suspendu) : `pg_dump --format=custom --no-owner --no-privileges` RO → `geo-postgres/prod/sets/<ISO-ts>/<db>.dump`. |
+| `cronjob-db-backup-prod.yaml` | CronJob `geo-db-backup-prod` (ns geo, suspendu) : `pg_dump --format=custom --no-owner --no-privileges` RO → `geo-postgres/prod/sets/<ISO-ts>/geo.dump` (`EXPECTED_DATABASE=geo`). |
 | `db-ro-role-provision.yaml` | ConfigMap SQL + Job : rôle `geo_db_ro_prod` (`pg_read_all_data` + `CONNECT` sur `current_database()`), superuser `geo-postgis-credentials`. |
 | `vap-ci-trigger-suspend-only.yaml` | VAP : la SA trigger ne peut muter QUE `spec.suspend` de `geo-db-backup-prod`. |
 | `rbac-ci-trigger-prod.yaml` | SA/Role/RB `geo-ci-trigger-prod` (ns geo) : get/patch du seul CronJob dump. |
 | `rbac-ci-bascule-prod.yaml` | SA permanente `geo-ci-bascule-prod` (ns geo) : apply du bundle, 0 `secrets:create`. |
 | `rbac-ci-bascule-preprod.yaml` | SA `geo-ci-bascule-preprod` (ns geo-preprod) : Jobs + rollout geo-api, 0 secrets, 0 logs. |
-| `geo-db-ro-prod-sealed.yaml`, `geo-pra-writer-prod-sealed.yaml` | **Placeholders commentés** SealedSecret (scellés puis committés à la place). |
+| `geo-db-ro-prod-sealed.yaml`, `geo-pra-writer-prod-sealed.yaml` | SealedSecrets **committées par geo-cond** (scellées, validées) — appliquées par le bundle. |
 | `netpol-geo-db-backup.k8s-apply.yaml` | **À appliquer par k8s** (jamais par un workflow) : ingress postgis + egress des pods de backup (ns geo). |
 | `install-cd-bootstrap.sh` | Install one-time owner-direct (k8s lane, cluster-admin). |
 | `../../../.github/workflows/bascule-preprod.yml` | Le run (schedule + dispatch). |
@@ -83,7 +83,7 @@ de la netpol existante), source vide = échec dans le copy-docs, GRANT CONNECT a
 - **G4 — rollout seulement si recon OK** : sentinel local + recon rejouée juste avant le rollout.
 - **EXPECTED_DATABASE (contrôle POSITIF in-cluster)** : le CronJob refuse de dumper si `current_database()` ≠ `EXPECTED_DATABASE` ; la clé du dump frais ⊇ `EXPECTED_DATABASE` (Job freshness).
 - **Anti-RCE (bundle)** : impersonation `--dry-run=server` — mutation `jobTemplate` DENIED, flip `suspend` ALLOWED, sinon Role T1 neutralisé.
-- **Bundle prêt** : `bascule-bundle-cd.yml` / `install-cd-bootstrap.sh` refusent tant qu'une SealedSecret est le placeholder commenté ou qu'une valeur `REPLACE_WITH_` subsiste.
+- **Bundle prêt** : `bascule-bundle-cd.yml` / `install-cd-bootstrap.sh` refusent tant qu'une SealedSecret (committée par geo-cond) est absente ou qu'une valeur `REPLACE_WITH_` subsiste.
 - G1 / G2 : N-A (pas de restore DB préprod).
 
 ## Matrice « quel secret / où »
@@ -95,30 +95,37 @@ de la netpol existante), source vide = échec dans le copy-docs, GRANT CONNECT a
 | `KUBE_CONFIG_DATA_BASCULE_PREPROD` | secret | kubeconfig préprod — SA `geo-ci-bascule-preprod` (pilotage). |
 | `KUBE_CONFIG_DATA_PROD_TRIGGER` | secret | kubeconfig PROD — SA `geo-ci-trigger-prod` (2 patch cronjob, VAP). Non requis en DRY. |
 | `KUBE_CONFIG_DATA_PROD` | secret | kubeconfig PROD — SA `geo-ci-bascule-prod` (apply du bundle). |
-| `BASCULE_EXPECTED_DATABASE` | var | nom littéral de la DB prod geo (fourni par k8s). |
+| `BASCULE_EXPECTED_DATABASE` | var | nom littéral de la DB prod geo (défaut `geo`, fourni par k8s). |
 | `BASCULE_*` (autres) | vars | endpoint, buckets, préfixes, CronJob, ns, URLs API, grantee — NON secrets, défauts dans le workflow. |
 
 **In-cluster** : voir `CRED_CYCLE.md` — ns geo : `geo-db-ro-prod`, `geo-pra-writer-prod`,
 `geo-postgis-credentials` (référencé) ; ns geo-preprod : `geo-backups-reader-preprod`,
 `geo-normalized-reader-preprod`, identité éphémère `geo-normalized-src-preprod`.
 
-## Ce que k8s doit fournir (liste consolidée)
+## Provisionnement k8s (liste consolidée)
 
-1. **Sceller** `geo-pra-writer-prod` (ns geo, `S3_ACCESS_KEY`/`S3_SECRET_KEY`, writer `radar-immobilier-backups-preprod/geo-postgres/`) — fichier committé par geo-cond. (`geo-db-ro-prod` est scellé par geo-cond.)
-2. **Minter** en ns geo-preprod : `geo-backups-reader-preprod` (RO bucket backups) et `geo-normalized-reader-preprod` (LIST `sentropic-geo` + `sentropic-geo-preprod`), clés `S3_ACCESS_KEY`/`S3_SECRET_KEY`.
-3. **Identité éphémère** `geo-normalized-src-preprod` (read `sentropic-geo` + rw `sentropic-geo-preprod`), créée au GO sur watch du Job `geo-normalized-sync-prod-to-preprod`, `ownerRef=Job.UID`, TTL 3600 s.
-4. **Nom littéral de la DB prod geo** (`geo-postgis-credentials/POSTGRES_DB`) → remplace `REPLACE_WITH_GEO_PROD_DB_NAME` dans `cronjob-db-backup-prod.yaml` (2 occurrences) + var `BASCULE_EXPECTED_DATABASE`.
-5. **Netpols** `netpol-geo-db-backup.k8s-apply.yaml` (ns geo : ingress postgis ← pods `role=pra-backup` :5432 ; egress DNS + postgis + S3-BHS). Les Jobs préprod réutilisent `allow-geo-sync-egress` (label `geo-preprod-sync`).
-6. **Install** : lancer `install-cd-bootstrap.sh` (cluster-admin) → RBAC des 2 SA, 1er bundle owner-direct, 3 kubeconfigs GH, armement.
-7. Vérifier la **ResourceQuota ns geo** (`secrets: 10`) : +4 secrets (2 SealedSecrets matérialisés + 2 tokens SA).
-8. Confirmer `log_statement=none` sur la postgis geo (mot de passe du rôle RO non journalisé).
+| # | Élément | État (2026-09-25) |
+| --- | --- | --- |
+| 1 | SealedSecret `geo-pra-writer-prod` (ns geo, `S3_ACCESS_KEY`/`S3_SECRET_KEY`, writer `radar-immobilier-backups-preprod/geo-postgres/`) | scellée par k8s, **fichier committé par geo-cond** |
+| 2 | SealedSecret `geo-db-ro-prod` (ns geo, `POSTGRES_USER=geo_db_ro_prod`/`POSTGRES_PASSWORD`/`POSTGRES_DB=geo`) | scellée, **fichier committé par geo-cond** |
+| 3 | `geo-backups-reader-preprod` (ns geo-preprod, `S3_ACCESS_KEY`/`S3_SECRET_KEY` + `S3_BUCKET`/`S3_ENDPOINT`/`S3_REGION`) — Job freshness | déposé |
+| 4 | `geo-normalized-reader-preprod` (ns geo-preprod, `S3_ACCESS_KEY`/`S3_SECRET_KEY` + `S3_ENDPOINT`/`S3_REGION`, RO sur les 2 `normalized/`) — Job recon | déposé |
+| 5 | Identité éphémère `geo-normalized-src-preprod` (watch du Job `geo-normalized-sync-prod-to-preprod`, `ownerRef=Job.UID`, TTL 3600 s) ; grantee `1901410700457444:9056dbb240a04d2584ffbaec38171228` | en place côté k8s |
+| 6 | Nom de DB prod geo = `geo` (`EXPECTED_DATABASE`, clé `geo.dump`) | fourni, intégré |
+| 7 | Netpols `netpol-geo-db-backup.k8s-apply.yaml` (ns geo : ingress postgis ← pods `role=pra-backup` :5432 ; egress DNS + postgis + S3-BHS) | **à appliquer par k8s** |
+| 8 | `install-cd-bootstrap.sh` (cluster-admin) : RBAC des 2 SA, 1er bundle owner-direct + gate anti-RCE, 3 kubeconfigs GH, armement | **à lancer (owner-direct)** |
+| 9 | ResourceQuota ns geo (`secrets: 10`) : +4 secrets (2 SealedSecrets matérialisés + 2 tokens SA) | à vérifier |
+| 10 | `log_statement=none` sur la postgis geo (mot de passe du rôle RO non journalisé) | à confirmer |
+
+Les Jobs préprod réutilisent la netpol existante `allow-geo-sync-egress` (label `geo-preprod-sync`) ; le
+verify tourne sur le runner (API publique) : aucune netpol d'ingress vers geo-api.
 
 ## Rejouer SANS IA
 
 1. **DRY (défaut, sûr).** `CONFIRM=iso-prod-<aujourd'hui UTC>`, `DRY_RUN=true` : preflight + recon + smoke informatifs, aucune écriture.
 2. **Exécution.** `DRY_RUN=false` + `CONFIRM=iso-prod-<date du jour UTC>`.
 3. **Isolation S5'** : `SKIP_ROLLOUT=true` si le patch deployment manque.
-4. **DR DB** : dumps durables sous `s3://radar-immobilier-backups-preprod/geo-postgres/prod/sets/<ts>/<db>.dump` ; restore = `pg_restore` in-cluster à la demande (hors bascule, préprod sans PG).
+4. **DR DB** : dumps durables sous `s3://radar-immobilier-backups-preprod/geo-postgres/prod/sets/<ts>/geo.dump` ; restore = `pg_restore` in-cluster à la demande (hors bascule, préprod sans PG).
 
 ## Points ouverts (non déterminables par lecture)
 

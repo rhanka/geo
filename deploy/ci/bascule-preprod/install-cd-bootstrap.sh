@@ -24,10 +24,9 @@
 #   (geo-db-ro-prod, geo-pra-writer-prod) = +4 secrets.
 #
 # Pré-requis : KUBECONFIG=<admin> exporté ; `gh` authentifié (repo+workflow) ;
-#   geo-db-ro-prod-sealed.yaml + geo-pra-writer-prod-sealed.yaml SCELLÉS et committés ;
-#   EXPECTED_DATABASE (nom littéral de la DB prod geo) renseigné dans cronjob-db-backup-prod.yaml ;
+#   geo-db-ro-prod-sealed.yaml + geo-pra-writer-prod-sealed.yaml SCELLÉS et committés (geo-cond) ;
 #   netpol-geo-db-backup.k8s-apply.yaml appliquée (ingress postgis, default-deny ns geo) ;
-#   secrets préprod geo-backups-reader-preprod + geo-normalized-reader-preprod mintés (run) ;
+#   secrets préprod geo-backups-reader-preprod + geo-normalized-reader-preprod déposés (run) ;
 #   à lancer depuis la racine d'un checkout contenant deploy/ci/bascule-preprod.
 # Idempotent : apply / `gh secret set` / `gh variable set` écrasent ; delete = --ignore-not-found.
 # ─────────────────────────────────────────────────────────────────────────────
@@ -62,8 +61,8 @@ YAML
 
 echo "== 0) garde : bundle prêt (SealedSecrets scellées, aucune valeur REPLACE_WITH_) =="
 for f in geo-db-ro-prod-sealed.yaml geo-pra-writer-prod-sealed.yaml; do
-  grep -Eq '^kind: SealedSecret' "$BUNDLE/$f" \
-    || { echo "FATAL: $BUNDLE/$f est encore le placeholder commenté (à sceller + committer). Rien appliqué." >&2; exit 1; }
+  grep -Eq '^kind: SealedSecret' "$BUNDLE/$f" 2>/dev/null \
+    || { echo "FATAL: $BUNDLE/$f absent ou non scellé (SealedSecret committée par geo-cond). Rien appliqué." >&2; exit 1; }
 done
 for f in geo-db-ro-prod-sealed.yaml geo-pra-writer-prod-sealed.yaml cronjob-db-backup-prod.yaml db-ro-role-provision.yaml; do
   if grep -Ev '^[[:space:]]*#' "$BUNDLE/$f" | grep -q 'REPLACE_WITH_'; then
