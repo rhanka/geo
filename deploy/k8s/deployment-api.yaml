@@ -77,7 +77,12 @@ spec:
             failureThreshold: 3
           resources:
             requests:
-              cpu: 75m
+              # 75m -> 10m (2026-09-25): aligned with deploy/k8s/base/deployment.yaml
+              # and with the live cluster (prod and preprod already run at 10m;
+              # prod cgroup measurement: 0.46m lifetime average, 1.95m over an
+              # 89 s window). Frees nothing: keeps a manual apply of this legacy
+              # line from re-inflating the reservation.
+              cpu: 10m
               memory: 128Mi
             limits:
               cpu: 500m
