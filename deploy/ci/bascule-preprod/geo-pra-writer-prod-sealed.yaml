@@ -1,0 +1,19 @@
+---
+apiVersion: bitnami.com/v1alpha1
+kind: SealedSecret
+metadata:
+  name: geo-pra-writer-prod
+  namespace: geo
+spec:
+  encryptedData:
+    S3_ACCESS_KEY: AgBLf8jNApNc26ju/pJ9bnYOn4Ubv7gLHGOaNx+uVkY901ksbHR1ybdA4HhS+noJ3cKI4TSLwblgo8p0lCjkWzYmEVdeaK0vt+9oc9fOM2cnMrTDdZvN/K1JhSu3cpjn1J+wDOwxyTIbkfYWl4BhjWwZcWn1xk8JDoiQxprShPG1pabYLMoqx479slcqPNQJjflah5TdlEGTd1PJW0yxYEMIFdMcGwkbpWkkS9d/8fRf+lWJMUObqhLyF3ir8mSXoKw2U/TfD4/osJmWxbFq4w0Xu1yAYSKiODS0Sldxila49W6xv/7BeYikBVzP/+6lLl64vs5iKu/w3o9TOKOXZaYfC6GPSu6QkG4ba4G6zfd6R5ZAyCIN5p7rpIKbD5vDUBeRqy82zoLhR3tg9Q+wGMLE6VNWDiVnmtLekXDVf8KDrzh17g/6Av71N3wqG6OuSV8HZgT2Ua07uFxeEMlpGlbM3itt2XQPtBdBm01SUXsWvFDYLzDn9+VMn/BnO97pMhxV9nYhQCJpoILY6JqL5CGfJbaqjJergydQR8y3ac+tym+KZZ6EIbGcjEEVZw2XAY+RPgjZbfifZb4gBO5q/nMYuJtXu1aYRFGYUfaGLvuQ26psk+YguslobKRASV1Nbrph1TCPHzvI4LrI9DlrGgFWfGWFObSjLftD5I54iE8uXookf33RiF0oVQilcJXQXpz/N8uOtpiu2HzMcng5dacd5bZXJsFu4trVdsayAMxwlQ==
+    S3_SECRET_KEY: AgDca5d4hbkYmXaJ270i7xjLPEt0p7tn5gRNDaEsbmxYnSSkoH0BonANpOtnVkabm7kNv/U0G26ENtIBxX9caMHoA6mueqzAbRxpCS5GLQhpVCnKVQ6Xf2FJziTyp4AFhuK5fEDB/xcQumoffTm8xtGv7MIrLf5w0FZeZrx8yTXkkJ/fwYuVQXZiykQ+0COT98FpqvLyc1SYpAtI5s+n7r2QiF/Sk2y98m7KKz2VIdAdFA7e5C4npH/LsvhxLHqPZrm6EPbj7SQso+B2JUkrv9Jv5Ra5fOfeejY7JyaSyyvXXXRYADeY4OGTzxqlVbTVH1FgnblEpr1Mr4F+fpKT6iXvZYbpmXUaKGOiN0R+zQ5LWuFxqD0tX1B8q/wjIYP4C9t69ztXBuY+IRwIQnS+qlxbpntZO//lfsTUZs/aXIDCN6uCEKVS14xzBm/cUM2pohO1OP6ooez8dq1rkuX0ueohK1qRrejCpgeyhtaxx1WX3T1TG9uNnN4GmJ1UzRqo+aJFm075RZlXzXgUlbeQ8JrOXIOzUXRUuL3JZdxAxZbSLVdqKASo1RJqXf9w11H3jg9tO/LAJ7wmV6Lit8uKu0mZiD485B3TZboHyxLjay+bhLS1dzZWgWsicIcZEp4gvZU18FXfTgLNIq2GEztVFx2vpy0/9TEM4vSuaVe9YGkJBquIpfngtS8MaBfFtsYXtIhG7GKve/8KJpi6u9BSSOvWsQXZzCGZb6R1vqPJ2JRtfA==
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/component: bascule
+        app.kubernetes.io/name: geo
+        app.kubernetes.io/part-of: sentropic
+      name: geo-pra-writer-prod
+      namespace: geo
+    type: Opaque
