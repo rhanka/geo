@@ -72,6 +72,11 @@ export {
   type GeoReceiptPgLeg,
 } from "./bascule/geo-receipt.js";
 export {
+  resolveModelMigrationChain,
+  type ModelMigration,
+  type ModelMigrationPlan,
+} from "./bascule/model-migration.js";
+export {
   parseChamplainDensityDocument,
   parseChestervilleDensityDocument,
   parseClermontDensityDocument,
