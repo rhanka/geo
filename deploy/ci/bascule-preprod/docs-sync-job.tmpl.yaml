@@ -22,6 +22,14 @@
 #   de @sentropic/geo/storage (OVH refuse les en-têtes de checksum aws-chunked).
 #   ÉCART geo (justifié) : source vide = exit 1 (immo : « rien à copier », exit 0) —
 #   un préfixe normalized/ prod vide est une panne, pas un succès (vert par omission).
+#   ÉCART geo (justifié, run 36195929583) : copie INCRÉMENTALE + CONCURRENTE. Le jeu geo
+#   pèse ~13 400 objets / ~40 GB, déjà présents en préprod : recopier tout en série
+#   (~1,9 obj/s, latence CopyObject) dépassait le délai du runner. On LISTE la
+#   destination et on ne copie que les clés absentes ou différentes — « à jour » = même
+#   Size ET (même ETag OU LastModified préprod ≥ LastModified prod, i.e. copiée après
+#   la dernière écriture prod) —, avec COPY_CONCURRENCY CopyObject en parallèle (défaut
+#   8, borné 1..32). LIST destination refusée ⇒ repli sur la copie complète (plus lent,
+#   même résultat). La recon (Key+Size) reste le contrôle indépendant.
 #
 # La recon (dest ⊇ src) est un Job séparé (s3-check-job mode=recon).
 #
@@ -102,6 +110,10 @@ spec:
               const s3=new S3Client({endpoint,region,forcePathStyle,requestChecksumCalculation:'WHEN_REQUIRED',responseChecksumValidation:'WHEN_REQUIRED',credentials:{accessKeyId:process.env.AWS_ACCESS_KEY_ID,secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY}});
               const enc=(k)=>encodeURIComponent(k).replace(/%2F/g,'/');
               const grant=grantee?{GrantFullControl:'id='+grantee}:{};
+              const concurrency=Math.max(1,Math.min(32,Math.floor(Number(process.env.COPY_CONCURRENCY||'8'))||8));
+              // A jour en preprod = meme Size ET (meme ETag OU copie posterieure a la derniere ecriture prod).
+              const upToDate=(o,d)=>!!d&&Number(d.Size)===Number(o.Size)&&(d.ETag===o.ETag||(!!d.LastModified&&!!o.LastModified&&new Date(d.LastModified).getTime()>=new Date(o.LastModified).getTime()));
+              const listAll=async(Bucket)=>{const all=[];let token=undefined;do{const out=await s3.send(new ListObjectsV2Command({Bucket,Prefix:prefix,ContinuationToken:token}));for(const o of (out.Contents||[]))all.push(o);token=out.IsTruncated?out.NextContinuationToken:undefined;}while(token);return all;};
               (async()=>{
                 const probe=await s3.send(new ListObjectsV2Command({Bucket:src,Prefix:prefix,MaxKeys:1}));
                 const seed=(probe.Contents||[]);
@@ -109,16 +121,17 @@ spec:
                 await s3.send(new HeadObjectCommand({Bucket:src,Key:seed[0].Key}));
                 console.log('[docs-sync] pre-check GET OK grant='+(grantee||'<none>'));
                 if(!grantee){console.warn('[docs-sync] WARN — COPY_GRANTEE vide : objets copies potentiellement illisibles par geo-api preprod (403).');}
-                let token=undefined,n=0;
-                do{
-                  const out=await s3.send(new ListObjectsV2Command({Bucket:src,Prefix:prefix,ContinuationToken:token}));
-                  for(const o of (out.Contents||[])){
-                    await s3.send(new CopyObjectCommand(Object.assign({Bucket:dst,Key:o.Key,CopySource:'/'+src+'/'+enc(o.Key),MetadataDirective:'COPY'},grant)));
-                    n++;
-                  }
-                  token=out.IsTruncated?out.NextContinuationToken:undefined;
-                }while(token);
-                console.log('[docs-sync] ok '+n+' objets copies server-side (0 octet pod, additif, idempotent)');
+                const srcObjs=await listAll(src);
+                let dstIndex=new Map();
+                try{for(const d of (await listAll(dst)))dstIndex.set(d.Key,d);}
+                catch(e){console.warn('[docs-sync] WARN LIST destination impossible ('+(e&&e.name)+') — copie complete (plus lente, meme resultat)');dstIndex=new Map();}
+                const todo=srcObjs.filter((o)=>!upToDate(o,dstIndex.get(o.Key)));
+                const fresh=srcObjs.length-todo.length;
+                console.log('[docs-sync] source='+srcObjs.length+' deja_a_jour='+fresh+' a_copier='+todo.length+' concurrence='+concurrency);
+                let next=0,copied=0;
+                const worker=async()=>{while(next<todo.length){const o=todo[next++];await s3.send(new CopyObjectCommand(Object.assign({Bucket:dst,Key:o.Key,CopySource:'/'+src+'/'+enc(o.Key),MetadataDirective:'COPY'},grant)));copied++;if(copied%500===0)console.log('[docs-sync] progression '+copied+'/'+todo.length);}};
+                await Promise.all(Array.from({length:Math.min(concurrency,todo.length)},()=>worker()));
+                console.log('[docs-sync] ok '+copied+' objets copies, '+fresh+' deja a jour (server-side, 0 octet pod, additif, idempotent)');
               })().catch((e)=>{console.error('[docs-sync] ERROR',e&&e.name,(e&&e.message)||e);process.exit(1);});
           env:
             - name: AWS_ACCESS_KEY_ID
