@@ -55,6 +55,16 @@ export {
   type ServedZoneRef,
 } from "./bascule/served-canonical-ids.js";
 export {
+  buildCasInventory,
+  casObjectKey,
+  reconcileCasInventory,
+  type CasInventory,
+  type CasInventoryEntry,
+  type CasReconcileResult,
+  type CasSourceEntry,
+  type CasTargetEntry,
+} from "./bascule/cas-inventory.js";
+export {
   parseChamplainDensityDocument,
   parseChestervilleDensityDocument,
   parseClermontDensityDocument,
