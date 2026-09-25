@@ -1,0 +1,219 @@
+# bascule-bundle-cd — CD-NATIVE apply of the geo bascule PROD bundle ON MERGE.
+#
+# CLONE geo of radar-immobilier:.github/workflows/bascule-bundle-cd.yml (i-cond recipe).
+# The FIRST apply is one-shot owner-direct (deploy/ci/bascule-preprod/install-cd-bootstrap.sh,
+# same steps, admin kubeconfig); from then on this workflow re-applies the bundle on every
+# merge touching it, with the PERMANENT SA geo-ci-bascule-prod (GH secret KUBE_CONFIG_DATA_PROD).
+#   - NO GH-secret materialization of the app creds: geo-db-ro-prod + geo-pra-writer-prod are
+#     materialized in-cluster by the sealed-secrets controller from the COMMITTED SealedSecrets.
+#     This SA has 0 secrets:create by construction.
+#   - NO CONFIRM gate: it runs on push to main when the bundle changes (idempotent). A bare
+#     workflow_dispatch is kept for on-demand re-apply.
+#
+# Apply order (VAP runbook — RBAC authZ precedes VAP admission):
+#   0. Guard (geo addition): refuse while a SealedSecret is still the commented placeholder or a
+#      bundle file still holds a REPLACE_WITH_ value (EXPECTED_DATABASE literal from k8s).
+#   1. Pre-flight — assert the PROD cluster (positive host + get deploy geo-api in ns geo).
+#   2. Apply the 2 SealedSecrets; wait for Synced (tolerant).
+#   3. Provision the strict RO Postgres role (Job geo-db-ro-role-provision), wait Complete.
+#   4. Apply the DORMANT dump CronJob geo-db-backup-prod (suspend:true).
+#   5. Apply the cluster-scoped VAP + Binding, then the T1 RBAC, then wait for propagation.
+#   6. ANTI-RCE GATE (fail-closed): impersonate geo-ci-trigger-prod, --dry-run=server:
+#      (A) jobTemplate mutation MUST be DENIED; (B) suspend flip MUST be ALLOWED. Otherwise the
+#      T1 Role is NEUTRALIZED (rules emptied) and the run ABORTS.
+#
+# 0 Python. Runner does kubectl only (control-plane). NO dump bytes, NO S3 keys read back.
+name: bascule-bundle-cd (prod bundle apply, CD-native)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'deploy/ci/bascule-preprod/**'
+      - '.github/workflows/bascule-bundle-cd.yml'
+  workflow_dispatch: {}
+
+concurrency:
+  group: bascule-bundle-cd
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  apply-bundle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    # ARMING SWITCH: set to 'true' by install-cd-bootstrap.sh AFTER the one-time install (SA +
+    # KUBE_CONFIG_DATA_PROD exist). Merging can never red a main push against a missing SA.
+    if: vars.BASCULE_BUNDLE_CD_ENABLED == 'true'
+    env:
+      NAMESPACE: geo
+      BUNDLE: deploy/ci/bascule-preprod
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Guard — bundle ready (SealedSecrets sealed, no placeholder)
+        run: |
+          set -euo pipefail
+          for f in geo-db-ro-prod-sealed.yaml geo-pra-writer-prod-sealed.yaml; do
+            if ! grep -Eq '^kind: SealedSecret' "$BUNDLE/$f"; then
+              echo "::error title=Bundle not ready::$BUNDLE/$f is still the commented placeholder (to be sealed + committed). Nothing was applied."; exit 1
+            fi
+          done
+          for f in geo-db-ro-prod-sealed.yaml geo-pra-writer-prod-sealed.yaml cronjob-db-backup-prod.yaml db-ro-role-provision.yaml vap-ci-trigger-suspend-only.yaml rbac-ci-trigger-prod.yaml; do
+            if grep -Ev '^[[:space:]]*#' "$BUNDLE/$f" | grep -q 'REPLACE_WITH_'; then
+              echo "::error title=Bundle not ready::$BUNDLE/$f still holds a REPLACE_WITH_ value (e.g. EXPECTED_DATABASE from k8s). Nothing was applied."; exit 1
+            fi
+          done
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig (PROD — permanent geo-ci-bascule-prod SA)
+        env:
+          KUBE_CONFIG_DATA_PROD: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.kube"
+          if printf '%s' "$KUBE_CONFIG_DATA_PROD" | base64 -d 2>/dev/null | grep -q '^apiVersion:'; then
+            printf '%s' "$KUBE_CONFIG_DATA_PROD" | base64 -d > "$HOME/.kube/config"
+          else
+            printf '%s' "$KUBE_CONFIG_DATA_PROD" > "$HOME/.kube/config"
+          fi
+          chmod 600 "$HOME/.kube/config"
+
+      - name: Pre-flight — assert PROD cluster
+        env:
+          EXPECTED_KUBE_APISERVER_HOST_PROD: ${{ vars.EXPECTED_KUBE_APISERVER_HOST_PROD || vars.EXPECTED_KUBE_APISERVER_HOST }}
+        run: |
+          set -euo pipefail
+          DEFAULT_HOST='hlhedx.c1.bhs5.k8s.ovh.net'
+          expected="${EXPECTED_KUBE_APISERVER_HOST_PROD:-$DEFAULT_HOST}"
+          if [ -z "${EXPECTED_KUBE_APISERVER_HOST_PROD:-}" ]; then
+            echo "::warning title=Pre-flight using built-in default::set EXPECTED_KUBE_APISERVER_HOST[_PROD] to make the guard explicit (falling back to ${DEFAULT_HOST})."
+          fi
+          server="$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
+          host="${server#*://}"; host="${host%%/*}"; host="${host%%:*}"
+          echo "kubeconfig apiserver host : ${host:-<none>}"
+          echo "expected apiserver host   : ${expected}"
+          if [ "$host" != "$expected" ]; then
+            echo "::error title=Wrong cluster — apply-bundle refused::kubeconfig targets '${host:-<none>}' but expected '${expected}'. Nothing was applied."; exit 1
+          fi
+          kubectl -n "$NAMESPACE" get deploy geo-api -o name
+          echo "pre-flight OK — ${expected} / namespace ${NAMESPACE}"
+
+      - name: Apply SealedSecrets (geo-db-ro-prod + geo-pra-writer-prod)
+        run: |
+          set -euo pipefail
+          kubectl -n "$NAMESPACE" apply -f "$BUNDLE/geo-db-ro-prod-sealed.yaml"
+          kubectl -n "$NAMESPACE" apply -f "$BUNDLE/geo-pra-writer-prod-sealed.yaml"
+          echo "SealedSecrets applied — controller will materialize geo-db-ro-prod + geo-pra-writer-prod."
+
+      - name: Wait for SealedSecrets Synced (tolerant)
+        run: |
+          set -uo pipefail
+          synced_deadline=$((SECONDS + 120))
+          for ss in geo-db-ro-prod geo-pra-writer-prod; do
+            while :; do
+              s="$(kubectl -n "$NAMESPACE" get sealedsecret "$ss" -o 'jsonpath={.status.conditions[?(@.type=="Synced")].status}' 2>/dev/null || true)"
+              if [ "$s" = "True" ]; then echo "SealedSecret ${ss}: Synced=True"; break; fi
+              if [ "$SECONDS" -ge "$synced_deadline" ]; then
+                echo "::warning title=SealedSecret sync unconfirmed::${ss} did not report Synced=True within the poll window (status='${s:-<empty>}'). Proceeding — the RO-role Job below is the fail-closed backstop."
+                break
+              fi
+              sleep 5
+            done
+          done
+
+      - name: Provision strict RO Postgres role (Job geo-db-ro-role-provision)
+        run: |
+          set -euo pipefail
+          kubectl -n "$NAMESPACE" delete job geo-db-ro-role-provision --ignore-not-found
+          kubectl -n "$NAMESPACE" apply -f "$BUNDLE/db-ro-role-provision.yaml"
+          deadline=$((SECONDS + 300))
+          while :; do
+            c="$(kubectl -n "$NAMESPACE" get job geo-db-ro-role-provision -o 'jsonpath={.status.conditions[?(@.type=="Complete")].status}' 2>/dev/null || true)"
+            f="$(kubectl -n "$NAMESPACE" get job geo-db-ro-role-provision -o 'jsonpath={.status.conditions[?(@.type=="Failed")].status}' 2>/dev/null || true)"
+            if [ "$c" = "True" ]; then echo "RO role provisioned (Job Complete)."; break; fi
+            if [ "$f" = "True" ]; then
+              echo "::error title=RO role provision FAILED::inspect job geo-db-ro-role-provision in-cluster (0 runner logs)."; exit 1
+            fi
+            if [ "$SECONDS" -ge "$deadline" ]; then
+              echo "::error title=RO role provision TIMEOUT::did not complete in 300s (check sealed-secrets materialized geo-db-ro-prod, and the postgis ingress netpol in ns geo)."; exit 1
+            fi
+            sleep 5
+          done
+
+      - name: Apply dormant dump CronJob (suspend:true)
+        run: |
+          set -euo pipefail
+          kubectl -n "$NAMESPACE" apply -f "$BUNDLE/cronjob-db-backup-prod.yaml"
+          sus="$(kubectl -n "$NAMESPACE" get cronjob geo-db-backup-prod -o jsonpath='{.spec.suspend}')"
+          echo "geo-db-backup-prod applied — spec.suspend=${sus} (must be true: dormant until the bascule triggers it)."
+          if [ "$sus" != "true" ]; then
+            echo "::error title=Dump CronJob not dormant::spec.suspend != true after apply — refusing to proceed."; exit 1
+          fi
+
+      - name: Apply VAP suspend-only (cluster-scoped)
+        run: kubectl apply -f "$BUNDLE/vap-ci-trigger-suspend-only.yaml"
+
+      - name: Apply RBAC T1 (trigger SA/Role/RoleBinding)
+        run: kubectl -n "$NAMESPACE" apply -f "$BUNDLE/rbac-ci-trigger-prod.yaml"
+
+      - name: Wait for VAP propagation
+        env:
+          VAP_PROPAGATION_SEC: ${{ vars.BASCULE_VAP_PROPAGATION_SEC || '20' }}
+        run: |
+          echo "waiting ${VAP_PROPAGATION_SEC}s for VAP propagation (measured lag 4-8s on the immo side)"
+          sleep "${VAP_PROPAGATION_SEC}"
+
+      - name: Anti-RCE gate — impersonation --dry-run=server negative test
+        run: |
+          set -uo pipefail
+          SA="system:serviceaccount:${NAMESPACE}:geo-ci-trigger-prod"
+          CJ="geo-db-backup-prod"
+          echo "gate @ $(date -u +%FT%TZ) — impersonating ${SA} on cronjob/${CJ}"
+          neutralize() {
+            echo "::group::Neutralize RBAC T1 (empty Role rules — close the RCE window)"
+            kubectl -n "$NAMESPACE" patch role geo-ci-trigger-prod --type=merge -p '{"rules":[]}' || true
+            echo "::endgroup::"
+          }
+          out_a="$(kubectl --as="$SA" -n "$NAMESPACE" patch cronjob "$CJ" --type=merge --dry-run=server \
+            -p '{"spec":{"jobTemplate":{"spec":{"template":{"spec":{"containers":[{"name":"upload","image":"evil"}]}}}}}}' 2>&1)"
+          rc_a=$?
+          echo "── (A) jobTemplate mutation — expect DENIED — rc=${rc_a}"
+          echo "${out_a}"
+          if [ "$rc_a" -eq 0 ]; then
+            echo "::error title=Anti-RCE gate FAILED (A admitted)::a jobTemplate mutation was ADMITTED — the VAP does NOT enforce suspend-only. Aborting + neutralizing RBAC T1."
+            neutralize; exit 1
+          fi
+          if ! printf '%s' "${out_a}" | grep -qi 'geo-ci-trigger-suspend-only\|jobTemplate'; then
+            echo "::error title=Anti-RCE gate FAILED (A wrong cause)::mutation rejected but NOT by the suspend-only VAP (rc=${rc_a}). Aborting + neutralizing RBAC T1."
+            neutralize; exit 1
+          fi
+          out_b="$(kubectl --as="$SA" -n "$NAMESPACE" patch cronjob "$CJ" --type=merge --dry-run=server \
+            -p '{"spec":{"suspend":false}}' 2>&1)"
+          rc_b=$?
+          echo "── (B) suspend flip — expect ALLOWED — rc=${rc_b}"
+          echo "${out_b}"
+          if [ "$rc_b" -ne 0 ]; then
+            echo "::error title=Anti-RCE gate FAILED (B denied)::the trigger SA cannot even flip suspend (rc=${rc_b}) — T1 is broken. Aborting + neutralizing RBAC T1."
+            neutralize; exit 1
+          fi
+          echo "anti-RCE gate OK — (A) jobTemplate DENIED by geo-ci-trigger-suspend-only, (B) suspend flip ALLOWED."
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### geo bascule prod bundle applied (CD-native)"
+            echo ""
+            echo "- Cred: KUBE_CONFIG_DATA_PROD (permanent SA geo-ci-bascule-prod, 0 secrets:create)"
+            echo "- SealedSecrets: geo-db-ro-prod, geo-pra-writer-prod (controller-materialized in-cluster)"
+            echo "- RO Postgres role: geo_db_ro_prod (Job Complete)"
+            echo "- Dump CronJob: geo-db-backup-prod (dormant, suspend:true)"
+            echo "- VAP: geo-ci-trigger-suspend-only (cluster-scoped)"
+            echo "- RBAC T1: geo-ci-trigger-prod (SA/Role/RoleBinding)"
+            echo "- Anti-RCE gate: jobTemplate DENIED + suspend ALLOWED"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -1,0 +1,235 @@
+# bascule-preprod — BASCULE PROD → PRÉPROD geo (« iso-prod »), rejouable SANS IA.
+#
+# CLONE geo de radar-immobilier:.github/workflows/bascule-preprod.yml (recette i-cond).
+# Sous-ensemble iso de S0→S7 (arbitrage i-cond, préprod geo SANS PostgreSQL) :
+#   S0 preflight → S1 dump (trigger CronJob prod geo-db-backup-prod + Job freshness +
+#   re-suspend) → S3/S4 copy-docs (normalized/ DIRECT prod→préprod, CopyObject
+#   server-side additif) → S3b recon (dest ⊇ src) → S5' rollout restart geo-api
+#   (GARDE G4) → S7 smoke (verify THROUGH l'API publique, runner).
+# RETIRÉS vs immo : quiesce/un-quiesce, S2 restore + G1 rollback, S2c migrate,
+# precheck-runs, flip GEO_DOCUMENTS_REPOINT, refresh/force-refresh (propres à immo).
+# Toute la LOGIQUE + les GARDES fail-closed sont en Node (bascule.mjs) ; ce workflow
+# reste fin. AUCUNE IA au runtime.
+#
+# RUNNER KUBECTL-ONLY : AUCUNE cred S3/DB, AUCUN listing/clé ne transite par le
+# runner. Il ne fait QUE kubectl (patch cronjob suspend, dispatch + OBSERVE .status
+# des Jobs — JAMAIS `kubectl logs` — rollout restart) + curl sur l'API geo PUBLIQUE.
+#
+# GO owner = l'input CONFIRM (GARDE G3, iso-prod-AAAA-MM-JJ, recoupé au jour UTC).
+# DRY_RUN=true par défaut = un dispatch nu ne fait RIEN de destructif.
+name: bascule-preprod (iso-prod)
+
+on:
+  # Planification nocturne (cadence figée ici) ; ARMEMENT = variable de dépôt
+  # BASCULE_SCHEDULE_ENABLED (OFF par défaut) → une fusion ne déclenche jamais une
+  # bascule avant que l'env soit prêt.
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+    inputs:
+      CONFIRM:
+        description: "GO owner — motif exact iso-prod-AAAA-MM-JJ (doit être la date du jour)"
+        required: true
+        type: string
+      DRY_RUN:
+        description: "true = preflight + recon informative + smoke, RIEN de destructif"
+        required: true
+        type: boolean
+        default: true
+      SKIP_ROLLOUT:
+        description: "true = ne pas jouer S5' (rollout restart geo-api) — pas isolé si la CI n'a pas le patch deployment"
+        required: false
+        type: boolean
+        default: false
+
+# Jamais deux bascules en parallèle (write préprod).
+concurrency:
+  group: bascule-preprod
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  bascule:
+    # Un dispatch manuel tourne TOUJOURS (GO = CONFIRM) ; un run PLANIFIÉ ne joue que
+    # si armé via vars.BASCULE_SCHEDULE_ENABLED == 'true' (OFF par défaut).
+    if: ${{ github.event_name != 'schedule' || vars.BASCULE_SCHEDULE_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    # ÉCART geo : 180 min (immo 120) — la copie server-side de normalized/ est plus longue.
+    timeout-minutes: 180
+    env:
+      CONFIRM: ${{ inputs.CONFIRM }}
+      # ── RUNNER KUBECTL-ONLY (0 cred S3, 0 cred DB) : paramètres NON secrets ──
+      BHS: ${{ vars.BASCULE_BHS_ENDPOINT || 's3.bhs.io.cloud.ovh.net' }}
+      S3_REGION: ${{ vars.BASCULE_AWS_REGION || 'bhs' }}
+      # « docs » = objets SERVIS geo : s3://<bucket>/normalized/ (même clé prod → préprod).
+      PROD_DOCS: ${{ vars.BASCULE_PROD_DOCS_BUCKET || 'sentropic-geo' }}
+      PREPROD_DOCS: ${{ vars.BASCULE_PREPROD_DOCS_BUCKET || 'sentropic-geo-preprod' }}
+      DOCS_SYNC_PREFIX: ${{ vars.BASCULE_DOCS_SYNC_PREFIX || 'normalized/' }}
+      # ── Dump prod (déclencheur T1) : CronJob + bucket de backups ────────────
+      DUMP_BUCKET: ${{ vars.BASCULE_DUMP_BUCKET || 'radar-immobilier-backups-preprod' }}
+      DUMP_PREFIX: ${{ vars.BASCULE_DUMP_PREFIX || 'geo-postgres/prod/sets' }}
+      DUMP_CRONJOB: ${{ vars.BASCULE_DUMP_CRONJOB || 'geo-db-backup-prod' }}
+      DUMP_CRONJOB_NAMESPACE: ${{ vars.BASCULE_DUMP_CRONJOB_NAMESPACE || 'geo' }}
+      # ── Copy-docs Option A (NON secrets : nom de l'identité éphémère + grantee id) ──
+      # L'identité ÉPHÉMÈRE geo-normalized-src-preprod est créée par k8s au GO
+      # (ownerRef=Job geo-normalized-sync-prod-to-preprod, GC au TTL) — jamais ici.
+      # DOCS_SYNC_GRANTEE = canonical id OVH de l'identité serving préprod geo (GrantFullControl).
+      DOCS_SYNC_READ_SECRET: ${{ vars.BASCULE_DOCS_SYNC_READ_SECRET || 'geo-normalized-src-preprod' }}
+      DOCS_SYNC_GRANTEE: ${{ vars.BASCULE_DOCS_SYNC_GRANTEE || '1901410700457444:9056dbb240a04d2584ffbaec38171228' }}
+      # ── Contrôle positif source + cible cluster + smoke (API geo PUBLIQUE) ──
+      # EXPECTED_DATABASE = nom LITTÉRAL de la DB prod geo, fourni par k8s (var de dépôt).
+      EXPECTED_DATABASE: ${{ vars.BASCULE_EXPECTED_DATABASE }}
+      PREPROD_NAMESPACE: ${{ vars.BASCULE_PREPROD_NAMESPACE || 'geo-preprod' }}
+      PREPROD_API_URL: ${{ vars.BASCULE_PREPROD_API_URL || 'https://api.preprod.geo.sent-tech.ca' }}
+      PROD_API_URL: ${{ vars.BASCULE_PROD_API_URL || 'https://api.geo.sent-tech.ca' }}
+      BASCULE_WORKDIR: ${{ github.workspace }}/.bascule-work
+      CLI: deploy/ci/bascule-preprod/bascule.mjs
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute CONFIRM_EXPECTED (anti-rejeu = date du jour UTC) + auto-CONFIRM planifié
+        run: |
+          set -euo pipefail
+          today="iso-prod-$(date -u +%F)"
+          echo "CONFIRM_EXPECTED=${today}" >> "$GITHUB_ENV"
+          # Un run PLANIFIÉ n'a pas d'input CONFIRM → la PLANIFICATION EST le GO ; le
+          # motif anti-rejeu reste la date du jour. Un dispatch garde le CONFIRM tapé.
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "CONFIRM=${today}" >> "$GITHUB_ENV"
+            echo "auto-CONFIRM (schedule) = ${today}"
+          fi
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # RUNNER KUBECTL-ONLY : AUCUN outil de données/S3 sur le runner (0 aws, 0 s5cmd,
+      # 0 postgresql-client). pg_dump / aws-cli / aws-sdk vivent dans les Jobs.
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig (préprod)
+        # Token DÉDIÉ moindre-privilège (SA geo-ci-bascule-preprod), PAS le déployeur
+        # partagé KUBE_CONFIG_DATA_PREPROD (cd-preprod.yml).
+        env:
+          KUBE_CONFIG_DATA_BASCULE_PREPROD: ${{ secrets.KUBE_CONFIG_DATA_BASCULE_PREPROD }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.kube"
+          printf '%s' "$KUBE_CONFIG_DATA_BASCULE_PREPROD" | base64 -d > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+          test -s "$HOME/.kube/config" || { echo "::error::KUBE_CONFIG_DATA_BASCULE_PREPROD absent ou vide"; exit 1; }
+
+      # Contrôle POSITIF du cluster cible AVANT tout write kubectl.
+      - name: Pre-flight — assert target cluster
+        env:
+          EXPECTED_KUBE_APISERVER_HOST: ${{ vars.EXPECTED_KUBE_APISERVER_HOST }}
+        run: |
+          set -euo pipefail
+          DEFAULT_HOST='hlhedx.c1.bhs5.k8s.ovh.net'
+          expected="${EXPECTED_KUBE_APISERVER_HOST:-$DEFAULT_HOST}"
+          server="$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
+          host="${server#*://}"; host="${host%%/*}"; host="${host%%:*}"
+          echo "kubeconfig apiserver host : ${host:-<none>}"
+          echo "expected apiserver host   : ${expected}"
+          if [ "$host" != "$expected" ]; then
+            echo "::error title=Wrong cluster — bascule refused::kubeconfig targets '${host:-<none>}' but expected '${expected}'."
+            exit 1
+          fi
+          kubectl -n "$PREPROD_NAMESPACE" get deploy geo-api -o name
+          echo "pre-flight cluster OK — ${expected} / ${PREPROD_NAMESPACE}"
+
+      # ── DUAL-KUBECONFIG (déclencheur dump S1 = namespace PROD geo) ──────────
+      # kubeconfig PROD DÉDIÉ (KUBE_CONFIG_DATA_PROD_TRIGGER = SA geo-ci-trigger-prod,
+      # name-scopée patch geo-db-backup-prod + VAP suspend-only) dans un FICHIER SÉPARÉ,
+      # utilisé UNIQUEMENT sur les 2 patch cronjob prod. Joué HORS DRY.
+      - name: Configure kubeconfig PROD (déclencheur dump S1)
+        if: ${{ !inputs.DRY_RUN }}
+        env:
+          KUBE_CONFIG_DATA_PROD_TRIGGER: ${{ secrets.KUBE_CONFIG_DATA_PROD_TRIGGER }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.kube"
+          printf '%s' "$KUBE_CONFIG_DATA_PROD_TRIGGER" | base64 -d > "$HOME/.kube/config-prod"
+          chmod 600 "$HOME/.kube/config-prod"
+          test -s "$HOME/.kube/config-prod" || { echo "::error::KUBE_CONFIG_DATA_PROD_TRIGGER absent ou vide"; exit 1; }
+          echo "DUMP_KUBECONFIG=$HOME/.kube/config-prod" >> "$GITHUB_ENV"
+
+      - name: Pre-flight — assert PROD cluster (kubeconfig dump)
+        if: ${{ !inputs.DRY_RUN }}
+        env:
+          EXPECTED_KUBE_APISERVER_HOST_PROD: ${{ vars.EXPECTED_KUBE_APISERVER_HOST_PROD || vars.EXPECTED_KUBE_APISERVER_HOST }}
+        run: |
+          set -euo pipefail
+          DEFAULT_HOST='hlhedx.c1.bhs5.k8s.ovh.net'
+          expected="${EXPECTED_KUBE_APISERVER_HOST_PROD:-$DEFAULT_HOST}"
+          server="$(kubectl --kubeconfig "$HOME/.kube/config-prod" config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
+          host="${server#*://}"; host="${host%%/*}"; host="${host%%:*}"
+          echo "PROD kubeconfig apiserver host : ${host:-<none>}"
+          echo "expected PROD apiserver host   : ${expected}"
+          if [ "$host" != "$expected" ]; then
+            echo "::error title=Wrong PROD cluster — bascule refused::dump kubeconfig targets '${host:-<none>}' but expected '${expected}'."
+            exit 1
+          fi
+          echo "pre-flight PROD cluster OK — ${expected} (déclencheur dump S1)"
+
+      # ── S0 ────────────────────────────────────────────────────────────────
+      - name: S0 preflight (binaires + params + EXPECTED_DATABASE)
+        run: node "$CLI" preflight
+
+      # ══════════════ DRY_RUN : rien de destructif ══════════════
+      - name: S3 copy-docs (DRY — copie non jouée)
+        if: ${{ inputs.DRY_RUN }}
+        env:
+          DRY: "1"
+        run: node "$CLI" copy-docs
+
+      - name: S3b recon (Job informatif en DRY)
+        if: ${{ inputs.DRY_RUN }}
+        continue-on-error: true
+        run: node "$CLI" recon
+
+      # ══════════════ EXÉCUTION : séquence fail-closed ══════════════
+      - name: S1 dump prod (DÉCLENCHEUR T1 — patch CronJob + Job freshness)
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" dump
+
+      # copy-docs = Job geo-api (aws-sdk CopyObject + grant). L'identité éphémère
+      # geo-normalized-src-preprod est créée par k8s (ownerRef=Job.UID), GC au TTL.
+      - name: S3 copy-docs (Job geo-api aws-sdk CopyObject normalized/, additif)
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" copy-docs
+
+      - name: S3b recon (Job list-objects-v2 diff Key+Size — dest ⊇ src, fatal)
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" recon
+
+      # S5' = équivalent geo du flip : geo-api cache son index au démarrage.
+      - name: S5' rollout restart geo-api préprod (G4 recon)
+        if: ${{ !inputs.DRY_RUN && !inputs.SKIP_ROLLOUT }}
+        run: node "$CLI" rollout
+
+      # ── S7 : smoke THROUGH l'API publique (read-only, 0 cred) ──────────────
+      - name: S7 smoke (DRY — informatif)
+        if: ${{ inputs.DRY_RUN }}
+        continue-on-error: true
+        run: node "$CLI" smoke
+
+      - name: S7 smoke — préprod ⊇ prod via l'API publique (fatal)
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" smoke
+
+      # Traçabilité : POINTEURS/états uniquement (T1 + sentinel recon), 0 contenu S3.
+      - name: Pointeurs + états (T1, recon — PAS de contenu S3)
+        if: ${{ always() && !inputs.DRY_RUN }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bascule-pointers-${{ github.run_id }}
+          path: |
+            ${{ github.workspace }}/.bascule-work/T1.txt
+            ${{ github.workspace }}/.bascule-work/recon.ok.json
+          if-no-files-found: warn
+          retention-days: 7

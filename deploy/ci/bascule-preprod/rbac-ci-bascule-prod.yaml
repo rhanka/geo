@@ -1,0 +1,120 @@
+# SA CD DÉDIÉ PERMANENT `geo-ci-bascule-prod` (ns prod geo). CLONE geo de
+# radar-immobilier:deploy/ci/bascule-preprod/rbac-ci-bascule-prod.yaml.
+# Appliqué UNE fois à l'install (install-cd-bootstrap.sh, cluster-admin), puis bascule-bundle-cd.yml applique le bundle
+# au merge avec ce SA (GH secret KUBE_CONFIG_DATA_PROD). Isole les droits élevés (VAP cluster + impersonate) hors du
+# déployeur général geo (KUBE_CONFIG_DATA, env geo-prod, cd-prod.yml — inchangé).
+#
+# ⚠ 0 `secrets:create` : les creds (geo-db-ro-prod, geo-pra-writer-prod) arrivent en **SealedSecret committées** ;
+#   le controller sealed-secrets matérialise les core Secrets. Le CD n'applique que des manifests.
+# `create` non name-scopable (RBAC) → create ns-wide ; get/patch/update name-scopés aux objets EXACTS du bundle.
+# impersonate name-scopé geo-ci-trigger-prod (gate anti-RCE `--dry-run=server`).
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: geo-ci-bascule-prod
+  namespace: geo
+  labels: { app.kubernetes.io/part-of: geo, role: ci-bascule-prod, usage: bascule-cd-permanent }
+---
+# ── Cluster-scoped : VAP (non-namespacé) ──────────────────────────────────────────────────────────────────────
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: geo-ci-bascule-prod-vap
+  labels: { app.kubernetes.io/part-of: geo, role: ci-bascule-prod }
+rules:
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["validatingadmissionpolicies", "validatingadmissionpolicybindings"]
+    verbs: ["create"]
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["validatingadmissionpolicies", "validatingadmissionpolicybindings"]
+    verbs: ["get", "update", "patch"]
+    resourceNames: ["geo-ci-trigger-suspend-only"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: geo-ci-bascule-prod-vap
+  labels: { app.kubernetes.io/part-of: geo, role: ci-bascule-prod }
+roleRef: { apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: geo-ci-bascule-prod-vap }
+subjects: [ { kind: ServiceAccount, name: geo-ci-bascule-prod, namespace: geo } ]
+---
+# ── Namespaced : bundle (ns geo) — SANS core secrets ──────────────────────────────────────────────────────────
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: geo-ci-bascule-prod
+  namespace: geo
+  labels: { app.kubernetes.io/part-of: geo, role: ci-bascule-prod }
+rules:
+  # SealedSecrets (CR bitnami) : le CD applique les SealedSecret committées ; le controller matérialise les core Secrets.
+  - apiGroups: ["bitnami.com"]
+    resources: ["sealedsecrets"]
+    verbs: ["create"]
+  - apiGroups: ["bitnami.com"]
+    resources: ["sealedsecrets"]
+    verbs: ["get", "patch", "update"]
+    resourceNames: ["geo-db-ro-prod", "geo-pra-writer-prod"]
+  # configmaps (SQL du rôle RO) :
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["configmaps"]
+    verbs: ["get", "patch", "update"]
+    resourceNames: ["geo-db-ro-role-sql"]
+  # serviceaccounts (SA trigger T1) :
+  - apiGroups: [""]
+    resources: ["serviceaccounts"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["serviceaccounts"]
+    verbs: ["get"]
+    resourceNames: ["geo-ci-trigger-prod"]
+  # roles/rolebindings (T1) — SANS escalate/bind (bascule est superset de T1) :
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["create"]
+  - apiGroups: ["rbac.authorization.k8s.io"]
+    resources: ["roles", "rolebindings"]
+    verbs: ["get", "update", "patch"]
+    resourceNames: ["geo-ci-trigger-prod"]
+  # jobs (RO-role provision one-shot + observe) :
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create", "get", "list", "watch", "delete"]
+  # cronjobs (dump) :
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["create"]
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "patch", "update"]
+    resourceNames: ["geo-db-backup-prod"]
+  # deployments : LECTURE SEULE (pré-vol : get deploy geo-api) :
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list"]
+  # impersonate : SEULEMENT la SA trigger, gate anti-RCE `--dry-run=server` :
+  - apiGroups: [""]
+    resources: ["serviceaccounts"]
+    verbs: ["impersonate"]
+    resourceNames: ["geo-ci-trigger-prod"]
+  # pods/pods/log : observer le Job RO (diagnostic), lecture seule :
+  - apiGroups: [""]
+    resources: ["pods", "pods/log"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: geo-ci-bascule-prod
+  namespace: geo
+  labels: { app.kubernetes.io/part-of: geo, role: ci-bascule-prod }
+roleRef: { apiGroup: rbac.authorization.k8s.io, kind: Role, name: geo-ci-bascule-prod }
+subjects: [ { kind: ServiceAccount, name: geo-ci-bascule-prod, namespace: geo } ]
+---
+# EXCLUS : core secrets (tous verbes — SealedSecrets), secrets:list, pods/exec, deployments:patch/scale, PV/PVC,
+#   namespaces, nodes, autres ns, impersonate users/groups.
+# INSTALL : appliqué UNE fois (cluster-admin, install-cd-bootstrap.sh). Token permanent → KUBE_CONFIG_DATA_PROD.
+#   Réversible : delete SA/Role/RB/ClusterRole/CRB.
