@@ -79,8 +79,8 @@ jobs:
       DOCS_SYNC_READ_SECRET: ${{ vars.BASCULE_DOCS_SYNC_READ_SECRET || 'geo-normalized-src-preprod' }}
       DOCS_SYNC_GRANTEE: ${{ vars.BASCULE_DOCS_SYNC_GRANTEE || '1901410700457444:9056dbb240a04d2584ffbaec38171228' }}
       # ── Contrôle positif source + cible cluster + smoke (API geo PUBLIQUE) ──
-      # EXPECTED_DATABASE = nom LITTÉRAL de la DB prod geo, fourni par k8s (var de dépôt).
-      EXPECTED_DATABASE: ${{ vars.BASCULE_EXPECTED_DATABASE }}
+      # EXPECTED_DATABASE = nom LITTÉRAL de la DB prod geo (fourni par k8s : "geo").
+      EXPECTED_DATABASE: ${{ vars.BASCULE_EXPECTED_DATABASE || 'geo' }}
       PREPROD_NAMESPACE: ${{ vars.BASCULE_PREPROD_NAMESPACE || 'geo-preprod' }}
       PREPROD_API_URL: ${{ vars.BASCULE_PREPROD_API_URL || 'https://api.preprod.geo.sent-tech.ca' }}
       PROD_API_URL: ${{ vars.BASCULE_PROD_API_URL || 'https://api.geo.sent-tech.ca' }}
