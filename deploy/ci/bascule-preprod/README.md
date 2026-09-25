@@ -12,12 +12,36 @@ buckets/préfixes, namespaces, runners geo, et le sous-ensemble d'étapes arbitr
 > planification nocturne (`bascule-preprod.yml`, armée par `BASCULE_SCHEDULE_ENABLED`) ou en
 > `workflow_dispatch` (CONFIRM). Voir `CD_NATIVE_MIGRATION.md` et `CRED_CYCLE.md`.
 
+## Deux jambes indépendantes, en parallèle (directive i-cond, validée owner)
+
+La bascule geo = **deux jambes INDÉPENDANTES**, jouées **EN PARALLÈLE** par deux jobs du
+workflow **sans `needs:` entre eux**. Chaque jambe rend son **statut GitHub séparément**
+(un job rouge n'annule ni ne masque l'autre) :
+
+| Job | Jambe | Séquence | Kubeconfigs | N'attend |
+| --- | --- | --- | --- | --- |
+| `pg` | PG (archive DR) | `preflight pg` → `dump` (S1) | préprod (Job freshness, ns geo-preprod) + PROD-TRIGGER (2 patch cronjob, hors DRY) | rien de S3 |
+| `s3` | S3 (couche servie) | `preflight s3` → `copy-docs` → `recon` → `rollout` (G4) → `smoke` | préprod seul | rien de PG |
+
+- Aucune dépendance de données PG → S3 côté geo : la préprod n'a pas de PostgreSQL, le dump
+  est une archive DR, rien ne le consomme dans la bascule. **Seul un futur orchestrateur e2e
+  couplera les deux jambes.**
+- `concurrency: bascule-preprod` reste au niveau **workflow** : jamais deux runs de bascule en
+  même temps ; à l'intérieur d'un run, `pg` et `s3` tournent en parallèle.
+- Chaque job a son propre runner → `BASCULE_WORKDIR` (sentinels `T1.txt`, `recon.ok.json`)
+  n'est **pas partagé**. Les Jobs in-cluster des deux jambes ont des noms distincts
+  (`geo-bascule-freshness` / `geo-normalized-sync-prod-to-preprod`, `geo-bascule-recon`) :
+  aucune collision de `delete`/`apply`.
+- Pointeurs séparés (hors DRY, `always`) : `bascule-pg-pointers-<run_id>` (`T1.txt`),
+  `bascule-s3-pointers-<run_id>` (`recon.ok.json`).
+
 ## RUNNER KUBECTL-ONLY (contrat owner, NON négociable — identique immo)
 
 **AUCUNE cred S3/DB, AUCUN listing/clé ne transite ni n'est lu par le runner GitHub.**
 Le runner ne fait QUE :
 
-- `kubectl` (2 kubeconfigs : **préprod** par défaut + **PROD** pour le seul trigger dump) :
+- `kubectl` (2 kubeconfigs : **préprod** par défaut, dans les 2 jobs + **PROD** pour le seul
+  trigger dump, job `pg` uniquement) :
   patch cronjob (suspend), dispatch + **OBSERVE `.status`** des Jobs, `rollout restart` geo-api.
 - `curl` sur l'**API geo publique** (smoke S7 : données publiques, 0 cred).
 
@@ -28,8 +52,8 @@ Tout l'accès object-store/DB vit dans des Jobs verdict-only (creds via `secretK
 
 | Fichier | Rôle |
 | --- | --- |
-| `bascule.mjs` | CLI Node kubectl-only : `preflight`, `dump`, `copy-docs`, `recon`, `rollout`, `smoke` + gardes + `classifyJobStatus`. |
-| `bascule.selftest.mjs` | Self-test des fonctions pures (0 appel réel). |
+| `bascule.mjs` | CLI Node kubectl-only : `preflight [pg\|s3]`, `dump`, `copy-docs`, `recon`, `rollout`, `smoke` + gardes + `classifyJobStatus` + `preflightRequirements`. |
+| `bascule.selftest.mjs` | Self-test des fonctions pures (0 appel kubectl/aws/réseau), dont le sélecteur de jambe du preflight. |
 | `s3-check-job.tmpl.yaml` | Checks S3 verdict-only (aws-cli, même pin qu'immo) : `freshness` (S1) et `recon` (S3b). |
 | `docs-sync-job.tmpl.yaml` | Copie `normalized/` prod → préprod (S3) : image geo-api, aws-sdk `CopyObject` server-side ADDITIF + `GrantFullControl`, identité éphémère k8s. |
 | `cronjob-db-backup-prod.yaml` | CronJob `geo-db-backup-prod` (ns geo, suspendu) : `pg_dump --format=custom --no-owner --no-privileges` RO → `geo-postgres/prod/sets/<ISO-ts>/geo.dump` (`EXPECTED_DATABASE=geo`). |
@@ -46,22 +70,31 @@ Tout l'accès object-store/DB vit dans des Jobs verdict-only (creds via `secretK
 
 ## Séquence geo (sous-ensemble iso de S0→S7)
 
-| Pas | Sous-commande | Ce qui se passe | Où |
-| --- | --- | --- | --- |
-| S0 | `preflight` | binaires runner (`node kubectl curl`) + params (dont `EXPECTED_DATABASE`, `BHS`, `DUMP_BUCKET`) ; **0 cred S3/DB runner**. | runner |
-| S1 | `dump` | **DÉCLENCHEUR T1** : `kubectl --kubeconfig $DUMP_KUBECONFIG -n geo patch cronjob geo-db-backup-prod suspend=false` ; **Job freshness** (poll interne : LastModified > T1, clé ⊇ `EXPECTED_DATABASE`, `.dump`, Size>0) ; **re-suspend** toujours. | runner (kubectl) + Job |
-| S3/S4 | `copy-docs` | Job `geo-normalized-sync-prod-to-preprod` (image geo-api) : pré-check GET fail-closed + boucle `CopyObject` server-side `s3://sentropic-geo/normalized/` → `s3://sentropic-geo-preprod/normalized/` + `GrantFullControl`. ADDITIF, idempotent. DRY : non jouée. | préprod (Job) |
-| S3b | `recon` | Job DIFF LIST-only Key+Size → dest ⊇ src → exit 0, sinon 1. Sentinel local `recon.ok.json`. | préprod (Job) |
-| S5' | `rollout` | **G4** (sentinel + recon rejouée) puis `kubectl rollout restart deployment/geo-api -n geo-preprod` + `rollout status` : geo-api recharge son index (StoreProvider). | préprod (kubectl) |
-| S7 | `smoke` | `curl` API publique : landing préprod 200 + ids `/collections` préprod ⊇ ids `/collections` prod. | runner (curl) |
+| Pas | Jambe (job) | Sous-commande | Ce qui se passe | Où |
+| --- | --- | --- | --- | --- |
+| S0 | `pg` | `preflight pg` | binaires runner (`node kubectl`) + params PG (`EXPECTED_DATABASE`, `BHS`, `DUMP_BUCKET`) ; **0 cred S3/DB runner**. | runner |
+| S1 | `pg` | `dump` | **DÉCLENCHEUR T1** : `kubectl --kubeconfig $DUMP_KUBECONFIG -n geo patch cronjob geo-db-backup-prod suspend=false` ; **Job freshness** (ns geo-preprod, kubeconfig préprod ; poll interne : LastModified > T1, clé ⊇ `EXPECTED_DATABASE`, `.dump`, Size>0) ; **re-suspend** toujours. | runner (kubectl) + Job |
+| S0 | `s3` | `preflight s3` | binaires runner (`node kubectl curl`) + params S3/smoke (`BHS`, `PROD_DOCS`, `PREPROD_DOCS`, `PREPROD_API_URL`, `PROD_API_URL`). | runner |
+| S3/S4 | `s3` | `copy-docs` | Job `geo-normalized-sync-prod-to-preprod` (image geo-api) : pré-check GET fail-closed + boucle `CopyObject` server-side `s3://sentropic-geo/normalized/` → `s3://sentropic-geo-preprod/normalized/` + `GrantFullControl`. ADDITIF, idempotent. DRY : non jouée. | préprod (Job) |
+| S3b | `s3` | `recon` | Job DIFF LIST-only Key+Size → dest ⊇ src → exit 0, sinon 1. Sentinel local `recon.ok.json`. | préprod (Job) |
+| S5' | `s3` | `rollout` | **G4** (sentinel + recon rejouée) puis `kubectl rollout restart deployment/geo-api -n geo-preprod` + `rollout status` : geo-api recharge son index (StoreProvider). | préprod (kubectl) |
+| S7 | `s3` | `smoke` | `curl` API publique : landing préprod 200 + ids `/collections` préprod ⊇ ids `/collections` prod. | runner (curl) |
 
-Ordre workflow : S0 → [DRY : copy-docs non jouée, recon + smoke informatifs] → S1 → S3 → S3b → S5' → S7 → pointeurs (`always`).
+`preflight` sans argument vérifie les params des DEUX jambes (comportement historique, usage
+manuel) ; une jambe inconnue échoue (fail-closed).
+
+Ordre workflow (les deux jobs démarrent ensemble) :
+
+- job `pg` : S0 pg → [DRY : arrêt, rien de destructif] → S1 → pointeur `T1.txt` (`always`).
+- job `s3` : S0 s3 → [DRY : copy-docs non jouée, recon + smoke informatifs] → S3 → S3b → S5' → S7 → pointeur `recon.ok.json` (`always`).
 
 ## Mapping immo → geo
 
 | immo | geo | justification |
 | --- | --- | --- |
-| S0 preflight | identique | — |
+| 1 job `bascule` séquentiel (S0→S7) | 2 jobs parallèles `pg` / `s3`, 0 `needs:` | directive i-cond (validée owner) : pas de restore préprod geo → aucune dépendance PG → S3 ; statut rendu par jambe |
+| S0 preflight | `preflight [pg\|s3]` (sans argument = identique) | chaque job ne vérifie que les params de sa jambe |
+| artefact `bascule-rollback-<run_id>` | `bascule-pg-pointers-<run_id>` (`T1.txt`) + `bascule-s3-pointers-<run_id>` (`recon.ok.json`) | un artefact par jambe ; pas de clé de rollback (pas de restore) |
 | S0.b / S3c `precheck-runs` | retiré | mémoire de collecte `runs/` propre à immo |
 | Q / U quiesce / un-quiesce, G2 | retiré | pas de PG préprod ni de writer à geler (arbitrage i-cond) |
 | S1 dump (trigger + freshness + re-suspend) | identique | CronJob `geo-db-backup-prod` ns geo |
@@ -93,8 +126,8 @@ de la netpol existante), source vide = échec dans le copy-docs, GRANT CONNECT a
 
 | Clé | Type | Usage |
 | --- | --- | --- |
-| `KUBE_CONFIG_DATA_BASCULE_PREPROD` | secret | kubeconfig préprod — SA `geo-ci-bascule-preprod` (pilotage). |
-| `KUBE_CONFIG_DATA_PROD_TRIGGER` | secret | kubeconfig PROD — SA `geo-ci-trigger-prod` (2 patch cronjob, VAP). Non requis en DRY. |
+| `KUBE_CONFIG_DATA_BASCULE_PREPROD` | secret | kubeconfig préprod — SA `geo-ci-bascule-preprod` (pilotage) ; jobs `pg` (Job freshness) et `s3`. |
+| `KUBE_CONFIG_DATA_PROD_TRIGGER` | secret | kubeconfig PROD — SA `geo-ci-trigger-prod` (2 patch cronjob, VAP) ; job `pg` seul. Non requis en DRY. |
 | `KUBE_CONFIG_DATA_PROD` | secret | kubeconfig PROD — SA `geo-ci-bascule-prod` (apply du bundle). |
 | `BASCULE_EXPECTED_DATABASE` | var | nom littéral de la DB prod geo (défaut `geo`, fourni par k8s). |
 | `BASCULE_*` (autres) | vars | endpoint, buckets, préfixes, CronJob, ns, URLs API, grantee — NON secrets, défauts dans le workflow. |
@@ -123,8 +156,8 @@ verify tourne sur le runner (API publique) : aucune netpol d'ingress vers geo-ap
 
 ## Rejouer SANS IA
 
-1. **DRY (défaut, sûr).** `CONFIRM=iso-prod-<aujourd'hui UTC>`, `DRY_RUN=true` : preflight + recon + smoke informatifs, aucune écriture.
-2. **Exécution.** `DRY_RUN=false` + `CONFIRM=iso-prod-<date du jour UTC>`.
+1. **DRY (défaut, sûr).** `CONFIRM=iso-prod-<aujourd'hui UTC>`, `DRY_RUN=true` : job `pg` = preflight seul ; job `s3` = preflight + recon + smoke informatifs ; aucune écriture.
+2. **Exécution.** `DRY_RUN=false` + `CONFIRM=iso-prod-<date du jour UTC>`. Lire le statut **par job** : `pg` vert = dump frais confirmé ; `s3` vert = préprod sert ⊇ prod. Un job rouge se rejoue sans l'autre (« Re-run failed jobs »), sous réserve d'un CONFIRM du jour (G3).
 3. **Isolation S5'** : `SKIP_ROLLOUT=true` si le patch deployment manque.
 4. **DR DB** : dumps durables sous `s3://radar-immobilier-backups-preprod/geo-postgres/prod/sets/<ts>/geo.dump` ; restore = `pg_restore` in-cluster à la demande (hors bascule, préprod sans PG).
 
@@ -134,12 +167,15 @@ verify tourne sur le runner (API publique) : aucune netpol d'ingress vers geo-ap
 2. **CopyObject ≤ 5 Go par objet** (limite S3) : sinon le Job échoue (fail-closed).
 3. **Digest de l'upload du CronJob** : épinglé sur le build `main-f39cd4b2` (CD préprod) ; re-pinner sur le digest geo-api PROD mesuré s'il diffère.
 4. **État mesuré avant toute bascule (2026-09-25, smoke S7 local)** : prod sert 3900 collections, préprod 3886, 18 absentes en préprod (`qc-zoning-events-*`) — le smoke est aujourd'hui rouge, la bascule doit le rendre vert.
+5. **Quota ns geo-preprod en parallèle** : les jambes font coexister le Job freshness (limits 500m / 768Mi) et le Job copy-docs (500m / 512Mi) puis recon (500m / 768Mi) — au plus 2 pods bascule simultanés. Marge de la ResourceQuota geo-preprod : `unverified` (à confirmer par k8s).
 
 ## Lancer une sous-commande à la main (hors workflow)
 
 ```bash
 # mêmes variables d'env que le workflow — 0 cred S3/DB runner
-node deploy/ci/bascule-preprod/bascule.mjs preflight
+node deploy/ci/bascule-preprod/bascule.mjs preflight      # les deux jambes
+node deploy/ci/bascule-preprod/bascule.mjs preflight pg   # jambe PG seule (job `pg`)
+node deploy/ci/bascule-preprod/bascule.mjs preflight s3   # jambe S3 seule (job `s3`)
 node deploy/ci/bascule-preprod/bascule.mjs smoke        # API publique, lecture seule
 node deploy/ci/bascule-preprod/bascule.selftest.mjs     # fonctions pures, 0 appel réel
 ```
