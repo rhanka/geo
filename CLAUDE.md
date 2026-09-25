@@ -95,6 +95,9 @@ Concrètement, avant de considérer un travail comme fait :
   prompt JSON strict par cellule + gardes anti-décalage conservés), choisi par **double-consensus**
   (benchmark sur grilles déjà extraites, sans re-payer Mistral) + **ratification geo-archi**.
   `voxtral-*` (audio) et `/v1/ocr` (OCR) ne sont pas concernés. Voir `docs/decisions.md` ADR-0024.
+- **Moteur LLM PV ≠ moteur vision grilles.** Extraction PV (ADR-0034, `proposed`) = politique du refresh immo :
+  `gpt-6-astra` `medium` + repli/vérification `gemini-3.8-flash` `low` ; **non effectif** avant la reprise des jobs
+  PV immo → geo. Le moteur vision des grilles reste celui d'ADR-0024 (remplaçant en attente).
 
 ## Opérationnel
 

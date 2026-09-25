@@ -29,7 +29,15 @@ describe("vision-engine-policy — mistral-medium-latest ban", () => {
   });
 
   it("allows sanctioned non-vision-chat models (OCR, audio) and gateway models", () => {
-    for (const m of ["mistral-ocr-latest", "voxtral-mini-latest", "gpt-5.6-terra", "gpt-5.6-luna"]) {
+    // gpt-6-astra / gemini-3.8-flash = PV extraction engine (ADR-0034) — must never be caught by the ban.
+    for (const m of [
+      "mistral-ocr-latest",
+      "voxtral-mini-latest",
+      "gpt-5.6-terra",
+      "gpt-5.6-luna",
+      "gpt-6-astra",
+      "gemini-3.8-flash",
+    ]) {
       expect(assertVisionModelAllowed(m)).toBe(m);
     }
   });
