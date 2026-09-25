@@ -1,0 +1,51 @@
+# SA DÉDIÉ moindre-privilège `geo-ci-bascule-preprod` (ns geo-preprod) — pilotage préprod du run de bascule
+# (bascule-preprod.yml, GH secret KUBE_CONFIG_DATA_BASCULE_PREPROD). Équivalent geo de la SA immo
+# radar-ci-bascule-preprod (dont le RBAC vit hors du dossier bascule côté immo) : PAS le déployeur partagé
+# geo-ci-deployer-preprod (KUBE_CONFIG_DATA_PREPROD, cd-preprod.yml — scope plus large, inchangé).
+#
+# Besoins EXACTS du run geo (bascule.mjs) en geo-preprod :
+#   - dispatch + OBSERVE .status des Jobs (freshness, docs-sync, recon) : jobs create/get/list/watch/delete ;
+#   - resolvePreprodImage : get deploy geo-api ; rollout (S5') : patch deploy geo-api + status (get/list/watch) ;
+#   - pods get/list/watch : diagnostic lecture seule (JAMAIS pods/log : runner STATUS-ONLY, 0 kubectl logs).
+# EXCLUS : secrets (tous verbes — l'identité éphémère est créée par k8s), networkpolicies, pods/log, pods/exec, autres ns.
+# INSTALL : appliqué UNE fois (install-cd-bootstrap.sh, cluster-admin). Token permanent → KUBE_CONFIG_DATA_BASCULE_PREPROD.
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: geo-ci-bascule-preprod
+  namespace: geo-preprod
+  labels: { app.kubernetes.io/part-of: geo, role: ci-bascule-preprod, usage: bascule-run }
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: geo-ci-bascule-preprod
+  namespace: geo-preprod
+  labels: { app.kubernetes.io/part-of: geo, role: ci-bascule-preprod }
+rules:
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["create", "get", "list", "watch", "delete"]
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments"]
+    verbs: ["patch"]                  # kubectl rollout restart = patch de l'annotation restartedAt
+    resourceNames: ["geo-api"]
+  - apiGroups: ["apps"]
+    resources: ["replicasets"]
+    verbs: ["get", "list", "watch"]   # rollout status
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: geo-ci-bascule-preprod
+  namespace: geo-preprod
+  labels: { app.kubernetes.io/part-of: geo, role: ci-bascule-preprod }
+roleRef: { apiGroup: rbac.authorization.k8s.io, kind: Role, name: geo-ci-bascule-preprod }
+subjects: [ { kind: ServiceAccount, name: geo-ci-bascule-preprod, namespace: geo-preprod } ]

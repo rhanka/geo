@@ -1,0 +1,25 @@
+# T1 — déclencheur ÉTROIT (name-scopé), 0 foothold. ns prod geo. CLONE geo de
+# radar-immobilier:deploy/ci/bascule-preprod/rbac-ci-trigger-prod.yaml.
+# Permet à la CI de get/patch UNIQUEMENT le cronjob nommé (un-suspend) → PAS de create jobs, PAS de pod arbitraire.
+# La VAP geo-ci-trigger-suspend-only restreint en plus le patch à spec.suspend. Token → GH secret KUBE_CONFIG_DATA_PROD_TRIGGER.
+apiVersion: v1
+kind: ServiceAccount
+metadata: { name: geo-ci-trigger-prod, namespace: geo, labels: { role: ci-trigger-prod, usage: bascule-dump } }
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: { name: geo-ci-trigger-prod, namespace: geo, labels: { role: ci-trigger-prod } }
+rules:
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    verbs: ["get", "patch"]                 # name-scopable (contrairement à create)
+    resourceNames: ["geo-db-backup-prod"]   # UN SEUL objet — 0 accès aux autres cronjobs/jobs/pods
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch"]         # observer le Job produit par le cronjob (lecture seule)
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: { name: geo-ci-trigger-prod, namespace: geo, labels: { role: ci-trigger-prod } }
+roleRef: { apiGroup: rbac.authorization.k8s.io, kind: Role, name: geo-ci-trigger-prod }
+subjects: [ { kind: ServiceAccount, name: geo-ci-trigger-prod, namespace: geo } ]

@@ -1,0 +1,52 @@
+# T1 DURCI — ValidatingAdmissionPolicy : contraint la SA de déclenchement geo à ne muter QUE spec.suspend du cronjob dump.
+# CLONE geo de radar-immobilier:deploy/ci/bascule-preprod/vap-ci-trigger-suspend-only.yaml.
+# Rend T1 réellement 0-FOOTHOLD : la SA geo-ci-trigger-prod peut un-suspend, mais NE PEUT PAS réécrire jobTemplate
+# (command = vecteur RCE) ni schedule. VAP GA (admissionregistration.k8s.io/v1). Apply = bundle (CD
+# bascule-bundle-cd.yml). N'impacte QUE les updates faits PAR la SA CI (matchConditions userInfo).
+#
+# ══ GATE T1 ANTI-RCE — TEST-NÉGATIF EN PROD (joué par bascule-bundle-cd.yml à chaque apply) ═══════════════
+# ORDRE D'APPLY (l'authZ RBAC précède l'admission VAP → la SA doit passer RBAC pour ATTEINDRE la VAP) :
+#   1) apply VAP (ce fichier) ; 2) apply RBAC T1 (rbac-ci-trigger-prod.yaml) ; 3) attendre la propagation (~20s) ;
+#   4) TEST-NÉGATIF par IMPERSONATION, non destructif (--dry-run=server) :
+#        SA=system:serviceaccount:geo:geo-ci-trigger-prod ; NS=geo ; CJ=geo-db-backup-prod
+#        # (A) mutation jobTemplate → ATTENDU: DENIED par la VAP
+#        kubectl --as=$SA -n $NS patch cronjob $CJ --type=merge --dry-run=server \
+#          -p '{"spec":{"jobTemplate":{"spec":{"template":{"spec":{"containers":[{"name":"upload","image":"evil"}]}}}}}}'
+#        # (B) flip suspend → ATTENDU: ALLOWED (dry-run)
+#        kubectl --as=$SA -n $NS patch cronjob $CJ --type=merge --dry-run=server -p '{"spec":{"suspend":false}}'
+#   5) GATE : (A) refusé par la VAP ET (B) passe. Sinon → ABORT + neutralisation du Role T1 (rules: []).
+# ══════════════════════════════════════════════════════════════════════════════════════════════════════════
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicy
+metadata:
+  name: geo-ci-trigger-suspend-only
+spec:
+  failurePolicy: Fail
+  matchConstraints:
+    resourceRules:
+      - apiGroups: ["batch"]
+        apiVersions: ["v1"]
+        operations: ["UPDATE"]
+        resources: ["cronjobs"]
+  matchConditions:
+    - name: only-ci-trigger-sa
+      expression: "request.userInfo.username == 'system:serviceaccount:geo:geo-ci-trigger-prod'"
+  validations:
+    - expression: "object.metadata.name == 'geo-db-backup-prod'"
+      message: "trigger SA: cronjob autorisé = geo-db-backup-prod uniquement"
+    - expression: "object.spec.jobTemplate == oldObject.spec.jobTemplate"
+      message: "trigger SA: mutation de jobTemplate INTERDITE (garde RCE) — seul spec.suspend est modifiable"
+    - expression: "object.spec.schedule == oldObject.spec.schedule"
+      message: "trigger SA: mutation de schedule INTERDITE — seul spec.suspend est modifiable"
+    - expression: "object.spec.concurrencyPolicy == oldObject.spec.concurrencyPolicy"
+      message: "trigger SA: mutation de concurrencyPolicy INTERDITE — seul spec.suspend est modifiable"
+# NB labels/annotations : non contraints (non exploitables pour RCE ; les contraindre risque des faux-refus via managed-fields).
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: geo-ci-trigger-suspend-only
+spec:
+  policyName: geo-ci-trigger-suspend-only
+  validationActions: ["Deny"]

@@ -1,0 +1,148 @@
+# =============================================================================
+# docs-sync-job.tmpl.yaml — COPIE des objets SERVIS geo `normalized/` prod →
+# préprod (S3/S4), Job in-cluster. CLONE geo du docs-sync immo (OPTION A
+# CANONIQUE : server-side aws-sdk CopyObject). Nom de fichier conservé (iso immo) ;
+# côté geo « docs » = objets servis `normalized/`.
+#
+# RUNNER KUBECTL-ONLY : la copie ne transite JAMAIS par le runner (0 S3 runner),
+# et la CI ne fait AUCUNE opération secret (0 droit secrets). La CI dispatche ce
+# Job + lit `.status` ; k8s crée le secret ÉPHÉMÈRE ${DOCS_SYNC_READ_SECRET}
+# (geo-normalized-src-preprod = identité lecture sentropic-geo + rw
+# sentropic-geo-preprod) avec ownerRef=Job.UID → GC cascade au TTL du Job. Le pod le
+# référence par NOM ; activeDeadlineSeconds couvre le retry de montage pendant la
+# création.
+#
+#   container `sync` (image geo-api SERVIE en préprod = @aws-sdk/client-s3, 0 python) :
+#     `node -e` : (1) PRÉ-CHECK GET fail-closed (HEAD 1 objet prod, sinon exit 1) ;
+#     (2) boucle List(s3://${SRC_BUCKET}, ${COPY_PREFIX}) → CopyObject(s3://${DST_BUCKET},
+#     MÊME clé, GrantFullControl id=${COPY_GRANTEE} si fourni) = CopyObject
+#     SERVER-SIDE (0 octet par le pod), ADDITIF (pas de delete), IDEMPOTENT.
+#   ÉCART geo (justifié) : options client OVH-safe (requestChecksumCalculation /
+#   responseChecksumValidation = WHEN_REQUIRED), mêmes que ovhSafeS3ClientOptions()
+#   de @sentropic/geo/storage (OVH refuse les en-têtes de checksum aws-chunked).
+#   ÉCART geo (justifié) : source vide = exit 1 (immo : « rien à copier », exit 0) —
+#   un préfixe normalized/ prod vide est une panne, pas un succès (vert par omission).
+#
+# La recon (dest ⊇ src) est un Job séparé (s3-check-job mode=recon).
+#
+# Labels pod : app.kubernetes.io/name=geo-preprod-sync → réutilise la NetworkPolicy
+# EXISTANTE allow-geo-sync-egress (DNS + S3-BHS). Le SA CI ne crée AUCUNE netpol.
+#
+# FAIL-CLOSED : backoffLimit 0 + restartPolicy Never. Runner ne lit que .status.
+#
+# PRÉREQUIS k8s (validés) : secret ${DOCS_SYNC_READ_SECRET} créé au GO (S3_ACCESS_KEY/
+# S3_SECRET_KEY, read sentropic-geo + rw sentropic-geo-preprod, ownerRef=ce Job, TTL
+# 3600 s) ; ${COPY_GRANTEE} = canonical id OVH de l'identité serving préprod
+# (1901410700457444:9056dbb240a04d2584ffbaec38171228, défaut du workflow).
+#
+# Placeholders : ${NAMESPACE} ${IMAGE} ${DOCS_SYNC_READ_SECRET} ${S3_ENDPOINT}
+# ${S3_REGION} ${S3_FORCE_PATH_STYLE} ${SRC_BUCKET} ${DST_BUCKET} ${COPY_GRANTEE}
+# ${COPY_PREFIX}. Le script node lit process.env.* (aucun ${...} dans le script).
+# =============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  # NOM EXACT (validé k8s, comme docs-sync-prod-to-preprod côté immo) : k8s watch ce
+  # nom pour lire l'UID et créer geo-normalized-src-preprod ownerRef=UID.
+  name: geo-normalized-sync-prod-to-preprod
+  namespace: ${NAMESPACE}
+  labels:
+    app.kubernetes.io/name: geo-preprod-sync
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: docs-sync
+    sentropic.io/bascule: docs-sync
+spec:
+  backoffLimit: 0
+  # TTL figé côté template CI : borne la vie du secret éphémère (ownerRef) à ~1h
+  # après l'état terminal du Job.
+  ttlSecondsAfterFinished: 3600
+  # Couvre le retry de montage du secret pendant que k8s le crée (ownerRef) + la copie.
+  activeDeadlineSeconds: 7200
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geo-preprod-sync
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: docs-sync
+        sentropic.io/bascule: docs-sync
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: sync
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
+          image: ${IMAGE}
+          imagePullPolicy: Always
+          # image geo-api : WORKDIR /app, node_modules prod dans /app/node_modules.
+          workingDir: /app
+          # aws-sdk CopyObject (0 python). Le script lit process.env.* (0 ${...}).
+          command: ["node", "-e"]
+          args:
+            - |
+              const {S3Client,ListObjectsV2Command,CopyObjectCommand,HeadObjectCommand}=require('@aws-sdk/client-s3');
+              const endpoint=process.env.S3_ENDPOINT;
+              const region=process.env.S3_REGION||'us-east-1';
+              const forcePathStyle=(process.env.S3_FORCE_PATH_STYLE||'true')==='true';
+              const src=process.env.SRC_BUCKET;
+              const dst=process.env.DST_BUCKET;
+              const grantee=process.env.COPY_GRANTEE||'';
+              const prefix=process.env.COPY_PREFIX||undefined;
+              const s3=new S3Client({endpoint,region,forcePathStyle,requestChecksumCalculation:'WHEN_REQUIRED',responseChecksumValidation:'WHEN_REQUIRED',credentials:{accessKeyId:process.env.AWS_ACCESS_KEY_ID,secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY}});
+              const enc=(k)=>encodeURIComponent(k).replace(/%2F/g,'/');
+              const grant=grantee?{GrantFullControl:'id='+grantee}:{};
+              (async()=>{
+                const probe=await s3.send(new ListObjectsV2Command({Bucket:src,Prefix:prefix,MaxKeys:1}));
+                const seed=(probe.Contents||[]);
+                if(seed.length===0){console.error('[docs-sync] bucket PROD/prefix vide — refus (fail-closed : une source vide ne doit pas passer pour une copie)');process.exit(1);}
+                await s3.send(new HeadObjectCommand({Bucket:src,Key:seed[0].Key}));
+                console.log('[docs-sync] pre-check GET OK grant='+(grantee||'<none>'));
+                if(!grantee){console.warn('[docs-sync] WARN — COPY_GRANTEE vide : objets copies potentiellement illisibles par geo-api preprod (403).');}
+                let token=undefined,n=0;
+                do{
+                  const out=await s3.send(new ListObjectsV2Command({Bucket:src,Prefix:prefix,ContinuationToken:token}));
+                  for(const o of (out.Contents||[])){
+                    await s3.send(new CopyObjectCommand(Object.assign({Bucket:dst,Key:o.Key,CopySource:'/'+src+'/'+enc(o.Key),MetadataDirective:'COPY'},grant)));
+                    n++;
+                  }
+                  token=out.IsTruncated?out.NextContinuationToken:undefined;
+                }while(token);
+                console.log('[docs-sync] ok '+n+' objets copies server-side (0 octet pod, additif, idempotent)');
+              })().catch((e)=>{console.error('[docs-sync] ERROR',e&&e.name,(e&&e.message)||e);process.exit(1);});
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom: { secretKeyRef: { name: ${DOCS_SYNC_READ_SECRET}, key: S3_ACCESS_KEY } }
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom: { secretKeyRef: { name: ${DOCS_SYNC_READ_SECRET}, key: S3_SECRET_KEY } }
+            - name: NODE_OPTIONS
+              value: "--dns-result-order=ipv4first"
+            - name: AWS_MAX_ATTEMPTS
+              value: "10"
+            - name: S3_ENDPOINT
+              value: "${S3_ENDPOINT}"
+            - name: S3_REGION
+              value: "${S3_REGION}"
+            - name: S3_FORCE_PATH_STYLE
+              value: "${S3_FORCE_PATH_STYLE}"
+            - name: SRC_BUCKET
+              value: "${SRC_BUCKET}"
+            - name: DST_BUCKET
+              value: "${DST_BUCKET}"
+            - name: COPY_GRANTEE
+              value: "${COPY_GRANTEE}"
+            - name: COPY_PREFIX
+              value: "${COPY_PREFIX}"
+          resources:
+            requests: { cpu: 100m, memory: 192Mi }
+            limits: { cpu: 500m, memory: 512Mi }
