@@ -200,7 +200,8 @@ signal during startup and data refreshes.
 
 ## Resource footprint (DEV1-M node: 4GB / 3vCPU)
 
-- geo-api: requests `75m` / `256Mi`, limits `300m` / `384Mi`.
+- geo-api (`deployment-api.yaml`): requests `10m` / `128Mi`, limits `500m` / `256Mi`
+  (CPU request lowered 75m -> 10m on 2026-09-25 from a prod cgroup measurement).
 - geo-fetch Job/CronJob: requests `100m` / `384Mi`, limits `1000m` / `1Gi`
   (gdal/ogr2ogr spikes on the municipal layer). The Job is short-lived.
 
