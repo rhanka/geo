@@ -240,7 +240,7 @@ flowchart TB
   CronJob `geo-pv-refresh` quotidien 04:20 (`deploy/k8s/geo-pv-refresh-cronjob.yaml:11,33-35` — ⚠ **non tracké**,
   working tree seulement : défaut de capitalisation à committer) ; CronJobs de campagne capture à état S3,
   `*/2 min`, lease + quota + auto-suspend (`deploy/capture-job/cronjob-capture-refresh.yaml:52-98`) ;
-  `tenant-quota.yaml`. Refresh Controller [cible] s'ajoute ici.
+  ResourceQuota `tenant-quota` (source unique poc-k8s `tenants/geo`). Refresh Controller [cible] s'ajoute ici.
 - ns `geo-preprod` : Deployment `geo-api` (overlay `overlays/preprod/` — ingress `api.preprod.geo.sent-tech.ca`
   `:33-42`) ; Jobs `geo-preprod-sync` / `geo-preprod-verify` ; RBAC ns-scoped `deployer-preprod-rbac.yaml` (SA
   `geo-ci-deployer-preprod`).

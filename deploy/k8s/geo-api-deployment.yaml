@@ -72,8 +72,9 @@ spec:
           resources:
             requests:
               # 75m -> 10m (2026-09-25) : aligné sur deploy/k8s/base/deployment.yaml
-              # (mesure cgroup prod : moyenne 0,46m, fenêtre 1,95m ; prod déjà à
-              # 10m en live). Évite qu'un apply manuel de cette ligne re-gonfle.
+              # et sur le live (prod et préprod déjà à 10m ; mesure cgroup prod :
+              # moyenne 0,46m, fenêtre 1,95m). Ne libère rien : évite qu'un apply
+              # manuel de cette ligne re-gonfle la réservation.
               cpu: 10m
               memory: 128Mi
             limits:
@@ -86,7 +87,7 @@ spec:
               # La dérive n'était visible nulle part et coûtait cher : le quota
               # du namespace compte les LIMITES, donc geo-api réservait à elle
               # seule la moitié des 4 Gi en n'en demandant que 150 Mi, ce qui
-              # interdisait le 3e pod de capture (cf. tenant-quota.yaml).
+              # interdisait le 3e pod de capture (quota : poc-k8s tenants/geo).
               #
               # 768 Mi = 3,9x le pic mesuré. Plus large que les 256 Mi mesurés,
               # nettement plus sobre que les 2048 Mi qui tournaient. Le choix

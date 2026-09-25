@@ -33,6 +33,10 @@ owned by **poc-k8s**, not here:
 
 Do not add Namespace/quota/RBAC objects here — they belong in poc-k8s.
 
+> Quota du tenant geo = source unique poc-k8s `tenants/geo` (ResourceQuota
+> `tenant-quota` + LimitRange). L'ancienne copie `deploy/k8s/tenant-quota.yaml`,
+> appliquée par aucune CD ni script, a été supprimée le 2026-09-25.
+
 ---
 
 # Ligne A — manifestes `geo-api-*` (déploiement courant, backend S3 + PostGIS)
@@ -201,7 +205,8 @@ signal during startup and data refreshes.
 ## Resource footprint (DEV1-M node: 4GB / 3vCPU)
 
 - geo-api (`deployment-api.yaml`): requests `10m` / `128Mi`, limits `500m` / `256Mi`
-  (CPU request lowered 75m -> 10m on 2026-09-25 from a prod cgroup measurement).
+  (CPU request 75m -> 10m on 2026-09-25 aligns the repo with the live cluster,
+  where prod and preprod already run at 10m; it frees nothing).
 - geo-fetch Job/CronJob: requests `100m` / `384Mi`, limits `1000m` / `1Gi`
   (gdal/ogr2ogr spikes on the municipal layer). The Job is short-lived.
 
