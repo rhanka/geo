@@ -11,8 +11,9 @@
 #     workflow_dispatch is kept for on-demand re-apply.
 #
 # Apply order (VAP runbook — RBAC authZ precedes VAP admission):
-#   0. Guard (geo addition): refuse while a SealedSecret is still the commented placeholder or a
-#      bundle file still holds a REPLACE_WITH_ value (EXPECTED_DATABASE literal from k8s).
+#   0. Guard (geo addition): refuse while a SealedSecret file (committed by geo-cond:
+#      geo-db-ro-prod-sealed.yaml, geo-pra-writer-prod-sealed.yaml) is absent, or a bundle file
+#      still holds a REPLACE_WITH_ value.
 #   1. Pre-flight — assert the PROD cluster (positive host + get deploy geo-api in ns geo).
 #   2. Apply the 2 SealedSecrets; wait for Synced (tolerant).
 #   3. Provision the strict RO Postgres role (Job geo-db-ro-role-provision), wait Complete.
@@ -57,8 +58,8 @@ jobs:
         run: |
           set -euo pipefail
           for f in geo-db-ro-prod-sealed.yaml geo-pra-writer-prod-sealed.yaml; do
-            if ! grep -Eq '^kind: SealedSecret' "$BUNDLE/$f"; then
-              echo "::error title=Bundle not ready::$BUNDLE/$f is still the commented placeholder (to be sealed + committed). Nothing was applied."; exit 1
+            if ! grep -Eq '^kind: SealedSecret' "$BUNDLE/$f" 2>/dev/null; then
+              echo "::error title=Bundle not ready::$BUNDLE/$f absent or not a SealedSecret (sealed + committed by geo-cond). Nothing was applied."; exit 1
             fi
           done
           for f in geo-db-ro-prod-sealed.yaml geo-pra-writer-prod-sealed.yaml cronjob-db-backup-prod.yaml db-ro-role-provision.yaml vap-ci-trigger-suspend-only.yaml rbac-ci-trigger-prod.yaml; do

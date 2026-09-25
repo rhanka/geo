@@ -5,8 +5,8 @@ Clone of `radar-immobilier:deploy/ci/bascule-preprod/CD_NATIVE_MIGRATION.md`. Ow
 only human step is the one-time cluster install by the k8s lane, which is itself a committed
 script (`install-cd-bootstrap.sh`).
 
-Constraints kept: **0 Python**, secrets **never committed in plaintext** (SealedSecrets,
-commented placeholders until sealed), all fail-closed gates that apply to geo (VAP anti-RCE,
+Constraints kept: **0 Python**, secrets **never committed in plaintext** (SealedSecrets
+committed by geo-cond), all fail-closed gates that apply to geo (VAP anti-RCE,
 CONFIRM G3, recon-before-rollout G4, positive DB control in-cluster), runner stays
 **kubectl-only + STATUS-ONLY** (no `kubectl logs`, no S3/DB creds).
 
@@ -22,8 +22,8 @@ CONFIRM G3, recon-before-rollout G4, positive DB control in-cluster), runner sta
 
 ```
   ┌── ONE-TIME, k8s lane (cluster-admin), install-cd-bootstrap.sh ──────────────┐
-  │ prereqs: geo-db-ro-prod + geo-pra-writer-prod sealed & committed,            │
-  │          EXPECTED_DATABASE literal filled, preprod readers minted,           │
+  │ prereqs: geo-db-ro-prod + geo-pra-writer-prod sealed & committed (geo-cond), │
+  │          preprod readers deposited (k8s),                                    │
   │          netpol-geo-db-backup applied (postgis ingress, ns geo default-deny)  │
   │ 1. apply rbac-ci-bascule-prod.yaml (ns geo) + rbac-ci-bascule-preprod.yaml   │
   │ 2. mint tokens → GH secrets KUBE_CONFIG_DATA_PROD,                           │
@@ -62,7 +62,7 @@ Unchanged and NOT used by the bascule: `KUBE_CONFIG_DATA` (env `geo-prod`, `cd-p
 - `BASCULE_BUNDLE_CD_ENABLED` — arms `bascule-bundle-cd.yml` (off by default).
 - `BASCULE_SCHEDULE_ENABLED` — arms the nightly run (off by default).
 - `EXPECTED_KUBE_APISERVER_HOST[_PROD]` — cluster identity (default OVH host `hlhedx.c1.bhs5.k8s.ovh.net`, same cluster as immo).
-- `BASCULE_EXPECTED_DATABASE` — literal name of the geo prod DB (from k8s; required by the run preflight).
+- `BASCULE_EXPECTED_DATABASE` — literal name of the geo prod DB (workflow default `geo`, from k8s).
 - `BASCULE_DOCS_SYNC_GRANTEE` — canonical id OVH of the geo preprod serving identity (GrantFullControl);
   workflow default `1901410700457444:9056dbb240a04d2584ffbaec38171228` (validated with k8s).
 - Overrides (defaults in the workflow): `BASCULE_PROD_DOCS_BUCKET`, `BASCULE_PREPROD_DOCS_BUCKET`,
