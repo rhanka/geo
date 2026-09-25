@@ -1,0 +1,106 @@
+# TRANSVERSE PRA — CronJob backup DB PROD geo, NATIF (0 python). CLONE geo de
+#   radar-immobilier:deploy/ci/bascule-preprod/cronjob-db-backup-prod.yaml (recette i-cond).
+#   Code committé (OPS-3) ; apply = bundle (install one-time owner-direct, puis bascule-bundle-cd.yml au merge).
+# Chemin données 100% cluster/S3 : dump PostGIS prod geo (ns geo) → s3://radar-immobilier-backups-preprod/
+#   geo-postgres/prod/sets/<ISO-ts>/<EXPECTED_DATABASE>.dump. Le runner GitHub ne GET JAMAIS le contenu.
+#   Secrets référencés par NOM, matérialisés par le controller sealed-secrets depuis les SealedSecrets committées
+#   (geo-db-ro-prod, geo-pra-writer-prod) — jamais en clair.
+#
+# HARD-GATE RO : conteneur dump = user DB prod RO STRICT (rôle geo_db_ro_prod, pg_read_all_data) via secretKeyRef
+#   geo-db-ro-prod (rôle provisionné par le Job db-ro-role-provision) — JAMAIS geo-postgis-credentials (superuser).
+# 0 PYTHON : dump = image postgis/postgis:16-3.4 (DÉJÀ dans le cluster = StatefulSet postgis) ; upload = image geo-api
+#   déjà en cluster (Node + @aws-sdk/client-s3 PutObject) — 0 nouvelle image.
+#
+# EXPECTED_DATABASE = nom LITTÉRAL de la DB prod geo : il n'existe que dans le secret geo-postgis-credentials
+#   (POSTGRES_DB) → FOURNI PAR k8s, remplace REPLACE_WITH_GEO_PROD_DB_NAME (2 occurrences). Tant que le placeholder
+#   est là, bascule-bundle-cd.yml et install-cd-bootstrap.sh REFUSENT d'appliquer ce fichier (fail-closed).
+#
+# ÉCARTS geo (justifiés) :
+#   - resources requests/limits posés : ns geo a une ResourceQuota (tenant-quota) sur limits.* → sans limites, pod refusé.
+#   - options client OVH-safe (checksum WHEN_REQUIRED, cf. ovhSafeS3ClientOptions de @sentropic/geo/storage).
+#   - image d'upload = geo-api (pas radar-api), épinglée par digest.
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: geo-db-backup-prod
+  namespace: geo
+  labels: { app.kubernetes.io/name: geo-db-backup, app.kubernetes.io/part-of: geo, role: pra-backup }
+spec:
+  schedule: "*/5 * * * *"      # iso immo : déclencheur bascule T1 (le CI un-suspend → run ≤5 min → freshness → re-suspend)
+  suspend: true                # PAR DÉFAUT suspendu : sert le trigger bascule, pas un PRA régulier
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  startingDeadlineSeconds: 600
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 3600
+      ttlSecondsAfterFinished: 86400
+      template:
+        metadata:
+          labels: { app.kubernetes.io/name: geo-db-backup, app.kubernetes.io/part-of: geo, app.kubernetes.io/component: db-backup, role: pra-backup }
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          securityContext: { runAsNonRoot: true, runAsUser: 1001, runAsGroup: 1001, fsGroup: 1001, seccompProfile: { type: RuntimeDefault } }
+          volumes:
+            - { name: work, emptyDir: { sizeLimit: 8Gi } }
+            - { name: scratch, emptyDir: { sizeLimit: 256Mi } }
+          initContainers:
+            # DUMP natif : pg_dump custom depuis un user RO strict → /work/backup.dump (aucun réseau sortant hors DB prod).
+            - name: dump
+              image: postgis/postgis:16-3.4    # déjà présent/validé dans le cluster (= StatefulSet postgis ns geo), a pg_dump
+              command: ["/bin/sh","-ceu"]
+              args:
+                - |
+                  # ASSERT DB : refuse de dumper si la DB connectée != EXPECTED_DATABASE (garde-fou natif).
+                  DB=$(/usr/lib/postgresql/16/bin/psql -tAc 'select current_database()' | tr -d '[:space:]')
+                  [ "$DB" = "$EXPECTED_DATABASE" ] || { echo "ABORT: db connectée=$DB != EXPECTED_DATABASE=$EXPECTED_DATABASE" >&2; exit 1; }
+                  # env libpq (PGHOST/PGUSER/PGPASSWORD/PGDATABASE), pas d'URI.
+                  /usr/lib/postgresql/16/bin/pg_dump --format=custom --no-owner --no-privileges --file=/work/backup.dump
+              env:
+                - { name: HOME, value: /work }
+                - { name: PGHOST, value: "geo-postgis.geo.svc" }
+                - { name: PGPORT, value: "5432" }
+                - { name: EXPECTED_DATABASE, value: "REPLACE_WITH_GEO_PROD_DB_NAME" }   # FOURNI PAR k8s (= geo-postgis-credentials/POSTGRES_DB)
+                - { name: PGUSER,     valueFrom: { secretKeyRef: { name: "geo-db-ro-prod", key: POSTGRES_USER } } }   # RO SELECT-only
+                - { name: PGPASSWORD, valueFrom: { secretKeyRef: { name: "geo-db-ro-prod", key: POSTGRES_PASSWORD } } }
+                - { name: PGDATABASE, valueFrom: { secretKeyRef: { name: "geo-db-ro-prod", key: POSTGRES_DB } } }
+              securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+              resources: { requests: { cpu: 50m, memory: 128Mi }, limits: { cpu: 500m, memory: 512Mi } }
+              volumeMounts: [ { name: work, mountPath: /work } ]
+          containers:
+            # UPLOAD : image geo-api DÉJÀ validée en cluster (Node + @aws-sdk) → PutObject. 0 NOUVELLE image, 0 python.
+            - name: upload
+              # digest = build main-f39cd4b2 (CD préprod 2026-09-14, GHCR), épinglé (immunisé roll CD). k8s re-pinne sur le
+              # digest geo-api PROD mesuré s'il diffère (même famille d'image : @aws-sdk/client-s3 en prod deps).
+              image: "ghcr.io/rhanka/geo-api@sha256:c2f03fd55ffed513f0112b3877cafde4fb383f758e8d5171feb2a2fcbef69373"
+              command: ["node","-e"]
+              args:
+                - |
+                  const fs=require('fs');
+                  const {S3Client,PutObjectCommand}=require('@aws-sdk/client-s3');
+                  const f='/work/backup.dump', sz=fs.statSync(f).size;
+                  const db=process.env.EXPECTED_DATABASE;   // convention clé (iso immo) : contient EXPECTED_DATABASE + suffixe .dump
+                  const key='geo-postgres/prod/sets/'+new Date().toISOString().replace(/[:.]/g,'-')+'/'+db+'.dump';
+                  const c=new S3Client({endpoint:process.env.S3_ENDPOINT,region:process.env.AWS_REGION,forcePathStyle:false,
+                    requestChecksumCalculation:'WHEN_REQUIRED',responseChecksumValidation:'WHEN_REQUIRED',
+                    credentials:{accessKeyId:process.env.AWS_ACCESS_KEY_ID,secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY}});
+                  c.send(new PutObjectCommand({Bucket:process.env.BACKUP_BUCKET,Key:key,Body:fs.createReadStream(f),ContentLength:sz}))
+                    .then(()=>console.log('uploaded s3://'+process.env.BACKUP_BUCKET+'/'+key+' ('+sz+' bytes)'))
+                    .catch(e=>{console.error('ERR',e.name,e.message);process.exit(1);});
+              env:
+                - { name: NODE_PATH, value: "/app/node_modules" }
+                - { name: S3_ENDPOINT, value: "https://s3.bhs.io.cloud.ovh.net" }      # iso BHS
+                - { name: AWS_REGION, value: "bhs" }                                    # iso S3_REGION
+                - { name: BACKUP_BUCKET, value: "radar-immobilier-backups-preprod" }    # iso DUMP_BUCKET
+                - { name: EXPECTED_DATABASE, value: "REPLACE_WITH_GEO_PROD_DB_NAME" }   # convention clé : .../<db>.dump — FOURNI PAR k8s
+                - { name: NODE_OPTIONS, value: "--dns-result-order=ipv4first" }
+                # Cred = writer backups geo-pra-writer-prod (SealedSecret committée, ns geo, scellée par k8s).
+                - { name: AWS_ACCESS_KEY_ID,     valueFrom: { secretKeyRef: { name: "geo-pra-writer-prod", key: S3_ACCESS_KEY } } }
+                - { name: AWS_SECRET_ACCESS_KEY, valueFrom: { secretKeyRef: { name: "geo-pra-writer-prod", key: S3_SECRET_KEY } } }
+              securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+              resources: { requests: { cpu: 50m, memory: 128Mi }, limits: { cpu: 250m, memory: 384Mi } }
+              volumeMounts: [ { name: work, mountPath: /work }, { name: scratch, mountPath: /tmp } ]
