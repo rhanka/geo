@@ -5,9 +5,10 @@ mêmes chemins, mêmes noms de fichiers, même mécanique. Seules différences :
 buckets/préfixes, namespaces, runners geo, et le sous-ensemble d'étapes arbitré par i-cond
 (préprod geo SANS PostgreSQL). Rejouable par la CI / l'owner SANS IA. **0 Python.**
 
-> CD-native : l'apply du bundle prod (2 SealedSecrets + rôle RO + CronJob dump + VAP + RBAC T1)
-> se fait **au merge sur `main`** (`bascule-bundle-cd.yml`, SA permanente `geo-ci-bascule-prod`) ;
-> le **1er apply** est one-shot owner-direct via `install-cd-bootstrap.sh`. La bascule tourne en
+> CD-native (iso immo) : le bundle prod (2 SealedSecrets + Job rôle RO + CronJob dump + VAP + RBAC T1)
+> est appliqué par le CD `bascule-bundle-cd.yml` (SA permanente `geo-ci-bascule-prod`) — 1er run
+> dispatché par k8s après merge (`install-cd-bootstrap.sh`), puis au merge. Les **netpols ne font pas
+> partie du bundle** (`netpol-geo-db-backup.k8s-apply.yaml`, appliquée par k8s). La bascule tourne en
 > planification nocturne (`bascule-preprod.yml`, armée par `BASCULE_SCHEDULE_ENABLED`) ou en
 > `workflow_dispatch` (CONFIRM). Voir `CD_NATIVE_MIGRATION.md` et `CRED_CYCLE.md`.
 
@@ -39,7 +40,7 @@ Tout l'accès object-store/DB vit dans des Jobs verdict-only (creds via `secretK
 | `rbac-ci-bascule-preprod.yaml` | SA `geo-ci-bascule-preprod` (ns geo-preprod) : Jobs + rollout geo-api, 0 secrets, 0 logs. |
 | `geo-db-ro-prod-sealed.yaml`, `geo-pra-writer-prod-sealed.yaml` | SealedSecrets **committées par geo-cond** (scellées, validées) — appliquées par le bundle. |
 | `netpol-geo-db-backup.k8s-apply.yaml` | **À appliquer par k8s** (jamais par un workflow) : ingress postgis + egress des pods de backup (ns geo). |
-| `install-cd-bootstrap.sh` | Install one-time owner-direct (k8s lane, cluster-admin). |
+| `install-cd-bootstrap.sh` | Install one-time (k8s lane, cluster-admin, après merge) : RBAC des SA, 3 kubeconfigs GH, armement, dispatch du CD bundle. |
 | `../../../.github/workflows/bascule-preprod.yml` | Le run (schedule + dispatch). |
 | `../../../.github/workflows/bascule-bundle-cd.yml` | Apply du bundle au merge. |
 
@@ -112,8 +113,8 @@ de la netpol existante), source vide = échec dans le copy-docs, GRANT CONNECT a
 | 4 | `geo-normalized-reader-preprod` (ns geo-preprod, `S3_ACCESS_KEY`/`S3_SECRET_KEY` + `S3_ENDPOINT`/`S3_REGION`, RO sur les 2 `normalized/`) — Job recon | déposé |
 | 5 | Identité éphémère `geo-normalized-src-preprod` (watch du Job `geo-normalized-sync-prod-to-preprod`, `ownerRef=Job.UID`, TTL 3600 s) ; grantee `1901410700457444:9056dbb240a04d2584ffbaec38171228` | en place côté k8s |
 | 6 | Nom de DB prod geo = `geo` (`EXPECTED_DATABASE`, clé `geo.dump`) | fourni, intégré |
-| 7 | Netpols `netpol-geo-db-backup.k8s-apply.yaml` (ns geo : ingress postgis ← pods `role=pra-backup` :5432 ; egress DNS + postgis + S3-BHS) | **à appliquer par k8s** |
-| 8 | `install-cd-bootstrap.sh` (cluster-admin) : RBAC des 2 SA, 1er bundle owner-direct + gate anti-RCE, 3 kubeconfigs GH, armement | **à lancer (owner-direct)** |
+| 7 | Netpols `netpol-geo-db-backup.k8s-apply.yaml` (ns geo : UNIQUE ingress postgis ← pods `role=pra-backup` :5432 = Job `db-ro-role-provision` ET CronJob `geo-db-backup-prod` ; egress DNS + postgis + S3-BHS) | **à appliquer par k8s**, avant le 1er dispatch |
+| 8 | `install-cd-bootstrap.sh` (cluster-admin, après merge) : RBAC des 2 SA, 3 kubeconfigs GH, armement, dispatch de `bascule-bundle-cd.yml` (gate anti-RCE inclus) | **à lancer (k8s)** |
 | 9 | ResourceQuota ns geo (`secrets: 10`) : +4 secrets (2 SealedSecrets matérialisés + 2 tokens SA) | à vérifier |
 | 10 | `log_statement=none` sur la postgis geo (mot de passe du rôle RO non journalisé) | à confirmer |
 

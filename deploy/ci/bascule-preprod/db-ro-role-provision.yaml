@@ -5,7 +5,8 @@
 # geo-postgis-credentials (the initdb bootstrap user of the postgis StatefulSet); the RO
 # password is injected from the minted secret geo-db-ro-prod (key POSTGRES_PASSWORD) via
 # psql \getenv — NEVER a literal here. Idempotent / replayable (OPS-3). Applied by the
-# bundle (install one-time owner-direct, then bascule-bundle-cd.yml on merge).
+# bundle by the CD bascule-bundle-cd.yml (dispatched by k8s after merge, then on merge).
+# Needs the postgis ingress netpol (netpol-geo-db-backup.k8s-apply.yaml, applied by k8s).
 #   Prereq: secret geo-db-ro-prod materialized (SealedSecret geo-db-ro-prod-sealed.yaml).
 #   Verify after: role exists, LOGIN, member of pg_read_all_data, CONNECT on the geo DB.
 #

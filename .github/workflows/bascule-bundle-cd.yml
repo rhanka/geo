@@ -1,9 +1,11 @@
 # bascule-bundle-cd — CD-NATIVE apply of the geo bascule PROD bundle ON MERGE.
 #
 # CLONE geo of radar-immobilier:.github/workflows/bascule-bundle-cd.yml (i-cond recipe).
-# The FIRST apply is one-shot owner-direct (deploy/ci/bascule-preprod/install-cd-bootstrap.sh,
-# same steps, admin kubeconfig); from then on this workflow re-applies the bundle on every
-# merge touching it, with the PERMANENT SA geo-ci-bascule-prod (GH secret KUBE_CONFIG_DATA_PROD).
+# This workflow applies the WHOLE bundle (SealedSecrets geo-pra-writer-prod + geo-db-ro-prod,
+# Job db-ro-role-provision, CronJob geo-db-backup-prod, VAP, RBAC T1) with the PERMANENT SA
+# geo-ci-bascule-prod (GH secret KUBE_CONFIG_DATA_PROD): first run dispatched by the k8s lane
+# after merge (install-cd-bootstrap.sh step 4), then on every merge touching the bundle.
+# NetworkPolicies are NOT part of it (netpol-geo-db-backup.k8s-apply.yaml, applied by k8s).
 #   - NO GH-secret materialization of the app creds: geo-db-ro-prod + geo-pra-writer-prod are
 #     materialized in-cluster by the sealed-secrets controller from the COMMITTED SealedSecrets.
 #     This SA has 0 secrets:create by construction.
