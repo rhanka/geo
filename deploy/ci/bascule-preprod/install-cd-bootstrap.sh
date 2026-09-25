@@ -3,14 +3,16 @@
 # Install one-time — bascule prod geo, CD-native. OPS-3 : rejouable + auditable.
 # CLONE geo de radar-immobilier:deploy/ci/bascule-preprod/install-cd-bootstrap.sh
 # (branche feat/install-cd-bootstrap-runbook, 3676f290). Exécuté UNE fois par la lane
-# k8s (cluster-admin), owner-direct : cet acte est CE SCRIPT COMMITTÉ (la trace = le code).
+# k8s (cluster-admin) : cet acte est CE SCRIPT COMMITTÉ (la trace = le code), pas un ad-hoc.
 # 0 python. Les VALEURS (tokens) ne sont JAMAIS committées : mintées in-cluster puis
 # posées en GH secrets (jamais imprimées sur stdout).
 #
-# ÉCART geo (arbitrage i-cond) : le 1er bundle est appliqué OWNER-DIRECT par ce script
-# (étape 3, mêmes pas que bascule-bundle-cd.yml, gate anti-RCE compris) — le workflow
-# n'est pas encore sur main, donc pas de `gh workflow run`. Ensuite bascule-bundle-cd.yml
-# ré-applique au merge (CD-native), armé à l'étape 5.
+# Iso immo : le bundle prod (SealedSecrets geo-pra-writer-prod + geo-db-ro-prod, Job
+# db-ro-role-provision, CronJob geo-db-backup-prod dormant, VAP, RBAC T1, gate anti-RCE)
+# est appliqué par le CD bascule-bundle-cd.yml (SA geo-ci-bascule-prod), DISPATCHÉ par
+# l'étape 4 → à lancer APRÈS le merge sur main (workflow_dispatch exige le fichier sur main).
+# Les NetworkPolicies ne font PAS partie du bundle : netpol-geo-db-backup.k8s-apply.yaml est
+# appliquée par k8s (délégation) AVANT l'étape 4 (sinon le Job RO échoue : ns geo default-deny).
 #
 # 3 kubeconfigs GH dédiés (iso immo) :
 #   KUBE_CONFIG_DATA_PROD             ← SA geo-ci-bascule-prod    (ns geo)         apply du bundle
@@ -24,10 +26,9 @@
 #   (geo-db-ro-prod, geo-pra-writer-prod) = +4 secrets.
 #
 # Pré-requis : KUBECONFIG=<admin> exporté ; `gh` authentifié (repo+workflow) ;
-#   geo-db-ro-prod-sealed.yaml + geo-pra-writer-prod-sealed.yaml SCELLÉS et committés (geo-cond) ;
-#   netpol-geo-db-backup.k8s-apply.yaml appliquée (ingress postgis, default-deny ns geo) ;
-#   secrets préprod geo-backups-reader-preprod + geo-normalized-reader-preprod déposés (run) ;
-#   à lancer depuis la racine d'un checkout contenant deploy/ci/bascule-preprod.
+#   bundle mergé sur main, SealedSecrets geo-db-ro-prod-sealed.yaml + geo-pra-writer-prod-sealed.yaml
+#   committées (geo-cond) ; netpol-geo-db-backup.k8s-apply.yaml appliquée (k8s) ;
+#   secrets préprod geo-backups-reader-preprod + geo-normalized-reader-preprod déposés (run).
 # Idempotent : apply / `gh secret set` / `gh variable set` écrasent ; delete = --ignore-not-found.
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
@@ -59,16 +60,13 @@ YAML
     "$SERVER" "$ca" "$ns" "$(printf %s "$tok" | base64 -d)" | base64 -w0
 }
 
-echo "== 0) garde : bundle prêt (SealedSecrets scellées, aucune valeur REPLACE_WITH_) =="
+echo "== 0) garde : SealedSecrets committées + netpol postgis appliquée (délégation k8s) =="
 for f in geo-db-ro-prod-sealed.yaml geo-pra-writer-prod-sealed.yaml; do
   grep -Eq '^kind: SealedSecret' "$BUNDLE/$f" 2>/dev/null \
-    || { echo "FATAL: $BUNDLE/$f absent ou non scellé (SealedSecret committée par geo-cond). Rien appliqué." >&2; exit 1; }
+    || { echo "FATAL: $BUNDLE/$f absent ou non scellé (SealedSecret committée par geo-cond)." >&2; exit 1; }
 done
-for f in geo-db-ro-prod-sealed.yaml geo-pra-writer-prod-sealed.yaml cronjob-db-backup-prod.yaml db-ro-role-provision.yaml; do
-  if grep -Ev '^[[:space:]]*#' "$BUNDLE/$f" | grep -q 'REPLACE_WITH_'; then
-    echo "FATAL: $BUNDLE/$f contient encore une valeur REPLACE_WITH_ (ex. EXPECTED_DATABASE fourni par k8s). Rien appliqué." >&2; exit 1
-  fi
-done
+kubectl -n "$NS" get networkpolicy allow-geo-db-backup-to-postgis -o name \
+  || { echo "FATAL: netpol allow-geo-db-backup-to-postgis absente (appliquer $BUNDLE/netpol-geo-db-backup.k8s-apply.yaml)." >&2; exit 1; }
 
 echo "== 1) apply RBAC des SA dédiées : geo-ci-bascule-prod (ns geo, VAP ClusterRole + impersonate) + geo-ci-bascule-preprod (ns geo-preprod) =="
 kubectl apply -f "$BUNDLE/rbac-ci-bascule-prod.yaml"
@@ -78,52 +76,22 @@ echo "== 2) mint legacy tokens -> GH secrets KUBE_CONFIG_DATA_PROD + KUBE_CONFIG
 mint_kubeconfig_b64 "$NS" geo-ci-bascule-prod | gh secret set KUBE_CONFIG_DATA_PROD --repo "$REPO"
 mint_kubeconfig_b64 "$NS_PREPROD" geo-ci-bascule-preprod | gh secret set KUBE_CONFIG_DATA_BASCULE_PREPROD --repo "$REPO"
 
-echo "== 3) 1er apply du bundle OWNER-DIRECT (mêmes pas que bascule-bundle-cd.yml, gate anti-RCE inclus) =="
-kubectl -n "$NS" get deploy geo-api -o name
-kubectl -n "$NS" apply -f "$BUNDLE/geo-db-ro-prod-sealed.yaml"
-kubectl -n "$NS" apply -f "$BUNDLE/geo-pra-writer-prod-sealed.yaml"
-for ss in geo-db-ro-prod geo-pra-writer-prod; do
-  for i in $(seq 1 24); do
-    s="$(kubectl -n "$NS" get sealedsecret "$ss" -o 'jsonpath={.status.conditions[?(@.type=="Synced")].status}' 2>/dev/null || true)"
-    [ "$s" = "True" ] && { echo "   SealedSecret ${ss}: Synced=True"; break; }
-    [ "$i" -eq 24 ] && echo "   WARN: ${ss} Synced non confirmé (le Job RO ci-dessous est le garde fail-closed)" >&2
-    sleep 5
-  done
-done
-kubectl -n "$NS" delete job geo-db-ro-role-provision --ignore-not-found
-kubectl -n "$NS" apply -f "$BUNDLE/db-ro-role-provision.yaml"
-kubectl -n "$NS" wait --for=condition=complete job/geo-db-ro-role-provision --timeout=300s
-kubectl -n "$NS" apply -f "$BUNDLE/cronjob-db-backup-prod.yaml"
-[ "$(kubectl -n "$NS" get cronjob geo-db-backup-prod -o jsonpath='{.spec.suspend}')" = "true" ] \
-  || { echo "FATAL: geo-db-backup-prod non dormant (spec.suspend != true)" >&2; exit 1; }
-kubectl apply -f "$BUNDLE/vap-ci-trigger-suspend-only.yaml"
-kubectl -n "$NS" apply -f "$BUNDLE/rbac-ci-trigger-prod.yaml"
-sleep "${VAP_PROPAGATION_SEC:-20}"
-SA="system:serviceaccount:${NS}:geo-ci-trigger-prod"
-neutralize() { kubectl -n "$NS" patch role geo-ci-trigger-prod --type=merge -p '{"rules":[]}' || true; }
-set +e
-out_a="$(kubectl --as="$SA" -n "$NS" patch cronjob geo-db-backup-prod --type=merge --dry-run=server \
-  -p '{"spec":{"jobTemplate":{"spec":{"template":{"spec":{"containers":[{"name":"upload","image":"evil"}]}}}}}}' 2>&1)"; rc_a=$?
-out_b="$(kubectl --as="$SA" -n "$NS" patch cronjob geo-db-backup-prod --type=merge --dry-run=server \
-  -p '{"spec":{"suspend":false}}' 2>&1)"; rc_b=$?
-set -e
-echo "   (A) jobTemplate mutation rc=${rc_a} : ${out_a}"
-echo "   (B) suspend flip        rc=${rc_b} : ${out_b}"
-if [ "$rc_a" -eq 0 ] || ! printf '%s' "$out_a" | grep -qi 'geo-ci-trigger-suspend-only\|jobTemplate' || [ "$rc_b" -ne 0 ]; then
-  echo "FATAL: gate anti-RCE ÉCHOUÉ — Role T1 neutralisé (rules: []). NE PAS minter KUBE_CONFIG_DATA_PROD_TRIGGER." >&2
-  neutralize; exit 1
-fi
-echo "   gate anti-RCE OK — (A) DENIED par la VAP, (B) ALLOWED."
-
-echo "== 4) le bundle a créé la SA trigger : mint legacy token geo-ci-trigger-prod -> KUBE_CONFIG_DATA_PROD_TRIGGER =="
-mint_kubeconfig_b64 "$NS" geo-ci-trigger-prod | gh secret set KUBE_CONFIG_DATA_PROD_TRIGGER --repo "$REPO"
-
-echo "== 5) arm apply-au-merge (bascule-bundle-cd.yml, effectif une fois le workflow sur main) =="
+echo "== 3) arm apply-au-merge =="
 gh variable set BASCULE_BUNDLE_CD_ENABLED --repo "$REPO" --body true
 
-echo "== 6) arm run planifié (03:17 UTC, bascule-preprod.yml) =="
+echo "== 4) dispatch bascule-bundle-cd (applique le bundle en prod) + attente (gate anti-RCE inclus) =="
+gh workflow run bascule-bundle-cd.yml --repo "$REPO"
+sleep 6
+RID="$(gh run list --repo "$REPO" --workflow bascule-bundle-cd.yml -L1 --json databaseId --jq '.[0].databaseId')"
+echo "   run id=$RID"
+gh run watch "$RID" --repo "$REPO" --exit-status   # échoue (set -e) si l'apply/gate échoue
+
+echo "== 5) le bundle a créé la SA trigger : mint legacy token geo-ci-trigger-prod -> KUBE_CONFIG_DATA_PROD_TRIGGER =="
+mint_kubeconfig_b64 "$NS" geo-ci-trigger-prod | gh secret set KUBE_CONFIG_DATA_PROD_TRIGGER --repo "$REPO"
+
+echo "== 6) arm run planifié (03:17 UTC) =="
 gh variable set BASCULE_SCHEDULE_ENABLED --repo "$REPO" --body true
 
-# (7) cleanup dormants immo (radar-ci-setup-prod, radar-intratenant-executor, secrets GH superseded) : N-A côté geo
-#     (aucun bootstrap v1 n'a existé pour geo).
-echo "== install one-time TERMINÉE — bundle appliqué, 3 kubeconfigs posés, CD-native armé. =="
+# (7) cleanup dormants immo (radar-ci-setup-prod, radar-intratenant-executor, GH secrets superseded) :
+#     N-A côté geo (aucun bootstrap v1 n'a existé pour geo).
+echo "== install one-time TERMINÉE — CD-native armé (apply-au-merge + run planifié). =="

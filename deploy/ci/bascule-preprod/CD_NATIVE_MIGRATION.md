@@ -14,8 +14,9 @@ CONFIRM G3, recon-before-rollout G4, positive DB control in-cluster), runner sta
 
 | immo | geo |
 | --- | --- |
-| first bundle via `gh workflow run bascule-bundle-cd.yml` from the install script | first bundle applied **owner-direct** by `install-cd-bootstrap.sh` (same steps + anti-RCE gate): the workflow is not on `main` yet |
+| first bundle via `gh workflow run bascule-bundle-cd.yml` from the install script | identical (run after the merge to `main`) |
 | cleanup of v1 dormants (`radar-ci-setup-prod`, GH secrets) | N-A (no v1 bootstrap for geo) |
+| no NetworkPolicy prerequisite | `netpol-geo-db-backup.k8s-apply.yaml` applied by k8s BEFORE the first dispatch (ns geo `default-deny-ingress`, postgis had no allow) — outside the bundle |
 | run S0→S7 incl. quiesce, restore, migrate, flip, refresh | S0 → S1 dump → S3 copy `normalized/` → S3b recon → S5' rollout → S7 smoke (no preprod PG, no writer to freeze) |
 
 ## Flow — one-time install, then everything automated
@@ -28,10 +29,10 @@ CONFIRM G3, recon-before-rollout G4, positive DB control in-cluster), runner sta
   │ 1. apply rbac-ci-bascule-prod.yaml (ns geo) + rbac-ci-bascule-preprod.yaml   │
   │ 2. mint tokens → GH secrets KUBE_CONFIG_DATA_PROD,                           │
   │      KUBE_CONFIG_DATA_BASCULE_PREPROD                                        │
-  │ 3. FIRST bundle apply, owner-direct: SealedSecrets → RO-role Job → dormant   │
-  │      CronJob → VAP → RBAC T1 → anti-RCE gate (A denied / B allowed)          │
-  │ 4. mint token geo-ci-trigger-prod → GH secret KUBE_CONFIG_DATA_PROD_TRIGGER  │
-  │ 5. gh variable set BASCULE_BUNDLE_CD_ENABLED true   (apply on merge)         │
+  │ 3. gh variable set BASCULE_BUNDLE_CD_ENABLED true   (apply on merge)         │
+  │ 4. gh workflow run bascule-bundle-cd.yml + watch: SealedSecrets → RO-role    │
+  │      Job → dormant CronJob → VAP → RBAC T1 → anti-RCE gate                   │
+  │ 5. mint token geo-ci-trigger-prod → GH secret KUBE_CONFIG_DATA_PROD_TRIGGER  │
   │ 6. gh variable set BASCULE_SCHEDULE_ENABLED true    (nightly run)            │
   └─────────────────────────────────────────────────────────────────────────────┘
                                    │

@@ -2,11 +2,14 @@
 # aucun SA CI geo n'a de verbe networkpolicies). Pas d'équivalent committé côté immo (réseau immo ouvert) :
 # spécifique geo, car le ns geo porte un default-deny-ingress.
 #
-#   1. allow-geo-db-backup-to-postgis (INGRESS, ns geo) : admet sur postgis:5432 les pods du bundle bascule
-#      (CronJob geo-db-backup-prod + Job geo-db-ro-role-provision, label role=pra-backup). SANS elle, le
-#      default-deny-ingress du ns geo bloque le pg_dump et le psql de provision → Job en échec.
+#   1. allow-geo-db-backup-to-postgis (INGRESS, ns geo) : UNIQUE netpol d'ingress postgis (postgis n'a aucun
+#      allow aujourd'hui) ; admet sur postgis:5432 À LA FOIS les pods du Job geo-db-ro-role-provision ET ceux
+#      du CronJob geo-db-backup-prod, via leur label COMMUN role=pra-backup (posé sur les 2 pod templates du
+#      bundle). SANS elle, le default-deny-ingress du ns geo bloque le psql de provision et le pg_dump.
 #   2. allow-geo-db-backup-egress (EGRESS, ns geo) : ces mêmes pods ne sortent que vers DNS + postgis:5432 +
 #      S3-BHS 54.39.60.208/32:443 (upload du dump vers radar-immobilier-backups-preprod).
+# Hors bundle : le CD bascule-bundle-cd.yml ne l'applique PAS (délégation k8s) ; à appliquer AVANT le 1er
+# dispatch du CD (install-cd-bootstrap.sh le vérifie).
 #
 # Les Jobs PRÉPROD du run (freshness, recon, docs-sync) n'ont besoin de RIEN de nouveau : ils portent le label
 # app.kubernetes.io/name=geo-preprod-sync et réutilisent la netpol EXISTANTE allow-geo-sync-egress (DNS + S3-BHS).

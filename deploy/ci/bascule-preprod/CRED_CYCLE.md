@@ -45,7 +45,7 @@ via psql `\getenv` (never in argv/logs). To confirm on the geo postgis: `log_sta
 | --- | --- | --- |
 | `KUBE_CONFIG_DATA_PROD` | `geo-ci-bascule-prod` (ns geo) | `install-cd-bootstrap.sh` step 2 |
 | `KUBE_CONFIG_DATA_BASCULE_PREPROD` | `geo-ci-bascule-preprod` (ns geo-preprod) | step 2 |
-| `KUBE_CONFIG_DATA_PROD_TRIGGER` | `geo-ci-trigger-prod` (ns geo) | step 4 (after the anti-RCE gate) |
+| `KUBE_CONFIG_DATA_PROD_TRIGGER` | `geo-ci-trigger-prod` (ns geo) | step 5 (after the bundle CD run and its anti-RCE gate) |
 
 Legacy SA token secrets (non-expiring, like the existing deployers): rotation = delete the
 `<sa>-token` secret and re-run the corresponding mint step.
