@@ -90,7 +90,19 @@ spec:
             failureThreshold: 6
           resources:
             requests:
-              cpu: 30m
+              # 30m -> 15m (2026-09-25, nœud OVH unique saturé en requests CPU).
+              # Mesuré cgroup v2 sur postgis-0 (11,75 j) : moyenne 9,2m sur la vie
+              # du conteneur, 9,9m sur une fenêtre de 89 s — consommation stable.
+              # 15m = moyenne × 1,5. Le live tourne à 10m depuis un
+              # `kubectl set resources` hors dépôt du 2026-09-14 : c'est sans marge
+              # au-dessus de la moyenne, ne pas descendre plus bas.
+              #
+              # ⚠️ Aucune limite CPU déclarée ici : le LimitRange du namespace
+              # (poc-k8s, tenants/geo) injecte `default.cpu: 100m`. Mesuré :
+              # 69,8 % des périodes CFS actives sont throttlées à ce plafond
+              # (cpu.stat nr_throttled/nr_periods). Sujet distinct des requests,
+              # non modifié ici (quota limits.cpu, redémarrage du pod).
+              cpu: 15m
               memory: 160Mi
             limits:
               memory: 768Mi
