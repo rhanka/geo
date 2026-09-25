@@ -55,6 +55,13 @@ export {
   type ServedZoneRef,
 } from "./bascule/served-canonical-ids.js";
 export {
+  collectionFeaturesToRefs,
+  municipalSlugFromNormalizedKey,
+  type CollectionServedRefs,
+  type MinimalFeature,
+  type ServedCollectionKind,
+} from "./bascule/served-ids-mapping.js";
+export {
   buildCasInventory,
   casObjectKey,
   planCasCopies,
