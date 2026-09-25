@@ -822,6 +822,84 @@ item track `01M2TA835K11WSEHKDJFERFACE`.
 **Réfs.** ADR-0022 (WP + rôles gelés) · `SPEC_WORKPACKAGES.md` §1 (maturité) / §3 (rôles) / §4 (chiffres non
 fiables) / §8 (consolidation) · `acquisition/config/fleet.json` · discussion propriétaire 2026-09-17.
 
+## ADR-0034 — **Moteur LLM d'extraction PV = politique du refresh immo (adoption à la reprise des jobs PV)** · accepted · 2026-09-25
+
+**Statut `accepted` — sur RECORD owner-direct** (ci-dessous, porté par geo-cond, pattern ADR-0030) ; **non
+effectif** avant la reprise des jobs PV (voir Conséquence). Le flip ne repose ni sur un relais ni sur un say-so peer.
+
+> **Record owner-direct** — **capturé par geo-cond, 1re main.** Session Claude Code
+> `70bd4185-531d-4669-b520-30a2a7c6270a` (geo-cond), message owner saisi en cours de tour (entrée transcript
+> `attachment/queued_command` `c7ca3f92-7d78-4462-8c10-cc287a8706b2`), **2026-09-25T21:40:04Z** — **verbatim** :
+> « pour le llm on utilisera le meme modele que pour i-cond qui a ete livré pour le refresh, mais dans une version
+> utlérieur, faudrait au moins updater le minimu, pour mettre en cohérence avec l'orientation prise sur i-cond
+> sachant qu'a terme on reversera les job de pv d'immo vers geo mais ce n,est pas encore priorisé ».
+> **Lecture** : « le même modèle que pour i-cond … livré pour le refresh » = politique du refresh PV immo
+> ci-dessous ; « dans une version ultérieure » = non effectif maintenant ; « au moins updater le minimum » = ce
+> record + la note `CLAUDE.md` + le test de non-ban, sans code de production.
+
+**Contexte.** geo possède l'acquisition des PV (ADR-0023), mais **aucun job PV geo n'appelle de LLM** aujourd'hui :
+`acquisition/src/pv-graphify-semantic-run.ts:6` est une extraction déterministe (« no model/backend is selected
+here ») ; seul l'OCR Mistral `/v1/ocr` intervient (ADR-0024). L'extraction LLM des PV tourne chez immo (refresh PV) ;
+son reversement vers geo est prévu **à terme, non priorisé**. Politique livrée par immo (radar-immobilier
+`origin/main` `813ffa6a`) :
+- `deploy/k8s/34-refresh-cronjob.yaml:163-179` — valeurs du tableau ci-dessous ;
+  `REFRESH_MAX_OUTPUT_TOKENS=32768`, `REFRESH_TIMEOUT_MS=900000` ;
+- **aucune valeur par défaut en code** : `api/src/scripts/refresh-pv.ts:86-94` exige
+  `<PREFIX>_PROVIDER` / `_MODEL` / `_REASONING_EFFORT` ;
+- transport : bibliothèque `@sentropic/llm-mesh@0.19.2` dans le pod (`api/src/services/graph/refresh-mesh.ts:107-127`),
+  OpenAI via `CodexRuntimeClient` (siège Codex), Gemini via `CloudCodeRuntimeClient` ; credentials dans un
+  `EncryptedFileKeyring` sur PVC ;
+- garde CI : `deploy/k8s/refresh-cronjobs/refresh-018.mk:175-186` (`verify-renders`) ;
+- décision tracée : commit `dde0e570` (2026-09-19, astra `low` → `medium` + passe de vérification gemini `low`) ;
+  `docs/reports/benchmark-v101b-2026-09-17.md` §1 (« Décision de l'owner : … astra-medium suivi d'une vérification
+  gemini-3.8 low », F1 0,506).
+
+**Décision (proposed).** Le moteur LLM d'extraction PV de geo **est** la politique du refresh immo :
+
+| rôle | provider | modèle | effort | règle |
+|---|---|---|---|---|
+| principal | `openai` | `gpt-6-astra` | `medium` | `PRIMARY_QUALITY_ATTEMPTS=2` |
+| repli | `gemini` | `gemini-3.8-flash` | `low` | sortie du repli **jamais vérifiée** |
+| vérification | `gemini` | `gemini-3.8-flash` | `low` | `VERIFY_ENABLED=1` ; ne peut que **retirer** des actes, jamais en ajouter |
+
+Provenance des colonnes : provider / modèle / effort / `PRIMARY_QUALITY_ATTEMPTS` / `VERIFY_ENABLED` = **config**
+(`34-refresh-cronjob.yaml:163-179`, relecture confirmée par i-cond le 2026-09-25). Les deux règles de
+**comportement** ne sont pas dans la config ; elles sont sourcées sur le **code** immo `813ffa6a` (`api/src/services/graph/`) :
+- **repli jamais vérifié** — `refresh-model-policy.ts:102` (`verify()` rend l'extraction telle quelle dès que le
+  document est passé en repli : `if (!options.verification || selected?.reason) return input;`) et `:253` (le reçu
+  d'une extraction de repli porte `verification.status = "skipped-fallback"`) ;
+- **la vérification ne peut que retirer** — contrat `verificationContract: "v101b-removal-only-v3"`
+  (`refresh-model-policy.ts:95`) ; `refresh-verification.ts:141` (« No verifier-provided graph content is ever read
+  or copied into the accepted extraction »), `:191` (seul un verdict `non_soutenu` agit : `removed.add(id)`),
+  `:197` (sortie = nœuds et arêtes de l'entrée **filtrés**) ; un vérificateur en échec garde l'extraction acceptée
+  (`refresh-model-policy.ts:147`).
+
+Tant que les jobs ne sont pas reversés, la source de vérité reste le manifeste immo ; à la reprise, geo reprend les
+valeurs alors en vigueur chez immo (ADR de suivi si elles diffèrent de celles-ci).
+
+**Périmètre.** Extraction PV **uniquement**. Ne changent pas : ADR-0024 (ban `mistral-medium-*` / `pixtral-*`,
+`/v1/ocr` seul usage Mistral sanctionné) ; le moteur vision des grilles (remplaçant toujours en attente de
+double-consensus + ratification geo-archi) ; les lanes grilles `gpt-5.5` / `xhigh`. `vision-engine-policy.ts` n'est
+pas modifié ; son test vérifie seulement que `gpt-6-astra` et `gemini-3.8-flash` ne sont pas attrapés par le ban.
+
+**Conséquence — non effectif** avant la reprise des jobs PV immo → geo (non priorisée) : aucun code geo ne change.
+**À la reprise :**
+1. **pas de constante par défaut en code** : provider / modèle / effort (principal, repli, vérification) viennent de
+   variables obligatoires équivalentes aux `REFRESH_*` ; absence = échec dur (même règle qu'ADR-0024 : un modèle
+   doit être explicite) ;
+2. les valeurs vivent dans le **manifeste du CronJob geo** (git), jamais dans le code ni une config locale ;
+3. **garde CI** équivalente à `verify-renders` : le rendu du manifeste porte les valeurs attendues, aucune variable
+   manquante ;
+4. transport cohérent avec **ADR-0032 option A** (PR #363, `proposed`) : credential dans le pod, sièges Codex et
+   Cloud Code, sous l'invariant `A ⟹ α` d'ADR-0032 (cap quota, kill-switch, gate `needs_llm`) ;
+5. **`unverified`** : que `@sentropic/llm-mesh@0.19.2` (version épinglée par immo) contienne le correctif
+   `8aee7f615` exigé par ADR-0032 pour la jambe Gemini — à vérifier avant la reprise, sinon épingler une version
+   qui le contient.
+
+**Réfs.** ADR-0023 (geo possède les PV) · ADR-0024 (ban vision-chat Mistral) · ADR-0032 (PR #363, credential dans le
+pod) · radar-immobilier `813ffa6a` (fichiers ci-dessus) · `dde0e570` · `benchmark-v101b-2026-09-17.md` §1 ·
+`acquisition/src/pv-graphify-semantic-run.ts:6`.
+
 ## Méthode de décision
 
 Décisions structurantes : 2 conseillers Opus-4.8 indépendants (lecture seule) → le conductor
