@@ -3,7 +3,9 @@ import { describe, expect, it } from "vitest";
 import {
   buildCasInventory,
   casObjectKey,
+  planCasCopies,
   reconcileCasInventory,
+  serializeCasInventory,
   type CasInventory,
   type CasTargetEntry,
 } from "./cas-inventory.js";
@@ -42,6 +44,36 @@ describe("buildCasInventory", () => {
     expect(inv.count).toBe(0);
     expect(inv.totalBytes).toBe(0);
     expect(inv.setHash).toMatch(/^[0-9a-f]{64}$/);
+  });
+});
+
+describe("serializeCasInventory", () => {
+  it("is deterministic, newline-terminated, and round-trips", () => {
+    const inv = buildCasInventory("c1", [{ sourceKey: "raw/a/cas/aaa", sha256: "aaa", size: 5 }]);
+    const s = serializeCasInventory(inv);
+    expect(s.endsWith("\n")).toBe(true);
+    expect(serializeCasInventory(inv)).toBe(s);
+    expect(JSON.parse(s).setHash).toBe(inv.setHash);
+  });
+});
+
+describe("planCasCopies", () => {
+  const inv = buildCasInventory("c1", [
+    { sourceKey: "raw/a/cas/aaa", sha256: "aaa", size: 1 },
+    { sourceKey: "raw/a/cas/bbb", sha256: "bbb", size: 1 },
+    { sourceKey: "raw/a/cas/ccc", sha256: "ccc", size: 1 },
+  ]);
+
+  it("copies only the sha256s absent from the backup (dedup)", () => {
+    expect(planCasCopies(inv, new Set(["bbb"]))).toEqual(["aaa", "ccc"]);
+  });
+
+  it("copies nothing when the backup already holds the whole set", () => {
+    expect(planCasCopies(inv, new Set(["aaa", "bbb", "ccc"]))).toEqual([]);
+  });
+
+  it("copies everything against an empty backup", () => {
+    expect(planCasCopies(inv, new Set())).toEqual(["aaa", "bbb", "ccc"]);
   });
 });
 

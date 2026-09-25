@@ -57,7 +57,9 @@ export {
 export {
   buildCasInventory,
   casObjectKey,
+  planCasCopies,
   reconcileCasInventory,
+  serializeCasInventory,
   type CasInventory,
   type CasInventoryEntry,
   type CasReconcileResult,
