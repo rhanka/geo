@@ -143,6 +143,9 @@ spec:
               value: "${COPY_GRANTEE}"
             - name: COPY_PREFIX
               value: "${COPY_PREFIX}"
+          # CopyObject server-side : le pod n'émet que des appels API, aucun octet ne le
+          # traverse → request CPU 25m (iso s3-check), limit inchangée. Nœud unique à ~91m
+          # libres (k8s, 2026-09-25) : pic des 2 jambes = dump 50m + recon 25m + surge geo-api 10m.
           resources:
-            requests: { cpu: 100m, memory: 192Mi }
+            requests: { cpu: 25m, memory: 192Mi }
             limits: { cpu: 500m, memory: 512Mi }
