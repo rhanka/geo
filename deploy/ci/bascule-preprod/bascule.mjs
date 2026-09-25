@@ -25,8 +25,18 @@
 // TOUT l'accès object-store (copie/LIST/freshness) vit dans des Jobs PRÉPROD
 // verdict-only (creds via secretKeyRef in-cluster ; exit code seul).
 //
+//   DEUX JAMBES INDÉPENDANTES, jouées EN PARALLÈLE (directive i-cond validée owner ;
+//   2 jobs du workflow SANS `needs:` entre eux, statut GitHub rendu séparément) :
+//     jambe PG = preflight pg → dump ;
+//     jambe S3 = preflight s3 → copy-docs → recon → rollout → smoke.
+//   Aucune dépendance de données PG→S3 côté geo (pas de restore préprod) ; seul un
+//   futur orchestrateur e2e les couplera.
+//
 //   Sous-commandes :
-//     preflight   S0  — binaires runner (kubectl/node/curl) + params.
+//     preflight   S0  — binaires runner (kubectl/node[/curl]) + params. Argument
+//                       optionnel de JAMBE : `preflight pg` | `preflight s3` ne
+//                       vérifie que les paramètres de cette jambe ; sans argument =
+//                       les deux (comportement historique). Jambe inconnue → échec.
 //     dump        S1  — DÉCLENCHEUR T1 : patch CronJob prod geo-db-backup-prod
 //                       suspend=false (kubeconfig PROD dédié DUMP_KUBECONFIG), Job
 //                       freshness (poll interne, verdict), re-suspend.
@@ -261,27 +271,58 @@ function dispatchS3Check({ mode, jobName, secret, accessKeyName = "S3_ACCESS_KEY
 }
 
 // =============================================================================
-// S0 — preflight : binaires + params (0 cred S3/DB runner)
+// preflightRequirements — fonction PURE : binaires + params exigés par JAMBE.
+// Les jambes PG et S3 tournent en PARALLÈLE dans 2 jobs distincts : chacune ne
+// vérifie que SES paramètres (un job PG ne doit pas échouer faute d'URL API, un job
+// S3 faute de DUMP_BUCKET). Sans jambe = les DEUX = liste historique, inchangée.
+// Jambe inconnue → null (l'appelant échoue, fail-closed : jamais de preflight vide).
+//   pg : dump (S1) — EXPECTED_DATABASE (clé ⊇ DB), BHS (endpoint du Job freshness),
+//        DUMP_BUCKET. 0 curl (pas de smoke dans cette jambe).
+//   s3 : copy-docs/recon/rollout (BHS, PROD_DOCS, PREPROD_DOCS) + smoke (URLs API, curl).
 // =============================================================================
-function cmdPreflight() {
-  section("S0 preflight");
-  const bins = ["node", "kubectl", "curl"];
+const PREFLIGHT_ALL = Object.freeze({
+  bins: ["node", "kubectl", "curl"],
+  params: ["EXPECTED_DATABASE", "BHS", "PROD_DOCS", "PREPROD_DOCS", "DUMP_BUCKET", "PREPROD_API_URL", "PROD_API_URL"],
+});
+const PREFLIGHT_LEGS = Object.freeze({
+  pg: Object.freeze({ bins: ["node", "kubectl"], params: ["EXPECTED_DATABASE", "BHS", "DUMP_BUCKET"] }),
+  s3: Object.freeze({ bins: ["node", "kubectl", "curl"], params: ["BHS", "PROD_DOCS", "PREPROD_DOCS", "PREPROD_API_URL", "PROD_API_URL"] }),
+});
+
+export function preflightRequirements(leg) {
+  const pick = leg === undefined || leg === null || leg === "" ? PREFLIGHT_ALL : Object.hasOwn(PREFLIGHT_LEGS, leg) ? PREFLIGHT_LEGS[leg] : null;
+  if (!pick) return null;
+  return { bins: [...pick.bins], params: [...pick.params] };
+}
+
+// =============================================================================
+// S0 — preflight [pg|s3] : binaires + params (0 cred S3/DB runner)
+// =============================================================================
+function cmdPreflight(args = []) {
+  const leg = args[0];
+  const reqs = preflightRequirements(leg);
+  if (!reqs) die(`S0 preflight — jambe inconnue '${leg}' : attendu 'pg', 's3' ou aucune (= les deux). Rien n'a été vérifié.`);
+  const label = leg ? `jambe ${leg}` : "jambes pg + s3";
+  section(`S0 preflight (${label})`);
+  const bins = reqs.bins;
   const missing = bins.filter((b) => run("bash", ["-lc", `command -v ${b}`], { capture: true, allowFail: true }).status !== 0);
   if (missing.length) die(`binaires manquants sur le runner : ${missing.join(", ")}`);
-  log(`binaires présents (runner kubectl-only + curl smoke) : ${bins.join(", ")}`);
+  log(`binaires présents (runner kubectl-only${bins.includes("curl") ? " + curl smoke" : ""}) : ${bins.join(", ")}`);
 
   // Params indispensables (présence seule — NON secrets). AUCUNE cred S3/DB runner.
   // EXPECTED_DATABASE = nom LITTÉRAL de la DB prod geo (fourni par k8s : il n'existe que
   // dans le secret geo-postgis-credentials) — var de dépôt BASCULE_EXPECTED_DATABASE.
-  const required = ["EXPECTED_DATABASE", "BHS", "PROD_DOCS", "PREPROD_DOCS", "DUMP_BUCKET", "PREPROD_API_URL", "PROD_API_URL"];
+  const required = reqs.params;
   const absent = required.filter((k) => !process.env[k]);
   if (absent.length) die(`paramètres CI absents : ${absent.join(", ")}`);
   log(`paramètres présents : ${required.length} clés (0 cred S3/DB runner)`);
   // Contrôle POSITIF EXPECTED_DATABASE — hors runner, fail-closed in-cluster : (a) Job
   // freshness — clé du dump frais ⊇ EXPECTED_DATABASE ; (c) CronJob dump — refuse si
   // current_database() != EXPECTED_DATABASE. (b immo — header archive au restore : N-A.)
-  log(`EXPECTED_DATABASE='${process.env.EXPECTED_DATABASE}' — contrôle positif assuré in-cluster (CronJob + Job freshness).`);
-  log("S0 preflight OK");
+  if (required.includes("EXPECTED_DATABASE")) {
+    log(`EXPECTED_DATABASE='${process.env.EXPECTED_DATABASE}' — contrôle positif assuré in-cluster (CronJob + Job freshness).`);
+  }
+  log(`S0 preflight OK (${label})`);
 }
 
 // =============================================================================
@@ -554,8 +595,10 @@ function main() {
   const isHelp = !cmd || cmd === "-h" || cmd === "--help";
   if (isHelp || !COMMANDS[cmd]) {
     console.log(
-      "usage: node bascule.mjs <preflight|dump|copy-docs|recon|rollout|smoke>\n" +
+      "usage: node bascule.mjs <preflight [pg|s3]|dump|copy-docs|recon|rollout|smoke>\n" +
         "  RUNNER KUBECTL-ONLY : 0 cred S3, 0 pg_dump, 0 listing/clé sur le runner ; .status seul (0 kubectl logs).\n" +
+        "  2 jambes PARALLÈLES : PG = preflight pg → dump ; S3 = preflight s3 → copy-docs → recon → rollout → smoke.\n" +
+        "  preflight (S0) : sans argument = les deux jambes ; 'pg' | 's3' = params de cette jambe seule.\n" +
         "  dump (S1) : DÉCLENCHEUR — patch CronJob prod geo-db-backup-prod suspend=false (kubeconfig PROD),\n" +
         "    Job freshness (poll interne, verdict), re-suspend. Dump réel = CronJob (ns geo).\n" +
         "  copy-docs (S3) : Job geo-api CopyObject server-side additif normalized/ prod → préprod ; DRY=1 → non jouée.\n" +
@@ -566,7 +609,7 @@ function main() {
     );
     process.exit(isHelp ? 0 : 1);
   }
-  COMMANDS[cmd]();
+  COMMANDS[cmd](process.argv.slice(3));
 }
 
 const invokedDirectly = process.argv[1]

@@ -1,11 +1,18 @@
 # bascule-preprod — BASCULE PROD → PRÉPROD geo (« iso-prod »), rejouable SANS IA.
 #
 # CLONE geo de radar-immobilier:.github/workflows/bascule-preprod.yml (recette i-cond).
-# Sous-ensemble iso de S0→S7 (arbitrage i-cond, préprod geo SANS PostgreSQL) :
-#   S0 preflight → S1 dump (trigger CronJob prod geo-db-backup-prod + Job freshness +
-#   re-suspend) → S3/S4 copy-docs (normalized/ DIRECT prod→préprod, CopyObject
-#   server-side additif) → S3b recon (dest ⊇ src) → S5' rollout restart geo-api
-#   (GARDE G4) → S7 smoke (verify THROUGH l'API publique, runner).
+# Sous-ensemble iso de S0→S7 (arbitrage i-cond, préprod geo SANS PostgreSQL), en
+# DEUX JAMBES INDÉPENDANTES jouées EN PARALLÈLE (directive i-cond, validée owner) :
+# 2 jobs SANS `needs:` entre eux → chaque jambe rend son statut GitHub SÉPARÉMENT.
+#   job `pg` : S0 preflight pg → S1 dump (trigger CronJob prod geo-db-backup-prod +
+#              Job freshness préprod + re-suspend). N'attend RIEN de S3.
+#   job `s3` : S0 preflight s3 → S3/S4 copy-docs (normalized/ DIRECT prod→préprod,
+#              CopyObject server-side additif) → S3b recon (dest ⊇ src) → S5' rollout
+#              restart geo-api (GARDE G4) → S7 smoke (verify THROUGH l'API publique,
+#              runner). N'attend RIEN de PG.
+# Seul un futur orchestrateur e2e couplera les deux jambes.
+# ÉCART vs immo : immo = 1 job `bascule` séquentiel (le restore préprod consomme le
+# dump S1) ; geo n'a pas de restore préprod → aucune dépendance de données PG → S3.
 # RETIRÉS vs immo : quiesce/un-quiesce, S2 restore + G1 rollback, S2c migrate,
 # precheck-runs, flip GEO_DOCUMENTS_REPOINT, refresh/force-refresh (propres à immo).
 # Toute la LOGIQUE + les GARDES fail-closed sont en Node (bascule.mjs) ; ce workflow
@@ -15,8 +22,9 @@
 # runner. Il ne fait QUE kubectl (patch cronjob suspend, dispatch + OBSERVE .status
 # des Jobs — JAMAIS `kubectl logs` — rollout restart) + curl sur l'API geo PUBLIQUE.
 #
-# GO owner = l'input CONFIRM (GARDE G3, iso-prod-AAAA-MM-JJ, recoupé au jour UTC).
-# DRY_RUN=true par défaut = un dispatch nu ne fait RIEN de destructif.
+# GO owner = l'input CONFIRM (GARDE G3, iso-prod-AAAA-MM-JJ, recoupé au jour UTC),
+# vérifié dans CHAQUE job. DRY_RUN=true par défaut = un dispatch nu ne fait RIEN de
+# destructif (jambe pg : preflight seul ; jambe s3 : preflight + recon + smoke informatifs).
 name: bascule-preprod (iso-prod)
 
 on:
@@ -32,7 +40,7 @@ on:
         required: true
         type: string
       DRY_RUN:
-        description: "true = preflight + recon informative + smoke, RIEN de destructif"
+        description: "true = preflight (jambes pg + s3) + recon/smoke informatifs (jambe s3), RIEN de destructif"
         required: true
         type: boolean
         default: true
@@ -42,7 +50,8 @@ on:
         type: boolean
         default: false
 
-# Jamais deux bascules en parallèle (write préprod).
+# Jamais deux bascules en parallèle (write préprod) : verrou au niveau WORKFLOW (un
+# run à la fois) ; À L'INTÉRIEUR d'un run, les jobs `pg` et `s3` tournent en parallèle.
 concurrency:
   group: bascule-preprod
   cancel-in-progress: false
@@ -51,39 +60,34 @@ permissions:
   contents: read
 
 jobs:
-  bascule:
+  # ═══════════════════════════════════════════════════════════════════════════
+  # JAMBE PG — S1 dump prod (archive DR). Indépendante de la jambe S3 (0 `needs:`).
+  # Kubeconfigs : PROD-TRIGGER (2 patch cronjob prod, hors DRY) + PRÉPROD (le Job
+  # freshness geo-bascule-freshness tourne dans le ns geo-preprod).
+  # ═══════════════════════════════════════════════════════════════════════════
+  pg:
     # Un dispatch manuel tourne TOUJOURS (GO = CONFIRM) ; un run PLANIFIÉ ne joue que
     # si armé via vars.BASCULE_SCHEDULE_ENABLED == 'true' (OFF par défaut).
     if: ${{ github.event_name != 'schedule' || vars.BASCULE_SCHEDULE_ENABLED == 'true' }}
     runs-on: ubuntu-latest
-    # ÉCART geo : 180 min (immo 120) — la copie server-side de normalized/ est plus longue.
-    timeout-minutes: 180
+    # Iso immo (120) : freshness bornée par DUMP_TIMEOUT (1800 s) + CHECK_POLL_BUFFER.
+    timeout-minutes: 120
     env:
       CONFIRM: ${{ inputs.CONFIRM }}
       # ── RUNNER KUBECTL-ONLY (0 cred S3, 0 cred DB) : paramètres NON secrets ──
+      # BHS/S3_REGION = endpoint rendu dans le Job freshness (in-cluster).
       BHS: ${{ vars.BASCULE_BHS_ENDPOINT || 's3.bhs.io.cloud.ovh.net' }}
       S3_REGION: ${{ vars.BASCULE_AWS_REGION || 'bhs' }}
-      # « docs » = objets SERVIS geo : s3://<bucket>/normalized/ (même clé prod → préprod).
-      PROD_DOCS: ${{ vars.BASCULE_PROD_DOCS_BUCKET || 'sentropic-geo' }}
-      PREPROD_DOCS: ${{ vars.BASCULE_PREPROD_DOCS_BUCKET || 'sentropic-geo-preprod' }}
-      DOCS_SYNC_PREFIX: ${{ vars.BASCULE_DOCS_SYNC_PREFIX || 'normalized/' }}
       # ── Dump prod (déclencheur T1) : CronJob + bucket de backups ────────────
       DUMP_BUCKET: ${{ vars.BASCULE_DUMP_BUCKET || 'radar-immobilier-backups-preprod' }}
       DUMP_PREFIX: ${{ vars.BASCULE_DUMP_PREFIX || 'geo-postgres/prod/sets' }}
       DUMP_CRONJOB: ${{ vars.BASCULE_DUMP_CRONJOB || 'geo-db-backup-prod' }}
       DUMP_CRONJOB_NAMESPACE: ${{ vars.BASCULE_DUMP_CRONJOB_NAMESPACE || 'geo' }}
-      # ── Copy-docs Option A (NON secrets : nom de l'identité éphémère + grantee id) ──
-      # L'identité ÉPHÉMÈRE geo-normalized-src-preprod est créée par k8s au GO
-      # (ownerRef=Job geo-normalized-sync-prod-to-preprod, GC au TTL) — jamais ici.
-      # DOCS_SYNC_GRANTEE = canonical id OVH de l'identité serving préprod geo (GrantFullControl).
-      DOCS_SYNC_READ_SECRET: ${{ vars.BASCULE_DOCS_SYNC_READ_SECRET || 'geo-normalized-src-preprod' }}
-      DOCS_SYNC_GRANTEE: ${{ vars.BASCULE_DOCS_SYNC_GRANTEE || '1901410700457444:9056dbb240a04d2584ffbaec38171228' }}
-      # ── Contrôle positif source + cible cluster + smoke (API geo PUBLIQUE) ──
+      # ── Contrôle positif source + cible cluster ─────────────────────────────
       # EXPECTED_DATABASE = nom LITTÉRAL de la DB prod geo (fourni par k8s : "geo").
       EXPECTED_DATABASE: ${{ vars.BASCULE_EXPECTED_DATABASE || 'geo' }}
       PREPROD_NAMESPACE: ${{ vars.BASCULE_PREPROD_NAMESPACE || 'geo-preprod' }}
-      PREPROD_API_URL: ${{ vars.BASCULE_PREPROD_API_URL || 'https://api.preprod.geo.sent-tech.ca' }}
-      PROD_API_URL: ${{ vars.BASCULE_PROD_API_URL || 'https://api.geo.sent-tech.ca' }}
+      # Runner PROPRE au job (isolé de la jambe s3) → workdir non partagé.
       BASCULE_WORKDIR: ${{ github.workspace }}/.bascule-work
       CLI: deploy/ci/bascule-preprod/bascule.mjs
     steps:
@@ -107,11 +111,13 @@ jobs:
           node-version: "22"
 
       # RUNNER KUBECTL-ONLY : AUCUN outil de données/S3 sur le runner (0 aws, 0 s5cmd,
-      # 0 postgresql-client). pg_dump / aws-cli / aws-sdk vivent dans les Jobs.
+      # 0 postgresql-client). pg_dump / aws-cli vivent dans le CronJob et le Job.
       - name: Install kubectl
         uses: azure/setup-kubectl@v4
 
-      - name: Configure kubeconfig (préprod)
+      # kubeconfig PRÉPROD : le Job freshness (S1.b) est dispatché + observé dans le
+      # ns geo-preprod avec le kubeconfig PAR DÉFAUT.
+      - name: Configure kubeconfig (préprod — Job freshness)
         # Token DÉDIÉ moindre-privilège (SA geo-ci-bascule-preprod), PAS le déployeur
         # partagé KUBE_CONFIG_DATA_PREPROD (cd-preprod.yml).
         env:
@@ -176,9 +182,118 @@ jobs:
           fi
           echo "pre-flight PROD cluster OK — ${expected} (déclencheur dump S1)"
 
-      # ── S0 ────────────────────────────────────────────────────────────────
-      - name: S0 preflight (binaires + params + EXPECTED_DATABASE)
-        run: node "$CLI" preflight
+      # ── S0 (jambe pg : EXPECTED_DATABASE + BHS + DUMP_BUCKET) ──────────────
+      # En DRY, la jambe pg s'arrête ICI : rien de destructif (0 patch cronjob prod).
+      - name: S0 preflight pg (binaires + params PG + EXPECTED_DATABASE)
+        run: node "$CLI" preflight pg
+
+      # ══════════════ EXÉCUTION : S1 fail-closed (G3 dans bascule.mjs) ══════════════
+      - name: S1 dump prod (DÉCLENCHEUR T1 — patch CronJob + Job freshness)
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" dump
+
+      # Traçabilité : POINTEUR T1 uniquement, 0 contenu S3.
+      - name: Pointeurs jambe pg (T1 — PAS de contenu S3)
+        if: ${{ always() && !inputs.DRY_RUN }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bascule-pg-pointers-${{ github.run_id }}
+          path: ${{ github.workspace }}/.bascule-work/T1.txt
+          if-no-files-found: warn
+          retention-days: 7
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # JAMBE S3 — copie normalized/ + recon + rollout (G4) + smoke. Indépendante de la
+  # jambe PG (0 `needs:`). Kubeconfig PRÉPROD seul (0 accès prod : copie server-side
+  # par un Job préprod, identité éphémère k8s ; smoke via l'API publique).
+  # ═══════════════════════════════════════════════════════════════════════════
+  s3:
+    # Même armement que la jambe pg (dispatch = toujours ; schedule = si armé).
+    if: ${{ github.event_name != 'schedule' || vars.BASCULE_SCHEDULE_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    # ÉCART geo : 180 min (immo 120) — la copie server-side de normalized/ est plus longue.
+    timeout-minutes: 180
+    env:
+      CONFIRM: ${{ inputs.CONFIRM }}
+      # ── RUNNER KUBECTL-ONLY (0 cred S3, 0 cred DB) : paramètres NON secrets ──
+      BHS: ${{ vars.BASCULE_BHS_ENDPOINT || 's3.bhs.io.cloud.ovh.net' }}
+      S3_REGION: ${{ vars.BASCULE_AWS_REGION || 'bhs' }}
+      # « docs » = objets SERVIS geo : s3://<bucket>/normalized/ (même clé prod → préprod).
+      PROD_DOCS: ${{ vars.BASCULE_PROD_DOCS_BUCKET || 'sentropic-geo' }}
+      PREPROD_DOCS: ${{ vars.BASCULE_PREPROD_DOCS_BUCKET || 'sentropic-geo-preprod' }}
+      DOCS_SYNC_PREFIX: ${{ vars.BASCULE_DOCS_SYNC_PREFIX || 'normalized/' }}
+      # ── Copy-docs Option A (NON secrets : nom de l'identité éphémère + grantee id) ──
+      # L'identité ÉPHÉMÈRE geo-normalized-src-preprod est créée par k8s au GO
+      # (ownerRef=Job geo-normalized-sync-prod-to-preprod, GC au TTL) — jamais ici.
+      # DOCS_SYNC_GRANTEE = canonical id OVH de l'identité serving préprod geo (GrantFullControl).
+      DOCS_SYNC_READ_SECRET: ${{ vars.BASCULE_DOCS_SYNC_READ_SECRET || 'geo-normalized-src-preprod' }}
+      DOCS_SYNC_GRANTEE: ${{ vars.BASCULE_DOCS_SYNC_GRANTEE || '1901410700457444:9056dbb240a04d2584ffbaec38171228' }}
+      # ── Cible cluster + smoke (API geo PUBLIQUE) ───────────────────────────
+      PREPROD_NAMESPACE: ${{ vars.BASCULE_PREPROD_NAMESPACE || 'geo-preprod' }}
+      PREPROD_API_URL: ${{ vars.BASCULE_PREPROD_API_URL || 'https://api.preprod.geo.sent-tech.ca' }}
+      PROD_API_URL: ${{ vars.BASCULE_PROD_API_URL || 'https://api.geo.sent-tech.ca' }}
+      # Runner PROPRE au job (isolé de la jambe pg) → workdir non partagé.
+      BASCULE_WORKDIR: ${{ github.workspace }}/.bascule-work
+      CLI: deploy/ci/bascule-preprod/bascule.mjs
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute CONFIRM_EXPECTED (anti-rejeu = date du jour UTC) + auto-CONFIRM planifié
+        run: |
+          set -euo pipefail
+          today="iso-prod-$(date -u +%F)"
+          echo "CONFIRM_EXPECTED=${today}" >> "$GITHUB_ENV"
+          # Un run PLANIFIÉ n'a pas d'input CONFIRM → la PLANIFICATION EST le GO ; le
+          # motif anti-rejeu reste la date du jour. Un dispatch garde le CONFIRM tapé.
+          if [ "${{ github.event_name }}" = "schedule" ]; then
+            echo "CONFIRM=${today}" >> "$GITHUB_ENV"
+            echo "auto-CONFIRM (schedule) = ${today}"
+          fi
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # RUNNER KUBECTL-ONLY : AUCUN outil de données/S3 sur le runner (0 aws, 0 s5cmd,
+      # 0 postgresql-client). aws-cli / aws-sdk vivent dans les Jobs.
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig (préprod)
+        # Token DÉDIÉ moindre-privilège (SA geo-ci-bascule-preprod), PAS le déployeur
+        # partagé KUBE_CONFIG_DATA_PREPROD (cd-preprod.yml).
+        env:
+          KUBE_CONFIG_DATA_BASCULE_PREPROD: ${{ secrets.KUBE_CONFIG_DATA_BASCULE_PREPROD }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.kube"
+          printf '%s' "$KUBE_CONFIG_DATA_BASCULE_PREPROD" | base64 -d > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+          test -s "$HOME/.kube/config" || { echo "::error::KUBE_CONFIG_DATA_BASCULE_PREPROD absent ou vide"; exit 1; }
+
+      # Contrôle POSITIF du cluster cible AVANT tout write kubectl.
+      - name: Pre-flight — assert target cluster
+        env:
+          EXPECTED_KUBE_APISERVER_HOST: ${{ vars.EXPECTED_KUBE_APISERVER_HOST }}
+        run: |
+          set -euo pipefail
+          DEFAULT_HOST='hlhedx.c1.bhs5.k8s.ovh.net'
+          expected="${EXPECTED_KUBE_APISERVER_HOST:-$DEFAULT_HOST}"
+          server="$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
+          host="${server#*://}"; host="${host%%/*}"; host="${host%%:*}"
+          echo "kubeconfig apiserver host : ${host:-<none>}"
+          echo "expected apiserver host   : ${expected}"
+          if [ "$host" != "$expected" ]; then
+            echo "::error title=Wrong cluster — bascule refused::kubeconfig targets '${host:-<none>}' but expected '${expected}'."
+            exit 1
+          fi
+          kubectl -n "$PREPROD_NAMESPACE" get deploy geo-api -o name
+          echo "pre-flight cluster OK — ${expected} / ${PREPROD_NAMESPACE}"
+
+      # ── S0 (jambe s3 : buckets docs + URLs API) ────────────────────────────
+      - name: S0 preflight s3 (binaires + params S3/smoke)
+        run: node "$CLI" preflight s3
 
       # ══════════════ DRY_RUN : rien de destructif ══════════════
       - name: S3 copy-docs (DRY — copie non jouée)
@@ -193,10 +308,6 @@ jobs:
         run: node "$CLI" recon
 
       # ══════════════ EXÉCUTION : séquence fail-closed ══════════════
-      - name: S1 dump prod (DÉCLENCHEUR T1 — patch CronJob + Job freshness)
-        if: ${{ !inputs.DRY_RUN }}
-        run: node "$CLI" dump
-
       # copy-docs = Job geo-api (aws-sdk CopyObject + grant). L'identité éphémère
       # geo-normalized-src-preprod est créée par k8s (ownerRef=Job.UID), GC au TTL.
       - name: S3 copy-docs (Job geo-api aws-sdk CopyObject normalized/, additif)
@@ -222,14 +333,12 @@ jobs:
         if: ${{ !inputs.DRY_RUN }}
         run: node "$CLI" smoke
 
-      # Traçabilité : POINTEURS/états uniquement (T1 + sentinel recon), 0 contenu S3.
-      - name: Pointeurs + états (T1, recon — PAS de contenu S3)
+      # Traçabilité : POINTEUR/état uniquement (sentinel recon), 0 contenu S3.
+      - name: Pointeurs jambe s3 (recon — PAS de contenu S3)
         if: ${{ always() && !inputs.DRY_RUN }}
         uses: actions/upload-artifact@v4
         with:
-          name: bascule-pointers-${{ github.run_id }}
-          path: |
-            ${{ github.workspace }}/.bascule-work/T1.txt
-            ${{ github.workspace }}/.bascule-work/recon.ok.json
+          name: bascule-s3-pointers-${{ github.run_id }}
+          path: ${{ github.workspace }}/.bascule-work/recon.ok.json
           if-no-files-found: warn
           retention-days: 7
