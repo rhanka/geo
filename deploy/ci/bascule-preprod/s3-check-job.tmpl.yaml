@@ -1,0 +1,161 @@
+# =============================================================================
+# s3-check-job.tmpl.yaml — CHECK S3 verdict-only (freshness / recon), geo.
+#
+# CLONE geo de radar-immobilier:deploy/ci/bascule-preprod/s3-check-job.tmpl.yaml.
+# RUNNER KUBECTL-ONLY : le runner ne touche pas S3 (0 cred S3 runner ; OVH n'a pas de
+# scope list-only). Ce Job PRÉPROD (aws-cli, cred in-cluster) fait le LIST + diff DANS
+# le pod (0 HEAD/GET) et renvoie UNIQUEMENT un exit code. Le runner ne lit que
+# `.status` (JAMAIS `kubectl logs`).
+#
+#   CHECK_MODE=freshness : poll interne (jusqu'à CHECK_TIMEOUT_SEC) un dump FRAIS sous
+#       s3://CHECK_BUCKET/CHECK_PREFIX (récursif) : LastModified epoch > CHECK_T1_EPOCH,
+#       clé ⊇ CHECK_EXPECTED_DATABASE, suffixe CHECK_KEY_SUFFIX, Size>0.
+#       Secret = geo-backups-reader-preprod (RO-reader backups, S3_*).
+#   CHECK_MODE=recon     : DIFF LIST-only (0 HEAD/GET) — dual `s3api list-objects-v2`
+#       paginé SRC vs DST, compare Key+Size → dest ⊇ src ? (exit 0) sinon exit 1.
+#       Secret = geo-normalized-reader-preprod (LIST sentropic-geo + sentropic-geo-preprod, S3_*).
+#   (mode `runs` immo retiré : mémoire de collecte propre à immo.)
+#
+# ÉCARTS geo : labels pod app.kubernetes.io/name=geo-preprod-sync (réutilise la netpol
+# EXISTANTE allow-geo-sync-egress : DNS + S3-BHS ; le SA CI ne crée aucune netpol) ;
+# pas de serviceAccountName (SA par défaut, token non monté) ; limite mémoire relevée
+# (aws-cli agrège le listing de normalized/, volume geo >> docs immo).
+#
+# FAIL-CLOSED : backoffLimit 0 + restartPolicy Never = un seul essai.
+#
+# Placeholders rendus par bascule.mjs (dispatchS3Check) : ${JOB_NAME} ${NAMESPACE}
+# ${AWSCLI_IMAGE} ${CHECK_SECRET} ${CHECK_ACCESS_KEY} ${CHECK_SECRET_KEY}
+# ${S3_ENDPOINT} ${S3_REGION} ${CHECK_MODE} ${CHECK_BUCKET} ${CHECK_PREFIX}
+# ${CHECK_SRC_BUCKET} ${CHECK_DST_BUCKET} ${CHECK_T1_EPOCH} ${CHECK_EXPECTED_DATABASE}
+# ${CHECK_KEY_SUFFIX} ${CHECK_TIMEOUT_SEC} ${CHECK_POLL_SEC} ${TTL_SECONDS}.
+# Les $CHECK_* du pod sont référencés SANS accolades (variables RUNTIME).
+# =============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    app.kubernetes.io/name: geo-preprod-sync
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: s3-check
+    sentropic.io/bascule: s3-check
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: ${TTL_SECONDS}
+  activeDeadlineSeconds: 7200
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geo-preprod-sync
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: s3-check
+        sentropic.io/bascule: s3-check
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: check
+          image: ${AWSCLI_IMAGE}
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              set -o pipefail
+              # NB endpoint : $CHECK_S3_ENDPOINT porte le schéma https:// (withScheme()).
+              common=(--no-cli-pager --endpoint-url "$CHECK_S3_ENDPOINT")
+              [ -n "$CHECK_S3_REGION" ] && common+=(--region "$CHECK_S3_REGION")
+              case "$CHECK_MODE" in
+                freshness)
+                  end=$(( $(date +%s) + CHECK_TIMEOUT_SEC ))
+                  while : ; do
+                    fresh=$(aws "${common[@]}" s3api list-objects-v2 --bucket "$CHECK_BUCKET" ${CHECK_PREFIX:+--prefix "$CHECK_PREFIX"} \
+                              --query "Contents[?Size>\`0\`].[LastModified,Key]" --output text \
+                            | while read -r lm key; do
+                                [ -z "$key" ] && continue
+                                case "$key" in *"$CHECK_KEY_SUFFIX") ;; *) continue ;; esac
+                                if [ -n "$CHECK_EXPECTED_DATABASE" ]; then
+                                  case "$key" in *"$CHECK_EXPECTED_DATABASE"*) ;; *) continue ;; esac
+                                fi
+                                e=$(date -d "$lm" +%s 2>/dev/null || echo 0)
+                                if [ "$e" -gt "$CHECK_T1_EPOCH" ]; then echo FRESH; break; fi
+                              done)
+                    if [ "$fresh" = "FRESH" ]; then echo "[check freshness] dump frais present (verdict-only)"; exit 0; fi
+                    now=$(date +%s)
+                    if [ "$now" -ge "$end" ]; then echo "[check freshness] timeout — aucun dump frais"; exit 1; fi
+                    sleep "$CHECK_POLL_SEC"
+                  done
+                  ;;
+                recon)
+                  # DIFF LIST-only (0 HEAD/GET) : dual list-objects-v2 (aws-cli auto-pagine),
+                  # compare Key+Size → dest ⊇ src. ETag VOLONTAIREMENT ignoré (CopyObject
+                  # peut re-chunker → faux PENDING). awk -F'\t' (clés avec espaces).
+                  se=/tmp/recon-src-err.txt; de=/tmp/recon-dst-err.txt
+                  if ! aws "${common[@]}" s3api list-objects-v2 --bucket "$CHECK_SRC_BUCKET" ${CHECK_PREFIX:+--prefix "$CHECK_PREFIX"} \
+                        --query 'Contents[].[Key,Size]' --output text > /tmp/recon-src.txt 2>"$se"; then
+                    echo "[check recon] LIST src ECHOUE (config/cred/endpoint) : $(tr '\n' ' ' < "$se" | tail -c 300)"; exit 2; fi
+                  if ! aws "${common[@]}" s3api list-objects-v2 --bucket "$CHECK_DST_BUCKET" ${CHECK_PREFIX:+--prefix "$CHECK_PREFIX"} \
+                        --query 'Contents[].[Key,Size]' --output text > /tmp/recon-dst.txt 2>"$de"; then
+                    echo "[check recon] LIST dst ECHOUE (config/cred/endpoint) : $(tr '\n' ' ' < "$de" | tail -c 300)"; exit 2; fi
+                  miss=$(awk -F'\t' 'NR==FNR{if($1!=""){seen[$1]=1;sz[$1]=$2}next} { if($1!=""){ if(!($1 in seen)||sz[$1]!=$2) c++ } } END{print c+0}' /tmp/recon-dst.txt /tmp/recon-src.txt)
+                  if [ "${miss:-0}" -gt 0 ]; then echo "[check recon] PENDING — $miss objet(s) src absent(s)/differents (Key/Size) en dst (dest NE contient PAS src)"; exit 1; fi
+                  echo "[check recon] OK — dest contient src (DIFF LIST-only Key+Size, 0 HEAD/GET)"; exit 0
+                  ;;
+                *)
+                  echo "[check] CHECK_MODE inconnu: $CHECK_MODE"; exit 2
+                  ;;
+              esac
+          env:
+            - name: HOME
+              value: /tmp
+            - name: AWS_EC2_METADATA_DISABLED
+              value: "true"
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom: { secretKeyRef: { name: ${CHECK_SECRET}, key: ${CHECK_ACCESS_KEY} } }
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom: { secretKeyRef: { name: ${CHECK_SECRET}, key: ${CHECK_SECRET_KEY} } }
+            - name: CHECK_S3_ENDPOINT
+              value: "${S3_ENDPOINT}"
+            - name: CHECK_S3_REGION
+              value: "${S3_REGION}"
+            - name: CHECK_MODE
+              value: "${CHECK_MODE}"
+            - name: CHECK_BUCKET
+              value: "${CHECK_BUCKET}"
+            - name: CHECK_PREFIX
+              value: "${CHECK_PREFIX}"
+            - name: CHECK_SRC_BUCKET
+              value: "${CHECK_SRC_BUCKET}"
+            - name: CHECK_DST_BUCKET
+              value: "${CHECK_DST_BUCKET}"
+            - name: CHECK_T1_EPOCH
+              value: "${CHECK_T1_EPOCH}"
+            - name: CHECK_EXPECTED_DATABASE
+              value: "${CHECK_EXPECTED_DATABASE}"
+            - name: CHECK_KEY_SUFFIX
+              value: "${CHECK_KEY_SUFFIX}"
+            - name: CHECK_TIMEOUT_SEC
+              value: "${CHECK_TIMEOUT_SEC}"
+            - name: CHECK_POLL_SEC
+              value: "${CHECK_POLL_SEC}"
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests: { cpu: 25m, memory: 128Mi, ephemeral-storage: 32Mi }
+            limits: { cpu: 500m, memory: 768Mi, ephemeral-storage: 128Mi }
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
+      volumes:
+        - name: tmp
+          emptyDir: { sizeLimit: 64Mi }

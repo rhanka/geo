@@ -1,0 +1,73 @@
+# À APPLIQUER PAR k8s (autorité réseau) — JAMAIS par un workflow (ni bascule-preprod.yml, ni bascule-bundle-cd.yml :
+# aucun SA CI geo n'a de verbe networkpolicies). Pas d'équivalent committé côté immo (réseau immo ouvert) :
+# spécifique geo, car le ns geo porte un default-deny-ingress.
+#
+#   1. allow-geo-db-backup-to-postgis (INGRESS, ns geo) : admet sur postgis:5432 les pods du bundle bascule
+#      (CronJob geo-db-backup-prod + Job geo-db-ro-role-provision, label role=pra-backup). SANS elle, le
+#      default-deny-ingress du ns geo bloque le pg_dump et le psql de provision → Job en échec.
+#   2. allow-geo-db-backup-egress (EGRESS, ns geo) : ces mêmes pods ne sortent que vers DNS + postgis:5432 +
+#      S3-BHS 54.39.60.208/32:443 (upload du dump vers radar-immobilier-backups-preprod).
+#
+# Les Jobs PRÉPROD du run (freshness, recon, docs-sync) n'ont besoin de RIEN de nouveau : ils portent le label
+# app.kubernetes.io/name=geo-preprod-sync et réutilisent la netpol EXISTANTE allow-geo-sync-egress (DNS + S3-BHS).
+# Le verify THROUGH l'API tourne sur le RUNNER (URL publique) : aucune netpol d'ingress vers geo-api.
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-geo-db-backup-to-postgis
+  namespace: geo
+  labels: { app.kubernetes.io/part-of: geo, role: pra-backup }
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: postgis
+  policyTypes:
+    - Ingress
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              role: pra-backup
+      ports:
+        - protocol: TCP
+          port: 5432
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-geo-db-backup-egress
+  namespace: geo
+  labels: { app.kubernetes.io/part-of: geo, role: pra-backup }
+spec:
+  podSelector:
+    matchLabels:
+      role: pra-backup
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: postgis
+      ports:
+        - protocol: TCP
+          port: 5432
+    - to:
+        - ipBlock:
+            cidr: 54.39.60.208/32 # S3 BHS (s3.bhs.io.cloud.ovh.net) — bucket radar-immobilier-backups-preprod
+      ports:
+        - protocol: TCP
+          port: 443

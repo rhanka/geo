@@ -1,0 +1,138 @@
+# Provision the STRICT READ-ONLY Postgres login role geo_db_ro_prod, consumed by the
+# prod geo DB backup CronJob (geo-db-backup-prod) as its SELECT-only pg_dump identity.
+# CLONE geo of radar-immobilier:deploy/ci/bascule-preprod/db-ro-role-provision.yaml.
+# COMMITTED CODE (option B): a one-shot k8s Job runs the SQL via psql as the SUPERUSER
+# geo-postgis-credentials (the initdb bootstrap user of the postgis StatefulSet); the RO
+# password is injected from the minted secret geo-db-ro-prod (key POSTGRES_PASSWORD) via
+# psql \getenv — NEVER a literal here. Idempotent / replayable (OPS-3). Applied by the
+# bundle (install one-time owner-direct, then bascule-bundle-cd.yml on merge).
+#   Prereq: secret geo-db-ro-prod materialized (SealedSecret geo-db-ro-prod-sealed.yaml).
+#   Verify after: role exists, LOGIN, member of pg_read_all_data, CONNECT on the geo DB.
+#
+# geo DEVIATIONS (justified):
+#   - GRANT CONNECT is DB-name agnostic (`SELECT current_database() AS db \gset` then
+#     `GRANT CONNECT ON DATABASE :"db"`): the prod geo DB name lives only in
+#     geo-postgis-credentials/POSTGRES_DB; the Job connects to exactly that DB (PGDATABASE).
+#   - resources requests/limits set: ns geo has a ResourceQuota on limits.*.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: geo-db-ro-role-sql
+  namespace: geo
+  labels: { app.kubernetes.io/name: geo-db-backup, app.kubernetes.io/part-of: geo, role: pra-backup }
+data:
+  provision-ro-role.sql: |
+    -- =============================================================================
+    -- Provision the STRICT READ-ONLY Postgres login role consumed by the prod geo DB
+    -- backup CronJob (geo-db-backup-prod, secret geo-db-ro-prod).
+    --
+    -- WHO RUNS THIS: a one-shot k8s Job connecting as the SUPERUSER identity
+    --   geo-postgis-credentials (POSTGRES_USER of the postgis StatefulSet), via `psql`.
+    --
+    -- INVOKE:  psql -v ON_ERROR_STOP=1 -f provision-ro-role.sql
+    --   Connection (superuser) via libpq env: PGHOST/PGUSER/PGPASSWORD/PGDATABASE
+    --     sourced from secret geo-postgis-credentials.
+    --   RO password via env RO_PASSWORD sourced from secret geo-db-ro-prod
+    --     (key POSTGRES_PASSWORD). NEVER a literal in this committed file.
+    --
+    -- IDEMPOTENT + REPLAYABLE (OPS-3): safe to run any number of times; re-running
+    --   after a secret rotation simply re-asserts the (new) password (rotation cycle).
+    --
+    -- SECRET HYGIENE: the ONLY secret interpolated here is the password, read from the
+    --   environment with psql `\getenv` (psql 16, shipped in postgis/postgis:16-3.4),
+    --   referenced only at TOP LEVEL as :'ro_pwd' (psql performs NO interpolation inside
+    --   dollar-quoted blocks). The role NAME is not a secret and stays hardcoded.
+    -- =============================================================================
+
+    \set ON_ERROR_STOP on
+
+    \set ro_pwd ''
+    \getenv ro_pwd RO_PASSWORD
+
+    -- Fail-closed guard: never create or keep a LOGIN role with an empty password.
+    SELECT length(:'ro_pwd') > 0 AS ro_ok \gset
+    \if :ro_ok
+    \else
+      \warn 'FATAL: env RO_PASSWORD is empty/unset — refusing to provision a passwordless RO login'
+      DO $guard$ BEGIN
+        RAISE EXCEPTION 'RO_PASSWORD env empty/unset (fail-closed)';
+      END $guard$;
+    \endif
+
+    -- The geo prod DB = the database this superuser session is connected to (name-agnostic).
+    SELECT current_database() AS db \gset
+
+    BEGIN;
+
+    -- 1) Create the login role if absent. Least-privilege attributes are explicit.
+    DO $$
+    BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'geo_db_ro_prod') THEN
+        CREATE ROLE geo_db_ro_prod
+          LOGIN
+          NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS;
+        RAISE NOTICE 'created role geo_db_ro_prod';
+      ELSE
+        RAISE NOTICE 'role geo_db_ro_prod already exists — reusing (password re-asserted below)';
+      END IF;
+    END
+    $$;
+
+    -- 2) Set/rotate the password from the minted secret (TOP LEVEL so :'ro_pwd' interpolates).
+    ALTER ROLE geo_db_ro_prod WITH LOGIN PASSWORD :'ro_pwd';
+
+    -- 3) Least-privilege READ: pg_read_all_data (PG14+) = SELECT on all tables/views/
+    --    sequences + USAGE on all schemas, INCLUDING future objects.
+    GRANT pg_read_all_data TO geo_db_ro_prod;
+
+    -- 4) CONNECT is database-level, NOT covered by pg_read_all_data. Idempotent.
+    GRANT CONNECT ON DATABASE :"db" TO geo_db_ro_prod;
+
+    COMMIT;
+
+    -- Post-conditions (optional smoke, read-only):
+    --   SELECT r.rolname, r.rolcanlogin,
+    --          pg_has_role('geo_db_ro_prod','pg_read_all_data','MEMBER') AS reads_all
+    --     FROM pg_roles r WHERE r.rolname = 'geo_db_ro_prod';
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-db-ro-role-provision
+  namespace: geo
+  labels: { app.kubernetes.io/name: geo-db-backup, app.kubernetes.io/part-of: geo, role: pra-backup }
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 300
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels: { app.kubernetes.io/name: geo-db-backup, app.kubernetes.io/part-of: geo, app.kubernetes.io/component: db-backup, role: pra-backup }
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      securityContext: { runAsNonRoot: true, runAsUser: 1001, runAsGroup: 1001, fsGroup: 1001, seccompProfile: { type: RuntimeDefault } }
+      volumes:
+        - { name: sql, configMap: { name: geo-db-ro-role-sql, defaultMode: 0444 } }
+        - { name: home, emptyDir: { sizeLimit: 16Mi } }
+      containers:
+        # psql 16 (ships \getenv) from the in-cluster postgis image — 0 new image (supply-chain).
+        - name: provision
+          image: postgis/postgis:16-3.4
+          command: ["/usr/lib/postgresql/16/bin/psql"]
+          args: ["-v", "ON_ERROR_STOP=1", "-f", "/sql/provision-ro-role.sql"]
+          env:
+            - { name: HOME, value: /home/psql }
+            # SUPERUSER connection (can CREATE ROLE / GRANT) — the initdb bootstrap user of the postgis StatefulSet.
+            - { name: PGHOST, value: "geo-postgis.geo.svc" }
+            - { name: PGPORT, value: "5432" }
+            - { name: PGUSER,     valueFrom: { secretKeyRef: { name: geo-postgis-credentials, key: POSTGRES_USER } } }
+            - { name: PGPASSWORD, valueFrom: { secretKeyRef: { name: geo-postgis-credentials, key: POSTGRES_PASSWORD } } }
+            - { name: PGDATABASE, valueFrom: { secretKeyRef: { name: geo-postgis-credentials, key: POSTGRES_DB } } }
+            # RO password from the minted secret (read by psql \getenv, kept out of argv/pod-spec).
+            - { name: RO_PASSWORD, valueFrom: { secretKeyRef: { name: geo-db-ro-prod, key: POSTGRES_PASSWORD } } }
+          securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+          resources: { requests: { cpu: 25m, memory: 64Mi }, limits: { cpu: 250m, memory: 128Mi } }
+          volumeMounts:
+            - { name: sql, mountPath: /sql, readOnly: true }
+            - { name: home, mountPath: /home/psql }
