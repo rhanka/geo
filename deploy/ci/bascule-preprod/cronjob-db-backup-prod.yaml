@@ -1,6 +1,6 @@
 # TRANSVERSE PRA — CronJob backup DB PROD geo, NATIF (0 python). CLONE geo de
 #   radar-immobilier:deploy/ci/bascule-preprod/cronjob-db-backup-prod.yaml (recette i-cond).
-#   Code committé (OPS-3) ; apply = bundle (install one-time owner-direct, puis bascule-bundle-cd.yml au merge).
+#   Code committé (OPS-3) ; apply = bundle, par le CD bascule-bundle-cd.yml (dispatch k8s après merge, puis au merge).
 # Chemin données 100% cluster/S3 : dump PostGIS prod geo (ns geo) → s3://radar-immobilier-backups-preprod/
 #   geo-postgres/prod/sets/<ISO-ts>/<EXPECTED_DATABASE>.dump. Le runner GitHub ne GET JAMAIS le contenu.
 #   Secrets référencés par NOM, matérialisés par le controller sealed-secrets depuis les SealedSecrets committées
