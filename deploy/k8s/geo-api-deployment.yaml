@@ -71,7 +71,10 @@ spec:
             failureThreshold: 3
           resources:
             requests:
-              cpu: 75m
+              # 75m -> 10m (2026-09-25) : aligné sur deploy/k8s/base/deployment.yaml
+              # (mesure cgroup prod : moyenne 0,46m, fenêtre 1,95m ; prod déjà à
+              # 10m en live). Évite qu'un apply manuel de cette ligne re-gonfle.
+              cpu: 10m
               memory: 128Mi
             limits:
               cpu: 500m
