@@ -90,9 +90,31 @@ spec:
             failureThreshold: 6
           resources:
             requests:
-              cpu: 30m
+              # 30m -> 15m (2026-09-25, nœud OVH unique saturé en requests CPU).
+              # Mesuré cgroup v2 sur postgis-0 (11,75 j) : moyenne 9,2m sur la vie
+              # du conteneur, 9,9m sur une fenêtre de 89 s — consommation stable.
+              # 15m = moyenne × 1,5. Le live tourne à 10m depuis un
+              # `kubectl set resources` hors dépôt du 2026-09-14 : c'est sans marge
+              # au-dessus de la moyenne, ne pas descendre plus bas.
+              cpu: 15m
               memory: 160Mi
             limits:
+              # LIMITE CPU : implicite 100m -> 500m déclarée (2026-09-25).
+              #
+              # Avant, aucune limite CPU n'était déclarée : le LimitRange du
+              # namespace (poc-k8s, tenants/geo) injectait `default.cpu: 100m`.
+              # Mesuré : 69,8 % des périodes CFS actives de postgis-0 étaient
+              # throttlées à ce plafond (cpu.stat nr_throttled/nr_periods), ce qui
+              # bride notamment les dumps de bascule. Avec la limite déclarée, le
+              # défaut du LimitRange ne s'applique plus. 500m = bas de la plage
+              # 500m–1000m recommandée par la lane k8s ; le quota geo
+              # (limits.cpu 4000m, dont ~600m utilisés) l'absorbe.
+              #
+              # ⚠️ EFFET DIFFÉRÉ : ce manifeste n'est appliqué par AUCUNE CD. La
+              # limite ne prend effet qu'à un `kubectl apply` manuel, qui
+              # REDÉMARRE la base de prod (template du StatefulSet modifié).
+              # À faire hors fenêtre de dump, sur GO explicite — pas au merge.
+              cpu: 500m
               memory: 768Mi
           volumeMounts:
             - name: pg-data
