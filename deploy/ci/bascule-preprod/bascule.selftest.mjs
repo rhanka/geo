@@ -13,7 +13,9 @@
 import process from "node:process";
 import console from "node:console";
 import { spawnSync } from "node:child_process";
+import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import vm from "node:vm";
 import { classifyJobStatus, withScheme, parseListingMeta, reconMissing, collectionIds, servedIdsMissing, preflightRequirements } from "./bascule.mjs";
 
 let passed = 0;
@@ -90,6 +92,109 @@ eq("preflight — clé héritée d'Object ('toString') ⇒ null", preflightRequi
   const r = spawnSync(process.execPath, [join(import.meta.dirname, "bascule.mjs"), "preflight", "bogus"], { encoding: "utf8", env: { PATH: process.env.PATH } });
   ok("preflight CLI — jambe inconnue ⇒ exit 1", r.status === 1);
   ok("preflight CLI — jambe inconnue ⇒ message fail-closed, 0 commande lancée", /jambe inconnue 'bogus'/.test(r.stdout) && !/\[bascule\] \$ /.test(r.stdout));
+}
+
+// ── docs-sync : copie INCRÉMENTALE + CONCURRENTE (script réel du template) ──────
+// Le script `node -e` du Job est extrait du template et exécuté dans un contexte vm
+// avec un faux @aws-sdk/client-s3 (0 réseau). On vérifie ce qu'il COPIE.
+{
+  const tmpl = readFileSync(join(import.meta.dirname, "docs-sync-job.tmpl.yaml"), "utf8");
+  const m = tmpl.match(/\n {10}args:\n {12}- \|\n([\s\S]*?)\n {10}env:/);
+  ok("docs-sync — script node extrait du template", !!m);
+  const code = m ? m[1].split("\n").map((l) => l.replace(/^ {14}/, "")).join("\n") : "";
+  ok("docs-sync — aucun placeholder ${...} dans le script", !/\$\{/.test(code));
+
+  const T0 = "2026-09-01T00:00:00.000Z";
+  const T1 = "2026-09-20T00:00:00.000Z";
+  const o = (Key, Size, ETag, LastModified) => ({ Key, Size, ETag, LastModified });
+  const runSync = ({ srcObjs, dstObjs, dstListFails = false, failCopyKey = null, concurrency, pageSize = 2 }) => new Promise((resolve) => {
+    const copies = [];
+    let inFlight = 0;
+    let maxInFlight = 0;
+    let done = false;
+    const finish = (r) => { if (!done) { done = true; resolve({ ...r, copies, maxInFlight }); } };
+    class Cmd { constructor(input) { this.input = input; } }
+    class ListObjectsV2Command extends Cmd {}
+    class CopyObjectCommand extends Cmd {}
+    class HeadObjectCommand extends Cmd {}
+    class S3Client {
+      async send(cmd) {
+        const i = cmd.input;
+        if (cmd instanceof ListObjectsV2Command) {
+          if (i.Bucket === "dst" && dstListFails) throw Object.assign(new Error("denied"), { name: "AccessDenied" });
+          const all = i.Bucket === "src" ? srcObjs : dstObjs;
+          const start = i.ContinuationToken ? Number(i.ContinuationToken) : 0;
+          const size = i.MaxKeys || pageSize;
+          const page = all.slice(start, start + size);
+          const more = start + size < all.length && !i.MaxKeys;
+          return { Contents: page, IsTruncated: more, NextContinuationToken: more ? String(start + size) : undefined };
+        }
+        if (cmd instanceof HeadObjectCommand) return {};
+        if (cmd instanceof CopyObjectCommand) {
+          inFlight += 1; maxInFlight = Math.max(maxInFlight, inFlight);
+          await new Promise((r) => setTimeout(r, 2));
+          inFlight -= 1;
+          if (i.Key === failCopyKey) throw Object.assign(new Error("boom"), { name: "InternalError" });
+          copies.push(i);
+          return {};
+        }
+        throw new Error("commande inattendue");
+      }
+    }
+    const env = { S3_ENDPOINT: "https://s3.test", SRC_BUCKET: "src", DST_BUCKET: "dst", COPY_GRANTEE: "g1", COPY_PREFIX: "normalized/", ...(concurrency ? { COPY_CONCURRENCY: String(concurrency) } : {}) };
+    const logs = [];
+    const fakeConsole = {
+      log: (...a) => { const s = a.join(" "); logs.push(s); if (s.startsWith("[docs-sync] ok ")) finish({ code: 0, logs }); },
+      warn: (...a) => logs.push(a.join(" ")),
+      error: (...a) => logs.push(a.join(" ")),
+    };
+    const fakeProcess = { env, exit: (c) => finish({ code: c, logs }) };
+    const sdk = { S3Client, ListObjectsV2Command, CopyObjectCommand, HeadObjectCommand };
+    vm.runInNewContext(code, { require: (id) => { if (id !== "@aws-sdk/client-s3") throw new Error(id); return sdk; }, process: fakeProcess, console: fakeConsole });
+  });
+
+  const SRC5 = [
+    o("normalized/a", 10, '"e1"', T0),        // dst identique (même ETag) ⇒ sauté
+    o("normalized/b", 20, '"e2"', T0),        // dst même Size, ETag différent, copiée APRÈS ⇒ sautée
+    o("normalized/c", 30, '"e3"', T0),        // dst Size différente ⇒ copiée
+    o("normalized/d", 40, '"e4-3"', T1),      // dst même Size, ETag différent, plus ANCIENNE que prod ⇒ copiée
+    o("normalized/e f", 50, '"e5"', T0),      // absente de dst ⇒ copiée (clé avec espace)
+  ];
+  const DST5 = [
+    o("normalized/a", 10, '"e1"', T0),
+    o("normalized/b", 20, '"md5-b"', T1),
+    o("normalized/c", 31, '"e3"', T1),
+    o("normalized/d", 40, '"md5-d"', T0),
+    o("normalized/x-preprod", 7, '"px"', T0), // extra préprod ignoré
+  ];
+  const keys = (r) => r.copies.map((c) => c.Key).sort();
+
+  const r1 = await runSync({ srcObjs: SRC5, dstObjs: DST5 });
+  eq("docs-sync — exit 0", r1.code, 0);
+  eq("docs-sync — copie SEULEMENT absentes/différentes (pagination src+dst)", keys(r1), ["normalized/c", "normalized/d", "normalized/e f"]);
+  ok("docs-sync — CopySource encodé + GrantFullControl + même clé", r1.copies.some((c) => c.CopySource === "/src/normalized/e%20f" && c.GrantFullControl === "id=g1" && c.Bucket === "dst"));
+  ok("docs-sync — compte rendu source/deja_a_jour/a_copier", r1.logs.some((l) => /source=5 deja_a_jour=2 a_copier=3 concurrence=8/.test(l)));
+
+  const r2 = await runSync({ srcObjs: SRC5, dstObjs: SRC5 });
+  eq("docs-sync — préprod déjà complète ⇒ 0 copie, exit 0", [r2.code, r2.copies.length], [0, 0]);
+
+  const r3 = await runSync({ srcObjs: SRC5, dstObjs: DST5, dstListFails: true });
+  eq("docs-sync — LIST destination refusée ⇒ repli copie complète", [r3.code, r3.copies.length], [0, 5]);
+  ok("docs-sync — repli signalé en WARN", r3.logs.some((l) => /LIST destination impossible \(AccessDenied\)/.test(l)));
+
+  const MANY = Array.from({ length: 40 }, (_, k) => o(`normalized/k${k}`, k + 1, `"e${k}"`, T0));
+  const r4 = await runSync({ srcObjs: MANY, dstObjs: [], concurrency: 4, pageSize: 7 });
+  eq("docs-sync — 40 absentes ⇒ 40 copies", [r4.code, r4.copies.length], [0, 40]);
+  ok(`docs-sync — concurrence bornée à COPY_CONCURRENCY=4 et effective (max ${r4.maxInFlight})`, r4.maxInFlight === 4);
+
+  const r5 = await runSync({ srcObjs: MANY, dstObjs: [], concurrency: 999 });
+  ok(`docs-sync — COPY_CONCURRENCY plafonnée à 32 (max ${r5.maxInFlight})`, r5.maxInFlight <= 32 && r5.maxInFlight > 1);
+
+  const r6 = await runSync({ srcObjs: MANY, dstObjs: [], failCopyKey: "normalized/k7" });
+  eq("docs-sync — erreur de copie ⇒ exit 1 (fail-closed)", r6.code, 1);
+
+  const r7 = await runSync({ srcObjs: [], dstObjs: DST5 });
+  eq("docs-sync — source vide ⇒ exit 1 (inchangé)", [r7.code, r7.copies.length], [1, 0]);
 }
 
 console.log(`\nbascule.selftest — ${passed} passés, ${failed} échoués`);
