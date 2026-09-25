@@ -4,13 +4,17 @@
 // CLONE geo de radar-immobilier:deploy/ci/bascule-preprod/bascule.selftest.mjs.
 //
 // N'exécute AUCUN appel réel (0 kubectl, 0 aws, 0 DB, 0 réseau) : il n'importe que
-// les fonctions pures exportées et les nourrit de données MOCKÉES.
+// les fonctions pures exportées et les nourrit de données MOCKÉES. Seule exception :
+// un sous-processus `node bascule.mjs preflight <jambe inconnue>`, qui échoue AVANT
+// tout appel d'outil (vérifie le fail-closed du sélecteur de jambe).
 //
 //   node deploy/ci/bascule-preprod/bascule.selftest.mjs   → exit 0 si tout passe.
 // =============================================================================
 import process from "node:process";
 import console from "node:console";
-import { classifyJobStatus, withScheme, parseListingMeta, reconMissing, collectionIds, servedIdsMissing } from "./bascule.mjs";
+import { spawnSync } from "node:child_process";
+import { join } from "node:path";
+import { classifyJobStatus, withScheme, parseListingMeta, reconMissing, collectionIds, servedIdsMissing, preflightRequirements } from "./bascule.mjs";
 
 let passed = 0;
 let failed = 0;
@@ -58,6 +62,35 @@ eq("servedIdsMissing — préprod ⊇ prod ⇒ []", servedIdsMissing(["a", "b"],
 eq("servedIdsMissing — id prod absent ⇒ listé", servedIdsMissing(["a", "b", "c"], ["a"]), ["b", "c"]);
 eq("servedIdsMissing — doublons prod dédupliqués", servedIdsMissing(["a", "a"], []), ["a"]);
 eq("servedIdsMissing — prod vide ⇒ []", servedIdsMissing([], ["a"]), []);
+
+// ── preflightRequirements : sélecteur de JAMBE (pg / s3 parallèles, geo) ─────
+const ALL_PARAMS = ["EXPECTED_DATABASE", "BHS", "PROD_DOCS", "PREPROD_DOCS", "DUMP_BUCKET", "PREPROD_API_URL", "PROD_API_URL"];
+eq("preflight — sans jambe ⇒ liste historique (les deux jambes, inchangée)", preflightRequirements(), { bins: ["node", "kubectl", "curl"], params: ALL_PARAMS });
+eq("preflight — jambe '' ⇒ les deux jambes", preflightRequirements(""), preflightRequirements());
+eq("preflight — jambe pg ⇒ EXPECTED_DATABASE + BHS + DUMP_BUCKET (0 curl)", preflightRequirements("pg"), { bins: ["node", "kubectl"], params: ["EXPECTED_DATABASE", "BHS", "DUMP_BUCKET"] });
+eq("preflight — jambe s3 ⇒ buckets docs + URLs API (curl smoke)", preflightRequirements("s3"), { bins: ["node", "kubectl", "curl"], params: ["BHS", "PROD_DOCS", "PREPROD_DOCS", "PREPROD_API_URL", "PROD_API_URL"] });
+ok("preflight — pg n'exige AUCUN param propre à S3", !["PROD_DOCS", "PREPROD_DOCS", "PREPROD_API_URL", "PROD_API_URL"].some((k) => preflightRequirements("pg").params.includes(k)));
+ok("preflight — s3 n'exige AUCUN param propre à PG", !["EXPECTED_DATABASE", "DUMP_BUCKET"].some((k) => preflightRequirements("s3").params.includes(k)));
+{
+  const union = new Set([...preflightRequirements("pg").params, ...preflightRequirements("s3").params]);
+  ok("preflight — pg ∪ s3 = liste complète (aucun param orphelin)", union.size === ALL_PARAMS.length && ALL_PARAMS.every((k) => union.has(k)));
+  const binsUnion = new Set([...preflightRequirements("pg").bins, ...preflightRequirements("s3").bins]);
+  ok("preflight — binaires pg ∪ s3 = binaires complets", binsUnion.size === 3 && ["node", "kubectl", "curl"].every((b) => binsUnion.has(b)));
+}
+eq("preflight — jambe inconnue ⇒ null (fail-closed)", preflightRequirements("sr"), null);
+eq("preflight — casse stricte ('PG') ⇒ null", preflightRequirements("PG"), null);
+eq("preflight — clé héritée d'Object ('toString') ⇒ null", preflightRequirements("toString"), null);
+{
+  const a = preflightRequirements("pg");
+  a.params.push("MUTATION");
+  ok("preflight — copie défensive (muter le retour n'altère pas la table)", !preflightRequirements("pg").params.includes("MUTATION"));
+}
+{
+  // CLI : jambe inconnue ⇒ exit 1 AVANT tout appel d'outil (0 bash/kubectl/curl).
+  const r = spawnSync(process.execPath, [join(import.meta.dirname, "bascule.mjs"), "preflight", "bogus"], { encoding: "utf8", env: { PATH: process.env.PATH } });
+  ok("preflight CLI — jambe inconnue ⇒ exit 1", r.status === 1);
+  ok("preflight CLI — jambe inconnue ⇒ message fail-closed, 0 commande lancée", /jambe inconnue 'bogus'/.test(r.stdout) && !/\[bascule\] \$ /.test(r.stdout));
+}
 
 console.log(`\nbascule.selftest — ${passed} passés, ${failed} échoués`);
 process.exit(failed ? 1 : 0);
