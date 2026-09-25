@@ -72,12 +72,14 @@ spec:
             failureThreshold: 3
           resources:
             requests:
-              # 75m -> 10m (2026-09-25, nœud OVH unique saturé en requests CPU).
+              # 75m -> 10m (2026-09-25) : ALIGNE le dépôt sur le live, ne libère
+              # rien. geo-api tourne déjà à 10m en live dans `geo` ET `geo-preprod`
+              # (`kubectl set resources` hors dépôt du 2026-09-14). Sans cet
+              # alignement, le prochain cd-preprod / cd-prod ré-appliquerait 75m.
               # Mesuré cgroup v2 sur le pod prod (11,75 j) : moyenne 0,46m sur la
-              # vie du conteneur, 1,95m sur une fenêtre de 89 s ; la prod tourne
-              # déjà à 10m depuis un `kubectl set resources` hors dépôt du
-              # 2026-09-14. Une request est une réservation d'ordonnancement, pas
-              # un plafond : les pics (scans) restent servis jusqu'à la limite.
+              # vie du conteneur, 1,95m sur une fenêtre de 89 s. Une request est
+              # une réservation d'ordonnancement, pas un plafond : les pics
+              # (scans) restent servis jusqu'à la limite.
               cpu: 10m
               memory: 128Mi
             limits:
