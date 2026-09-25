@@ -65,6 +65,13 @@ export {
   type CasTargetEntry,
 } from "./bascule/cas-inventory.js";
 export {
+  buildGeoReceipt,
+  serializeGeoReceipt,
+  type GeoReceipt,
+  type GeoReceiptInput,
+  type GeoReceiptPgLeg,
+} from "./bascule/geo-receipt.js";
+export {
   parseChamplainDensityDocument,
   parseChestervilleDensityDocument,
   parseClermontDensityDocument,
