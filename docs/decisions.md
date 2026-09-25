@@ -862,6 +862,18 @@ son reversement vers geo est prévu **à terme, non priorisé**. Politique livr�
 | repli | `gemini` | `gemini-3.8-flash` | `low` | sortie du repli **jamais vérifiée** |
 | vérification | `gemini` | `gemini-3.8-flash` | `low` | `VERIFY_ENABLED=1` ; ne peut que **retirer** des actes, jamais en ajouter |
 
+Provenance des colonnes : provider / modèle / effort / `PRIMARY_QUALITY_ATTEMPTS` / `VERIFY_ENABLED` = **config**
+(`34-refresh-cronjob.yaml:163-179`, relecture confirmée par i-cond le 2026-09-25). Les deux règles de
+**comportement** ne sont pas dans la config ; elles sont sourcées sur le **code** immo `813ffa6a` (`api/src/services/graph/`) :
+- **repli jamais vérifié** — `refresh-model-policy.ts:102` (`verify()` rend l'extraction telle quelle dès que le
+  document est passé en repli : `if (!options.verification || selected?.reason) return input;`) et `:253` (le reçu
+  d'une extraction de repli porte `verification.status = "skipped-fallback"`) ;
+- **la vérification ne peut que retirer** — contrat `verificationContract: "v101b-removal-only-v3"`
+  (`refresh-model-policy.ts:95`) ; `refresh-verification.ts:141` (« No verifier-provided graph content is ever read
+  or copied into the accepted extraction »), `:191` (seul un verdict `non_soutenu` agit : `removed.add(id)`),
+  `:197` (sortie = nœuds et arêtes de l'entrée **filtrés**) ; un vérificateur en échec garde l'extraction acceptée
+  (`refresh-model-policy.ts:147`).
+
 Tant que les jobs ne sont pas reversés, la source de vérité reste le manifeste immo ; à la reprise, geo reprend les
 valeurs alors en vigueur chez immo (ADR de suivi si elles diffèrent de celles-ci).
 
