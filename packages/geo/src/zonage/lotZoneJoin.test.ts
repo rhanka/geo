@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   assignLotZones,
+  canonicalizeNoLotForJoin,
   canonicalizeZoneCodeForJoin,
   enrichWithNorms,
   normalizeZoneCode,
@@ -121,6 +122,28 @@ describe("canonicalizeZoneCodeForJoin", () => {
       expect(canonicalizeZoneCodeForJoin("20-A-1")).toBe("20-A-1");
       expect(new Set(["20HA", "21HA", "20HB", "20-A-1"].map(canonicalizeZoneCodeForJoin)).size).toBe(4);
     });
+  });
+});
+
+describe("canonicalizeNoLotForJoin", () => {
+  it("strips every space, keeping case and dashes verbatim", () => {
+    expect(canonicalizeNoLotForJoin("1 234 567")).toBe("1234567");
+    expect(canonicalizeNoLotForJoin("  2 345  ")).toBe("2345");
+    expect(canonicalizeNoLotForJoin("RL0103Ax")).toBe("RL0103Ax");
+    expect(canonicalizeNoLotForJoin("1-234-567")).toBe("1-234-567");
+    expect(canonicalizeNoLotForJoin(1234567)).toBe("1234567");
+  });
+
+  it("maps null/undefined/empty to the empty string", () => {
+    expect(canonicalizeNoLotForJoin(null)).toBe("");
+    expect(canonicalizeNoLotForJoin(undefined)).toBe("");
+    expect(canonicalizeNoLotForJoin("   ")).toBe("");
+  });
+
+  it("stays byte-identical to the frozen acquisition normalization (space-strip)", () => {
+    for (const raw of ["1 234 567", "5 678", "RL0103Ax", "12-A-1"]) {
+      expect(canonicalizeNoLotForJoin(raw)).toBe(String(raw).replace(/ /g, ""));
+    }
   });
 });
 

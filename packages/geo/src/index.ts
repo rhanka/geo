@@ -34,6 +34,7 @@ export * from "./acquire/index.js";
 export * from "./storage/index.js";
 export {
   assignLotZones,
+  canonicalizeNoLotForJoin,
   canonicalizeZoneCodeForJoin,
   enrichWithNorms,
   normalizeZoneCode,
