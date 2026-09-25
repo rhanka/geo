@@ -173,6 +173,10 @@ jobs:
 
       - name: Anti-RCE gate — impersonation --dry-run=server negative test
         run: |
+          # GitHub lance `run:` en `bash -e` : le refus ATTENDU du test (A) (rc≠0 dans
+          # `out_a="$(…)"`) tuait l'étape avant tout verdict. `set +e` rend la main au
+          # script, qui décide lui-même (rc_a / rc_b + cause) et reste fail-closed.
+          set +e
           set -uo pipefail
           SA="system:serviceaccount:${NAMESPACE}:geo-ci-trigger-prod"
           CJ="geo-db-backup-prod"
