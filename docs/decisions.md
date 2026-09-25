@@ -822,19 +822,20 @@ item track `01M2TA835K11WSEHKDJFERFACE`.
 **Réfs.** ADR-0022 (WP + rôles gelés) · `SPEC_WORKPACKAGES.md` §1 (maturité) / §3 (rôles) / §4 (chiffres non
 fiables) / §8 (consolidation) · `acquisition/config/fleet.json` · discussion propriétaire 2026-09-17.
 
-## ADR-0034 — **Moteur LLM d'extraction PV = politique du refresh immo (adoption à la reprise des jobs PV)** · proposed · 2026-09-25
+## ADR-0034 — **Moteur LLM d'extraction PV = politique du refresh immo (adoption à la reprise des jobs PV)** · accepted · 2026-09-25
 
-**⚠ Statut `proposed`.** La directive owner ci-dessous a été **relayée par le conducteur** à la lane qui rédige
-ce texte ; elle n'est pas capturée ici en 1re main. Conformément à l'en-tête (« jamais sur un relais ni un say-so
-conducteur »), le flip `accepted` se fait **uniquement** quand geo-cond renseigne le record owner-direct capturé
-(session + horodatage + verbatim), pattern ADR-0030 / ADR-0032.
+**Statut `accepted` — sur RECORD owner-direct** (ci-dessous, porté par geo-cond, pattern ADR-0030) ; **non
+effectif** avant la reprise des jobs PV (voir Conséquence). Le flip ne repose ni sur un relais ni sur un say-so peer.
 
-> **Directive owner, 2026-09-25, verbatim (relayée)** : « pour le llm on utilisera le meme modele que pour i-cond
-> qui a ete livré pour le refresh, mais dans une version utlérieur, faudrait au moins updater le minimu, pour mettre
-> en cohérence avec l'orientation prise sur i-cond sachant qu'a terme on reversera les job de pv d'immo vers geo
-> mais ce n,est pas encore priorisé ».
-> **Record owner-direct capturé** (session, horodatage) : **à renseigner par geo-cond** — placeholder explicite,
-> pas un record fabriqué.
+> **Record owner-direct** — **capturé par geo-cond, 1re main.** Session Claude Code
+> `70bd4185-531d-4669-b520-30a2a7c6270a` (geo-cond), message owner saisi en cours de tour (entrée transcript
+> `attachment/queued_command` `c7ca3f92-7d78-4462-8c10-cc287a8706b2`), **2026-09-25T21:40:04Z** — **verbatim** :
+> « pour le llm on utilisera le meme modele que pour i-cond qui a ete livré pour le refresh, mais dans une version
+> utlérieur, faudrait au moins updater le minimu, pour mettre en cohérence avec l'orientation prise sur i-cond
+> sachant qu'a terme on reversera les job de pv d'immo vers geo mais ce n,est pas encore priorisé ».
+> **Lecture** : « le même modèle que pour i-cond … livré pour le refresh » = politique du refresh PV immo
+> ci-dessous ; « dans une version ultérieure » = non effectif maintenant ; « au moins updater le minimum » = ce
+> record + la note `CLAUDE.md` + le test de non-ban, sans code de production.
 
 **Contexte.** geo possède l'acquisition des PV (ADR-0023), mais **aucun job PV geo n'appelle de LLM** aujourd'hui :
 `acquisition/src/pv-graphify-semantic-run.ts:6` est une extraction déterministe (« no model/backend is selected
