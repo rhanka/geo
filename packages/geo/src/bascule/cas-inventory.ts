@@ -57,6 +57,20 @@ export function buildCasInventory(cycleId: string, entries: Iterable<CasSourceEn
   return { cycleId, count: sorted.length, totalBytes, entries: sorted, setHash };
 }
 
+/** Deterministic JSON for `sets/<cycleId>/inventory.json` (2-space, newline-terminated). */
+export function serializeCasInventory(inventory: CasInventory): string {
+  return JSON.stringify(inventory, null, 2) + "\n";
+}
+
+/**
+ * Which CAS sha256s still need copying to the backup: the inventory set minus the
+ * sha256s already present (content-addressed dedup — an identical object copied
+ * in a prior cycle is skipped). Returned in inventory (byte-sorted) order.
+ */
+export function planCasCopies(inventory: CasInventory, existingBackupShas: ReadonlySet<string>): string[] {
+  return inventory.entries.map((e) => e.sha256).filter((sha) => !existingBackupShas.has(sha));
+}
+
 /** A target-side observation of a backup object (from listing the backup bucket). */
 export interface CasTargetEntry {
   readonly size: number;
