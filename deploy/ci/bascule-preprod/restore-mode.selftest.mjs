@@ -34,7 +34,7 @@ import {
 import { backupOfLeg, buildGeoLeg } from "./served-ids.mjs";
 import { secretSpecsForMode } from "./restore-mode.mjs";
 import {
-  assertManifestNamespace, buildPgFailureSummary, PG_DEFAULTS, PG_JOBS, pgParams, POSTGIS_SECRET_KEYS, postgisSecretValues, PROD_NAMESPACES,
+  assertManifestNamespace, buildPgFailureSummary, PG_DEFAULTS, PG_JOBS, PG_NETPOLS, pgExpectedResources, pgParams, POSTGIS_SECRET_KEYS, postgisSecretValues, PROD_NAMESPACES,
 } from "./restore-pg.mjs";
 
 const require = createRequire(import.meta.url);
@@ -455,13 +455,18 @@ for (const [tmpl, vars] of Object.entries({
     eq("RBAC — secrets get/update limités aux 3 Secrets pré-créés (dont geo-postgis-credentials)", ruleFor("", "secrets", ["get", "update"]).resourceNames,
       ["geo-backup-reader-preprod", "geo-backup-restore-docs", "geo-postgis-credentials"]);
     ok("RBAC — aucun autre verbe sur secrets (ni create, ni patch, ni list)", rules.filter((r) => r.resources.includes("secrets")).length === 1);
-    eq("RBAC — statefulsets get/patch/list/watch limités à postgis", ruleFor("apps", "statefulsets", ["get", "patch", "list", "watch"]).resourceNames, ["postgis"]);
-    eq("RBAC — services get/patch limités à geo-postgis", ruleFor("", "services", ["get", "patch"]).resourceNames, ["geo-postgis"]);
-    eq("RBAC — networkpolicies get/patch limités aux 2 netpols", ruleFor("networking.k8s.io", "networkpolicies", ["get", "patch"]).resourceNames, ["geo-postgis-preprod", "pra-restore-egress"]);
-    const creates = rules.filter((r) => r.verbs.includes("create") && !r.resources.includes("jobs"));
-    eq("RBAC — create (non limitable par nom) : seulement statefulsets/services/networkpolicies, sans resourceNames", creates.map((r) => [r.resources[0], r.verbs, r.resourceNames ?? null]),
-      [["statefulsets", ["create"], null], ["services", ["create"], null], ["networkpolicies", ["create"], null]]);
-    ok("RBAC — aucun delete sur statefulsets/services/networkpolicies/pvc", !rules.some((r) => r.verbs.includes("delete") && r.resources.some((x) => ["statefulsets", "services", "networkpolicies", "persistentvolumeclaims"].includes(x))));
+    eq("RBAC — statefulsets get/list/watch limités à postgis (présence + rollout status)", ruleFor("apps", "statefulsets", ["get", "list", "watch"]).resourceNames, ["postgis"]);
+    eq("RBAC — services get limité à geo-postgis", ruleFor("", "services", ["get"]).resourceNames, ["geo-postgis"]);
+    eq("RBAC — networkpolicies get limité aux 2 netpols", ruleFor("networking.k8s.io", "networkpolicies", ["get"]).resourceNames, ["geo-postgis-preprod", "pra-restore-egress"]);
+    const pgRes = ["statefulsets", "services", "networkpolicies", "persistentvolumeclaims"];
+    const pgRules = rules.filter((r) => r.resources.some((x) => pgRes.includes(x)));
+    ok("RBAC — postgis préprod : la CI ne crée/modifie/supprime RIEN (0 create/patch/update/delete sur statefulsets/services/networkpolicies/pvc)",
+      pgRules.length === 3 && pgRules.every((r) => r.verbs.every((v) => ["get", "list", "watch"].includes(v))));
+    ok("RBAC — tout verbe postgis limité par nom (resourceNames)", pgRules.every((r) => Array.isArray(r.resourceNames) && r.resourceNames.length > 0));
+    ok("RBAC — le seul create restant concerne les Jobs", rules.filter((r) => r.verbs.includes("create")).every((r) => JSON.stringify(r.resources) === '["jobs"]'));
+    eq("pg-apply — ressources vérifiées = StatefulSet, Service et les NetworkPolicies du manifeste", pgExpectedResources(pgParams({}, { namespace: "geo-preprod", db: DB })),
+      [["statefulset", "postgis"], ["service", "geo-postgis"], ...docs.filter((d) => d.kind === "NetworkPolicy").map((d) => ["networkpolicy", d.metadata.name])]);
+    eq("PG_NETPOLS = resourceNames RBAC des networkpolicies", [...PG_NETPOLS], ruleFor("networking.k8s.io", "networkpolicies", ["get"]).resourceNames);
   }
   // templates de la restauration PG : rendu, labels, gardes, syntaxe bash
   const pgBase = { NAMESPACE: "geo-preprod", PG_IMAGE: "postgis/postgis:16-3.4", PG_SERVICE: "geo-postgis", PG_SECRET: "geo-postgis-credentials", EXPECTED_DATABASE: DB, TTL_SECONDS: "3600" };
@@ -509,6 +514,13 @@ for (const [tmpl, vars] of Object.entries({
   const rbk = render("pg-rollback-job.tmpl.yaml", pgRenders["pg-rollback-job.tmpl.yaml"]).text;
   ok("rollback G1 — refus sans snapshot ou avec session, puis drop + create TEMPLATE snapshot", rbk.indexOf("no G1 snapshot") < rbk.indexOf("drop database") &&
     rbk.indexOf("pg_stat_activity") < rbk.indexOf("drop database") && /create database \\"\$EXPECTED_DATABASE\\" template \\"\$PG_SNAPSHOT_DB\\"/.test(rbk));
+  // G2 ciblée : seules les sessions CLIENT autres que la sienne comptent (autovacuum,
+  // walwriter… et la session du garde lui-même ignorés).
+  for (const [tmpl, text] of [["pg-snapshot-job.tmpl.yaml", snp], ["db-restore-backup-job.tmpl.yaml", rst], ["pg-rollback-job.tmpl.yaml", rbk]]) {
+    const g2 = (text.match(/select count\(\*\) from pg_stat_activity where [^"]*/g) || []);
+    ok(`${tmpl} — G2 : count(pg_stat_activity) limité à backend_type = 'client backend' et pid <> pg_backend_pid()`,
+      g2.length === 1 && g2[0].includes("and backend_type = 'client backend'") && g2[0].includes("and pid <> pg_backend_pid()"));
+  }
   ok("S2c migrate — N/A : aucun fichier de migration/ORM dans le dépôt geo (vérifié)", !existsSync(join(DIR, "..", "..", "..", "drizzle")) && !existsSync(join(DIR, "..", "..", "..", "migrations")));
 }
 
@@ -538,6 +550,14 @@ for (const [tmpl, vars] of Object.entries({
       docs: Number(/'(\d+)'/.exec(doc.jobs.restore.env.DOCS_RESTORE_TIMEOUT)[1]) / 60, recon: 15, g4: 15, rollout: 10, servedIds: 45 };
     const sum = Object.values(stepsMin).reduce((a, b) => a + b, 0);
     ok(`workflow — job restore : budget 350 min > somme des attentes d'étapes (${sum} min), plafond 360`, doc.jobs.restore["timeout-minutes"] === 350 && sum < 350 - 15);
+    // Deadline du Job S3' ≤ attente runner (workflow ET défaut de restore-mode.mjs) : le Job
+    // ne continue jamais de copier après que le runner a abandonné l'étape.
+    const docsDeadlines = [...readFileSync(join(DIR, "docs-restore-backup-job.tmpl.yaml"), "utf8").matchAll(/^\s+activeDeadlineSeconds:\s*(\d+)\s*$/gm)].map((m) => Number(m[1]));
+    const docsDeadline = docsDeadlines.length === 1 ? docsDeadlines[0] : NaN;
+    const wfDocsTimeout = Number(/'(\d+)'/.exec(doc.jobs.restore.env.DOCS_RESTORE_TIMEOUT)[1]);
+    const cliDocsTimeout = Number(/"DOCS_RESTORE_TIMEOUT" : "RECON_TIMEOUT", step === "docs" \? "(\d+)"/.exec(readFileSync(join(DIR, "restore-mode.mjs"), "utf8"))[1]);
+    ok(`S3' — activeDeadlineSeconds du Job (${docsDeadline} s) ≤ DOCS_RESTORE_TIMEOUT (workflow ${wfDocsTimeout} s, restore-mode.mjs ${cliDocsTimeout} s)`,
+      docsDeadline > 0 && docsDeadline <= wfDocsTimeout && docsDeadline <= cliDocsTimeout);
     const idx = (re) => doc.jobs.restore.steps.findIndex((s) => re.test(String(s.run ?? "")) && !s["continue-on-error"]);
     ok("workflow — restauration PG : R0 < pg-apply < pg-check (fatal) < G1 snapshot < S2 pg-restore < S3' docs-restore",
       idx(/backup-resolve/) < idx(/pg-apply/) && idx(/pg-apply/) < idx(/pg-check/) && idx(/pg-check/) < idx(/pg-snapshot/) &&
@@ -606,6 +626,7 @@ async function cliSuite() {
   const klog = join(tmp, "kubectl.log");
   writeFileSync(join(bin, "kubectl"), ["#!/usr/bin/env bash", `echo "$*" >> "${klog}"`,
     'if [ -n "${FAKE_FAIL_JOB:-}" ] && [[ "$*" == *"get job $FAKE_FAIL_JOB -o jsonpath={.status}"* ]]; then printf \'{"failed":1}\'; exit 0; fi',
+    'if [ -n "${FAKE_MISSING:-}" ] && [[ "$*" == *"get $FAKE_MISSING -o name"* ]]; then echo "Error from server (NotFound)" >&2; exit 1; fi',
     'case "$*" in',
     '  *"containers[0].image"*) printf "ghcr.io/rhanka/geo-api@sha256:%064d" 0 ;;',
     '  *"get job "*"jsonpath={.status}"*) printf \'{"succeeded":1}\' ;;',
@@ -653,9 +674,17 @@ async function cliSuite() {
   const beforePg = readFileSync(klog, "utf8").length;
   eq("CLI pg-apply — exit 0", cli("pg-apply").status, 0);
   const klogApply = readFileSync(klog, "utf8").slice(beforePg);
-  ok("CLI pg-apply — kubectl apply de postgis-preprod.yaml puis rollout status statefulset/postgis (ns geo-preprod)",
-    /-n geo-preprod apply -f \S+postgis-preprod\.yaml/.test(klogApply) && /-n geo-preprod rollout status statefulset\/postgis --timeout=300s/.test(klogApply) &&
-    klogApply.indexOf(" apply -f ") < klogApply.indexOf("rollout status"));
+  ok("CLI pg-apply — get par nom (statefulset postgis, service geo-postgis, 2 netpols) PUIS rollout status statefulset/postgis (ns geo-preprod)",
+    ["statefulset postgis", "service geo-postgis", "networkpolicy geo-postgis-preprod", "networkpolicy pra-restore-egress"].every((r) => klogApply.includes(`-n geo-preprod get ${r} -o name`)) &&
+    /-n geo-preprod rollout status statefulset\/postgis --timeout=300s/.test(klogApply) &&
+    klogApply.lastIndexOf(" get networkpolicy ") < klogApply.indexOf("rollout status"));
+  ok("CLI pg-apply — la CI n'applique/ne crée/ne modifie RIEN (0 apply/create/patch/replace/edit)", !/ (apply|create|patch|replace|edit|delete) /.test(klogApply));
+  const beforeMissing = readFileSync(klog, "utf8").length;
+  const missing = cli("pg-apply", { FAKE_MISSING: "networkpolicy pra-restore-egress" });
+  const klogMissing = readFileSync(klog, "utf8").slice(beforeMissing);
+  ok("CLI pg-apply — ressource absente ⇒ exit 1, message « appliquer postgis-preprod.yaml par l'opérateur », ni apply ni rollout",
+    missing.status === 1 && /networkpolicy\/pra-restore-egress/.test(missing.stdout) && /appliquer postgis-preprod\.yaml par l'opérateur/.test(missing.stdout) &&
+    !/ apply | rollout /.test(klogMissing));
   eq("CLI pg-check — exit 0 (pg_isready + SELECT 1 verts)", cli("pg-check").status, 0);
   const rc = readFileSync(join(work, `${PG_JOBS.check}.rendered.yaml`), "utf8");
   ok("CLI pg-check — Job rendu : role=pra-restore, PGHOST geo-postgis, Secret geo-postgis-credentials", /role: pra-restore/.test(rc) && /PGHOST, value: "geo-postgis"/.test(rc) &&
@@ -673,7 +702,7 @@ async function cliSuite() {
   ok("CLI pg-restore — Job épinglé à D + sha256 manifeste/dump, fetch-dump, lecteur geo-backup-reader-preprod", rr.includes(`BACKUP_DATE, value: "${D}"`) &&
     rr.includes(pinNow.manifestSha256) && rr.includes(pinNow.pgSha256) && /BR_STEP, value: "fetch-dump"/.test(rr) && /name: geo-backup-reader-preprod, key: S3_ACCESS_KEY/.test(rr));
   const nsProd = cli("pg-apply", { PREPROD_NAMESPACE: "geo" });
-  ok("CLI pg-apply — namespace de PRODUCTION `geo` refusé avant tout kubectl apply", nsProd.status === 1 && /PRODUCTION/.test(nsProd.stdout));
+  ok("CLI pg-apply — namespace de PRODUCTION `geo` refusé avant tout kubectl", nsProd.status === 1 && /PRODUCTION/.test(nsProd.stdout));
   const stalePg = ["pg-apply", "pg-check", "pg-snapshot", "pg-restore", "pg-rollback"].map((c) => cli(c, { CONFIRM: "iso-prod-2020-01-01" }));
   ok("CLI restauration PG — G3 (CONFIRM périmé) refusé pour apply/check/snapshot/restore/rollback", stalePg.every((r) => r.status === 1 && /GARDE G3/.test(r.stdout)));
   eq("CLI pg-restore — refusé hors MODE=restore", cli("pg-restore", { MODE: "chain" }).status, 1);

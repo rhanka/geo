@@ -7,8 +7,10 @@
 // l'accès base et S3 vit dans des Jobs `role=pra-restore` ; le runner lit le
 // `.status` du Job et le message de fin de SES pods (uid), jamais `kubectl logs`.
 //
-//   pg-apply     postgis-preprod.yaml (StatefulSet `postgis`, Service `geo-postgis`,
-//                NetworkPolicies) : kubectl apply puis rollout status.
+//   pg-apply     VÉRIFIE la présence (get par nom) du StatefulSet `postgis`, du
+//                Service `geo-postgis` et des 2 NetworkPolicies `role=pra-restore`
+//                puis rollout status ; n'applique RIEN (postgis-preprod.yaml est
+//                appliqué une fois par l'opérateur, compte local geo-admin).
 //   pg-check     AVANT S2 : pg_isready puis SELECT 1 authentifié avec le Secret ;
 //                échec ⇒ message clair, rien de destructif, pas de pg_restore.
 //   pg-snapshot  G1 : copie de la base préprod (CREATE DATABASE … TEMPLATE) ; G2 =
@@ -104,6 +106,14 @@ export function postgisSecretValues(env, expectedDb) {
   return { POSTGRES_DB: db, POSTGRES_USER: user, POSTGRES_PASSWORD: password };
 }
 
+// NetworkPolicies du postgis préprod (postgis-preprod.yaml), appliquées par l'opérateur.
+export const PG_NETPOLS = Object.freeze(["geo-postgis-preprod", "pra-restore-egress"]);
+
+// Ressources dont pg-apply vérifie la présence (get par nom) : [type kubectl, nom].
+export function pgExpectedResources(q) {
+  return [["statefulset", q.statefulset], ["service", q.service], ...PG_NETPOLS.map((n) => ["networkpolicy", n])];
+}
+
 // Vérifie que le manifeste postgis ne vise que le namespace préprod attendu.
 export function assertManifestNamespace(text, namespace) {
   const nss = [...String(text).matchAll(/^\s+namespace:\s*(\S+)\s*$/gm)].map((m) => m[1]);
@@ -151,20 +161,24 @@ export function makeRestorePg(h) {
   }
   const need = () => { if (mode() !== "restore") die("la restauration PG exige MODE=restore."); };
 
-  // ── pg-apply : postgis préprod (StatefulSet + Service + netpols) ────────────
+  // ── pg-apply : VÉRIFICATION de la présence du postgis préprod ───────────────
+  // La CI n'applique RIEN : postgis-preprod.yaml est appliqué une fois par
+  // l'opérateur (compte local geo-admin). Ici : get par nom de chaque ressource
+  // puis rollout status ; une absence ⇒ échec clair, rien n'est créé.
   function cmdPgApply() {
-    section("S2.0 postgis préprod — apply (StatefulSet, Service, NetworkPolicies) + rollout");
+    section("S2.0 postgis préprod — vérification de présence (StatefulSet, Service, NetworkPolicies) + rollout status");
     need();
-    assertConfirm(); // G3 avant toute mutation
+    assertConfirm();
     const { p, q } = pg();
-    const file = join(import.meta.dirname, PG_DEFAULTS.manifest);
-    let kinds;
-    try { kinds = assertManifestNamespace(readFileSync(file, "utf8"), p.jd.NAMESPACE); } catch (e) { die(e.message); }
-    const r = run("kubectl", ["-n", p.jd.NAMESPACE, "apply", "-f", file], { allowFail: true });
-    if (r.status !== 0) die(`kubectl apply de ${PG_DEFAULTS.manifest} en échec (RBAC geo-ci-bascule-preprod : statefulsets/services/networkpolicies par nom — README).`);
+    if (PROD_NAMESPACES.includes(p.jd.NAMESPACE)) die(`namespace ${p.jd.NAMESPACE} = PRODUCTION : refus`);
+    const expected = pgExpectedResources(q);
+    const missing = expected.filter(([kind, name]) => run("kubectl", ["-n", p.jd.NAMESPACE, "get", kind, name, "-o", "name"], { allowFail: true }).status !== 0);
+    if (missing.length) {
+      die(`postgis préprod absent dans ${p.jd.NAMESPACE} : ${missing.map(([k, n]) => `${k}/${n}`).join(", ")} — appliquer ${PG_DEFAULTS.manifest} par l'opérateur (compte local geo-admin : kubectl -n ${p.jd.NAMESPACE} apply -f deploy/ci/bascule-preprod/${PG_DEFAULTS.manifest}) ; la CI ne crée rien. Rien de destructif n'a été fait.`);
+    }
     const ro = run("kubectl", ["-n", p.jd.NAMESPACE, "rollout", "status", `statefulset/${q.statefulset}`, `--timeout=${Number(opt("PG_ROLLOUT_TIMEOUT", "300"))}s`], { allowFail: true });
     if (ro.status !== 0) die(`statefulset/${q.statefulset} pas prêt dans le délai (rollout status) — rien de destructif n'a été fait.`);
-    log(`S2.0 OK — ${kinds.join(", ")} appliqués dans ${p.jd.NAMESPACE}, statefulset/${q.statefulset} prêt.`);
+    log(`S2.0 OK — ${expected.map(([k, n]) => `${k}/${n}`).join(", ")} présents dans ${p.jd.NAMESPACE}, statefulset/${q.statefulset} prêt.`);
   }
 
   // ── pg-check : pg_isready + SELECT 1 authentifié, AVANT S2 ──────────────────

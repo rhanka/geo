@@ -221,7 +221,11 @@ Verify recovery at any time: `kubectl -n geo-preprod get secret geo-backup-resto
 
 Target of the PG restore of the preprod bascule (owner decision 2026-09-26): StatefulSet
 `postgis` in ns `geo-preprod` (`postgis-preprod.yaml`), a disposable database fed only by
-restores of `geo-backup`.
+restores of `geo-backup`. `postgis-preprod.yaml` (StatefulSet, Service, 2 NetworkPolicies) is
+applied ONCE by the operator (local account `geo-admin`), never by a workflow: the CI SA
+only reads these objects by name (presence check + `rollout status` in `pg-apply`). Apply it
+AFTER a first `MODE=restore` run (a `DRY_RUN=true` one is enough) has written this Secret:
+the image initialises the empty volume with the Secret values at first start.
 
 | secret (k8s name) | keys | GitHub source (Environment `geo-bascule`, main-only) | consumer | rights |
 | --- | --- | --- | --- | --- |
@@ -232,7 +236,9 @@ Written by the bascule like the backup identities (step "Write backup Secrets fr
 `^[a-z_][a-z0-9_]{0,62}$`, password printable ASCII 16–128, `POSTGRES_DB` = `EXPECTED_DATABASE`,
 `kubectl replace --dry-run=server` of every Secret before the first write, key set checked
 on the object returned by the server; values via `env:` only, never in argv/logs. SA
-`geo-ci-bascule-preprod`: secrets get/update by resourceNames only. Never a SealedSecret.
+`geo-ci-bascule-preprod`: secrets get/update by resourceNames only; statefulset `postgis`,
+service `geo-postgis` and the 2 netpols: get (and list/watch on the StatefulSet) by
+resourceNames only, no create/patch/update/delete. Never a SealedSecret.
 The 3 variables are also recorded in the k8s-ops registry (#76).
 
 ⚠ **The postgres image applies `POSTGRES_PASSWORD` only when it initialises an EMPTY
