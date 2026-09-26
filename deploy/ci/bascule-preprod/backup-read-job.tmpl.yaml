@@ -1,0 +1,99 @@
+# =============================================================================
+# backup-read-job.tmpl.yaml — Job de LECTURE de la bascule geo MODE=restore|list.
+#
+# BR_STEP=resolve : BACKUP_ID (latest | AAAA-MM-JJ) → date D + gardes (manifeste
+#                   `complete`, garde 24 h pour `latest`, sidecar sha256 == manifeste,
+#                   taille, sha256 du dump RECALCULÉ en flux — la préprod geo n'a pas
+#                   de PostgreSQL : le dump est vérifié, pas restauré) → PIN.
+# BR_STEP=list    : chaque manifeste daté encore listé (date, statut, taille, sha).
+#
+# Identité = lecteur dédié préprod de geo-backup, Secret ${READER_SECRET}
+# (geo-backup-reader-preprod, ns geo-preprod, pré-créé par k8s et RÉÉCRIT par la
+# bascule depuis l'environment GitHub geo-bascule ; clés S3_ACCESS_KEY,
+# S3_SECRET_KEY, BACKUP_BUCKET) : GetObject sur pg/*, manifests/*, docs-inventory/*,
+# docs/* (une lecture versionnée est un GetObject chez OVH) + ListBucket. Aucun
+# droit d'écriture, aucun accès DB.
+#
+# Label pod app.kubernetes.io/name=geo-preprod-sync → réutilise la NetworkPolicy
+# EXISTANTE allow-geo-sync-egress (DNS + S3-BHS). Endpoint figé ${PINNED_S3_ENDPOINT}.
+# Runner = kubectl seul : .status du Job + message de fin du pod (JSON ≤ 4 Kio :
+# dates, statuts, tailles, sha256 — jamais une clé d'objet). Jamais `kubectl logs`.
+#
+# Placeholders (rendus par restore-mode.mjs) : ${JOB_NAME} ${NAMESPACE} ${IMAGE}
+# ${BR_STEP} ${READER_SECRET} ${S3_ENDPOINT} ${PINNED_S3_ENDPOINT} ${S3_REGION}
+# ${S3_FORCE_PATH_STYLE} ${EXPECTED_BACKUP_BUCKET} ${EXPECTED_DATABASE} ${BACKUP_ID}
+# ${ALLOW_STALE_BACKUP} ${MAX_AGE_HOURS} ${VERIFY_DUMP_SHA256} ${TTL_SECONDS}, plus
+# le placeholder BR_SCRIPT sous `args:` (jamais écrit dans un commentaire : il
+# s'étend sur de nombreuses lignes).
+# =============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    app.kubernetes.io/name: geo-preprod-sync
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: backup-read
+    sentropic.io/bascule: backup-read
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: ${TTL_SECONDS}
+  activeDeadlineSeconds: 2700
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geo-preprod-sync
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: backup-read
+        sentropic.io/bascule: backup-read
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: tmp
+          emptyDir: { sizeLimit: 64Mi }
+      containers:
+        - name: read
+          image: ${IMAGE}
+          imagePullPolicy: IfNotPresent
+          workingDir: /app
+          command: ["node", "-e"]
+          args:
+            - |
+${BR_SCRIPT}
+          env:
+            - { name: BR_STEP, value: "${BR_STEP}" }
+            - { name: AWS_EC2_METADATA_DISABLED, value: "true" }
+            - { name: S3_ENDPOINT, value: "${S3_ENDPOINT}" }
+            - { name: PINNED_S3_ENDPOINT, value: "${PINNED_S3_ENDPOINT}" }
+            - { name: S3_REGION, value: "${S3_REGION}" }
+            - { name: S3_FORCE_PATH_STYLE, value: "${S3_FORCE_PATH_STYLE}" }
+            - { name: EXPECTED_BACKUP_BUCKET, value: "${EXPECTED_BACKUP_BUCKET}" }
+            - { name: EXPECTED_DATABASE, value: "${EXPECTED_DATABASE}" }
+            - { name: BACKUP_ID, value: "${BACKUP_ID}" }
+            - { name: ALLOW_STALE_BACKUP, value: "${ALLOW_STALE_BACKUP}" }
+            - { name: MAX_AGE_HOURS, value: "${MAX_AGE_HOURS}" }
+            - { name: VERIFY_DUMP_SHA256, value: "${VERIFY_DUMP_SHA256}" }
+            - { name: READER_ACCESS_KEY, valueFrom: { secretKeyRef: { name: ${READER_SECRET}, key: S3_ACCESS_KEY } } }
+            - { name: READER_SECRET_KEY, valueFrom: { secretKeyRef: { name: ${READER_SECRET}, key: S3_SECRET_KEY } } }
+            - { name: BACKUP_BUCKET, valueFrom: { secretKeyRef: { name: ${READER_SECRET}, key: BACKUP_BUCKET } } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests: { cpu: 25m, memory: 96Mi }
+            limits: { cpu: 500m, memory: 256Mi }
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
