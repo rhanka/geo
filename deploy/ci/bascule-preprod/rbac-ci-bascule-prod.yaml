@@ -8,11 +8,12 @@
 #   le controller sealed-secrets matérialise les core Secrets. Le CD n'applique que des manifests.
 # `create` non name-scopable (RBAC) → create ns-wide ; get/patch/update name-scopés aux objets EXACTS du bundle.
 # impersonate name-scopé geo-ci-trigger-prod (gate anti-RCE `--dry-run=server`).
-# Daily prod backup (deploy/ci/backup/README.md): the same SA applies, in job `apply-backup` of
-# bascule-bundle-cd.yml, the SealedSecrets geo-backup-writer/-reader/-purger, the ConfigMap geo-backup-daily-script
-# and the CronJobs geo-backup-daily + geo-backup-freshness → those 6 names are added to the name-scoped verbs below (create stays ns-wide;
-# `kubectl create job --from=cronjob` for backup_run_now uses the existing jobs:create). RE-APPLY this file
-# (install-time, cluster-admin) BEFORE arming BACKUP_DAILY_CD_ENABLED.
+# Daily prod backup (deploy/ci/backup/README.md): the same SA, in job `apply-backup` of bascule-bundle-cd.yml,
+# WRITES the core Secrets geo-backup-writer/-reader/-purger from the Environment geo-prod-bundle (NO SealedSecret for
+# them), and applies the ConfigMap geo-backup-daily-script and the CronJobs geo-backup-daily + geo-backup-freshness →
+# those 6 names are in the name-scoped verbs below (`kubectl create job --from=cronjob` for backup_run_now uses the
+# existing jobs:create). The 3 Secrets are PRE-CREATED by the k8s lane: secrets = get/patch/update on these 3 names
+# ONLY — 0 secrets:create/list/watch/delete. RE-APPLY this file (install-time, cluster-admin) BEFORE the CD writes them.
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -44,7 +45,7 @@ metadata:
 roleRef: { apiGroup: rbac.authorization.k8s.io, kind: ClusterRole, name: geo-ci-bascule-prod-vap }
 subjects: [ { kind: ServiceAccount, name: geo-ci-bascule-prod, namespace: geo } ]
 ---
-# ── Namespaced : bundle (ns geo) — SANS core secrets ──────────────────────────────────────────────────────────
+# ── Namespaced : bundle (ns geo) — core secrets : les 3 identités backup SEULEMENT ─────────────────────────────
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -59,8 +60,14 @@ rules:
   - apiGroups: ["bitnami.com"]
     resources: ["sealedsecrets"]
     verbs: ["get", "patch", "update"]
-    # + geo-backup-writer / -reader / -purger: daily prod backup identities (deploy/ci/backup/, job apply-backup).
-    resourceNames: ["geo-db-ro-prod", "geo-pra-writer-prod", "geo-backup-writer", "geo-backup-reader", "geo-backup-purger"]
+    resourceNames: ["geo-db-ro-prod", "geo-pra-writer-prod"]
+  # core secrets : ONLY the 3 daily prod backup identities (deploy/ci/backup/, job apply-backup), written from the
+  # Environment geo-prod-bundle by `kubectl replace` (get + update). Pre-created by the k8s lane.
+  # NO create (a missing Secret stays missing), NO list/watch, NO delete.
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "patch", "update"]
+    resourceNames: ["geo-backup-writer", "geo-backup-reader", "geo-backup-purger"]
   # configmaps (SQL du rôle RO + daily backup script geo-backup-daily-script) :
   - apiGroups: [""]
     resources: ["configmaps"]
@@ -120,7 +127,8 @@ metadata:
 roleRef: { apiGroup: rbac.authorization.k8s.io, kind: Role, name: geo-ci-bascule-prod }
 subjects: [ { kind: ServiceAccount, name: geo-ci-bascule-prod, namespace: geo } ]
 ---
-# EXCLUS : core secrets (tous verbes — SealedSecrets), secrets:list, pods/exec, deployments:patch/scale, PV/PVC,
+# EXCLUS : core secrets (tous verbes, sauf get/patch/update sur les 3 identités backup geo-backup-*),
+#   secrets:create/list/watch/delete, pods/exec, deployments:patch/scale, PV/PVC,
 #   namespaces, nodes, autres ns, impersonate users/groups.
 # INSTALL : appliqué UNE fois (cluster-admin, install-cd-bootstrap.sh). Token permanent → KUBE_CONFIG_DATA_PROD.
 #   Réversible : delete SA/Role/RB/ClusterRole/CRB.
