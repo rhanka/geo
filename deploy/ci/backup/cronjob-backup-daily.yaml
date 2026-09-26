@@ -29,10 +29,11 @@
 #                          its manifest exists, puts the delete-markers. Identity
 #                          geo-backup-purger (DeleteObject on pg/*, manifests/*,
 #                          docs-inventory/* + ListBucket; no GET, no PUT, no docs/).
-#                          No plan (backup partial) = nothing purged.
+#                          No plan (backup partial or incomplete) = nothing purged.
 # 0 python, 0 new image. Logs = verdict only (counts, backup keys, sha256).
-# `partial` (seed, objects pending) exits 0 with verdict PARTIAL in the manifest;
-# geo-backup-freshness (cronjob-backup-freshness.yaml) fails when it lasts.
+# `partial` (seed, budget, request deadlines: objects pending) exits 0 with verdict
+# PARTIAL in the manifest; `incomplete` (S3 error answers on the copy) exits 4.
+# geo-backup-freshness (cronjob-backup-freshness.yaml) fails when either lasts.
 #
 # NETWORK: pod label role=pra-backup → existing netpols allow-geo-db-backup-to-postgis
 # (ingress postgis:5432) + allow-geo-db-backup-egress (DNS, postgis:5432,
@@ -72,8 +73,9 @@ spec:
     spec:
       # One retry for transient failures (exit 1). Exit 2/3/4 = no retry (a
       # retry would re-dump prod for nothing): integrity refusal (nothing
-      # purged), purge failed after a valid manifest, source step failed as a
-      # whole after the PG part was recorded. A partial seed exits 0.
+      # purged), purge failed after a valid manifest, manifest `incomplete`
+      # (source copy errors / source step failed after the PG part was recorded;
+      # next night resumes). A partial seed exits 0.
       backoffLimit: 1
       activeDeadlineSeconds: 10800
       ttlSecondsAfterFinished: 259200

@@ -44,7 +44,8 @@ manifests/latest.json        pointer to the newest manifest + latestComplete
 are kept as they are below it, e.g. `docs/raw/<source>/cas/<sha256>`.)
 
 `manifests/D.json` (format `geo-backup-manifest/v1`) holds: status (`complete` |
-`partial`) and verdict (`OK` | `PARTIAL`), start/end times, dump key + sha256 + size + TOC entry count, the
+`partial` | `incomplete`, below) and verdict (`OK` | `PARTIAL` | `INCOMPLETE`),
+`partialReason` (why it is not complete, counts only), start/end times, dump key + sha256 + size + TOC entry count, the
 database size (`pg_database_size`), PostgreSQL / PostGIS / pg_dump versions,
 globals key + sha256, schema version (`unknown` on geo: no drizzle migrations
 table), source counts (objects, bytes, copied, copied by multipart, up to date,
@@ -52,6 +53,14 @@ pending, failed, excluded) + inventory key + sha256, and the script sha256 /
 image digest that produced it. The DB is dumped first and the source bucket is
 listed after, so every object the DB references at dump time is in the
 inventory.
+
+| status | meaning | Job |
+| --- | --- | --- |
+| `complete` | PG + every source object backed up (or excluded), inventory written | Complete, purge runs |
+| `partial` | PG complete; source objects still pending (2-hour budget reached, a request past its deadline, SIGTERM) or inventory not written, **no error answer** (resumes next run); `partialReason` says why | Complete (exit 0, verdict `PARTIAL`), purge skipped — after SIGTERM: exit 1, verdict `TERMINATED` |
+| `incomplete` | PG complete; source copy **errors** (S3 error answers after the SDK retries, `docs.failed`) or the source step failed as a whole | Failed (exit 4, verdict `INCOMPLETE`), purge skipped |
+
+Same status model and names as the immo job (rhanka/radar-immobilier#779).
 
 ## How a run works
 
@@ -79,19 +88,20 @@ monthly geo-fetch), `concurrencyPolicy: Forbid`, `activeDeadlineSeconds: 10800`,
    GET, no PUT, no `docs/`) — re-validates the plan (complete backup, same
    bucket, today's plan, only dated keys of purged dates outside the daily
    window), confirms by LIST that the plan's manifest exists, then puts the
-   delete-markers. No plan (partial backup) = nothing purged.
+   delete-markers. No plan (backup partial or incomplete) = nothing purged.
 
 Logs are verdict only (counts, backup keys, sha256) — never a source key, a row
-or a credential. Last lines: `VERDICT OK|PARTIAL|DOCS-FAILED|OK-PURGE-PLAN-FAILED
+or a credential. Last lines: `VERDICT OK|PARTIAL|INCOMPLETE|TERMINATED|OK-PURGE-PLAN-FAILED
 date=… status=…` (backup) and `PURGE VERDICT OK|SKIPPED …` (purge).
+`OK-PURGE-PLAN-FAILED` is geo-only: geo plans the purge after the manifest (exit 3).
 
 | Exit | Meaning | Retry |
 | --- | --- | --- |
-| 0 | backup recorded: `complete` (plan written, purge done) **or `partial`** (seed, objects pending/failed: verdict `PARTIAL` in the manifest, no purge) | — (next night resumes) |
-| 1 | transient failure before the manifest (DB unreachable, S3 5xx, re-read mismatch) | once (`backoffLimit: 1`) |
+| 0 | backup recorded: `complete` (plan written, purge done) **or `partial`** (seed, budget, request deadlines: objects pending, verdict `PARTIAL` in the manifest, no purge) | — (next night resumes) |
+| 1 | transient failure before the manifest (DB unreachable, S3 5xx / request deadline, re-read mismatch), or SIGTERM (partial manifest recorded when the PG part was) | once (`backoffLimit: 1`) |
 | 2 | refusal: wrong DB/bucket, versioning off, dump size anomaly, source listing anomaly, invalid purge plan — nothing purged | no (`podFailurePolicy`) |
 | 3 | purge planning or execution failed after a complete manifest (backup valid) | no |
-| 4 | source step failed as a whole (listing / unexpected error) after the PG part was recorded | no |
+| 4 | manifest written with `status=incomplete` (source copy errors, or the source step failed as a whole after the PG part was recorded) | no — next night resumes |
 
 `partial` is a recorded state, not a failure: the Job is `Complete`.
 **`geo-backup-freshness`** (07:47 UTC, identity `geo-backup-reader`, reads
@@ -352,9 +362,12 @@ copies, (3) no handling of SIGTERM, so the kill left nothing recorded.
   idle timeout). When the module does not resolve, the script logs
   `handler=abort-signal-only` and the per-request deadline above still applies.
   The first log line of each mode states the values and the handler mode.
-- **A copy that fails or times out** (after the SDK retries) is `failed` for
-  that object only (`docs.failed`, `docs.timedOut`, inventory `state: failed`);
-  the other workers go on. It is retried the next night.
+- **A copy past its deadline** stays `pending` (counted in `docs.timedOut`,
+  `partialReason` "N object(s) pending (T timed out)") → `partial`, exit 0,
+  retried the next night: no answer is not an error answer. **A copy answered
+  by an S3 error** (after the SDK retries) is `failed` (`docs.failed`, inventory
+  `state: failed`) → `incomplete`, exit 4. Either way only that object is
+  affected; the other workers go on. Same rule as immo #779.
 - **The budget really cuts**: at `DOCS_COPY_BUDGET_SECONDS` a timer aborts every
   copy in flight and no worker starts a new one. Interrupted copies stay
   `pending` (`docs.interrupted`), `docs.stopReason: budget`. The run then writes
@@ -366,8 +379,10 @@ copies, (3) no handling of SIGTERM, so the kill left nothing recorded.
   as the budget with `docs.stopReason: terminated`, verdict `TERMINATED`,
   exit 1; each final write is capped to the grace left (minus 10 s). An
   inventory of 116 000 objects is ~26 MiB, built in < 1 s and uploaded in ~3 s at
-  the 8 MiB/s floor (selftest measure). SIGTERM before the PG part is recorded
-  aborts the run (exit 1, nothing written: there is no valid backup to record).
+  the 8 MiB/s floor (selftest measure). The real duration is logged by every
+  run: `final writes ms=… inventory.bytes=…`. SIGTERM before the PG part is
+  recorded aborts the run (exit 1, nothing written: there is no valid backup to
+  record).
 - **Never `complete` with an object missing**: `complete` needs 0 pending, 0
   failed, every listed object backed up or excluded, and the inventory written.
   A final write that fails (inventory) leaves the backup `partial`
