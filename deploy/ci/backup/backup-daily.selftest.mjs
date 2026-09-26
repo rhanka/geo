@@ -485,6 +485,8 @@ console.log('# pod run — first run with 210 days of un-purged history (backup 
   const stored = JSON.parse(fake.text(BK, 'manifests/2026-09-26.json') || '{}');
   eq('manifest stored = manifest returned', stored, m);
   eq('manifest format + status + verdict', [m.format, m.status, m.verdict], ['geo-backup-manifest/v1', 'complete', 'OK']);
+  const tr = lib.terminationRecord('backup', res.r);
+  eq('runBackup returns verdict → termination record complete/OK (pre-MEP gate input)', [res.r.verdict, tr.verdict, tr.status, tr.exitCode], ['OK', 'OK', 'complete', 0]);
   eq('dump uploaded byte-exact', fake.latest(fake.b(BK), 'pg/2026-09-26/geo.dump').body.equals(dump), true);
   eq('sha256 object', fake.text(BK, 'pg/2026-09-26/geo.dump.sha256'), `${sha(dump)}  geo.dump\n`);
   eq('manifest pg', [m.pg.database, m.pg.key, m.pg.sha256, m.pg.sizeBytes, m.pg.multipart, m.pg.serverVersion, m.pg.postgisVersion, m.pg.tocEntries, m.pg.databaseSizeBytes],
@@ -1317,6 +1319,40 @@ const secretRun = runBodies(secretStep).join('\n');
     /resources: \{ requests: \{ cpu: 25m, memory: 64Mi \}, limits: \{ cpu: 250m, memory: 128Mi \} \}/.test(ro));
   const ci = read('.github/workflows/ci.yml');
   ok('CI runs this selftest', ci.includes('node deploy/ci/backup/backup-daily.selftest.mjs'));
+}
+
+// ── termination message (read by the cd-prod pre-MEP gate, kubectl-only) ─────
+{
+  const complete = lib.terminationRecord('backup', {
+    exitCode: 0, verdict: 'OK',
+    manifest: { status: 'complete', date: '2026-09-26', docs: { status: 'complete' } },
+    pointer: { latestComplete: { date: '2026-09-26' } },
+  });
+  eq('termination record: complete backup', complete, {
+    format: lib.TERMINATION_FORMAT, mode: 'backup', exitCode: 0, verdict: 'OK', status: 'complete', date: '2026-09-26', docsStatus: 'complete', latestComplete: '2026-09-26', partialReason: null,
+  });
+  const partial = lib.terminationRecord('backup', {
+    exitCode: 0, verdict: 'PARTIAL', manifest: { status: 'partial', date: '2026-09-26', docs: { status: 'partial' }, partialReason: 'docs budget exhausted' }, pointer: { latestComplete: null },
+  });
+  eq('termination record: partial backup exits 0 but says PARTIAL + partialReason', [partial.exitCode, partial.verdict, partial.status, partial.latestComplete, partial.partialReason],
+    [0, 'PARTIAL', 'partial', null, 'docs budget exhausted']);
+  const incomplete = lib.terminationRecord('backup', {
+    exitCode: lib.EXIT.DOCS_INCOMPLETE, verdict: 'INCOMPLETE', manifest: { status: 'incomplete', date: '2026-09-26', docs: { status: 'incomplete' }, partialReason: 'x' }, pointer: {},
+  });
+  eq('termination record: incomplete backup', [incomplete.exitCode, incomplete.verdict, incomplete.status, incomplete.partialReason], [lib.EXIT.DOCS_INCOMPLETE, 'INCOMPLETE', 'incomplete', 'x']);
+  const terminated = lib.terminationRecord('backup', {
+    exitCode: lib.EXIT.RETRYABLE, verdict: 'TERMINATED', manifest: { status: 'partial', date: '2026-09-26', docs: { status: 'partial' }, partialReason: 'terminated (SIGTERM) before the copy finished' }, pointer: {},
+  });
+  eq('termination record: SIGTERM run says TERMINATED', [terminated.exitCode, terminated.verdict, terminated.status], [lib.EXIT.RETRYABLE, 'TERMINATED', 'partial']);
+  eq('termination record: failure', lib.terminationRecord('backup', null, new lib.BackupError(2, 'x')), { format: lib.TERMINATION_FORMAT, mode: 'backup', exitCode: 2, verdict: 'FAIL' });
+  eq('termination record: purge skipped / freshness stale', [lib.terminationRecord('purge', { exitCode: 0, skipped: true }).verdict,
+    lib.terminationRecord('freshness', { exitCode: 5, ok: false }).verdict], ['SKIPPED', 'STALE']);
+  const tl = path.join(TMP, 'termination-log');
+  ok('termination message: absent file → no write (outside k8s)', lib.writeTerminationMessage(complete, tl) === false && !fs.existsSync(tl));
+  fs.writeFileSync(tl, '');
+  ok('termination message: kubelet file present → JSON verdict written, no secret-like field',
+    lib.writeTerminationMessage(complete, tl) === true && JSON.parse(fs.readFileSync(tl, 'utf8')).verdict === 'OK' &&
+    !/key|secret|bucket|endpoint/i.test(Object.keys(JSON.parse(fs.readFileSync(tl, 'utf8'))).join(',')));
 }
 
 fs.rmSync(TMP, { recursive: true, force: true });

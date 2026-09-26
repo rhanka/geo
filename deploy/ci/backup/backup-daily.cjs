@@ -1264,7 +1264,50 @@ async function runBackupSteps(ctx) {
   // SIGTERM: recorded (partial), but the run did not finish → exit 1 (retryable;
   // on activeDeadlineSeconds the Job is failed anyway, with its manifest written).
   const exitCode = terminated ? EXIT.RETRYABLE : manifest.status === 'incomplete' ? EXIT.DOCS_INCOMPLETE : purgeError ? EXIT.PURGE_FAILED : EXIT.OK;
-  return { exitCode, manifest, pointer, purge, purgeError };
+  return { exitCode, verdict, manifest, pointer, purge, purgeError };
+}
+
+// ── termination message (kubectl-readable verdict, no S3 credential) ─────────
+// The pre-MEP gate of cd-prod (deploy/ci/backup/premep-backup-gate.mjs) is
+// kubectl-only: it cannot read s3://geo-backup. Exit 0 covers BOTH `complete` and
+// `partial`, so the Job status alone cannot tell them apart. The record carries
+// the verdict (OK | PARTIAL | INCOMPLETE | TERMINATED | OK-PURGE-PLAN-FAILED |
+// FAIL), the manifest status (complete | partial | incomplete) and partialReason;
+// only status=complete + verdict=OK lets a MEP through. Each mode therefore
+// writes a one-line JSON verdict to the container termination message
+// (/dev/termination-log, mounted by the kubelet, writable under a read-only root
+// filesystem), read back from `pod.status.(init)containerStatuses[].state.terminated.message`
+// with the `pods get/list` right the deployer already holds — no `pods/log`.
+// Verdict fields only: no key, no source object, no credential. Best-effort: a
+// missing file (outside k8s, selftest) or a write error never changes the exit code.
+const TERMINATION_FORMAT = 'geo-backup-verdict/v1';
+function terminationRecord(mode, r, err) {
+  if (err !== undefined) {
+    return { format: TERMINATION_FORMAT, mode, exitCode: err instanceof BackupError ? err.exitCode : EXIT.RETRYABLE, verdict: 'FAIL' };
+  }
+  const rec = { format: TERMINATION_FORMAT, mode, exitCode: r.exitCode };
+  if (mode === 'backup') {
+    rec.verdict = r.verdict || null;
+    rec.status = (r.manifest && r.manifest.status) || null;
+    rec.date = (r.manifest && r.manifest.date) || null;
+    rec.docsStatus = (r.manifest && r.manifest.docs && r.manifest.docs.status) || null;
+    rec.latestComplete = (r.pointer && r.pointer.latestComplete && r.pointer.latestComplete.date) || null;
+    rec.partialReason = (r.manifest && r.manifest.partialReason) || null;
+  } else if (mode === 'purge') {
+    rec.verdict = r.skipped ? 'SKIPPED' : 'OK';
+  } else if (mode === 'freshness') {
+    rec.verdict = r.ok ? 'OK' : 'STALE';
+  }
+  return rec;
+}
+function writeTerminationMessage(rec, file = process.env.TERMINATION_MESSAGE_PATH || '/dev/termination-log') {
+  try {
+    if (!fs.existsSync(file)) return false;
+    fs.writeFileSync(file, JSON.stringify(rec).slice(0, 4000));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function main() {
@@ -1304,6 +1347,7 @@ async function main() {
     });
   }
   const r = await run({ env: process.env, sdk, s3, fetchImpl: globalThis.fetch, log, terminate: terminate.signal });
+  writeTerminationMessage(terminationRecord(mode, r));
   return r.exitCode;
 }
 
@@ -1314,6 +1358,7 @@ module.exports = {
   readFreshnessConfig, assertBuckets, buildManifest, buildLatestPointer, checkFreshness, copySourceObject, runBackup,
   planPurge, validatePurgePlan, executePurge, runPurge, runFreshness, docsStatus,
   DEFAULT_TIMEOUTS, readTimeouts, requestDeadlineMs, s3send, buildRequestHandler, partialReasonOf, stoppedError,
+  TERMINATION_FORMAT, terminationRecord, writeTerminationMessage,
 };
 
 if (require.main === module) {
@@ -1321,6 +1366,7 @@ if (require.main === module) {
     const code = e instanceof BackupError ? e.exitCode : EXIT.RETRYABLE;
     const msg = e instanceof BackupError ? e.message : errName(e);
     console.error(`[${process.argv[2] || 'backup'}] VERDICT FAIL exit=${code} ${msg}`);
+    writeTerminationMessage(terminationRecord(process.argv[2] || 'backup', null, e));
     process.exit(code);
   });
 }
