@@ -295,6 +295,34 @@ Activation order (once; nothing is committed for the credentials):
    also starts a first run (outside 03:13–06:30 UTC). A freshness run before the
    first backup fails once (no `latest.json` yet): expected.
 
+## Pre-MEP gate (cd-prod)
+
+`.github/workflows/cd-prod.yml` runs `premep-backup-gate.mjs` after the owner
+approval and before any deployment `kubectl`, with the deployer SA
+`geo-cd-deployer` (kubectl only, no S3 credential). Fail-closed — the MEP is
+refused when:
+
+- it is dispatched inside 03:13–06:30 UTC (scheduled run window);
+- a Job `geo-backup-*` is still active after 30 min (a Job created with
+  `--from` is not covered by `concurrencyPolicy: Forbid`);
+- the newest successful `geo-backup-daily` Job recorded a non-complete verdict
+  (seed not finished);
+- the Job `geo-backup-premep-<sha7>-<run_id>-<run_attempt>` it creates
+  `--from=cronjob/geo-backup-daily` fails, is not complete within
+  `activeDeadlineSeconds` (10800 s) + 600 s, or completes without an explicit
+  `status=complete` + `verdict=OK` (`partial`, `incomplete`, `TERMINATED`,
+  unknown or absent all refuse).
+
+The verdict is read without S3 and without `pods/log`: every mode of
+`backup-daily.cjs` writes a one-line JSON (`geo-backup-verdict/v1`: verdict,
+status, date, latestComplete, partialReason — no key, no credential) to the container
+termination message, read from `pod.status.initContainerStatuses[backup]`.
+Exit 0 covers both `complete` and `partial`, so the Job status alone cannot
+decide. RBAC added to `deploy/k8s/prod/deployer-prod-rbac.yaml`: `batch/jobs`
+get/list/watch/create, `batch/cronjobs` get on `geo-backup-daily`. The created
+Job is not deleted (real backup, removed by its TTL). Selftest:
+`premep-backup-gate.selftest.mjs` (CI job `verify`).
+
 ## Verification
 
 Every day (any operator, no cluster write):
