@@ -420,18 +420,38 @@ export function shortSha(sha) {
   return s.slice(0, 7);
 }
 
-/** Sous-branche `legs.geo` du schéma partagé (ordre des clés figé). */
-export function buildGeoLeg({ cycleId, runId, gitSha, t1, pgResult, s3Result, servedIdsSha256, repo = LEG_REPO, workflow = LEG_WORKFLOW }) {
+/** Bloc `backup` de legs.geo (MODE=restore) : validé champ par champ, null sinon. */
+export function backupOfLeg(mode, backup) {
+  const date = String(backup?.date ?? "");
+  if (mode !== "restore" || !/^\d{4}-\d{2}-\d{2}$/.test(date)) return null;
+  const sha = (v) => (/^[a-f0-9]{64}$/.test(String(v ?? "")) ? v : null);
+  const id = String(backup?.id ?? "");
+  return {
+    id: id === "latest" || /^\d{4}-\d{2}-\d{2}$/.test(id) ? id : null,
+    date,
+    manifest_sha256: sha(backup.manifestSha256),
+    pg_sha256: sha(backup.pgSha256),
+    dump_started_at: Number.isFinite(Date.parse(backup?.dumpStartedAt)) ? new Date(Date.parse(backup.dumpStartedAt)).toISOString() : null,
+  };
+}
+
+/** Sous-branche `legs.geo` du schéma partagé (ordre des clés figé ; mode + backup ajoutés). */
+export function buildGeoLeg({ cycleId, runId, gitSha, t1, pgResult, s3Result, servedIdsSha256, mode = "chain", backup = null, repo = LEG_REPO, workflow = LEG_WORKFLOW }) {
   if (!/^\d+$/.test(String(runId ?? ""))) throw new Error(`run_id invalide : ${JSON.stringify(runId)}`);
   if (servedIdsSha256 !== null && servedIdsSha256 !== undefined && !/^[a-f0-9]{64}$/.test(servedIdsSha256)) {
     throw new Error(`served_ids_sha256 invalide : ${servedIdsSha256}`);
   }
+  if (!["chain", "restore"].includes(mode)) throw new Error(`MODE invalide pour un cycle-leg : ${JSON.stringify(mode)}`);
+  const b = backupOfLeg(mode, backup);
   return {
     repo,
     workflow,
     run_id: String(runId),
     sha_main: shortSha(gitSha),
-    t1: t1 ?? null,
+    // MODE=restore : point de cohérence = début du dump du backup restauré.
+    t1: (b && b.dump_started_at) || (t1 ?? null),
+    mode,
+    backup: b,
     verdict: { pg: mapJobResult(pgResult), s3: mapJobResult(s3Result) },
     served_ids_artifact: servedIdsArtifactName(cycleId),
     served_ids_sha256: servedIdsSha256 ?? null,
@@ -587,6 +607,11 @@ function cmdCycleLeg(argv) {
       pgResult: envOr("PG_RESULT", ""),
       s3Result: envOr("S3_RESULT", ""),
       servedIdsSha256: servedSha,
+      mode: envOr("MODE", "chain"),
+      backup: {
+        id: envOr("BACKUP_ID", ""), date: envOr("BACKUP_DATE", ""), manifestSha256: envOr("MANIFEST_SHA256", ""),
+        pgSha256: envOr("PG_SHA256", ""), dumpStartedAt: envOr("DUMP_STARTED_AT", ""),
+      },
     });
   } catch (e) { die(`legs.geo : ${e.message}`); }
   mkdirSync(dirname(resolve(out)), { recursive: true });
