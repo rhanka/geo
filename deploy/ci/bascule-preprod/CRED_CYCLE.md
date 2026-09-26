@@ -164,8 +164,10 @@ backup reader Secret from GitHub", `restore-mode.mjs backup-secret-fill`): value
 `env:` only, same guards as #405 (single-line, `^[A-Za-z0-9]{16,128}$` /
 `^[A-Za-z0-9/+=]{16,128}$`, endpoint pinned to `https://s3.bhs.io.cloud.ovh.net`),
 `kubectl replace --dry-run=server` then `kubectl replace`, key set checked on the
-object the server returns. SA `geo-ci-bascule-preprod`: secrets get/update on this name
-only (`rbac-ci-bascule-preprod.yaml`) — no create, patch, list, watch or delete.
+object the server returns. SA `geo-ci-bascule-preprod`: secrets get/update by
+resourceNames on `geo-backup-reader-preprod` and `geo-backup-restore-docs` (the S3'
+signer, section below) only (`rbac-ci-bascule-preprod.yaml`) — no create, patch, list,
+watch or delete.
 
 **Rotation: every 90 days** (and at once on suspected exposure):
 
@@ -185,11 +187,14 @@ Verify recovery at any time: `kubectl -n geo-preprod get secret geo-backup-reade
 
 Dedicated preprod identity, created and tested by the k8s lane (2026-09-26, 6/6: GET
 `docs/normalized/*` with versionId 200; `pg/` 403; PUT on the backup 403; DELETE on preprod
-403; versioned CopyObject with `x-amz-grant-full-control` 200).
+403; versioned CopyObject with `x-amz-grant-full-control` 200). Second k8s check
+2026-09-26 (effective policy + real tests 7/7): ListBucket + GetBucketLocation on
+`sentropic-geo-preprod` (real LIST 200 — the preprod listing of S3'/S3b'), no delete of
+any kind.
 
 | secret (k8s name) | OVH user | keys | GitHub source (Environment `geo-bascule`, main-only) | consumer | rights |
 | --- | --- | --- | --- | --- | --- |
-| `geo-backup-restore-docs` (ns `geo-preprod`, pre-created Opaque, no ownerReference) | `geo-backup-restore-preprod` (809950) | `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` (= `geo-backup`) | secrets `GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY`, `GEO_BACKUP_RESTORE_DOCS_SECRET_KEY` | `bascule-preprod.yml` job `restore` (Job `geo-docs-restore-backup`: signer of the server-side copy `geo-backup/docs/normalized/X` → `sentropic-geo-preprod/normalized/X`) | `geo-backup`: GetObject (incl. versionId) on `docs/normalized/*`, nothing else; `sentropic-geo-preprod`: PutObject + PutObjectAcl, no delete |
+| `geo-backup-restore-docs` (ns `geo-preprod`, pre-created Opaque, no ownerReference) | `geo-backup-restore-preprod` (809950) | `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` (= `geo-backup`) | secrets `GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY`, `GEO_BACKUP_RESTORE_DOCS_SECRET_KEY` | `bascule-preprod.yml` job `restore` (Job `geo-docs-restore-backup`: signer of the server-side copy `geo-backup/docs/normalized/X` → `sentropic-geo-preprod/normalized/X`) | `geo-backup`: GetObject (incl. versionId) on `docs/normalized/*`, nothing else; `sentropic-geo-preprod`: ListBucket + GetBucketLocation + PutObject + PutObjectAcl, no delete |
 
 Written by the bascule exactly like the reader (step "Write backup Secrets from GitHub",
 same #405 guards, server-side dry-run of both Secrets before the first write). SA
