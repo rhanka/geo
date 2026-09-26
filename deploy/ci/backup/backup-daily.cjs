@@ -430,7 +430,7 @@ function readConfig(env) {
   if (cfg.copyPartSize > 5 * GIB) throw new BackupError(EXIT.INTEGRITY, 'invalid COPY_PART_BYTES (part max 5 GiB)');
   return cfg;
 }
-// Positive bucket guard (same idea as EXPECTED_DATABASE): a mis-sealed secret
+// Positive bucket guard (same idea as EXPECTED_DATABASE): a misconfigured secret
 // must never make this job write into the source bucket or read the wrong one.
 function assertBuckets(cfg) {
   if (cfg.backupBucket === cfg.sourceBucket) throw new BackupError(EXIT.INTEGRITY, 'BACKUP_BUCKET equals SOURCE_BUCKET');

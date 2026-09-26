@@ -33,14 +33,14 @@ CONFIRM G3, recon-before-rollout G4, positive DB control in-cluster), runner sta
   │ 4. gh workflow run bascule-bundle-cd.yml + watch: SealedSecrets → RO-role    │
   │      Job → dormant CronJob → VAP → RBAC T1 → anti-RCE gate                   │
   │ 5. mint token geo-ci-trigger-prod → GH secret KUBE_CONFIG_DATA_PROD_TRIGGER  │
-  │ 6. gh variable set BASCULE_SCHEDULE_ENABLED true    (nightly run)            │
+  │ 6. gh variable set BASCULE_SCHEDULE_ENABLED true    (weekly run)             │
   └─────────────────────────────────────────────────────────────────────────────┘
                                    │
    ── then, 0 owner action ──      ▼
   ┌── every merge to main touching deploy/ci/bascule-preprod/** ────────────────┐
   │ bascule-bundle-cd.yml (KUBE_CONFIG_DATA_PROD, idempotent, same 6 steps)      │
   └─────────────────────────────────────────────────────────────────────────────┘
-  ┌── nightly 03:17 UTC (armed) or workflow_dispatch (CONFIRM) ─────────────────┐
+  ┌── weekly, Sunday 03:17 UTC (armed) or workflow_dispatch (CONFIRM) ──────────┐
   │ bascule-preprod.yml: S0 → S1 dump (trigger + freshness + re-suspend) →       │
   │   S3 copy normalized/ (CopyObject, additive) → S3b recon (dest ⊇ src) →      │
   │   S5' rollout restart geo-api (G4) → S7 smoke (API: preprod ⊇ prod)          │
@@ -61,7 +61,7 @@ Unchanged and NOT used by the bascule: `KUBE_CONFIG_DATA` (env `geo-prod`, `cd-p
 ## Repo variables (non-secret; safe fallbacks built in)
 
 - `BASCULE_BUNDLE_CD_ENABLED` — arms `bascule-bundle-cd.yml` (off by default).
-- `BASCULE_SCHEDULE_ENABLED` — arms the nightly run (off by default).
+- `BASCULE_SCHEDULE_ENABLED` — arms the weekly run (off by default). Cadence fixed in code: `17 3 * * 0`, Sunday 03:17 UTC (owner decision 2026-09-26).
 - `EXPECTED_KUBE_APISERVER_HOST[_PROD]` — cluster identity (default OVH host `hlhedx.c1.bhs5.k8s.ovh.net`, same cluster as immo).
 - `BASCULE_EXPECTED_DATABASE` — literal name of the geo prod DB (workflow default `geo`, from k8s).
 - `BASCULE_DOCS_SYNC_GRANTEE` — canonical id OVH of the geo preprod serving identity (GrantFullControl);
