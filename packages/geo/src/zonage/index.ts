@@ -8,6 +8,7 @@
 
 export {
   assignLotZones,
+  canonicalizeNoLotForJoin,
   canonicalizeZoneCodeForJoin,
   enrichWithNorms,
   normalizeZoneCode,
