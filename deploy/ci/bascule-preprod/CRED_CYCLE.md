@@ -33,6 +33,7 @@ prod DB name `geo` (from k8s) is `EXPECTED_DATABASE` and names the dump
 | `geo-backups-reader-preprod` | `S3_ACCESS_KEY`, `S3_SECRET_KEY` (+ `S3_BUCKET`/`S3_ENDPOINT`/`S3_REGION`, unused by the Job) | Job freshness (S1, LIST backups) — var `FRESHNESS_CHECK_SECRET` | persistent, deposited by k8s |
 | `geo-normalized-reader-preprod` | `S3_ACCESS_KEY`, `S3_SECRET_KEY` (+ `S3_ENDPOINT`/`S3_REGION`) | Job recon (S3b, RO LIST of both `normalized/`) — var `CHECK_DOCS_SECRET` | persistent, deposited by k8s |
 | `geo-normalized-src-preprod` **(EPHEMERAL)** | `S3_ACCESS_KEY`, `S3_SECRET_KEY` (read `sentropic-geo` + rw `sentropic-geo-preprod`) | copy Job `geo-normalized-sync-prod-to-preprod` ONLY | created by k8s (watch of the Job name, `ownerRef=Job.UID`), GC at the Job TTL (3600 s). **Never referenced by a check Job.** |
+| `geo-postgis-credentials` | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | preprod StatefulSet `postgis` + PG restore Jobs `role=pra-restore` (`MODE=restore`) | pre-created empty by k8s, rewritten by the bascule from `geo-bascule` (section "Preprod postgis superuser") |
 
 GrantFullControl grantee (serving identity preprod, canonical id, not a secret):
 `1901410700457444:9056dbb240a04d2584ffbaec38171228`.
@@ -216,6 +217,52 @@ id=${BASCULE_DOCS_SYNC_GRANTEE}` (same variable and default as docs-sync).
 Verify recovery at any time: `kubectl -n geo-preprod get secret geo-backup-restore-docs`
 (3 keys); last `MODE=restore` run (or DRY) green.
 
+## Preprod postgis superuser (bascule `MODE=restore`, PG restore S2 + G1)
+
+Target of the PG restore of the preprod bascule (owner decision 2026-09-26): StatefulSet
+`postgis` in ns `geo-preprod` (`postgis-preprod.yaml`), a disposable database fed only by
+restores of `geo-backup`.
+
+| secret (k8s name) | keys | GitHub source (Environment `geo-bascule`, main-only) | consumer | rights |
+| --- | --- | --- | --- | --- |
+| `geo-postgis-credentials` (ns `geo-preprod`, pre-created EMPTY by k8s, no ownerReference) | `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` | secrets `GEO_POSTGIS_PREPROD_DB`, `GEO_POSTGIS_PREPROD_USER`, `GEO_POSTGIS_PREPROD_PASSWORD` (the password is generated on the geo side) | StatefulSet `postgis` (init of an empty volume) + Jobs `role=pra-restore` (pg-check, G1 snapshot, S2 restore, rollback) | superuser of the preprod instance only (never the prod postgis of ns `geo`, whose Secret has the same name in another namespace) |
+
+Written by the bascule like the backup identities (step "Write backup Secrets from GitHub",
+`restore-mode.mjs backup-secret-fill`): single-line values, database/role name
+`^[a-z_][a-z0-9_]{0,62}$`, password printable ASCII 16–128, `POSTGRES_DB` = `EXPECTED_DATABASE`,
+`kubectl replace --dry-run=server` of every Secret before the first write, key set checked
+on the object returned by the server; values via `env:` only, never in argv/logs. SA
+`geo-ci-bascule-preprod`: secrets get/update by resourceNames only. Never a SealedSecret.
+The 3 variables are also recorded in the k8s-ops registry (#76).
+
+⚠ **The postgres image applies `POSTGRES_PASSWORD` only when it initialises an EMPTY
+volume.** With the persistent PVC `pg-data`, rewriting the Secret alone does NOT change the
+role password: the next run's `pg-check` (`pg_isready` + authenticated `SELECT 1`) then fails
+with a clear message, before any snapshot or `pg_restore` (nothing destructive).
+
+**Rotation: every 90 days** (and at once on suspected exposure):
+
+1. Generate the new password (geo side).
+2. Apply it to the role FIRST, through the local socket inside the pod (operator with exec
+   rights; the CI SA has none):
+   `kubectl -n geo-preprod exec -it postgis-0 -- psql -U "<POSTGRES_USER>" -d postgres` then
+   `ALTER ROLE "<POSTGRES_USER>" PASSWORD '<new password>';` (typed in the interactive
+   session, never in a command line or a log).
+3. Update locations 1 to 3 by hand (section below): the GitHub secret
+   `GEO_POSTGIS_PREPROD_PASSWORD` (`gh secret set … --env geo-bascule --repo rhanka/geo`), the
+   central `.env`, the geo `.env` (and the k8s-ops registry #76).
+4. The next `bascule-preprod.yml` `MODE=restore` run (a `DRY_RUN=true` one is enough)
+   rewrites the k8s Secret (4) and its `pg-check` is green (proves the new password).
+
+Alternative (the database is disposable): update 1 to 3, let the bascule rewrite the
+Secret, then delete the PVC `pg-data-postgis-0` and the pod `postgis-0` (k8s lane): the
+StatefulSet re-initialises an empty volume with the new password; the next `MODE=restore`
+run restores the backup into it.
+
+Verify recovery at any time: `kubectl -n geo-preprod get secret geo-postgis-credentials`
+(3 keys), `kubectl -n geo-preprod get statefulset postgis` ready; last `MODE=restore` run (or
+DRY) with a green `pg-check`.
+
 ## Where every geo backup key lives (4 locations) and how to rotate it
 
 Each key lives in **four places**; the `.env` variable names are the GitHub secret names:
@@ -236,6 +283,7 @@ Each key lives in **four places**; the `.env` variable names are the GitHub secr
 | `geo-backup-purger` | à compléter (registre k8s) | `GEO_BACKUP_PURGER_ACCESS_KEY`, `GEO_BACKUP_PURGER_SECRET_KEY` — `geo-prod-bundle` | `geo-backup-purger` — `geo` | CD `apply-backup` | before 2026-12-25 |
 | `geo-backup-reader-preprod` | 809855 | `GEO_BACKUP_READER_PREPROD_ACCESS_KEY`, `GEO_BACKUP_READER_PREPROD_SECRET_KEY` — `geo-bascule` | `geo-backup-reader-preprod` — `geo-preprod` | bascule `MODE=list|restore` | before 2026-12-25 |
 | `geo-backup-restore-preprod` | 809950 | `GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY`, `GEO_BACKUP_RESTORE_DOCS_SECRET_KEY` — `geo-bascule` | `geo-backup-restore-docs` — `geo-preprod` | bascule `MODE=restore` | before 2026-12-25 |
+| postgis preprod superuser (not an OVH identity) | N/A (PostgreSQL role; values also in the k8s-ops registry #76) | `GEO_POSTGIS_PREPROD_DB`, `GEO_POSTGIS_PREPROD_USER`, `GEO_POSTGIS_PREPROD_PASSWORD` — `geo-bascule` | `geo-postgis-credentials` — `geo-preprod` | bascule `MODE=restore` (the role password itself: `ALTER ROLE` first, section above) | before 2026-12-25 |
 
 (2) and (3) hold the same variable names for every row.
 
@@ -247,5 +295,8 @@ valid):
 - le CD ou la bascule propage vers 4 ;
 - vérifier le backup ou le restore suivant ;
 - seulement alors, supprimer l'ancienne s3Credential OVH.
+
+For the postgis preprod superuser there is no s3Credential: the role password is changed by
+`ALTER ROLE` BEFORE updating 1 to 3 (or the disposable PVC is re-created), see its section.
 
 (The per-identity steps above give the exact run that propagates to (4) and the check.)
