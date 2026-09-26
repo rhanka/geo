@@ -71,6 +71,10 @@ jobs:
     needs: approve
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    # SECRET VAULT `geo-prod-bundle` (0 reviewer, deployment branch = main ONLY): holds
+    # KUBE_CONFIG_DATA_PROD → readable ONLY from main. The owner gate stays on `approve`
+    # (Environment `geo-prod`); this Environment adds no approval, it only scopes the secret.
+    environment: geo-prod-bundle
     # ARMING SWITCH: set to 'true' by install-cd-bootstrap.sh AFTER the one-time install (SA +
     # KUBE_CONFIG_DATA_PROD exist). Merging can never red a main push against a missing SA.
     # GATE: runs iff (a) `approve` succeeded IN THIS ATTEMPT, or (b) first attempt of a
