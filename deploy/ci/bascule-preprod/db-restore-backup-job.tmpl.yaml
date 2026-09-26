@@ -11,9 +11,18 @@
 #   container     `restore` (postgis) : G2 (aucune autre session sur la base),
 #                           base du Secret == EXPECTED_DATABASE, pg_restore --list
 #                           (nombre d'entrées TOC == manifeste, dbname de l'archive ==
-#                           EXPECTED_DATABASE), puis pg_restore --clean --if-exists
-#                           --no-owner --no-privileges --exit-on-error
-#                           --single-transaction (tout ou rien).
+#                           EXPECTED_DATABASE), cible munie des extensions de
+#                           l'image postgis, liste -L = TOC moins les entrées
+#                           EXTENSION/COMMENT et SCHEMA/COMMENT des extensions de
+#                           l'image (fuzzystrmatch, postgis, postgis_tiger_geocoder,
+#                           postgis_topology ; schémas tiger, tiger_data, topology),
+#                           puis pg_restore --clean --if-exists --no-owner
+#                           --no-privileges --exit-on-error --single-transaction
+#                           --use-list (tout ou rien), puis contrôle post-restauration
+#                           (postgis répond, nombre de tables = TOC).
+#                           Incident 2026-09-26 et reproduction : README, section
+#                           « Restauration PostgreSQL » ; test Docker :
+#                           restore-pg.docker.selftest.mjs.
 #
 # Avant ce Job (restore-pg.mjs) : pg-check (pg_isready + SELECT 1) et G1 (snapshot).
 # Pod `role=pra-restore` (netpol pra-restore-egress : DNS, S3-BHS:443,
@@ -132,11 +141,41 @@ ${BR_SCRIPT}
               if [ -z "$src_db" ] || [ "$src_db" != "$EXPECTED_DATABASE" ]; then
                 fin false "$toc" "archive dbname differs from EXPECTED_DATABASE, restore refused"; exit 2
               fi
+              # Extensions fournies par l'image postgis (docker-entrypoint-initdb.d/10_postgis.sh)
+              # et schemas qu'elles possedent : la cible les a deja, on ne les recree pas
+              # (incident 2026-09-26 : CREATE EXTENSION postgis_tiger_geocoder rejoue depuis
+              # le dump echoue, soundex introuvable, car fuzzystrmatch est dans le schema geo
+              # en prod). Seules ces entrees TOC sont commentees dans la liste -L ; les
+              # donnees (TABLE DATA, y compris les tables de config des extensions) restent.
+              IMAGE_EXTENSIONS="fuzzystrmatch postgis postgis_tiger_geocoder postgis_topology"
+              IMAGE_EXT_SCHEMAS="tiger tiger_data topology"
+              absent="$(psql -X -v ON_ERROR_STOP=1 -tAc "select coalesce(string_agg(x, ' ' order by x), '') from unnest(string_to_array('$IMAGE_EXTENSIONS', ' ')) x where not exists (select 1 from pg_extension where extname = x)")" || { fin false "$toc" "postgres unreachable (extensions check)"; exit 1; }
+              absent_ns="$(psql -X -v ON_ERROR_STOP=1 -tAc "select coalesce(string_agg(x, ' ' order by x), '') from unnest(string_to_array('$IMAGE_EXT_SCHEMAS', ' ')) x where not exists (select 1 from pg_namespace where nspname = x)")" || { fin false "$toc" "postgres unreachable (schemas check)"; exit 1; }
+              if [ -n "$absent$absent_ns" ]; then
+                fin false "$toc" "target lacks image extensions or schemas ($absent $absent_ns): postgis image not initialized, restore refused"; exit 2
+              fi
+              awk -v exts=" $IMAGE_EXTENSIONS " -v nss=" $IMAGE_EXT_SCHEMAS " '
+                /^[0-9]+;/ && $5 == "-" && (($4 == "EXTENSION" && index(exts, " " $6 " ")) || ($4 == "COMMENT" && $6 == "EXTENSION" && index(exts, " " $7 " ")) ||
+                  ($4 == "SCHEMA" && index(nss, " " $6 " ")) || ($4 == "COMMENT" && $6 == "SCHEMA" && index(nss, " " $7 " "))) { print ";" $0; next }
+                { print }' /tmp/toc.txt > /tmp/restore.list || { fin false "$toc" "restore list not written"; exit 1; }
+              excluded="$(grep -c '^;[0-9]' /tmp/restore.list || true)"
+              user_tables="$(awk '/^[0-9]+;/ && $4 == "TABLE" && $5 != "DATA"' /tmp/restore.list | wc -l | tr -d ' ')"
+              echo "[restore] liste -L : $excluded entree(s) exclue(s) (extensions/schemas de l'image), $user_tables table(s)"
               echo "[restore] pg_restore --clean --if-exists --single-transaction -> base=$PGDATABASE hote=$PGHOST"
               if ! pg_restore --clean --if-exists --no-owner --no-privileges \
                 --exit-on-error --single-transaction \
+                --use-list /tmp/restore.list \
                 --dbname "$PGDATABASE" "/work/$DUMP_FILE"; then
                 fin false "$toc" "pg_restore failed (single transaction rolled back: the previous state is kept)"; exit 1
+              fi
+              # Controle post-restauration (lecture seule) : postgis repond et chaque table de
+              # la TOC existe (tables hors extensions). Un echec ici survient APRES le commit :
+              # la raison dit de lancer le rollback G1.
+              pgv="$(psql -X -v ON_ERROR_STOP=1 -tAc "select postgis_lib_version()")" || pgv=""
+              got_tables="$(psql -X -v ON_ERROR_STOP=1 -tAc "select count(*) from pg_class c join pg_namespace n on n.oid = c.relnamespace where c.relkind in ('r','p') and n.nspname not in ('pg_catalog','information_schema') and n.nspname not like 'pg_toast%' and not exists (select 1 from pg_depend d where d.classid = 'pg_class'::regclass and d.objid = c.oid and d.deptype = 'e')")" || got_tables=""
+              echo "[restore] sanite : postgis=$pgv tables=$got_tables attendu=$user_tables"
+              if [ -z "$pgv" ] || [ "$got_tables" != "$user_tables" ]; then
+                fin false "$toc" "post-restore check failed (postgis or table count): restore committed, run bascule.mjs pg-rollback (G1 snapshot)"; exit 1
               fi
               fin true "$toc" ""
               echo "[restore] OK - backup $BACKUP_DATE charge dans le postgis preprod"
