@@ -27,7 +27,7 @@ import { join } from "node:path";
 import process from "node:process";
 
 import {
-  assertScriptEmbeddable, assertYamlSafeVars, basculeMode, buildSecretManifest, formatBackupTable, indentBlock, JOBS, keysOfReplaced,
+  assertScriptEmbeddable, assertYamlSafeVars, BACKUP_SECRET_SPECS, backupSecretValues, basculeMode, buildSecretManifest, specsForMode, formatBackupTable, indentBlock, JOBS, keysOfReplaced,
   parseTermination, pickTerminationMessage, PINNED_S3_ENDPOINT, readerSecretValues, safeReason, validateBackupIdInput, validateCycleId,
   validateListing, validatePin,
 } from "./restore-mode.mjs";
@@ -107,7 +107,7 @@ function client(store, policy) {
         const v = s.v ? store.versions(s.b, s.k).find((x) => x.VersionId === s.v) : store.latest(s.b, s.k);
         if (!v) throw notFound();
         if (v.Size > 5 * 1024 ** 3) throw Object.assign(new Error("EntityTooLarge"), { name: "EntityTooLarge" });
-        store.copies.push({ key: i.Key, versionId: s.v, grant: i.GrantFullControl || null, multipart: false });
+        store.copies.push({ key: i.Key, from: s.k, fromBucket: s.b, versionId: s.v, grant: i.GrantFullControl || null, multipart: false });
         store.put(i.Bucket, i.Key, v.body, "2026-09-27T05:00:00Z", v.Size);
         return {};
       }
@@ -123,7 +123,7 @@ function client(store, policy) {
       if (cmd instanceof sdk.CompleteMultipartUploadCommand) {
         const u = store.mpu.get(i.UploadId);
         const v = store.versions(u.src.b, u.src.k).find((x) => x.VersionId === u.src.v) || store.latest(u.src.b, u.src.k);
-        store.copies.push({ key: i.Key, versionId: u.src.v, grant: u.grant, multipart: true, parts: i.MultipartUpload.Parts.length });
+        store.copies.push({ key: i.Key, from: u.src.k, fromBucket: u.src.b, versionId: u.src.v, grant: u.grant, multipart: true, parts: i.MultipartUpload.Parts.length });
         store.put(i.Bucket, i.Key, v.body, "2026-09-27T05:00:00Z", v.Size);
         return {};
       }
@@ -244,6 +244,10 @@ async function suite() {
     const mp = s.copies.find((c) => c.key === `${P}qc/lots.pmtiles`);
     ok("docs — objet > 5 GiB copié en multipart (12 parts, version épinglée, grant)", mp && mp.multipart && mp.parts === 12 && mp.versionId && mp.grant === "id=1901410700457444:g");
     ok("docs — additif : objet préprod postérieur conservé", !!s.latest(DST, `${P}extra-newer.parquet`));
+    ok("docs — correspondance des clés : geo-backup/docs/normalized/X → sentropic-geo-preprod/normalized/X (préfixe docs/ retiré)",
+      s.copies.length === 3 && s.copies.every((c) => c.fromBucket === B && c.from === `docs/${c.key}` && c.key.startsWith(P) && !c.key.startsWith("docs/")) &&
+      [...s.b.get(DST).keys()].every((k) => !k.startsWith("docs/")));
+    ok("docs — grant = COPY_GRANTEE (paramètre), sur chaque copie", s.copies.every((c) => c.grant === "id=1901410700457444:g"));
     ok("docs — logs sans clé d'objet", !r.logs.join("\n").includes("zones.parquet"));
     eq("recon — préprod ⊇ inventaire(D) (normalized/)", (await step({ s, env: { ...docsEnv(manSha), BR_STEP: "recon" } })).code, 0);
   }
@@ -279,6 +283,12 @@ eq("pickTerminationMessage — conteneur du pod le plus récent", parseTerminati
   const SK = "abc/DEF+ghi=1234567890xyz";
   const env = { GEO_BACKUP_READER_PREPROD_ACCESS_KEY: AK, GEO_BACKUP_READER_PREPROD_SECRET_KEY: SK, BACKUP_BUCKET: B, S3_ENDPOINT_RENDERED: PINNED_S3_ENDPOINT };
   eq("readerSecretValues — clés EXACTES du Secret pré-créé", Object.keys(readerSecretValues(env)).sort(), ["BACKUP_BUCKET", "S3_ACCESS_KEY", "S3_SECRET_KEY"]);
+  const denv = { ...env, GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY: "ZZZZZZZZ12345678abcd", GEO_BACKUP_RESTORE_DOCS_SECRET_KEY: "zzz/YYY+xxx=0987654321abc" };
+  eq("backupSecretValues — signataire S3' : mêmes clés, depuis GEO_BACKUP_RESTORE_DOCS_*", [Object.keys(backupSecretValues(denv, "restore-docs")).sort(), backupSecretValues(denv, "restore-docs").S3_ACCESS_KEY],
+    [["BACKUP_BUCKET", "S3_ACCESS_KEY", "S3_SECRET_KEY"], "ZZZZZZZZ12345678abcd"]);
+  throws("backupSecretValues — signataire : secret GitHub absent ⇒ fail-closed", () => backupSecretValues(env, "restore-docs"));
+  eq("specsForMode — list : lecteur ; restore : lecteur + signataire", [specsForMode("list"), specsForMode("restore"), specsForMode("chain")], [["reader"], ["reader", "restore-docs"], []]);
+  eq("BACKUP_SECRET_SPECS — noms par défaut", Object.values(BACKUP_SECRET_SPECS).map((x) => x.defaultName), ["geo-backup-reader-preprod", "geo-backup-restore-docs"]);
   throws("readerSecretValues — secret GitHub absent ⇒ fail-closed", () => readerSecretValues({ ...env, GEO_BACKUP_READER_PREPROD_SECRET_KEY: "" }));
   throws("readerSecretValues — format #405 violé ⇒ fail-closed", () => readerSecretValues({ ...env, GEO_BACKUP_READER_PREPROD_ACCESS_KEY: "bad key!" }));
   throws("readerSecretValues — multi-ligne ⇒ fail-closed", () => readerSecretValues({ ...env, GEO_BACKUP_READER_PREPROD_SECRET_KEY: `${SK}\nx` }));
@@ -346,10 +356,18 @@ for (const [tmpl, vars] of Object.entries({
       doc.jobs[j].steps.some((s) => s.env && s.env.GEO_BACKUP_READER_PREPROD_ACCESS_KEY === "${{ secrets.GEO_BACKUP_READER_PREPROD_ACCESS_KEY }}" && /backup-secret-fill/.test(s.run)));
     ok("workflow — cycle-leg : needs [pg, s3, restore], backup du job restore", JSON.stringify(doc.jobs["cycle-leg"].needs) === '["pg","s3","restore"]' &&
       /needs\.restore\.outputs\.backup_date/.test(JSON.stringify(doc.jobs["cycle-leg"].env)));
+    const fill = doc.jobs.restore.steps.find((s) => /backup-secret-fill/.test(String(s.run ?? "")));
+    ok("workflow — job restore : secrets du signataire S3' via env: (GEO_BACKUP_RESTORE_DOCS_*)",
+      !!fill && fill.env.GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY === "${{ secrets.GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY }}" && fill.env.GEO_BACKUP_RESTORE_DOCS_SECRET_KEY === "${{ secrets.GEO_BACKUP_RESTORE_DOCS_SECRET_KEY }}");
+    const listFill = doc.jobs.list.steps.find((s) => /backup-secret-fill/.test(String(s.run ?? "")));
+    ok("workflow — job list : lecteur seulement (pas de secret du signataire)", !!listFill && !("GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY" in listFill.env));
+    ok("workflow — grant S3' aligné sur docs-sync (même variable, même défaut)", doc.jobs.restore.env.DOCS_SYNC_GRANTEE === doc.jobs.s3.env.DOCS_SYNC_GRANTEE &&
+      /vars\.BASCULE_DOCS_SYNC_GRANTEE/.test(doc.jobs.restore.env.DOCS_SYNC_GRANTEE));
+    ok("workflow — signataire S3' par défaut geo-backup-restore-docs, sans repli sur le lecteur", doc.jobs.restore.env.BACKUP_DOCS_COPY_SECRET === "${{ vars.BASCULE_BACKUP_DOCS_COPY_SECRET || 'geo-backup-restore-docs' }}");
     ok(`workflow — ${Object.keys(doc.on.workflow_dispatch.inputs).length} inputs (<= 25)`, Object.keys(doc.on.workflow_dispatch.inputs).length <= 25);
   }
   const rbac = readFileSync(join(DIR, "rbac-ci-bascule-preprod.yaml"), "utf8");
-  ok("RBAC — secrets get/update limités à geo-backup-reader-preprod (ni create/patch/list)", /resources: \["secrets"\]\n\s+verbs: \["get", "update"\][^\n]*\n\s+resourceNames: \["geo-backup-reader-preprod"\]/.test(rbac) &&
+  ok("RBAC — secrets get/update limités à geo-backup-reader-preprod + geo-backup-restore-docs (ni create/patch/list)", /resources: \["secrets"\]\n\s+verbs: \["get", "update"\][^\n]*\n\s+resourceNames: \["geo-backup-reader-preprod", "geo-backup-restore-docs"\]/.test(rbac) &&
     !/resources: \["secrets"\]\n\s+verbs: \[[^\]]*(create|patch|list)/.test(rbac));
 }
 
@@ -379,11 +397,20 @@ async function cliSuite() {
   writeFileSync(env.GITHUB_OUTPUT, "");
   const cli = (cmd, extra = {}) => spawnSync(process.execPath, [join(DIR, "bascule.mjs"), cmd], { env: { ...env, ...extra }, encoding: "utf8" });
   eq("CLI preflight-backup — exit 0", cli("preflight-backup").status, 0);
-  const fill = cli("backup-secret-fill", { GEO_BACKUP_READER_PREPROD_ACCESS_KEY: "ABCDEFGH12345678abcd", GEO_BACKUP_READER_PREPROD_SECRET_KEY: "abc/DEF+ghi=1234567890xyz" });
+  const both = { GEO_BACKUP_READER_PREPROD_ACCESS_KEY: "ABCDEFGH12345678abcd", GEO_BACKUP_READER_PREPROD_SECRET_KEY: "abc/DEF+ghi=1234567890xyz",
+    GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY: "ZZZZZZZZ12345678abcd", GEO_BACKUP_RESTORE_DOCS_SECRET_KEY: "zzz/YYY+xxx=0987654321abc" };
+  const fill = cli("backup-secret-fill", both);
   const log1 = readFileSync(klog, "utf8");
-  ok("CLI backup-secret-fill — dry-run serveur puis replace, jeu de clés vérifié, valeurs jamais en argv/stdout",
-    fill.status === 0 && /replace --dry-run=server -f \S+ -o json/.test(log1) && /replace -f \S+ -o json/.test(log1) &&
-    !log1.includes("abc/DEF+ghi") && !fill.stdout.includes("abc/DEF+ghi"));
+  const dryIdx = [...log1.matchAll(/replace --dry-run=server -f \S+ -o json/g)].map((m) => m.index);
+  const realIdx = [...log1.matchAll(/replace -f \S+ -o json/g)].map((m) => m.index);
+  ok("CLI backup-secret-fill (restore) — lecteur + signataire : 2 dry-run serveur AVANT les 2 replace, valeurs jamais en argv/stdout",
+    fill.status === 0 && dryIdx.length === 2 && realIdx.length === 2 && Math.max(...dryIdx) < Math.min(...realIdx) &&
+    /get secret geo-backup-reader-preprod/.test(log1) && /get secret geo-backup-restore-docs/.test(log1) &&
+    !["abc/DEF+ghi", "zzz/YYY+xxx"].some((v) => log1.includes(v) || fill.stdout.includes(v)));
+  ok("CLI backup-secret-fill (restore) — secret du signataire absent ⇒ fail-closed, rien écrit",
+    cli("backup-secret-fill", { GEO_BACKUP_READER_PREPROD_ACCESS_KEY: both.GEO_BACKUP_READER_PREPROD_ACCESS_KEY, GEO_BACKUP_READER_PREPROD_SECRET_KEY: both.GEO_BACKUP_READER_PREPROD_SECRET_KEY }).status === 1);
+  ok("CLI backup-secret-fill (list) — lecteur seul, secrets du signataire non requis",
+    cli("backup-secret-fill", { MODE: "list", GEO_BACKUP_READER_PREPROD_ACCESS_KEY: both.GEO_BACKUP_READER_PREPROD_ACCESS_KEY, GEO_BACKUP_READER_PREPROD_SECRET_KEY: both.GEO_BACKUP_READER_PREPROD_SECRET_KEY }).status === 0);
   ok("CLI backup-secret-fill — secret GitHub absent ⇒ fail-closed", cli("backup-secret-fill").status === 1);
   eq("CLI backup-resolve — exit 0 + PIN", [cli("backup-resolve").status, JSON.parse(readFileSync(join(work, "backup-pin.json"), "utf8")).manifestSha256 === manSha], [0, true]);
   ok("CLI backup-resolve — GITHUB_OUTPUT backup_date", readFileSync(env.GITHUB_OUTPUT, "utf8").includes(`backup_date=${D}`));
