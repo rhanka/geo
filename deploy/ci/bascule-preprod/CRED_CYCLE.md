@@ -39,16 +39,31 @@ RFC1123); the PG ROLE name and the `POSTGRES_USER` VALUE are underscored (`geo_d
 via psql `\getenv` (never in argv/logs). To confirm on the geo postgis: `log_statement=none`
 (immo measured it on theirs) so the `ALTER ROLE … PASSWORD` statement is not logged.
 
-## GH secrets (kubeconfigs only — never an app cred)
+## GH secrets (kubeconfigs only — never an app cred) — Environment secrets, main-only
 
-| GH secret | SA | minted by |
-| --- | --- | --- |
-| `KUBE_CONFIG_DATA_PROD` | `geo-ci-bascule-prod` (ns geo) | `install-cd-bootstrap.sh` step 2 |
-| `KUBE_CONFIG_DATA_BASCULE_PREPROD` | `geo-ci-bascule-preprod` (ns geo-preprod) | step 2 |
-| `KUBE_CONFIG_DATA_PROD_TRIGGER` | `geo-ci-trigger-prod` (ns geo) | step 5 (after the bundle CD run and its anti-RCE gate) |
+The three bascule kubeconfigs are **GitHub Environment secrets**, set with
+`gh secret set <NAME> --repo rhanka/geo --env <vault>`. Each vault Environment has **no
+reviewer** and a deployment branch policy of **`main` only**: the kubeconfig is readable only
+by a job started from `main` (a dispatch or re-run on any other branch cannot read it).
+
+| GH secret | Environment (vault) | SA | read by | minted by |
+| --- | --- | --- | --- | --- |
+| `KUBE_CONFIG_DATA_PROD` | `geo-prod-bundle` | `geo-ci-bascule-prod` (ns geo) | `bascule-bundle-cd.yml` job `apply-bundle` | `install-cd-bootstrap.sh` step 2 |
+| `KUBE_CONFIG_DATA_BASCULE_PREPROD` | `geo-bascule` | `geo-ci-bascule-preprod` (ns geo-preprod) | `bascule-preprod.yml` jobs `pg` + `s3` | step 2 |
+| `KUBE_CONFIG_DATA_PROD_TRIGGER` | `geo-bascule` | `geo-ci-trigger-prod` (ns geo) | `bascule-preprod.yml` job `pg` | step 5 (after the bundle CD run and its anti-RCE gate) |
+
+The vault Environments add no approval: the owner gate of `bascule-bundle-cd.yml` stays the
+`approve` job (Environment `geo-prod`, required reviewer). Out of the bascule but same rule:
+`KUBE_CONFIG_DATA_PREPROD` lives in Environment `geo-preprod-cd` (`cd-preprod.yml` job
+`deploy-preprod`; its owner gate stays `approve` on `geo-preprod`).
+
+**Repository-level secrets with these names are removed** (`gh secret delete <NAME> --repo
+rhanka/geo`) once a green run from the vaults is verified. Never re-create one at repository
+level: it would be readable again from any branch. To verify: `gh secret list --repo rhanka/geo`
+must not list them; `gh secret list --repo rhanka/geo --env <vault>` must.
 
 Legacy SA token secrets (non-expiring, like the existing deployers): rotation = delete the
-`<sa>-token` secret and re-run the corresponding mint step.
+`<sa>-token` secret and re-run the corresponding mint step (it writes to the same `--env` vault).
 
 ## Rotation
 - `geo-db-ro-prod`: regenerate password (openssl) → re-seal → commit → the bundle re-applies on
