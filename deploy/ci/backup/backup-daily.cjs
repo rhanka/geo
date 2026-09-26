@@ -60,7 +60,8 @@
 //   0 backup recorded: status=complete (purge plan written) OR status=partial
 //     (seed / objects pending or failed: verdict PARTIAL in the manifest, no
 //     purge). `partial` is not a failure; geo-backup-freshness watches it.
-//   1 retryable failure before the manifest (network, S3 5xx, re-read mismatch)
+//   1 retryable failure before the manifest (network, S3 5xx / request deadline,
+//     re-read mismatch), or SIGTERM (partial manifest recorded when the PG part was)
 //   2 integrity/config refusal (bucket guard, versioning off, dump size anomaly,
 //     source listing anomaly, invalid purge plan) — nothing purged
 //   3 purge planning/execution failed AFTER a complete manifest (backup valid)
@@ -344,10 +345,32 @@ function envReaders(env) {
   };
   return { req, num };
 }
+// Per-request S3 deadlines (see README.md "S3 request timeouts"). Every S3 call
+// goes through s3send(): a wall-clock deadline per command (all SDK retries
+// included), enforced by an AbortSignal handed to the SDK AND by a race on that
+// signal, so the caller never waits on a request that never answers (incident
+// 2026-09-26: one CopyObject hung forever, the Job died on activeDeadlineSeconds
+// without manifest nor latest.json).
+//   connectMs      TCP/TLS connect (NodeHttpHandler connectionTimeout)
+//   requestMs      socket idle bound (NodeHttpHandler socketTimeout) AND floor of
+//                  the wall-clock deadline of a copy / write / body transfer
+//   metaMs         wall-clock deadline of HEAD / LIST / versioning / delete / small GET
+//   minBytesPerSec a body or server-side copy of N bytes gets max(requestMs, N / minBytesPerSec)
+const DEFAULT_TIMEOUTS = Object.freeze({ connectMs: 10000, requestMs: 120000, metaMs: 30000, minBytesPerSec: 8 * MIB });
+function readTimeouts(env) {
+  const { num } = envReaders(env);
+  return {
+    connectMs: num('S3_CONNECT_TIMEOUT_MS', DEFAULT_TIMEOUTS.connectMs, { min: 1 }),
+    requestMs: num('S3_REQUEST_TIMEOUT_MS', DEFAULT_TIMEOUTS.requestMs, { min: 1 }),
+    metaMs: num('S3_META_TIMEOUT_MS', DEFAULT_TIMEOUTS.metaMs, { min: 1 }),
+    minBytesPerSec: num('S3_MIN_THROUGHPUT_BYTES_PER_SEC', DEFAULT_TIMEOUTS.minBytesPerSec, { min: 1 }),
+  };
+}
 // S3 access common to the three identities (writer, purger, reader).
 function readS3Config(env) {
   const { req } = envReaders(env);
   return {
+    timeouts: readTimeouts(env),
     endpoint: withScheme(req('S3_ENDPOINT')),
     region: req('S3_REGION'),
     forcePathStyle: String(env.S3_FORCE_PATH_STYLE || 'false').trim() === 'true',
@@ -407,6 +430,9 @@ function readConfig(env) {
     backupImage: String(env.BACKUP_IMAGE || 'unknown').trim(),
     copyConcurrency: Math.min(32, num('COPY_CONCURRENCY', 8, { min: 1 })),
     docsBudgetSeconds: num('DOCS_COPY_BUDGET_SECONDS', 5400, { min: 1 }),
+    // = the pod terminationGracePeriodSeconds: after SIGTERM, the final writes
+    // (inventory, manifest, latest.json) are bounded to fit in it.
+    terminationGraceSeconds: num('TERMINATION_GRACE_SECONDS', 120, { min: 15 }),
     excludePrefixes: parsePrefixes(env.DOCS_EXCLUDE_PREFIXES),
     minDumpBytes: num('MIN_DUMP_BYTES', MIB, { min: 1 }),
     minDumpRatio: num('MIN_DUMP_RATIO', 0.5, { min: 0, integer: false }),
@@ -441,6 +467,19 @@ function assertBuckets(cfg) {
 }
 
 // ── manifest ─────────────────────────────────────────────────────────────────
+// Why a backup is not complete, in one line (null when complete). Counts and
+// stop reasons only, never a key.
+function partialReasonOf(docs, budgetSeconds) {
+  if (docs.status === 'complete') return null;
+  if (docs.status === 'failed') return `docs step failed (${docs.error || 'unknown'})`;
+  const parts = [];
+  if (docs.stopReason === 'terminated') parts.push('terminated (SIGTERM) before the copy finished');
+  else if (docs.budgetExhausted) parts.push(`docs copy budget reached (${budgetSeconds} s)`);
+  if (docs.failed) parts.push(`${docs.failed} object(s) failed (${docs.timedOut || 0} timed out)`);
+  if (docs.pending) parts.push(`${docs.pending} object(s) pending`);
+  if (!docs.inventoryKey) parts.push(`inventory not written (${docs.inventoryError || 'unknown'})`);
+  return parts.length ? parts.join('; ') : 'docs not complete';
+}
 function buildManifest({ date, startedAt, completedAt, cfg, pg, schema, code, docs, tool }) {
   const docsOk = docs.status === 'complete';
   return {
@@ -449,6 +488,7 @@ function buildManifest({ date, startedAt, completedAt, cfg, pg, schema, code, do
     status: docsOk ? 'complete' : 'partial',
     // PARTIAL is a recorded state (seed, objects pending/failed), not a job failure.
     verdict: docsOk ? 'OK' : 'PARTIAL',
+    partialReason: partialReasonOf(docs, cfg.docsBudgetSeconds),
     startedAt,
     completedAt,
     backupBucket: cfg.backupBucket,
@@ -493,6 +533,7 @@ function buildLatestPointer(manifest, manifestKey, manifestSha256, previous = nu
     docsObjects: Number.isFinite(manifest.docs.objects) ? manifest.docs.objects : null,
     latestComplete,
     partialSince,
+    partialReason: manifest.partialReason || null,
     updatedAt: manifest.completedAt,
   };
 }
@@ -512,6 +553,81 @@ function checkFreshness(pointer, today, { maxAgeDays = 1, maxPartialDays = 3 } =
   return { ok: true, reason: null };
 }
 
+// ── S3 request deadlines ─────────────────────────────────────────────────────
+// Error used as the abort reason of the docs copy (budget / SIGTERM).
+function stoppedError(stop) {
+  return Object.assign(new Error(`stopped: ${stop}`), { name: 'BackupStopped', stop });
+}
+function isStopped(e) { return !!e && e.name === 'BackupStopped'; }
+function isRequestTimeout(e) { return !!e && (e.name === 'S3RequestTimeout' || e.name === 'TimeoutError'); }
+// Wall-clock deadline of one command. kind 'meta' (HEAD/LIST/...) or 'body'
+// (copy / write / transfer of `bytes`). After SIGTERM (ctx.finalDeadline) every
+// deadline is capped so the final writes fit in the termination grace period.
+function requestDeadlineMs(ctx, kind, bytes, nowMs = Date.now()) {
+  const t = (ctx.cfg && ctx.cfg.timeouts) || DEFAULT_TIMEOUTS;
+  let ms = kind === 'meta' ? t.metaMs : Math.max(t.requestMs, Math.ceil((Number(bytes) || 0) / t.minBytesPerSec * 1000));
+  if (ctx.finalDeadline) ms = Math.max(1000, Math.min(ms, ctx.finalDeadline - nowMs));
+  return ms;
+}
+// ctx.s3.send(cmd) with a deadline: the SDK gets an AbortSignal (it aborts the
+// HTTP request and stops retrying) AND the returned promise settles on that
+// signal whatever the SDK does, so a request that never answers cannot block.
+// `consume(out, signal)` (a body read) runs under the same deadline. `signal`
+// (optional) aborts the command early with its reason (docs budget / SIGTERM).
+async function s3send(ctx, cmd, { kind = 'meta', bytes = 0, signal = null, consume = null } = {}) {
+  const ms = requestDeadlineMs(ctx, kind, bytes);
+  const ac = new AbortController();
+  const timer = setTimeout(() => ac.abort(Object.assign(new Error(`S3 request exceeded ${ms} ms`), { name: 'S3RequestTimeout' })), ms);
+  const onParent = () => ac.abort(signal.reason);
+  if (signal) {
+    if (signal.aborted) onParent();
+    else signal.addEventListener('abort', onParent, { once: true });
+  }
+  try {
+    if (ac.signal.aborted) throw ac.signal.reason;
+    return await new Promise((resolve, reject) => {
+      ac.signal.addEventListener('abort', () => reject(ac.signal.reason), { once: true });
+      Promise.resolve()
+        .then(() => ctx.s3.send(cmd, { abortSignal: ac.signal }))
+        .then((out) => (consume ? consume(out, ac.signal) : out))
+        .then(resolve, reject);
+    });
+  } finally {
+    clearTimeout(timer);
+    if (signal) signal.removeEventListener('abort', onParent);
+  }
+}
+// Reads a response body chunk by chunk; the stream is destroyed on abort.
+async function readBody(body, signal, onChunk) {
+  if (!body) return;
+  if (Buffer.isBuffer(body) || typeof body === 'string') { onChunk(Buffer.from(body)); return; }
+  const onAbort = () => { if (typeof body.destroy === 'function') body.destroy(signal.reason); };
+  if (signal) signal.addEventListener('abort', onAbort, { once: true });
+  try {
+    for await (const c of body) onChunk(Buffer.isBuffer(c) ? c : Buffer.from(c));
+  } finally {
+    if (signal) signal.removeEventListener('abort', onAbort);
+  }
+}
+// Transport-level bounds for the real client (mode main()). @smithy/node-http-handler
+// is a dependency of @aws-sdk/client-s3, hoisted in /app/node_modules of the image.
+// Only `connectionTimeout` + `socketTimeout` are passed: both are honoured by the
+// 2.x..4.x handlers (4.x: socketTimeout = idle socket; older: deprecated alias of
+// requestTimeout, itself an idle-socket timeout), and neither logs a URL. The
+// wall-clock bound never depends on it: s3send() enforces it in every mode.
+function buildRequestHandler(timeouts, load = require) {
+  try {
+    const { NodeHttpHandler } = load('@smithy/node-http-handler');
+    if (typeof NodeHttpHandler !== 'function') throw new Error('no NodeHttpHandler');
+    return {
+      requestHandler: new NodeHttpHandler({ connectionTimeout: timeouts.connectMs, socketTimeout: timeouts.requestMs }),
+      mode: 'node-http-handler',
+    };
+  } catch {
+    return { requestHandler: undefined, mode: 'abort-signal-only' };
+  }
+}
+
 // ── S3 helpers (client + sdk injected: the selftest passes an in-memory fake) ─
 async function hashFile(file) {
   const sha = crypto.createHash('sha256');
@@ -520,19 +636,11 @@ async function hashFile(file) {
   for await (const chunk of fs.createReadStream(file)) { sha.update(chunk); md5.update(chunk); size += chunk.length; }
   return { sha256: sha.digest('hex'), md5: md5.digest('base64'), size };
 }
-async function bodyToBuffer(body) {
-  if (!body) return Buffer.alloc(0);
-  if (Buffer.isBuffer(body)) return body;
-  if (typeof body === 'string') return Buffer.from(body);
-  const chunks = [];
-  for await (const c of body) chunks.push(Buffer.isBuffer(c) ? c : Buffer.from(c));
-  return Buffer.concat(chunks);
-}
-async function listAll(ctx, Bucket, Prefix) {
+async function listAll(ctx, Bucket, Prefix, signal = ctx.signal) {
   const all = [];
   let ContinuationToken;
   do {
-    const out = await ctx.s3.send(new ctx.sdk.ListObjectsV2Command({ Bucket, Prefix, ContinuationToken }));
+    const out = await s3send(ctx, new ctx.sdk.ListObjectsV2Command({ Bucket, Prefix, ContinuationToken }), { signal });
     for (const o of out.Contents || []) all.push(o);
     ContinuationToken = out.IsTruncated ? out.NextContinuationToken : undefined;
   } while (ContinuationToken);
@@ -540,11 +648,11 @@ async function listAll(ctx, Bucket, Prefix) {
 }
 // Latest version per key (needs s3:ListBucketVersions). A delete-marker as
 // latest means "absent". Throws on AccessDenied; the caller falls back.
-async function listLatestVersions(ctx, Bucket, Prefix) {
+async function listLatestVersions(ctx, Bucket, Prefix, signal = ctx.signal) {
   const latest = new Map();
   let KeyMarker; let VersionIdMarker;
   do {
-    const out = await ctx.s3.send(new ctx.sdk.ListObjectVersionsCommand({ Bucket, Prefix, KeyMarker, VersionIdMarker }));
+    const out = await s3send(ctx, new ctx.sdk.ListObjectVersionsCommand({ Bucket, Prefix, KeyMarker, VersionIdMarker }), { signal });
     for (const v of out.Versions || []) if (v.IsLatest) latest.set(v.Key, v);
     for (const m of out.DeleteMarkers || []) if (m.IsLatest) latest.delete(m.Key);
     const more = out.IsTruncated;
@@ -555,24 +663,25 @@ async function listLatestVersions(ctx, Bucket, Prefix) {
 }
 async function putBuffer(ctx, Key, body, ContentType) {
   const buf = Buffer.isBuffer(body) ? body : Buffer.from(body);
-  const out = await ctx.s3.send(new ctx.sdk.PutObjectCommand({
+  const out = await s3send(ctx, new ctx.sdk.PutObjectCommand({
     Bucket: ctx.cfg.backupBucket, Key, Body: buf, ContentLength: buf.length,
     ContentMD5: crypto.createHash('md5').update(buf).digest('base64'), ContentType,
-  }));
+  }), { kind: 'body', bytes: buf.length, signal: ctx.signal });
   return { sha256: crypto.createHash('sha256').update(buf).digest('hex'), size: buf.length, versionId: out.VersionId || null };
 }
 // Single PUT up to the threshold, multipart above. Content-MD5 on every body
 // (object-lock buckets require an integrity header on writes).
 async function putFile(ctx, Key, file, info) {
   const Bucket = ctx.cfg.backupBucket;
+  const signal = ctx.signal;
   if (info.size <= ctx.cfg.multipartThreshold) {
-    const out = await ctx.s3.send(new ctx.sdk.PutObjectCommand({
+    const out = await s3send(ctx, new ctx.sdk.PutObjectCommand({
       Bucket, Key, Body: fs.createReadStream(file), ContentLength: info.size, ContentMD5: info.md5,
       ContentType: 'application/octet-stream',
-    }));
+    }), { kind: 'body', bytes: info.size, signal });
     return { multipart: false, parts: 1, versionId: out.VersionId || null };
   }
-  const { UploadId } = await ctx.s3.send(new ctx.sdk.CreateMultipartUploadCommand({ Bucket, Key, ContentType: 'application/octet-stream' }));
+  const { UploadId } = await s3send(ctx, new ctx.sdk.CreateMultipartUploadCommand({ Bucket, Key, ContentType: 'application/octet-stream' }), { signal });
   try {
     const parts = [];
     const fh = await fsp.open(file, 'r');
@@ -586,31 +695,33 @@ async function putFile(ctx, Key, file, info) {
           if (!bytesRead) throw new BackupError(EXIT.RETRYABLE, 'short read on dump file');
           off += bytesRead;
         }
-        const out = await ctx.s3.send(new ctx.sdk.UploadPartCommand({
+        const out = await s3send(ctx, new ctx.sdk.UploadPartCommand({
           Bucket, Key, UploadId, PartNumber: n, Body: buf, ContentLength: len,
           ContentMD5: crypto.createHash('md5').update(buf).digest('base64'),
-        }));
+        }), { kind: 'body', bytes: len, signal });
         parts.push({ PartNumber: n, ETag: out.ETag });
       }
     } finally {
       await fh.close();
     }
-    const done = await ctx.s3.send(new ctx.sdk.CompleteMultipartUploadCommand({ Bucket, Key, UploadId, MultipartUpload: { Parts: parts } }));
+    const done = await s3send(ctx, new ctx.sdk.CompleteMultipartUploadCommand({ Bucket, Key, UploadId, MultipartUpload: { Parts: parts } }), { kind: 'body', signal });
     return { multipart: true, parts: parts.length, versionId: done.VersionId || null };
   } catch (e) {
-    await ctx.s3.send(new ctx.sdk.AbortMultipartUploadCommand({ Bucket, Key, UploadId })).catch(() => {});
+    await s3send(ctx, new ctx.sdk.AbortMultipartUploadCommand({ Bucket, Key, UploadId })).catch(() => {});
     throw e;
   }
 }
 // Re-read AFTER upload: HEAD size + full GET re-hash. Mismatch = retryable failure.
 async function verifyObject(ctx, Key, expected) {
   const Bucket = ctx.cfg.backupBucket;
-  const head = await ctx.s3.send(new ctx.sdk.HeadObjectCommand({ Bucket, Key }));
+  const head = await s3send(ctx, new ctx.sdk.HeadObjectCommand({ Bucket, Key }), { signal: ctx.signal });
   if (Number(head.ContentLength) !== expected.size) throw new BackupError(EXIT.RETRYABLE, `size mismatch after upload key=${Key}`);
-  const got = await ctx.s3.send(new ctx.sdk.GetObjectCommand({ Bucket, Key }));
   const h = crypto.createHash('sha256');
   let n = 0;
-  for await (const chunk of got.Body) { h.update(chunk); n += chunk.length; }
+  const got = await s3send(ctx, new ctx.sdk.GetObjectCommand({ Bucket, Key }), {
+    kind: 'body', bytes: expected.size, signal: ctx.signal,
+    consume: async (out, sig) => { await readBody(out.Body, sig, (chunk) => { h.update(chunk); n += chunk.length; }); return out; },
+  });
   const sha256 = h.digest('hex');
   if (sha256 !== expected.sha256 || n !== expected.size) throw new BackupError(EXIT.RETRYABLE, `sha256 mismatch after upload key=${Key}`);
   return { sha256, versionId: head.VersionId || got.VersionId || null };
@@ -620,8 +731,11 @@ async function verifyObject(ctx, Key, expected) {
 async function getJsonOrNull(ctx, Key) {
   let text;
   try {
-    const got = await ctx.s3.send(new ctx.sdk.GetObjectCommand({ Bucket: ctx.cfg.backupBucket, Key }));
-    text = (await bodyToBuffer(got.Body)).toString('utf8');
+    const chunks = [];
+    await s3send(ctx, new ctx.sdk.GetObjectCommand({ Bucket: ctx.cfg.backupBucket, Key }), {
+      signal: ctx.signal, consume: (out, sig) => readBody(out.Body, sig, (c) => chunks.push(c)),
+    });
+    text = Buffer.concat(chunks).toString('utf8');
   } catch (e) {
     if (isNotFound(e)) return null;
     throw e;
@@ -636,7 +750,7 @@ async function getJsonOrNull(ctx, Key) {
 
 async function checkVersioning(ctx) {
   try {
-    const out = await ctx.s3.send(new ctx.sdk.GetBucketVersioningCommand({ Bucket: ctx.cfg.backupBucket }));
+    const out = await s3send(ctx, new ctx.sdk.GetBucketVersioningCommand({ Bucket: ctx.cfg.backupBucket }), { signal: ctx.signal });
     if (out.Status !== 'Enabled') {
       throw new BackupError(EXIT.INTEGRITY, `backup bucket versioning is ${out.Status || 'off'} (must be Enabled)`);
     }
@@ -671,33 +785,38 @@ async function readOptional(file) {
 // source ETag (CopySourceIfMatch) so a source rewritten mid-copy fails the copy
 // (retried next run) instead of mixing two contents. Content-Type and user
 // metadata are carried over from a HEAD of the source (same ETag pin).
-async function copySourceObject(ctx, o) {
+// Every request carries a deadline (s3send) and `signal` (docs budget / SIGTERM):
+// a copy that never answers fails (timeout) instead of blocking the run.
+async function copySourceObject(ctx, o, signal = null) {
   const { cfg } = ctx;
   const Key = LAYOUT.docsPrefix + o.Key;
   const CopySource = '/' + cfg.sourceBucket + '/' + encodeKey(o.Key);
   const size = Number(o.Size);
   if (!(size > cfg.copyMultipartThreshold)) {
-    const out = await ctx.s3.send(new ctx.sdk.CopyObjectCommand({ Bucket: cfg.backupBucket, Key, CopySource, MetadataDirective: 'COPY' }));
+    const out = await s3send(ctx, new ctx.sdk.CopyObjectCommand({ Bucket: cfg.backupBucket, Key, CopySource, MetadataDirective: 'COPY' }),
+      { kind: 'body', bytes: size, signal });
     return { etag: (out.CopyObjectResult && out.CopyObjectResult.ETag) || null, versionId: out.VersionId || null, multipart: false };
   }
-  const head = await ctx.s3.send(new ctx.sdk.HeadObjectCommand({ Bucket: cfg.sourceBucket, Key: o.Key, IfMatch: o.ETag }));
-  const { UploadId } = await ctx.s3.send(new ctx.sdk.CreateMultipartUploadCommand({
+  const head = await s3send(ctx, new ctx.sdk.HeadObjectCommand({ Bucket: cfg.sourceBucket, Key: o.Key, IfMatch: o.ETag }), { signal });
+  const { UploadId } = await s3send(ctx, new ctx.sdk.CreateMultipartUploadCommand({
     Bucket: cfg.backupBucket, Key, ContentType: head.ContentType, Metadata: head.Metadata,
-  }));
+  }), { signal });
   try {
     const parts = [];
     for (let n = 1, pos = 0; pos < size; n += 1, pos += cfg.copyPartSize) {
       const end = Math.min(pos + cfg.copyPartSize, size) - 1;
-      const out = await ctx.s3.send(new ctx.sdk.UploadPartCopyCommand({
+      const out = await s3send(ctx, new ctx.sdk.UploadPartCopyCommand({
         Bucket: cfg.backupBucket, Key, UploadId, PartNumber: n, CopySource,
         CopySourceRange: `bytes=${pos}-${end}`, CopySourceIfMatch: o.ETag,
-      }));
+      }), { kind: 'body', bytes: end - pos + 1, signal });
       parts.push({ PartNumber: n, ETag: out.CopyPartResult && out.CopyPartResult.ETag });
     }
-    const done = await ctx.s3.send(new ctx.sdk.CompleteMultipartUploadCommand({ Bucket: cfg.backupBucket, Key, UploadId, MultipartUpload: { Parts: parts } }));
+    const done = await s3send(ctx, new ctx.sdk.CompleteMultipartUploadCommand({ Bucket: cfg.backupBucket, Key, UploadId, MultipartUpload: { Parts: parts } }),
+      { kind: 'body', signal });
     return { etag: done.ETag || null, versionId: done.VersionId || null, multipart: true };
   } catch (e) {
-    await ctx.s3.send(new ctx.sdk.AbortMultipartUploadCommand({ Bucket: cfg.backupBucket, Key, UploadId })).catch(() => {});
+    // Not tied to `signal`: the upload is aborted even when the copy was stopped.
+    await s3send(ctx, new ctx.sdk.AbortMultipartUploadCommand({ Bucket: cfg.backupBucket, Key, UploadId })).catch(() => {});
     throw e;
   }
 }
@@ -719,32 +838,62 @@ async function backupDocs(ctx, date, previousCount) {
   }
   const plan = planDocs(srcObjs, dstIndex, cfg.excludePrefixes);
   log(`docs source=${srcObjs.length} up_to_date=${plan.fresh.length} to_copy=${plan.todo.length} excluded=${plan.excluded.length} concurrency=${cfg.copyConcurrency} version_ids=${versionIds}`);
-  const deadline = ctx.now() + cfg.docsBudgetSeconds * 1000;
+  // The budget really cuts: at the deadline (real timer, or the clock seen
+  // between two copies) or on SIGTERM (ctx.terminate), `stop` aborts every copy
+  // in flight; no worker starts a new one. An interrupted copy stays `pending`
+  // (retried next run); a copy that fails or times out (after the SDK retries)
+  // is `failed` for that object only.
+  const budgetMs = cfg.docsBudgetSeconds * 1000;
+  const deadline = ctx.now() + budgetMs;
+  const stop = new AbortController();
+  const stopWith = (reason) => { if (!stop.signal.aborted) stop.abort(stoppedError(reason)); };
+  const budgetTimer = setTimeout(() => stopWith('budget'), budgetMs);
+  const onTerminate = () => stopWith('terminated');
+  if (ctx.terminate) {
+    if (ctx.terminate.aborted) onTerminate();
+    else ctx.terminate.addEventListener('abort', onTerminate, { once: true });
+  }
   const copied = new Map();
   const failed = new Set();
-  let next = 0; let budgetHit = false; let errorsLogged = 0;
+  let next = 0; let errorsLogged = 0; let timedOut = 0; let interrupted = 0;
   const worker = async () => {
     while (next < plan.todo.length) {
-      if (ctx.now() >= deadline) { budgetHit = true; return; }
+      if (stop.signal.aborted) return;
+      if (ctx.now() >= deadline) { stopWith('budget'); return; }
       const o = plan.todo[next++];
       try {
-        copied.set(o.Key, await copySourceObject(ctx, o));
+        copied.set(o.Key, await copySourceObject(ctx, o, stop.signal));
       } catch (e) {
+        if (stop.signal.aborted && (e === stop.signal.reason || isStopped(e) || (e && e.name === 'AbortError'))) {
+          interrupted += 1;
+          continue;
+        }
         failed.add(o.Key);
+        if (isRequestTimeout(e)) timedOut += 1;
         if (errorsLogged < 5) { errorsLogged += 1; log(`docs copy error ${errName(e)} (object key not logged)`); }
       }
       const doneCount = copied.size + failed.size;
       if (doneCount % 500 === 0) log(`docs progress ${doneCount}/${plan.todo.length}`);
     }
   };
-  await Promise.all(Array.from({ length: Math.min(cfg.copyConcurrency, plan.todo.length) }, () => worker()));
+  try {
+    await Promise.all(Array.from({ length: Math.min(cfg.copyConcurrency, plan.todo.length) }, () => worker()));
+  } finally {
+    clearTimeout(budgetTimer);
+    if (ctx.terminate) ctx.terminate.removeEventListener('abort', onTerminate);
+  }
+  const stopReason = stop.signal.aborted ? stop.signal.reason.stop : null;
+  if (stopReason) log(`docs copy stopped reason=${stopReason} copied=${copied.size} failed=${failed.size} interrupted=${interrupted} not_started=${plan.todo.length - next}`);
   const inventory = buildInventory({
     db: cfg.expectedDatabase, date, createdAt: new Date(ctx.now()).toISOString(), sourceBucket: cfg.sourceBucket, backupBucket: cfg.backupBucket,
     excludePrefixes: cfg.excludePrefixes, versionIds, srcObjs, dstIndex, copied, failed,
   });
   let copiedMultipart = 0;
   for (const c of copied.values()) if (c.multipart) copiedMultipart += 1;
-  return { inventory, copied: copied.size, copiedMultipart, alreadyUpToDate: plan.fresh.length, budgetHit, versionIds };
+  return {
+    inventory, copied: copied.size, copiedMultipart, alreadyUpToDate: plan.fresh.length, budgetHit: stopReason === 'budget',
+    stopReason, timedOut, interrupted, versionIds,
+  };
 }
 
 // ── purge (two identities: the writer PLANS, the purger DELETES) ─────────────
@@ -808,7 +957,7 @@ async function executePurge(ctx, plan) {
     // NO VersionId: a delete-marker; the locked version stays until lifecycle expiry.
     if (!cfg.purgeDryRun) {
       try {
-        await ctx.s3.send(new ctx.sdk.DeleteObjectCommand({ Bucket: cfg.backupBucket, Key }));
+        await s3send(ctx, new ctx.sdk.DeleteObjectCommand({ Bucket: cfg.backupBucket, Key }));
       } catch (e) {
         throw new BackupError(EXIT.PURGE_FAILED, `delete-marker failed ${errName(e)} after ${deleteMarkers}/${plan.keys.length}`);
       }
@@ -854,10 +1003,31 @@ async function runFreshness({ env, sdk, s3, now = Date.now, log = console.log })
 }
 
 // ── main flow ────────────────────────────────────────────────────────────────
-async function runBackup({ env, sdk, s3, fetchImpl, now = Date.now, log = console.log, overrides = {} }) {
+// `terminate` (AbortSignal, fired by main() on SIGTERM): before the PG part is
+// recorded it aborts the run (exit 1, nothing to record); during the docs copy it
+// stops the copy, and the inventory + manifest (partial) + latest.json are still
+// written, each request capped to fit in the termination grace period.
+async function runBackup({ env, sdk, s3, fetchImpl, now = Date.now, log = console.log, overrides = {}, terminate = null }) {
   const cfg = { ...readConfig(env), ...overrides };
   assertBuckets(cfg);
-  const ctx = { cfg, sdk, s3, now, log };
+  const ctx = { cfg, sdk, s3, now, log, fetchImpl, terminate, signal: terminate, finalDeadline: null };
+  const onTerminate = () => { ctx.finalDeadline = Date.now() + Math.max(5, cfg.terminationGraceSeconds - 10) * 1000; };
+  if (terminate) {
+    if (terminate.aborted) onTerminate();
+    else terminate.addEventListener('abort', onTerminate, { once: true });
+  }
+  try {
+    return await runBackupSteps(ctx);
+  } catch (e) {
+    // SIGTERM before the PG part was recorded: nothing valid to record.
+    if (isStopped(e)) throw new BackupError(EXIT.RETRYABLE, 'terminated (SIGTERM) before the PG backup was recorded');
+    throw e;
+  } finally {
+    if (terminate) terminate.removeEventListener('abort', onTerminate);
+  }
+}
+async function runBackupSteps(ctx) {
+  const { cfg, now, log, fetchImpl } = ctx;
   const W = cfg.workDir;
   // A plan is only ever the product of THIS run's complete backup.
   await fsp.rm(path.join(W, PURGE_PLAN_FILE), { force: true });
@@ -929,13 +1099,33 @@ async function runBackup({ env, sdk, s3, fetchImpl, now = Date.now, log = consol
   // 5) docs. A source listing anomaly is a refusal (exit 2, no manifest, no
   // purge). Any other failure of the whole step still records the PG backup
   // (status=partial, docs.status=failed, exit 4).
+  // From here on the PG part is recorded: whatever stops the copy (budget,
+  // SIGTERM, timeouts), the inventory, the manifest and latest.json are written.
   let docs;
+  let d = null;
   try {
-    const d = await backupDocs(ctx, date, previousDocsObjects);
-    const inv = await putBuffer(ctx, keys.inventory, JSON.stringify(d.inventory), 'application/json');
+    d = await backupDocs(ctx, date, previousDocsObjects);
+  } catch (e) {
+    if (e instanceof BackupError) throw e;
+    log(`docs step failed ${errName(e)}`);
+    docs = { status: 'failed', sourceBucket: cfg.sourceBucket, backupPrefix: LAYOUT.docsPrefix, error: errName(e), inventoryKey: null };
+  }
+  // Final writes: no longer aborted by SIGTERM (only bounded, see s3send).
+  ctx.signal = null;
+  if (d) {
+    let inv = null; let inventoryError = null;
+    try {
+      inv = await putBuffer(ctx, keys.inventory, JSON.stringify(d.inventory), 'application/json');
+    } catch (e) {
+      inventoryError = errName(e);
+      log(`docs inventory not written ${inventoryError}`);
+    }
     const c = d.inventory.counts;
+    // `complete` only when EVERY listed object is backed up (or excluded) and the
+    // inventory that proves it is written. Never complete with an object missing.
+    const allThere = c.pending === 0 && c.failed === 0 && c.backedUp + c.excluded === c.objects;
     docs = {
-      status: c.pending === 0 && c.failed === 0 ? 'complete' : 'partial',
+      status: allThere && inv ? 'complete' : 'partial',
       sourceBucket: cfg.sourceBucket,
       backupPrefix: LAYOUT.docsPrefix,
       objects: c.objects,
@@ -949,14 +1139,14 @@ async function runBackup({ env, sdk, s3, fetchImpl, now = Date.now, log = consol
       excluded: c.excluded,
       excludedPrefixes: cfg.excludePrefixes,
       budgetExhausted: d.budgetHit,
+      stopReason: d.stopReason,
+      timedOut: d.timedOut,
+      interrupted: d.interrupted,
       versionIds: d.versionIds,
-      inventoryKey: keys.inventory,
-      inventorySha256: inv.sha256,
+      inventoryKey: inv ? keys.inventory : null,
+      inventorySha256: inv ? inv.sha256 : null,
+      ...(inventoryError ? { inventoryError } : {}),
     };
-  } catch (e) {
-    if (e instanceof BackupError) throw e;
-    log(`docs step failed ${errName(e)}`);
-    docs = { status: 'failed', sourceBucket: cfg.sourceBucket, backupPrefix: LAYOUT.docsPrefix, error: errName(e), inventoryKey: null };
   }
 
   // 6) manifest + latest pointer
@@ -1003,8 +1193,10 @@ async function runBackup({ env, sdk, s3, fetchImpl, now = Date.now, log = consol
 
   // 7) retention purge PLAN, only after a COMPLETE backup of the day. The writer
   // cannot delete: the `purge` container (identity geo-backup-purger) executes it.
+  // Not after SIGTERM: the pod is going away, the purge container will not run.
+  const terminated = !!(ctx.terminate && ctx.terminate.aborted);
   let purge = null; let purgeError = null;
-  if (manifest.status === 'complete') {
+  if (manifest.status === 'complete' && !terminated) {
     try {
       purge = await planPurge(ctx, date);
       const plan = {
@@ -1015,18 +1207,25 @@ async function runBackup({ env, sdk, s3, fetchImpl, now = Date.now, log = consol
     } catch (e) { purgeError = e instanceof BackupError ? e.message : errName(e); }
   }
 
-  const verdict = docs.status === 'failed' ? 'DOCS-FAILED' : manifest.status !== 'complete' ? 'PARTIAL' : purgeError ? 'OK-PURGE-PLAN-FAILED' : 'OK';
+  const verdict = terminated ? 'TERMINATED' : docs.status === 'failed' ? 'DOCS-FAILED' : manifest.status !== 'complete' ? 'PARTIAL' : purgeError ? 'OK-PURGE-PLAN-FAILED' : 'OK';
   const purgeText = manifest.status !== 'complete'
     ? 'purge=skipped(backup not complete)'
-    : purgeError
+    : terminated
+      ? 'purge=skipped(terminated)'
+      : purgeError
       ? `purge=failed(${purgeError})`
       : `purge=planned purge.kept_dates=${purge.keptDates} purge.dates=${purge.purgeDates.length}${purge.purgeDates.length ? '[' + purge.purgeDates.join(',') + ']' : ''} purge.keys=${purge.keys.length}`;
   log(`VERDICT ${verdict} date=${date} status=${manifest.status} pg.bytes=${info.size} pg.sha256=${info.sha256} ` +
     `schema.migrations=${schema.migrationsApplied === undefined ? 'unknown' : schema.migrationsApplied} code.sha=${servedSha} ` +
     `docs.status=${docs.status} docs.objects=${docs.objects === undefined ? 'n/a' : docs.objects} docs.copied=${docs.copied === undefined ? 'n/a' : docs.copied} ` +
     `docs.pending=${docs.pending === undefined ? 'n/a' : docs.pending} manifest=${keys.manifest} manifest.sha256=${man.sha256} ` +
-    `latest_complete=${(pointer.latestComplete && pointer.latestComplete.date) || 'none'} ${purgeText}`);
-  const exitCode = docs.status === 'failed' ? EXIT.DOCS_FAILED : purgeError ? EXIT.PURGE_FAILED : EXIT.OK;
+    `docs.failed=${docs.failed === undefined ? 'n/a' : docs.failed} docs.timed_out=${docs.timedOut === undefined ? 'n/a' : docs.timedOut} ` +
+    `docs.stop=${docs.stopReason || 'none'} ` +
+    `latest_complete=${(pointer.latestComplete && pointer.latestComplete.date) || 'none'} ${purgeText}` +
+    `${manifest.partialReason ? ` reason="${manifest.partialReason}"` : ''}`);
+  // SIGTERM: recorded (partial), but the run did not finish → exit 1 (retryable;
+  // on activeDeadlineSeconds the Job is failed anyway, with its manifest written).
+  const exitCode = terminated ? EXIT.RETRYABLE : docs.status === 'failed' ? EXIT.DOCS_FAILED : purgeError ? EXIT.PURGE_FAILED : EXIT.OK;
   return { exitCode, manifest, pointer, purge, purgeError };
 }
 
@@ -1038,7 +1237,12 @@ async function main() {
   // Lazy: resolved from the geo-api image (NODE_PATH=/app/node_modules); the selftest never loads it.
   const sdk = require('@aws-sdk/client-s3');
   const cfg = read(process.env);
+  const log = (m) => console.log(`[${mode}] ${m}`);
+  const handler = buildRequestHandler(cfg.timeouts);
+  const t = cfg.timeouts;
+  log(`s3 timeouts connect_ms=${t.connectMs} request_ms=${t.requestMs} meta_ms=${t.metaMs} min_bytes_per_sec=${t.minBytesPerSec} handler=${handler.mode}`);
   const s3 = new sdk.S3Client({
+    ...(handler.requestHandler ? { requestHandler: handler.requestHandler } : {}),
     endpoint: cfg.endpoint,
     region: cfg.region,
     forcePathStyle: cfg.forcePathStyle,
@@ -1049,8 +1253,18 @@ async function main() {
     requestChecksumCalculation: 'WHEN_REQUIRED',
     responseChecksumValidation: 'WHEN_REQUIRED',
   });
-  const log = (m) => console.log(`[${mode}] ${m}`);
-  const r = await run({ env: process.env, sdk, s3, fetchImpl: globalThis.fetch, log });
+  // SIGTERM (kubelet, on activeDeadlineSeconds or a node drain; SIGKILL follows
+  // after terminationGracePeriodSeconds): mode `backup` stops the copy and still
+  // records the day (inventory, manifest partial, latest.json). Other modes keep
+  // the default behaviour (exit on SIGTERM): they write nothing to preserve.
+  const terminate = new AbortController();
+  if (mode === 'backup') {
+    process.once('SIGTERM', () => {
+      log('SIGTERM received: stopping the copy, recording a partial backup');
+      terminate.abort(stoppedError('terminated'));
+    });
+  }
+  const r = await run({ env: process.env, sdk, s3, fetchImpl: globalThis.fetch, log, terminate: terminate.signal });
   return r.exitCode;
 }
 
@@ -1060,6 +1274,7 @@ module.exports = {
   encodeKey, checkDumpSize, checkSourceCount, upToDate, planDocs, formatId, buildInventory, readConfig, readPurgeConfig,
   readFreshnessConfig, assertBuckets, buildManifest, buildLatestPointer, checkFreshness, copySourceObject, runBackup,
   planPurge, validatePurgePlan, executePurge, runPurge, runFreshness,
+  DEFAULT_TIMEOUTS, readTimeouts, requestDeadlineMs, s3send, buildRequestHandler, partialReasonOf, stoppedError,
 };
 
 if (require.main === module) {
