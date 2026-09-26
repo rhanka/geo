@@ -37,28 +37,33 @@ jobs:
       # kubeconfig — owner/infra-provisioned secret, consumed AGNOSTICALLY so TokenRequest↔OIDC can be
       # swapped without touching workflow logic. Fail-closed if absent (workflow inert until provisioned).
       - name: kubeconfig (geo-ci-runner SA, ns geo-preprod)
+        env:
+          KUBE_CONFIG_GEO: ${{ secrets.KUBE_CONFIG_GEO }}
         run: |
-          if [ -z "${{ secrets.KUBE_CONFIG_GEO }}" ]; then
+          if [ -z "$KUBE_CONFIG_GEO" ]; then
             echo "::error::KUBE_CONFIG_GEO absent — workflow inerte tant que le secret n'est pas provisionné (owner/infra)."
             exit 1
           fi
-          printf '%s' "${{ secrets.KUBE_CONFIG_GEO }}" | base64 -d > "$RUNNER_TEMP/kubeconfig"
+          printf '%s' "$KUBE_CONFIG_GEO" | base64 -d > "$RUNNER_TEMP/kubeconfig"
           echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
       # S3 READ-ONLY cred: render-<job>.ts reads S3 to find the latest capture manifest (proof-bound).
       # Read-only, owner/infra-provisioned. (Design note: the launched Job does its own S3 I/O in-cluster
       # via geo-s3-credentials; the CI only needs READ to render.)
       - name: s3 read env
+        env:
+          GEO_S3_ENV: ${{ secrets.GEO_S3_ENV }}
         run: |
-          if [ -z "${{ secrets.GEO_S3_ENV }}" ]; then
+          if [ -z "$GEO_S3_ENV" ]; then
             echo "::error::GEO_S3_ENV absent — provisionner un cred S3 READ-ONLY (owner/infra)."
             exit 1
           fi
-          printf '%s' "${{ secrets.GEO_S3_ENV }}" | base64 -d > "$RUNNER_TEMP/s3.env"
+          printf '%s' "$GEO_S3_ENV" | base64 -d > "$RUNNER_TEMP/s3.env"
           echo "S3_ENV_FILE=$RUNNER_TEMP/s3.env" >> "$GITHUB_ENV"
       - name: render (${{ github.event.inputs.job }})
         env:
           S3_BUCKET: sentropic-geo-preprod   # PRÉPROD-ONLY EN DUR
-        run: npx tsx "deploy/constraints/render-${{ github.event.inputs.job }}.ts" > "$RUNNER_TEMP/job.yaml"
+          JOB: ${{ github.event.inputs.job }}
+        run: npx tsx "deploy/constraints/render-${JOB}.ts" > "$RUNNER_TEMP/job.yaml"
       - name: dry-run GATE (server-side — must pass before apply)
         run: kubectl apply --dry-run=server -f "$RUNNER_TEMP/job.yaml"
       - name: apply
@@ -74,4 +79,5 @@ jobs:
       - name: verify served
         env:
           PREPROD_OGC_URL: ${{ vars.PREPROD_OGC_URL }}   # preprod geo-api ingress (repo variable, non-secret)
-        run: ./deploy/ci/verify-served.sh "${{ github.event.inputs.job }}"
+          JOB: ${{ github.event.inputs.job }}
+        run: ./deploy/ci/verify-served.sh "$JOB"
