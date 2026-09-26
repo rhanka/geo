@@ -22,6 +22,10 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      # 0 dependency (node builtins only): the backup retention/manifest/copy logic
+      # and its CronJob/RBAC/CD wiring, against an in-memory versioned S3 fake.
+      - name: Validate daily prod backup logic (offline selftest)
+        run: node deploy/ci/backup/backup-daily.selftest.mjs
       - name: Guard registry migration
         run: node scripts/check-registry-policy.mjs
       # poppler-utils fournit `pdftotext`, que l'image de scrape embarque
