@@ -6,8 +6,13 @@
 # Besoins EXACTS du run geo (bascule.mjs) en geo-preprod :
 #   - dispatch + OBSERVE .status des Jobs (freshness, docs-sync, recon) : jobs create/get/list/watch/delete ;
 #   - resolvePreprodImage : get deploy geo-api ; rollout (S5') : patch deploy geo-api + status (get/list/watch) ;
-#   - pods get/list/watch : diagnostic lecture seule (JAMAIS pods/log : runner STATUS-ONLY, 0 kubectl logs).
-# EXCLUS : secrets (tous verbes — l'identité éphémère est créée par k8s), networkpolicies, pods/log, pods/exec, autres ns.
+#   - pods get/list/watch : diagnostic lecture seule + message de fin des Jobs de backup (MODE=restore|list)
+#     (JAMAIS pods/log : runner STATUS-ONLY, 0 kubectl logs) ;
+#   - secrets get/update UNIQUEMENT sur geo-backup-reader-preprod (Secret pré-créé par k8s, RÉÉCRIT par la
+#     bascule MODE=restore|list depuis l'environment GitHub geo-bascule : kubectl replace --dry-run=server puis
+#     replace ; jamais create/patch/list ; jamais de SealedSecret).
+# EXCLUS : tout autre verbe/nom de Secret (l'identité éphémère docs-sync reste créée par k8s), networkpolicies,
+# pods/log, pods/exec, autres ns.
 # INSTALL : appliqué UNE fois (install-cd-bootstrap.sh, cluster-admin). Token permanent → KUBE_CONFIG_DATA_BASCULE_PREPROD.
 ---
 apiVersion: v1
@@ -40,6 +45,10 @@ rules:
   - apiGroups: ["apps"]
     resources: ["replicasets"]
     verbs: ["get", "list", "watch"]   # rollout status
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "update"]          # kubectl replace (GET + PUT) du Secret lecteur pré-créé
+    resourceNames: ["geo-backup-reader-preprod"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

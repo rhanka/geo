@@ -31,7 +31,20 @@
 # GO owner = l'input CONFIRM (GARDE G3, iso-prod-AAAA-MM-JJ, recoupé au jour UTC),
 # vérifié dans CHAQUE job. DRY_RUN=true par défaut = un dispatch nu ne fait RIEN de
 # destructif (jambe pg : preflight seul ; jambe s3 : preflight + recon + smoke informatifs).
+#
+# MODE (input, défaut `chain` ; un run planifié est toujours `chain`) :
+#   chain   jambes pg + s3 ci-dessus, inchangées.
+#   restore job `restore` : restaurer la préprod geo DEPUIS un backup quotidien de
+#           geo-backup (BACKUP_ID = latest | AAAA-MM-JJ) : S0 → Secret lecteur réécrit
+#           depuis GitHub → R0 resolve (gardes, dump geo VÉRIFIÉ par sha256 — préprod
+#           SANS PostgreSQL) → S3' état de normalized/ au jour D (docs-inventory/<D>.json,
+#           copie serveur) → S3b' recon vs inventaire → S5' rollout (G4) → S7 smoke.
+#           `latest` > 24 h refusé sauf ALLOW_STALE_BACKUP ; date explicite non bloquante.
+#   list    job `list` : lecture seule, backups disponibles (artefact backup-list-geo-<id>).
+# Logique : deploy/ci/bascule-preprod/restore-mode.mjs (port de radar-immobilier#777).
 name: bascule-preprod (iso-prod)
+# L'orchestrateur e2e (radar-immobilier bascule-e2e.yml) corrèle son dispatch sur MODE + CYCLE_ID.
+run-name: "bascule-preprod ${{ inputs.MODE || 'chain' }} ${{ inputs.CYCLE_ID }}"
 
 on:
   # Planification HEBDOMADAIRE : dimanche 03:17 UTC (décision owner 2026-09-26 ; auparavant
@@ -61,6 +74,22 @@ on:
         required: false
         type: string
         default: ""
+      MODE:
+        description: "chain = copie vivante (défaut) · restore = DEPUIS un backup quotidien (BACKUP_ID) · list = backups disponibles (lecture seule)"
+        required: false
+        type: choice
+        options: [chain, restore, list]
+        default: chain
+      BACKUP_ID:
+        description: "MODE=restore — 'latest' (dernier backup complet, refusé au-delà de 24 h) ou une date AAAA-MM-JJ (âge non bloquant)"
+        required: false
+        type: string
+        default: latest
+      ALLOW_STALE_BACKUP:
+        description: "MODE=restore — true = accepter un 'latest' de plus de 24 h"
+        required: false
+        type: boolean
+        default: false
 
 # Jamais deux bascules en parallèle (write préprod) : verrou au niveau WORKFLOW (un
 # run à la fois) ; À L'INTÉRIEUR d'un run, les jobs `pg` et `s3` tournent en parallèle.
@@ -80,7 +109,7 @@ jobs:
   pg:
     # Un dispatch manuel tourne TOUJOURS (GO = CONFIRM) ; un run PLANIFIÉ ne joue que
     # si armé via vars.BASCULE_SCHEDULE_ENABLED == 'true' (OFF par défaut).
-    if: ${{ github.event_name != 'schedule' || vars.BASCULE_SCHEDULE_ENABLED == 'true' }}
+    if: ${{ (github.event_name != 'schedule' || vars.BASCULE_SCHEDULE_ENABLED == 'true') && (inputs.MODE || 'chain') == 'chain' }}
     runs-on: ubuntu-latest
     # Coffre `geo-bascule` (0 reviewer, branche de déploiement = main SEULE) : porte
     # KUBE_CONFIG_DATA_BASCULE_PREPROD + KUBE_CONFIG_DATA_PROD_TRIGGER → lisibles
@@ -232,7 +261,7 @@ jobs:
   # ═══════════════════════════════════════════════════════════════════════════
   s3:
     # Même armement que la jambe pg (dispatch = toujours ; schedule = si armé).
-    if: ${{ github.event_name != 'schedule' || vars.BASCULE_SCHEDULE_ENABLED == 'true' }}
+    if: ${{ (github.event_name != 'schedule' || vars.BASCULE_SCHEDULE_ENABLED == 'true') && (inputs.MODE || 'chain') == 'chain' }}
     runs-on: ubuntu-latest
     # Coffre `geo-bascule` (0 reviewer, branche de déploiement = main SEULE) : porte
     # KUBE_CONFIG_DATA_BASCULE_PREPROD → lisible UNIQUEMENT depuis main. Jambe
@@ -408,23 +437,269 @@ jobs:
           retention-days: 7
 
   # ═══════════════════════════════════════════════════════════════════════════
+  # MODE=list — lecture seule : backups disponibles de geo-backup (date, statut,
+  # taille, sha256). Secret lecteur réécrit depuis GitHub, Job de lecture, artefact
+  # backup-list-geo-<CYCLE_ID|run_id> (backup-list.json, radar-backup-list/v1).
+  # ═══════════════════════════════════════════════════════════════════════════
+  list:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.MODE == 'list' }}
+    runs-on: ubuntu-latest
+    # Coffre `geo-bascule` (branche de déploiement = main SEULE) : kubeconfig préprod +
+    # GEO_BACKUP_READER_PREPROD_* (Secret lecteur réécrit par ce job).
+    environment: geo-bascule
+    timeout-minutes: 30
+    env:
+      MODE: list
+      CYCLE_ID: ${{ inputs.CYCLE_ID }}
+      BHS: ${{ vars.BASCULE_BHS_ENDPOINT || 's3.bhs.io.cloud.ovh.net' }}
+      S3_REGION: ${{ vars.BASCULE_AWS_REGION || 'bhs' }}
+      EXPECTED_DATABASE: ${{ vars.BASCULE_EXPECTED_DATABASE || 'geo' }}
+      PREPROD_NAMESPACE: ${{ vars.BASCULE_PREPROD_NAMESPACE || 'geo-preprod' }}
+      BACKUP_BUCKET: ${{ vars.BASCULE_BACKUP_BUCKET || 'geo-backup' }}
+      BACKUP_READER_SECRET: ${{ vars.BASCULE_BACKUP_READER_SECRET || 'geo-backup-reader-preprod' }}
+      BASCULE_WORKDIR: ${{ github.workspace }}/.bascule-work
+      CLI: deploy/ci/bascule-preprod/bascule.mjs
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: e2e — valider CYCLE_ID
+        if: ${{ inputs.CYCLE_ID != '' }}
+        run: node deploy/ci/bascule-preprod/served-ids.mjs validate-cycle-id
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig (préprod)
+        env:
+          KUBE_CONFIG_DATA_BASCULE_PREPROD: ${{ secrets.KUBE_CONFIG_DATA_BASCULE_PREPROD }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.kube"
+          printf '%s' "$KUBE_CONFIG_DATA_BASCULE_PREPROD" | base64 -d > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+          test -s "$HOME/.kube/config" || { echo "::error::KUBE_CONFIG_DATA_BASCULE_PREPROD absent ou vide"; exit 1; }
+
+      - name: Pre-flight — assert target cluster
+        env:
+          EXPECTED_KUBE_APISERVER_HOST: ${{ vars.EXPECTED_KUBE_APISERVER_HOST }}
+        run: |
+          set -euo pipefail
+          DEFAULT_HOST='hlhedx.c1.bhs5.k8s.ovh.net'
+          expected="${EXPECTED_KUBE_APISERVER_HOST:-$DEFAULT_HOST}"
+          server="$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
+          host="${server#*://}"; host="${host%%/*}"; host="${host%%:*}"
+          if [ "$host" != "$expected" ]; then
+            echo "::error title=Wrong cluster — bascule refused::kubeconfig targets '${host:-<none>}' but expected '${expected}'."
+            exit 1
+          fi
+          kubectl -n "$PREPROD_NAMESPACE" get deploy geo-api -o name
+
+      - name: S0 preflight (MODE=list)
+        run: node "$CLI" preflight-backup
+
+      # Gardes de geo #405 : clés au format attendu, endpoint figé, dry-run serveur,
+      # jeu de clés vérifié, valeurs par env: uniquement (jamais en argv/log).
+      - name: Write backup reader Secret from GitHub (geo-backup-reader-preprod)
+        env:
+          GEO_BACKUP_READER_PREPROD_ACCESS_KEY: ${{ secrets.GEO_BACKUP_READER_PREPROD_ACCESS_KEY }}
+          GEO_BACKUP_READER_PREPROD_SECRET_KEY: ${{ secrets.GEO_BACKUP_READER_PREPROD_SECRET_KEY }}
+        run: node "$CLI" backup-secret-fill
+
+      - name: backup-list (Job lecture — backups disponibles)
+        run: node "$CLI" backup-list
+
+      - name: artefact backup-list-geo-<CYCLE_ID|run_id>
+        uses: actions/upload-artifact@v4
+        with:
+          name: backup-list-geo-${{ inputs.CYCLE_ID || github.run_id }}
+          path: ${{ github.workspace }}/.bascule-work/backup-list.json
+          if-no-files-found: error
+          retention-days: 7
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # MODE=restore — restaurer la préprod geo DEPUIS un backup de geo-backup. Un job
+  # séquentiel (R0 fige la date D consommée par S3') ; la préprod geo n'a pas de
+  # PostgreSQL : le dump du backup est VÉRIFIÉ (sha256 recalculé), pas restauré.
+  # ═══════════════════════════════════════════════════════════════════════════
+  restore:
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.MODE == 'restore' }}
+    runs-on: ubuntu-latest
+    environment: geo-bascule
+    timeout-minutes: 240
+    outputs:
+      o_resolve: ${{ steps.resolve.outcome }}
+      backup_id: ${{ steps.resolve.outputs.backup_id }}
+      backup_date: ${{ steps.resolve.outputs.backup_date }}
+      manifest_sha256: ${{ steps.resolve.outputs.manifest_sha256 }}
+      pg_sha256: ${{ steps.resolve.outputs.pg_sha256 }}
+      dump_started_at: ${{ steps.resolve.outputs.dump_started_at }}
+    env:
+      CONFIRM: ${{ inputs.CONFIRM }}
+      MODE: restore
+      BACKUP_ID: ${{ inputs.BACKUP_ID || 'latest' }}
+      ALLOW_STALE_BACKUP: ${{ inputs.ALLOW_STALE_BACKUP && 'true' || 'false' }}
+      CYCLE_ID: ${{ inputs.CYCLE_ID }}
+      BHS: ${{ vars.BASCULE_BHS_ENDPOINT || 's3.bhs.io.cloud.ovh.net' }}
+      S3_REGION: ${{ vars.BASCULE_AWS_REGION || 'bhs' }}
+      EXPECTED_DATABASE: ${{ vars.BASCULE_EXPECTED_DATABASE || 'geo' }}
+      PROD_DOCS: ${{ vars.BASCULE_PROD_DOCS_BUCKET || 'sentropic-geo' }}
+      PREPROD_DOCS: ${{ vars.BASCULE_PREPROD_DOCS_BUCKET || 'sentropic-geo-preprod' }}
+      DOCS_SYNC_PREFIX: ${{ vars.BASCULE_DOCS_SYNC_PREFIX || 'normalized/' }}
+      DOCS_SYNC_GRANTEE: ${{ vars.BASCULE_DOCS_SYNC_GRANTEE || '1901410700457444:9056dbb240a04d2584ffbaec38171228' }}
+      PREPROD_NAMESPACE: ${{ vars.BASCULE_PREPROD_NAMESPACE || 'geo-preprod' }}
+      PREPROD_API_URL: ${{ vars.BASCULE_PREPROD_API_URL || 'https://api.preprod.geo.sent-tech.ca' }}
+      PROD_API_URL: ${{ vars.BASCULE_PROD_API_URL || 'https://api.geo.sent-tech.ca' }}
+      BACKUP_BUCKET: ${{ vars.BASCULE_BACKUP_BUCKET || 'geo-backup' }}
+      BACKUP_READER_SECRET: ${{ vars.BASCULE_BACKUP_READER_SECRET || 'geo-backup-reader-preprod' }}
+      BACKUP_DOCS_COPY_SECRET: ${{ vars.BASCULE_BACKUP_DOCS_COPY_SECRET || 'geo-backup-restore-docs' }}
+      BACKUP_MAX_AGE_HOURS: ${{ vars.BASCULE_BACKUP_MAX_AGE_HOURS || '24' }}
+      BASCULE_WORKDIR: ${{ github.workspace }}/.bascule-work
+      CLI: deploy/ci/bascule-preprod/bascule.mjs
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute CONFIRM_EXPECTED (anti-rejeu = date du jour UTC)
+        run: echo "CONFIRM_EXPECTED=iso-prod-$(date -u +%F)" >> "$GITHUB_ENV"
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: e2e — valider CYCLE_ID
+        if: ${{ inputs.CYCLE_ID != '' }}
+        run: node deploy/ci/bascule-preprod/served-ids.mjs validate-cycle-id
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig (préprod)
+        env:
+          KUBE_CONFIG_DATA_BASCULE_PREPROD: ${{ secrets.KUBE_CONFIG_DATA_BASCULE_PREPROD }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.kube"
+          printf '%s' "$KUBE_CONFIG_DATA_BASCULE_PREPROD" | base64 -d > "$HOME/.kube/config"
+          chmod 600 "$HOME/.kube/config"
+          test -s "$HOME/.kube/config" || { echo "::error::KUBE_CONFIG_DATA_BASCULE_PREPROD absent ou vide"; exit 1; }
+
+      - name: Pre-flight — assert target cluster
+        env:
+          EXPECTED_KUBE_APISERVER_HOST: ${{ vars.EXPECTED_KUBE_APISERVER_HOST }}
+        run: |
+          set -euo pipefail
+          DEFAULT_HOST='hlhedx.c1.bhs5.k8s.ovh.net'
+          expected="${EXPECTED_KUBE_APISERVER_HOST:-$DEFAULT_HOST}"
+          server="$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
+          host="${server#*://}"; host="${host%%/*}"; host="${host%%:*}"
+          if [ "$host" != "$expected" ]; then
+            echo "::error title=Wrong cluster — bascule refused::kubeconfig targets '${host:-<none>}' but expected '${expected}'."
+            exit 1
+          fi
+          kubectl -n "$PREPROD_NAMESPACE" get deploy geo-api -o name
+
+      - name: S0 preflight (MODE=restore)
+        run: node "$CLI" preflight-backup
+
+      - name: Write backup reader Secret from GitHub (geo-backup-reader-preprod)
+        env:
+          GEO_BACKUP_READER_PREPROD_ACCESS_KEY: ${{ secrets.GEO_BACKUP_READER_PREPROD_ACCESS_KEY }}
+          GEO_BACKUP_READER_PREPROD_SECRET_KEY: ${{ secrets.GEO_BACKUP_READER_PREPROD_SECRET_KEY }}
+        run: node "$CLI" backup-secret-fill
+
+      # Lecture seule, AVANT toute mutation : un backup refusé ne touche jamais la préprod.
+      - name: R0 backup-resolve (Job lecture — BACKUP_ID → date + gardes + PIN)
+        id: resolve
+        run: node "$CLI" backup-resolve
+
+      - name: S3' docs-restore (DRY — plan seul, 0 copie)
+        if: ${{ inputs.DRY_RUN }}
+        env:
+          DRY: "1"
+        run: node "$CLI" docs-restore
+
+      - name: S3' docs-restore DEPUIS le backup (Job copie serveur, état de normalized/ au jour D)
+        id: docs_backup
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" docs-restore
+
+      - name: S3b' recon-backup (Job — préprod ⊇ docs-inventory(D), Key+Size, fatal)
+        id: recon_backup
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" recon-backup
+
+      - name: S5' rollout restart geo-api préprod (G4 = recon vs inventaire)
+        if: ${{ !inputs.DRY_RUN && !inputs.SKIP_ROLLOUT }}
+        run: node "$CLI" rollout
+
+      - name: S7 smoke (MODE=restore — préprod ⊇ prod consultatif ; informatif en DRY)
+        id: smoke
+        continue-on-error: ${{ inputs.DRY_RUN }}
+        run: node "$CLI" smoke
+
+      - name: e2e — installer le builder publié @sentropic/geo (dossier temporaire, version épinglée)
+        if: ${{ !inputs.DRY_RUN && inputs.CYCLE_ID != '' }}
+        run: |
+          set -euo pipefail
+          version="$(node deploy/ci/bascule-preprod/served-ids.mjs builder-version)"
+          npm install --prefix "$RUNNER_TEMP/served-ids-builder" --no-save --no-audit --no-fund --ignore-scripts "@sentropic/geo@${version}"
+
+      - name: e2e — ids canoniques servis (zones) via l'API publique préprod
+        if: ${{ !inputs.DRY_RUN && inputs.CYCLE_ID != '' }}
+        timeout-minutes: 45
+        run: node deploy/ci/bascule-preprod/served-ids.mjs build --builder-dir "$RUNNER_TEMP/served-ids-builder" --out "$RUNNER_TEMP/served-ids"
+
+      - name: e2e — artefact geo-served-canonical-ids-<CYCLE_ID>
+        if: ${{ !inputs.DRY_RUN && inputs.CYCLE_ID != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: geo-served-canonical-ids-${{ inputs.CYCLE_ID }}
+          path: ${{ runner.temp }}/served-ids/
+          if-no-files-found: error
+          retention-days: 7
+          overwrite: true
+
+      - name: Pointeurs restore (PIN + recon — PAS de contenu S3)
+        if: ${{ always() && !inputs.DRY_RUN }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bascule-restore-pointers-${{ github.run_id }}
+          path: |
+            ${{ github.workspace }}/.bascule-work/backup-pin.json
+            ${{ github.workspace }}/.bascule-work/recon.ok.json
+          if-no-files-found: warn
+          retention-days: 7
+
+  # ═══════════════════════════════════════════════════════════════════════════
   # CYCLE-LEG — contrat e2e immo+geo : RAPPORTE `legs.geo` pour l'orchestrateur.
-  # `needs: [pg, s3]` + `always()` = attend la fin des DEUX jambes quel que soit leur
-  # résultat, SANS les coupler (pg et s3 restent sans `needs:` entre eux). N'existe
-  # que si CYCLE_ID est non vide (dispatch e2e) ; un run planifié ne l'a jamais.
-  # 0 kubectl, 0 cred : lit needs.*.result + 2 artefacts du run, écrit un JSON.
+  # `needs: [pg, s3, restore]` + `always()` = attend la fin des jobs du MODE joué,
+  # SANS les coupler. N'existe que si CYCLE_ID est non vide et MODE ≠ list.
+  # 0 kubectl, 0 cred : lit needs.*.result/outputs + 2 artefacts du run, écrit un JSON.
+  # MODE=chain : pg = job pg, s3 = job s3. MODE=restore : pg = R0 (backup + dump
+  # vérifiés), s3 = job restore ; legs.geo.backup = date + sha256 du backup restauré.
   # Mapping verdict : success → success ; failure|cancelled|skipped → failure ;
   # autre/vide → pending (served-ids.mjs mapJobResult).
   # ═══════════════════════════════════════════════════════════════════════════
   cycle-leg:
-    needs: [pg, s3]
-    if: ${{ always() && inputs.CYCLE_ID != '' }}
+    needs: [pg, s3, restore]
+    if: ${{ always() && inputs.CYCLE_ID != '' && inputs.MODE != 'list' }}
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
       CYCLE_ID: ${{ inputs.CYCLE_ID }}
-      PG_RESULT: ${{ needs.pg.result }}
-      S3_RESULT: ${{ needs.s3.result }}
+      MODE: ${{ inputs.MODE || 'chain' }}
+      PG_RESULT: ${{ inputs.MODE == 'restore' && needs.restore.outputs.o_resolve || needs.pg.result }}
+      S3_RESULT: ${{ inputs.MODE == 'restore' && needs.restore.result || needs.s3.result }}
+      BACKUP_ID: ${{ needs.restore.outputs.backup_id }}
+      BACKUP_DATE: ${{ needs.restore.outputs.backup_date }}
+      MANIFEST_SHA256: ${{ needs.restore.outputs.manifest_sha256 }}
+      PG_SHA256: ${{ needs.restore.outputs.pg_sha256 }}
+      DUMP_STARTED_AT: ${{ needs.restore.outputs.dump_started_at }}
     steps:
       - uses: actions/checkout@v4
 

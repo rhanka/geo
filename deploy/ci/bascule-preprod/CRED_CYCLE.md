@@ -146,3 +146,39 @@ Verify recovery at any time (any operator/owner/AI, no owner GO):
   `apply-backup` run is green;
 - last `geo-backup-daily` and `geo-backup-freshness` Jobs `Complete`; `manifests/latest.json`
   of `geo-backup` fresh (`latestComplete.date` = today or yesterday).
+
+## Preprod restore-from-backup reader (bascule `MODE=restore|list`)
+
+Dedicated preprod identity, created and tested by the k8s lane (2026-09-26).
+
+| secret (k8s name) | OVH user | keys | GitHub source (Environment `geo-bascule`, main-only) | consumer | rights |
+| --- | --- | --- | --- | --- | --- |
+| `geo-backup-reader-preprod` (ns `geo-preprod`, pre-created Opaque, no ownerReference) | 809855 | `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` (= `geo-backup`) | secrets `GEO_BACKUP_READER_PREPROD_ACCESS_KEY`, `GEO_BACKUP_READER_PREPROD_SECRET_KEY` | `bascule-preprod.yml` jobs `list` and `restore` (Jobs `geo-bascule-backup-*`, `geo-docs-restore-backup`) | `geo-backup`: GetObject on `pg/*`, `manifests/*`, `docs-inventory/*`, `docs/*` + ListBucket; no write, no delete |
+
+OVH: `s3:GetObjectVersion` is refused in policies; a versioned read (GetObject /
+CopyObject with `versionId`) is covered by GetObject.
+
+**Source of truth: GitHub Environment `geo-bascule` + `.env`. No SealedSecret.** The
+bascule rewrites the pre-created Secret at every `MODE=restore|list` run (step "Write
+backup reader Secret from GitHub", `restore-mode.mjs backup-secret-fill`): values via
+`env:` only, same guards as #405 (single-line, `^[A-Za-z0-9]{16,128}$` /
+`^[A-Za-z0-9/+=]{16,128}$`, endpoint pinned to `https://s3.bhs.io.cloud.ovh.net`),
+`kubectl replace --dry-run=server` then `kubectl replace`, key set checked on the
+object the server returns. SA `geo-ci-bascule-preprod`: secrets get/update on this name
+only (`rbac-ci-bascule-preprod.yaml`) — no create, patch, list, watch or delete.
+
+**Rotation: every 90 days** (and at once on suspected exposure):
+
+1. k8s lane: new `s3Credentials` for OVH user 809855 (the old one stays valid for now).
+2. k8s lane: `gh secret set GEO_BACKUP_READER_PREPROD_ACCESS_KEY --env geo-bascule --repo
+   rhanka/geo` (same for `_SECRET_KEY`) and update the `.env` recovery copy.
+3. `workflow_dispatch` of `bascule-preprod.yml` with `MODE=list`: the step "Write backup
+   reader Secret from GitHub" is green and the backup list is printed (proves the new key).
+4. Only then: k8s lane deletes the old credential; record the date (next = +90 days).
+
+Verify recovery at any time: `kubectl -n geo-preprod get secret geo-backup-reader-preprod`
+(3 keys); last `MODE=list` run green.
+
+The S3' copy signer (`BACKUP_DOCS_COPY_SECRET`, default `geo-backup-restore-docs`: GetObject
+on `geo-backup/docs/normalized/*` + PutObject/PutObjectAcl on `sentropic-geo-preprod`, no
+delete) is NOT provisioned yet — see `README.md` "Restore depuis un backup".

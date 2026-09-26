@@ -1,5 +1,18 @@
 # Restore a backup of date D
 
+**Into preprod, automated:** `.github/workflows/bascule-preprod.yml` with `MODE=restore`
+(`BACKUP_ID=latest` or a date) verifies the backup of D in-cluster (manifest `complete`,
+dump sha256 recomputed — geo preprod has no PostgreSQL), restores the served objects
+(`normalized/`) at D from `docs-inventory/<D>.json` by server-side copy, then recon,
+rollout and smoke; `MODE=list` lists the available backups. It reads with the dedicated
+preprod identity `geo-backup-reader-preprod` (ns `geo-preprod`, rewritten by the bascule
+from the GitHub Environment `geo-bascule`). See `../bascule-preprod/README.md`
+« Restore depuis un backup ».
+
+**OVH:** `s3:GetObjectVersion` is refused in OVH policies; a read of a given version
+(GetObject / CopyObject with `versionId`, `s5cmd cp --version-id`) is covered by
+GetObject — never grant a separate version permission.
+
 All reads use the **reader** identity `geo-backup-reader` (keys `S3_ENDPOINT`,
 `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET`): GetObject (also
 with a version id), ListBucket, ListBucketVersions. It cannot write or delete.
