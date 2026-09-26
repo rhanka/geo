@@ -56,17 +56,34 @@
 // LOGS = verdict only: counts, backup keys, sha256. Never a source key, never a
 // row, never a credential. SDK errors are reported as name/http-status.
 //
+// Manifest status (same model and names as the immo script, rhanka/radar-immobilier#779):
+//   complete    PG + every listed source object backed up (or excluded), inventory written
+//   partial     PG complete; objects still pending — time budget, request deadline
+//               (no answer, retried next run), SIGTERM — or inventory not written;
+//               no error answer. Exit 0 (SIGTERM: 1); `partialReason` says why.
+//   incomplete  PG complete; S3 error answers on the docs copy (objects `failed`
+//               after the SDK retries) or the docs step failed as a whole. Exit 4.
+//
+// S3 DEADLINES (incident 2026-09-26: one CopyObject never answered, the Job died on
+// activeDeadlineSeconds with no manifest, no inventory, no latest.json): every S3
+// call goes through s3send() — a wall-clock deadline per command (SDK retries
+// included), an AbortSignal handed to the SDK AND a race on it. The docs budget
+// aborts the copies in flight (they stay `pending`); SIGTERM stops the copy and the
+// inventory + manifest (partial) + latest.json are still written, each request
+// capped to the termination grace period (README.md "S3 request timeouts, budget
+// and SIGTERM").
+//
 // EXIT CODES (podFailurePolicy in the CronJob maps 2/3/4 to FailJob, no retry):
 //   0 backup recorded: status=complete (purge plan written) OR status=partial
-//     (seed / objects pending or failed: verdict PARTIAL in the manifest, no
-//     purge). `partial` is not a failure; geo-backup-freshness watches it.
+//     (seed / budget / request deadlines: verdict PARTIAL, no purge). `partial` is
+//     not a failure; geo-backup-freshness watches it.
 //   1 retryable failure before the manifest (network, S3 5xx / request deadline,
 //     re-read mismatch), or SIGTERM (partial manifest recorded when the PG part was)
 //   2 integrity/config refusal (bucket guard, versioning off, dump size anomaly,
 //     source listing anomaly, invalid purge plan) — nothing purged
 //   3 purge planning/execution failed AFTER a complete manifest (backup valid)
-//   4 source step failed as a whole (listing / unexpected error) after the PG
-//     part was recorded (manifest status=partial, docs.status=failed)
+//   4 manifest written with status=incomplete (docs copy errors, or the source step
+//     failed as a whole after the PG part was recorded) — next night resumes
 //   5 (freshness) latest backup stale or not complete for too long
 // =============================================================================
 
@@ -82,7 +99,7 @@ const process = require('node:process');
 const console = require('node:console');
 const { Buffer } = require('node:buffer');
 
-const EXIT = Object.freeze({ OK: 0, RETRYABLE: 1, INTEGRITY: 2, PURGE_FAILED: 3, DOCS_FAILED: 4, NOT_FRESH: 5 });
+const EXIT = Object.freeze({ OK: 0, RETRYABLE: 1, INTEGRITY: 2, PURGE_FAILED: 3, DOCS_INCOMPLETE: 4, NOT_FRESH: 5 });
 // Written by mode `backup` (writer) in the shared emptyDir, read by mode `purge`.
 const PURGE_PLAN_FILE = 'purge-plan.json';
 
@@ -467,27 +484,40 @@ function assertBuckets(cfg) {
 }
 
 // ── manifest ─────────────────────────────────────────────────────────────────
-// Why a backup is not complete, in one line (null when complete). Counts and
-// stop reasons only, never a key.
+// Manifest status from the docs outcome (PG is always complete once we get here),
+// as on immo (#779). `complete` needs EVERY listed object backed up or excluded
+// (0 pending, 0 failed, backedUp + excluded = objects) AND the inventory that
+// proves it written (`inventoryWritten` false → partial). Never complete with an
+// object missing. An S3 error answer (`failed`) or a failed docs step → incomplete.
+function docsStatus(counts, docsError, inventoryWritten = true) {
+  if (docsError || !counts || counts.failed > 0) return 'incomplete';
+  const allThere = counts.pending === 0 && counts.backedUp + counts.excluded === counts.objects;
+  if (!allThere || !inventoryWritten) return 'partial';
+  return 'complete';
+}
+const VERDICTS = Object.freeze({ complete: 'OK', partial: 'PARTIAL', incomplete: 'INCOMPLETE' });
+// Why a backup is not complete, in one line (null when complete). Counts and stop
+// reasons only, never a key. A copy past its request deadline stays `pending`
+// (counted in `timedOut`): partial, exit 0, retried next night; `failed` is an S3
+// error answer (incomplete, exit 4). Same text as immo #779.
 function partialReasonOf(docs, budgetSeconds) {
-  if (docs.status === 'complete') return null;
-  if (docs.status === 'failed') return `docs step failed (${docs.error || 'unknown'})`;
+  if (!docs || docs.status === 'complete') return null;
+  if (docs.error) return `docs step failed (${docs.error})`;
   const parts = [];
   if (docs.stopReason === 'terminated') parts.push('terminated (SIGTERM) before the copy finished');
   else if (docs.budgetExhausted) parts.push(`docs copy budget reached (${budgetSeconds} s)`);
-  if (docs.failed) parts.push(`${docs.failed} object(s) failed (${docs.timedOut || 0} timed out)`);
-  if (docs.pending) parts.push(`${docs.pending} object(s) pending`);
+  if (docs.failed) parts.push(`${docs.failed} object(s) failed`);
+  if (docs.pending) parts.push(`${docs.pending} object(s) pending${docs.timedOut ? ` (${docs.timedOut} timed out)` : ''}`);
   if (!docs.inventoryKey) parts.push(`inventory not written (${docs.inventoryError || 'unknown'})`);
   return parts.length ? parts.join('; ') : 'docs not complete';
 }
 function buildManifest({ date, startedAt, completedAt, cfg, pg, schema, code, docs, tool }) {
-  const docsOk = docs.status === 'complete';
   return {
     format: formatId(cfg.expectedDatabase, 'manifest'),
     date,
-    status: docsOk ? 'complete' : 'partial',
-    // PARTIAL is a recorded state (seed, objects pending/failed), not a job failure.
-    verdict: docsOk ? 'OK' : 'PARTIAL',
+    status: docs.status, // complete | partial | incomplete (PG is complete at this point)
+    // PARTIAL is a recorded state (seed, budget, request deadlines), not a job failure.
+    verdict: VERDICTS[docs.status],
     partialReason: partialReasonOf(docs, cfg.docsBudgetSeconds),
     startedAt,
     completedAt,
@@ -841,8 +871,9 @@ async function backupDocs(ctx, date, previousCount) {
   // The budget really cuts: at the deadline (real timer, or the clock seen
   // between two copies) or on SIGTERM (ctx.terminate), `stop` aborts every copy
   // in flight; no worker starts a new one. An interrupted copy stays `pending`
-  // (retried next run); a copy that fails or times out (after the SDK retries)
-  // is `failed` for that object only.
+  // (`interrupted`, retried next run). A copy past its request deadline (after the
+  // SDK retries) stays `pending` too (`timedOut`); an S3 error answer is `failed`
+  // (incomplete, exit 4). Either way the other workers go on.
   const budgetMs = cfg.docsBudgetSeconds * 1000;
   const deadline = ctx.now() + budgetMs;
   const stop = new AbortController();
@@ -868,11 +899,14 @@ async function backupDocs(ctx, date, previousCount) {
           interrupted += 1;
           continue;
         }
-        failed.add(o.Key);
-        if (isRequestTimeout(e)) timedOut += 1;
+        if (isRequestTimeout(e)) {
+          timedOut += 1; // stays pending: no answer is not an error answer
+        } else {
+          failed.add(o.Key);
+        }
         if (errorsLogged < 5) { errorsLogged += 1; log(`docs copy error ${errName(e)} (object key not logged)`); }
       }
-      const doneCount = copied.size + failed.size;
+      const doneCount = copied.size + failed.size + timedOut;
       if (doneCount % 500 === 0) log(`docs progress ${doneCount}/${plan.todo.length}`);
     }
   };
@@ -883,7 +917,7 @@ async function backupDocs(ctx, date, previousCount) {
     if (ctx.terminate) ctx.terminate.removeEventListener('abort', onTerminate);
   }
   const stopReason = stop.signal.aborted ? stop.signal.reason.stop : null;
-  if (stopReason) log(`docs copy stopped reason=${stopReason} copied=${copied.size} failed=${failed.size} interrupted=${interrupted} not_started=${plan.todo.length - next}`);
+  if (stopReason) log(`docs copy stopped reason=${stopReason} copied=${copied.size} failed=${failed.size} timed_out=${timedOut} interrupted=${interrupted} not_started=${plan.todo.length - next}`);
   const inventory = buildInventory({
     db: cfg.expectedDatabase, date, createdAt: new Date(ctx.now()).toISOString(), sourceBucket: cfg.sourceBucket, backupBucket: cfg.backupBucket,
     excludePrefixes: cfg.excludePrefixes, versionIds, srcObjs, dstIndex, copied, failed,
@@ -1098,9 +1132,10 @@ async function runBackupSteps(ctx) {
 
   // 5) docs. A source listing anomaly is a refusal (exit 2, no manifest, no
   // purge). Any other failure of the whole step still records the PG backup
-  // (status=partial, docs.status=failed, exit 4).
-  // From here on the PG part is recorded: whatever stops the copy (budget,
-  // SIGTERM, timeouts), the inventory, the manifest and latest.json are written.
+  // (status=incomplete, exit 4). Pending objects left by the budget, a request
+  // deadline or SIGTERM = partial, resumed next run. From here on the PG part is
+  // recorded: whatever stops the copy, the inventory, the manifest and
+  // latest.json are written.
   let docs;
   let d = null;
   try {
@@ -1108,24 +1143,25 @@ async function runBackupSteps(ctx) {
   } catch (e) {
     if (e instanceof BackupError) throw e;
     log(`docs step failed ${errName(e)}`);
-    docs = { status: 'failed', sourceBucket: cfg.sourceBucket, backupPrefix: LAYOUT.docsPrefix, error: errName(e), inventoryKey: null };
+    docs = { status: docsStatus(null, e), sourceBucket: cfg.sourceBucket, backupPrefix: LAYOUT.docsPrefix, error: errName(e), inventoryKey: null };
   }
   // Final writes: no longer aborted by SIGTERM (only bounded, see s3send).
   ctx.signal = null;
+  const finalStarted = Date.now();
+  let inventoryBytes = 0;
   if (d) {
     let inv = null; let inventoryError = null;
     try {
-      inv = await putBuffer(ctx, keys.inventory, JSON.stringify(d.inventory), 'application/json');
+      const text = JSON.stringify(d.inventory);
+      inventoryBytes = Buffer.byteLength(text);
+      inv = await putBuffer(ctx, keys.inventory, text, 'application/json');
     } catch (e) {
       inventoryError = errName(e);
       log(`docs inventory not written ${inventoryError}`);
     }
     const c = d.inventory.counts;
-    // `complete` only when EVERY listed object is backed up (or excluded) and the
-    // inventory that proves it is written. Never complete with an object missing.
-    const allThere = c.pending === 0 && c.failed === 0 && c.backedUp + c.excluded === c.objects;
     docs = {
-      status: allThere && inv ? 'complete' : 'partial',
+      status: docsStatus(c, null, !!inv),
       sourceBucket: cfg.sourceBucket,
       backupPrefix: LAYOUT.docsPrefix,
       objects: c.objects,
@@ -1190,6 +1226,7 @@ async function runBackupSteps(ctx) {
   const man = await putBuffer(ctx, keys.manifest, JSON.stringify(manifest, null, 2), 'application/json');
   const pointer = buildLatestPointer(manifest, keys.manifest, man.sha256, previous);
   await putBuffer(ctx, LAYOUT.latestKey, JSON.stringify(pointer, null, 2), 'application/json');
+  log(`final writes ms=${Date.now() - finalStarted} inventory.bytes=${inventoryBytes} (inventory + manifest + latest.json; grace ${cfg.terminationGraceSeconds} s)`);
 
   // 7) retention purge PLAN, only after a COMPLETE backup of the day. The writer
   // cannot delete: the `purge` container (identity geo-backup-purger) executes it.
@@ -1207,7 +1244,8 @@ async function runBackupSteps(ctx) {
     } catch (e) { purgeError = e instanceof BackupError ? e.message : errName(e); }
   }
 
-  const verdict = terminated ? 'TERMINATED' : docs.status === 'failed' ? 'DOCS-FAILED' : manifest.status !== 'complete' ? 'PARTIAL' : purgeError ? 'OK-PURGE-PLAN-FAILED' : 'OK';
+  // OK-PURGE-PLAN-FAILED is geo-only: geo plans the purge after the manifest (exit 3).
+  const verdict = terminated ? 'TERMINATED' : manifest.status === 'complete' && purgeError ? 'OK-PURGE-PLAN-FAILED' : VERDICTS[manifest.status];
   const purgeText = manifest.status !== 'complete'
     ? 'purge=skipped(backup not complete)'
     : terminated
@@ -1215,17 +1253,17 @@ async function runBackupSteps(ctx) {
       : purgeError
       ? `purge=failed(${purgeError})`
       : `purge=planned purge.kept_dates=${purge.keptDates} purge.dates=${purge.purgeDates.length}${purge.purgeDates.length ? '[' + purge.purgeDates.join(',') + ']' : ''} purge.keys=${purge.keys.length}`;
+  const na = (v) => (v === undefined ? 'n/a' : v);
   log(`VERDICT ${verdict} date=${date} status=${manifest.status} pg.bytes=${info.size} pg.sha256=${info.sha256} ` +
     `schema.migrations=${schema.migrationsApplied === undefined ? 'unknown' : schema.migrationsApplied} code.sha=${servedSha} ` +
-    `docs.status=${docs.status} docs.objects=${docs.objects === undefined ? 'n/a' : docs.objects} docs.copied=${docs.copied === undefined ? 'n/a' : docs.copied} ` +
-    `docs.pending=${docs.pending === undefined ? 'n/a' : docs.pending} manifest=${keys.manifest} manifest.sha256=${man.sha256} ` +
-    `docs.failed=${docs.failed === undefined ? 'n/a' : docs.failed} docs.timed_out=${docs.timedOut === undefined ? 'n/a' : docs.timedOut} ` +
-    `docs.stop=${docs.stopReason || 'none'} ` +
+    `docs.status=${docs.status} docs.objects=${na(docs.objects)} docs.copied=${na(docs.copied)} ` +
+    `docs.pending=${na(docs.pending)} docs.failed=${na(docs.failed)} docs.timed_out=${na(docs.timedOut)} docs.stop=${docs.stopReason || 'none'} ` +
+    `manifest=${keys.manifest} manifest.sha256=${man.sha256} ` +
     `latest_complete=${(pointer.latestComplete && pointer.latestComplete.date) || 'none'} ${purgeText}` +
     `${manifest.partialReason ? ` reason="${manifest.partialReason}"` : ''}`);
   // SIGTERM: recorded (partial), but the run did not finish → exit 1 (retryable;
   // on activeDeadlineSeconds the Job is failed anyway, with its manifest written).
-  const exitCode = terminated ? EXIT.RETRYABLE : docs.status === 'failed' ? EXIT.DOCS_FAILED : purgeError ? EXIT.PURGE_FAILED : EXIT.OK;
+  const exitCode = terminated ? EXIT.RETRYABLE : manifest.status === 'incomplete' ? EXIT.DOCS_INCOMPLETE : purgeError ? EXIT.PURGE_FAILED : EXIT.OK;
   return { exitCode, manifest, pointer, purge, purgeError };
 }
 
@@ -1240,7 +1278,8 @@ async function main() {
   const log = (m) => console.log(`[${mode}] ${m}`);
   const handler = buildRequestHandler(cfg.timeouts);
   const t = cfg.timeouts;
-  log(`s3 timeouts connect_ms=${t.connectMs} request_ms=${t.requestMs} meta_ms=${t.metaMs} min_bytes_per_sec=${t.minBytesPerSec} handler=${handler.mode}`);
+  log(`s3 timeouts connect_ms=${t.connectMs} request_ms=${t.requestMs} meta_ms=${t.metaMs} min_bytes_per_sec=${t.minBytesPerSec} handler=${handler.mode}` +
+    `${mode === 'backup' ? ` docs_budget_s=${cfg.docsBudgetSeconds} grace_s=${cfg.terminationGraceSeconds}` : ''}`);
   const s3 = new sdk.S3Client({
     ...(handler.requestHandler ? { requestHandler: handler.requestHandler } : {}),
     endpoint: cfg.endpoint,
@@ -1273,7 +1312,7 @@ module.exports = {
   planRetention, parseEnvFile, parseSha256Line, parseMigrationsCopy, resolveMigrationTag, parsePrefixes, withScheme,
   encodeKey, checkDumpSize, checkSourceCount, upToDate, planDocs, formatId, buildInventory, readConfig, readPurgeConfig,
   readFreshnessConfig, assertBuckets, buildManifest, buildLatestPointer, checkFreshness, copySourceObject, runBackup,
-  planPurge, validatePurgePlan, executePurge, runPurge, runFreshness,
+  planPurge, validatePurgePlan, executePurge, runPurge, runFreshness, docsStatus,
   DEFAULT_TIMEOUTS, readTimeouts, requestDeadlineMs, s3send, buildRequestHandler, partialReasonOf, stoppedError,
 };
 
