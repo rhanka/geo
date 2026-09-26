@@ -100,6 +100,10 @@ spec:
             role: pra-backup
         spec:
           restartPolicy: Never
+          # SIGTERM → SIGKILL delay (activeDeadlineSeconds, node drain). On SIGTERM the
+          # `backup` step stops the copy and still writes inventory + manifest (partial)
+          # + latest.json, each request capped to this grace (= TERMINATION_GRACE_SECONDS).
+          terminationGracePeriodSeconds: 120
           automountServiceAccountToken: false
           securityContext:
             runAsNonRoot: true
@@ -215,6 +219,14 @@ spec:
                 # ~71k live objects / ~70 GB to seed: the seed spans several runs
                 # (status=partial, exit 0, verdict PARTIAL) and resumes each night; see README.md.
                 - { name: DOCS_COPY_BUDGET_SECONDS, value: "7200" }
+                # Per-request S3 deadlines (incident 2026-09-26: one CopyObject hung forever).
+                # Budget 7200 s + longest copy deadline + final writes stay well under
+                # activeDeadlineSeconds 10800 (checked by the selftest).
+                - { name: S3_CONNECT_TIMEOUT_MS, value: "10000" }
+                - { name: S3_REQUEST_TIMEOUT_MS, value: "120000" }
+                - { name: S3_META_TIMEOUT_MS, value: "30000" }
+                - { name: S3_MIN_THROUGHPUT_BYTES_PER_SEC, value: "8388608" }
+                - { name: TERMINATION_GRACE_SECONDS, value: "120" }
                 # Frozen 48.94 GB archive (one-time copy, README.md) + rebuildable PMTiles.
                 - { name: DOCS_EXCLUDE_PREFIXES, value: "ops/decommission/20260913/,pmtiles/" }
                 - { name: COPY_MULTIPART_THRESHOLD_BYTES, value: "4294967296" }
