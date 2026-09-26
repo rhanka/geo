@@ -102,8 +102,9 @@ between two identities (geo-cond review).
 | `geo-backup-purger` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` | secrets `GEO_BACKUP_PURGER_ACCESS_KEY`, `GEO_BACKUP_PURGER_SECRET_KEY` | container `purge` of CronJob `geo-backup-daily` | `geo-backup` DeleteObject without VersionId (delete-marker) restricted by ARN to `pg/*`, `manifests/*`, `docs-inventory/*` + ListBucket / GetBucketLocation; no GET, no PUT, no `docs/` |
 | `geo-backup-reader` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` | secrets `GEO_BACKUP_READER_ACCESS_KEY`, `GEO_BACKUP_READER_SECRET_KEY` | CronJob `geo-backup-freshness` + restores (`deploy/ci/backup/RESTORE.md`) | `geo-backup` GetObject (incl. versionId), ListBucket, ListBucketVersions |
 
-Shared keys come from the Environment variables `BACKUP_S3_ENDPOINT` (→ `S3_ENDPOINT`),
-`BACKUP_S3_REGION` (→ `S3_REGION`), `BACKUP_BUCKET` (→ `BACKUP_BUCKET`, `geo-backup`) and
+Shared keys come from the Environment variables `BACKUP_S3_ENDPOINT` (→ `S3_ENDPOINT`,
+exactly `https://s3.bhs.io.cloud.ovh.net`),
+`BACKUP_S3_REGION` (→ `S3_REGION`, exactly `bhs`), `BACKUP_BUCKET` (→ `BACKUP_BUCKET`, `geo-backup`) and
 `BACKUP_SOURCE_BUCKET` (→ writer `SOURCE_BUCKET`, `sentropic-geo`).
 
 **Source of truth: GitHub Environment `geo-prod-bundle` + `.env`. No SealedSecret, nothing
@@ -112,7 +113,7 @@ the same values in its `.env` recovery copy at the documented owner location. Th
 Secrets (ns `geo`, type `Opaque`) are pre-created by the k8s lane; `bascule-bundle-cd.yml` job
 `apply-backup` rewrites them from GitHub at every run (`kubectl replace`: exact key set, no
 `last-applied-configuration` copy of the values). The SA `geo-ci-bascule-prod` holds
-get/patch/update on these three names only — no create, list, watch or delete on Secrets.
+get/update on these three names only (server-side dry-run of the three before any write) — no create, patch, list, watch or delete on Secrets.
 
 **Rotation: every 90 days** (and at once on suspected exposure), one identity at a time:
 
@@ -120,7 +121,7 @@ get/patch/update on these three names only — no create, list, watch or delete 
    `s3Credentials`; the old one stays valid for now).
 2. k8s lane, same moment: set the new values in the vault
    (`gh secret set GEO_BACKUP_<WRITER|PURGER|READER>_ACCESS_KEY --env geo-prod-bundle --repo
-   rhanka/geo`, same for `_SECRET_KEY`; single-line values — the CD refuses a multi-line one)
+   rhanka/geo`, same for `_SECRET_KEY`; single-line values of the expected charset/length — the CD refuses any other)
    **and** in the `.env` recovery copy.
 3. `workflow_dispatch` of `bascule-bundle-cd` (owner approval; no `backup_run_now` needed):
    `apply-backup` rewrites the Secret; its log shows `secret/geo-backup-<id> replaced from
