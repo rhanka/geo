@@ -221,11 +221,20 @@ de la netpol existante), source vide = échec dans le copy-docs, GRANT CONNECT a
 
 | Clé | Type | Usage |
 | --- | --- | --- |
-| `KUBE_CONFIG_DATA_BASCULE_PREPROD` | secret | kubeconfig préprod — SA `geo-ci-bascule-preprod` (pilotage) ; jobs `pg` (Job freshness) et `s3`. |
-| `KUBE_CONFIG_DATA_PROD_TRIGGER` | secret | kubeconfig PROD — SA `geo-ci-trigger-prod` (2 patch cronjob, VAP) ; job `pg` seul. Non requis en DRY. |
-| `KUBE_CONFIG_DATA_PROD` | secret | kubeconfig PROD — SA `geo-ci-bascule-prod` (apply du bundle). |
+| `KUBE_CONFIG_DATA_BASCULE_PREPROD` | secret d'env `geo-bascule` | kubeconfig préprod — SA `geo-ci-bascule-preprod` (pilotage) ; jobs `pg` (Job freshness) et `s3`. |
+| `KUBE_CONFIG_DATA_PROD_TRIGGER` | secret d'env `geo-bascule` | kubeconfig PROD — SA `geo-ci-trigger-prod` (2 patch cronjob, VAP) ; job `pg` seul. Non requis en DRY. |
+| `KUBE_CONFIG_DATA_PROD` | secret d'env `geo-prod-bundle` | kubeconfig PROD — SA `geo-ci-bascule-prod` (apply du bundle, job `apply-bundle`). |
 | `BASCULE_EXPECTED_DATABASE` | var | nom littéral de la DB prod geo (défaut `geo`, fourni par k8s). |
 | `BASCULE_*` (autres) | vars | endpoint, buckets, préfixes, CronJob, ns, URLs API, grantee — NON secrets, défauts dans le workflow. |
+
+**Kubeconfigs = secrets d'ENVIRONMENT, lisibles depuis `main` SEULEMENT.** Les 3 kubeconfigs
+bascule se posent avec `gh secret set <NOM> --repo rhanka/geo --env <coffre>` (`install-cd-bootstrap.sh`
+étapes 2 et 5) : `geo-bascule` ← `KUBE_CONFIG_DATA_BASCULE_PREPROD` + `KUBE_CONFIG_DATA_PROD_TRIGGER`
+(jobs `pg`/`s3`, `environment: geo-bascule`) ; `geo-prod-bundle` ← `KUBE_CONFIG_DATA_PROD` (job
+`apply-bundle`, `environment: geo-prod-bundle`). Coffres SANS reviewer, deployment branch policy = `main`
+seule : les jambes `pg`/`s3` restent autonomes, la gate owner de `bascule-bundle-cd` reste le job
+`approve` (`geo-prod`). Les secrets de DÉPÔT homonymes sont retirés (`gh secret delete <NOM> --repo
+rhanka/geo`) après vérification d'un run vert — ne jamais les re-poser au niveau dépôt.
 
 **In-cluster** : voir `CRED_CYCLE.md` — ns geo : `geo-db-ro-prod`, `geo-pra-writer-prod`,
 `geo-postgis-credentials` (référencé) ; ns geo-preprod : `geo-backups-reader-preprod`,

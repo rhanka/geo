@@ -63,6 +63,10 @@ jobs:
   deploy-preprod:
     needs: approve
     runs-on: ubuntu-latest
+    # COFFRE `geo-preprod-cd` (0 reviewer, branche de déploiement = main SEULE) : porte
+    # KUBE_CONFIG_DATA_PREPROD → lisible UNIQUEMENT depuis main. La gate owner reste sur
+    # `approve` (Environment `geo-preprod`) ; ce coffre n'ajoute aucune approbation.
+    environment: geo-preprod-cd
     # GATE : tourne ssi (a) `approve` a réussi DANS CETTE TENTATIVE, ou (b) 1re tentative d'un
     # run non-dispatch (push), où `approve` est sauté. `!cancelled()` empêche le success()
     # implicite de propager le saut d'`approve` sur ce job.

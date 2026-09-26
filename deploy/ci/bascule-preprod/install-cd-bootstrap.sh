@@ -14,10 +14,19 @@
 # Les NetworkPolicies ne font PAS partie du bundle : netpol-geo-db-backup.k8s-apply.yaml est
 # appliquée par k8s (délégation) AVANT l'étape 4 (sinon le Job RO échoue : ns geo default-deny).
 #
-# 3 kubeconfigs GH dédiés (iso immo) :
-#   KUBE_CONFIG_DATA_PROD             ← SA geo-ci-bascule-prod    (ns geo)         apply du bundle
-#   KUBE_CONFIG_DATA_BASCULE_PREPROD  ← SA geo-ci-bascule-preprod (ns geo-preprod) pilotage du run
-#   KUBE_CONFIG_DATA_PROD_TRIGGER     ← SA geo-ci-trigger-prod    (ns geo)         trigger dump (VAP)
+# 3 kubeconfigs GH dédiés (iso immo), posés en secrets d'ENVIRONMENT (`gh secret set … --env`) :
+#   KUBE_CONFIG_DATA_PROD             ← SA geo-ci-bascule-prod    (ns geo)         apply du bundle    → coffre geo-prod-bundle
+#   KUBE_CONFIG_DATA_BASCULE_PREPROD  ← SA geo-ci-bascule-preprod (ns geo-preprod) pilotage du run    → coffre geo-bascule
+#   KUBE_CONFIG_DATA_PROD_TRIGGER     ← SA geo-ci-trigger-prod    (ns geo)         trigger dump (VAP) → coffre geo-bascule
+#
+# COFFRES « main seul » : les Environments geo-bascule / geo-prod-bundle (et geo-preprod-cd
+#   pour KUBE_CONFIG_DATA_PREPROD, hors bascule) n'ont AUCUN reviewer et une deployment
+#   branch policy = main SEULE → ces kubeconfigs ne sont lisibles QUE par un job lancé depuis
+#   main. Jobs rattachés : bascule-preprod.yml pg + s3 (geo-bascule), bascule-bundle-cd.yml
+#   apply-bundle (geo-prod-bundle). La gate owner de bascule-bundle-cd reste le job `approve`
+#   (Environment geo-prod). Les secrets de DÉPÔT homonymes sont RETIRÉS (après vérification
+#   d'un run vert depuis les coffres) : `gh secret delete <NOM> --repo rhanka/geo` ; ne JAMAIS
+#   re-poser un de ces kubeconfigs au niveau dépôt (il redeviendrait lisible depuis toute branche).
 #
 # Mécanisme token = LEGACY SA token secret (kubernetes.io/service-account-token,
 #   NON-expirant), identique aux déployeurs existants (0 rotation de token).
@@ -29,7 +38,8 @@
 #   bundle mergé sur main, SealedSecrets geo-db-ro-prod-sealed.yaml + geo-pra-writer-prod-sealed.yaml
 #   committées (geo-cond) ; netpol-geo-db-backup.k8s-apply.yaml appliquée (k8s) ;
 #   secrets préprod geo-backups-reader-preprod + geo-normalized-reader-preprod déposés (run).
-# Idempotent : apply / `gh secret set` / `gh variable set` écrasent ; delete = --ignore-not-found.
+# Pré-requis coffres : Environments geo-bascule + geo-prod-bundle créés (0 reviewer, branche = main).
+# Idempotent : apply / `gh secret set --env` / `gh variable set` écrasent ; delete = --ignore-not-found.
 # ─────────────────────────────────────────────────────────────────────────────
 set -euo pipefail
 : "${KUBECONFIG:?export KUBECONFIG=<admin kubeconfig> requis}"
@@ -72,9 +82,9 @@ echo "== 1) apply RBAC des SA dédiées : geo-ci-bascule-prod (ns geo, VAP Clust
 kubectl apply -f "$BUNDLE/rbac-ci-bascule-prod.yaml"
 kubectl apply -f "$BUNDLE/rbac-ci-bascule-preprod.yaml"
 
-echo "== 2) mint legacy tokens -> GH secrets KUBE_CONFIG_DATA_PROD + KUBE_CONFIG_DATA_BASCULE_PREPROD (valeurs non imprimées) =="
-mint_kubeconfig_b64 "$NS" geo-ci-bascule-prod | gh secret set KUBE_CONFIG_DATA_PROD --repo "$REPO"
-mint_kubeconfig_b64 "$NS_PREPROD" geo-ci-bascule-preprod | gh secret set KUBE_CONFIG_DATA_BASCULE_PREPROD --repo "$REPO"
+echo "== 2) mint legacy tokens -> GH env secrets KUBE_CONFIG_DATA_PROD (geo-prod-bundle) + KUBE_CONFIG_DATA_BASCULE_PREPROD (geo-bascule) (valeurs non imprimées) =="
+mint_kubeconfig_b64 "$NS" geo-ci-bascule-prod | gh secret set KUBE_CONFIG_DATA_PROD --repo "$REPO" --env geo-prod-bundle
+mint_kubeconfig_b64 "$NS_PREPROD" geo-ci-bascule-preprod | gh secret set KUBE_CONFIG_DATA_BASCULE_PREPROD --repo "$REPO" --env geo-bascule
 
 echo "== 3) arm apply-au-merge =="
 gh variable set BASCULE_BUNDLE_CD_ENABLED --repo "$REPO" --body true
@@ -88,8 +98,8 @@ RID="$(gh run list --repo "$REPO" --workflow bascule-bundle-cd.yml -L1 --json da
 echo "   run id=$RID"
 gh run watch "$RID" --repo "$REPO" --exit-status   # échoue (set -e) si l'apply/gate échoue
 
-echo "== 5) le bundle a créé la SA trigger : mint legacy token geo-ci-trigger-prod -> KUBE_CONFIG_DATA_PROD_TRIGGER =="
-mint_kubeconfig_b64 "$NS" geo-ci-trigger-prod | gh secret set KUBE_CONFIG_DATA_PROD_TRIGGER --repo "$REPO"
+echo "== 5) le bundle a créé la SA trigger : mint legacy token geo-ci-trigger-prod -> KUBE_CONFIG_DATA_PROD_TRIGGER (env geo-bascule) =="
+mint_kubeconfig_b64 "$NS" geo-ci-trigger-prod | gh secret set KUBE_CONFIG_DATA_PROD_TRIGGER --repo "$REPO" --env geo-bascule
 
 echo "== 6) arm run planifié (03:17 UTC) =="
 gh variable set BASCULE_SCHEDULE_ENABLED --repo "$REPO" --body true
