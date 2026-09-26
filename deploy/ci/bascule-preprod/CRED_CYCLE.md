@@ -170,15 +170,77 @@ only (`rbac-ci-bascule-preprod.yaml`) — no create, patch, list, watch or delet
 **Rotation: every 90 days** (and at once on suspected exposure):
 
 1. k8s lane: new `s3Credentials` for OVH user 809855 (the old one stays valid for now).
-2. k8s lane: `gh secret set GEO_BACKUP_READER_PREPROD_ACCESS_KEY --env geo-bascule --repo
-   rhanka/geo` (same for `_SECRET_KEY`) and update the `.env` recovery copy.
+2. Update locations 1 to 3 by hand (section "Where every geo backup key lives" below): the
+   GitHub secrets `GEO_BACKUP_READER_PREPROD_ACCESS_KEY` / `_SECRET_KEY` (`gh secret set …
+   --env geo-bascule --repo rhanka/geo`), the central `.env`, the geo `.env`.
 3. `workflow_dispatch` of `bascule-preprod.yml` with `MODE=list`: the step "Write backup
-   reader Secret from GitHub" is green and the backup list is printed (proves the new key).
+   reader Secret from GitHub" rewrites the k8s Secret and is green, and the backup list is
+   printed (proves the new key).
 4. Only then: k8s lane deletes the old credential; record the date (next = +90 days).
 
 Verify recovery at any time: `kubectl -n geo-preprod get secret geo-backup-reader-preprod`
 (3 keys); last `MODE=list` run green.
 
-The S3' copy signer (`BACKUP_DOCS_COPY_SECRET`, default `geo-backup-restore-docs`: GetObject
-on `geo-backup/docs/normalized/*` + PutObject/PutObjectAcl on `sentropic-geo-preprod`, no
-delete) is NOT provisioned yet — see `README.md` "Restore depuis un backup".
+## Preprod restore-from-backup copy signer (bascule `MODE=restore`, S3')
+
+Dedicated preprod identity, created and tested by the k8s lane (2026-09-26, 6/6: GET
+`docs/normalized/*` with versionId 200; `pg/` 403; PUT on the backup 403; DELETE on preprod
+403; versioned CopyObject with `x-amz-grant-full-control` 200).
+
+| secret (k8s name) | OVH user | keys | GitHub source (Environment `geo-bascule`, main-only) | consumer | rights |
+| --- | --- | --- | --- | --- | --- |
+| `geo-backup-restore-docs` (ns `geo-preprod`, pre-created Opaque, no ownerReference) | `geo-backup-restore-preprod` (809950) | `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` (= `geo-backup`) | secrets `GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY`, `GEO_BACKUP_RESTORE_DOCS_SECRET_KEY` | `bascule-preprod.yml` job `restore` (Job `geo-docs-restore-backup`: signer of the server-side copy `geo-backup/docs/normalized/X` → `sentropic-geo-preprod/normalized/X`) | `geo-backup`: GetObject (incl. versionId) on `docs/normalized/*`, nothing else; `sentropic-geo-preprod`: PutObject + PutObjectAcl, no delete |
+
+Written by the bascule exactly like the reader (step "Write backup Secrets from GitHub",
+same #405 guards, server-side dry-run of both Secrets before the first write). SA
+`geo-ci-bascule-preprod`: secrets get/update on `geo-backup-reader-preprod` and
+`geo-backup-restore-docs` only. The copied objects carry `GrantFullControl
+id=${BASCULE_DOCS_SYNC_GRANTEE}` (same variable and default as docs-sync).
+
+**Rotation: every 90 days** (and at once on suspected exposure):
+
+1. k8s lane: new `s3Credentials` for OVH user 809950 (the old one stays valid for now).
+2. Update locations 1 to 3 by hand (section below): the GitHub secrets
+   `GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY` / `_SECRET_KEY` (`gh secret set … --env geo-bascule
+   --repo rhanka/geo`), the central `.env`, the geo `.env`.
+3. `workflow_dispatch` of `bascule-preprod.yml` with `MODE=restore` and `DRY_RUN=true`: the
+   step "Write backup Secrets from GitHub" rewrites the k8s Secret and the S3' plan is green
+   (proves the new key).
+4. Only then: k8s lane deletes the old credential; record the date (next = +90 days).
+
+Verify recovery at any time: `kubectl -n geo-preprod get secret geo-backup-restore-docs`
+(3 keys); last `MODE=restore` run (or DRY) green.
+
+## Where every geo backup key lives (4 locations) and how to rotate it
+
+Each key lives in **four places**; the `.env` variable names are the GitHub secret names:
+
+1. the GitHub Environment secret (`geo-prod-bundle` for the prod identities, `geo-bascule`
+   for the preprod ones);
+2. the central `.env` `/home/antoinefa/src/sentropic/.env` — source of the mint scripts,
+   referenced by the k8s-ops registry;
+3. the tenant `.env` `/home/antoinefa/src/geo/.env` (recovery copy; perms 600, ignored by git);
+4. the k8s Secret (ns `geo` or `geo-preprod`), rewritten from (1) by the CD
+   (`bascule-bundle-cd.yml` `apply-backup`) or by the bascule (`bascule-preprod.yml`
+   `MODE=list|restore`) — never edited by hand.
+
+| identity (OVH user) | OVH user id | (1) GitHub secrets — Environment | (4) k8s Secret — ns | rewritten by | rotation due |
+| --- | --- | --- | --- | --- | --- |
+| `geo-backup-writer` | à compléter (registre k8s) | `GEO_BACKUP_WRITER_ACCESS_KEY`, `GEO_BACKUP_WRITER_SECRET_KEY` — `geo-prod-bundle` | `geo-backup-writer` — `geo` | CD `apply-backup` | before 2026-12-25 |
+| `geo-backup-reader` | à compléter (registre k8s) | `GEO_BACKUP_READER_ACCESS_KEY`, `GEO_BACKUP_READER_SECRET_KEY` — `geo-prod-bundle` | `geo-backup-reader` — `geo` | CD `apply-backup` | before 2026-12-25 |
+| `geo-backup-purger` | à compléter (registre k8s) | `GEO_BACKUP_PURGER_ACCESS_KEY`, `GEO_BACKUP_PURGER_SECRET_KEY` — `geo-prod-bundle` | `geo-backup-purger` — `geo` | CD `apply-backup` | before 2026-12-25 |
+| `geo-backup-reader-preprod` | 809855 | `GEO_BACKUP_READER_PREPROD_ACCESS_KEY`, `GEO_BACKUP_READER_PREPROD_SECRET_KEY` — `geo-bascule` | `geo-backup-reader-preprod` — `geo-preprod` | bascule `MODE=list|restore` | before 2026-12-25 |
+| `geo-backup-restore-preprod` | 809950 | `GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY`, `GEO_BACKUP_RESTORE_DOCS_SECRET_KEY` — `geo-bascule` | `geo-backup-restore-docs` — `geo-preprod` | bascule `MODE=restore` | before 2026-12-25 |
+
+(2) and (3) hold the same variable names for every row.
+
+**Rotation procedure** (every 90 days, and at once on suspected exposure; one identity at a
+time; the k8s lane first mints a new `s3Credential` for the OVH user, the old one staying
+valid):
+
+- mettre à jour 1 à 3 à la main ;
+- le CD ou la bascule propage vers 4 ;
+- vérifier le backup ou le restore suivant ;
+- seulement alors, supprimer l'ancienne s3Credential OVH.
+
+(The per-identity steps above give the exact run that propagates to (4) and the check.)

@@ -39,8 +39,9 @@ const STATUS_RE = /^[a-z0-9._-]{1,32}$/i;
 export const RE_ACCESS_KEY = /^[A-Za-z0-9]{16,128}$/;
 export const RE_SECRET_KEY = /^[A-Za-z0-9/+=]{16,128}$/;
 export const PINNED_S3_ENDPOINT = "https://s3.bhs.io.cloud.ovh.net";
-// Secret lecteur pré-créé : clés EXACTES (k8s).
-export const READER_SECRET_KEYS = Object.freeze(["BACKUP_BUCKET", "S3_ACCESS_KEY", "S3_SECRET_KEY"]);
+// Secrets pré-créés (lecteur + signataire S3') : clés EXACTES (k8s).
+export const BACKUP_SECRET_KEYS = Object.freeze(["BACKUP_BUCKET", "S3_ACCESS_KEY", "S3_SECRET_KEY"]);
+export const READER_SECRET_KEYS = BACKUP_SECRET_KEYS;
 
 export const JOBS = Object.freeze({
   resolve: "geo-bascule-backup-resolve",
@@ -157,8 +158,20 @@ export function formatBackupTable(listing) {
   };
 }
 
-// Valeurs du Secret lecteur (gardes #405) ; l'erreur nomme la variable, jamais la valeur.
-export function readerSecretValues(env) {
+// Secrets pré-créés que la bascule réécrit depuis l'environment geo-bascule :
+// spec → secrets GitHub (préfixe) + variable de nom + nom par défaut + MODE où il sert.
+export const BACKUP_SECRET_SPECS = Object.freeze({
+  reader: Object.freeze({ ghPrefix: "GEO_BACKUP_READER_PREPROD", nameEnv: "BACKUP_READER_SECRET", defaultName: "geo-backup-reader-preprod", modes: Object.freeze(["list", "restore"]) }),
+  "restore-docs": Object.freeze({ ghPrefix: "GEO_BACKUP_RESTORE_DOCS", nameEnv: "BACKUP_DOCS_COPY_SECRET", defaultName: "geo-backup-restore-docs", modes: Object.freeze(["restore"]) }),
+});
+export function specsForMode(mode) {
+  return Object.entries(BACKUP_SECRET_SPECS).filter(([, s]) => s.modes.includes(mode)).map(([id]) => id);
+}
+
+// Valeurs d'un Secret (gardes #405) ; l'erreur nomme la variable, jamais la valeur.
+export function backupSecretValues(env, spec = "reader") {
+  const s = BACKUP_SECRET_SPECS[spec];
+  if (!s) throw new Error(`spec de Secret inconnue : ${spec}`);
   const bad = [];
   const one = (name, re) => {
     const v = String(env[name] ?? "");
@@ -167,8 +180,8 @@ export function readerSecretValues(env) {
     if (!re.test(v)) { bad.push(`${name}(format ${re})`); return null; }
     return v;
   };
-  const ak = one("GEO_BACKUP_READER_PREPROD_ACCESS_KEY", RE_ACCESS_KEY);
-  const sk = one("GEO_BACKUP_READER_PREPROD_SECRET_KEY", RE_SECRET_KEY);
+  const ak = one(`${s.ghPrefix}_ACCESS_KEY`, RE_ACCESS_KEY);
+  const sk = one(`${s.ghPrefix}_SECRET_KEY`, RE_SECRET_KEY);
   const bucket = String(env.BACKUP_BUCKET ?? "").trim() || "geo-backup";
   if (!BUCKET_RE.test(bucket)) bad.push("BACKUP_BUCKET(format)");
   const endpoint = String(env.S3_ENDPOINT_RENDERED ?? "");
@@ -176,6 +189,7 @@ export function readerSecretValues(env) {
   if (bad.length) throw new Error(`secrets/variables GitHub manquants ou invalides (environment geo-bascule) :${bad.map((b) => ` ${b}`).join("")} — rien n'a été écrit`);
   return { S3_ACCESS_KEY: ak, S3_SECRET_KEY: sk, BACKUP_BUCKET: bucket };
 }
+export const readerSecretValues = (env) => backupSecretValues(env, "reader");
 export function buildSecretManifest({ name, namespace, values, labels = {} }) {
   if (!K8S_NAME_RE.test(String(name)) || !K8S_NAME_RE.test(String(namespace))) throw new Error("nom de Secret ou namespace invalide");
   return {
@@ -272,31 +286,47 @@ export function makeRestoreMode(h) {
     log("S0 preflight OK");
   }
 
-  // Réécrit le Secret lecteur pré-créé depuis l'environment geo-bascule (gardes #405).
+  // Réécrit les Secrets pré-créés du MODE depuis l'environment geo-bascule (gardes #405) :
+  // list → lecteur ; restore → lecteur + signataire S3' geo-backup-restore-docs. Tous les
+  // contrôles et le dry-run serveur de CHAQUE Secret passent avant la première écriture
+  // (pas d'écriture partielle).
   function cmdBackupSecretFill() {
-    section("Write backup reader Secret from GitHub (environment geo-bascule)");
+    const m = mode();
+    if (m === "chain") die("backup-secret-fill sert MODE=restore|list.");
+    const specs = specsForMode(m);
+    section(`Write backup Secrets from GitHub (environment geo-bascule) : ${specs.join(", ")}`);
     const p = params();
     const ns = p.jd.NAMESPACE;
-    let values;
-    try { values = readerSecretValues({ ...process.env, BACKUP_BUCKET: p.bucket, S3_ENDPOINT_RENDERED: p.jd.S3_ENDPOINT }); } catch (e) { die(e.message); }
-    const exists = run("kubectl", ["-n", ns, "get", "secret", p.readerSecret, "-o", "name"], { capture: true, allowFail: true });
-    if (exists.status !== 0) die(`Secret ${ns}/${p.readerSecret} absent ou illisible : pré-création par k8s + get/update par nom pour geo-ci-bascule-preprod. Rien n'a été écrit.`);
-    const dir = mkdtempSync(join(tmpdir(), "geo-backup-reader-"));
+    const names = { reader: p.readerSecret, "restore-docs": p.copySecret };
+    const values = {};
+    for (const spec of specs) {
+      try { values[spec] = backupSecretValues({ ...process.env, BACKUP_BUCKET: p.bucket, S3_ENDPOINT_RENDERED: p.jd.S3_ENDPOINT }, spec); } catch (e) { die(`${spec} — ${e.message}`); }
+      const exists = run("kubectl", ["-n", ns, "get", "secret", names[spec], "-o", "name"], { capture: true, allowFail: true });
+      if (exists.status !== 0) die(`Secret ${ns}/${names[spec]} absent ou illisible : pré-création par k8s + get/update par nom pour geo-ci-bascule-preprod. Rien n'a été écrit.`);
+    }
+    const dir = mkdtempSync(join(tmpdir(), "geo-backup-secrets-"));
     chmodSync(dir, 0o700);
-    const file = join(dir, "secret.json");
-    writeFileSync(file, JSON.stringify(buildSecretManifest({ name: p.readerSecret, namespace: ns, values,
-      labels: { "app.kubernetes.io/part-of": "geo", "app.kubernetes.io/component": "backup-reader-preprod" } })), { mode: 0o600 });
+    const want = BACKUP_SECRET_KEYS.join(" ");
     try {
-      const want = READER_SECRET_KEYS.join(" ");
+      const files = {};
+      for (const spec of specs) {
+        files[spec] = join(dir, `${spec}.json`);
+        writeFileSync(files[spec], JSON.stringify(buildSecretManifest({ name: names[spec], namespace: ns, values: values[spec],
+          labels: { "app.kubernetes.io/part-of": "geo", "app.kubernetes.io/component": `backup-${spec}-preprod` } })), { mode: 0o600 });
+      }
       for (const pass of [["--dry-run=server"], []]) {
-        const r = run("kubectl", ["-n", ns, "replace", ...pass, "-f", file, "-o", "json"], { capture: true, allowFail: true });
-        const got = r.status === 0 ? keysOfReplaced(r.stdout) : "";
-        if (r.status !== 0 || got !== want) die(`${p.readerSecret} refusé${pass.length ? " par le dry-run serveur" : ""} : clés '${got}' (attendu '${want}').`);
+        for (const spec of specs) {
+          const r = run("kubectl", ["-n", ns, "replace", ...pass, "-f", files[spec], "-o", "json"], { capture: true, allowFail: true });
+          const got = r.status === 0 ? keysOfReplaced(r.stdout) : "";
+          if (r.status !== 0 || got !== want) {
+            die(`${names[spec]} refusé${pass.length ? " par le dry-run serveur (rien n'a été écrit)" : ""} : clés '${got}' (attendu '${want}').`);
+          }
+        }
       }
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
-    log(`secret/${p.readerSecret} réécrit depuis GitHub — clés : ${READER_SECRET_KEYS.join(" ")} (valeurs jamais affichées)`);
+    for (const spec of specs) log(`secret/${names[spec]} réécrit depuis GitHub — clés : ${want} (valeurs jamais affichées)`);
   }
 
   function cmdBackupResolve() {

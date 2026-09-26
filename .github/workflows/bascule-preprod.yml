@@ -550,6 +550,8 @@ jobs:
       PROD_DOCS: ${{ vars.BASCULE_PROD_DOCS_BUCKET || 'sentropic-geo' }}
       PREPROD_DOCS: ${{ vars.BASCULE_PREPROD_DOCS_BUCKET || 'sentropic-geo-preprod' }}
       DOCS_SYNC_PREFIX: ${{ vars.BASCULE_DOCS_SYNC_PREFIX || 'normalized/' }}
+      # GrantFullControl des objets copiés (S3') : MÊME variable et MÊME défaut que le
+      # docs-sync du job s3 — canonical id OVH owner/serving de sentropic-geo-preprod.
       DOCS_SYNC_GRANTEE: ${{ vars.BASCULE_DOCS_SYNC_GRANTEE || '1901410700457444:9056dbb240a04d2584ffbaec38171228' }}
       PREPROD_NAMESPACE: ${{ vars.BASCULE_PREPROD_NAMESPACE || 'geo-preprod' }}
       PREPROD_API_URL: ${{ vars.BASCULE_PREPROD_API_URL || 'https://api.preprod.geo.sent-tech.ca' }}
@@ -606,10 +608,15 @@ jobs:
       - name: S0 preflight (MODE=restore)
         run: node "$CLI" preflight-backup
 
-      - name: Write backup reader Secret from GitHub (geo-backup-reader-preprod)
+      # Lecteur geo-backup-reader-preprod + signataire S3' DÉDIÉ geo-backup-restore-docs
+      # (Secrets pré-créés par k8s), mêmes gardes #405 ; dry-run serveur des DEUX avant
+      # la première écriture.
+      - name: Write backup Secrets from GitHub (geo-backup-reader-preprod + geo-backup-restore-docs)
         env:
           GEO_BACKUP_READER_PREPROD_ACCESS_KEY: ${{ secrets.GEO_BACKUP_READER_PREPROD_ACCESS_KEY }}
           GEO_BACKUP_READER_PREPROD_SECRET_KEY: ${{ secrets.GEO_BACKUP_READER_PREPROD_SECRET_KEY }}
+          GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY: ${{ secrets.GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY }}
+          GEO_BACKUP_RESTORE_DOCS_SECRET_KEY: ${{ secrets.GEO_BACKUP_RESTORE_DOCS_SECRET_KEY }}
         run: node "$CLI" backup-secret-fill
 
       # Lecture seule, AVANT toute mutation : un backup refusé ne touche jamais la préprod.
