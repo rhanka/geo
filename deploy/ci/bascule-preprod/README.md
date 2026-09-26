@@ -9,7 +9,7 @@ buckets/préfixes, namespaces, runners geo, et le sous-ensemble d'étapes arbitr
 > est appliqué par le CD `bascule-bundle-cd.yml` (SA permanente `geo-ci-bascule-prod`) — 1er run
 > dispatché par k8s après merge (`install-cd-bootstrap.sh`), puis au merge. Les **netpols ne font pas
 > partie du bundle** (`netpol-geo-db-backup.k8s-apply.yaml`, appliquée par k8s). La bascule tourne en
-> planification nocturne (`bascule-preprod.yml`, armée par `BASCULE_SCHEDULE_ENABLED`) ou en
+> planification hebdomadaire, dimanche 03:17 UTC (`bascule-preprod.yml`, armée par `BASCULE_SCHEDULE_ENABLED`) ou en
 > `workflow_dispatch` (CONFIRM). Voir `CD_NATIVE_MIGRATION.md` et `CRED_CYCLE.md`.
 
 ## Deux jambes indépendantes, en parallèle (directive i-cond, validée owner)

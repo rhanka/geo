@@ -34,11 +34,12 @@
 name: bascule-preprod (iso-prod)
 
 on:
-  # Planification nocturne (cadence figée ici) ; ARMEMENT = variable de dépôt
-  # BASCULE_SCHEDULE_ENABLED (OFF par défaut) → une fusion ne déclenche jamais une
-  # bascule avant que l'env soit prêt.
+  # Planification HEBDOMADAIRE : dimanche 03:17 UTC (décision owner 2026-09-26 ; auparavant
+  # quotidienne ; cadence figée ici, GitHub refuse une variable dans le littéral cron) ;
+  # ARMEMENT = variable de dépôt BASCULE_SCHEDULE_ENABLED (OFF par défaut) → une fusion ne
+  # déclenche jamais une bascule avant que l'env soit prêt.
   schedule:
-    - cron: '17 3 * * *'
+    - cron: '17 3 * * 0'
   workflow_dispatch:
     inputs:
       CONFIRM:

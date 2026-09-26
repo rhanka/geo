@@ -24,6 +24,7 @@ import path from 'node:path';
 import { Readable } from 'node:stream';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 
 const require = createRequire(import.meta.url);
 const lib = require('./backup-daily.cjs');
@@ -968,17 +969,49 @@ const secretRun = runBodies(secretStep).join('\n');
   for (const t of [cj, fcj]) for (const x of t.matchAll(/secretKeyRef: \{ name: geo-backup-([a-z]+), key: ([A-Z_0-9]+) \}/g)) (mounted[x[1]] ||= new Set()).add(x[2]);
   eq('CD secret step keys = keys mounted by the CronJobs, per identity', IDS.map((id) => keysOf(id)), IDS.map((id) => [...(mounted[id] || [])].sort()));
   const iGuard = secretRun.indexOf('(missing)'); const iBucket = secretRun.indexOf('EXPECTED_BACKUP_BUCKET');
-  const iGet = secretRun.indexOf('get secret'); const iReplace = secretRun.indexOf(' replace -f -');
-  ok('CD secret step: fail-closed order — values guard, bucket guard, Secrets exist, then replace',
-    iGuard > 0 && iGuard < iBucket && iBucket < iGet && iGet < iReplace && secretRun.indexOf('kubectl') > iGuard &&
+  const iGet = secretRun.indexOf('get secret'); const iDry = secretRun.indexOf(' replace --dry-run=server -f ');
+  const iDryOk = secretRun.indexOf('server-side dry-run OK for the 3 Secrets'); const iReplace = secretRun.indexOf(' replace -f "$tmp/');
+  ok('CD secret step: fail-closed order — values guard, bucket guard, Secrets exist, dry-run of the 3, then the real replace',
+    iGuard > 0 && iGuard < iBucket && iBucket < iGet && iGet < iDry && iDry < iDryOk && iDryOk < iReplace && secretRun.indexOf('kubectl') > iGuard &&
     secretRun.includes('EXPECTED_SOURCE_BUCKET') && /multi-line/.test(secretRun));
   const kubectlCalls = [...active(secretRun).matchAll(/\bkubectl\s+(?:-n\s+"\$NAMESPACE"\s+)?([a-z-]+)([^\n]*)/g)].map((x) => [x[1], x[2]]);
   eq('CD secret step: kubectl verbs = get, create (client-side), label (local), replace — never apply/patch/delete',
     [...new Set(kubectlCalls.map((c) => c[0]))].sort(), ['create', 'get', 'label', 'replace']);
-  ok('CD secret step: create is client-side only (--dry-run=client), label is --local, replace reads stdin',
-    kubectlCalls.every(([v, rest]) => (v !== 'create' || /--dry-run=client/.test(rest)) && (v !== 'label' || /--local/.test(rest)) &&
-      (v !== 'replace' || /^ -f - /.test(rest))) &&
+  const replaces = kubectlCalls.filter(([v]) => v === 'replace').map(([, rest]) => rest.trim());
+  eq('CD secret step: exactly 2 replace calls — server-side dry-run, then the real PUT — of the rendered manifests',
+    replaces, ['--dry-run=server -f "$tmp/${id}.yaml" -o json | keys_json)" || [ "$live" != "$(want_of "$id")" ]; then', '-f "$tmp/${id}.yaml" -o json | keys_json)" || [ "$live" != "$(want_of "$id")" ]; then']);
+  ok('CD secret step: create is client-side only (--dry-run=client), label is --local',
+    kubectlCalls.every(([v, rest]) => (v !== 'create' || /--dry-run=client/.test(rest)) && (v !== 'label' || /--local/.test(rest))) &&
     /create secret generic "geo-backup-\$\{id\}" --type=Opaque "\$\{args\[@\]\}" --dry-run=client -o yaml/.test(secretRun));
+  ok('CD secret step: S3 target pinned + credential charset/length', /PINNED_S3_ENDPOINT="https:\/\/s3\.bhs\.io\.cloud\.ovh\.net"/.test(secretRun) &&
+    /PINNED_S3_REGION="bhs"/.test(secretRun) && secretRun.includes("RE_ACCESS_KEY='^[A-Za-z0-9]{16,128}$'") && secretRun.includes("RE_SECRET_KEY='^[A-Za-z0-9/+=]{16,128}$'"));
+  const guardEnd = secretRun.indexOf('# 3. The three Secrets exist');
+  // kubectl is a function that aborts (97): the guard must decide before any cluster call.
+  const guardScript = guardEnd > 0 ? `kubectl() { echo KUBECTL-CALLED; exit 97; }\n${secretRun.slice(0, guardEnd)}\necho GUARD-PASSED\n` : 'exit 99';
+  const fakeVals = Object.fromEntries(GH_SECRETS.map((n, i) => [n, n.endsWith('_ACCESS_KEY') ? `AKFAKE${i}0123456789abcdef` : `SKFAKE${i}/+=0123456789abcdef`]));
+  const goodEnv = { NAMESPACE: 'geo', BACKUP_DIR: 'deploy/ci/backup', ...fakeVals, BACKUP_S3_ENDPOINT: 'https://s3.bhs.io.cloud.ovh.net', BACKUP_S3_REGION: 'bhs',
+    BACKUP_BUCKET: BK, BACKUP_SOURCE_BUCKET: SRC };
+  const guard = (over) => {
+    const r = spawnSync('bash', ['-e', '-c', guardScript], { cwd: ROOT, encoding: 'utf8', env: { PATH: '/usr/bin:/bin', ...goodEnv, ...over } });
+    const out = `${r.stdout || ''}${r.stderr || ''}`;
+    return { passed: r.status === 0 && out.includes('GUARD-PASSED'), refused: r.status === 1 && out.includes('Nothing was applied') && !out.includes('GUARD-PASSED'),
+      leak: Object.values(fakeVals).some((v) => out.includes(v)) };
+  };
+  const good = guard({});
+  ok('CD secret step guard (bash): valid GitHub values pass, nothing echoed', good.passed && !good.leak);
+  const W = 'GEO_BACKUP_WRITER', R = 'GEO_BACKUP_READER', U = 'GEO_BACKUP_PURGER';
+  for (const [name, over] of [
+    ['missing secret', { [`${U}_SECRET_KEY`]: '' }], ['missing variable', { BACKUP_S3_REGION: '' }],
+    ['multi-line secret', { [`${R}_ACCESS_KEY`]: 'AKFAKE0123456789abcd\n' }], ['CR in a value', { [`${W}_SECRET_KEY`]: 'SKFAKE0123456789abcd\r' }],
+    ['access key charset', { [`${W}_ACCESS_KEY`]: 'AKFAKE-0123456789abc' }], ['access key too short', { [`${R}_ACCESS_KEY`]: 'AKFAKE012345678' }],
+    ['access key too long', { [`${U}_ACCESS_KEY`]: `AKFAKE${'a'.repeat(123)}` }], ['secret key charset (quote)', { [`${W}_SECRET_KEY`]: 'SKFAKE"0123456789abc' }],
+    ['secret key charset (space)', { [`${U}_SECRET_KEY`]: 'SKFAKE 0123456789abc' }], ['endpoint not pinned (no scheme)', { BACKUP_S3_ENDPOINT: 's3.bhs.io.cloud.ovh.net' }],
+    ['endpoint not pinned (other region)', { BACKUP_S3_ENDPOINT: 'https://s3.gra.io.cloud.ovh.net' }], ['region not pinned', { BACKUP_S3_REGION: 'gra' }],
+    ['backup bucket mismatch', { BACKUP_BUCKET: 'other-bucket' }], ['source bucket mismatch', { BACKUP_SOURCE_BUCKET: 'other-source' }],
+  ]) {
+    const g = guard(over);
+    ok(`CD secret step guard (bash): ${name} → refused before any kubectl, no value echoed`, g.refused && !g.leak);
+  }
   ok('CD secret step: values from 0600 files of a temp dir removed on exit', /umask 077/.test(secretRun) && /mktemp -d/.test(secretRun) &&
     /trap 'rm -rf "\$tmp"' EXIT/.test(secretRun) && /--from-file=\$\{k\}=/.test(secretRun));
   ok('CD secret step: Secrets labelled app.kubernetes.io/component=db-backup', /app\.kubernetes\.io\/component=db-backup/.test(secretRun));
@@ -998,9 +1031,9 @@ const secretRun = runBodies(secretStep).join('\n');
     names: list((/\n {4}resourceNames: \[([^\]]*)\]/.exec(r) || [])[1]),
   }));
   const secretRules = rules.filter((r) => r.groups.includes('') && r.resources.some((x) => x === 'secrets' || x === '*'));
-  eq('CD Role: core secrets = ONE rule, get/patch/update on the 3 backup names only (no create/list/watch/delete)',
+  eq('CD Role: core secrets = ONE rule, get/update on the 3 backup names only (no create/patch/list/watch/delete)',
     secretRules.map((r) => [r.resources, [...r.verbs].sort(), [...r.names].sort()]),
-    [[['secrets'], ['get', 'patch', 'update'], ['geo-backup-purger', 'geo-backup-reader', 'geo-backup-writer']]]);
+    [[['secrets'], ['get', 'update'], ['geo-backup-purger', 'geo-backup-reader', 'geo-backup-writer']]]);
   ok('CD Role: no wildcard verb or resource', rules.every((r) => !r.verbs.includes('*') && !r.resources.includes('*')));
   eq('CD Role: sealedsecrets name-scoped to the 2 bundle SealedSecrets only (no backup name)',
     rules.filter((r) => r.resources.includes('sealedsecrets') && r.names.length).map((r) => r.names), [['geo-db-ro-prod', 'geo-pra-writer-prod']]);
