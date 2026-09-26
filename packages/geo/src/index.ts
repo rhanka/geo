@@ -34,6 +34,7 @@ export * from "./acquire/index.js";
 export * from "./storage/index.js";
 export {
   assignLotZones,
+  canonicalizeNoLotForJoin,
   canonicalizeZoneCodeForJoin,
   enrichWithNorms,
   normalizeZoneCode,
@@ -46,6 +47,13 @@ export {
   type PolygonalFeature,
   type PolygonalGeometry,
 } from "./zonage/lotZoneJoin.js";
+export {
+  buildServedCanonicalIds,
+  serializeServedCanonicalIds,
+  type ServedCanonicalIdsInput,
+  type ServedLotRef,
+  type ServedZoneRef,
+} from "./bascule/served-canonical-ids.js";
 export {
   parseChamplainDensityDocument,
   parseChestervilleDensityDocument,
