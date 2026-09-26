@@ -44,7 +44,8 @@
 # group: a backup apply problem never blocks the bascule bundle or its anti-RCE gate, and vice
 # versa). It writes the core Secrets geo-backup-writer/-reader/-purger from the secrets and
 # variables of the Environment geo-prod-bundle — NO SealedSecret, nothing committed: the three
-# Secrets are pre-created by the k8s lane and replaced by name (get/patch/update, no create) —,
+# Secrets are pre-created by the k8s lane and replaced by name (get/update, no create), after a
+# server-side dry-run of the 3 —,
 # then applies the ConfigMap geo-backup-daily-script (rendered from
 # deploy/ci/backup/backup-daily.cjs) and the CronJobs geo-backup-daily + geo-backup-freshness.
 # Runner contract: kubectl only, 0 backup content read; the three S3 credentials transit the
@@ -353,18 +354,21 @@ jobs:
       # Source of truth = the secrets/variables of the Environment geo-prod-bundle + the `.env`
       # recovery copy of the k8s lane (deploy/ci/bascule-preprod/CRED_CYCLE.md). Nothing about
       # these credentials is committed, sealed or not.
-      # The three Secrets are PRE-CREATED by the k8s lane: this SA holds
-      # get/patch/update on exactly these three names and NO create/list/watch/
-      # delete — a missing Secret is a hard error here, never a create.
-      # Method: `kubectl replace` (GET + PUT = get + update) of an object rendered
+      # The three Secrets are PRE-CREATED by the k8s lane: this SA holds get/update
+      # on exactly these three names and NO create/patch/list/watch/delete — a
+      # missing Secret is a hard error here, never a create.
+      # Method: `kubectl replace` (GET + PUT = get + update) of objects rendered
       # client-side (`kubectl create secret generic --dry-run=client`, each value read
       # from a file in a 0700 temp dir: never in argv, never echoed). The PUT makes
       # the live data EXACTLY the key set below (a stale extra key is dropped),
       # writes no last-applied annotation (a client-side `kubectl apply` would copy
       # the credentials into it) and clears any former ownerReference.
+      # No partial write: a server-side dry-run of the 3 PUTs (RBAC, admission,
+      # immutable fields, key set) must pass for all 3 before the first real PUT.
       # Values reach the script through `env:` only (never a `${{ }}` inside `run:`);
       # GitHub masks the secrets; no `set -x`; logs carry names and key names only.
-      # Fail-closed: every check (10 GitHub values present and single-line, bucket
+      # Fail-closed: every check (10 GitHub values present, single-line, keys of the
+      # expected charset/length, S3 endpoint/region = the pinned BHS target (egress netpol: 54.39.60.208 only), bucket
       # variables = the CronJob guards, the 3 Secrets exist) runs before any write.
       - name: Write backup Secrets from GitHub (geo-backup-writer + geo-backup-reader + geo-backup-purger)
         env:
@@ -389,15 +393,26 @@ jobs:
           )
           # Shared (non-secret) values: GitHub variable feeding each key.
           declare -A FROM_VAR=([S3_ENDPOINT]=BACKUP_S3_ENDPOINT [S3_REGION]=BACKUP_S3_REGION [BACKUP_BUCKET]=BACKUP_BUCKET [SOURCE_BUCKET]=BACKUP_SOURCE_BUCKET)
+          # Pinned S3 target (OVH BHS; the egress netpol allows 54.39.60.208/32:443 only) and credential shape.
+          PINNED_S3_ENDPOINT="https://s3.bhs.io.cloud.ovh.net"
+          PINNED_S3_REGION="bhs"
+          RE_ACCESS_KEY='^[A-Za-z0-9]{16,128}$'
+          RE_SECRET_KEY='^[A-Za-z0-9/+=]{16,128}$'
 
-          # 1. GitHub values present and single-line (names only in the log).
+          # 1. GitHub values present, single-line, well-formed (names only in the log).
           bad=""
           for v in GEO_BACKUP_WRITER_ACCESS_KEY GEO_BACKUP_WRITER_SECRET_KEY \
                    GEO_BACKUP_READER_ACCESS_KEY GEO_BACKUP_READER_SECRET_KEY \
                    GEO_BACKUP_PURGER_ACCESS_KEY GEO_BACKUP_PURGER_SECRET_KEY \
                    BACKUP_S3_ENDPOINT BACKUP_S3_REGION BACKUP_BUCKET BACKUP_SOURCE_BUCKET; do
             if [ -z "${!v:-}" ]; then bad="${bad} ${v}(missing)"; continue; fi
-            case "${!v}" in *$'\n'*|*$'\r'*) bad="${bad} ${v}(multi-line)" ;; esac
+            case "${!v}" in *$'\n'*|*$'\r'*) bad="${bad} ${v}(multi-line)"; continue ;; esac
+            case "$v" in
+              *_ACCESS_KEY) [[ "${!v}" =~ $RE_ACCESS_KEY ]] || bad="${bad} ${v}(format ${RE_ACCESS_KEY})" ;;
+              *_SECRET_KEY) [[ "${!v}" =~ $RE_SECRET_KEY ]] || bad="${bad} ${v}(format ${RE_SECRET_KEY})" ;;
+              BACKUP_S3_ENDPOINT) [ "${!v}" = "$PINNED_S3_ENDPOINT" ] || bad="${bad} ${v}(must be ${PINNED_S3_ENDPOINT})" ;;
+              BACKUP_S3_REGION) [ "${!v}" = "$PINNED_S3_REGION" ] || bad="${bad} ${v}(must be ${PINNED_S3_REGION})" ;;
+            esac
           done
           if [ -n "$bad" ]; then
             echo "::error title=Backup credentials missing or invalid in GitHub::Environment geo-prod-bundle:${bad}. Nothing was applied."; exit 1
@@ -418,7 +433,8 @@ jobs:
             fi
           done
 
-          # 4. Render (values from 0600 files), label, PUT; check the key set the server returns.
+          # 4. Render the 3 Secrets client-side (values from 0600 files; the rendered
+          #    manifests stay in the 0700 temp dir, removed on exit).
           tmp="$(mktemp -d "${RUNNER_TEMP:-/tmp}/geo-backup-secrets.XXXXXX")"
           trap 'rm -rf "$tmp"' EXIT
           for id in writer reader purger; do
@@ -435,14 +451,27 @@ jobs:
               printf '%s' "${!src}" > "$tmp/$id/$k"
               args+=("--from-file=${k}=${tmp}/${id}/${k}")
             done
-            live="$(kubectl -n "$NAMESPACE" create secret generic "geo-backup-${id}" --type=Opaque "${args[@]}" --dry-run=client -o yaml \
+            kubectl -n "$NAMESPACE" create secret generic "geo-backup-${id}" --type=Opaque "${args[@]}" --dry-run=client -o yaml \
               | kubectl label --local -f - app.kubernetes.io/name=geo-backup-daily app.kubernetes.io/part-of=geo app.kubernetes.io/component=db-backup -o yaml \
-              | kubectl -n "$NAMESPACE" replace -f - -o json \
-              | node -e 'let s="";process.stdin.on("data",(c)=>{s+=c;}).on("end",()=>{let k="<unreadable>";try{k=Object.keys(JSON.parse(s).data||{}).sort().join(" ");}catch{}process.stdout.write(k);});')"
+              > "$tmp/${id}.yaml"
             rm -rf "${tmp:?}/${id}"
-            want="$(printf '%s\n' "${keys[@]}" | sort | paste -sd' ' -)"
-            if [ "$live" != "$want" ]; then
-              echo "::error title=geo-backup-${id} keys differ::server returned keys '${live}', expected '${want}'."; exit 1
+          done
+          # Key names of the object the server returns (never a value).
+          keys_json() { node -e 'let s="";process.stdin.on("data",(c)=>{s+=c;}).on("end",()=>{let k="<unreadable>";try{k=Object.keys(JSON.parse(s).data||{}).sort().join(" ");}catch{}process.stdout.write(k);});'; }
+          want_of() { local -a ks; read -ra ks <<< "${KEYS[$1]}"; printf '%s\n' "${ks[@]}" | sort | paste -sd' ' -; }
+
+          # 5a. Server-side dry-run of the 3 PUTs: nothing is written unless all 3 pass.
+          for id in writer reader purger; do
+            if ! live="$(kubectl -n "$NAMESPACE" replace --dry-run=server -f "$tmp/${id}.yaml" -o json | keys_json)" || [ "$live" != "$(want_of "$id")" ]; then
+              echo "::error title=geo-backup-${id} refused by the server-side dry-run::keys '${live:-}' (expected '$(want_of "$id")'). Nothing was written."; exit 1
+            fi
+          done
+          echo "server-side dry-run OK for the 3 Secrets"
+
+          # 5b. Real PUTs, same manifests; check the key set the server returns.
+          for id in writer reader purger; do
+            if ! live="$(kubectl -n "$NAMESPACE" replace -f "$tmp/${id}.yaml" -o json | keys_json)" || [ "$live" != "$(want_of "$id")" ]; then
+              echo "::error title=geo-backup-${id} not written as expected::keys '${live:-}' (expected '$(want_of "$id")')."; exit 1
             fi
             echo "secret/geo-backup-${id} replaced from GitHub — keys: ${live}"
           done
