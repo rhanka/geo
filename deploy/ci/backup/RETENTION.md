@@ -10,7 +10,7 @@ enforcement is split in two:
 | --- | --- | --- |
 | Object lock GOVERNANCE, default retention 7 days | k8s lane (bucket) | Every object version is undeletable for 7 days after it is written. |
 | Lifecycle | k8s lane (bucket) | Noncurrent versions expire 7 days after they become noncurrent on `pg/`, `docs-inventory/`, `manifests/`, and 190 days after on `docs/`; incomplete multipart uploads after 1 day. |
-| Dated-folder purge | `geo-backup-daily` (identity `geo-backup-writer`) | After the manifest of the day is written, puts a **delete-marker** (DeleteObject without VersionId) on every dated object outside the policy. |
+| Dated-folder purge | `geo-backup-daily`: planned by `backup` (identity `geo-backup-writer`, no delete right), executed by `purge` (identity `geo-backup-purger`, DeleteObject on `pg/*` `manifests/*` `docs-inventory/*` + ListBucket, no GET) | Only after a **complete** backup of the day: puts a **delete-marker** (DeleteObject without VersionId) on every dated object outside the policy. |
 
 The job never deletes a version. A purged object becomes a noncurrent version,
 stays readable by version id for 7 more days (restore grace), then the lifecycle
@@ -38,13 +38,28 @@ Sundays + 6 monthly, fewer when they overlap), plus the purged ones during their
 7-day grace.
 
 A `partial` day (seed, or objects failed that day) has a manifest, so it counts
-as a backup: its PG dump is complete, only some source objects were not yet in
-`docs/` that day (listed `pending`/`failed` in its inventory).
+as a backup in the plan of a later complete day: its PG dump is complete, only
+some source objects were not yet in `docs/` that day (listed `pending`/`failed`
+in its inventory). **No purge runs on a partial day** (no plan is written).
 
-Never purged: `docs/` (the mirror), `manifests/latest.json`, any key that does not
-match the dated layout, and anything at all when the manifest of today is not
-listed (the purge refuses and the run exits 3). If the job stops running,
-nothing is purged: the failure mode is accumulation, never loss.
+How the purge is split between the two identities:
+
+1. `backup` (writer), after the manifest of the day is written and only if its
+   status is `complete`: lists the dated prefixes, refuses if the manifest of
+   today is not listed (exit 3), computes the plan, and writes it to
+   `/work/purge-plan.json` (date, manifest key + sha256, purge dates, keys).
+2. `purge` (purger), in the same pod, only if `backup` exited 0: re-validates the
+   plan (status `complete`, same bucket, plan of today or yesterday, manifest key
+   = `manifests/<date>.json`, every key a dated object of a purge date outside
+   the daily window — exit 2 otherwise), confirms by LIST that this manifest
+   exists (the purger has no GET), then puts the delete-markers (exit 3 on
+   failure). No plan = `PURGE VERDICT SKIPPED`, exit 0.
+
+Never purged: `docs/` (the mirror; also out of the purger's ARN),
+`manifests/latest.json`, any key that does not match the dated layout, anything
+on a partial or refused day, and anything at all when the plan does not
+validate. If the job stops running, nothing is purged: the failure mode is
+accumulation, never loss.
 
 ## Timeline of one daily dump
 
@@ -100,8 +115,10 @@ versions have expired (harmless if absent: a few markers per purged date).
 
 ## Knobs (CronJob env, defaults = policy)
 
-`RETENTION_DAILY_DAYS=7`, `RETENTION_WEEKLY_WEEKS=4`, `RETENTION_MONTHLY_MONTHS=6`,
-`RETENTION_MIN_KEEP=7`, `PURGE_DRY_RUN=false` (true = compute and log the plan,
-put no delete-marker). The algorithm is `planRetention` in `backup-daily.cjs`,
+`backup`: `RETENTION_DAILY_DAYS=7`, `RETENTION_WEEKLY_WEEKS=4`,
+`RETENTION_MONTHLY_MONTHS=6`, `RETENTION_MIN_KEEP=7`. `purge`:
+`RETENTION_DAILY_DAYS=7` (re-validation, must match), `PURGE_DRY_RUN=false`
+(true = validate and count the plan, put no delete-marker). The algorithm is
+`planRetention` / `planPurge` / `validatePurgePlan` in `backup-daily.cjs`,
 covered by `backup-daily.selftest.mjs` (500-day simulation, missing Sunday,
-outage, unfinished days, boundaries).
+outage, unfinished days, boundaries, invalid plans, per-identity access).
