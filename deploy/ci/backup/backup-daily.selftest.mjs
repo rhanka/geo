@@ -271,11 +271,11 @@ function asIdentity(fake, allowed, { deletePrefixes = null } = {}) {
 const writerOf = (fake) => asIdentity(fake, WRITER_OPS);
 const purgerOf = (fake) => asIdentity(fake, PURGER_OPS, { deletePrefixes: PURGER_PREFIXES });
 const readerOf = (fake) => asIdentity(fake, READER_OPS);
-async function run(fake, clock, env, { overrides, fetchImpl = okFetch, s3 } = {}) {
+async function run(fake, clock, env, { overrides, fetchImpl = okFetch, s3, terminate } = {}) {
   const logs = [];
   const view = s3 || writerOf(fake);
   try {
-    const r = await lib.runBackup({ env, sdk, s3: view, fetchImpl, now: () => clock.now(), log: (m) => logs.push(m), overrides });
+    const r = await lib.runBackup({ env, sdk, s3: view, fetchImpl, now: () => clock.now(), log: (m) => logs.push(m), overrides, terminate });
     return { code: r.exitCode, r, logs, s3: view };
   } catch (e) {
     return { code: e instanceof lib.BackupError ? e.exitCode : `unexpected:${e && e.stack}`, err: e, logs, s3: view };
@@ -851,6 +851,192 @@ console.log('# pod run — refusals and degraded paths');
 }
 
 // ═════════════════════════════════════════════════════════════════════════════
+// Incident 2026-09-26: one CopyObject never answered (no timeout), the worker
+// waited forever, the Job died on activeDeadlineSeconds with no manifest, no
+// inventory, no latest.json. A request that never answers must not block a run.
+console.log('# S3 request deadlines (incident 2026-09-26)');
+const HANG = () => new Promise(() => {}); // a request that never answers
+const FAST = { connectMs: 10000, requestMs: 150, metaMs: 150, minBytesPerSec: 8 * 1024 * 1024 };
+const SLOW = { connectMs: 10000, requestMs: 600000, metaMs: 600000, minBytesPerSec: 8 * 1024 * 1024 };
+const timed = async (fn) => { const t0 = Date.now(); const r = await fn(); return { r, ms: Date.now() - t0 }; };
+{
+  const cfg = lib.readConfig(envFor('/w'));
+  eq('defaults: connect 10 s, request 120 s, meta 30 s, 8 MiB/s, grace 120 s', [cfg.timeouts, cfg.terminationGraceSeconds],
+    [{ connectMs: 10000, requestMs: 120000, metaMs: 30000, minBytesPerSec: 8388608 }, 120]);
+  eq('env overrides', lib.readConfig(envFor('/w', { S3_CONNECT_TIMEOUT_MS: '5000', S3_REQUEST_TIMEOUT_MS: '60000', S3_META_TIMEOUT_MS: '9000',
+    S3_MIN_THROUGHPUT_BYTES_PER_SEC: '1048576' })).timeouts, { connectMs: 5000, requestMs: 60000, metaMs: 9000, minBytesPerSec: 1048576 });
+  throwsCode('invalid S3_REQUEST_TIMEOUT_MS → exit 2', () => lib.readConfig(envFor('/w', { S3_REQUEST_TIMEOUT_MS: '0' })), 2);
+  throwsCode('TERMINATION_GRACE_SECONDS < 15 → exit 2', () => lib.readConfig(envFor('/w', { TERMINATION_GRACE_SECONDS: '5' })), 2);
+  eq('purger and reader carry the same timeouts', [lib.readPurgeConfig(purgeEnvFor('/w')).timeouts, lib.readFreshnessConfig(purgeEnvFor('/w')).timeouts],
+    [cfg.timeouts, cfg.timeouts]);
+  const c = { cfg };
+  eq('deadline: meta 30 s, small copy 120 s (floor), 4 GiB copy 512 s (size / 8 MiB/s)',
+    [lib.requestDeadlineMs(c, 'meta', 0), lib.requestDeadlineMs(c, 'body', 1000), lib.requestDeadlineMs(c, 'body', 4 * 1024 ** 3)], [30000, 120000, 512000]);
+  eq('deadline after SIGTERM: capped to the grace left (min 1 s)', [lib.requestDeadlineMs({ cfg, finalDeadline: 1000 + 45000 }, 'body', 4 * 1024 ** 3, 1000),
+    lib.requestDeadlineMs({ cfg, finalDeadline: 1000 }, 'meta', 0, 5000)], [45000, 1000]);
+}
+{
+  let seen = null;
+  const s3 = { send: (cmd, opts) => { seen = opts; return HANG(); } };
+  const ctx = { cfg: { timeouts: FAST }, s3 };
+  let err = null;
+  const { ms } = await timed(() => lib.s3send(ctx, new sdk.CopyObjectCommand({}), { kind: 'body', bytes: 10 }).catch((e) => { err = e; }));
+  ok(`s3send: a request that never answers rejects S3RequestTimeout (${ms} ms)`, !!err && err.name === 'S3RequestTimeout' && ms < 2000);
+  ok('s3send: the SDK received an AbortSignal, aborted at the deadline', !!seen && seen.abortSignal && seen.abortSignal.aborted);
+  const ac = new AbortController();
+  const p = lib.s3send({ cfg: { timeouts: SLOW }, s3 }, new sdk.CopyObjectCommand({}), { signal: ac.signal }).catch((e) => e);
+  ac.abort(lib.stoppedError('budget'));
+  const e2 = await p;
+  ok('s3send: parent signal (budget / SIGTERM) aborts at once with its reason', e2 && e2.name === 'BackupStopped' && e2.stop === 'budget');
+  const body = new Readable({ read() {} }); // headers arrived, body never ends
+  body.push(Buffer.from('partial'));
+  const e3 = await lib.s3send({ cfg: { timeouts: FAST }, s3: { send: async () => ({ Body: body }) } }, new sdk.GetObjectCommand({}), {
+    consume: async (out, sig) => { for await (const x of out.Body) { void x; if (sig.aborted) break; } return out; },
+  }).catch((e) => e);
+  ok('s3send: a body that stops flowing is bounded by the same deadline', e3 && e3.name === 'S3RequestTimeout');
+  let opts = null;
+  const fakeHandler = class { constructor(o) { opts = o; } };
+  const h = lib.buildRequestHandler(lib.DEFAULT_TIMEOUTS, () => ({ NodeHttpHandler: fakeHandler }));
+  eq('requestHandler: NodeHttpHandler with connectionTimeout 10 s + socketTimeout (idle) 120 s', [h.mode, opts], ['node-http-handler', { connectionTimeout: 10000, socketTimeout: 120000 }]);
+  const h2 = lib.buildRequestHandler(lib.DEFAULT_TIMEOUTS, () => { throw new Error('Cannot find module'); });
+  eq('requestHandler: module not resolvable → abort-signal-only (s3send still bounds every request)', [h2.mode, h2.requestHandler], ['abort-signal-only', undefined]);
+}
+const PREV_LATEST = JSON.stringify({ date: '2026-09-25', status: 'complete', manifestKey: 'manifests/2026-09-25.json', manifestSha256: 'f'.repeat(64),
+  latestComplete: { date: '2026-09-25', manifestKey: 'manifests/2026-09-25.json', manifestSha256: 'f'.repeat(64) }, pgSizeBytes: 300 * 1024, docsObjects: 7 });
+{
+  // The incident, replayed: one CopyObject never answers.
+  const { clock, fake } = mkWorld();
+  fake.seed(BK, 'manifests/latest.json', PREV_LATEST);
+  fake.hooks.CopyObject = (input) => (input.Key.endsWith('x.json') ? HANG() : undefined);
+  const w = makeWork('2026-09-26');
+  const { r: res, ms } = await timed(() => runPod(fake, clock, envFor(w.dir), { overrides: { timeouts: FAST } }));
+  const m = res.r && res.r.manifest;
+  eq(`hung CopyObject: the run ends (${ms} ms), exit 0, manifest partial`, [res.code, m && m.status, m && m.verdict, ms < 5000], [0, 'partial', 'PARTIAL', true]);
+  eq('…the hung object is failed (timed out), the 5 others copied', [m.docs.failed, m.docs.timedOut, m.docs.copied, m.docs.pending], [1, 1, 5, 0]);
+  const inv = invOf(fake);
+  ok('…inventory written: the object is `failed`, every other backed-up', inv.counts.failed === 1 && inv.counts.backedUp === 6 &&
+    inv.objects.find((o) => o.key.endsWith('x.json')).state === 'failed');
+  ok('…manifest stored, reason recorded', JSON.parse(fake.text(BK, 'manifests/2026-09-26.json')).partialReason === '1 object(s) failed (1 timed out)');
+  const l = latestOf(fake);
+  eq('…latest.json: partial, partialSince today, latestComplete unchanged, reason', [l.date, l.status, l.partialSince, l.latestComplete.date, l.partialReason],
+    ['2026-09-26', 'partial', '2026-09-26', '2026-09-25', '1 object(s) failed (1 timed out)']);
+  ok('…no purge plan, purge step skipped', planOf(w.dir) === null && res.purge && res.purge.r.skipped);
+  ok('…verdict line with the counts and the reason', res.logs.some((x) => x.startsWith('VERDICT PARTIAL') && x.includes('docs.timed_out=1') &&
+    x.includes('reason="1 object(s) failed (1 timed out)"')));
+  noLeak('hung copy', res.logs);
+}
+{
+  // Budget reached with every copy in flight (each one would hang for 10 min):
+  // the budget aborts them, the run ends at the budget, not at the request deadline.
+  const { clock, fake } = mkWorld();
+  fake.seed(BK, 'manifests/latest.json', PREV_LATEST);
+  fake.hooks.CopyObject = HANG;
+  const w = makeWork('2026-09-26');
+  const { r: res, ms } = await timed(() => runPod(fake, clock, envFor(w.dir), { overrides: { timeouts: SLOW, docsBudgetSeconds: 0.2 } }));
+  const m = res.r && res.r.manifest;
+  eq(`budget with copies in flight: ends at the budget (${ms} ms), exit 0, partial`, [res.code, m && m.status, ms < 5000], [0, 'partial', true]);
+  eq('…stop=budget, 0 copied, 6 pending (interrupted, retried next run), 0 failed', [m.docs.stopReason, m.docs.budgetExhausted, m.docs.copied, m.docs.pending,
+    m.docs.failed, m.docs.interrupted], ['budget', true, 0, 6, 0, 6]);
+  ok('…inventory + manifest + latest.json written', invOf(fake).counts.pending === 6 && !!fake.text(BK, 'manifests/2026-09-26.json') &&
+    latestOf(fake).status === 'partial' && latestOf(fake).latestComplete.date === '2026-09-25');
+  eq('…reason', m.partialReason, 'docs copy budget reached (0.2 s); 6 object(s) pending');
+  ok('…no purge plan', planOf(w.dir) === null && res.purge.r.skipped);
+  ok('…log: copy stopped reason=budget', res.logs.some((x) => x.startsWith('docs copy stopped reason=budget')));
+}
+{
+  // SIGTERM (kubelet, activeDeadlineSeconds) while copies hang: recorded, exit 1.
+  const { clock, fake } = mkWorld();
+  fake.seed(BK, 'manifests/latest.json', PREV_LATEST);
+  const term = new AbortController();
+  fake.hooks.CopyObject = (input) => {
+    if (input.Key.endsWith('b.json')) return undefined; // first to copy: done before the signal
+    setTimeout(() => term.abort(lib.stoppedError('terminated')), 30);
+    return HANG();
+  };
+  const w = makeWork('2026-09-26');
+  const { r: res, ms } = await timed(() => runPod(fake, clock, envFor(w.dir, { COPY_CONCURRENCY: '1' }), { overrides: { timeouts: SLOW }, terminate: term.signal }));
+  const m = res.r && res.r.manifest;
+  eq(`SIGTERM during the copy: ends at once (${ms} ms), exit 1, manifest partial`, [res.code, m && m.status, ms < 5000], [1, 'partial', true]);
+  eq('…stop=terminated, 1 copied, the rest pending, 0 failed', [m.docs.stopReason, m.docs.copied, m.docs.failed, m.docs.pending], ['terminated', 1, 0, 5]);
+  eq('…reason', m.partialReason, 'terminated (SIGTERM) before the copy finished; 5 object(s) pending');
+  const l = latestOf(fake);
+  ok('…inventory + manifest + latest.json written (latestComplete unchanged)', invOf(fake).counts.pending === 5 && l.status === 'partial' &&
+    l.latestComplete.date === '2026-09-25' && l.partialSince === '2026-09-26' && !!l.partialReason);
+  ok('…no purge plan, no purge step (exit 1)', planOf(w.dir) === null && res.purge === null);
+  ok('…verdict TERMINATED', res.logs.some((x) => x.startsWith('VERDICT TERMINATED') && x.includes('docs.stop=terminated')));
+}
+{
+  // SIGTERM before the PG part is recorded: nothing to record, exit 1, no manifest.
+  const { clock, fake } = mkWorld();
+  const term = new AbortController();
+  term.abort(lib.stoppedError('terminated'));
+  const res = await run(fake, clock, envFor(makeWork('2026-09-26').dir), { terminate: term.signal });
+  eq('SIGTERM before the PG upload → exit 1, no manifest, no latest', [res.code, fake.text(BK, 'manifests/2026-09-26.json'), fake.text(BK, 'manifests/latest.json')],
+    [1, null, null]);
+}
+{
+  // A hung inventory PUT does not block either: manifest partial (inventory not written).
+  const { clock, fake } = mkWorld();
+  fake.seed(BK, 'manifests/latest.json', PREV_LATEST);
+  fake.hooks.PutObject = (input) => (input.Key.startsWith('docs-inventory/') ? HANG() : undefined);
+  const res = await run(fake, clock, envFor(makeWork('2026-09-26').dir), { overrides: { timeouts: { ...FAST, requestMs: 150 } } });
+  const m = res.r && res.r.manifest;
+  eq('hung inventory PUT: exit 0, partial even with every object copied (never complete without its inventory)',
+    [res.code, m && m.status, m && m.docs.pending, m && m.docs.failed, m && m.docs.inventoryKey], [0, 'partial', 0, 0, null]);
+  ok('…reason names the inventory, latest.json written', /inventory not written \(S3RequestTimeout\)/.test(m.partialReason) && latestOf(fake).status === 'partial');
+}
+{
+  // A hung GET of latest.json (before any write): bounded, retryable failure.
+  const { clock, fake } = mkWorld();
+  fake.hooks.GetObject = (input) => (input.Key === 'manifests/latest.json' ? HANG() : undefined);
+  const { r: res, ms } = await timed(() => run(fake, clock, envFor(makeWork('2026-09-26').dir), { overrides: { timeouts: FAST } }));
+  // A non-BackupError is mapped to exit 1 (retryable) by main().
+  eq(`hung GET latest.json → S3RequestTimeout = exit 1 (${ms} ms), nothing written`,
+    [res.err && res.err.name, fake.text(BK, 'manifests/2026-09-26.json'), ms < 5000], ['S3RequestTimeout', null, true]);
+}
+{
+  // Purger: a hung DeleteObject ends the purge (exit 3) instead of blocking the pod.
+  const { clock, fake } = mkWorld();
+  for (const d of range('2026-09-01', '2026-09-26')) { fake.seed(BK, `manifests/${d}.json`, '{}'); fake.seed(BK, `pg/${d}/geo.dump`, 'x'); }
+  const dir = makeWork('2026-09-26').dir;
+  writePlan(dir, { format: 'geo-backup-purge-plan/v1', date: '2026-09-26', status: 'complete', backupBucket: BK, manifestKey: 'manifests/2026-09-26.json',
+    purgeDates: ['2026-09-02'], keys: ['pg/2026-09-02/geo.dump'] });
+  fake.hooks.DeleteObject = HANG;
+  const { r: res, ms } = await timed(() => runPurgeStep(fake, clock, dir, { S3_META_TIMEOUT_MS: '150' }));
+  eq(`purge: hung DeleteObject → exit 3 (${ms} ms)`, [res.code, ms < 5000], [3, true]);
+}
+{
+  // Freshness reader: a hung GET ends (exit 1 from main), never blocks the CronJob.
+  const { clock, fake } = mkWorld();
+  fake.hooks.GetObject = HANG;
+  let err = null;
+  try { await lib.runFreshness({ env: purgeEnvFor('/w', { S3_META_TIMEOUT_MS: '150' }), sdk, s3: readerOf(fake), now: () => clock.now(), log: () => {} }); } catch (e) { err = e; }
+  ok('freshness: hung GET → S3RequestTimeout (bounded)', !!err && err.name === 'S3RequestTimeout');
+}
+{
+  // Final write size under SIGTERM: inventory of ~116 000 objects (prod: 70 440 listed
+  // + growth), built + serialised + uploaded at the minimum throughput, must fit in
+  // the grace period with the manifest and latest.json.
+  const N = 116000;
+  const t0 = new Date('2026-09-20T00:00:00Z');
+  const srcObjs = Array.from({ length: N }, (_, i) => ({ Key: `raw/ville-${i % 1106}/cas/document-${i}-procès-verbal.pdf`, Size: 100000 + i, ETag: `"${md5hex(String(i))}"`,
+    LastModified: t0 }));
+  const dstIndex = new Map(srcObjs.slice(0, N / 2).map((o) => [o.Key, { ...o, VersionId: `v${o.Size}`, LastModified: new Date('2026-09-21T00:00:00Z') }]));
+  const started = Date.now();
+  const inv = lib.buildInventory({ db: DB, date: '2026-09-26', createdAt: t0.toISOString(), sourceBucket: SRC, backupBucket: BK, excludePrefixes: [],
+    versionIds: 'list-versions', srcObjs, dstIndex, copied: new Map(), failed: new Set() });
+  const bytes = Buffer.byteLength(JSON.stringify(inv));
+  const buildMs = Date.now() - started;
+  const cfg = lib.readConfig(envFor('/w'));
+  const uploadMs = lib.requestDeadlineMs({ cfg }, 'body', bytes);
+  const graceMs = (cfg.terminationGraceSeconds - 10) * 1000;
+  ok(`inventory of ${N} objects: ${(bytes / 1048576).toFixed(1)} MiB built in ${buildMs} ms, upload bound ${uploadMs} ms at 8 MiB/s`,
+    buildMs < 15000 && bytes / cfg.timeouts.minBytesPerSec * 1000 < 10000);
+  ok(`…build + upload at the min throughput + manifest + latest fit in the grace window (${graceMs} ms)`,
+    buildMs + bytes / cfg.timeouts.minBytesPerSec * 1000 + 2 * 5000 < graceMs);
+}
+
+// ═════════════════════════════════════════════════════════════════════════════
 console.log('# static wiring checks');
 const read = (rel) => fs.readFileSync(path.join(ROOT, rel), 'utf8');
 const active = (t) => t.split('\n').filter((l) => !/^\s*(#|\/\/)/.test(l)).join('\n');
@@ -934,7 +1120,8 @@ const secretRefs = (text) => [...text.matchAll(/secretKeyRef: \{ name: ([a-z0-9-
   const cfgKeys = ['S3_ENDPOINT', 'S3_REGION', 'S3_ACCESS_KEY', 'S3_SECRET_KEY', 'BACKUP_BUCKET', 'SOURCE_BUCKET', 'EXPECTED_BACKUP_BUCKET',
     'EXPECTED_SOURCE_BUCKET', 'EXPECTED_DATABASE', 'WORK_DIR', 'PUBLIC_HEALTH_URL', 'DRIZZLE_JOURNAL', 'COPY_CONCURRENCY', 'DOCS_COPY_BUDGET_SECONDS',
     'DOCS_EXCLUDE_PREFIXES', 'COPY_MULTIPART_THRESHOLD_BYTES', 'COPY_PART_BYTES', 'MIN_DUMP_BYTES', 'MIN_DUMP_RATIO', 'MIN_SOURCE_RATIO',
-    'RETENTION_DAILY_DAYS', 'RETENTION_WEEKLY_WEEKS', 'RETENTION_MONTHLY_MONTHS', 'RETENTION_MIN_KEEP'];
+    'RETENTION_DAILY_DAYS', 'RETENTION_WEEKLY_WEEKS', 'RETENTION_MONTHLY_MONTHS', 'RETENTION_MIN_KEEP',
+    'S3_CONNECT_TIMEOUT_MS', 'S3_REQUEST_TIMEOUT_MS', 'S3_META_TIMEOUT_MS', 'S3_MIN_THROUGHPUT_BYTES_PER_SEC', 'TERMINATION_GRACE_SECONDS'];
   ok('every runtime knob of the backup step is set explicitly', cfgKeys.every((k) => bk.includes(`name: ${k},`)));
   ok('every runtime knob of the purge step is set explicitly', ['EXPECTED_BACKUP_BUCKET', 'WORK_DIR', 'RETENTION_DAILY_DAYS', 'PURGE_DRY_RUN']
     .every((k) => pu.includes(`name: ${k},`)) && !bk.includes('name: PURGE_DRY_RUN,'));
@@ -953,6 +1140,20 @@ const secretRefs = (text) => [...text.matchAll(/secretKeyRef: \{ name: ([a-z0-9-
   ok('irreplaceable prefixes are never excluded', ['raw/', 'capture/', 'sources/', 'registry/', 'normalized/']
     .every((p) => !cfg.excludePrefixes.some((x) => p.startsWith(x) || x.startsWith(p))));
   ok('docs budget fits the Job deadline', /activeDeadlineSeconds: 10800/.test(cj) && cfg.docsBudgetSeconds <= 10800 - 1800);
+  // The internal budget must cut well before activeDeadlineSeconds, so the normal
+  // case never depends on SIGTERM: pre-docs phase (dump + PG upload/re-read, 30 min
+  // margin) + docs budget + the longest request deadline in flight (a copy of
+  // COPY_MULTIPART_THRESHOLD_BYTES) + the final writes (inventory, manifest,
+  // latest.json: 3 request deadlines) + the grace period < activeDeadlineSeconds.
+  const deadlineS = Number((/activeDeadlineSeconds: (\d+)/.exec(cj) || [])[1]);
+  const graceS = Number((/terminationGracePeriodSeconds: (\d+)/.exec(cj) || [])[1]);
+  const maxCopyS = lib.requestDeadlineMs({ cfg }, 'body', Math.max(cfg.copyMultipartThreshold, cfg.copyPartSize)) / 1000;
+  const finalS = 3 * lib.requestDeadlineMs({ cfg }, 'body', 0) / 1000;
+  const totalS = 1800 + cfg.docsBudgetSeconds + maxCopyS + finalS + graceS;
+  ok(`budget + max request deadline + final writes + grace < activeDeadlineSeconds (1800 + ${cfg.docsBudgetSeconds} + ${maxCopyS} + ${finalS} + ${graceS} = ${totalS} < ${deadlineS})`,
+    Number.isFinite(totalS) && totalS < deadlineS);
+  eq('terminationGracePeriodSeconds = TERMINATION_GRACE_SECONDS (final writes capped to the real grace)', [graceS, cfg.terminationGraceSeconds], [120, 120]);
+  eq('CronJob S3 deadlines: connect 10 s, request 120 s, meta 30 s, 8 MiB/s', cfg.timeouts, { connectMs: 10000, requestMs: 120000, metaMs: 30000, minBytesPerSec: 8388608 });
   ok('freshness CronJob: name/ns/schedule after the backup window, no retry', /name: geo-backup-freshness\n/.test(fcj) && /namespace: geo\n/.test(fcj) &&
     /schedule: "47 7 \* \* \*"/.test(fcj) && /backoffLimit: 0/.test(fcj) && /command: \["node", "\/opt\/backup\/backup-daily\.cjs", "freshness"\]/.test(fcj));
   eq('freshness reads only the reader identity; N = 3 days, max age 1 day', [secretRefs(fcj).sort(), fcfg.maxPartialDays, fcfg.maxAgeDays],
