@@ -12,11 +12,12 @@
 //
 //   MODE=chain   (défaut) jambes pg + s3 inchangées (dump vivant + copie normalized/).
 //   MODE=restore job `restore` : preflight-backup → backup-secret-fill → backup-resolve
-//                (gardes, AVANT toute mutation ; dump geo vérifié par sha256, pas
-//                restauré : préprod SANS PostgreSQL) → docs-restore (état de
-//                normalized/ au jour D) → recon-backup → rollout (G4 = recon-backup)
-//                → smoke (préprod ⊇ prod consultatif : un état passé peut précéder
-//                des collections récentes).
+//                (gardes, AVANT toute mutation ; dump geo vérifié par sha256) →
+//                pg-apply (postgis préprod) → pg-check (pg_isready + SELECT 1) →
+//                pg-snapshot (G1) → pg-restore (S2, restore-pg.mjs ; S2c migrate N/A)
+//                → docs-restore (état de normalized/ au jour D) → recon-backup →
+//                rollout (G4 = recon-backup) → smoke (préprod ⊇ prod consultatif :
+//                un état passé peut précéder des collections récentes).
 //   MODE=list    job `list` : lecture seule, backups disponibles.
 //
 // Sous-commandes (enregistrées dans COMMANDS de bascule.mjs) : preflight-backup,
@@ -27,6 +28,7 @@ import { appendFileSync, chmodSync, existsSync, mkdtempSync, readFileSync, rmSyn
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import process from "node:process";
+import { makeRestorePg, pgParams, POSTGIS_SECRET_KEYS, postgisSecretValues } from "./restore-pg.mjs";
 
 export const MODES = Object.freeze(["chain", "restore", "list"]);
 export const CYCLE_ID_RE = /^[A-Za-z0-9._-]{1,100}$/;
@@ -192,6 +194,11 @@ export const BACKUP_SECRET_SPECS = Object.freeze({
 export function specsForMode(mode) {
   return Object.entries(BACKUP_SECRET_SPECS).filter(([, s]) => s.modes.includes(mode)).map(([id]) => id);
 }
+// Secrets écrits par backup-secret-fill pour un MODE : ceux du backup + le superuser
+// du postgis préprod (geo-postgis-credentials) en MODE=restore (restauration PG, S2).
+export function secretSpecsForMode(mode) {
+  return [...specsForMode(mode), ...(mode === "restore" ? ["postgis"] : [])];
+}
 
 // Valeurs d'un Secret (gardes #405) ; l'erreur nomme la variable, jamais la valeur.
 export function backupSecretValues(env, spec = "reader") {
@@ -314,6 +321,9 @@ export function makeRestoreMode(h) {
       try { forbidden = forbiddenDstBuckets({ prodDocs: req("PROD_DOCS"), backupBucket: p.bucket }); } catch (e) { die(e.message); }
       if (forbidden.split(",").includes(req("PREPROD_DOCS"))) die("PREPROD_DOCS est une destination interdite (bucket prod ou de backup) — restauration refusée.");
       log(`destinations interdites de la copie : ${forbidden}`);
+      let q;
+      try { q = pgParams(process.env, { namespace: p.jd.NAMESPACE, db: p.db }); } catch (e) { die(e.message); }
+      log(`restauration PG : ns=${q.namespace} service=${q.service} secret=${q.secret} statefulset=${q.statefulset} snapshot=${q.snapshotDb} image=${q.image}`);
     }
     log(`MODE=${m} bucket=${p.bucket} lecteur=${p.readerSecret} copie=${p.copySecret} prefixe=${p.prefix} backup_id=${backupId} (0 cred S3 runner)`);
     log("S0 preflight OK");
@@ -327,40 +337,50 @@ export function makeRestoreMode(h) {
     const m = mode();
     if (m === "chain") die("backup-secret-fill sert MODE=restore|list.");
     assertConfirm(); // G3 avant toute écriture de Secret
-    const specs = specsForMode(m);
+    const specs = secretSpecsForMode(m);
     section(`Write backup Secrets from GitHub (environment geo-bascule) : ${specs.join(", ")}`);
     const p = params();
     const ns = p.jd.NAMESPACE;
-    const names = { reader: p.readerSecret, "restore-docs": p.copySecret };
+    let pgSecret = null;
+    if (specs.includes("postgis")) {
+      try { pgSecret = pgParams(process.env, { namespace: ns, db: p.db }).secret; } catch (e) { die(e.message); }
+    }
+    const names = { reader: p.readerSecret, "restore-docs": p.copySecret, postgis: pgSecret };
+    const wantOf = (spec) => (spec === "postgis" ? Object.keys(POSTGIS_SECRET_KEYS) : BACKUP_SECRET_KEYS).slice().sort().join(" ");
     const values = {};
     for (const spec of specs) {
-      try { values[spec] = backupSecretValues({ ...process.env, BACKUP_BUCKET: p.bucket, S3_ENDPOINT_RENDERED: p.jd.S3_ENDPOINT }, spec); } catch (e) { die(`${spec} — ${e.message}`); }
+      try {
+        values[spec] = spec === "postgis"
+          ? postgisSecretValues(process.env, p.db)
+          : backupSecretValues({ ...process.env, BACKUP_BUCKET: p.bucket, S3_ENDPOINT_RENDERED: p.jd.S3_ENDPOINT }, spec);
+      } catch (e) { die(`${spec} — ${e.message}`); }
       const exists = run("kubectl", ["-n", ns, "get", "secret", names[spec], "-o", "name"], { capture: true, allowFail: true });
       if (exists.status !== 0) die(`Secret ${ns}/${names[spec]} absent ou illisible : pré-création par k8s + get/update par nom pour geo-ci-bascule-preprod. Rien n'a été écrit.`);
     }
     const dir = mkdtempSync(join(tmpdir(), "geo-backup-secrets-"));
     chmodSync(dir, 0o700);
-    const want = BACKUP_SECRET_KEYS.join(" ");
     try {
       const files = {};
       for (const spec of specs) {
         files[spec] = join(dir, `${spec}.json`);
+        const component = spec === "postgis" ? "postgis-preprod" : `backup-${spec}-preprod`;
         writeFileSync(files[spec], JSON.stringify(buildSecretManifest({ name: names[spec], namespace: ns, values: values[spec],
-          labels: { "app.kubernetes.io/part-of": "geo", "app.kubernetes.io/component": `backup-${spec}-preprod` } })), { mode: 0o600 });
+          labels: { "app.kubernetes.io/part-of": "geo", "app.kubernetes.io/component": component } })), { mode: 0o600 });
       }
+      // Dry-run serveur de CHAQUE Secret avant la première écriture (pas d'écriture partielle).
       for (const pass of [["--dry-run=server"], []]) {
         for (const spec of specs) {
           const r = run("kubectl", ["-n", ns, "replace", ...pass, "-f", files[spec], "-o", "json"], { capture: true, allowFail: true });
           const got = r.status === 0 ? keysOfReplaced(r.stdout) : "";
-          if (r.status !== 0 || got !== want) {
-            die(`${names[spec]} refusé${pass.length ? " par le dry-run serveur (rien n'a été écrit)" : ""} : clés '${got}' (attendu '${want}').`);
+          if (r.status !== 0 || got !== wantOf(spec)) {
+            die(`${names[spec]} refusé${pass.length ? " par le dry-run serveur (rien n'a été écrit)" : ""} : clés '${got}' (attendu '${wantOf(spec)}').`);
           }
         }
       }
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
-    for (const spec of specs) log(`secret/${names[spec]} réécrit depuis GitHub — clés : ${want} (valeurs jamais affichées)`);
+    for (const spec of specs) log(`secret/${names[spec]} réécrit depuis GitHub — clés : ${wantOf(spec)} (valeurs jamais affichées)`);
   }
 
   function cmdBackupResolve() {
@@ -424,7 +444,7 @@ export function makeRestoreMode(h) {
       vars: readVars(p, step, { JOB_NAME: jobName, COPY_SECRET: p.copySecret, BACKUP_DATE: pin.date, PIN_MANIFEST_SHA256: pin.manifestSha256,
         DST_BUCKET: req("PREPROD_DOCS"), FORBIDDEN_DST_BUCKETS: forbidden, DOCS_RESTORE_PREFIX: p.prefix, COPY_GRANTEE: opt("DOCS_SYNC_GRANTEE", ""),
         COPY_CONCURRENCY: String(Math.max(1, Math.min(32, Number(opt("BACKUP_COPY_CONCURRENCY", "8")) || 8))), DOCS_DRY: dry ? "1" : "0" }),
-      timeoutSec: Number(opt(step === "docs" ? "DOCS_RESTORE_TIMEOUT" : "RECON_TIMEOUT", step === "docs" ? "11000" : "900")),
+      timeoutSec: Number(opt(step === "docs" ? "DOCS_RESTORE_TIMEOUT" : "RECON_TIMEOUT", step === "docs" ? "9000" : "900")),
     });
     const { verdict } = readVerdict(p.jd.NAMESPACE, jobName, "docs", res.uid);
     return { res, verdict, pin, p, jobName };
@@ -467,9 +487,15 @@ export function makeRestoreMode(h) {
     log("GARDE G4 OK — recon vs inventaire(D) reconfirmée (Job) juste avant le rollout.");
   }
 
+  // Restauration PostgreSQL (S2 + G1) dans le postgis préprod : restore-pg.mjs.
+  const restorePg = makeRestorePg({
+    ...h, dispatchWithScript: dispatch, readVerdict, failWithVerdict, loadPin, params, mode, PINNED_S3_ENDPOINT,
+  });
+
   return {
     assertReconOk,
     commands: {
+      ...restorePg.commands,
       "preflight-backup": cmdPreflightBackup,
       "backup-secret-fill": cmdBackupSecretFill,
       "backup-resolve": cmdBackupResolve,

@@ -1,0 +1,103 @@
+# =============================================================================
+# pg-check-job.tmpl.yaml — AVANT S2 (restauration PG) de la bascule MODE=restore :
+# le postgis préprod répond-il, et les identifiants du Secret ${PG_SECRET} ouvrent-ils
+# une session ? `pg_isready` puis `SELECT 1` authentifié, puis base connectée ==
+# EXPECTED_DATABASE. Échec ⇒ message clair (message de fin du pod), sortie 2,
+# AUCUNE action destructive : la bascule ne lance ni snapshot ni pg_restore.
+#
+# Cas typique d'échec : mot de passe du Secret changé sans `ALTER ROLE` (l'image
+# postgres n'applique POSTGRES_PASSWORD qu'à l'initialisation d'un volume vide —
+# CRED_CYCLE.md).
+#
+# Pod `role=pra-restore` : NetworkPolicy pra-restore-egress (DNS + S3-BHS +
+# geo-postgis:5432) et entrée autorisée par geo-postgis-preprod. Identifiants =
+# PG* libpq depuis le Secret (jamais une URI à mot de passe, jamais en argv/log).
+# Runner = kubectl seul (.status + message de fin, jamais `kubectl logs`).
+#
+# Placeholders (rendus par restore-pg.mjs) : ${JOB_NAME} ${NAMESPACE} ${PG_IMAGE}
+# ${PG_SERVICE} ${PG_SECRET} ${EXPECTED_DATABASE} ${PG_READY_TIMEOUT} ${TTL_SECONDS}.
+# Les $VAR du shell sont des variables d'EXÉCUTION (sans accolades).
+# =============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    role: pra-restore
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: pra-restore
+    sentropic.io/bascule: pg-check
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: ${TTL_SECONDS}
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        role: pra-restore
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: pra-restore
+        sentropic.io/bascule: pg-check
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: tmp
+          emptyDir: { sizeLimit: 16Mi }
+      containers:
+        - name: check
+          image: ${PG_IMAGE}
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "-c"]
+          args:
+            - |
+              set -uo pipefail
+              T=/dev/termination-log
+              verdict() { printf '{"ok":%s,"step":"pg-check","ready":%s,"auth":%s,"database":"%s","reason":"%s"}' "$1" "$2" "$3" "$4" "$5" > "$T" 2>/dev/null || true; }
+              if ! pg_isready -h "$PGHOST" -p "$PGPORT" -d "$PGDATABASE" -t "$PG_READY_TIMEOUT" > /dev/null; then
+                echo "[pg-check] REFUS - postgis preprod $PGHOST:$PGPORT injoignable ou pas pret (pg_isready) : aucune action destructive, pas de pg_restore"
+                verdict false false false "" "postgis preprod $PGHOST:$PGPORT not ready (pg_isready): nothing destructive done, no pg_restore"
+                exit 2
+              fi
+              if ! one="$(psql -X -v ON_ERROR_STOP=1 -tAc 'SELECT 1' 2> /tmp/psql.err)" || [ "$one" != "1" ]; then
+                echo "[pg-check] REFUS - connexion authentifiee refusee (SELECT 1) : $(head -c 200 /tmp/psql.err | head -n 1)"
+                verdict false true false "" "authenticated connection refused (SELECT 1): the password of the Secret may not be applied to the role (ALTER ROLE, CRED_CYCLE.md); nothing destructive done, no pg_restore"
+                exit 2
+              fi
+              db="$(psql -X -v ON_ERROR_STOP=1 -tAc 'select current_database()' | tr -cd 'a-z0-9_')"
+              if [ "$db" != "$EXPECTED_DATABASE" ]; then
+                echo "[pg-check] REFUS - base connectee '$db' differente de EXPECTED_DATABASE '$EXPECTED_DATABASE'"
+                verdict false true true "$db" "connected database differs from EXPECTED_DATABASE: nothing destructive done, no pg_restore"
+                exit 2
+              fi
+              verdict true true true "$db" ""
+              echo "[pg-check] OK - pg_isready + SELECT 1 authentifie, base $db"
+          env:
+            - { name: PGHOST, value: "${PG_SERVICE}" }
+            - { name: PGPORT, value: "5432" }
+            - { name: PGCONNECT_TIMEOUT, value: "10" }
+            - { name: PGAPPNAME, value: "geo-bascule-pg-check" }
+            - { name: PG_READY_TIMEOUT, value: "${PG_READY_TIMEOUT}" }
+            - { name: EXPECTED_DATABASE, value: "${EXPECTED_DATABASE}" }
+            - { name: PGUSER, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_USER } } }
+            - { name: PGPASSWORD, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_PASSWORD } } }
+            - { name: PGDATABASE, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_DB } } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { cpu: 100m, memory: 64Mi }
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
