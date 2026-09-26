@@ -303,6 +303,69 @@ Wave 2 (not in this PR, as on immo): an automated restore-test job.
 legitimate large cleanup, set it to 0 by PR for one run, then back.
 `purge`: `RETENTION_DAILY_DAYS` (7, re-validation), `PURGE_DRY_RUN` (false).
 `freshness`: `FRESHNESS_MAX_AGE_DAYS` (1), `FRESHNESS_MAX_PARTIAL_DAYS` (3).
+S3 deadlines (all three modes, set explicitly on `backup`, defaults elsewhere):
+`S3_CONNECT_TIMEOUT_MS` (10 000), `S3_REQUEST_TIMEOUT_MS` (120 000),
+`S3_META_TIMEOUT_MS` (30 000), `S3_MIN_THROUGHPUT_BYTES_PER_SEC` (8 MiB/s);
+`backup` only: `TERMINATION_GRACE_SECONDS` (120, = the pod
+`terminationGracePeriodSeconds`). See "S3 request timeouts" below.
+
+## Incident 2026-09-26 — a CopyObject that never answered
+
+Manual run `geo-backup-manual-20260926123119`: last log `docs progress
+70000/70440` at 13:58:40Z, then nothing (0 CPU, one TCP connection open to S3).
+One server-side `CopyObject` out of 70 440 never answered; the SDK had no
+request timeout, so the worker awaited it forever. The 7200 s budget was only
+checked **between** two copies, so it could not cut; `activeDeadlineSeconds`
+(10 800 s) then killed the Job → `Failed`, **no manifest, no inventory, no
+`latest.json` (404), no purge**. The PG dump itself was valid. Root causes:
+(1) no per-request deadline, (2) a budget that does not abort in-flight
+copies, (3) no handling of SIGTERM, so the kill left nothing recorded.
+
+## S3 request timeouts, budget and SIGTERM
+
+- **Every S3 call has a wall-clock deadline** (`s3send()` in the script),
+  retries of the SDK (`maxAttempts` 5) included: `S3_META_TIMEOUT_MS` for
+  HEAD / LIST / versioning / delete / small GET; for a copy, a write or a body
+  transfer of N bytes, `max(S3_REQUEST_TIMEOUT_MS, N / S3_MIN_THROUGHPUT_BYTES_PER_SEC)`
+  (120 s for a small object, 512 s for a 4 GiB copy or part). The deadline is
+  enforced twice: an `AbortSignal` handed to the SDK (`send(cmd, { abortSignal })`,
+  which aborts the HTTP request and stops the retries) **and** a race on that
+  signal, so the run never waits on a request that never answers, whatever
+  the SDK version does with the signal.
+- **Transport bounds**: when `@smithy/node-http-handler` resolves from
+  `NODE_PATH=/app/node_modules` (it is a dependency of `@aws-sdk/client-s3`,
+  hoisted by `npm ci` in the geo-api image), the client gets a `NodeHttpHandler`
+  with `connectionTimeout` = `S3_CONNECT_TIMEOUT_MS` and `socketTimeout` (idle
+  socket) = `S3_REQUEST_TIMEOUT_MS`. Only these two options are used: both are
+  honoured by the 2.x–4.x handlers, neither logs a URL (4.x `requestTimeout`
+  only warns unless `throwOnRequestTimeout`, and older versions read it as an
+  idle timeout). When the module does not resolve, the script logs
+  `handler=abort-signal-only` and the per-request deadline above still applies.
+  The first log line of each mode states the values and the handler mode.
+- **A copy that fails or times out** (after the SDK retries) is `failed` for
+  that object only (`docs.failed`, `docs.timedOut`, inventory `state: failed`);
+  the other workers go on. It is retried the next night.
+- **The budget really cuts**: at `DOCS_COPY_BUDGET_SECONDS` a timer aborts every
+  copy in flight and no worker starts a new one. Interrupted copies stay
+  `pending` (`docs.interrupted`), `docs.stopReason: budget`. The run then writes
+  the inventory, the manifest (`partial`, `partialReason`), `latest.json`
+  (`partialSince`, `latestComplete` unchanged, `partialReason`) and the
+  verdict, and exits 0 (no purge).
+- **SIGTERM** (kubelet on `activeDeadlineSeconds` or a node drain; SIGKILL
+  follows after `terminationGracePeriodSeconds`, 120 s): during the copy, same
+  as the budget with `docs.stopReason: terminated`, verdict `TERMINATED`,
+  exit 1; each final write is capped to the grace left (minus 10 s). An
+  inventory of 116 000 objects is ~26 MiB, built in < 1 s and uploaded in ~3 s at
+  the 8 MiB/s floor (selftest measure). SIGTERM before the PG part is recorded
+  aborts the run (exit 1, nothing written: there is no valid backup to record).
+- **Never `complete` with an object missing**: `complete` needs 0 pending, 0
+  failed, every listed object backed up or excluded, and the inventory written.
+  A final write that fails (inventory) leaves the backup `partial`
+  (`inventory not written (...)`).
+- **Budget vs deadline** (selftest, static check): 1800 s (dump + PG upload
+  margin) + 7200 s budget + 512 s (longest request in flight) + 3 × 120 s (final
+  writes) + 120 s grace = 9992 s < `activeDeadlineSeconds` 10 800 s. The normal
+  end is the budget, never the kill.
 
 ## Differences from the immo job
 
