@@ -5,9 +5,10 @@
 // (deploy/ci/backup/ : pg/<D>/geo.dump, docs/, docs-inventory/<D>.json,
 // manifests/<D>.json, manifests/latest.json). Port du script immo
 // (rhanka/radar-immobilier#777), mêmes gardes ; écarts geo : formats
-// `geo-backup-*/v1`, dump `pg/<D>/<EXPECTED_DATABASE>.dump`, préprod geo SANS
-// PostgreSQL (le dump est VÉRIFIÉ — sha256 recalculé en flux — pas restauré),
-// objets servis = sous-préfixe `normalized/` des docs, copie multipart au-delà de 5 GiB.
+// `geo-backup-*/v1`, dump `pg/<D>/<EXPECTED_DATABASE>.dump` (vérifié par resolve —
+// sha256 recalculé en flux — puis restauré dans le postgis préprod par fetch-dump +
+// pg_restore, S2), objets servis = sous-préfixe `normalized/` des docs, copie
+// multipart au-delà de 5 GiB.
 //
 // Ce fichier ne tourne JAMAIS sur le runner GitHub : restore-mode.mjs l'embarque
 // tel quel dans les templates de Job (`node -e`, image geo-api = Node +
@@ -18,6 +19,11 @@
 //            sha256 du dump RECALCULÉ en flux (VERIFY_DUMP_SHA256), inventaire
 //            présent. Émet le PIN (D + sha256 manifeste/dump) revérifié ensuite.
 //   list     Job de lecture : chaque manifeste daté encore listé.
+//   fetch-dump initContainer du Job de restauration PG (S2, lecteur) : relit
+//            manifests/D.json (sha256 = PIN de resolve), télécharge pg/D/<db>.dump
+//            (version du manifeste) en calculant son sha256 et REFUSE sauf égalité
+//            manifeste = sidecar = PIN ; écrit WORK_DIR/<db>.dump + WORK_DIR/backup.env
+//            (date, sha256, nombre d'entrées TOC attendu, base du dump).
 //   docs     Job de restauration des objets servis : lecteur = manifeste +
 //            inventaire ; identité de copie = listing des versions de
 //            <backup>/docs/<préfixe>, listing préprod et copies. Restaure dans le
@@ -39,6 +45,9 @@
 /* global require, module */
 /* eslint-disable @typescript-eslint/no-require-imports */
 const fs = require('node:fs');
+const fsp = require('node:fs/promises');
+const path = require('node:path');
+const { once } = require('node:events');
 const crypto = require('node:crypto');
 const process = require('node:process');
 const console = require('node:console');
@@ -356,6 +365,15 @@ function readConfig(env, step) {
     if (!Number.isFinite(h) || h <= 0) throw refused('MAX_AGE_HOURS invalide');
     cfg.maxAgeHours = h;
   }
+  if (step === 'fetch-dump') {
+    cfg.date = req('BACKUP_DATE');
+    if (!isValidDate(cfg.date)) throw refused('BACKUP_DATE invalide');
+    cfg.pinManifestSha256 = req('PIN_MANIFEST_SHA256');
+    if (!SHA_RE.test(cfg.pinManifestSha256)) throw refused('PIN_MANIFEST_SHA256 invalide');
+    cfg.pinPgSha256 = req('PIN_PG_SHA256');
+    if (!SHA_RE.test(cfg.pinPgSha256)) throw refused('PIN_PG_SHA256 invalide');
+    cfg.workDir = String(env.WORK_DIR || '/work');
+  }
   if (step === 'docs' || step === 'recon') {
     cfg.date = req('BACKUP_DATE');
     if (!isValidDate(cfg.date)) throw refused('BACKUP_DATE invalide');
@@ -428,7 +446,8 @@ async function listAllVersions(c, Bucket, Prefix) {
   } while (KeyMarker);
   return all;
 }
-// sha256 + taille d'un objet en flux, octets jetés (le dump geo est vérifié, pas restauré).
+// sha256 + taille d'un objet en flux, octets jetés (vérification de resolve ; la
+// restauration PG télécharge le dump avec fetch-dump).
 async function streamSha(c, Bucket, Key, VersionId) {
   const got = await c.s3.send(new c.sdk.GetObjectCommand(VersionId ? { Bucket, Key, VersionId } : { Bucket, Key }));
   const h = crypto.createHash('sha256');
@@ -514,6 +533,48 @@ async function runList({ cfg, reader, log }) {
   const listing = buildListing({ bucket: cfg.backupBucket, latest: latestGot && latestGot.json, manifests });
   log(`LIST OK backups=${listing.count} latest=${listing.latest} latest_complete=${listing.latestComplete}${listing.truncated ? ' (tronqué)' : ''}`);
   return { exitCode: EXIT.OK, termination: { ok: true, step: 'list', ...listing } };
+}
+
+// Téléchargement du dump en flux vers un fichier, sha256 calculé au passage.
+async function downloadWithSha(c, Bucket, Key, VersionId, file) {
+  const got = await c.s3.send(new c.sdk.GetObjectCommand(VersionId ? { Bucket, Key, VersionId } : { Bucket, Key }));
+  const h = crypto.createHash('sha256');
+  let size = 0;
+  const out = fs.createWriteStream(file, { mode: 0o600 });
+  for await (const chunk of got.Body) {
+    const b = Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk);
+    h.update(b);
+    size += b.length;
+    if (!out.write(b)) await once(out, 'drain');
+  }
+  await new Promise((resolve, reject) => out.end((e) => (e ? reject(e) : resolve())));
+  return { sha256: h.digest('hex'), size };
+}
+
+// S2 (restauration PG) : le dump n'est écrit pour pg_restore que s'il est l'octet
+// près celui du manifeste épinglé par resolve (manifeste = sidecar = PIN).
+async function runFetchDump({ cfg, reader, log }) {
+  const manifest = await loadPinnedManifest(reader, cfg);
+  if (manifest.pg.sha256 !== cfg.pinPgSha256) throw refused('pg.sha256 du manifeste différent du PIN');
+  const k = keysFor(cfg.date, cfg.db);
+  const side = await getBufferOrNull(reader, cfg.backupBucket, k.dumpSha);
+  if (!side || parseSha256Line(side.buf.toString('utf8')) !== manifest.pg.sha256) throw failed('sidecar sha256 du dump absent ou différent du manifeste');
+  await fsp.mkdir(cfg.workDir, { recursive: true });
+  const file = path.join(cfg.workDir, `${cfg.db}.dump`);
+  const got = await downloadWithSha(reader, cfg.backupBucket, k.dump, manifest.pg.versionId || null, file);
+  if (got.size !== Number(manifest.pg.sizeBytes)) throw failed(`taille du dump ${got.size} différente du manifeste ${manifest.pg.sizeBytes}`);
+  if (got.sha256 !== manifest.pg.sha256) throw failed('sha256 du dump différent du manifeste (restauration refusée)');
+  const toc = Number.isFinite(Number(manifest.pg.tocEntries)) && Number(manifest.pg.tocEntries) > 0 ? Number(manifest.pg.tocEntries) : '';
+  const facts = [
+    `BACKUP_DATE=${cfg.date}`,
+    `PG_SHA256=${got.sha256}`,
+    `EXPECTED_TOC_ENTRIES=${toc}`,
+    `DUMP_DATABASE=${safeToken(manifest.pg.database || cfg.db)}`,
+    `DUMP_FILE=${cfg.db}.dump`,
+  ].join('\n') + '\n';
+  await fsp.writeFile(path.join(cfg.workDir, 'backup.env'), facts, { mode: 0o600 });
+  log(`FETCH OK date=${cfg.date} octets=${got.size} sha256=${got.sha256} (= manifeste = sidecar = PIN) toc_attendu=${toc || 'inconnu'}`);
+  return { exitCode: EXIT.OK, termination: { ok: true, step: 'fetch-dump', date: cfg.date, pgSha256: got.sha256, pgSizeBytes: got.size, expectedTocEntries: toc || null } };
 }
 
 async function resolveByHead(copier, cfg, plan) {
@@ -616,7 +677,7 @@ async function runRecon({ cfg, reader, copier, log }) {
   return { exitCode: recon.ok ? EXIT.OK : EXIT.ERROR, termination: { ok: recon.ok, step: 'recon', date: cfg.date, ...recon } };
 }
 
-const STEPS = { resolve: runResolve, list: runList, docs: runDocs, recon: runRecon };
+const STEPS = { resolve: runResolve, list: runList, 'fetch-dump': runFetchDump, docs: runDocs, recon: runRecon };
 
 function makeClient(sdk, cfg, creds) {
   return new sdk.S3Client({
