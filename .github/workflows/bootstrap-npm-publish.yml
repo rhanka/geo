@@ -14,6 +14,14 @@ name: Bootstrap NPM Publish (new package, token)
 # Provenance is preserved: this runs in GitHub Actions with id-token: write, so
 # `npm publish --provenance` attaches a signed provenance statement (sigstore) even
 # though authentication is by token rather than OIDC trusted publishing.
+#
+# OWNER GATE: the job references the Environment `geo-release` (required reviewer = owner),
+# so EVERY run (this workflow is dispatch-only) and every re-run pauses until the owner
+# approves. Reason: an Actions "write" token (e.g. the immo orchestrator's GEO_DISPATCH_TOKEN)
+# can dispatch every workflow of this repo, on any existing branch. NPM_TOKEN, when
+# provisioned, goes to the `geo-release` ENVIRONMENT secrets (not a repository secret): it is
+# then readable only by a job that references geo-release, i.e. only after the owner approval.
+# The `workspace` input is read through env, never interpolated into the script.
 on:
   workflow_dispatch:
     inputs:
@@ -29,6 +37,8 @@ permissions:
 jobs:
   bootstrap-publish:
     runs-on: ubuntu-latest
+    # OWNER GATE (required reviewer = owner) — see header.
+    environment: geo-release
     steps:
       - uses: actions/checkout@v4
 
@@ -48,5 +58,7 @@ jobs:
       - name: First-publish (token)
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          WORKSPACE: ${{ inputs.workspace }}
         run: |
-          npm publish --workspace "${{ inputs.workspace }}" --access public --provenance
+          set -euo pipefail
+          npm publish --workspace "$WORKSPACE" --access public --provenance
