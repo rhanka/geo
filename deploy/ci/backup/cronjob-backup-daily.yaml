@@ -77,6 +77,10 @@ spec:
       backoffLimit: 1
       activeDeadlineSeconds: 10800
       ttlSecondsAfterFinished: 259200
+      # batch/v1 PodFailurePolicyRule: `action` + exactly one of `onExitCodes`
+      # {operator, values (unique, ascending, no 0 with In)} / `onPodConditions`
+      # [{type, status (required: "True"|"False"|"Unknown")}]. Server-side
+      # validation only — `kubectl --dry-run=client` does not catch a missing field.
       podFailurePolicy:
         rules:
           - action: FailJob
@@ -86,6 +90,7 @@ spec:
           - action: Ignore
             onPodConditions:
               - type: DisruptionTarget
+                status: "True"
       template:
         metadata:
           labels:
