@@ -11,6 +11,16 @@
 #     This SA has 0 secrets:create by construction.
 #   - NO CONFIRM gate: it runs on push to main when the bundle changes (idempotent). A bare
 #     workflow_dispatch is kept for on-demand re-apply.
+#   - OWNER GATE on the MANUAL paths only (job `approve`, Environment `geo-prod`, required
+#     reviewer = owner): a workflow_dispatch, or ANY re-run attempt (github.run_attempt > 1,
+#     including a re-run of a push run), pauses until the owner approves. Reason: an Actions
+#     "write" token (e.g. the immo orchestrator's GEO_DISPATCH_TOKEN) can dispatch AND re-run
+#     every workflow of this repo. The FIRST attempt of a push run stays automatic (0 click).
+#     The approval is bound to the attempt (outputs.attempt == github.run_attempt): re-running
+#     apply-bundle alone never reuses an older approval. To re-run after a failure, use
+#     "Re-run all jobs" (a "Re-run failed jobs" skips apply-bundle by design).
+#     Concurrency sits on apply-bundle (not on the workflow) so a run waiting for approval
+#     never blocks the automatic push path.
 #
 # Apply order (VAP runbook — RBAC authZ precedes VAP admission):
 #   0. Guard (geo addition): refuse while a SealedSecret file (committed by geo-cond:
@@ -36,20 +46,43 @@ on:
       - '.github/workflows/bascule-bundle-cd.yml'
   workflow_dispatch: {}
 
-concurrency:
-  group: bascule-bundle-cd
-  cancel-in-progress: false
-
 permissions:
   contents: read
 
 jobs:
+  # OWNER GATE — manual paths only (dispatch, or re-run attempt > 1). Skipped on the first
+  # attempt of a push run. Runs nothing before approval; no checkout, no token scope.
+  approve:
+    if: ${{ vars.BASCULE_BUNDLE_CD_ENABLED == 'true' && (github.event_name == 'workflow_dispatch' || github.run_attempt != '1') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: geo-prod
+    permissions: {}
+    outputs:
+      attempt: ${{ steps.bind.outputs.attempt }}
+    steps:
+      - name: Bind the owner approval to this run attempt
+        id: bind
+        run: |
+          echo "attempt=${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+          echo "owner-approved: event=${GITHUB_EVENT_NAME} ref=${GITHUB_REF} sha=${GITHUB_SHA} attempt=${GITHUB_RUN_ATTEMPT} triggering_actor=${GITHUB_TRIGGERING_ACTOR}" | tee -a "$GITHUB_STEP_SUMMARY"
+
   apply-bundle:
+    needs: approve
     runs-on: ubuntu-latest
     timeout-minutes: 20
     # ARMING SWITCH: set to 'true' by install-cd-bootstrap.sh AFTER the one-time install (SA +
     # KUBE_CONFIG_DATA_PROD exist). Merging can never red a main push against a missing SA.
-    if: vars.BASCULE_BUNDLE_CD_ENABLED == 'true'
+    # GATE: runs iff (a) `approve` succeeded IN THIS ATTEMPT, or (b) first attempt of a
+    # non-dispatch (push) run, where `approve` is skipped. `!cancelled()` stops the default
+    # success() check from cascading the skip of `approve` onto this job.
+    if: >-
+      ${{ !cancelled() && vars.BASCULE_BUNDLE_CD_ENABLED == 'true' &&
+      ((needs.approve.result == 'success' && needs.approve.outputs.attempt == github.run_attempt) ||
+      (needs.approve.result == 'skipped' && github.event_name != 'workflow_dispatch' && github.run_attempt == '1')) }}
+    concurrency:
+      group: bascule-bundle-cd
+      cancel-in-progress: false
     env:
       NAMESPACE: geo
       BUNDLE: deploy/ci/bascule-preprod

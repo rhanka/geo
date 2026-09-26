@@ -10,6 +10,17 @@ name: CD Preprod
 #
 # ⚠ Séparé du RELEASE tag-driven (`docker-publish.yml` + `npm-publish.yml`, domaine
 # geo-socle, intouché). Ici = déploiement continu preprod, PAS la publication versionnée.
+#
+# GATE OWNER sur les chemins MANUELS seulement (job `approve`, Environment `geo-preprod`,
+# required-reviewer = owner) : un workflow_dispatch, ou TOUTE relance (github.run_attempt > 1,
+# y compris la relance d'un run push), attend l'approbation owner. Motif : un jeton « Actions:
+# write » (ex. GEO_DISPATCH_TOKEN de l'orchestrateur immo) peut dispatcher ET relancer tous
+# les workflows du dépôt, sur n'importe quelle branche existante. La 1re tentative d'un run
+# push reste AUTOMATIQUE (0 clic). L'approbation est liée à la tentative (outputs.attempt ==
+# github.run_attempt) : relancer deploy-preprod seul ne réutilise jamais une approbation
+# antérieure. Après un échec : « Re-run all jobs » (« Re-run failed jobs » saute le déploiement).
+# La concurrency est portée par deploy-preprod (pas par le workflow) : un run en attente
+# d'approbation ne bloque jamais le chemin push automatique.
 on:
   push:
     branches: [main]
@@ -26,18 +37,42 @@ permissions:
   contents: read
   packages: write
 
-concurrency:
-  group: cd-preprod
-  cancel-in-progress: false
-
 env:
   # GHCR — geo-api sorti de Scaleway (déploiement preprod sur GHCR via GITHUB_TOKEN,
   # package public). Le registre SCW reste up pour matchid, geo n'en dépend plus.
   IMAGE: ghcr.io/rhanka/geo-api
 
 jobs:
-  deploy-preprod:
+  # GATE OWNER — chemins manuels seulement (dispatch, ou relance > 1). Sauté à la 1re
+  # tentative d'un run push. N'exécute rien avant l'approbation ; 0 checkout, 0 scope de jeton.
+  approve:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.run_attempt != '1' }}
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: geo-preprod
+    permissions: {}
+    outputs:
+      attempt: ${{ steps.bind.outputs.attempt }}
+    steps:
+      - name: Lie l'approbation owner à cette tentative
+        id: bind
+        run: |
+          echo "attempt=${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+          echo "owner-approved: event=${GITHUB_EVENT_NAME} ref=${GITHUB_REF} sha=${GITHUB_SHA} attempt=${GITHUB_RUN_ATTEMPT} triggering_actor=${GITHUB_TRIGGERING_ACTOR}" | tee -a "$GITHUB_STEP_SUMMARY"
+
+  deploy-preprod:
+    needs: approve
+    runs-on: ubuntu-latest
+    # GATE : tourne ssi (a) `approve` a réussi DANS CETTE TENTATIVE, ou (b) 1re tentative d'un
+    # run non-dispatch (push), où `approve` est sauté. `!cancelled()` empêche le success()
+    # implicite de propager le saut d'`approve` sur ce job.
+    if: >-
+      ${{ !cancelled() &&
+      ((needs.approve.result == 'success' && needs.approve.outputs.attempt == github.run_attempt) ||
+      (needs.approve.result == 'skipped' && github.event_name != 'workflow_dispatch' && github.run_attempt == '1')) }}
+    concurrency:
+      group: cd-preprod
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
 

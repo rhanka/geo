@@ -15,6 +15,14 @@ name: NPM Prerelease Publish (single package, dist-tag)
 # brand-new name uses `bootstrap-npm-publish.yml` first), AND a trusted publisher must be
 # configured on npm for THIS workflow + the package — a registry-admin / package-owner setup
 # that this workflow does NOT and cannot perform. `--provenance` attaches a signed statement.
+#
+# OWNER GATE: the job references the Environment `geo-release` (required reviewer = owner),
+# so EVERY run (this workflow is dispatch-only) and every re-run pauses until the owner
+# approves. Reason: an Actions "write" token (e.g. the immo orchestrator's GEO_DISPATCH_TOKEN)
+# can dispatch every workflow of this repo. Optional hardening: set Environment name =
+# geo-release on the npm trusted publisher, so an OIDC token from a job WITHOUT this
+# environment (e.g. an older copy of this file on another branch or tag) cannot publish.
+# Dispatch inputs never reach a shell or a JS source: they are read through env only.
 on:
   workflow_dispatch:
     inputs:
@@ -38,6 +46,8 @@ concurrency:
 jobs:
   prerelease-publish:
     runs-on: ubuntu-latest
+    # OWNER GATE (required reviewer = owner) — see header.
+    environment: geo-release
     steps:
       - uses: actions/checkout@v4
         with:
@@ -67,10 +77,12 @@ jobs:
             echo "::error::Refusing: NON-latest prerelease tags only (latest goes through npm-publish.yml, all 6 packages, version==tag)."
             exit 1
           fi
-          PKG_JSON="./${PACKAGE_DIR}/package.json"
-          NAME="$(node -p "require('$PKG_JSON').name")"
-          VERSION="$(node -p "require('$PKG_JSON').version")"
-          PRIVATE="$(node -p "String(!!require('$PKG_JSON').private)")"
+          # PKG_JSON is read by node from env (never spliced into the JS source): a crafted
+          # package_dir input stays a path, not code.
+          export PKG_JSON="./${PACKAGE_DIR}/package.json"
+          NAME="$(node -p "require(require('node:path').resolve(process.env.PKG_JSON)).name")"
+          VERSION="$(node -p "require(require('node:path').resolve(process.env.PKG_JSON)).version")"
+          PRIVATE="$(node -p "String(!!require(require('node:path').resolve(process.env.PKG_JSON)).private)")"
           # 3. Never publish a private package.
           if [ "$PRIVATE" = "true" ]; then
             echo "::error::Refusing: $NAME is private (not publishable)."
@@ -94,6 +106,11 @@ jobs:
           npm run build
 
       - name: Prerelease-publish (OIDC, single package, NON-latest dist-tag)
+        env:
+          PKG_NAME: ${{ steps.guard.outputs.pkg_name }}
+          PKG_VERSION: ${{ steps.guard.outputs.pkg_version }}
+          DIST_TAG: ${{ inputs.dist_tag }}
         run: |
-          npm publish --workspace "${{ steps.guard.outputs.pkg_name }}" --tag "${{ inputs.dist_tag }}" --access public --provenance
-          echo "Published ${{ steps.guard.outputs.pkg_name }}@${{ steps.guard.outputs.pkg_version }} -> dist-tag ${{ inputs.dist_tag }}"
+          set -euo pipefail
+          npm publish --workspace "$PKG_NAME" --tag "$DIST_TAG" --access public --provenance
+          echo "Published ${PKG_NAME}@${PKG_VERSION} -> dist-tag ${DIST_TAG}"
