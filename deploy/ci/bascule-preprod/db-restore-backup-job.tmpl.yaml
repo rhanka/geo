@@ -1,0 +1,163 @@
+# =============================================================================
+# db-restore-backup-job.tmpl.yaml — S2 de la bascule geo MODE=restore : restaurer la
+# base du postgis PRÉPROD DEPUIS le backup quotidien geo-backup/pg/<D>/<db>.dump
+# (format -Fc). Port de rhanka/radar-immobilier#777.
+#
+#   initContainer `fetch`   (image geo-api, backup-restore.cjs BR_STEP=fetch-dump,
+#                           lecteur ${READER_SECRET}) : relit manifests/<D>.json (sha256
+#                           = PIN de resolve), télécharge le dump en calculant son
+#                           sha256 et REFUSE sauf égalité manifeste = sidecar = PIN ;
+#                           écrit /work/<db>.dump + /work/backup.env.
+#   container     `restore` (postgis) : G2 (aucune autre session sur la base),
+#                           base du Secret == EXPECTED_DATABASE, pg_restore --list
+#                           (nombre d'entrées TOC == manifeste, dbname de l'archive ==
+#                           EXPECTED_DATABASE), puis pg_restore --clean --if-exists
+#                           --no-owner --no-privileges --exit-on-error
+#                           --single-transaction (tout ou rien).
+#
+# Avant ce Job (restore-pg.mjs) : pg-check (pg_isready + SELECT 1) et G1 (snapshot).
+# Pod `role=pra-restore` (netpol pra-restore-egress : DNS, S3-BHS:443,
+# geo-postgis:5432). Superuser préprod = PG* libpq depuis ${PG_SECRET}.
+# Runner = kubectl seul (.status + messages de fin de `fetch` et `restore`).
+#
+# Placeholders : ${JOB_NAME} ${NAMESPACE} ${IMAGE} ${PG_IMAGE} ${READER_SECRET}
+# ${S3_ENDPOINT} ${PINNED_S3_ENDPOINT} ${S3_REGION} ${S3_FORCE_PATH_STYLE}
+# ${EXPECTED_BACKUP_BUCKET} ${EXPECTED_DATABASE} ${BACKUP_DATE} ${PIN_MANIFEST_SHA256}
+# ${PIN_PG_SHA256} ${PG_SERVICE} ${PG_SECRET} ${TTL_SECONDS}, plus le placeholder
+# BR_SCRIPT sous les args de `fetch` (jamais écrit dans un commentaire : il s'étend
+# sur de nombreuses lignes). $VAR du shell = variables d'EXÉCUTION.
+# =============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    role: pra-restore
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: pra-restore
+    sentropic.io/bascule: pg-restore
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: ${TTL_SECONDS}
+  activeDeadlineSeconds: 1800
+  template:
+    metadata:
+      labels:
+        role: pra-restore
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: pra-restore
+        sentropic.io/bascule: pg-restore
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: work
+          emptyDir: { sizeLimit: 2Gi }
+        - name: tmp
+          emptyDir: { sizeLimit: 64Mi }
+      initContainers:
+        - name: fetch
+          image: ${IMAGE}
+          imagePullPolicy: IfNotPresent
+          workingDir: /app
+          command: ["node", "-e"]
+          args:
+            - |
+${BR_SCRIPT}
+          env:
+            - { name: BR_STEP, value: "fetch-dump" }
+            - { name: AWS_EC2_METADATA_DISABLED, value: "true" }
+            - { name: WORK_DIR, value: "/work" }
+            - { name: S3_ENDPOINT, value: "${S3_ENDPOINT}" }
+            - { name: PINNED_S3_ENDPOINT, value: "${PINNED_S3_ENDPOINT}" }
+            - { name: S3_REGION, value: "${S3_REGION}" }
+            - { name: S3_FORCE_PATH_STYLE, value: "${S3_FORCE_PATH_STYLE}" }
+            - { name: EXPECTED_BACKUP_BUCKET, value: "${EXPECTED_BACKUP_BUCKET}" }
+            - { name: EXPECTED_DATABASE, value: "${EXPECTED_DATABASE}" }
+            - { name: BACKUP_DATE, value: "${BACKUP_DATE}" }
+            - { name: PIN_MANIFEST_SHA256, value: "${PIN_MANIFEST_SHA256}" }
+            - { name: PIN_PG_SHA256, value: "${PIN_PG_SHA256}" }
+            - { name: READER_ACCESS_KEY, valueFrom: { secretKeyRef: { name: ${READER_SECRET}, key: S3_ACCESS_KEY } } }
+            - { name: READER_SECRET_KEY, valueFrom: { secretKeyRef: { name: ${READER_SECRET}, key: S3_SECRET_KEY } } }
+            - { name: BACKUP_BUCKET, valueFrom: { secretKeyRef: { name: ${READER_SECRET}, key: BACKUP_BUCKET } } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests: { cpu: 10m, memory: 96Mi }
+            limits: { cpu: 500m, memory: 256Mi }
+          volumeMounts:
+            - { name: work, mountPath: /work }
+            - { name: tmp, mountPath: /tmp }
+      containers:
+        - name: restore
+          image: ${PG_IMAGE}
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "-c"]
+          args:
+            - |
+              set -uo pipefail
+              T=/dev/termination-log
+              fin() { printf '{"ok":%s,"step":"pg-restore","date":"%s","tocEntries":%s,"reason":"%s"}' "$1" "$BACKUP_DATE" "$2" "$3" > "$T" 2>/dev/null || true; }
+              BACKUP_DATE=unknown
+              # shellcheck disable=SC1091
+              . /work/backup.env || { fin false null "backup.env absent (fetch)"; exit 1; }
+              if [ "$PGDATABASE" != "$EXPECTED_DATABASE" ]; then
+                fin false null "POSTGRES_DB of the Secret differs from EXPECTED_DATABASE, restore refused"; exit 2
+              fi
+              busy="$(psql -X -v ON_ERROR_STOP=1 -d postgres -tAc "select count(*) from pg_stat_activity where datname = '$EXPECTED_DATABASE' and pid <> pg_backend_pid()")" || { fin false null "postgres unreachable"; exit 1; }
+              if [ "$busy" != "0" ]; then
+                fin false null "G2: $busy active session(s) on the target database, restore refused"; exit 2
+              fi
+              echo "[restore] backup date=$BACKUP_DATE sha256=$PG_SHA256 (verifie par fetch)"
+              pg_restore --list "/work/$DUMP_FILE" > /tmp/toc.txt || { fin false null "archive unreadable (pg_restore --list)"; exit 1; }
+              toc="$(grep -c '^[0-9]' /tmp/toc.txt || true)"
+              if [ -n "$EXPECTED_TOC_ENTRIES" ] && [ "$toc" != "$EXPECTED_TOC_ENTRIES" ]; then
+                fin false "$toc" "TOC entries differ from the manifest, restore refused"; exit 2
+              fi
+              src_db="$(awk -F': ' '/^;[[:space:]]+dbname:/ {print $2; exit}' /tmp/toc.txt | tr -cd 'a-z0-9_')"
+              echo "[restore] toc_entries=$toc archive dbname='$src_db' attendu='$EXPECTED_DATABASE'"
+              if [ -z "$src_db" ] || [ "$src_db" != "$EXPECTED_DATABASE" ]; then
+                fin false "$toc" "archive dbname differs from EXPECTED_DATABASE, restore refused"; exit 2
+              fi
+              echo "[restore] pg_restore --clean --if-exists --single-transaction -> base=$PGDATABASE hote=$PGHOST"
+              if ! pg_restore --clean --if-exists --no-owner --no-privileges \
+                --exit-on-error --single-transaction \
+                --dbname "$PGDATABASE" "/work/$DUMP_FILE"; then
+                fin false "$toc" "pg_restore failed (single transaction rolled back: the previous state is kept)"; exit 1
+              fi
+              fin true "$toc" ""
+              echo "[restore] OK - backup $BACKUP_DATE charge dans le postgis preprod"
+          env:
+            - { name: PGHOST, value: "${PG_SERVICE}" }
+            - { name: PGPORT, value: "5432" }
+            - { name: PGCONNECT_TIMEOUT, value: "10" }
+            - { name: PGAPPNAME, value: "geo-bascule-pg-restore" }
+            - { name: EXPECTED_DATABASE, value: "${EXPECTED_DATABASE}" }
+            - { name: PGUSER, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_USER } } }
+            - { name: PGPASSWORD, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_PASSWORD } } }
+            - { name: PGDATABASE, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_DB } } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests: { cpu: 10m, memory: 128Mi }
+            limits: { cpu: 500m, memory: 512Mi }
+          volumeMounts:
+            - { name: work, mountPath: /work }
+            - { name: tmp, mountPath: /tmp }

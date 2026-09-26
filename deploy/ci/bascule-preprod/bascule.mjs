@@ -11,10 +11,12 @@
 //   server-side ADDITIF) → S3b recon (dest ⊇ src) → S5' rollout (restart geo-api
 //   préprod, GARDE G4) → S7 smoke (verify THROUGH l'API publique, côté runner).
 //
-//   RETIRÉS vs immo (préprod geo SANS PostgreSQL, 0 writer à geler) : quiesce /
-//   un-quiesce (G2), restore + rollback (G1), migrate (S2c), precheck-runs (S3c),
-//   refresh / force-refresh (worker-live immo), flip GEO_DOCUMENTS_REPOINT (S5 immo).
-//   Côté DB geo la bascule = dump prod + freshness SEULEMENT (archive DR).
+//   RETIRÉS vs immo en MODE=chain (0 writer à geler) : quiesce / un-quiesce (G2),
+//   restore + rollback (G1), migrate (S2c), precheck-runs (S3c), refresh /
+//   force-refresh (worker-live immo), flip GEO_DOCUMENTS_REPOINT (S5 immo). Côté DB
+//   geo, la jambe chain = dump prod + freshness SEULEMENT (archive DR). La
+//   restauration PG du postgis préprod (S2 + G1, pg-check avant) vit en MODE=restore
+//   (restore-pg.mjs) ; S2c migrate y est N/A (geo n'a pas de migration).
 //
 // DATA-PLANE 100% CLUSTER-SIDE, RUNNER KUBECTL-ONLY (contrat owner, identique immo) :
 // AUCUNE cred S3/DB, AUCUN listing/clé ne transite ni n'est lu par le runner GitHub.
