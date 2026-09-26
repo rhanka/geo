@@ -54,6 +54,13 @@ jobs:
       # soit ENFORCÉ en CI, pas seulement committé.
       - name: Test (scripts/)
         run: npm run test:scripts
+      # Self-tests hors ligne de la bascule préprod (CLI bascule.mjs : gardes, docs-sync
+      # incrémental, cron hebdomadaire) et du contrat e2e (served-ids.mjs), jusqu'ici
+      # committés mais jamais lancés par la CI.
+      - name: Validate bascule preprod logic (offline selftests)
+        run: |
+          node deploy/ci/bascule-preprod/bascule.selftest.mjs
+          node deploy/ci/bascule-preprod/served-ids.selftest.mjs
       - name: Install Chromium for MapLibre mount e2e
         run: npx playwright install --with-deps chromium
       - name: Mount e2e (real MapLibre and Chromium)
