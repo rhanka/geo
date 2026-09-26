@@ -80,6 +80,8 @@ echo "== 3) arm apply-au-merge =="
 gh variable set BASCULE_BUNDLE_CD_ENABLED --repo "$REPO" --body true
 
 echo "== 4) dispatch bascule-bundle-cd (applique le bundle en prod) + attente (gate anti-RCE inclus) =="
+# Un dispatch de bascule-bundle-cd attend l'approbation owner (job `approve`, Environment
+# geo-prod) : le `gh run watch` ci-dessous reste en attente tant que l'owner n'a pas approuvé.
 gh workflow run bascule-bundle-cd.yml --repo "$REPO"
 sleep 6
 RID="$(gh run list --repo "$REPO" --workflow bascule-bundle-cd.yml -L1 --json databaseId --jq '.[0].databaseId')"
