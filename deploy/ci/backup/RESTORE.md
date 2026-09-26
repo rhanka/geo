@@ -38,9 +38,10 @@ $S5 cp $B/manifests/$D.json manifest.json
 ```
 
 Use a manifest with `status: "complete"` (`latest.json` `latestComplete` points
-to the newest one). `status: "partial"` (verdict `PARTIAL`) means the PG part
-is valid but some source objects were not in the backup that day
-(`docs.pending` / `docs.failed` > 0 — expected during the seed). The manifest
+to the newest one). `status: "partial"` (verdict `PARTIAL`) or `"incomplete"`
+(verdict `INCOMPLETE`) means the PG part is valid but some source objects were
+not in the backup that day (`docs.pending` > 0 — expected during the seed — or
+`docs.failed` > 0; `partialReason` says why). The manifest
 gives the dump key + sha256, the database size, the PostgreSQL / PostGIS
 versions and the inventory key.
 

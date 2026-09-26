@@ -37,10 +37,11 @@ early. Steady state: at most 16 visible dated backups (7 daily + 3 older
 Sundays + 6 monthly, fewer when they overlap), plus the purged ones during their
 7-day grace.
 
-A `partial` day (seed, or objects failed that day) has a manifest, so it counts
-as a backup in the plan of a later complete day: its PG dump is complete, only
-some source objects were not yet in `docs/` that day (listed `pending`/`failed`
-in its inventory). **No purge runs on a partial day** (no plan is written).
+A `partial` day (seed, budget, request deadlines) or `incomplete` day (objects
+failed that day) has a manifest, so it counts as a backup in the plan of a
+later complete day: its PG dump is complete, only some source objects were not
+yet in `docs/` that day (listed `pending`/`failed` in its inventory). **No purge
+runs on a partial or incomplete day** (no plan is written).
 
 How the purge is split between the two identities:
 
