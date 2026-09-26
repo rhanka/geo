@@ -24,8 +24,9 @@ workflow **sans `needs:` entre eux**. Chaque jambe rend son **statut GitHub sép
 | `s3` | S3 (couche servie) | `preflight s3` → `copy-docs` → `recon` → `rollout` (G4) → `smoke` | préprod seul | rien de PG |
 
 - Aucune dépendance de données PG → S3 côté geo : la préprod n'a pas de PostgreSQL, le dump
-  est une archive DR, rien ne le consomme dans la bascule. **Seul un futur orchestrateur e2e
-  couplera les deux jambes.**
+  est une archive DR, rien ne le consomme dans la bascule. **Seul l'orchestrateur e2e (côté
+  immo) couple les deux jambes** ; le job `cycle-leg` (voir « Contrat e2e ») ne fait que
+  rapporter leur résultat et ne crée aucun `needs:` entre `pg` et `s3`.
 - `concurrency: bascule-preprod` reste au niveau **workflow** : jamais deux runs de bascule en
   même temps ; à l'intérieur d'un run, `pg` et `s3` tournent en parallèle.
 - Chaque job a son propre runner → `BASCULE_WORKDIR` (sentinels `T1.txt`, `recon.ok.json`)
@@ -54,6 +55,8 @@ Tout l'accès object-store/DB vit dans des Jobs verdict-only (creds via `secretK
 | --- | --- |
 | `bascule.mjs` | CLI Node kubectl-only : `preflight [pg\|s3]`, `dump`, `copy-docs`, `recon`, `rollout`, `smoke` + gardes + `classifyJobStatus` + `preflightRequirements`. |
 | `bascule.selftest.mjs` | Self-test des fonctions pures (0 appel kubectl/aws/réseau), dont le sélecteur de jambe du preflight. |
+| `served-ids.mjs` | Contrat e2e : `validate-cycle-id`, `builder-version`, `build` (ids ZONES servis via l'API publique + builder publié), `cycle-leg` (`legs.geo`). 0 kubectl, 0 cred. |
+| `served-ids.selftest.mjs` | Self-test du contrat e2e (API OGC et builder simulés, 0 réseau) + validation structurelle du workflow (`yaml`). |
 | `s3-check-job.tmpl.yaml` | Checks S3 verdict-only (aws-cli, même pin qu'immo) : `freshness` (S1) et `recon` (S3b). |
 | `docs-sync-job.tmpl.yaml` | Copie `normalized/` prod → préprod (S3) : image geo-api, aws-sdk `CopyObject` server-side ADDITIF + `GrantFullControl`, identité éphémère k8s. |
 | `cronjob-db-backup-prod.yaml` | CronJob `geo-db-backup-prod` (ns geo, suspendu) : `pg_dump --format=custom --no-owner --no-privileges` RO → `geo-postgres/prod/sets/<ISO-ts>/geo.dump` (`EXPECTED_DATABASE=geo`). |
@@ -86,7 +89,99 @@ manuel) ; une jambe inconnue échoue (fail-closed).
 Ordre workflow (les deux jobs démarrent ensemble) :
 
 - job `pg` : S0 pg → [DRY : arrêt, rien de destructif] → S1 → pointeur `T1.txt` (`always`).
-- job `s3` : S0 s3 → [DRY : copy-docs non jouée, recon + smoke informatifs] → S3 → S3b → S5' → S7 → pointeur `recon.ok.json` (`always`).
+- job `s3` : S0 s3 → [DRY : copy-docs non jouée, recon + smoke informatifs] → S3 → S3b → S5' → S7 → [CYCLE_ID : served ids zones] → pointeur `recon.ok.json` (`always`).
+- job `cycle-leg` (seulement si CYCLE_ID non vide) : après `pg` ET `s3`, quel que soit leur résultat → `legs.geo`.
+
+## Contrat e2e immo+geo (`CYCLE_ID`)
+
+L'orchestrateur e2e (radar-immobilier, conducteur i-cond) dispatche ce workflow puis vérifie,
+par **INCLUSION**, que chaque id canonique référencé par immo existe **octet pour octet** dans
+le *served set* de geo. Contrat symétrique : immo fait la même chose dans son dépôt. Toute la
+logique geo est dans `served-ids.mjs` ; le workflow reste fin.
+
+### Input
+
+| Input | Type | Règle |
+| --- | --- | --- |
+| `CYCLE_ID` | string, optionnel (défaut vide) | `^[A-Za-z0-9._-]{1,100}$`, validé (`validate-cycle-id`) au début des jobs `pg`, `s3` et `cycle-leg`, AVANT tout usage dans un nom d'artefact. Jamais interpolé dans un `run:` (passé par `env`). **Vide ⇒ comportement inchangé** : aucune étape e2e, pas de job `cycle-leg`. Un run planifié n'a pas d'input ⇒ jamais d'e2e. |
+
+### Artefact `geo-served-canonical-ids-<CYCLE_ID>` (fin du job `s3`)
+
+Produit **après le smoke S7 vert**, **hors DRY**, si `CYCLE_ID` est non vide. S'il échoue, le job
+`s3` passe au rouge (fail-closed).
+
+| Fichier | Contenu |
+| --- | --- |
+| `served-ids.txt` | 1 id par ligne, **ordre d'octets (LC_ALL=C), dédupliqué**, LF final. |
+| `served-ids.txt.sha256` | `<hex>  served-ids.txt` (vérifiable par `sha256sum -c`). |
+| `served-ids.meta.json` | `scope: "zones"`, version du builder, registre (chemin + sha256), comptes, collections lues (features/pages/ids par collection), collections exclues. |
+| `missing-zone-collections.txt` | Slugs du registre **sans** collection `qc-zonage-<slug>` dans `/collections` (1 par ligne, vide s'il n'y en a aucun). |
+
+- **Scope = ZONES seules** (arbitrage i-cond). Format : `ogc:zones:<city_slug>:<canonicalizeZoneCodeForJoin(zone_code)>`,
+  par exemple `ogc:zones:westmount:R-13-02-02` (`zone_code` servi `R13-02-02`). **Les lots viendront
+  plus tard** par un endpoint geo-api `/join-keys` : les `qc-lots-*` ne sont pas lisibles par l'API
+  OGC actuelle (géométrie obligatoire ; chaque page relit l'objet entier côté serveur, soit environ
+  63 min pour Laval avec 401 594 lots ; `qc-lots-montreal` ferme la connexion vers 50 s).
+- **Builder** : `buildServedCanonicalIds({ zones })` + `serializeServedCanonicalIds` de
+  **`@sentropic/geo` PUBLIÉ sur npm**, version épinglée dans `served-ids.mjs` (`BUILDER_VERSION`,
+  aujourd'hui `0.6.2`, source unique : `node served-ids.mjs builder-version`), installé hors workspace
+  (`npm install --prefix $RUNNER_TEMP/served-ids-builder --no-save --ignore-scripts`). La version
+  installée est revérifiée avant l'import ; la sortie est recontrôlée (tri octets strict, format,
+  sérialisation). Geo et immo utilisent ainsi exactement le même builder.
+- **Univers** (SPEC_GEO_SERVED_CONTRACT §2) : collections `qc-zonage-<slug>` dont le slug appartient
+  au registre committé des 1106 municipalités (`packages/qc-sources/src/geo/municipalities.qc.json`).
+  **Exclus** : `qc-zonage-norms-*` (tables de normes), couches thématiques (`qc-zonage-arcgis-*`,
+  `qc-zonage-laval-sad-*`, …) et les **3 variantes de slug servies hors registre** : `l-assomption`,
+  `l-epiphanie`, `sainte-christine-d-auvergne`. Elles restent exclues **tant qu'immo n'a pas dit s'il
+  les référence** ; elles figurent dans `served-ids.meta.json` (`excluded_unregistered_qc_zonage_collections`).
+- **Lecture** : API **publique** préprod (`PREPROD_API_URL`), 0 credential comme le smoke, 4 collections
+  en parallèle, pagination `limit=10000` / `offset` **calculés** (les liens `next` de l'API sont en
+  `http://` derrière la terminaison TLS, on ne les suit pas). Propriété lue : `zone_code` (brute ;
+  vide ⇒ ignorée par le builder).
+- **Fail-closed** : erreur HTTP (429/5xx/réseau/JSON illisible : 3 tentatives puis échec ; 4xx :
+  échec immédiat), page incohérente (`numberReturned`, `numberMatched` qui change, page vide avant la
+  fin), collection **servie** illisible, registre invalide, builder absent ou d'une autre version,
+  résultat vide ⇒ exit 1. **Seule tolérance, choisie volontairement** : un slug du registre **absent
+  de `/collections`** n'est pas une erreur, puisque le served set est par définition ce qui est servi.
+  Il est listé dans `missing-zone-collections.txt`. Une collection présente dans `/collections` mais
+  illisible reste une erreur.
+
+### Artefact `cycle-leg-geo-<CYCLE_ID>` (job `cycle-leg`)
+
+`needs: [pg, s3]`, `if: always() && inputs.CYCLE_ID != ''`. Ce job **rapporte seulement** : 0 kubectl,
+0 secret. Il télécharge `bascule-pg-pointers-<run_id>` (T1) et `geo-served-canonical-ids-<CYCLE_ID>`
+(les deux en `continue-on-error` : absents en DRY ou si une jambe a échoué). Il écrit
+`cycle-leg-geo.json`, qui contient UNIQUEMENT la sous-branche `legs.geo` du schéma partagé :
+
+```json
+{
+  "repo": "rhanka/geo",
+  "workflow": "bascule-preprod.yml",
+  "run_id": "<github.run_id>",
+  "sha_main": "<7 premiers caractères de github.sha>",
+  "t1": "<ISO 8601 de T1.txt (jambe pg)> | null",
+  "verdict": { "pg": "success|failure|pending", "s3": "success|failure|pending" },
+  "served_ids_artifact": "geo-served-canonical-ids-<CYCLE_ID>",
+  "served_ids_sha256": "<hex> | null",
+  "served_ids_scope": "zones"
+}
+```
+
+- **Mapping des verdicts** (`needs.<job>.result`) : `success` → `success` ; `failure`, `cancelled`,
+  `skipped` → `failure` ; vide ou inconnu → `pending` (jamais observé une fois les `needs` terminés).
+- `t1` : `null` si l'artefact pg est absent (DRY, échec avant S1) ou si `T1.txt` est illisible.
+- `served_ids_sha256` : **recalculé** sur `served-ids.txt` et comparé au `.sha256` (un artefact
+  incohérent fait échouer le job) ; `null` si l'artefact est absent, **sans modifier le verdict `s3`**.
+- `served_ids_scope` : champ additionnel (`"zones"`), ignoré par un orchestrateur qui ne le connaît pas.
+- Un dispatch **DRY** avec `CYCLE_ID` produit un `legs.geo` avec `t1: null` et `served_ids_sha256: null` :
+  ce n'est pas un cycle e2e exploitable.
+
+### Dépendance cross-repo (owner / infra)
+
+Le dispatch de `rhanka/geo` par l'orchestrateur immo exige un jeton côté immo : **PAT repo-scopé
+`GEO_DISPATCH_TOKEN`** (décision owner), avec le droit `actions:write` sur `rhanka/geo` (dispatch
++ lecture des runs et artefacts). **À provisionner par l'owner/infra** ; ce dépôt ne le crée ni ne
+le lit. Ce workflow ne demande aucune permission supplémentaire (`contents: read`).
 
 ## Mapping immo → geo
 
@@ -178,4 +273,9 @@ node deploy/ci/bascule-preprod/bascule.mjs preflight pg   # jambe PG seule (job 
 node deploy/ci/bascule-preprod/bascule.mjs preflight s3   # jambe S3 seule (job `s3`)
 node deploy/ci/bascule-preprod/bascule.mjs smoke        # API publique, lecture seule
 node deploy/ci/bascule-preprod/bascule.selftest.mjs     # fonctions pures, 0 appel réel
+
+# contrat e2e — served ids ZONES (API publique, lecture seule, 0 cred)
+npm install --prefix /tmp/served-ids-builder --no-save --ignore-scripts "@sentropic/geo@$(node deploy/ci/bascule-preprod/served-ids.mjs builder-version)"
+node deploy/ci/bascule-preprod/served-ids.mjs build --builder-dir /tmp/served-ids-builder --out /tmp/served-ids
+node deploy/ci/bascule-preprod/served-ids.selftest.mjs  # 0 réseau ; YAML_RESOLVE_FROM=<package.json> si pas de node_modules
 ```
