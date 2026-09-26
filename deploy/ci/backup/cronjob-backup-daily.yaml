@@ -187,7 +187,7 @@ spec:
                 - { name: NODE_PATH, value: "/app/node_modules" }
                 - { name: NODE_OPTIONS, value: "--max-old-space-size=512 --dns-result-order=ipv4first" }
                 - { name: AWS_EC2_METADATA_DISABLED, value: "true" }
-                # Identity geo-backup-writer (SealedSecret, k8s lane): read sentropic-geo;
+                # Identity geo-backup-writer (Secret written by the CD from GitHub): read sentropic-geo;
                 # geo-backup Put/Get/List/multipart. NO delete right (the purge is `purge`).
                 - { name: S3_ENDPOINT,   valueFrom: { secretKeyRef: { name: geo-backup-writer, key: S3_ENDPOINT } } }
                 - { name: S3_REGION,     valueFrom: { secretKeyRef: { name: geo-backup-writer, key: S3_REGION } } }
@@ -241,7 +241,7 @@ spec:
                 - { name: NODE_PATH, value: "/app/node_modules" }
                 - { name: NODE_OPTIONS, value: "--max-old-space-size=128 --dns-result-order=ipv4first" }
                 - { name: AWS_EC2_METADATA_DISABLED, value: "true" }
-                # Identity geo-backup-purger (SealedSecret, k8s lane): DeleteObject WITHOUT
+                # Identity geo-backup-purger (Secret written by the CD from GitHub): DeleteObject WITHOUT
                 # VersionId (delete-marker) on pg/*, manifests/*, docs-inventory/* + ListBucket. No GET, no PUT, no docs/.
                 - { name: S3_ENDPOINT,   valueFrom: { secretKeyRef: { name: geo-backup-purger, key: S3_ENDPOINT } } }
                 - { name: S3_REGION,     valueFrom: { secretKeyRef: { name: geo-backup-purger, key: S3_REGION } } }
