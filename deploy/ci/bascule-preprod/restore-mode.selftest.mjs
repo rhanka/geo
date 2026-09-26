@@ -27,8 +27,8 @@ import { join } from "node:path";
 import process from "node:process";
 
 import {
-  assertScriptEmbeddable, assertYamlSafeVars, BACKUP_SECRET_SPECS, backupSecretValues, basculeMode, buildSecretManifest, specsForMode, formatBackupTable, indentBlock, JOBS, keysOfReplaced,
-  parseTermination, pickTerminationMessage, PINNED_S3_ENDPOINT, readerSecretValues, safeReason, validateBackupIdInput, validateCycleId,
+  assertScriptEmbeddable, assertYamlSafeVars, BACKUP_SECRET_SPECS, backupSecretValues, basculeMode, buildSecretManifest, specsForMode, forbiddenDstBuckets, formatBackupTable, indentBlock, JOBS, keysOfReplaced,
+  parseTermination, pickTerminationMessage, PINNED_S3_ENDPOINT, podOfJob, readerSecretValues, safeReason, validateBackupIdInput, validateCycleId,
   validateListing, validatePin,
 } from "./restore-mode.mjs";
 import { backupOfLeg, buildGeoLeg } from "./served-ids.mjs";
@@ -214,6 +214,22 @@ eq("chooseDate — latestComplete + son manifestSha256", br.chooseDate({ kind: "
 throwsCode("readConfig — endpoint non figé refusé", () => br.readConfig(baseEnv({ S3_ENDPOINT: "https://evil.example" }), "resolve"), 2);
 throwsCode("readConfig — écriture dans la prod refusée", () => br.readConfig(docsEnv("a".repeat(64), { DST_BUCKET: PROD }), "docs"), 2);
 throwsCode("readConfig — préfixe invalide refusé", () => br.readConfig(docsEnv("a".repeat(64), { DOCS_RESTORE_PREFIX: "../" }), "docs"), 2);
+throwsCode("readConfig — liste interdite vide refusée (jamais « rien d'interdit »)", () => br.readConfig(docsEnv("a".repeat(64), { FORBIDDEN_DST_BUCKETS: " , " }), "recon"), 2);
+throwsCode("readConfig — sentropic-geo figé interdit même absent de la liste", () => br.readConfig(docsEnv("a".repeat(64), { DST_BUCKET: "sentropic-geo", FORBIDDEN_DST_BUCKETS: "autre-bucket" }), "docs"), 2);
+throwsCode("readConfig — geo-backup figé interdit même avec un autre bucket de backup", () => br.readConfig(docsEnv("a".repeat(64), { DST_BUCKET: "geo-backup", BACKUP_BUCKET: "geo-backup-2", EXPECTED_BACKUP_BUCKET: "geo-backup-2" }), "docs"), 2);
+eq("HARD_FORBIDDEN_DST_BUCKETS — sentropic-geo + geo-backup", br.HARD_FORBIDDEN_DST_BUCKETS, ["sentropic-geo", "geo-backup"]);
+{
+  // `excluded` (préfixe écarté par le backup, backup toujours complet) : non exigé, compté à part ; pending bloque toujours.
+  const entries = [{ key: `${P}archive/old.parquet`, size: 9, state: "excluded" }, { key: `${P}laval/zones.parquet`, size: 2, etag: '"e"', backupEtag: '"e"', state: "backed-up" }];
+  const dest = new Map([[`${P}laval/zones.parquet`, { Size: 2, ETag: '"e"' }]]);
+  const plan = br.planDocsRestore({ entries, createdAt: "2026-09-26T04:40:00Z", versionsIndex: new Map(), destIndex: dest });
+  eq("planDocsRestore — excluded ignoré (pas un refus), compté à part", [plan.excluded, plan.notInBackup, plan.unresolved, plan.upToDate], [1, 0, 0, 1]);
+  const rec = br.reconInventory(entries, dest, P);
+  eq("reconInventory — excluded non exigé, compté à part", [rec.ok, rec.excluded, rec.notInBackup, rec.extra], [true, 1, 0, 0]);
+  eq("planDocsRestore — pending bloque toujours (notInBackup)", br.planDocsRestore({ entries: [{ key: `${P}p`, size: 1, state: "pending" }], createdAt: "2026-09-26T04:40:00Z", versionsIndex: new Map(), destIndex: new Map() }).notInBackup, 1);
+}
+eq("forbiddenDstBuckets — sentropic-geo figé + PROD_DOCS + bucket de backup, dédoublonnés", forbiddenDstBuckets({ prodDocs: PROD, backupBucket: B }), `${PROD},${B}`);
+throws("forbiddenDstBuckets — PROD_DOCS vide refusé", () => forbiddenDstBuckets({ prodDocs: "", backupBucket: B }));
 
 // ═════════════════════════════ étapes contre le faux S3 ═══════════════════════
 async function suite() {
@@ -275,9 +291,21 @@ throws("validateBackupIdInput — guillemet refusé", () => validateBackupIdInpu
 eq("validateCycleId — id orchestrateur", validateCycleId("iso-prod-2026-09-27-abc"), "iso-prod-2026-09-27-abc");
 throws("assertYamlSafeVars — guillemet refusé", () => assertYamlSafeVars({ X: 'a"b' }));
 ok("safeReason — ni commande workflow ni saut de ligne", !/::|\n/.test(safeReason("a\n::error::x")));
-eq("pickTerminationMessage — conteneur du pod le plus récent", parseTermination(pickTerminationMessage({ items: [
-  { metadata: { creationTimestamp: "1" }, status: { containerStatuses: [{ name: "read", state: { terminated: { message: '{"ok":false}' } } }] } },
-  { metadata: { creationTimestamp: "2" }, status: { containerStatuses: [{ name: "read", state: { terminated: { message: '{"ok":true}' } } }] } }] }, "read")), { ok: true });
+{
+  const U1 = "11111111-1111-4111-8111-111111111111";
+  const U0 = "00000000-0000-4000-8000-000000000000";
+  const own = (uid) => [{ kind: "Job", uid, controller: true }];
+  const pods = { items: [
+    { metadata: { creationTimestamp: "1", ownerReferences: own(U1) }, status: { containerStatuses: [{ name: "read", state: { terminated: { message: '{"ok":false}' } } }] } },
+    { metadata: { creationTimestamp: "2", ownerReferences: own(U1) }, status: { containerStatuses: [{ name: "read", state: { terminated: { message: '{"ok":true}' } } }] } },
+    // pod d'une instance PRÉCÉDENTE du même Job (supprimée, encore listée), le plus récent de tous
+    { metadata: { creationTimestamp: "3", ownerReferences: own(U0), labels: { "batch.kubernetes.io/controller-uid": U0 } }, status: { containerStatuses: [{ name: "read", state: { terminated: { message: '{"ok":true,"stale":1}' } } }] } }] };
+  eq("pickTerminationMessage — pod le plus récent DE CETTE instance du Job", parseTermination(pickTerminationMessage(pods, "read", U1)), { ok: true });
+  eq("pickTerminationMessage — pod d'une instance précédente jamais lu", pickTerminationMessage({ items: [pods.items[2]] }, "read", U1), null);
+  eq("pickTerminationMessage — sans uid du Job ⇒ rien lu (aucun repli)", pickTerminationMessage(pods, "read", null), null);
+  ok("podOfJob — label controller-uid (historique ou batch.kubernetes.io) accepté", podOfJob({ metadata: { labels: { "controller-uid": U1 } } }, U1) &&
+    podOfJob({ metadata: { labels: { "batch.kubernetes.io/controller-uid": U1 } } }, U1) && !podOfJob({ metadata: { labels: { "controller-uid": U0 } } }, U1));
+}
 {
   const AK = "ABCDEFGH12345678abcd";
   const SK = "abc/DEF+ghi=1234567890xyz";
@@ -350,6 +378,19 @@ for (const [tmpl, vars] of Object.entries({
   ok("workflow — resolve avant la copie", wf.indexOf('node "$CLI" backup-resolve') < wf.indexOf('run: node "$CLI" docs-restore'));
   const runs = [...wf.matchAll(/run: (?:\|\n((?: {10,}.*\n?)+)|(.*))/g)].map((m) => m[1] || m[2]);
   ok("workflow — aucun ${{ secrets./inputs. }} interpolé dans un run:", runs.every((r) => !/\$\{\{\s*(secrets|inputs)\./.test(r)));
+  ok("workflow — aucun ${{ github.* }} interpolé dans un run: (event_name passé par env:)", runs.every((r) => !/\$\{\{\s*github\./.test(r)));
+  if (YAML) {
+    const doc = YAML.parse(wf);
+    ok("workflow — job list : CONFIRM dans l'env + CONFIRM_EXPECTED calculé AVANT preflight-backup (G3)", doc.jobs.list.env.CONFIRM === "${{ inputs.CONFIRM }}" &&
+      doc.jobs.list.steps.findIndex((s) => /CONFIRM_EXPECTED=/.test(String(s.run ?? ""))) > -1 &&
+      doc.jobs.list.steps.findIndex((s) => /CONFIRM_EXPECTED=/.test(String(s.run ?? ""))) < doc.jobs.list.steps.findIndex((s) => /preflight-backup/.test(String(s.run ?? ""))));
+    for (const j of ["list", "restore"]) {
+      const idx = (re) => doc.jobs[j].steps.findIndex((s) => re.test(String(s.run ?? "")));
+      ok(`workflow — job ${j} : preflight-backup (G3) avant l'écriture des Secrets et tout Job`, idx(/preflight-backup/) > -1 && idx(/preflight-backup/) < idx(/backup-secret-fill/) &&
+        idx(/backup-secret-fill/) < Math.max(idx(/backup-resolve/), idx(/backup-list/)));
+    }
+    ok("workflow — job restore : budget 350 min (> ≈ 313 min d'attentes d'étapes, plafond 360)", doc.jobs.restore["timeout-minutes"] === 350);
+  }
   if (YAML) {
     const doc = YAML.parse(wf);
     for (const j of ["list", "restore"]) ok(`workflow — job ${j} : environment geo-bascule, secrets lecteur via env:`, doc.jobs[j].environment === "geo-bascule" &&
@@ -377,7 +418,12 @@ async function cliSuite() {
   const resolved = await step({ s, env: baseEnv({ BR_STEP: "resolve" }) });
   const bin = join(tmp, "fakebin");
   mkdirSync(bin, { recursive: true });
-  const pods = (c, msg) => JSON.stringify({ items: [{ metadata: { creationTimestamp: "x" }, status: { containerStatuses: [{ name: c, state: { terminated: { message: msg } } }] } }] });
+  // Chaque Job appliqué reçoit JOB_UID ; chaque liste de pods contient aussi un pod PLUS
+  // RÉCENT d'une instance précédente (autre uid) dont le verdict ne doit jamais être lu.
+  const JOB_UID = "22222222-2222-4222-8222-222222222222";
+  const podOf = (uid, ts, c, msg) => ({ metadata: { creationTimestamp: ts, ownerReferences: [{ kind: "Job", uid, controller: true }] }, status: { containerStatuses: [{ name: c, state: { terminated: { message: msg } } }] } });
+  const pods = (c, msg) => JSON.stringify({ items: [podOf(JOB_UID, "2026-09-26T12:00:00Z", c, msg),
+    podOf("99999999-9999-4999-8999-999999999999", "2026-09-26T13:00:00Z", c, '{"ok":false,"reason":"pod périmé d\'une instance précédente"}')] });
   writeFileSync(join(tmp, "pods-read.json"), pods("read", JSON.stringify(resolved.t)));
   writeFileSync(join(tmp, "pods-docs.json"), pods("docs", JSON.stringify({ ok: true, step: "docs", copied: 3 })));
   writeFileSync(join(tmp, "replaced.json"), JSON.stringify({ kind: "Secret", data: { S3_ACCESS_KEY: "eA==", S3_SECRET_KEY: "eA==", BACKUP_BUCKET: "eA==" } }));
@@ -385,6 +431,7 @@ async function cliSuite() {
   writeFileSync(join(bin, "kubectl"), ["#!/usr/bin/env bash", `echo "$*" >> "${klog}"`, 'case "$*" in',
     '  *"containers[0].image"*) printf "ghcr.io/rhanka/geo-api@sha256:%064d" 0 ;;',
     '  *"get job "*"jsonpath={.status}"*) printf \'{"succeeded":1}\' ;;',
+    `  *"get job "*"jsonpath={.metadata.uid}"*) printf "${JOB_UID}" ;;`,
     `  *"replace"*) cat "${join(tmp, "replaced.json")}" ;;`,
     `  *"job-name=${JOBS.resolve}"*) cat "${join(tmp, "pods-read.json")}" ;;`,
     `  *"job-name=${JOBS.docs}"*|*"job-name=${JOBS.recon}"*) cat "${join(tmp, "pods-docs.json")}" ;;`,
@@ -416,7 +463,14 @@ async function cliSuite() {
   ok("CLI backup-resolve — GITHUB_OUTPUT backup_date", readFileSync(env.GITHUB_OUTPUT, "utf8").includes(`backup_date=${D}`));
   eq("CLI docs-restore — exit 0", cli("docs-restore").status, 0);
   const rd = readFileSync(join(work, `${JOBS.docs}.rendered.yaml`), "utf8");
-  ok("CLI docs-restore — Job : préfixe normalized/, prod interdite, signataire dédié", rd.includes(`DOCS_RESTORE_PREFIX, value: "${P}"`) && rd.includes(`FORBIDDEN_DST_BUCKETS, value: "${PROD}"`) && rd.includes("name: geo-backup-restore-docs"));
+  ok("CLI docs-restore — Job : préfixe normalized/, prod + backup interdits, signataire dédié", rd.includes(`DOCS_RESTORE_PREFIX, value: "${P}"`) && rd.includes(`FORBIDDEN_DST_BUCKETS, value: "${PROD},${B}"`) && rd.includes("name: geo-backup-restore-docs"));
+  ok("CLI preflight-backup (restore) — PREPROD_DOCS = bucket prod figé ⇒ refusé", cli("preflight-backup", { PROD_DOCS: "autre-prod", PREPROD_DOCS: PROD }).status === 1);
+  // G3 dans TOUS les MODE (list compris), avant toute écriture de Secret ou tout Job
+  const beforeG3 = readFileSync(klog, "utf8").length;
+  const stale = { CONFIRM: "iso-prod-2020-01-01" };
+  const g3 = [cli("preflight-backup", { ...stale, MODE: "list" }), cli("backup-secret-fill", { ...stale, MODE: "list", ...both }), cli("backup-list", { ...stale, MODE: "list" }), cli("backup-resolve", stale)];
+  ok("CLI G3 — CONFIRM périmé refusé en MODE=list/restore : preflight, écriture de Secret, Jobs — 0 appel kubectl",
+    g3.every((r) => r.status === 1 && /GARDE G3/.test(r.stdout)) && readFileSync(klog, "utf8").length === beforeG3);
   eq("CLI recon-backup — exit 0 + sentinel", [cli("recon-backup").status, JSON.parse(readFileSync(join(work, "recon.ok.json"), "utf8")).backupDate], [0, D]);
   const ro = cli("rollout");
   ok("CLI rollout — G4 = recon vs inventaire(D) rejouée, puis rollout restart", ro.status === 0 && /rollout restart deployment\/geo-api/.test(readFileSync(klog, "utf8")));
