@@ -246,11 +246,21 @@ render the ConfigMap from `backup-daily.cjs` and apply it → apply both CronJob
 and assert their live schedule/suspend/concurrency.
 Triggered on push to `main` touching `deploy/ci/backup/**`; independent of
 `apply-bundle` (no `needs` between them, own concurrency group). A push under
-`deploy/ci/backup/**` also re-runs `apply-bundle` (idempotent), as on immo.
+`deploy/ci/backup/**` also re-runs `apply-bundle` (idempotent), as on immo. A
+`workflow_dispatch` with `backup_run_now=true` **skips `apply-bundle`**, so the
+bundle's RO-role Job never competes with the backup pod for CPU (a plain
+dispatch or a push touching the bundle still re-applies it; port of
+radar-immobilier#773).
 
 Manual runs (`backup_run_now`, optionally `backup_include_archive`) are refused
 inside the scheduled window (03:13–06:30 UTC) and while another
 `geo-backup-daily` Job is active.
+
+**Capacity during a backup.** Avoid concurrent manual launches during the day
+(manual backup runs, one-shot Jobs, bundle re-applies) while a backup runs: on
+immo a running backup pod brought the namespace `limits.cpu` to ≈ 2350m / 2500m
+and the node to ≈ 97 % of requests. The geo figures during a backup are
+`unverified` (not measured). The scheduled 03:23 UTC run is alone by design.
 
 Activation order (once; nothing is committed for the credentials):
 
