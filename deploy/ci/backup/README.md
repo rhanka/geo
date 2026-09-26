@@ -186,8 +186,8 @@ nothing about these values is committed.
 
 | k8s Secret / key | `geo-backup-writer` | `geo-backup-reader` | `geo-backup-purger` |
 | --- | --- | --- | --- |
-| `S3_ENDPOINT` | variable `BACKUP_S3_ENDPOINT` | same | same |
-| `S3_REGION` | variable `BACKUP_S3_REGION` | same | same |
+| `S3_ENDPOINT` | variable `BACKUP_S3_ENDPOINT` (= `https://s3.bhs.io.cloud.ovh.net`) | same | same |
+| `S3_REGION` | variable `BACKUP_S3_REGION` (= `bhs`) | same | same |
 | `S3_ACCESS_KEY` | secret `GEO_BACKUP_WRITER_ACCESS_KEY` | secret `GEO_BACKUP_READER_ACCESS_KEY` | secret `GEO_BACKUP_PURGER_ACCESS_KEY` |
 | `S3_SECRET_KEY` | secret `GEO_BACKUP_WRITER_SECRET_KEY` | secret `GEO_BACKUP_READER_SECRET_KEY` | secret `GEO_BACKUP_PURGER_SECRET_KEY` |
 | `BACKUP_BUCKET` | variable `BACKUP_BUCKET` (= `geo-backup`) | same | same |
@@ -197,13 +197,18 @@ The step **Write backup Secrets from GitHub** of job `apply-backup` runs at
 every CD run, before the ConfigMap and the CronJobs:
 
 1. **Fail-closed guard, before any write**: the 6 secrets and 4 variables are set
-   and single-line (a missing or multi-line value is named — never printed —
-   and nothing is applied); `BACKUP_BUCKET` / `BACKUP_SOURCE_BUCKET` equal the
+   and single-line; access keys match `^[A-Za-z0-9]{16,128}$` and secret keys
+   `^[A-Za-z0-9/+=]{16,128}$`; `BACKUP_S3_ENDPOINT` is exactly
+   `https://s3.bhs.io.cloud.ovh.net` and `BACKUP_S3_REGION` exactly `bhs` (the
+   pinned OVH BHS target); `BACKUP_BUCKET` / `BACKUP_SOURCE_BUCKET` equal the
    `EXPECTED_*` guards of `cronjob-backup-daily.yaml`; the three Secrets exist.
+   A failing value is named — never printed — and nothing is applied.
 2. For each identity: render the Secret client-side (`kubectl create secret
    generic --dry-run=client`, each value read from a file of a `0700` temp dir —
    never in argv, never echoed; the dir is removed on exit), label it
-   `app.kubernetes.io/component: db-backup`, then `kubectl replace` (GET + PUT).
+   `app.kubernetes.io/component: db-backup`. **No partial write**: a
+   server-side dry-run of the three PUTs (`kubectl replace --dry-run=server`)
+   must pass for all three, then the real `kubectl replace` (GET + PUT) runs.
    The PUT makes the live key set **exactly** the one the CronJobs mount (a stale
    extra key is dropped) and writes no `last-applied-configuration` annotation
    (a client-side `kubectl apply` would copy the credentials into it).
@@ -212,8 +217,8 @@ every CD run, before the ConfigMap and the CronJobs:
 Values reach the script through the step `env:` only (never a `${{ }}` inside
 `run:`), GitHub masks the secrets, there is no `set -x`; the log carries
 names and key names only. The SA `geo-ci-bascule-prod` holds
-**get/patch/update on these three Secret names only** — no create, list, watch
-or delete on Secrets (`../bascule-preprod/rbac-ci-bascule-prod.yaml`): a
+**get/update on these three Secret names only** — no create, patch, list,
+watch or delete on Secrets (`../bascule-preprod/rbac-ci-bascule-prod.yaml`): a
 missing Secret is a hard error, never a create.
 
 DB access reuses the RO role secret `geo-db-ro-prod` (bascule bundle, role
@@ -258,7 +263,7 @@ Activation order (once; nothing is committed for the credentials):
    names were ever applied in-cluster, delete them with `--cascade=orphan`
    first, or their owned Secrets are garbage-collected.
 3. k8s lane re-applies `deploy/ci/bascule-preprod/rbac-ci-bascule-prod.yaml`
-   (install-time, cluster-admin): the SA gains name-scoped get/patch/update on
+   (install-time, cluster-admin): the SA gains name-scoped get/update on
    the Secrets `geo-backup-writer`, `geo-backup-reader`, `geo-backup-purger`,
    the ConfigMap `geo-backup-daily-script`, the CronJobs `geo-backup-daily`,
    `geo-backup-freshness`.
