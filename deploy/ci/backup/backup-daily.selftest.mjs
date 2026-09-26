@@ -898,6 +898,38 @@ const secretRefs = (text) => [...text.matchAll(/secretKeyRef: \{ name: ([a-z0-9-
   ok('purge mounts /work read-only; backup writes it', /\{ name: work, mountPath: \/work, readOnly: true \}/.test(pu) && /\{ name: work, mountPath: \/work \}/.test(bk));
   ok('DB via the RO role secret, never the superuser', /name: geo-db-ro-prod, key: POSTGRES_PASSWORD/.test(du) && !active(cj).includes('geo-postgis-credentials'));
   ok('podFailurePolicy FailJob on 2/3/4 (partial = exit 0 is not in it)', /values: \[2, 3, 4\]/.test(cj));
+  // Server-side schema of batch/v1 PodFailurePolicy (not checked by --dry-run=client; port of immo #772):
+  // every rule has an action and exactly one matcher; onExitCodes has operator + values
+  // (unique, ascending, no 0 with In); every onPodConditions entry has type AND status.
+  for (const [file, text] of [['cronjob-backup-daily.yaml', cj], ['cronjob-backup-freshness.yaml', fcj]]) {
+    const at = text.indexOf('\n      podFailurePolicy:');
+    if (at < 0) { ok(`${file}: no podFailurePolicy (nothing to validate)`, !/podFailurePolicy:/.test(text.replace(/#.*$/mg, ''))); continue; }
+    const pfp = text.slice(at + 1).split('\n').slice(1).filter((l, i, a) => a.slice(0, i + 1).every((x) => /^ {8,}\S|^\s*$/.test(x))).join('\n');
+    const rules = pfp.split(/\n {10}- /).slice(1).map((r) => '- ' + r);
+    const problems = [];
+    rules.forEach((r, i) => {
+      if (!/^- action: (FailJob|FailIndex|Ignore|Count)\b/.test(r)) problems.push(`rules[${i}].action`);
+      const hasCodes = /\n {12}onExitCodes:/.test(r); const hasConds = /\n {12}onPodConditions:/.test(r);
+      if (hasCodes === hasConds) problems.push(`rules[${i}]: exactly one of onExitCodes/onPodConditions`);
+      if (hasCodes) {
+        if (!/\n {14}operator: (In|NotIn)\b/.test(r)) problems.push(`rules[${i}].onExitCodes.operator`);
+        const m = /\n {14}values: \[([^\]]*)\]/.exec(r);
+        const vals = m ? m[1].split(',').map((v) => Number(v.trim())) : [];
+        if (!vals.length || vals.some((v, j) => !Number.isInteger(v) || (j && v <= vals[j - 1])) || (/operator: In/.test(r) && vals.includes(0))) {
+          problems.push(`rules[${i}].onExitCodes.values`);
+        }
+      }
+      if (hasConds) {
+        const conds = r.split(/\n {14}- /).slice(1);
+        if (!conds.length) problems.push(`rules[${i}].onPodConditions empty`);
+        conds.forEach((c, j) => {
+          if (!/^type: \S+/.test(c)) problems.push(`rules[${i}].onPodConditions[${j}].type`);
+          if (!/(^|\n {16})status: "(True|False|Unknown)"/.test(c)) problems.push(`rules[${i}].onPodConditions[${j}].status`);
+        });
+      }
+    });
+    eq(`${file}: podFailurePolicy matches the batch/v1 schema (${rules.length} rules)`, problems, []);
+  }
   ok('no python in any active line of the backup job', !/python|\.py\b/i.test(active(cj) + active(fcj) + active(read('deploy/ci/backup/backup-daily.cjs'))));
   const cfgKeys = ['S3_ENDPOINT', 'S3_REGION', 'S3_ACCESS_KEY', 'S3_SECRET_KEY', 'BACKUP_BUCKET', 'SOURCE_BUCKET', 'EXPECTED_BACKUP_BUCKET',
     'EXPECTED_SOURCE_BUCKET', 'EXPECTED_DATABASE', 'WORK_DIR', 'PUBLIC_HEALTH_URL', 'DRIZZLE_JOURNAL', 'COPY_CONCURRENCY', 'DOCS_COPY_BUDGET_SECONDS',
