@@ -1,7 +1,8 @@
 # bascule-preprod — BASCULE PROD → PRÉPROD geo (« iso-prod »), rejouable SANS IA.
 #
 # CLONE geo de radar-immobilier:.github/workflows/bascule-preprod.yml (recette i-cond).
-# Sous-ensemble iso de S0→S7 (arbitrage i-cond, préprod geo SANS PostgreSQL), en
+# Sous-ensemble iso de S0→S7 (arbitrage i-cond : la jambe chain ne restaure pas de
+# PostgreSQL ; MODE=restore restaure le postgis préprod depuis un backup), en
 # DEUX JAMBES INDÉPENDANTES jouées EN PARALLÈLE (directive i-cond, validée owner) :
 # 2 jobs SANS `needs:` entre eux → chaque jambe rend son statut GitHub SÉPARÉMENT.
 #   job `pg` : S0 preflight pg → S1 dump (trigger CronJob prod geo-db-backup-prod +
@@ -35,10 +36,12 @@
 # MODE (input, défaut `chain` ; un run planifié est toujours `chain`) :
 #   chain   jambes pg + s3 ci-dessus, inchangées.
 #   restore job `restore` : restaurer la préprod geo DEPUIS un backup quotidien de
-#           geo-backup (BACKUP_ID = latest | AAAA-MM-JJ) : S0 → Secret lecteur réécrit
-#           depuis GitHub → R0 resolve (gardes, dump geo VÉRIFIÉ par sha256 — préprod
-#           SANS PostgreSQL) → S3' état de normalized/ au jour D (docs-inventory/<D>.json,
-#           copie serveur) → S3b' recon vs inventaire → S5' rollout (G4) → S7 smoke.
+#           geo-backup (BACKUP_ID = latest | AAAA-MM-JJ) : S0 → Secrets réécrits depuis
+#           GitHub → R0 resolve (gardes, dump geo VÉRIFIÉ par sha256) → S2.0 postgis
+#           préprod (apply + rollout) → S2.1 pg-check (pg_isready + SELECT 1) → G1
+#           snapshot → S2 restauration PG (pg_restore --single-transaction ; S2c N/A)
+#           → S3' état de normalized/ au jour D (docs-inventory/<D>.json, copie
+#           serveur) → S3b' recon vs inventaire → S5' rollout (G4) → S7 smoke.
 #           `latest` > 24 h refusé sauf ALLOW_STALE_BACKUP ; date explicite non bloquante.
 #   list    job `list` : lecture seule, backups disponibles (artefact backup-list-geo-<id>).
 # Logique : deploy/ci/bascule-preprod/restore-mode.mjs (port de radar-immobilier#777).
@@ -533,20 +536,23 @@ jobs:
 
   # ═══════════════════════════════════════════════════════════════════════════
   # MODE=restore — restaurer la préprod geo DEPUIS un backup de geo-backup. Un job
-  # séquentiel (R0 fige la date D consommée par S3') ; la préprod geo n'a pas de
-  # PostgreSQL : le dump du backup est VÉRIFIÉ (sha256 recalculé), pas restauré.
+  # séquentiel (R0 fige la date D consommée par S2 et S3') : base PostgreSQL du
+  # postgis préprod (S2, G1 snapshot, pg-check avant) PUIS objets servis (S3').
+  # S2c migrate : N/A (geo n'a pas de migration : base lue telle quelle).
   # ═══════════════════════════════════════════════════════════════════════════
   restore:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.MODE == 'restore' }}
     runs-on: ubuntu-latest
     environment: geo-bascule
-    # Budget > somme des attentes runner des étapes (≈ 313 min : R0 45 + S3' 183
-    # (DOCS_RESTORE_TIMEOUT 11000 s) + recon 15 + G4 recon 15 + rollout 10 + served-ids
-    # 45) : un Job bloqué finit par SON timeout Node (échec d'étape), jamais par la
-    # coupure du job (annulation). Plafond GitHub 360.
+    # Budget > somme des attentes runner des étapes (≈ 330 min : R0 45 + pg-apply 5 +
+    # pg-check 5 + G1 snapshot 10 + S2 restauration PG 30 + S3' 150 (DOCS_RESTORE_TIMEOUT
+    # 9000 s) + recon 15 + G4 recon 15 + rollout 10 + served-ids 45) : un Job bloqué
+    # finit par SON timeout Node (échec d'étape), jamais par la coupure du job
+    # (annulation). Plafond GitHub 360.
     timeout-minutes: 350
     outputs:
       o_resolve: ${{ steps.resolve.outcome }}
+      o_restore_pg: ${{ steps.restore_pg.outcome }}
       backup_id: ${{ steps.resolve.outputs.backup_id }}
       backup_date: ${{ steps.resolve.outputs.backup_date }}
       manifest_sha256: ${{ steps.resolve.outputs.manifest_sha256 }}
@@ -574,6 +580,15 @@ jobs:
       BACKUP_READER_SECRET: ${{ vars.BASCULE_BACKUP_READER_SECRET || 'geo-backup-reader-preprod' }}
       BACKUP_DOCS_COPY_SECRET: ${{ vars.BASCULE_BACKUP_DOCS_COPY_SECRET || 'geo-backup-restore-docs' }}
       BACKUP_MAX_AGE_HOURS: ${{ vars.BASCULE_BACKUP_MAX_AGE_HOURS || '24' }}
+      # S3' : 150 min (budget du job ci-dessus) ; une copie plus longue échoue à son
+      # délai et se reprend au run suivant (copie additive, idempotente).
+      DOCS_RESTORE_TIMEOUT: ${{ vars.BASCULE_DOCS_RESTORE_TIMEOUT || '9000' }}
+      # Restauration PG (S2) dans le postgis préprod — noms confirmés par k8s,
+      # paramétrables (restore-pg.mjs les valide : nom court, ns préprod, jamais la prod).
+      PG_SERVICE: ${{ vars.BASCULE_PG_SERVICE || 'geo-postgis' }}
+      PG_SECRET: ${{ vars.BASCULE_PG_SECRET || 'geo-postgis-credentials' }}
+      PG_STATEFULSET: ${{ vars.BASCULE_PG_STATEFULSET || 'postgis' }}
+      PG_IMAGE: ${{ vars.BASCULE_PG_IMAGE || 'postgis/postgis:16-3.4' }}
       BASCULE_WORKDIR: ${{ github.workspace }}/.bascule-work
       CLI: deploy/ci/bascule-preprod/bascule.mjs
     steps:
@@ -622,21 +637,50 @@ jobs:
       - name: S0 preflight (MODE=restore)
         run: node "$CLI" preflight-backup
 
-      # Lecteur geo-backup-reader-preprod + signataire S3' DÉDIÉ geo-backup-restore-docs
-      # (Secrets pré-créés par k8s), mêmes gardes #405 ; dry-run serveur des DEUX avant
-      # la première écriture.
-      - name: Write backup Secrets from GitHub (geo-backup-reader-preprod + geo-backup-restore-docs)
+      # Lecteur geo-backup-reader-preprod + signataire S3' DÉDIÉ geo-backup-restore-docs +
+      # superuser du postgis préprod geo-postgis-credentials (Secrets pré-créés par k8s),
+      # gardes #405 ; dry-run serveur des TROIS avant la première écriture.
+      - name: Write backup Secrets from GitHub (lecteur + signataire S3' + postgis préprod)
         env:
           GEO_BACKUP_READER_PREPROD_ACCESS_KEY: ${{ secrets.GEO_BACKUP_READER_PREPROD_ACCESS_KEY }}
           GEO_BACKUP_READER_PREPROD_SECRET_KEY: ${{ secrets.GEO_BACKUP_READER_PREPROD_SECRET_KEY }}
           GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY: ${{ secrets.GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY }}
           GEO_BACKUP_RESTORE_DOCS_SECRET_KEY: ${{ secrets.GEO_BACKUP_RESTORE_DOCS_SECRET_KEY }}
+          GEO_POSTGIS_PREPROD_DB: ${{ secrets.GEO_POSTGIS_PREPROD_DB }}
+          GEO_POSTGIS_PREPROD_USER: ${{ secrets.GEO_POSTGIS_PREPROD_USER }}
+          GEO_POSTGIS_PREPROD_PASSWORD: ${{ secrets.GEO_POSTGIS_PREPROD_PASSWORD }}
         run: node "$CLI" backup-secret-fill
 
       # Lecture seule, AVANT toute mutation : un backup refusé ne touche jamais la préprod.
       - name: R0 backup-resolve (Job lecture — BACKUP_ID → date + gardes + PIN)
         id: resolve
         run: node "$CLI" backup-resolve
+
+      # ── Restauration PG (S2) — postgis préprod, ns geo-preprod ─────────────
+      # DRY : seulement pg-check, informatif (aucune mutation).
+      - name: S2.1 pg-check (DRY — informatif)
+        if: ${{ inputs.DRY_RUN }}
+        continue-on-error: true
+        run: node "$CLI" pg-check
+
+      - name: S2.0 postgis préprod — apply (StatefulSet, Service, NetworkPolicies) + rollout
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" pg-apply
+
+      # AVANT toute action destructive : pg_isready puis SELECT 1 avec les identifiants
+      # du Secret ; échec ⇒ ni snapshot ni pg_restore.
+      - name: S2.1 pg-check (pg_isready + SELECT 1 authentifié, fatal)
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" pg-check
+
+      - name: G1 snapshot de la base préprod (CREATE DATABASE … TEMPLATE ; G2 = aucune session)
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" pg-snapshot
+
+      - name: S2 restauration PG DEPUIS le backup (sha256 = PIN, TOC + dbname, --single-transaction)
+        id: restore_pg
+        if: ${{ !inputs.DRY_RUN }}
+        run: node "$CLI" pg-restore
 
       - name: S3' docs-restore (DRY — plan seul, 0 copie)
         if: ${{ inputs.DRY_RUN }}
@@ -685,6 +729,12 @@ jobs:
           retention-days: 7
           overwrite: true
 
+      # Échec APRÈS une restauration PG réussie : la base préprod est au jour D ;
+      # résumé du run avec le rollback G1 (pg-rollback, manuel).
+      - name: Échec après S2 — résumé (base préprod au jour D, rollback G1)
+        if: ${{ failure() && !inputs.DRY_RUN && steps.restore_pg.outcome == 'success' }}
+        run: node "$CLI" pg-failure-summary
+
       - name: Pointeurs restore (PIN + recon — PAS de contenu S3)
         if: ${{ always() && !inputs.DRY_RUN }}
         uses: actions/upload-artifact@v4
@@ -701,8 +751,9 @@ jobs:
   # `needs: [pg, s3, restore]` + `always()` = attend la fin des jobs du MODE joué,
   # SANS les coupler. N'existe que si CYCLE_ID est non vide et MODE ≠ list.
   # 0 kubectl, 0 cred : lit needs.*.result/outputs + 2 artefacts du run, écrit un JSON.
-  # MODE=chain : pg = job pg, s3 = job s3. MODE=restore : pg = R0 (backup + dump
-  # vérifiés), s3 = job restore ; legs.geo.backup = date + sha256 du backup restauré.
+  # MODE=chain : pg = job pg, s3 = job s3. MODE=restore : pg = S2 (restauration PG
+  # du postgis préprod ; en DRY : R0, backup + dump vérifiés), s3 = job restore ;
+  # legs.geo.backup = date + sha256 du backup restauré.
   # Mapping verdict : success → success ; failure|cancelled|skipped → failure ;
   # autre/vide → pending (served-ids.mjs mapJobResult).
   # ═══════════════════════════════════════════════════════════════════════════
@@ -714,7 +765,7 @@ jobs:
     env:
       CYCLE_ID: ${{ inputs.CYCLE_ID }}
       MODE: ${{ inputs.MODE || 'chain' }}
-      PG_RESULT: ${{ inputs.MODE == 'restore' && needs.restore.outputs.o_resolve || needs.pg.result }}
+      PG_RESULT: ${{ inputs.MODE == 'restore' && (inputs.DRY_RUN && needs.restore.outputs.o_resolve || needs.restore.outputs.o_restore_pg) || needs.pg.result }}
       S3_RESULT: ${{ inputs.MODE == 'restore' && needs.restore.result || needs.s3.result }}
       BACKUP_ID: ${{ needs.restore.outputs.backup_id }}
       BACKUP_DATE: ${{ needs.restore.outputs.backup_date }}

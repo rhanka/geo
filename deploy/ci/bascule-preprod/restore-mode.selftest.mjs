@@ -32,6 +32,10 @@ import {
   validateListing, validatePin,
 } from "./restore-mode.mjs";
 import { backupOfLeg, buildGeoLeg } from "./served-ids.mjs";
+import { secretSpecsForMode } from "./restore-mode.mjs";
+import {
+  assertManifestNamespace, buildPgFailureSummary, PG_DEFAULTS, PG_JOBS, pgParams, POSTGIS_SECRET_KEYS, postgisSecretValues, PROD_NAMESPACES,
+} from "./restore-pg.mjs";
 
 const require = createRequire(import.meta.url);
 const br = require("./backup-restore.cjs");
@@ -167,7 +171,7 @@ function fixture({ tamperDump = false, rewriteAfterD = true } = {}) {
   s.put(B, `docs-inventory/${D}.json`, invBuf);
   const manifest = {
     format: "geo-backup-manifest/v1", date: D, status: "complete", verdict: "OK", startedAt: "2026-09-26T03:23:00Z", completedAt: "2026-09-26T04:41:00Z",
-    pg: { database: DB, key: `pg/${D}/${DB}.dump`, sha256: sha(dump), sizeBytes: dump.length, versionId: dumpV.VersionId, dumpStartedAt: "2026-09-26T03:23:05Z" },
+    pg: { database: DB, key: `pg/${D}/${DB}.dump`, sha256: sha(dump), sizeBytes: dump.length, versionId: dumpV.VersionId, dumpStartedAt: "2026-09-26T03:23:05Z", tocEntries: 24 },
     docs: { status: "complete", objects: 4, inventoryKey: `docs-inventory/${D}.json`, inventorySha256: sha(invBuf) },
   };
   const manBuf = Buffer.from(JSON.stringify(manifest, null, 2));
@@ -249,6 +253,24 @@ async function suite() {
   {
     const { s } = fixture({ tamperDump: true });
     eq("resolve — dump altéré (sha256 recalculé) ⇒ échec", (await step({ s, env: baseEnv({ BR_STEP: "resolve" }) })).code, 1);
+  }
+  // fetch-dump (initContainer de la restauration PG, S2)
+  {
+    const { s, manSha, dump } = fixture();
+    const work = join(tmp, "fetch-ok");
+    const r = await step({ s, env: baseEnv({ BR_STEP: "fetch-dump", BACKUP_DATE: D, PIN_MANIFEST_SHA256: manSha, PIN_PG_SHA256: sha(dump), WORK_DIR: work }) });
+    eq("fetch-dump — exit 0, octets du dump identiques", [r.code, existsSync(join(work, `${DB}.dump`)) && readFileSync(join(work, `${DB}.dump`)).equals(dump)], [0, true]);
+    const envf = readFileSync(join(work, "backup.env"), "utf8");
+    ok("fetch-dump — backup.env : date, sha256, TOC attendu (24, manifeste), base, fichier", envf.includes(`BACKUP_DATE=${D}\n`) && envf.includes(`PG_SHA256=${sha(dump)}\n`) &&
+      envf.includes("EXPECTED_TOC_ENTRIES=24\n") && envf.includes(`DUMP_DATABASE=${DB}\n`) && envf.includes(`DUMP_FILE=${DB}.dump\n`));
+    eq("fetch-dump — message de fin (sha256, taille, TOC)", [r.t.ok, r.t.pgSha256 === sha(dump), r.t.expectedTocEntries], [true, true, 24]);
+    eq("fetch-dump — manifeste modifié depuis resolve (PIN) ⇒ refus", (await step({ s, env: baseEnv({ BR_STEP: "fetch-dump", BACKUP_DATE: D, PIN_MANIFEST_SHA256: "c".repeat(64), PIN_PG_SHA256: sha(dump), WORK_DIR: join(tmp, "f2") }) })).code, 2);
+    eq("fetch-dump — PIN du dump différent du manifeste ⇒ refus", (await step({ s, env: baseEnv({ BR_STEP: "fetch-dump", BACKUP_DATE: D, PIN_MANIFEST_SHA256: manSha, PIN_PG_SHA256: "d".repeat(64), WORK_DIR: join(tmp, "f3") }) })).code, 2);
+    throwsCode("readConfig fetch-dump — PIN_PG_SHA256 invalide refusé", () => br.readConfig(baseEnv({ BACKUP_DATE: D, PIN_MANIFEST_SHA256: manSha, PIN_PG_SHA256: "x" }), "fetch-dump"), 2);
+  }
+  {
+    const { s, manSha, dump } = fixture({ tamperDump: true });
+    eq("fetch-dump — dump altéré (taille/sha256) ⇒ restauration refusée", (await step({ s, env: baseEnv({ BR_STEP: "fetch-dump", BACKUP_DATE: D, PIN_MANIFEST_SHA256: manSha, PIN_PG_SHA256: sha(dump), WORK_DIR: join(tmp, "f4") }) })).code, 1);
   }
   {
     const { s, manSha } = fixture();
@@ -368,6 +390,128 @@ for (const [tmpl, vars] of Object.entries({
   }
 }
 
+// ═════════════════════════════ restauration PG (S2 + G1) ══════════════════════
+{
+  const q = pgParams({}, { namespace: "geo-preprod", db: DB });
+  eq("pgParams — défauts = noms confirmés par k8s", [q.service, q.secret, q.statefulset, q.image, q.snapshotDb],
+    ["geo-postgis", "geo-postgis-credentials", "postgis", "postgis/postgis:16-3.4", "geo_pra_rollback"]);
+  throws("pgParams — namespace de PRODUCTION `geo` refusé", () => pgParams({}, { namespace: "geo", db: DB }));
+  ok("PROD_NAMESPACES — `geo`", PROD_NAMESPACES.includes("geo"));
+  throws("pgParams — PG_SERVICE en FQDN (geo-postgis.geo) refusé : nom court seulement", () => pgParams({ PG_SERVICE: "geo-postgis.geo" }, { namespace: "geo-preprod", db: DB }));
+  throws("pgParams — snapshot = base cible refusé", () => pgParams({ PG_SNAPSHOT_DB: DB }, { namespace: "geo-preprod", db: DB }));
+  throws("pgParams — image hors postgis/postgis refusée", () => pgParams({ PG_IMAGE: "evil/postgres:16" }, { namespace: "geo-preprod", db: DB }));
+  throws("pgParams — PG_SECRET invalide refusé", () => pgParams({ PG_SECRET: "Bad_Name" }, { namespace: "geo-preprod", db: DB }));
+  const PW = "Zx9!q-Long_Password=42";
+  const penv = { GEO_POSTGIS_PREPROD_DB: DB, GEO_POSTGIS_PREPROD_USER: "geo", GEO_POSTGIS_PREPROD_PASSWORD: PW };
+  eq("postgisSecretValues — clés EXACTES POSTGRES_DB/USER/PASSWORD depuis GEO_POSTGIS_PREPROD_*", Object.keys(postgisSecretValues(penv, DB)).sort(),
+    ["POSTGRES_DB", "POSTGRES_PASSWORD", "POSTGRES_USER"]);
+  eq("POSTGIS_SECRET_KEYS — correspondance secrets GitHub", POSTGIS_SECRET_KEYS, { POSTGRES_DB: "GEO_POSTGIS_PREPROD_DB", POSTGRES_USER: "GEO_POSTGIS_PREPROD_USER", POSTGRES_PASSWORD: "GEO_POSTGIS_PREPROD_PASSWORD" });
+  throws("postgisSecretValues — mot de passe absent ⇒ fail-closed", () => postgisSecretValues({ ...penv, GEO_POSTGIS_PREPROD_PASSWORD: "" }, DB));
+  throws("postgisSecretValues — mot de passe trop court ⇒ fail-closed", () => postgisSecretValues({ ...penv, GEO_POSTGIS_PREPROD_PASSWORD: "short" }, DB));
+  throws("postgisSecretValues — multi-ligne ⇒ fail-closed", () => postgisSecretValues({ ...penv, GEO_POSTGIS_PREPROD_PASSWORD: `${PW}\nx` }, DB));
+  throws("postgisSecretValues — POSTGRES_DB ≠ EXPECTED_DATABASE ⇒ fail-closed", () => postgisSecretValues({ ...penv, GEO_POSTGIS_PREPROD_DB: "other" }, DB));
+  try { postgisSecretValues({ ...penv, GEO_POSTGIS_PREPROD_PASSWORD: "bad pass with spaces" }, DB); } catch (e) {
+    ok("postgisSecretValues — l'erreur nomme la variable, jamais la valeur", /GEO_POSTGIS_PREPROD_PASSWORD/.test(e.message) && !e.message.includes("bad pass"));
+  }
+  eq("secretSpecsForMode — restore : lecteur + signataire + postgis ; list : lecteur", [secretSpecsForMode("restore"), secretSpecsForMode("list")],
+    [["reader", "restore-docs", "postgis"], ["reader"]]);
+  const manifestText = readFileSync(join(DIR, PG_DEFAULTS.manifest), "utf8");
+  eq("assertManifestNamespace — postgis-preprod.yaml : 4 ressources, toutes en geo-preprod", assertManifestNamespace(manifestText, "geo-preprod"),
+    ["StatefulSet", "Service", "NetworkPolicy", "NetworkPolicy"]);
+  throws("assertManifestNamespace — une ressource dans le ns prod `geo` ⇒ refus", () => assertManifestNamespace(manifestText.replace("namespace: geo-preprod", "namespace: geo"), "geo-preprod"));
+  throws("assertManifestNamespace — cible ns prod ⇒ refus", () => assertManifestNamespace(manifestText.replaceAll("namespace: geo-preprod", "namespace: geo"), "geo"));
+  ok("buildPgFailureSummary — base au jour D + commande pg-rollback", /jour D = 2026-09-26/.test(buildPgFailureSummary({ date: D, snapshotDb: "geo_pra_rollback", db: DB })) &&
+    /bascule\.mjs pg-rollback/.test(buildPgFailureSummary({ date: D, snapshotDb: "geo_pra_rollback", db: DB })));
+  // manifestes postgis préprod (StatefulSet, Service, NetworkPolicies)
+  if (YAML) {
+    const docs = YAML.parseAllDocuments(manifestText).map((d) => d.toJSON());
+    const sts = docs.find((d) => d.kind === "StatefulSet");
+    const c = sts.spec.template.spec.containers[0];
+    eq("StatefulSet — postgis, ns geo-preprod, 1 réplica, label, image, serviceName", [sts.metadata.name, sts.metadata.namespace, sts.spec.replicas,
+      sts.spec.template.metadata.labels["app.kubernetes.io/name"], c.image, sts.spec.serviceName], ["postgis", "geo-preprod", 1, "postgis", "postgis/postgis:16-3.4", "geo-postgis"]);
+    eq("StatefulSet — requests 10m/128Mi, limits 250m/512Mi", c.resources, { requests: { cpu: "10m", memory: "128Mi" }, limits: { cpu: "250m", memory: "512Mi" } });
+    const vct = sts.spec.volumeClaimTemplates[0];
+    eq("StatefulSet — PVC pg-data 2Gi block-standard RWO", [vct.metadata.name, vct.spec.resources.requests.storage, vct.spec.storageClassName, vct.spec.accessModes],
+      ["pg-data", "2Gi", "block-standard", ["ReadWriteOnce"]]);
+    eq("StatefulSet — POSTGRES_* depuis geo-postgis-credentials", c.env.filter((e) => e.valueFrom).map((e) => [e.name, e.valueFrom.secretKeyRef.name, e.valueFrom.secretKeyRef.key]),
+      [["POSTGRES_DB", "geo-postgis-credentials", "POSTGRES_DB"], ["POSTGRES_USER", "geo-postgis-credentials", "POSTGRES_USER"], ["POSTGRES_PASSWORD", "geo-postgis-credentials", "POSTGRES_PASSWORD"]]);
+    const svc = docs.find((d) => d.kind === "Service");
+    eq("Service — geo-postgis:5432 → postgis", [svc.metadata.name, svc.metadata.namespace, svc.spec.ports[0].port, svc.spec.selector], ["geo-postgis", "geo-preprod", 5432, { "app.kubernetes.io/name": "postgis" }]);
+    const np = docs.find((d) => d.kind === "NetworkPolicy" && d.metadata.name === "geo-postgis-preprod");
+    eq("netpol postgis — entrée 5432 UNIQUEMENT depuis role=pra-restore, aucune sortie", [np.spec.podSelector, np.spec.policyTypes, np.spec.ingress, np.spec.egress],
+      [{ matchLabels: { "app.kubernetes.io/name": "postgis" } }, ["Ingress", "Egress"], [{ from: [{ podSelector: { matchLabels: { role: "pra-restore" } } }], ports: [{ protocol: "TCP", port: 5432 }] }], []]);
+    const ne = docs.find((d) => d.kind === "NetworkPolicy" && d.metadata.name === "pra-restore-egress");
+    eq("netpol pra-restore — sortie DNS kube-system + S3-BHS 54.39.60.208/32:443 + geo-postgis:5432, rien d'autre",
+      [ne.spec.podSelector, ne.spec.policyTypes, ne.spec.egress.map((r) => JSON.stringify(r.to) + JSON.stringify(r.ports))],
+      [{ matchLabels: { role: "pra-restore" } }, ["Egress"], [
+        JSON.stringify([{ namespaceSelector: { matchLabels: { "kubernetes.io/metadata.name": "kube-system" } }, podSelector: { matchLabels: { "k8s-app": "kube-dns" } } }]) + JSON.stringify([{ protocol: "UDP", port: 53 }, { protocol: "TCP", port: 53 }]),
+        JSON.stringify([{ ipBlock: { cidr: "54.39.60.208/32" } }]) + JSON.stringify([{ protocol: "TCP", port: 443 }]),
+        JSON.stringify([{ podSelector: { matchLabels: { "app.kubernetes.io/name": "postgis" } } }]) + JSON.stringify([{ protocol: "TCP", port: 5432 }])]]);
+    ok("netpol — geo-api n'est jamais une source autorisée", !JSON.stringify(np).includes("geo-api"));
+    // RBAC geo-ci-bascule-preprod
+    const rb = YAML.parseAllDocuments(readFileSync(join(DIR, "rbac-ci-bascule-preprod.yaml"), "utf8")).map((d) => d.toJSON()).find((d) => d.kind === "Role");
+    const rules = rb.rules;
+    const ruleFor = (group, res, verbs) => rules.find((r) => r.apiGroups[0] === group && r.resources[0] === res && JSON.stringify(r.verbs) === JSON.stringify(verbs));
+    eq("RBAC — secrets get/update limités aux 3 Secrets pré-créés (dont geo-postgis-credentials)", ruleFor("", "secrets", ["get", "update"]).resourceNames,
+      ["geo-backup-reader-preprod", "geo-backup-restore-docs", "geo-postgis-credentials"]);
+    ok("RBAC — aucun autre verbe sur secrets (ni create, ni patch, ni list)", rules.filter((r) => r.resources.includes("secrets")).length === 1);
+    eq("RBAC — statefulsets get/patch/list/watch limités à postgis", ruleFor("apps", "statefulsets", ["get", "patch", "list", "watch"]).resourceNames, ["postgis"]);
+    eq("RBAC — services get/patch limités à geo-postgis", ruleFor("", "services", ["get", "patch"]).resourceNames, ["geo-postgis"]);
+    eq("RBAC — networkpolicies get/patch limités aux 2 netpols", ruleFor("networking.k8s.io", "networkpolicies", ["get", "patch"]).resourceNames, ["geo-postgis-preprod", "pra-restore-egress"]);
+    const creates = rules.filter((r) => r.verbs.includes("create") && !r.resources.includes("jobs"));
+    eq("RBAC — create (non limitable par nom) : seulement statefulsets/services/networkpolicies, sans resourceNames", creates.map((r) => [r.resources[0], r.verbs, r.resourceNames ?? null]),
+      [["statefulsets", ["create"], null], ["services", ["create"], null], ["networkpolicies", ["create"], null]]);
+    ok("RBAC — aucun delete sur statefulsets/services/networkpolicies/pvc", !rules.some((r) => r.verbs.includes("delete") && r.resources.some((x) => ["statefulsets", "services", "networkpolicies", "persistentvolumeclaims"].includes(x))));
+  }
+  // templates de la restauration PG : rendu, labels, gardes, syntaxe bash
+  const pgBase = { NAMESPACE: "geo-preprod", PG_IMAGE: "postgis/postgis:16-3.4", PG_SERVICE: "geo-postgis", PG_SECRET: "geo-postgis-credentials", EXPECTED_DATABASE: DB, TTL_SECONDS: "3600" };
+  const pgRenders = {
+    "pg-check-job.tmpl.yaml": { ...pgBase, JOB_NAME: PG_JOBS.check, PG_READY_TIMEOUT: "60" },
+    "pg-snapshot-job.tmpl.yaml": { ...pgBase, JOB_NAME: PG_JOBS.snapshot, PG_SNAPSHOT_DB: "geo_pra_rollback" },
+    "pg-rollback-job.tmpl.yaml": { ...pgBase, JOB_NAME: PG_JOBS.rollback, PG_SNAPSHOT_DB: "geo_pra_rollback" },
+    "db-restore-backup-job.tmpl.yaml": { ...common, ...pgBase, JOB_NAME: PG_JOBS.restore, BACKUP_DATE: D, PIN_MANIFEST_SHA256: "a".repeat(64), PIN_PG_SHA256: "b".repeat(64) },
+  };
+  for (const [tmpl, vars] of Object.entries(pgRenders)) {
+    const { text, leftover } = render(tmpl, vars);
+    ok(`${tmpl} — aucun placeholder résiduel`, !leftover);
+    ok(`${tmpl} — Job et pod labellisés role=pra-restore (netpols), jamais geo-preprod-sync`, (text.match(/\n {4,8}role: pra-restore\n/g) || []).length === 2 && !text.includes("geo-preprod-sync"));
+    ok(`${tmpl} — PGHOST = Service court geo-postgis, identifiants depuis geo-postgis-credentials (jamais en clair)`, /PGHOST, value: "geo-postgis"/.test(text) &&
+      /PGPASSWORD, valueFrom: \{ secretKeyRef: \{ name: geo-postgis-credentials, key: POSTGRES_PASSWORD \} \}/.test(text) && !/postgres(ql)?:\/\//.test(text));
+    if (YAML) {
+      const job = YAML.parse(text);
+      const pod = job.spec.template.spec;
+      ok(`${tmpl} — YAML valide, backoffLimit 0, automount désactivé, activeDeadlineSeconds`, job.kind === "Job" && job.spec.backoffLimit === 0 && pod.automountServiceAccountToken === false &&
+        Number(job.spec.activeDeadlineSeconds) > 0);
+      for (const ctr of pod.containers.filter((x) => x.command[0] === "bash")) {
+        const n = spawnSync("bash", ["-n", "-c", ctr.args[0]], { encoding: "utf8" });
+        ok(`${tmpl} — script bash du conteneur ${ctr.name} syntaxiquement valide (bash -n)`, n.status === 0);
+      }
+    }
+  }
+  const chk = render("pg-check-job.tmpl.yaml", pgRenders["pg-check-job.tmpl.yaml"]).text;
+  const chkArgs = YAML ? YAML.parse(chk).spec.template.spec.containers[0].args[0] : chk;
+  ok("pg-check — pg_isready PUIS SELECT 1 authentifié PUIS base == EXPECTED_DATABASE, sortie 2 sinon, aucune commande destructive",
+    chkArgs.indexOf("pg_isready -h") < chkArgs.indexOf("'SELECT 1'") && chkArgs.indexOf("'SELECT 1'") < chkArgs.indexOf("current_database()") &&
+    (chkArgs.match(/exit 2/g) || []).length === 3 && !/pg_restore --|drop database|create database|pg_dump/i.test(chkArgs));
+  const snp = render("pg-snapshot-job.tmpl.yaml", pgRenders["pg-snapshot-job.tmpl.yaml"]).text;
+  ok("G1 snapshot — G2 (aucune session) AVANT drop/create, CREATE DATABASE … TEMPLATE", snp.indexOf("pg_stat_activity") < snp.indexOf("drop database if exists") &&
+    /create database \\"\$PG_SNAPSHOT_DB\\" template \\"\$EXPECTED_DATABASE\\"/.test(snp));
+  const rst = render("db-restore-backup-job.tmpl.yaml", pgRenders["db-restore-backup-job.tmpl.yaml"]).text;
+  ok("S2 — fetch-dump (script embarqué) puis pg_restore --clean --if-exists --no-owner --no-privileges --exit-on-error --single-transaction",
+    /BR_STEP, value: "fetch-dump"/.test(rst) && /pg_restore --clean --if-exists --no-owner --no-privileges \\\n\s+--exit-on-error --single-transaction/.test(rst));
+  const ra = YAML ? YAML.parse(rst).spec.template.spec.containers.find((x) => x.name === "restore").args[0] : rst;
+  ok("S2 — gardes avant pg_restore : base du Secret, G2 sessions, TOC == manifeste, dbname de l'archive", ra.indexOf('"$PGDATABASE" != "$EXPECTED_DATABASE"') > -1 &&
+    ra.indexOf('"$PGDATABASE" != "$EXPECTED_DATABASE"') < ra.indexOf("pg_stat_activity") &&
+    ra.indexOf("pg_stat_activity") < ra.indexOf("EXPECTED_TOC_ENTRIES") && ra.indexOf("EXPECTED_TOC_ENTRIES") < ra.indexOf("dbname:") &&
+    ra.indexOf("dbname:") < ra.indexOf("pg_restore --clean"));
+  const m = rst.match(/command: \["node", "-e"\]\n {10}args:\n {12}- \|\n([\s\S]*?)\n {10}env:/);
+  ok("S2 — script fetch embarqué à l'octet", m && m[1].split("\n").map((l) => l.replace(/^ {14}/, "")).join("\n").trimEnd() === SCRIPT.trimEnd());
+  const rbk = render("pg-rollback-job.tmpl.yaml", pgRenders["pg-rollback-job.tmpl.yaml"]).text;
+  ok("rollback G1 — refus sans snapshot ou avec session, puis drop + create TEMPLATE snapshot", rbk.indexOf("no G1 snapshot") < rbk.indexOf("drop database") &&
+    rbk.indexOf("pg_stat_activity") < rbk.indexOf("drop database") && /create database \\"\$EXPECTED_DATABASE\\" template \\"\$PG_SNAPSHOT_DB\\"/.test(rbk));
+  ok("S2c migrate — N/A : aucun fichier de migration/ORM dans le dépôt geo (vérifié)", !existsSync(join(DIR, "..", "..", "..", "drizzle")) && !existsSync(join(DIR, "..", "..", "..", "migrations")));
+}
+
 // ═════════════════════════════ câblage du workflow ════════════════════════════
 {
   const wf = readFileSync(join(DIR, "..", "..", "..", ".github", "workflows", "bascule-preprod.yml"), "utf8");
@@ -389,7 +533,30 @@ for (const [tmpl, vars] of Object.entries({
       ok(`workflow — job ${j} : preflight-backup (G3) avant l'écriture des Secrets et tout Job`, idx(/preflight-backup/) > -1 && idx(/preflight-backup/) < idx(/backup-secret-fill/) &&
         idx(/backup-secret-fill/) < Math.max(idx(/backup-resolve/), idx(/backup-list/)));
     }
-    ok("workflow — job restore : budget 350 min (> ≈ 313 min d'attentes d'étapes, plafond 360)", doc.jobs.restore["timeout-minutes"] === 350);
+    // Budget : somme des attentes runner des étapes du job restore (défauts) < timeout-minutes < 360.
+    const stepsMin = { r0: 2700 / 60, apply: 300 / 60, check: 300 / 60, snapshot: 600 / 60, restorePg: 1800 / 60,
+      docs: Number(/'(\d+)'/.exec(doc.jobs.restore.env.DOCS_RESTORE_TIMEOUT)[1]) / 60, recon: 15, g4: 15, rollout: 10, servedIds: 45 };
+    const sum = Object.values(stepsMin).reduce((a, b) => a + b, 0);
+    ok(`workflow — job restore : budget 350 min > somme des attentes d'étapes (${sum} min), plafond 360`, doc.jobs.restore["timeout-minutes"] === 350 && sum < 350 - 15);
+    const idx = (re) => doc.jobs.restore.steps.findIndex((s) => re.test(String(s.run ?? "")) && !s["continue-on-error"]);
+    ok("workflow — restauration PG : R0 < pg-apply < pg-check (fatal) < G1 snapshot < S2 pg-restore < S3' docs-restore",
+      idx(/backup-resolve/) < idx(/pg-apply/) && idx(/pg-apply/) < idx(/pg-check/) && idx(/pg-check/) < idx(/pg-snapshot/) &&
+      idx(/pg-snapshot/) < idx(/pg-restore/) && idx(/pg-restore/) < doc.jobs.restore.steps.findIndex((s) => /docs-restore/.test(String(s.run ?? "")) && s.id === "docs_backup"));
+    const stepOf = (re, dry) => doc.jobs.restore.steps.find((s) => re.test(String(s.run ?? "")) && (dry ? /inputs\.DRY_RUN }}$/.test(String(s.if)) : /!inputs\.DRY_RUN/.test(String(s.if))));
+    ok("workflow — DRY : pg-check seul, informatif (continue-on-error) ; hors DRY : apply, check, snapshot, restore", !!stepOf(/pg-check/, true) && stepOf(/pg-check/, true)["continue-on-error"] === true &&
+      ["pg-apply", "pg-check", "pg-snapshot", "pg-restore"].every((c) => !!stepOf(new RegExp(`${c}$`), false)) &&
+      !doc.jobs.restore.steps.some((s) => /pg-(apply|snapshot|restore)$/.test(String(s.run ?? "")) && !/!inputs\.DRY_RUN/.test(String(s.if))));
+    const fillR = doc.jobs.restore.steps.find((s) => /backup-secret-fill/.test(String(s.run ?? "")));
+    ok("workflow — job restore : secrets GEO_POSTGIS_PREPROD_* via env: de l'étape d'écriture", ["DB", "USER", "PASSWORD"].every((k) => fillR.env[`GEO_POSTGIS_PREPROD_${k}`] === `\${{ secrets.GEO_POSTGIS_PREPROD_${k} }}`));
+    ok("workflow — job list : aucun secret postgis", !JSON.stringify(doc.jobs.list).includes("GEO_POSTGIS_PREPROD"));
+    eq("workflow — noms PG paramétrés, défauts k8s", [doc.jobs.restore.env.PG_SERVICE, doc.jobs.restore.env.PG_SECRET, doc.jobs.restore.env.PG_STATEFULSET, doc.jobs.restore.env.PG_IMAGE],
+      ["${{ vars.BASCULE_PG_SERVICE || 'geo-postgis' }}", "${{ vars.BASCULE_PG_SECRET || 'geo-postgis-credentials' }}", "${{ vars.BASCULE_PG_STATEFULSET || 'postgis' }}",
+        "${{ vars.BASCULE_PG_IMAGE || 'postgis/postgis:16-3.4' }}"]);
+    ok("workflow — échec après S2 réussi ⇒ résumé + rollback G1", doc.jobs.restore.steps.some((s) => /pg-failure-summary/.test(String(s.run ?? "")) &&
+      /failure\(\) && !inputs\.DRY_RUN && steps\.restore_pg\.outcome == 'success'/.test(String(s.if))));
+    ok("workflow — cycle-leg : verdict.pg = S2 (o_restore_pg) en MODE=restore (R0 en DRY)", doc.jobs.restore.outputs.o_restore_pg === "${{ steps.restore_pg.outcome }}" &&
+      /needs\.restore\.outputs\.o_restore_pg/.test(doc.jobs["cycle-leg"].env.PG_RESULT));
+    ok("workflow — les jobs pg/s3 (chain) ne touchent pas au postgis préprod", !/pg-(apply|check|snapshot|restore|rollback)/.test(JSON.stringify(doc.jobs.pg) + JSON.stringify(doc.jobs.s3)));
   }
   if (YAML) {
     const doc = YAML.parse(wf);
@@ -408,7 +575,7 @@ for (const [tmpl, vars] of Object.entries({
     ok(`workflow — ${Object.keys(doc.on.workflow_dispatch.inputs).length} inputs (<= 25)`, Object.keys(doc.on.workflow_dispatch.inputs).length <= 25);
   }
   const rbac = readFileSync(join(DIR, "rbac-ci-bascule-preprod.yaml"), "utf8");
-  ok("RBAC — secrets get/update limités à geo-backup-reader-preprod + geo-backup-restore-docs (ni create/patch/list)", /resources: \["secrets"\]\n\s+verbs: \["get", "update"\][^\n]*\n\s+resourceNames: \["geo-backup-reader-preprod", "geo-backup-restore-docs"\]/.test(rbac) &&
+  ok("RBAC — secrets get/update limités aux 3 Secrets pré-créés (ni create/patch/list)", /resources: \["secrets"\]\n\s+verbs: \["get", "update"\][^\n]*\n\s+resourceNames: \["geo-backup-reader-preprod", "geo-backup-restore-docs", "geo-postgis-credentials"\]/.test(rbac) &&
     !/resources: \["secrets"\]\n\s+verbs: \[[^\]]*(create|patch|list)/.test(rbac));
 }
 
@@ -427,14 +594,29 @@ async function cliSuite() {
   writeFileSync(join(tmp, "pods-read.json"), pods("read", JSON.stringify(resolved.t)));
   writeFileSync(join(tmp, "pods-docs.json"), pods("docs", JSON.stringify({ ok: true, step: "docs", copied: 3 })));
   writeFileSync(join(tmp, "replaced.json"), JSON.stringify({ kind: "Secret", data: { S3_ACCESS_KEY: "eA==", S3_SECRET_KEY: "eA==", BACKUP_BUCKET: "eA==" } }));
+  writeFileSync(join(tmp, "replaced-pg.json"), JSON.stringify({ kind: "Secret", data: { POSTGRES_DB: "eA==", POSTGRES_USER: "eA==", POSTGRES_PASSWORD: "eA==" } }));
+  writeFileSync(join(tmp, "pods-check.json"), pods("check", JSON.stringify({ ok: true, step: "pg-check", ready: true, auth: true, database: DB })));
+  writeFileSync(join(tmp, "pods-check-ko.json"), pods("check", JSON.stringify({ ok: false, step: "pg-check", ready: true, auth: false, database: "",
+    reason: "authenticated connection refused (SELECT 1): nothing destructive done, no pg_restore" })));
+  writeFileSync(join(tmp, "pods-snapshot.json"), pods("snapshot", JSON.stringify({ ok: true, step: "pg-snapshot", snapshot: "geo_pra_rollback", sizeBytes: 12345 })));
+  const podsRestore = (uid) => ({ metadata: { creationTimestamp: "2026-09-26T12:00:00Z", ownerReferences: [{ kind: "Job", uid, controller: true }] }, status: {
+    initContainerStatuses: [{ name: "fetch", state: { terminated: { message: JSON.stringify({ ok: true, step: "fetch-dump", date: D }) } } }],
+    containerStatuses: [{ name: "restore", state: { terminated: { message: JSON.stringify({ ok: true, step: "pg-restore", date: D, tocEntries: 24 }) } } }] } });
+  writeFileSync(join(tmp, "pods-restore.json"), JSON.stringify({ items: [podsRestore(JOB_UID)] }));
   const klog = join(tmp, "kubectl.log");
-  writeFileSync(join(bin, "kubectl"), ["#!/usr/bin/env bash", `echo "$*" >> "${klog}"`, 'case "$*" in',
+  writeFileSync(join(bin, "kubectl"), ["#!/usr/bin/env bash", `echo "$*" >> "${klog}"`,
+    'if [ -n "${FAKE_FAIL_JOB:-}" ] && [[ "$*" == *"get job $FAKE_FAIL_JOB -o jsonpath={.status}"* ]]; then printf \'{"failed":1}\'; exit 0; fi',
+    'case "$*" in',
     '  *"containers[0].image"*) printf "ghcr.io/rhanka/geo-api@sha256:%064d" 0 ;;',
     '  *"get job "*"jsonpath={.status}"*) printf \'{"succeeded":1}\' ;;',
     `  *"get job "*"jsonpath={.metadata.uid}"*) printf "${JOB_UID}" ;;`,
+    `  *"replace"*"postgis.json"*) cat "${join(tmp, "replaced-pg.json")}" ;;`,
     `  *"replace"*) cat "${join(tmp, "replaced.json")}" ;;`,
     `  *"job-name=${JOBS.resolve}"*) cat "${join(tmp, "pods-read.json")}" ;;`,
     `  *"job-name=${JOBS.docs}"*|*"job-name=${JOBS.recon}"*) cat "${join(tmp, "pods-docs.json")}" ;;`,
+    `  *"job-name=${PG_JOBS.check}"*) if [ -n "\${FAKE_FAIL_JOB:-}" ]; then cat "${join(tmp, "pods-check-ko.json")}"; else cat "${join(tmp, "pods-check.json")}"; fi ;;`,
+    `  *"job-name=${PG_JOBS.snapshot}"*) cat "${join(tmp, "pods-snapshot.json")}" ;;`,
+    `  *"job-name=${PG_JOBS.restore}"*) cat "${join(tmp, "pods-restore.json")}" ;;`,
     "  *) : ;;", "esac", "exit 0", ""].join("\n"), { mode: 0o755 });
   const work = join(tmp, "work");
   const t = new Date().toISOString().slice(0, 10);
@@ -444,23 +626,62 @@ async function cliSuite() {
   writeFileSync(env.GITHUB_OUTPUT, "");
   const cli = (cmd, extra = {}) => spawnSync(process.execPath, [join(DIR, "bascule.mjs"), cmd], { env: { ...env, ...extra }, encoding: "utf8" });
   eq("CLI preflight-backup — exit 0", cli("preflight-backup").status, 0);
+  const PGPW = "Zx9!q-Long_Password=42";
   const both = { GEO_BACKUP_READER_PREPROD_ACCESS_KEY: "ABCDEFGH12345678abcd", GEO_BACKUP_READER_PREPROD_SECRET_KEY: "abc/DEF+ghi=1234567890xyz",
-    GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY: "ZZZZZZZZ12345678abcd", GEO_BACKUP_RESTORE_DOCS_SECRET_KEY: "zzz/YYY+xxx=0987654321abc" };
+    GEO_BACKUP_RESTORE_DOCS_ACCESS_KEY: "ZZZZZZZZ12345678abcd", GEO_BACKUP_RESTORE_DOCS_SECRET_KEY: "zzz/YYY+xxx=0987654321abc",
+    GEO_POSTGIS_PREPROD_DB: DB, GEO_POSTGIS_PREPROD_USER: "geo", GEO_POSTGIS_PREPROD_PASSWORD: PGPW };
   const fill = cli("backup-secret-fill", both);
   const log1 = readFileSync(klog, "utf8");
   const dryIdx = [...log1.matchAll(/replace --dry-run=server -f \S+ -o json/g)].map((m) => m.index);
   const realIdx = [...log1.matchAll(/replace -f \S+ -o json/g)].map((m) => m.index);
-  ok("CLI backup-secret-fill (restore) — lecteur + signataire : 2 dry-run serveur AVANT les 2 replace, valeurs jamais en argv/stdout",
-    fill.status === 0 && dryIdx.length === 2 && realIdx.length === 2 && Math.max(...dryIdx) < Math.min(...realIdx) &&
-    /get secret geo-backup-reader-preprod/.test(log1) && /get secret geo-backup-restore-docs/.test(log1) &&
-    !["abc/DEF+ghi", "zzz/YYY+xxx"].some((v) => log1.includes(v) || fill.stdout.includes(v)));
+  ok("CLI backup-secret-fill (restore) — lecteur + signataire + postgis : 3 dry-run serveur AVANT les 3 replace, valeurs jamais en argv/stdout",
+    fill.status === 0 && dryIdx.length === 3 && realIdx.length === 3 && Math.max(...dryIdx) < Math.min(...realIdx) &&
+    /get secret geo-backup-reader-preprod/.test(log1) && /get secret geo-backup-restore-docs/.test(log1) && /get secret geo-postgis-credentials/.test(log1) &&
+    !["abc/DEF+ghi", "zzz/YYY+xxx", PGPW].some((v) => log1.includes(v) || fill.stdout.includes(v)));
   ok("CLI backup-secret-fill (restore) — secret du signataire absent ⇒ fail-closed, rien écrit",
     cli("backup-secret-fill", { GEO_BACKUP_READER_PREPROD_ACCESS_KEY: both.GEO_BACKUP_READER_PREPROD_ACCESS_KEY, GEO_BACKUP_READER_PREPROD_SECRET_KEY: both.GEO_BACKUP_READER_PREPROD_SECRET_KEY }).status === 1);
+  const beforePgFill = readFileSync(klog, "utf8").length;
+  const noPg = cli("backup-secret-fill", { ...both, GEO_POSTGIS_PREPROD_PASSWORD: "" });
+  ok("CLI backup-secret-fill (restore) — mot de passe postgis absent ⇒ fail-closed AVANT tout replace",
+    noPg.status === 1 && /GEO_POSTGIS_PREPROD_PASSWORD/.test(noPg.stdout) && !/replace/.test(readFileSync(klog, "utf8").slice(beforePgFill)));
   ok("CLI backup-secret-fill (list) — lecteur seul, secrets du signataire non requis",
     cli("backup-secret-fill", { MODE: "list", GEO_BACKUP_READER_PREPROD_ACCESS_KEY: both.GEO_BACKUP_READER_PREPROD_ACCESS_KEY, GEO_BACKUP_READER_PREPROD_SECRET_KEY: both.GEO_BACKUP_READER_PREPROD_SECRET_KEY }).status === 0);
   ok("CLI backup-secret-fill — secret GitHub absent ⇒ fail-closed", cli("backup-secret-fill").status === 1);
   eq("CLI backup-resolve — exit 0 + PIN", [cli("backup-resolve").status, JSON.parse(readFileSync(join(work, "backup-pin.json"), "utf8")).manifestSha256 === manSha], [0, true]);
   ok("CLI backup-resolve — GITHUB_OUTPUT backup_date", readFileSync(env.GITHUB_OUTPUT, "utf8").includes(`backup_date=${D}`));
+  // ── restauration PG (S2 + G1) ──
+  const beforePg = readFileSync(klog, "utf8").length;
+  eq("CLI pg-apply — exit 0", cli("pg-apply").status, 0);
+  const klogApply = readFileSync(klog, "utf8").slice(beforePg);
+  ok("CLI pg-apply — kubectl apply de postgis-preprod.yaml puis rollout status statefulset/postgis (ns geo-preprod)",
+    /-n geo-preprod apply -f \S+postgis-preprod\.yaml/.test(klogApply) && /-n geo-preprod rollout status statefulset\/postgis --timeout=300s/.test(klogApply) &&
+    klogApply.indexOf(" apply -f ") < klogApply.indexOf("rollout status"));
+  eq("CLI pg-check — exit 0 (pg_isready + SELECT 1 verts)", cli("pg-check").status, 0);
+  const rc = readFileSync(join(work, `${PG_JOBS.check}.rendered.yaml`), "utf8");
+  ok("CLI pg-check — Job rendu : role=pra-restore, PGHOST geo-postgis, Secret geo-postgis-credentials", /role: pra-restore/.test(rc) && /PGHOST, value: "geo-postgis"/.test(rc) &&
+    /name: geo-postgis-credentials, key: POSTGRES_PASSWORD/.test(rc));
+  const beforeKo = readFileSync(klog, "utf8").length;
+  const ko = cli("pg-check", { FAKE_FAIL_JOB: PG_JOBS.check });
+  ok("CLI pg-check — connexion refusée ⇒ exit 1, message clair (raison du pod), aucune action destructive",
+    ko.status === 1 && /pg-check refusé/.test(ko.stdout) && /aucune action destructive/.test(ko.stdout) && /SELECT 1/.test(ko.stdout) &&
+    !new RegExp(`${PG_JOBS.snapshot}|${PG_JOBS.restore}`).test(readFileSync(klog, "utf8").slice(beforeKo)));
+  eq("CLI pg-snapshot (G1) — exit 0", cli("pg-snapshot").status, 0);
+  ok("CLI pg-snapshot — snapshot geo_pra_rollback rendu", readFileSync(join(work, `${PG_JOBS.snapshot}.rendered.yaml`), "utf8").includes('PG_SNAPSHOT_DB, value: "geo_pra_rollback"'));
+  eq("CLI pg-restore (S2) — exit 0", cli("pg-restore").status, 0);
+  const rr = readFileSync(join(work, `${PG_JOBS.restore}.rendered.yaml`), "utf8");
+  const pinNow = JSON.parse(readFileSync(join(work, "backup-pin.json"), "utf8"));
+  ok("CLI pg-restore — Job épinglé à D + sha256 manifeste/dump, fetch-dump, lecteur geo-backup-reader-preprod", rr.includes(`BACKUP_DATE, value: "${D}"`) &&
+    rr.includes(pinNow.manifestSha256) && rr.includes(pinNow.pgSha256) && /BR_STEP, value: "fetch-dump"/.test(rr) && /name: geo-backup-reader-preprod, key: S3_ACCESS_KEY/.test(rr));
+  const nsProd = cli("pg-apply", { PREPROD_NAMESPACE: "geo" });
+  ok("CLI pg-apply — namespace de PRODUCTION `geo` refusé avant tout kubectl apply", nsProd.status === 1 && /PRODUCTION/.test(nsProd.stdout));
+  const stalePg = ["pg-apply", "pg-check", "pg-snapshot", "pg-restore", "pg-rollback"].map((c) => cli(c, { CONFIRM: "iso-prod-2020-01-01" }));
+  ok("CLI restauration PG — G3 (CONFIRM périmé) refusé pour apply/check/snapshot/restore/rollback", stalePg.every((r) => r.status === 1 && /GARDE G3/.test(r.stdout)));
+  eq("CLI pg-restore — refusé hors MODE=restore", cli("pg-restore", { MODE: "chain" }).status, 1);
+  const sumFile = join(tmp, "pg-summary.md");
+  writeFileSync(sumFile, "");
+  const fsum = cli("pg-failure-summary", { GITHUB_STEP_SUMMARY: sumFile });
+  ok("CLI pg-failure-summary — base au jour D + rollback G1 dans le résumé", fsum.status === 0 && readFileSync(sumFile, "utf8").includes(`jour D = ${D}`) &&
+    readFileSync(sumFile, "utf8").includes("pg-rollback"));
   eq("CLI docs-restore — exit 0", cli("docs-restore").status, 0);
   const rd = readFileSync(join(work, `${JOBS.docs}.rendered.yaml`), "utf8");
   ok("CLI docs-restore — Job : préfixe normalized/, prod + backup interdits, signataire dédié", rd.includes(`DOCS_RESTORE_PREFIX, value: "${P}"`) && rd.includes(`FORBIDDEN_DST_BUCKETS, value: "${PROD},${B}"`) && rd.includes("name: geo-backup-restore-docs"));
