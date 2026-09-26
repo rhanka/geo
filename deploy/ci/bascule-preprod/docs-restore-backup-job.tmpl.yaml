@@ -1,0 +1,115 @@
+# =============================================================================
+# docs-restore-backup-job.tmpl.yaml — S3'/S3b' de la bascule geo MODE=restore :
+# restaurer dans le bucket préprod l'état AU JOUR D des objets servis
+# (${DOCS_RESTORE_PREFIX}, défaut normalized/) depuis geo-backup.
+#
+# BR_STEP=docs  : manifests/<D>.json (sha256 == PIN) → docs-inventory/<D>.json
+#                 (sha256 == manifeste), sous-ensemble du préfixe servi →
+#                 ListObjectVersions(<backup>/docs/<préfixe>) → plan : chaque entrée
+#                 `backed-up` dont la copie préprod n'est pas déjà le même contenu
+#                 (taille + ETag) est copiée CÔTÉ SERVEUR depuis
+#                 <backup>/docs/<clé>?versionId=<v> (CopyObject ; UploadPartCopy
+#                 au-delà de 5 GiB), ADDITIF, puis recon dest ⊇ inventaire(D).
+#                 DOCS_DRY=1 = plan seul. Objet absent du backup ou sans version
+#                 restaurable ⇒ refus (exit 2) avant la première copie.
+# BR_STEP=recon : recon seule (G4 juste avant le rollout).
+#
+# Identités (clés S3_ACCESS_KEY / S3_SECRET_KEY) :
+#   lecteur ${READER_SECRET} (geo-backup-reader-preprod, + clé BACKUP_BUCKET) :
+#           manifeste + inventaire.
+#   copie   ${COPY_SECRET} : liste les versions de <backup>/docs/ (sinon repli :
+#           versionIds enregistrés, les autres vérifiés par HEAD), SIGNE la copie
+#           serveur (GetObject sur <backup>/docs/* — pas de permission
+#           GetObjectVersion distincte chez OVH) et liste/écrit le bucket préprod
+#           (ListBucket + PutObject + PutObjectAcl, sans delete). PRÉREQUIS k8s —
+#           voir README « Restore depuis un backup ».
+# GrantFullControl id=${COPY_GRANTEE} (identité serving préprod) comme docs-sync.
+#
+# Label pod app.kubernetes.io/name=geo-preprod-sync → NetworkPolicy EXISTANTE
+# allow-geo-sync-egress (DNS + S3-BHS). Runner = kubectl seul (.status + message de fin).
+# Placeholders : ${JOB_NAME} ${NAMESPACE} ${IMAGE} ${BR_STEP} ${READER_SECRET}
+# ${COPY_SECRET} ${S3_ENDPOINT} ${PINNED_S3_ENDPOINT} ${S3_REGION}
+# ${S3_FORCE_PATH_STYLE} ${EXPECTED_BACKUP_BUCKET} ${EXPECTED_DATABASE}
+# ${BACKUP_DATE} ${PIN_MANIFEST_SHA256} ${DST_BUCKET} ${FORBIDDEN_DST_BUCKETS}
+# ${DOCS_RESTORE_PREFIX} ${COPY_GRANTEE} ${COPY_CONCURRENCY} ${DOCS_DRY}
+# ${TTL_SECONDS}, plus le placeholder BR_SCRIPT sous `args:` (jamais écrit dans un
+# commentaire : il s'étend sur de nombreuses lignes).
+# =============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    app.kubernetes.io/name: geo-preprod-sync
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: docs-restore
+    sentropic.io/bascule: docs-restore
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: ${TTL_SECONDS}
+  activeDeadlineSeconds: 10800
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geo-preprod-sync
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: docs-restore
+        sentropic.io/bascule: docs-restore
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: tmp
+          emptyDir: { sizeLimit: 64Mi }
+      containers:
+        - name: docs
+          image: ${IMAGE}
+          imagePullPolicy: IfNotPresent
+          workingDir: /app
+          command: ["node", "-e"]
+          args:
+            - |
+${BR_SCRIPT}
+          env:
+            - { name: BR_STEP, value: "${BR_STEP}" }
+            - { name: NODE_OPTIONS, value: "--max-old-space-size=1536" }
+            - { name: AWS_EC2_METADATA_DISABLED, value: "true" }
+            - { name: S3_ENDPOINT, value: "${S3_ENDPOINT}" }
+            - { name: PINNED_S3_ENDPOINT, value: "${PINNED_S3_ENDPOINT}" }
+            - { name: S3_REGION, value: "${S3_REGION}" }
+            - { name: S3_FORCE_PATH_STYLE, value: "${S3_FORCE_PATH_STYLE}" }
+            - { name: EXPECTED_BACKUP_BUCKET, value: "${EXPECTED_BACKUP_BUCKET}" }
+            - { name: EXPECTED_DATABASE, value: "${EXPECTED_DATABASE}" }
+            - { name: BACKUP_DATE, value: "${BACKUP_DATE}" }
+            - { name: PIN_MANIFEST_SHA256, value: "${PIN_MANIFEST_SHA256}" }
+            - { name: DST_BUCKET, value: "${DST_BUCKET}" }
+            - { name: FORBIDDEN_DST_BUCKETS, value: "${FORBIDDEN_DST_BUCKETS}" }
+            - { name: DOCS_RESTORE_PREFIX, value: "${DOCS_RESTORE_PREFIX}" }
+            - { name: COPY_GRANTEE, value: "${COPY_GRANTEE}" }
+            - { name: COPY_CONCURRENCY, value: "${COPY_CONCURRENCY}" }
+            - { name: DOCS_DRY, value: "${DOCS_DRY}" }
+            - { name: READER_ACCESS_KEY, valueFrom: { secretKeyRef: { name: ${READER_SECRET}, key: S3_ACCESS_KEY } } }
+            - { name: READER_SECRET_KEY, valueFrom: { secretKeyRef: { name: ${READER_SECRET}, key: S3_SECRET_KEY } } }
+            - { name: BACKUP_BUCKET, valueFrom: { secretKeyRef: { name: ${READER_SECRET}, key: BACKUP_BUCKET } } }
+            - { name: COPIER_ACCESS_KEY, valueFrom: { secretKeyRef: { name: ${COPY_SECRET}, key: S3_ACCESS_KEY } } }
+            - { name: COPIER_SECRET_KEY, valueFrom: { secretKeyRef: { name: ${COPY_SECRET}, key: S3_SECRET_KEY } } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests: { cpu: 25m, memory: 256Mi }
+            limits: { cpu: 500m, memory: 2Gi }
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
