@@ -103,9 +103,11 @@ jobs:
 
       # 5. Kubeconfig geo-ci-runner (env-scopé geo-preprod, derrière required-reviewer).
       - name: kubeconfig (geo-ci-runner)
+        env:
+          KUBE_CONFIG_GEO: ${{ secrets.KUBE_CONFIG_GEO }}
         run: |
-          test -n "${{ secrets.KUBE_CONFIG_GEO }}" || { echo "::error::KUBE_CONFIG_GEO absent (env geo-preprod)."; exit 1; }
-          printf '%s' "${{ secrets.KUBE_CONFIG_GEO }}" | base64 -d > "$RUNNER_TEMP/kubeconfig"
+          test -n "$KUBE_CONFIG_GEO" || { echo "::error::KUBE_CONFIG_GEO absent (env geo-preprod)."; exit 1; }
+          printf '%s' "$KUBE_CONFIG_GEO" | base64 -d > "$RUNNER_TEMP/kubeconfig"
           echo "KUBECONFIG=$RUNNER_TEMP/kubeconfig" >> "$GITHUB_ENV"
 
       # 6. Écrit le keyString dans geo-tile-key (apply UPDATE-only sur le secret PRÉ-CRÉÉ vide ; RBAC
@@ -145,8 +147,10 @@ jobs:
 
       # 8. VERIFY : /basemap/2d/session = 200 (flag ON + clé présente). 503 = GO#1 flag pas mergé OU clé absente.
       - name: verify serve (/basemap/2d/session = 200)
+        env:
+          PREPROD_OGC_URL: ${{ vars.PREPROD_OGC_URL }}
         run: |
-          URL="${{ vars.PREPROD_OGC_URL }}"
+          URL="$PREPROD_OGC_URL"
           test -n "$URL" || { echo "::error::PREPROD_OGC_URL (Variable) absent."; exit 1; }
           CODE="$(curl -sS -o /dev/null -w '%{http_code}' "${URL%/}/basemap/2d/session" || true)"
           echo "GET ${URL%/}/basemap/2d/session → $CODE"
