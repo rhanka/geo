@@ -331,6 +331,8 @@ throws("shortSha — invalide ⇒ lève", () => shortSha("main"), /invalide/);
     run_id: "123456",
     sha_main: "0b1d3bc",
     t1: "2026-09-25T03:17:42.123Z",
+    mode: "chain",
+    backup: null,
     verdict: { pg: "success", s3: "failure" },
     served_ids_artifact: "geo-served-canonical-ids-c-1",
     served_ids_sha256: "d".repeat(64),
@@ -370,7 +372,7 @@ throws("shortSha — invalide ⇒ lève", () => shortSha("main"), /invalide/);
   ok("CLI cycle-leg — exit 0", legRun.status === 0);
   const leg = existsSync(outFile) ? JSON.parse(readFileSync(outFile, "utf8")) : {};
   eq("CLI cycle-leg — legs.geo complet", leg, {
-    repo: "rhanka/geo", workflow: "bascule-preprod.yml", run_id: "42", sha_main: "0b1d3bc", t1: "2026-09-25T03:17:42.123Z",
+    repo: "rhanka/geo", workflow: "bascule-preprod.yml", run_id: "42", sha_main: "0b1d3bc", t1: "2026-09-25T03:17:42.123Z", mode: "chain", backup: null,
     verdict: { pg: "success", s3: "success" }, served_ids_artifact: "geo-served-canonical-ids-e2e-1",
     served_ids_sha256: sha256Hex("ogc:zones:a:A-1\n"), served_ids_scope: "zones",
   });
@@ -393,10 +395,10 @@ throws("shortSha — invalide ⇒ lève", () => shortSha("main"), /invalide/);
     const wfText = readFileSync(wfPath, "utf8");
     const wf = YAML.parse(wfText);
     const jobs = wf?.jobs ?? {};
-    eq("workflow — jobs pg, s3, cycle-leg", Object.keys(jobs), ["pg", "s3", "cycle-leg"]);
+    eq("workflow — jobs pg, s3, list, restore, cycle-leg", Object.keys(jobs), ["pg", "s3", "list", "restore", "cycle-leg"]);
     ok("workflow — pg SANS needs", jobs.pg && !("needs" in jobs.pg));
     ok("workflow — s3 SANS needs", jobs.s3 && !("needs" in jobs.s3));
-    eq("workflow — cycle-leg needs [pg, s3]", jobs["cycle-leg"]?.needs, ["pg", "s3"]);
+    eq("workflow — cycle-leg needs [pg, s3, restore]", jobs["cycle-leg"]?.needs, ["pg", "s3", "restore"]);
     const legIf = String(jobs["cycle-leg"]?.if ?? "");
     ok("workflow — cycle-leg if always() && CYCLE_ID non vide", /always\(\)/.test(legIf) && /inputs\.CYCLE_ID != ''/.test(legIf));
     const input = wf?.on?.workflow_dispatch?.inputs?.CYCLE_ID;
@@ -404,7 +406,7 @@ throws("shortSha — invalide ⇒ lève", () => shortSha("main"), /invalide/);
     ok("workflow — CONFIRM/DRY_RUN/SKIP_ROLLOUT inchangés", ["CONFIRM", "DRY_RUN", "SKIP_ROLLOUT"].every((k) => wf.on.workflow_dispatch.inputs[k]));
     const allSteps = Object.entries(jobs).flatMap(([job, j]) => (j.steps ?? []).map((s) => ({ job, ...s })));
     ok("workflow — aucun ${{ inputs.CYCLE_ID }} interpolé dans un run: (anti-injection)", allSteps.every((s) => !/\$\{\{\s*inputs\.CYCLE_ID/.test(String(s.run ?? ""))));
-    const usesCycle = allSteps.filter((s) => /inputs\.CYCLE_ID|served-ids\.mjs/.test(JSON.stringify(s)) && s.job !== "cycle-leg");
+    const usesCycle = allSteps.filter((s) => /inputs\.CYCLE_ID|served-ids\.mjs/.test(JSON.stringify(s)) && s.job !== "cycle-leg" && s.job !== "list");
     ok(`workflow — chaque étape e2e de pg/s3 est gardée par CYCLE_ID != '' (${usesCycle.length} étapes)`, usesCycle.length >= 5 && usesCycle.every((s) => /inputs\.CYCLE_ID != ''/.test(String(s.if ?? ""))));
     const s3Steps = jobs.s3.steps.map((s) => s.name ?? s.uses);
     const smokeIdx = s3Steps.findIndex((n) => /S7 smoke — préprod ⊇ prod/.test(n));
