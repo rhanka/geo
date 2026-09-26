@@ -36,6 +36,16 @@
 #      T1 Role is NEUTRALIZED (rules emptied) and the run ABORTS.
 #
 # 0 Python. Runner does kubectl only (control-plane). NO dump bytes, NO S3 keys read back.
+#
+# SECOND JOB `apply-backup` — the DAILY PROD BACKUP (deploy/ci/backup/README.md), port of
+# radar-immobilier#771: same permanent SA, same owner gate (`approve`, attempt-bound), same vault
+# Environment geo-prod-bundle, same positive PROD pre-flight, its own arming switch
+# BACKUP_DAILY_CD_ENABLED and its own failure domain (no `needs` on apply-bundle, own concurrency
+# group: a backup apply problem never blocks the bascule bundle or its anti-RCE gate, and vice
+# versa). It applies the SealedSecrets geo-backup-writer/-reader (one committed file), the
+# ConfigMap geo-backup-daily-script (rendered from deploy/ci/backup/backup-daily.cjs) and the
+# CronJob geo-backup-daily. Same runner contract: kubectl only, 0 backup content read, 0 secret
+# material on the runner.
 name: bascule-bundle-cd (prod bundle apply, CD-native)
 
 on:
@@ -43,8 +53,18 @@ on:
     branches: [main]
     paths:
       - 'deploy/ci/bascule-preprod/**'
+      - 'deploy/ci/backup/**'
       - '.github/workflows/bascule-bundle-cd.yml'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      backup_run_now:
+        description: "apply-backup: also start one geo-backup-daily run now (create job --from=cronjob)"
+        type: boolean
+        default: false
+      backup_include_archive:
+        description: "with backup_run_now: that run also copies the frozen archive ops/decommission/20260913/ (one-time copy; repeat until the manifest shows 0 pending)"
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -260,4 +280,165 @@ jobs:
             echo "- VAP: geo-ci-trigger-suspend-only (cluster-scoped)"
             echo "- RBAC T1: geo-ci-trigger-prod (SA/Role/RoleBinding)"
             echo "- Anti-RCE gate: jobTemplate DENIED + suspend ALLOWED"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  # ── Daily prod backup (deploy/ci/backup/) — independent job ──────────────────
+  apply-backup:
+    needs: approve
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Same vault as apply-bundle: KUBE_CONFIG_DATA_PROD is readable from main only.
+    environment: geo-prod-bundle
+    # Two switches: the bundle CD is armed (the permanent SA exists) AND the k8s lane armed the
+    # backup AFTER re-applying rbac-ci-bascule-prod.yaml (the new name-scoped verbs). Merging can
+    # never red main against an old Role. Same owner gate as apply-bundle: runs iff `approve`
+    # succeeded IN THIS ATTEMPT, or on the first attempt of a push run (approve skipped).
+    if: >-
+      ${{ !cancelled() && vars.BASCULE_BUNDLE_CD_ENABLED == 'true' && vars.BACKUP_DAILY_CD_ENABLED == 'true' &&
+      ((needs.approve.result == 'success' && needs.approve.outputs.attempt == github.run_attempt) ||
+      (needs.approve.result == 'skipped' && github.event_name != 'workflow_dispatch' && github.run_attempt == '1')) }}
+    concurrency:
+      group: geo-backup-daily-cd
+      cancel-in-progress: false
+    env:
+      NAMESPACE: geo
+      BACKUP_DIR: deploy/ci/backup
+    steps:
+      - uses: actions/checkout@v4
+
+      # Fail-closed BEFORE touching the cluster: the SealedSecrets (minted and sealed by the k8s
+      # lane, scope strict ns geo) must be committed verbatim, both of them, nothing in clear.
+      - name: Guard — backup SealedSecrets committed
+        run: |
+          set -euo pipefail
+          f="$BACKUP_DIR/geo-backup-sealedsecrets.yaml"
+          if [ ! -f "$f" ]; then
+            echo "::error title=Backup not ready::$f absent (SealedSecrets geo-backup-writer + geo-backup-reader from the k8s lane, committed verbatim). Nothing was applied."; exit 1
+          fi
+          for n in geo-backup-writer geo-backup-reader; do
+            if ! grep -Eq "^  name: ${n}$" "$f"; then
+              echo "::error title=Backup not ready::$f has no SealedSecret named ${n}. Nothing was applied."; exit 1
+            fi
+          done
+          if [ "$(grep -c '^kind: SealedSecret$' "$f")" != "2" ] || grep -Eq '^(kind: Secret|stringData:|data:)' "$f"; then
+            echo "::error title=Backup not ready::$f must hold exactly 2 SealedSecrets and no plain Secret. Nothing was applied."; exit 1
+          fi
+
+      # The retention/manifest/upload/copy logic and the wiring must pass the selftest
+      # (in-memory S3 fake, 0 network) before anything is applied.
+      - name: Selftest backup logic (0 network)
+        run: node "$BACKUP_DIR/backup-daily.selftest.mjs"
+
+      - name: Install kubectl
+        uses: azure/setup-kubectl@v4
+
+      - name: Configure kubeconfig (PROD — permanent geo-ci-bascule-prod SA)
+        env:
+          KUBE_CONFIG_DATA_PROD: ${{ secrets.KUBE_CONFIG_DATA_PROD }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.kube"
+          if printf '%s' "$KUBE_CONFIG_DATA_PROD" | base64 -d 2>/dev/null | grep -q '^apiVersion:'; then
+            printf '%s' "$KUBE_CONFIG_DATA_PROD" | base64 -d > "$HOME/.kube/config"
+          else
+            printf '%s' "$KUBE_CONFIG_DATA_PROD" > "$HOME/.kube/config"
+          fi
+          chmod 600 "$HOME/.kube/config"
+
+      - name: Pre-flight — assert PROD cluster
+        env:
+          EXPECTED_KUBE_APISERVER_HOST_PROD: ${{ vars.EXPECTED_KUBE_APISERVER_HOST_PROD || vars.EXPECTED_KUBE_APISERVER_HOST }}
+        run: |
+          set -euo pipefail
+          DEFAULT_HOST='hlhedx.c1.bhs5.k8s.ovh.net'
+          expected="${EXPECTED_KUBE_APISERVER_HOST_PROD:-$DEFAULT_HOST}"
+          server="$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')"
+          host="${server#*://}"; host="${host%%/*}"; host="${host%%:*}"
+          echo "kubeconfig apiserver host : ${host:-<none>}"
+          echo "expected apiserver host   : ${expected}"
+          if [ "$host" != "$expected" ]; then
+            echo "::error title=Wrong cluster — apply-backup refused::kubeconfig targets '${host:-<none>}' but expected '${expected}'. Nothing was applied."; exit 1
+          fi
+          kubectl -n "$NAMESPACE" get deploy geo-api -o name
+          echo "pre-flight OK — ${expected} / namespace ${NAMESPACE}"
+
+      # Committed SealedSecrets; the in-cluster controller materializes the core Secrets. The
+      # runner never sees the plaintext and this SA has 0 secrets verbs.
+      - name: Apply SealedSecrets (geo-backup-writer + geo-backup-reader)
+        run: kubectl -n "$NAMESPACE" apply -f "$BACKUP_DIR/geo-backup-sealedsecrets.yaml"
+
+      - name: Wait for SealedSecrets Synced (tolerant)
+        run: |
+          set -uo pipefail
+          synced_deadline=$((SECONDS + 120))
+          for ss in geo-backup-writer geo-backup-reader; do
+            while :; do
+              s="$(kubectl -n "$NAMESPACE" get sealedsecret "$ss" -o 'jsonpath={.status.conditions[?(@.type=="Synced")].status}' 2>/dev/null || true)"
+              if [ "$s" = "True" ]; then echo "SealedSecret ${ss}: Synced=True"; break; fi
+              if [ "$SECONDS" -ge "$synced_deadline" ]; then
+                echo "::warning title=SealedSecret sync unconfirmed::${ss} did not report Synced=True within the poll window (status='${s:-<empty>}'). The CronJob pod is the backstop: it cannot start without geo-backup-writer."
+                break
+              fi
+              sleep 5
+            done
+          done
+
+      # The script ships as a ConfigMap rendered from the committed file (single source of
+      # truth, the same bytes the selftest exercised), then the CronJob.
+      - name: Apply script ConfigMap + CronJob geo-backup-daily
+        run: |
+          set -euo pipefail
+          kubectl -n "$NAMESPACE" create configmap geo-backup-daily-script \
+            --from-file=backup-daily.cjs="$BACKUP_DIR/backup-daily.cjs" --dry-run=client -o yaml \
+            | kubectl label --local -f - app.kubernetes.io/name=geo-backup-daily app.kubernetes.io/part-of=geo \
+                app.kubernetes.io/component=db-backup -o yaml \
+            | kubectl -n "$NAMESPACE" apply -f -
+          kubectl -n "$NAMESPACE" apply -f "$BACKUP_DIR/cronjob-backup-daily.yaml"
+          got="$(kubectl -n "$NAMESPACE" get cronjob geo-backup-daily -o jsonpath='{.spec.schedule}|{.spec.suspend}|{.spec.concurrencyPolicy}')"
+          echo "geo-backup-daily schedule|suspend|concurrencyPolicy = ${got}"
+          if [ "$got" != "23 3 * * *|false|Forbid" ]; then
+            echo "::error title=geo-backup-daily not as committed::live spec '${got}' differs from the committed manifest."; exit 1
+          fi
+          echo "script sha256 = $(sha256sum "$BACKUP_DIR/backup-daily.cjs" | cut -d' ' -f1) (recorded by each run as manifest.tool.scriptSha256)"
+
+      # backup_include_archive: the one-time copy of the frozen archive (README.md) is the same Job
+      # with the archive prefix removed from DOCS_EXCLUDE_PREFIXES (client-side edit of the Job
+      # rendered from the live CronJob; the CronJob itself is never changed).
+      - name: Start one run now (workflow_dispatch input backup_run_now)
+        if: github.event_name == 'workflow_dispatch' && inputs.backup_run_now
+        env:
+          INCLUDE_ARCHIVE: ${{ inputs.backup_include_archive }}
+          ARCHIVE_PREFIX: ops/decommission/20260913/
+        run: |
+          set -euo pipefail
+          active="$(kubectl -n "$NAMESPACE" get jobs -l app.kubernetes.io/name=geo-backup-daily -o jsonpath='{range .items[?(@.status.active)]}{.metadata.name}{" "}{end}')"
+          if [ -n "$active" ]; then
+            echo "::error title=Backup run already active::${active}— not starting a second one (same bucket, same day)."; exit 1
+          fi
+          job="geo-backup-manual-$(date -u +%Y%m%d%H%M%S)"
+          if [ "$INCLUDE_ARCHIVE" = "true" ]; then
+            cur="$(sed -n 's/.*name: DOCS_EXCLUDE_PREFIXES, value: "\([^"]*\)".*/\1/p' "$BACKUP_DIR/cronjob-backup-daily.yaml")"
+            new="$(printf '%s\n' "$cur" | tr ',' '\n' | grep -vxF "$ARCHIVE_PREFIX" | paste -sd, - || true)"
+            if [ "$new" = "$cur" ]; then
+              echo "::error title=Archive prefix not found::DOCS_EXCLUDE_PREFIXES='${cur}' does not hold ${ARCHIVE_PREFIX}."; exit 1
+            fi
+            kubectl -n "$NAMESPACE" create job "$job" --from=cronjob/geo-backup-daily --dry-run=client -o yaml \
+              | kubectl set env --local -f - -c backup "DOCS_EXCLUDE_PREFIXES=${new}" -o yaml \
+              | kubectl -n "$NAMESPACE" create -f -
+            echo "started job/${job} WITH the archive (DOCS_EXCLUDE_PREFIXES='${new}')."
+          else
+            kubectl -n "$NAMESPACE" create job "$job" --from=cronjob/geo-backup-daily
+            echo "started job/${job}."
+          fi
+          echo "verdict in-cluster (Job .status + manifests/latest.json); the runner reads no backup content."
+
+      - name: Summary
+        if: always()
+        run: |
+          {
+            echo "### geo daily prod backup applied"
+            echo ""
+            echo "- SealedSecrets: geo-backup-writer (job identity), geo-backup-reader (restore identity)"
+            echo "- ConfigMap: geo-backup-daily-script (from deploy/ci/backup/backup-daily.cjs)"
+            echo "- CronJob: geo-backup-daily (23 3 * * * UTC, Forbid) → s3://geo-backup"
           } >> "$GITHUB_STEP_SUMMARY"
