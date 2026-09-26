@@ -139,13 +139,15 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Compute CONFIRM_EXPECTED (anti-rejeu = date du jour UTC) + auto-CONFIRM planifié
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
           today="iso-prod-$(date -u +%F)"
           echo "CONFIRM_EXPECTED=${today}" >> "$GITHUB_ENV"
           # Un run PLANIFIÉ n'a pas d'input CONFIRM → la PLANIFICATION EST le GO ; le
           # motif anti-rejeu reste la date du jour. Un dispatch garde le CONFIRM tapé.
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ "$EVENT_NAME" = "schedule" ]; then
             echo "CONFIRM=${today}" >> "$GITHUB_ENV"
             echo "auto-CONFIRM (schedule) = ${today}"
           fi
@@ -295,13 +297,15 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Compute CONFIRM_EXPECTED (anti-rejeu = date du jour UTC) + auto-CONFIRM planifié
+        env:
+          EVENT_NAME: ${{ github.event_name }}
         run: |
           set -euo pipefail
           today="iso-prod-$(date -u +%F)"
           echo "CONFIRM_EXPECTED=${today}" >> "$GITHUB_ENV"
           # Un run PLANIFIÉ n'a pas d'input CONFIRM → la PLANIFICATION EST le GO ; le
           # motif anti-rejeu reste la date du jour. Un dispatch garde le CONFIRM tapé.
-          if [ "${{ github.event_name }}" = "schedule" ]; then
+          if [ "$EVENT_NAME" = "schedule" ]; then
             echo "CONFIRM=${today}" >> "$GITHUB_ENV"
             echo "auto-CONFIRM (schedule) = ${today}"
           fi
@@ -449,6 +453,9 @@ jobs:
     environment: geo-bascule
     timeout-minutes: 30
     env:
+      # G3 aussi en MODE=list : CONFIRM contrôlé (preflight-backup) AVANT l'écriture
+      # du Secret lecteur et le Job de lecture.
+      CONFIRM: ${{ inputs.CONFIRM }}
       MODE: list
       CYCLE_ID: ${{ inputs.CYCLE_ID }}
       BHS: ${{ vars.BASCULE_BHS_ENDPOINT || 's3.bhs.io.cloud.ovh.net' }}
@@ -461,6 +468,9 @@ jobs:
       CLI: deploy/ci/bascule-preprod/bascule.mjs
     steps:
       - uses: actions/checkout@v4
+
+      - name: Compute CONFIRM_EXPECTED (anti-rejeu = date du jour UTC)
+        run: echo "CONFIRM_EXPECTED=iso-prod-$(date -u +%F)" >> "$GITHUB_ENV"
 
       - name: Setup Node 22
         uses: actions/setup-node@v4
@@ -530,7 +540,11 @@ jobs:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.MODE == 'restore' }}
     runs-on: ubuntu-latest
     environment: geo-bascule
-    timeout-minutes: 240
+    # Budget > somme des attentes runner des étapes (≈ 313 min : R0 45 + S3' 183
+    # (DOCS_RESTORE_TIMEOUT 11000 s) + recon 15 + G4 recon 15 + rollout 10 + served-ids
+    # 45) : un Job bloqué finit par SON timeout Node (échec d'étape), jamais par la
+    # coupure du job (annulation). Plafond GitHub 360.
+    timeout-minutes: 350
     outputs:
       o_resolve: ${{ steps.resolve.outcome }}
       backup_id: ${{ steps.resolve.outputs.backup_id }}

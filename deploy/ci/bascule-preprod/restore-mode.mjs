@@ -90,8 +90,21 @@ export function assertScriptEmbeddable(script) {
   if (hit) throw new Error(`backup-restore.cjs contient un motif de placeholder (${hit[0]})`);
   return true;
 }
-export function pickTerminationMessage(podList, container) {
-  const items = Array.isArray(podList?.items) ? [...podList.items] : [];
+// Un pod appartient à l'instance `jobUid` du Job (celle créée par ce run) quand son
+// ownerReference contrôleur ou son label controller-uid porte cet uid. Un pod d'une
+// instance précédente du même nom (supprimée, pods encore en fin de vie) n'est
+// jamais lu.
+export function podOfJob(pod, jobUid) {
+  if (!jobUid) return false;
+  const owners = Array.isArray(pod?.metadata?.ownerReferences) ? pod.metadata.ownerReferences : [];
+  if (owners.some((o) => o?.kind === "Job" && o?.uid === jobUid)) return true;
+  const labels = pod?.metadata?.labels ?? {};
+  return labels["batch.kubernetes.io/controller-uid"] === jobUid || labels["controller-uid"] === jobUid;
+}
+// Message de fin de `container` dans le pod le plus récent de l'instance `jobUid`
+// (init containers compris). Pas d'uid ⇒ null (jamais de repli sur un autre pod).
+export function pickTerminationMessage(podList, container, jobUid) {
+  const items = (Array.isArray(podList?.items) ? [...podList.items] : []).filter((p) => podOfJob(p, jobUid));
   items.sort((a, b) => String(b?.metadata?.creationTimestamp ?? "").localeCompare(String(a?.metadata?.creationTimestamp ?? "")));
   for (const pod of items) {
     const statuses = [...(pod?.status?.initContainerStatuses ?? []), ...(pod?.status?.containerStatuses ?? [])];
@@ -100,6 +113,18 @@ export function pickTerminationMessage(podList, container) {
     if (typeof msg === "string" && msg.trim()) return msg;
   }
   return null;
+}
+// Bucket prod de geo, figé (défaut de BASCULE_PROD_DOCS_BUCKET) : TOUJOURS une
+// destination interdite de la copie S3', quelles que soient les variables.
+export const FROZEN_PROD_DOCS_BUCKETS = Object.freeze(["sentropic-geo"]);
+// FORBIDDEN_DST_BUCKETS rendu dans les Jobs docs : bucket prod figé + PROD_DOCS
+// (exigé en MODE=restore) + bucket de backup. Jamais vide ; nom invalide refusé.
+export function forbiddenDstBuckets({ prodDocs, backupBucket }) {
+  const prod = String(prodDocs ?? "").trim();
+  if (!prod) throw new Error("PROD_DOCS (BASCULE_PROD_DOCS_BUCKET) est exigé en MODE=restore : c'est une destination interdite de la copie");
+  const names = [...FROZEN_PROD_DOCS_BUCKETS, prod, String(backupBucket ?? "").trim()].filter(Boolean);
+  if (names.some((n) => !BUCKET_RE.test(n))) throw new Error("nom de bucket invalide dans les destinations interdites");
+  return [...new Set(names)].join(",");
 }
 export function parseTermination(msg) {
   if (typeof msg !== "string" || !msg.trim()) return null;
@@ -239,15 +264,17 @@ export function makeRestoreMode(h) {
     try { assertYamlSafeVars(vars); } catch (e) { die(e.message); }
     return runJobFromTemplate({ tmpl, jobName, vars: { ...vars, BR_SCRIPT: brScript() }, timeoutSec, failClosed: false });
   }
-  function readVerdict(ns, jobName, container) {
+  // Verdict lu UNIQUEMENT sur les pods de l'instance du Job créée par ce run (uid).
+  function readVerdict(ns, jobName, container, jobUid) {
+    if (!jobUid) return { verdict: null, readable: true };
     const r = run("kubectl", ["-n", ns, "get", "pods", "-l", `job-name=${jobName}`, "-o", "json"], { capture: true, allowFail: true });
     if (r.status !== 0) return { verdict: null, readable: false };
     let pods = null;
     try { pods = JSON.parse(r.stdout || "{}"); } catch { pods = null; }
-    return { verdict: parseTermination(pickTerminationMessage(pods, container)), readable: true };
+    return { verdict: parseTermination(pickTerminationMessage(pods, container, jobUid)), readable: true };
   }
   function failWithVerdict(res, ns, jobName, container, what) {
-    const { verdict, readable } = readVerdict(ns, jobName, container);
+    const { verdict, readable } = readVerdict(ns, jobName, container, res.uid);
     const reason = verdict && verdict.reason ? safeReason(verdict.reason)
       : verdict && verdict.ok === true ? `étape '${container}' OK — un conteneur suivant a échoué (inspecter in-cluster)`
         : readable ? "aucun verdict enregistré (inspecter le Job in-cluster)" : "pods illisibles par la CI (RBAC pods get/list)";
@@ -270,6 +297,7 @@ export function makeRestoreMode(h) {
     const m = mode();
     section(`S0 preflight (MODE=${m})`);
     if (m === "chain") die("preflight-backup sert MODE=restore|list (MODE=chain : 'preflight').");
+    assertConfirm(); // G3 dans TOUS les MODE (list compris), AVANT l'écriture des Secrets et R0
     const missing = ["node", "kubectl", "curl"].filter((b) => run("bash", ["-lc", `command -v ${b}`], { capture: true, allowFail: true }).status !== 0);
     if (missing.length) die(`binaires manquants sur le runner : ${missing.join(", ")}`);
     const required = m === "restore" ? ["BHS", "PREPROD_DOCS", "PROD_DOCS", "PREPROD_API_URL", "PROD_API_URL", "EXPECTED_DATABASE"] : ["BHS", "EXPECTED_DATABASE"];
@@ -281,7 +309,12 @@ export function makeRestoreMode(h) {
       if (m === "restore") backupId = validateBackupIdInput(opt("BACKUP_ID", "latest"), today());
       validateCycleId(opt("CYCLE_ID", ""));
     } catch (e) { die(e.message); }
-    if (m === "restore" && req("PREPROD_DOCS") === req("PROD_DOCS")) die("PREPROD_DOCS == PROD_DOCS — restauration vers la prod refusée.");
+    if (m === "restore") {
+      let forbidden;
+      try { forbidden = forbiddenDstBuckets({ prodDocs: req("PROD_DOCS"), backupBucket: p.bucket }); } catch (e) { die(e.message); }
+      if (forbidden.split(",").includes(req("PREPROD_DOCS"))) die("PREPROD_DOCS est une destination interdite (bucket prod ou de backup) — restauration refusée.");
+      log(`destinations interdites de la copie : ${forbidden}`);
+    }
     log(`MODE=${m} bucket=${p.bucket} lecteur=${p.readerSecret} copie=${p.copySecret} prefixe=${p.prefix} backup_id=${backupId} (0 cred S3 runner)`);
     log("S0 preflight OK");
   }
@@ -293,6 +326,7 @@ export function makeRestoreMode(h) {
   function cmdBackupSecretFill() {
     const m = mode();
     if (m === "chain") die("backup-secret-fill sert MODE=restore|list.");
+    assertConfirm(); // G3 avant toute écriture de Secret
     const specs = specsForMode(m);
     section(`Write backup Secrets from GitHub (environment geo-bascule) : ${specs.join(", ")}`);
     const p = params();
@@ -332,6 +366,7 @@ export function makeRestoreMode(h) {
   function cmdBackupResolve() {
     section("R0 backup-resolve — Job lecture (BACKUP_ID → date D + gardes + PIN)");
     if (mode() !== "restore") die("backup-resolve exige MODE=restore.");
+    assertConfirm(); // G3 avant le Job (lecture seule)
     const p = params();
     let backupId;
     try { backupId = validateBackupIdInput(opt("BACKUP_ID", "latest"), today()); } catch (e) { die(e.message); }
@@ -343,7 +378,7 @@ export function makeRestoreMode(h) {
       timeoutSec: Number(opt("BACKUP_RESOLVE_TIMEOUT", "2700")),
     });
     if (!res.ok) failWithVerdict(res, p.jd.NAMESPACE, JOBS.resolve, "read", "R0 backup refusé");
-    const { verdict, readable } = readVerdict(p.jd.NAMESPACE, JOBS.resolve, "read");
+    const { verdict, readable } = readVerdict(p.jd.NAMESPACE, JOBS.resolve, "read", res.uid);
     if (!verdict) die(readable ? "R0 — Job OK mais aucun PIN (message de fin absent)." : "R0 — pods illisibles par la CI (RBAC pods get/list).");
     let pin;
     try { pin = validatePin(verdict); } catch (e) { die(e.message); }
@@ -359,6 +394,7 @@ export function makeRestoreMode(h) {
   function cmdBackupList() {
     section("backup-list — Job lecture (backups disponibles)");
     if (mode() !== "list") die("backup-list exige MODE=list.");
+    assertConfirm(); // G3 avant le Job, list compris
     const p = params();
     const res = dispatch({
       tmpl: "backup-read-job.tmpl.yaml", jobName: JOBS.list,
@@ -366,7 +402,7 @@ export function makeRestoreMode(h) {
       timeoutSec: Number(opt("BACKUP_LIST_TIMEOUT", "600")),
     });
     if (!res.ok) failWithVerdict(res, p.jd.NAMESPACE, JOBS.list, "read", "backup-list en échec");
-    const { verdict, readable } = readVerdict(p.jd.NAMESPACE, JOBS.list, "read");
+    const { verdict, readable } = readVerdict(p.jd.NAMESPACE, JOBS.list, "read", res.uid);
     if (!verdict) die(readable ? "backup-list sans verdict." : "pods illisibles par la CI (RBAC pods get/list).");
     let listing;
     try { listing = validateListing(verdict); } catch (e) { die(e.message); }
@@ -380,14 +416,17 @@ export function makeRestoreMode(h) {
     const pin = loadPin();
     const p = params();
     const jobName = step === "docs" ? JOBS.docs : JOBS.recon;
+    let forbidden;
+    try { forbidden = forbiddenDstBuckets({ prodDocs: req("PROD_DOCS"), backupBucket: p.bucket }); } catch (e) { die(e.message); }
+    if (forbidden.split(",").includes(req("PREPROD_DOCS"))) die("PREPROD_DOCS est une destination interdite (bucket prod ou de backup).");
     const res = dispatch({
       tmpl: "docs-restore-backup-job.tmpl.yaml", jobName,
       vars: readVars(p, step, { JOB_NAME: jobName, COPY_SECRET: p.copySecret, BACKUP_DATE: pin.date, PIN_MANIFEST_SHA256: pin.manifestSha256,
-        DST_BUCKET: req("PREPROD_DOCS"), FORBIDDEN_DST_BUCKETS: req("PROD_DOCS"), DOCS_RESTORE_PREFIX: p.prefix, COPY_GRANTEE: opt("DOCS_SYNC_GRANTEE", ""),
+        DST_BUCKET: req("PREPROD_DOCS"), FORBIDDEN_DST_BUCKETS: forbidden, DOCS_RESTORE_PREFIX: p.prefix, COPY_GRANTEE: opt("DOCS_SYNC_GRANTEE", ""),
         COPY_CONCURRENCY: String(Math.max(1, Math.min(32, Number(opt("BACKUP_COPY_CONCURRENCY", "8")) || 8))), DOCS_DRY: dry ? "1" : "0" }),
       timeoutSec: Number(opt(step === "docs" ? "DOCS_RESTORE_TIMEOUT" : "RECON_TIMEOUT", step === "docs" ? "11000" : "900")),
     });
-    const { verdict } = readVerdict(p.jd.NAMESPACE, jobName, "docs");
+    const { verdict } = readVerdict(p.jd.NAMESPACE, jobName, "docs", res.uid);
     return { res, verdict, pin, p, jobName };
   }
   const counts = (v) => (v ? Object.entries(v).filter(([k]) => !["ok", "step", "reason"].includes(k))
