@@ -58,6 +58,10 @@
 //     G1/G2 : N-A (pas de restore DB préprod geo).
 //
 //   Piloté par .github/workflows/bascule-preprod.yml. AUCUNE exécution au build.
+//
+//   MODE (input) : chain (défaut, les deux jambes ci-dessus) | restore (restaurer
+//   la préprod DEPUIS un backup quotidien de geo-backup, job `restore`) | list
+//   (lecture seule). restore/list = restore-mode.mjs (même contrat kubectl-only).
 // =============================================================================
 import { spawnSync } from "node:child_process";
 import console from "node:console";
@@ -70,6 +74,7 @@ import {
 import { join, resolve } from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
+import { basculeMode, makeRestoreMode } from "./restore-mode.mjs";
 
 // ── petits utilitaires de sortie (jamais de secret imprimé) ─────────────────
 const log = (msg) => console.log(`[bascule] ${msg}`);
@@ -430,6 +435,11 @@ function runJobFromTemplate({ tmpl, jobName, vars, timeoutSec, failClosed = true
   writeFileSync(rendered, renderTemplate(join(import.meta.dirname, tmpl), vars), { mode: 0o600 });
   run("kubectl", ["-n", ns, "delete", "job", jobName, "--ignore-not-found"], { allowFail: true });
   run("kubectl", ["-n", ns, "apply", "-f", rendered]);
+  // uid de CETTE instance du Job : son verdict n'est lu que sur SES pods (un pod de
+  // l'instance précédente supprimée peut encore être listé sous le même job-name).
+  const uidRes = run("kubectl", ["-n", ns, "get", "job", jobName, "-o", "jsonpath={.metadata.uid}"], { capture: true, allowFail: true });
+  const uid = uidRes.status === 0 && /^[0-9a-f-]{36}$/.test((uidRes.stdout || "").trim()) ? uidRes.stdout.trim() : null;
+  if (!uid) warn(`Job ${jobName} — uid illisible : son message de fin ne sera pas lu.`);
   const inspect = `inspecter in-cluster : kubectl -n ${ns} logs job/${jobName} --all-containers`;
   const deadline = Date.now() + timeoutSec * 1000;
   for (;;) {
@@ -437,15 +447,15 @@ function runJobFromTemplate({ tmpl, jobName, vars, timeoutSec, failClosed = true
     let status = {};
     try { status = st.stdout && st.stdout.trim() ? JSON.parse(st.stdout) : {}; } catch { status = {}; }
     const v = classifyJobStatus(status);
-    if (v.done && v.ok) { log(`Job ${jobName} terminé OK (.status=succeeded)`); return { ok: true, state: "succeeded", jobName }; }
+    if (v.done && v.ok) { log(`Job ${jobName} terminé OK (.status=succeeded)`); return { ok: true, state: "succeeded", jobName, uid }; }
     if (v.done && !v.ok) {
       const msg = `Job ${jobName} en ÉCHEC (.status=failed) — étape avortée (fail-closed). ${inspect} (0 logs runner).`;
-      if (!failClosed) { warn(msg); return { ok: false, state: "failed", jobName }; }
+      if (!failClosed) { warn(msg); return { ok: false, state: "failed", jobName, uid }; }
       die(msg);
     }
     if (Date.now() >= deadline) {
       const msg = `Job ${jobName} non terminé dans ${timeoutSec}s — étape avortée. ${inspect} (0 logs runner).`;
-      if (!failClosed) { warn(msg); return { ok: false, state: "timeout", jobName }; }
+      if (!failClosed) { warn(msg); return { ok: false, state: "timeout", jobName, uid }; }
       die(msg);
     }
     spawnSync("bash", ["-lc", "sleep 10"], { stdio: "ignore" });
@@ -520,6 +530,8 @@ function cmdRecon() {
 
 // GARDE G4 (identique immo) : sentinel local vérifié, puis recon REJOUÉE en direct.
 function assertReconOk() {
+  // MODE=restore : G4 = recon de la préprod contre docs-inventory(D) du backup.
+  if (currentMode() === "restore") { restoreMode.assertReconOk(); return; }
   const dir = workdir();
   const path = join(dir, "recon.ok.json");
   if (!existsSync(path)) die("GARDE G4 — sentinel recon.ok absent : lancer recon (S3b) et l'obtenir VERT avant le rollout.");
@@ -574,14 +586,31 @@ function cmdSmoke() {
   if (prodIds.length === 0) die("smoke KO — /collections prod vide ou illisible (contrôle impossible).");
   const missing = servedIdsMissing(prodIds, preIds);
   log(`/collections : prod=${prodIds.length} préprod=${preIds.length} manquants-en-préprod=${missing.length}`);
+  // MODE=restore : la préprod sert l'état d'un jour D passé — des collections créées
+  // en prod après D peuvent légitimement manquer : contrôle CONSULTATIF (warning).
+  if (missing.length && currentMode() === "restore") {
+    if (preIds.length === 0) die("smoke KO — /collections préprod vide après restauration.");
+    warn(`smoke (MODE=restore) — ${missing.length} collection(s) prod absente(s) en préprod (postérieures au backup ?) : consultatif.`);
+    log("S7 smoke OK (MODE=restore) — landing 200 + /collections préprod non vide.");
+    return;
+  }
   if (missing.length) die(`smoke KO — ${missing.length} collection(s) servie(s) en prod absente(s) en préprod (ex. ${missing.slice(0, 10).join(", ")}).`);
   log("S7 smoke OK — préprod sert ⊇ prod (through l'API).");
 }
 
 // =============================================================================
+// MODE=restore|list (restore-mode.mjs) — helpers injectés, aucun import circulaire.
+// =============================================================================
+function currentMode() {
+  try { return basculeMode(process.env); } catch (e) { return die(e.message); }
+}
+const restoreMode = makeRestoreMode({ log, warn, die, section, req, opt, run, assertConfirm, runJobFromTemplate, jobDefaults, workdir, resolvePreprodImage });
+
+// =============================================================================
 // dispatch
 // =============================================================================
 const COMMANDS = {
+  ...restoreMode.commands,
   preflight: cmdPreflight,
   dump: cmdDump,
   "copy-docs": cmdCopyDocs,
@@ -605,7 +634,9 @@ function main() {
         "  recon (S3b) : Job verdict-only list-objects-v2 diff Key+Size (dest ⊇ src).\n" +
         "  rollout (S5') : rollout restart geo-api préprod, SEULEMENT si recon vert (G4).\n" +
         "  smoke (S7) : API publique — préprod ⊇ prod sur /collections (0 cred).\n" +
-        "  GARDES : G3 CONFIRM, G4 recon-avant-rollout, contrôle POSITIF DB in-cluster (CronJob).",
+        "  GARDES : G3 CONFIRM, G4 recon-avant-rollout, contrôle POSITIF DB in-cluster (CronJob).\n" +
+        "  MODE=restore|list (restore-mode.mjs) : preflight-backup | backup-secret-fill | backup-resolve |\n" +
+        "    backup-list | docs-restore [--dry] | recon-backup — restauration DEPUIS geo-backup (BACKUP_ID).",
     );
     process.exit(isHelp ? 0 : 1);
   }
