@@ -63,6 +63,9 @@ const TERMINATION_MAX_BYTES = 3900; // k8s plafonne le message de fin à 4096 oc
 const COPY_OBJECT_MAX = 5 * 1024 * 1024 * 1024; // S3 plafonne CopyObject à 5 GiB
 const PART_BYTES = 512 * 1024 * 1024;
 const LAYOUT = Object.freeze({ docsPrefix: 'docs/', manifestsPrefix: 'manifests/', latestKey: 'manifests/latest.json' });
+// Buckets prod et backup de geo : destinations TOUJOURS interdites de la copie S3',
+// quelles que soient les variables rendues dans le Job.
+const HARD_FORBIDDEN_DST_BUCKETS = Object.freeze(['sentropic-geo', 'geo-backup']);
 const formatId = (db, kind) => `${db}-backup-${kind}/v1`;
 
 // ── fonctions pures ──────────────────────────────────────────────────────────
@@ -243,12 +246,17 @@ function destUpToDate(entry, d) {
 
 // versionsIndex = null quand le listing des versions est refusé : versionId
 // enregistré utilisé tel quel, les autres vérifiés par HEAD (needsHead).
+// Entrées `excluded` (préfixes que le backup écarte volontairement, backup
+// toujours `complete`) : traitées comme le backup les traite — non exigées,
+// comptées à part (`excluded`) et journalisées. Tout autre état ≠ `backed-up`
+// (pending, failed : jamais dans un backup complet) reste `notInBackup` et bloque.
 function planDocsRestore({ entries, createdAt, versionsIndex, destIndex }) {
   const createdAtMs = Date.parse(createdAt);
-  const plan = { objects: 0, upToDate: 0, notInBackup: 0, unresolved: 0, unresolvedReasons: {}, toCopy: [], needsHead: [], bytesToCopy: 0, how: {} };
+  const plan = { objects: 0, upToDate: 0, excluded: 0, notInBackup: 0, unresolved: 0, unresolvedReasons: {}, toCopy: [], needsHead: [], bytesToCopy: 0, how: {} };
   const bump = (o, k) => { o[k] = (o[k] || 0) + 1; };
   for (const e of entries) {
     plan.objects += 1;
+    if (e.state === 'excluded') { plan.excluded += 1; continue; }
     if (e.state !== 'backed-up') { plan.notInBackup += 1; continue; }
     if (destUpToDate(e, destIndex.get(e.key))) { plan.upToDate += 1; continue; }
     if (!versionsIndex) {
@@ -267,11 +275,13 @@ function planDocsRestore({ entries, createdAt, versionsIndex, destIndex }) {
 }
 
 // dest ⊇ inventaire(D) sur le préfixe servi, Key + Size ; objets préprod en plus tolérés (additif).
+// Entrées `excluded` non exigées (comptées à part), comme dans planDocsRestore.
 function reconInventory(entries, destIndex, prefix) {
-  const r = { checked: 0, missing: 0, sizeMismatch: 0, notInBackup: 0, extra: 0 };
+  const r = { checked: 0, missing: 0, sizeMismatch: 0, excluded: 0, notInBackup: 0, extra: 0 };
   const keys = new Set();
   for (const e of entries) {
     keys.add(e.key);
+    if (e.state === 'excluded') { r.excluded += 1; continue; }
     if (e.state !== 'backed-up') { r.notInBackup += 1; continue; }
     r.checked += 1;
     const d = destIndex.get(e.key);
@@ -360,8 +370,13 @@ function readConfig(env, step) {
     const c = Math.floor(Number(env.COPY_CONCURRENCY || '8'));
     cfg.concurrency = Number.isFinite(c) ? Math.max(1, Math.min(32, c)) : 8;
     const forbidden = String(env.FORBIDDEN_DST_BUCKETS || '').split(',').map((s) => s.trim()).filter(Boolean);
-    // Jamais d'écriture dans le bucket de backup ni dans un bucket de prod.
-    if (cfg.dstBucket === cfg.backupBucket || forbidden.includes(cfg.dstBucket)) throw refused('DST_BUCKET est le bucket de backup ou un bucket interdit (prod)');
+    // Le runner nomme toujours le bucket prod : une liste vide = Job mal rendu, jamais
+    // « rien d'interdit ».
+    if (!forbidden.length) throw refused('FORBIDDEN_DST_BUCKETS vide : le bucket prod doit être nommé');
+    // Jamais d'écriture dans le bucket de backup ni dans un bucket de prod — les
+    // buckets prod et backup de geo sont en plus figés ici, quelles que soient les variables.
+    const hard = [...HARD_FORBIDDEN_DST_BUCKETS, cfg.backupBucket];
+    if (hard.includes(cfg.dstBucket) || forbidden.includes(cfg.dstBucket)) throw refused('DST_BUCKET est le bucket de backup ou un bucket interdit (prod)');
   }
   return cfg;
 }
@@ -558,10 +573,11 @@ async function runDocs({ cfg, reader, copier, log }) {
   const plan = planDocsRestore({ entries, createdAt: inventory.createdAt, versionsIndex, destIndex });
   if (plan.needsHead.length) await resolveByHead(copier, cfg, plan);
   log(`PLAN date=${cfg.date} prefix=${cfg.prefix} inventaire=${plan.objects} a_jour=${plan.upToDate} a_copier=${plan.toCopy.length} ` +
-    `octets=${plan.bytesToCopy} hors_backup=${plan.notInBackup} irresolus=${plan.unresolved} raisons=${JSON.stringify(plan.unresolvedReasons)} ` +
+    `octets=${plan.bytesToCopy} exclus=${plan.excluded} hors_backup=${plan.notInBackup} irresolus=${plan.unresolved} raisons=${JSON.stringify(plan.unresolvedReasons)} ` +
     `how=${JSON.stringify(plan.how)} dest=${destIndex.size} versions_listees=${versionsIndex !== null} dry=${cfg.dry}`);
   const base = { step: 'docs', date: cfg.date, prefix: cfg.prefix, dry: cfg.dry, inventory: plan.objects, upToDate: plan.upToDate, toCopy: plan.toCopy.length,
-    bytesToCopy: plan.bytesToCopy, notInBackup: plan.notInBackup, unresolved: plan.unresolved, unresolvedReasons: plan.unresolvedReasons };
+    bytesToCopy: plan.bytesToCopy, excluded: plan.excluded, notInBackup: plan.notInBackup, unresolved: plan.unresolved, unresolvedReasons: plan.unresolvedReasons };
+  if (plan.excluded > 0) log(`NOTE ${plan.excluded} objet(s) de l'inventaire exclus par le backup lui-même (préfixes exclus) : non exigés, non restaurés`);
   if (plan.notInBackup > 0 || plan.unresolved > 0) {
     log(`DOCS REFUSÉ — ${plan.notInBackup} objet(s) absents du backup de ${cfg.date}, ${plan.unresolved} sans version restaurable (fail-closed)`);
     return { exitCode: EXIT.REFUSED, termination: { ok: false, ...base } };
@@ -596,7 +612,7 @@ async function runRecon({ cfg, reader, copier, log }) {
   const inventory = await loadInventory(reader, cfg, manifest);
   const recon = reconInventory(servedEntries(inventory, cfg.prefix), await destIndexOf(copier, cfg.dstBucket, cfg.prefix), cfg.prefix);
   log(`${recon.ok ? 'RECON OK' : 'RECON ÉCHEC'} date=${cfg.date} verifies=${recon.checked} manquants=${recon.missing} ` +
-    `taille_diff=${recon.sizeMismatch} hors_backup=${recon.notInBackup} dest_en_plus=${recon.extra}`);
+    `taille_diff=${recon.sizeMismatch} exclus=${recon.excluded} hors_backup=${recon.notInBackup} dest_en_plus=${recon.extra}`);
   return { exitCode: recon.ok ? EXIT.OK : EXIT.ERROR, termination: { ok: recon.ok, step: 'recon', date: cfg.date, ...recon } };
 }
 
@@ -629,7 +645,7 @@ async function runStep({ env, sdk, clients, now = Date.now, log }) {
 }
 
 module.exports = {
-  EXIT, RestoreError, LAYOUT, TERMINATION_MAX_BYTES, COPY_OBJECT_MAX, isValidDate, keysFor, withScheme, normEtag, parseSha256Line, parseBackupId,
+  EXIT, RestoreError, LAYOUT, TERMINATION_MAX_BYTES, COPY_OBJECT_MAX, HARD_FORBIDDEN_DST_BUCKETS, isValidDate, keysFor, withScheme, normEtag, parseSha256Line, parseBackupId,
   chooseDate, checkManifest, backupReferenceTime, staleGuard, checkInventory, servedEntries, indexVersions, chooseVersion, destUpToDate,
   planDocsRestore, reconInventory, copySourceFor, partRanges, buildListing, readConfig, runStep,
 };
