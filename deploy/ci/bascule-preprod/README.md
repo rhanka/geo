@@ -64,7 +64,9 @@ Tout l'accès object-store/DB vit dans des Jobs verdict-only (creds via `secretK
 | `vap-ci-trigger-suspend-only.yaml` | VAP : la SA trigger ne peut muter QUE `spec.suspend` de `geo-db-backup-prod`. |
 | `rbac-ci-trigger-prod.yaml` | SA/Role/RB `geo-ci-trigger-prod` (ns geo) : get/patch du seul CronJob dump. |
 | `rbac-ci-bascule-prod.yaml` | SA permanente `geo-ci-bascule-prod` (ns geo) : apply du bundle, 0 `secrets:create`. |
-| `rbac-ci-bascule-preprod.yaml` | SA `geo-ci-bascule-preprod` (ns geo-preprod) : Jobs + rollout geo-api, 0 secrets, 0 logs. |
+| `rbac-ci-bascule-preprod.yaml` | SA `geo-ci-bascule-preprod` (ns geo-preprod) : Jobs + rollout geo-api, secrets get/update sur `geo-backup-reader-preprod` et `geo-backup-restore-docs` seulement, 0 logs. |
+| `restore-mode.mjs` · `backup-restore.cjs` · `backup-read-job.tmpl.yaml` · `docs-restore-backup-job.tmpl.yaml` | `MODE=restore\|list` : restauration DEPUIS `geo-backup` (section « Restore depuis un backup »). |
+| `restore-mode.selftest.mjs` | Selftest hors ligne du mode restore/list (faux S3 versionné par identité, CLI réelle contre un faux kubectl). |
 | `geo-db-ro-prod-sealed.yaml`, `geo-pra-writer-prod-sealed.yaml` | SealedSecrets **committées par geo-cond** (scellées, validées) — appliquées par le bundle. |
 | `netpol-geo-db-backup.k8s-apply.yaml` | **À appliquer par k8s** (jamais par un workflow) : ingress postgis + egress des pods de backup (ns geo). |
 | `install-cd-bootstrap.sh` | Install one-time (k8s lane, cluster-admin, après merge) : RBAC des SA, 3 kubeconfigs GH, armement, dispatch du CD bundle. |
@@ -272,6 +274,71 @@ verify tourne sur le runner (API publique) : aucune netpol d'ingress vers geo-ap
 3. **Digest de l'upload du CronJob** : épinglé sur le build `main-f39cd4b2` (CD préprod) ; re-pinner sur le digest geo-api PROD mesuré s'il diffère.
 4. **État mesuré avant toute bascule (2026-09-25, smoke S7 local)** : prod sert 3900 collections, préprod 3886, 18 absentes en préprod (`qc-zoning-events-*`) — le smoke est aujourd'hui rouge, la bascule doit le rendre vert.
 5. **Quota ns geo-preprod en parallèle** : les jambes font coexister le Job freshness (limits 500m / 768Mi) et le Job copy-docs (500m / 512Mi) puis recon (500m / 768Mi) — au plus 2 pods bascule simultanés. Marge de la ResourceQuota geo-preprod : `unverified` (à confirmer par k8s).
+
+## Restore depuis un backup — `MODE=restore` / `MODE=list`
+
+Input `MODE` : `chain` (défaut, et toujours pour un run planifié : jambes `pg` + `s3`
+ci-dessus, inchangées) | `restore` (restaurer la préprod geo DEPUIS un backup quotidien de
+`geo-backup`, voir `../backup/`) | `list` (lecture seule). Port de la bascule immo
+(rhanka/radar-immobilier#777), mêmes gardes. Logique : `restore-mode.mjs` (runner, kubectl
+seul) + `backup-restore.cjs` (étapes in-pod embarquées dans les templates, `node -e`, image
+geo-api, 0 python, 0 image nouvelle). `BASCULE_SCHEDULE_ENABLED` inchangé.
+
+| Input | Valeurs | Effet |
+| --- | --- | --- |
+| `MODE` | `chain` \| `restore` \| `list` | voir ci-dessus |
+| `BACKUP_ID` | `latest` (défaut) \| `AAAA-MM-JJ` | `latest` = `manifests/latest.json` → `latestComplete` (jamais le dernier partiel) ; une date = `manifests/<D>.json` |
+| `ALLOW_STALE_BACKUP` | `false` \| `true` | accepter un `latest` de plus de 24 h |
+| `CYCLE_ID`, `CONFIRM`, `DRY_RUN`, `SKIP_ROLLOUT` | inchangés | G3 anti-rejeu inchangé ; `DRY_RUN=true` = lecture seule |
+
+### Séquence (job `restore`, environment `geo-bascule`)
+
+| Pas | Sous-commande | Ce qui se passe |
+| --- | --- | --- |
+| S0 | `preflight-backup` | **G3 (`CONFIRM`) en premier, dans tous les MODE (list compris), avant l'écriture des Secrets et tout Job** (re-contrôlé avant chaque écriture de Secret et chaque Job) ; binaires, params, format `BACKUP_ID`/`CYCLE_ID`, endpoint figé ; destinations interdites de la copie = bucket prod figé `sentropic-geo` + `PROD_DOCS` + bucket de backup (jamais une liste vide ; l'étape in-pod refuse une liste vide et fige en plus `sentropic-geo` et `geo-backup`) ; `PREPROD_DOCS` parmi elles ⇒ refus |
+| S0.s | `backup-secret-fill` | réécrit les Secrets pré-créés `geo-backup-reader-preprod` (depuis `GEO_BACKUP_READER_PREPROD_*`) et, en `restore`, `geo-backup-restore-docs` (depuis `GEO_BACKUP_RESTORE_DOCS_*`) — gardes #405 : une ligne, `^[A-Za-z0-9]{16,128}$` / `^[A-Za-z0-9/+=]{16,128}$`, endpoint `https://s3.bhs.io.cloud.ovh.net`, `kubectl replace --dry-run=server` des deux avant la première écriture, jeu de clés vérifié ; valeurs par `env:` seulement, jamais en argv/log |
+| R0 | `backup-resolve` | Job de lecture AVANT toute mutation : `BACKUP_ID` → D ; statut `complete` exigé ; `latest` > 24 h refusé sauf `ALLOW_STALE_BACKUP` (âge = début du dump) ; date explicite non bloquante ; sidecar sha256 = manifeste, taille, **sha256 du dump recalculé en flux** (préprod geo SANS PostgreSQL : le dump est vérifié, pas restauré) ; PIN `backup-pin.json` |
+| S3' | `docs-restore` | G3 ; état AU JOUR D du préfixe servi `normalized/` d'après `docs-inventory/<D>.json` (sha256 = manifeste) : copie **côté serveur** signée par `geo-backup-restore-docs`, clé `geo-backup/docs/normalized/X` → `sentropic-geo-preprod/normalized/X` (préfixe `docs/` retiré, clé source conservée), depuis la version enregistrée, sinon celle dont l'ETag est celui de l'inventaire si l'objet a été réécrit depuis ; `UploadPartCopy` au-delà de 5 GiB (lève la limite du point ouvert 2 pour ce mode) ; additif ; `GrantFullControl id=<BASCULE_DOCS_SYNC_GRANTEE>` exactement comme docs-sync (même variable, même défaut : canonical id owner/serving de `sentropic-geo-preprod`) ; entrées `excluded` par le backup lui-même (préfixes exclus, backup toujours `complete`) traitées comme le backup les traite : non exigées, comptées à part (`excluded`) et journalisées ; tout autre objet absent du backup (`pending`, `failed`) ou sans version restaurable ⇒ refus avant la 1re copie |
+| S3b' | `recon-backup` | préprod ⊇ inventaire(D) sur `normalized/` (Key + Size) ; sentinel `recon.ok.json` (D + sha256 du manifeste) |
+| S5' | `rollout` | G4 = sentinel de CE backup + `recon-backup` rejouée |
+| S7 | `smoke` | landing 200 + `/collections` non vide ; préprod ⊇ prod devient **consultatif** (une collection créée en prod après D peut manquer) |
+
+`DRY_RUN=true` : S0 (G3) + S0.s + R0 + plan S3' (0 copie) + smoke informatif. **Un restore
+DRY écrit quand même les Secrets** (mêmes valeurs, nécessaires aux Jobs de lecture) **et
+lance R0** (Job de lecture seule) ; ni copie, ni rollout. Job `list` : S0 (G3, `CONFIRM`
+dans l'env du job) + S0.s + Job de liste → journal, résumé du run, artefact
+`backup-list-geo-<CYCLE_ID|run_id>` (`backup-list.json`, format `radar-backup-list/v1`
+attendu par l'orchestrateur immo).
+Le runner lit le message de fin des pods (RBAC pods get/list existante), jamais les logs,
+et **seulement sur les pods de l'instance du Job qu'il vient de créer** (uid lu après
+l'apply ; ownerReference contrôleur ou label `controller-uid`) — jamais un pod d'une
+instance précédente du même nom ; sans uid, aucun verdict.
+
+Budget du job `restore` : **350 min** (plafond 360), au-dessus de la somme des attentes
+runner des étapes (≈ 313 min : R0 45 + S3' 183 + recon 15 + G4 15 + rollout 10 +
+served-ids 45) : un Job bloqué finit par son propre timeout (échec d'étape), pas par la
+coupure du job (annulation).
+
+### Contrat e2e (`CYCLE_ID`)
+
+- job `restore` : `geo-served-canonical-ids-<CYCLE_ID>` après le smoke (inchangé) ;
+- job `cycle-leg` (`needs: [pg, s3, restore]`) : `legs.geo` gagne `mode` et `backup`
+  (`id`, `date`, sha256 manifeste/dump, `dump_started_at` = `t1`) ; en MODE=restore,
+  `verdict.pg` = R0 (backup + dump vérifiés), `verdict.s3` = job `restore` ;
+- `run-name: bascule-preprod <MODE> <CYCLE_ID>` (corrélation exacte par l'orchestrateur).
+
+### Identités et prérequis
+
+| Élément | Contenu | Statut |
+| --- | --- | --- |
+| Secret `geo-backup-reader-preprod` (ns `geo-preprod`, OVH 809855) | clés `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` ; GetObject `pg/*`, `manifests/*`, `docs-inventory/*`, `docs/*` + ListBucket | créé et testé par k8s ; secrets GitHub `GEO_BACKUP_READER_PREPROD_*` en place dans `geo-bascule` ; rotation 90 j (`CRED_CYCLE.md`) |
+| Secret `geo-backup-restore-docs` (ns `geo-preprod`, identité DÉDIÉE `geo-backup-restore-preprod`, OVH 809950) — signataire S3' (`BACKUP_DOCS_COPY_SECRET`) | clés `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` (= `geo-backup`) ; GetObject (avec versionId) sur `geo-backup/docs/normalized/*` ; `pg/` 403 ; aucune écriture sur le backup ; ListBucket + GetBucketLocation + PutObject + PutObjectAcl sur `sentropic-geo-preprod`, sans delete ; CopyObject versionné avec grant = 200 | créé et testé par k8s (6/6, puis 7/7 : LIST réel 200 sur la préprod) ; secrets GitHub `GEO_BACKUP_RESTORE_DOCS_*` en place dans `geo-bascule` ; rotation 90 j (`CRED_CYCLE.md`) |
+| RBAC `geo-ci-bascule-preprod` | secrets get/update sur `geo-backup-reader-preprod` et `geo-backup-restore-docs` seulement (ni create/patch/list) — `rbac-ci-bascule-preprod.yaml` | à appliquer par k8s |
+| Grant des objets copiés | `GrantFullControl id=${BASCULE_DOCS_SYNC_GRANTEE}` — même variable et même défaut que docs-sync (`1901410700457444:9056dbb240a04d2584ffbaec38171228`, owner/serving de `sentropic-geo-preprod`) | variable de dépôt, surchargeable |
+| NetworkPolicy | les pods portent `app.kubernetes.io/name=geo-preprod-sync` → `allow-geo-sync-egress` existante (DNS + S3-BHS) | rien à ajouter |
+
+OVH : `s3:GetObjectVersion` est refusé dans les policies ; une lecture versionnée est un
+GetObject / CopyObject avec `versionId`, couverte par GetObject.
 
 ## Lancer une sous-commande à la main (hors workflow)
 

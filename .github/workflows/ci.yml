@@ -65,6 +65,7 @@ jobs:
         run: |
           node deploy/ci/bascule-preprod/bascule.selftest.mjs
           node deploy/ci/bascule-preprod/served-ids.selftest.mjs
+          node deploy/ci/bascule-preprod/restore-mode.selftest.mjs
       - name: Install Chromium for MapLibre mount e2e
         run: npx playwright install --with-deps chromium
       - name: Mount e2e (real MapLibre and Chromium)
