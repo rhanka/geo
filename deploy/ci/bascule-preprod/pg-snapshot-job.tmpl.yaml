@@ -70,7 +70,7 @@ spec:
               q() { psql -X -v ON_ERROR_STOP=1 -d postgres -tAc "$1"; }
               exists="$(q "select count(*) from pg_database where datname = '$EXPECTED_DATABASE'")" || { fin false null "postgres unreachable"; exit 1; }
               if [ "$exists" != "1" ]; then fin false null "target database absent"; exit 2; fi
-              busy="$(q "select count(*) from pg_stat_activity where datname = '$EXPECTED_DATABASE' and pid <> pg_backend_pid()")" || { fin false null "pg_stat_activity unreadable"; exit 1; }
+              busy="$(q "select count(*) from pg_stat_activity where datname = '$EXPECTED_DATABASE' and backend_type = 'client backend' and pid <> pg_backend_pid()")" || { fin false null "pg_stat_activity unreadable"; exit 1; }
               if [ "$busy" != "0" ]; then
                 echo "[snapshot] REFUS - $busy session(s) active(s) sur $EXPECTED_DATABASE (G2) : rien n'est touche"
                 fin false null "G2: $busy active session(s) on the target database, nothing touched"; exit 2

@@ -663,7 +663,9 @@ jobs:
         continue-on-error: true
         run: node "$CLI" pg-check
 
-      - name: S2.0 postgis préprod — apply (StatefulSet, Service, NetworkPolicies) + rollout
+      # La CI n'applique RIEN : postgis-preprod.yaml est appliqué une fois par l'opérateur
+      # (compte local geo-admin). Ici : présence vérifiée par nom + rollout status.
+      - name: S2.0 postgis préprod — vérification de présence (StatefulSet, Service, NetworkPolicies) + rollout status
         if: ${{ !inputs.DRY_RUN }}
         run: node "$CLI" pg-apply
 

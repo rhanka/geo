@@ -49,7 +49,9 @@ metadata:
 spec:
   backoffLimit: 0
   ttlSecondsAfterFinished: ${TTL_SECONDS}
-  activeDeadlineSeconds: 10800
+  # ≤ DOCS_RESTORE_TIMEOUT (9000 s, attente runner) : le Job ne survit pas à l'attente
+  # du runner (contrôlé par restore-mode.selftest.mjs).
+  activeDeadlineSeconds: 9000
   template:
     metadata:
       labels:

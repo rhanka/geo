@@ -67,7 +67,7 @@ Tout l'accès object-store/DB vit dans des Jobs verdict-only (creds via `secretK
 | `vap-ci-trigger-suspend-only.yaml` | VAP : la SA trigger ne peut muter QUE `spec.suspend` de `geo-db-backup-prod`. |
 | `rbac-ci-trigger-prod.yaml` | SA/Role/RB `geo-ci-trigger-prod` (ns geo) : get/patch du seul CronJob dump. |
 | `rbac-ci-bascule-prod.yaml` | SA permanente `geo-ci-bascule-prod` (ns geo) : apply du bundle, 0 `secrets:create`. |
-| `rbac-ci-bascule-preprod.yaml` | SA `geo-ci-bascule-preprod` (ns geo-preprod) : Jobs + rollout geo-api, secrets get/update sur `geo-backup-reader-preprod`, `geo-backup-restore-docs` et `geo-postgis-credentials` seulement, apply du postgis préprod (par nom ; `create` non limitable), 0 logs. |
+| `rbac-ci-bascule-preprod.yaml` | SA `geo-ci-bascule-preprod` (ns geo-preprod) : Jobs + rollout geo-api, secrets get/update sur `geo-backup-reader-preprod`, `geo-backup-restore-docs` et `geo-postgis-credentials` seulement, postgis préprod en lecture seule par nom (présence + rollout status ; 0 create/patch), 0 logs. |
 | `restore-mode.mjs` · `backup-restore.cjs` · `backup-read-job.tmpl.yaml` · `docs-restore-backup-job.tmpl.yaml` | `MODE=restore\|list` : restauration DEPUIS `geo-backup` (section « Restore depuis un backup »). |
 | `restore-pg.mjs` · `postgis-preprod.yaml` · `pg-check-job.tmpl.yaml` · `pg-snapshot-job.tmpl.yaml` · `db-restore-backup-job.tmpl.yaml` · `pg-rollback-job.tmpl.yaml` | Restauration PostgreSQL du postgis préprod en `MODE=restore` (S2 + G1, pg-check avant ; section « Restauration PostgreSQL »). |
 | `restore-mode.selftest.mjs` | Selftest hors ligne du mode restore/list (faux S3 versionné par identité, CLI réelle contre un faux kubectl). |
@@ -302,9 +302,9 @@ geo-api, 0 python, 0 image nouvelle). `BASCULE_SCHEDULE_ENABLED` inchangé.
 | S0 | `preflight-backup` | **G3 (`CONFIRM`) en premier, dans tous les MODE (list compris), avant l'écriture des Secrets et tout Job** (re-contrôlé avant chaque écriture de Secret et chaque Job) ; binaires, params, format `BACKUP_ID`/`CYCLE_ID`, endpoint figé ; destinations interdites de la copie = bucket prod figé `sentropic-geo` + `PROD_DOCS` + bucket de backup (jamais une liste vide ; l'étape in-pod refuse une liste vide et fige en plus `sentropic-geo` et `geo-backup`) ; `PREPROD_DOCS` parmi elles ⇒ refus |
 | S0.s | `backup-secret-fill` | réécrit les Secrets pré-créés `geo-backup-reader-preprod` (depuis `GEO_BACKUP_READER_PREPROD_*`) et, en `restore`, `geo-backup-restore-docs` (depuis `GEO_BACKUP_RESTORE_DOCS_*`) et `geo-postgis-credentials` (depuis `GEO_POSTGIS_PREPROD_DB/USER/PASSWORD` → `POSTGRES_DB/USER/PASSWORD`) — gardes #405 : une ligne, `^[A-Za-z0-9]{16,128}$` / `^[A-Za-z0-9/+=]{16,128}$` (S3), nom de base/rôle `^[a-z_][a-z0-9_]{0,62}$`, mot de passe ASCII imprimable 16–128, `POSTGRES_DB` = `EXPECTED_DATABASE`, endpoint `https://s3.bhs.io.cloud.ovh.net`, `kubectl replace --dry-run=server` de chaque Secret avant la première écriture, jeu de clés vérifié ; valeurs par `env:` seulement, jamais en argv/log |
 | R0 | `backup-resolve` | Job de lecture AVANT toute mutation : `BACKUP_ID` → D ; statut `complete` exigé ; `latest` > 24 h refusé sauf `ALLOW_STALE_BACKUP` (âge = début du dump) ; date explicite non bloquante ; sidecar sha256 = manifeste, taille, **sha256 du dump recalculé en flux** ; PIN `backup-pin.json` |
-| S2.0 | `pg-apply` | `kubectl apply` de `postgis-preprod.yaml` (StatefulSet `postgis`, Service `geo-postgis`, NetworkPolicies `geo-postgis-preprod` + `pra-restore-egress`, namespace vérifié = préprod) puis `rollout status statefulset/postgis` |
+| S2.0 | `pg-apply` | **n'applique rien** : vérifie la présence (get par nom) du StatefulSet `postgis`, du Service `geo-postgis` et des NetworkPolicies `geo-postgis-preprod` + `pra-restore-egress` (namespace préprod imposé), puis `rollout status statefulset/postgis` ; une absence ⇒ échec clair « appliquer postgis-preprod.yaml par l'opérateur » (compte local geo-admin), rien de destructif |
 | S2.1 | `pg-check` | **AVANT toute action destructive** : `pg_isready` puis `SELECT 1` authentifié avec les identifiants du Secret, puis base connectée = `EXPECTED_DATABASE` ; échec ⇒ message clair, sortie 2, **ni snapshot ni pg_restore** (en DRY : informatif) |
-| G1 | `pg-snapshot` | G2 = aucune autre session sur la base ; snapshot `CREATE DATABASE geo_pra_rollback TEMPLATE geo` (le précédent supprimé : un emplacement) |
+| G1 | `pg-snapshot` | G2 = aucune autre session client sur la base (`backend_type = 'client backend'`, hors la session du garde : autovacuum ignoré) ; snapshot `CREATE DATABASE geo_pra_rollback TEMPLATE geo` (le précédent supprimé : un emplacement) |
 | S2 | `pg-restore` | Job `fetch` (dump `pg/<D>/geo.dump` téléchargé, sha256 = manifeste = sidecar = PIN) + `restore` (G2, base du Secret = `EXPECTED_DATABASE`, TOC = manifeste, dbname de l'archive = `EXPECTED_DATABASE`, `pg_restore --clean --if-exists --no-owner --no-privileges --exit-on-error --single-transaction`) |
 | S2c | — | **N/A** : geo n'a ni migration ni ORM ni DDL applicatif (la base est lue telle quelle par `postgis-provider.ts`) |
 | S3' | `docs-restore` | G3 ; état AU JOUR D du préfixe servi `normalized/` d'après `docs-inventory/<D>.json` (sha256 = manifeste) : copie **côté serveur** signée par `geo-backup-restore-docs`, clé `geo-backup/docs/normalized/X` → `sentropic-geo-preprod/normalized/X` (préfixe `docs/` retiré, clé source conservée), depuis la version enregistrée, sinon celle dont l'ETag est celui de l'inventaire si l'objet a été réécrit depuis ; `UploadPartCopy` au-delà de 5 GiB (lève la limite du point ouvert 2 pour ce mode) ; additif ; `GrantFullControl id=<BASCULE_DOCS_SYNC_GRANTEE>` exactement comme docs-sync (même variable, même défaut : canonical id owner/serving de `sentropic-geo-preprod`) ; entrées `excluded` par le backup lui-même (préfixes exclus, backup toujours `complete`) traitées comme le backup les traite : non exigées, comptées à part (`excluded`) et journalisées ; tout autre objet absent du backup (`pending`, `failed`) ou sans version restaurable ⇒ refus avant la 1re copie |
@@ -314,7 +314,7 @@ geo-api, 0 python, 0 image nouvelle). `BASCULE_SCHEDULE_ENABLED` inchangé.
 
 `DRY_RUN=true` : S0 (G3) + S0.s + R0 + pg-check informatif + plan S3' (0 copie) + smoke
 informatif. **Un restore DRY écrit quand même les Secrets** (mêmes valeurs, nécessaires aux
-Jobs de lecture) **et lance R0** (Job de lecture seule) ; ni apply du postgis, ni snapshot,
+Jobs de lecture) **et lance R0** (Job de lecture seule) ; ni vérification du postgis, ni snapshot,
 ni pg_restore, ni copie, ni rollout. Job `list` : S0 (G3, `CONFIRM`
 dans l'env du job) + S0.s + Job de liste → journal, résumé du run, artefact
 `backup-list-geo-<CYCLE_ID|run_id>` (`backup-list.json`, format `radar-backup-list/v1`
@@ -328,7 +328,8 @@ Budget du job `restore` : **350 min** (plafond 360), au-dessus de la somme des a
 runner des étapes (≈ 330 min : R0 45 + pg-apply 5 + pg-check 5 + G1 10 + S2 30 + S3' 150
 (`DOCS_RESTORE_TIMEOUT` 9000 s, auparavant 11 000) + recon 15 + G4 15 + rollout 10 +
 served-ids 45) : un Job bloqué finit par son propre timeout (échec d'étape), pas par la
-coupure du job (annulation). Une copie S3' plus longue que 150 min échoue à son délai et se
+coupure du job (annulation). Le Job S3' a `activeDeadlineSeconds: 9000` ≤ `DOCS_RESTORE_TIMEOUT`
+(contrôle statique du selftest) : il ne copie jamais au-delà de l'attente du runner. Une copie S3' plus longue que 150 min échoue à son délai et se
 reprend au run suivant (copie additive, idempotente).
 
 ### Restauration PostgreSQL (S2 + G1) — postgis préprod
@@ -337,12 +338,17 @@ Décision owner (2026-09-26) : la bascule préprod geo restaure AUSSI la base, c
 Cible : postgis préprod du namespace `geo-preprod` (StatefulSet `postgis`, 1 réplica,
 requests 10m / 128Mi, limits 250m / 512Mi, PVC `pg-data` 2Gi `block-standard`, Service
 `geo-postgis:5432`, image `postgis/postgis:16-3.4`), miroir de
-`deploy/k8s/postgis-statefulset.yaml`, décrit par `postgis-preprod.yaml` et appliqué par la
-bascule (`pg-apply`). Superuser = Secret `geo-postgis-credentials` (pré-créé vide par k8s,
+`deploy/k8s/postgis-statefulset.yaml`, décrit par `postgis-preprod.yaml` et **appliqué une
+fois par l'opérateur** (compte local geo-admin, `kubectl -n geo-preprod apply -f
+deploy/ci/bascule-preprod/postgis-preprod.yaml`) — **jamais par un workflow** (même convention
+que `netpol-geo-db-backup.k8s-apply.yaml`) ; la bascule (`pg-apply`) ne fait que vérifier sa
+présence par nom puis `rollout status`. Ordre : l'opérateur l'applique APRÈS un premier run
+`MODE=restore` (`DRY_RUN=true` suffit) qui a écrit le Secret superuser (l'image initialise le
+volume vide avec ses valeurs au premier démarrage). Superuser = Secret `geo-postgis-credentials` (pré-créé vide par k8s,
 réécrit par la bascule depuis `geo-bascule`). Logique : `restore-pg.mjs`.
 
 - **Jamais de chemin vers la prod** : namespace imposé préprod (le ns prod `geo` est refusé
-  par `pgParams` et `pg-apply`) ; Service désigné par un **nom court** (résolu dans le
+  par `pgParams`, donc par `pg-apply` et chaque Job) ; Service désigné par un **nom court** (résolu dans le
   namespace du Job — un FQDN `geo-postgis.geo…` est refusé) ; netpol `pra-restore-egress`
   limitée au postgis du même namespace ; la SA `geo-ci-bascule-preprod` n'a de droits que
   dans `geo-preprod`.
@@ -383,9 +389,9 @@ réécrit par la bascule depuis `geo-bascule`). Logique : `restore-pg.mjs`.
 | Secret `geo-backup-reader-preprod` (ns `geo-preprod`, OVH 809855) | clés `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` ; GetObject `pg/*`, `manifests/*`, `docs-inventory/*`, `docs/*` + ListBucket | créé et testé par k8s ; secrets GitHub `GEO_BACKUP_READER_PREPROD_*` en place dans `geo-bascule` ; rotation 90 j (`CRED_CYCLE.md`) |
 | Secret `geo-backup-restore-docs` (ns `geo-preprod`, identité DÉDIÉE `geo-backup-restore-preprod`, OVH 809950) — signataire S3' (`BACKUP_DOCS_COPY_SECRET`) | clés `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` (= `geo-backup`) ; GetObject (avec versionId) sur `geo-backup/docs/normalized/*` ; `pg/` 403 ; aucune écriture sur le backup ; ListBucket + GetBucketLocation + PutObject + PutObjectAcl sur `sentropic-geo-preprod`, sans delete ; CopyObject versionné avec grant = 200 | créé et testé par k8s (6/6, puis 7/7 : LIST réel 200 sur la préprod) ; secrets GitHub `GEO_BACKUP_RESTORE_DOCS_*` en place dans `geo-bascule` ; rotation 90 j (`CRED_CYCLE.md`) |
 | Secret `geo-postgis-credentials` (ns `geo-preprod`) — superuser du postgis préprod | clés `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` ; pré-créé vide par k8s, réécrit par la bascule | secrets GitHub `GEO_POSTGIS_PREPROD_DB/USER/PASSWORD` posés dans `geo-bascule` ; rotation 90 j par `ALTER ROLE` (`CRED_CYCLE.md`) |
-| RBAC `geo-ci-bascule-preprod` | secrets get/update sur `geo-backup-reader-preprod`, `geo-backup-restore-docs` et `geo-postgis-credentials` seulement (ni create/patch/list) ; postgis préprod : statefulsets get/patch/list/watch sur `postgis`, services get/patch sur `geo-postgis`, networkpolicies get/patch sur `geo-postgis-preprod` + `pra-restore-egress` (resourceNames) ; **`create` de ces 3 types sans resourceNames** (l'API RBAC ne peut pas limiter `create` par nom : 1er apply) ; aucun delete — `rbac-ci-bascule-preprod.yaml` | à appliquer par k8s |
+| RBAC `geo-ci-bascule-preprod` | secrets get/update sur `geo-backup-reader-preprod`, `geo-backup-restore-docs` et `geo-postgis-credentials` seulement (ni create/patch/list) ; postgis préprod en **lecture seule par nom** : statefulsets get/list/watch sur `postgis` (présence + rollout status), services get sur `geo-postgis`, networkpolicies get sur `geo-postgis-preprod` + `pra-restore-egress` (resourceNames) ; **aucun create/patch/update/delete** sur statefulsets/services/networkpolicies/pvc (le postgis est appliqué par l'opérateur) — `rbac-ci-bascule-preprod.yaml` | à appliquer par k8s |
 | Grant des objets copiés | `GrantFullControl id=${BASCULE_DOCS_SYNC_GRANTEE}` — même variable et même défaut que docs-sync (`1901410700457444:9056dbb240a04d2584ffbaec38171228`, owner/serving de `sentropic-geo-preprod`) | variable de dépôt, surchargeable |
-| NetworkPolicy | les pods de lecture/copie portent `app.kubernetes.io/name=geo-preprod-sync` → `allow-geo-sync-egress` existante (DNS + S3-BHS) ; les pods de la restauration PG portent `role=pra-restore` → `pra-restore-egress` + `geo-postgis-preprod` (dans `postgis-preprod.yaml`, appliqués par `pg-apply`) | nouvelles netpols dans cette PR |
+| NetworkPolicy | les pods de lecture/copie portent `app.kubernetes.io/name=geo-preprod-sync` → `allow-geo-sync-egress` existante (DNS + S3-BHS) ; les pods de la restauration PG portent `role=pra-restore` → `pra-restore-egress` + `geo-postgis-preprod` (dans `postgis-preprod.yaml`, **appliqués par l'opérateur**, jamais par un workflow ; `pg-apply` vérifie leur présence) | nouvelles netpols dans cette PR |
 
 OVH : `s3:GetObjectVersion` est refusé dans les policies ; une lecture versionnée est un
 GetObject / CopyObject avec `versionId`, couverte par GetObject.

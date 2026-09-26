@@ -16,8 +16,11 @@
 # (base jetable). Voir CRED_CYCLE.md. Un mot de passe désaligné est détecté par
 # l'étape pg-check (pg_isready + SELECT 1) AVANT toute action destructive.
 #
-# Appliqué par la bascule (restore-mode.mjs pg-apply : kubectl apply + rollout status),
-# SA geo-ci-bascule-preprod (rbac-ci-bascule-preprod.yaml). Réseau : ingress 5432
+# Appliqué UNE fois par l'OPÉRATEUR (compte local geo-admin) :
+#   kubectl -n geo-preprod apply -f deploy/ci/bascule-preprod/postgis-preprod.yaml
+# JAMAIS par un workflow (la SA geo-ci-bascule-preprod n'a aucun create/patch sur ces
+# types) : la bascule (restore-pg.mjs pg-apply) vérifie seulement la présence de chaque
+# ressource par nom puis rollout status ; une absence ⇒ échec clair. Réseau : ingress 5432
 # UNIQUEMENT depuis les pods `role=pra-restore` (Jobs de la bascule), rien depuis
 # geo-api ; aucune sortie pour postgis ; les pods pra-restore sortent vers le DNS,
 # S3-BHS:443 et geo-postgis:5432 seulement.

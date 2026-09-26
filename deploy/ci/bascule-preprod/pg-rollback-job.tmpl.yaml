@@ -62,7 +62,7 @@ spec:
               q() { psql -X -v ON_ERROR_STOP=1 -d postgres -tAc "$1"; }
               snap="$(q "select count(*) from pg_database where datname = '$PG_SNAPSHOT_DB'")" || { fin false "postgres unreachable"; exit 1; }
               if [ "$snap" != "1" ]; then fin false "no G1 snapshot to roll back to, nothing touched"; exit 2; fi
-              busy="$(q "select count(*) from pg_stat_activity where datname in ('$EXPECTED_DATABASE', '$PG_SNAPSHOT_DB') and pid <> pg_backend_pid()")" || { fin false "pg_stat_activity unreadable"; exit 1; }
+              busy="$(q "select count(*) from pg_stat_activity where datname in ('$EXPECTED_DATABASE', '$PG_SNAPSHOT_DB') and backend_type = 'client backend' and pid <> pg_backend_pid()")" || { fin false "pg_stat_activity unreadable"; exit 1; }
               if [ "$busy" != "0" ]; then fin false "G2: $busy active session(s), nothing touched"; exit 2; fi
               q "drop database if exists \"$EXPECTED_DATABASE\"" > /dev/null || { fin false "target database not dropped"; exit 1; }
               q "create database \"$EXPECTED_DATABASE\" template \"$PG_SNAPSHOT_DB\"" > /dev/null || { fin false "database not recreated from the snapshot"; exit 1; }
