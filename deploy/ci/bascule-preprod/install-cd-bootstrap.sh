@@ -101,7 +101,7 @@ gh run watch "$RID" --repo "$REPO" --exit-status   # échoue (set -e) si l'apply
 echo "== 5) le bundle a créé la SA trigger : mint legacy token geo-ci-trigger-prod -> KUBE_CONFIG_DATA_PROD_TRIGGER (env geo-bascule) =="
 mint_kubeconfig_b64 "$NS" geo-ci-trigger-prod | gh secret set KUBE_CONFIG_DATA_PROD_TRIGGER --repo "$REPO" --env geo-bascule
 
-echo "== 6) arm run planifié (03:17 UTC) =="
+echo "== 6) arm run planifié (hebdomadaire, dimanche 03:17 UTC) =="
 gh variable set BASCULE_SCHEDULE_ENABLED --repo "$REPO" --body true
 
 # (7) cleanup dormants immo (radar-ci-setup-prod, radar-intratenant-executor, GH secrets superseded) :
