@@ -1081,6 +1081,12 @@ const secretRun = runBodies(secretStep).join('\n');
     job.includes('cronjob-backup-freshness.yaml') && job.includes('"47 7 * * *|false|Forbid"'));
   ok('CD apply-backup: manual run refused inside the 03:13–06:30 UTC window and while a run is active',
     /WINDOW_START_MIN: "193"/.test(job) && /WINDOW_END_MIN: "390"/.test(job) && job.includes('status.active'));
+  const bundleJob = (/\n {2}apply-bundle:\n([\s\S]*?)(?=\n {2}[a-z][a-z0-9-]*:\n|$)/.exec(wf) || [])[1] || '';
+  ok('CD workflow: apply-bundle is skipped on a backup_run_now dispatch (no CPU race with the backup pod)',
+    /\n {4}if: >-\n {6}\$\{\{ !cancelled\(\) && vars\.BASCULE_BUNDLE_CD_ENABLED == 'true' &&\n {6}!\(github\.event_name == 'workflow_dispatch' && inputs\.backup_run_now\) &&\n/.test(bundleJob));
+  const ro = read('deploy/ci/bascule-preprod/db-ro-role-provision.yaml');
+  ok('RO-role provision Job: explicit small requests/limits (no LimitRange default)',
+    /resources: \{ requests: \{ cpu: 25m, memory: 64Mi \}, limits: \{ cpu: 250m, memory: 128Mi \} \}/.test(ro));
   const ci = read('.github/workflows/ci.yml');
   ok('CI runs this selftest', ci.includes('node deploy/ci/backup/backup-daily.selftest.mjs'));
 }
