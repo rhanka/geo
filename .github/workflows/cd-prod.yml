@@ -122,6 +122,21 @@ jobs:
           # Fail-fast clair si le secret est absent/vide (vert-par-omission = rouge).
           test -s "$HOME/.kube/config" || { echo "::error::KUBE_CONFIG_DATA absent ou vide — kubeconfig requis pour deploy-prod (env geo-prod)"; exit 1; }
 
+      # PORTE BACKUP PRÉ-MEP (fail-closed, port du backup-before-release immo) : AVANT tout kubectl de
+      # déploiement, (1) refuse dans la fenêtre du backup planifié (03:13–06:30 UTC), (2) attend (borné
+      # 30 min) qu'aucun Job `geo-backup-*` ne soit actif, sinon refuse, (3) refuse si le dernier backup
+      # réussi n'est pas `complete` (amorce non terminée), (4) crée
+      # `geo-backup-premep-<sha7>-<run_id>-<run_attempt>` --from=cronjob/geo-backup-daily et poll son
+      # .status jusqu'à activeDeadlineSeconds (10800 s) + 600 s. Échec, timeout ou verdict ≠ complete
+      # (lu dans le terminationMessage du conteneur `backup`, via pods get — 0 cred S3, 0 pods/log)
+      # ⇒ MEP REFUSÉE. Inputs par env uniquement. Script + selftest : deploy/ci/backup/premep-backup-gate*.
+      - name: Porte backup pré-MEP (geo-backup-daily, fail-closed)
+        env:
+          GIT_SHA: ${{ github.sha }}
+          RUN_ID: ${{ github.run_id }}
+          RUN_ATTEMPT: ${{ github.run_attempt }}
+        run: node deploy/ci/backup/premep-backup-gate.mjs
+
       # Promeut le digest : kustomize set image dans l'overlay prod + apply + rollout status (ns geo).
       - name: Deploy prod (same-digest promotion)
         run: make k8s-deploy-prod GEO_DIGEST="${{ steps.resolve.outputs.digest }}"

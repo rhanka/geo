@@ -26,6 +26,10 @@ jobs:
       # and its CronJob/RBAC/CD wiring, against an in-memory versioned S3 fake.
       - name: Validate daily prod backup logic (offline selftest)
         run: node deploy/ci/backup/backup-daily.selftest.mjs
+      # 0 dependency: the cd-prod pre-MEP backup gate against a simulated kubectl
+      # (create/wait, active Job, failed, timeout, seed not complete) + its wiring.
+      - name: Validate cd-prod pre-MEP backup gate (offline selftest)
+        run: node deploy/ci/backup/premep-backup-gate.selftest.mjs
       - name: Guard registry migration
         run: node scripts/check-registry-policy.mjs
       # poppler-utils fournit `pdftotext`, que l'image de scrape embarque
