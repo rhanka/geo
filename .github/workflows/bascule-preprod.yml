@@ -10,7 +10,13 @@
 #              CopyObject server-side additif) → S3b recon (dest ⊇ src) → S5' rollout
 #              restart geo-api (GARDE G4) → S7 smoke (verify THROUGH l'API publique,
 #              runner). N'attend RIEN de PG.
-# Seul un futur orchestrateur e2e couplera les deux jambes.
+# CONTRAT e2e immo+geo (input CYCLE_ID, optionnel ; VIDE = comportement inchangé) :
+#   fin du job `s3` (hors DRY) → artefact geo-served-canonical-ids-<CYCLE_ID> (ids
+#   ZONES servis, builder PUBLIÉ @sentropic/geo, API publique, 0 cred) ;
+#   job `cycle-leg` (needs [pg, s3], always) → artefact cycle-leg-geo-<CYCLE_ID>
+#   (`legs.geo`). cycle-leg ne fait que RAPPORTER : pg et s3 restent SANS `needs:`
+#   entre eux ; seul l'orchestrateur e2e (côté immo) couple les deux jambes.
+#   Logique : deploy/ci/bascule-preprod/served-ids.mjs.
 # ÉCART vs immo : immo = 1 job `bascule` séquentiel (le restore préprod consomme le
 # dump S1) ; geo n'a pas de restore préprod → aucune dépendance de données PG → S3.
 # RETIRÉS vs immo : quiesce/un-quiesce, S2 restore + G1 rollback, S2c migrate,
@@ -49,6 +55,11 @@ on:
         required: false
         type: boolean
         default: false
+      CYCLE_ID:
+        description: "Contrat e2e immo+geo — id de cycle de l'orchestrateur (optionnel, ^[A-Za-z0-9._-]{1,100}$). Vide = comportement inchangé, aucun artefact e2e."
+        required: false
+        type: string
+        default: ""
 
 # Jamais deux bascules en parallèle (write préprod) : verrou au niveau WORKFLOW (un
 # run à la fois) ; À L'INTÉRIEUR d'un run, les jobs `pg` et `s3` tournent en parallèle.
@@ -109,6 +120,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+
+      # Contrat e2e : un CYCLE_ID mal formé échoue AVANT toute action (0 kubectl).
+      - name: e2e — valider CYCLE_ID
+        if: ${{ inputs.CYCLE_ID != '' }}
+        env:
+          CYCLE_ID: ${{ inputs.CYCLE_ID }}
+        run: node deploy/ci/bascule-preprod/served-ids.mjs validate-cycle-id
 
       # RUNNER KUBECTL-ONLY : AUCUN outil de données/S3 sur le runner (0 aws, 0 s5cmd,
       # 0 postgresql-client). pg_dump / aws-cli vivent dans le CronJob et le Job.
@@ -255,6 +273,13 @@ jobs:
         with:
           node-version: "22"
 
+      # Contrat e2e : un CYCLE_ID mal formé échoue AVANT toute action (0 kubectl).
+      - name: e2e — valider CYCLE_ID
+        if: ${{ inputs.CYCLE_ID != '' }}
+        env:
+          CYCLE_ID: ${{ inputs.CYCLE_ID }}
+        run: node deploy/ci/bascule-preprod/served-ids.mjs validate-cycle-id
+
       # RUNNER KUBECTL-ONLY : AUCUN outil de données/S3 sur le runner (0 aws, 0 s5cmd,
       # 0 postgresql-client). aws-cli / aws-sdk vivent dans les Jobs.
       - name: Install kubectl
@@ -333,6 +358,36 @@ jobs:
         if: ${{ !inputs.DRY_RUN }}
         run: node "$CLI" smoke
 
+      # ══════════════ CONTRAT e2e (hors DRY, CYCLE_ID non vide, après S7 vert) ══════════════
+      # Ids canoniques ZONES servis par la préprod (scope zones, arbitrage i-cond ; lots à
+      # venir via un endpoint geo-api /join-keys). Builder = @sentropic/geo PUBLIÉ sur npm,
+      # version épinglée dans served-ids.mjs, installé HORS workspace ($RUNNER_TEMP) pour
+      # que geo et immo utilisent exactement le même builder. 0 kubectl, 0 cred : npm +
+      # API publique seulement. Échec ⇒ job `s3` rouge (fail-closed, fichier vide refusé).
+      - name: e2e — installer le builder publié @sentropic/geo (dossier temporaire, version épinglée)
+        if: ${{ !inputs.DRY_RUN && inputs.CYCLE_ID != '' }}
+        run: |
+          set -euo pipefail
+          version="$(node deploy/ci/bascule-preprod/served-ids.mjs builder-version)"
+          npm install --prefix "$RUNNER_TEMP/served-ids-builder" --no-save --no-audit --no-fund --ignore-scripts "@sentropic/geo@${version}"
+
+      - name: e2e — ids canoniques servis (zones) via l'API publique préprod
+        if: ${{ !inputs.DRY_RUN && inputs.CYCLE_ID != '' }}
+        timeout-minutes: 45
+        env:
+          CYCLE_ID: ${{ inputs.CYCLE_ID }}
+        run: node deploy/ci/bascule-preprod/served-ids.mjs build --builder-dir "$RUNNER_TEMP/served-ids-builder" --out "$RUNNER_TEMP/served-ids"
+
+      - name: e2e — artefact geo-served-canonical-ids-<CYCLE_ID>
+        if: ${{ !inputs.DRY_RUN && inputs.CYCLE_ID != '' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: geo-served-canonical-ids-${{ inputs.CYCLE_ID }}
+          path: ${{ runner.temp }}/served-ids/
+          if-no-files-found: error
+          retention-days: 7
+          overwrite: true
+
       # Traçabilité : POINTEUR/état uniquement (sentinel recon), 0 contenu S3.
       - name: Pointeurs jambe s3 (recon — PAS de contenu S3)
         if: ${{ always() && !inputs.DRY_RUN }}
@@ -342,3 +397,60 @@ jobs:
           path: ${{ github.workspace }}/.bascule-work/recon.ok.json
           if-no-files-found: warn
           retention-days: 7
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # CYCLE-LEG — contrat e2e immo+geo : RAPPORTE `legs.geo` pour l'orchestrateur.
+  # `needs: [pg, s3]` + `always()` = attend la fin des DEUX jambes quel que soit leur
+  # résultat, SANS les coupler (pg et s3 restent sans `needs:` entre eux). N'existe
+  # que si CYCLE_ID est non vide (dispatch e2e) ; un run planifié ne l'a jamais.
+  # 0 kubectl, 0 cred : lit needs.*.result + 2 artefacts du run, écrit un JSON.
+  # Mapping verdict : success → success ; failure|cancelled|skipped → failure ;
+  # autre/vide → pending (served-ids.mjs mapJobResult).
+  # ═══════════════════════════════════════════════════════════════════════════
+  cycle-leg:
+    needs: [pg, s3]
+    if: ${{ always() && inputs.CYCLE_ID != '' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      CYCLE_ID: ${{ inputs.CYCLE_ID }}
+      PG_RESULT: ${{ needs.pg.result }}
+      S3_RESULT: ${{ needs.s3.result }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: e2e — valider CYCLE_ID
+        run: node deploy/ci/bascule-preprod/served-ids.mjs validate-cycle-id
+
+      # T1 (jambe pg) : artefact de pointeurs, absent en DRY ou si pg a échoué avant S1.
+      - name: Télécharger les pointeurs pg (T1.txt)
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: bascule-pg-pointers-${{ github.run_id }}
+          path: ${{ runner.temp }}/cycle-leg/pg
+
+      # served ids (jambe s3) : absent en DRY ou si s3 a échoué → sha null, verdict inchangé.
+      - name: Télécharger l'artefact served ids
+        continue-on-error: true
+        uses: actions/download-artifact@v4
+        with:
+          name: geo-served-canonical-ids-${{ inputs.CYCLE_ID }}
+          path: ${{ runner.temp }}/cycle-leg/served-ids
+
+      - name: Construire legs.geo (rapport seul)
+        run: node deploy/ci/bascule-preprod/served-ids.mjs cycle-leg --pg-dir "$RUNNER_TEMP/cycle-leg/pg" --served-dir "$RUNNER_TEMP/cycle-leg/served-ids" --out "$RUNNER_TEMP/cycle-leg/out/cycle-leg-geo.json"
+
+      - name: e2e — artefact cycle-leg-geo-<CYCLE_ID>
+        uses: actions/upload-artifact@v4
+        with:
+          name: cycle-leg-geo-${{ inputs.CYCLE_ID }}
+          path: ${{ runner.temp }}/cycle-leg/out/cycle-leg-geo.json
+          if-no-files-found: error
+          retention-days: 7
+          overwrite: true
