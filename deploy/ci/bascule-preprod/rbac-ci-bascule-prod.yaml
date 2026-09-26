@@ -9,8 +9,8 @@
 # `create` non name-scopable (RBAC) → create ns-wide ; get/patch/update name-scopés aux objets EXACTS du bundle.
 # impersonate name-scopé geo-ci-trigger-prod (gate anti-RCE `--dry-run=server`).
 # Daily prod backup (deploy/ci/backup/README.md): the same SA applies, in job `apply-backup` of
-# bascule-bundle-cd.yml, the SealedSecrets geo-backup-writer/-reader, the ConfigMap geo-backup-daily-script and
-# the CronJob geo-backup-daily → those 4 names are added to the name-scoped verbs below (create stays ns-wide;
+# bascule-bundle-cd.yml, the SealedSecrets geo-backup-writer/-reader/-purger, the ConfigMap geo-backup-daily-script
+# and the CronJobs geo-backup-daily + geo-backup-freshness → those 6 names are added to the name-scoped verbs below (create stays ns-wide;
 # `kubectl create job --from=cronjob` for backup_run_now uses the existing jobs:create). RE-APPLY this file
 # (install-time, cluster-admin) BEFORE arming BACKUP_DAILY_CD_ENABLED.
 ---
@@ -59,8 +59,8 @@ rules:
   - apiGroups: ["bitnami.com"]
     resources: ["sealedsecrets"]
     verbs: ["get", "patch", "update"]
-    # + geo-backup-writer / geo-backup-reader: daily prod backup identities (deploy/ci/backup/, job apply-backup).
-    resourceNames: ["geo-db-ro-prod", "geo-pra-writer-prod", "geo-backup-writer", "geo-backup-reader"]
+    # + geo-backup-writer / -reader / -purger: daily prod backup identities (deploy/ci/backup/, job apply-backup).
+    resourceNames: ["geo-db-ro-prod", "geo-pra-writer-prod", "geo-backup-writer", "geo-backup-reader", "geo-backup-purger"]
   # configmaps (SQL du rôle RO + daily backup script geo-backup-daily-script) :
   - apiGroups: [""]
     resources: ["configmaps"]
@@ -89,14 +89,14 @@ rules:
   - apiGroups: ["batch"]
     resources: ["jobs"]
     verbs: ["create", "get", "list", "watch", "delete"]
-  # cronjobs (dump bascule + daily backup geo-backup-daily) :
+  # cronjobs (dump bascule + daily backup geo-backup-daily + its freshness check geo-backup-freshness) :
   - apiGroups: ["batch"]
     resources: ["cronjobs"]
     verbs: ["create"]
   - apiGroups: ["batch"]
     resources: ["cronjobs"]
     verbs: ["get", "patch", "update"]
-    resourceNames: ["geo-db-backup-prod", "geo-backup-daily"]
+    resourceNames: ["geo-db-backup-prod", "geo-backup-daily", "geo-backup-freshness"]
   # deployments : LECTURE SEULE (pré-vol : get deploy geo-api) :
   - apiGroups: ["apps"]
     resources: ["deployments"]

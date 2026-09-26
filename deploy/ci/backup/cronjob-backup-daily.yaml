@@ -13,26 +13,34 @@
 # pre-flight, arming var BACKUP_DAILY_CD_ENABLED). The script is the ConfigMap
 # geo-backup-daily-script, rendered by that job from deploy/ci/backup/backup-daily.cjs.
 #
-# Pod = 2 steps, one coherent backup of day D (UTC):
+# Pod = 3 sequential steps, one coherent backup of day D (UTC), three identities:
 #   initContainer `dump`   postgis/postgis:16-3.4 (already in the cluster = the
 #                          postgis StatefulSet): DB assert → pg_dump -Fc (RO role
 #                          geo_db_ro_prod) → pg_restore --list (readability) →
 #                          sha256sum → pg_dumpall --globals-only --no-role-passwords
 #                          (best-effort) + DB size / versions in dump.env.
-#   container     `backup` geo-api image, SAME digest as the bascule dump CronJob
+#   initContainer `backup` geo-api image, SAME digest as the bascule dump CronJob
 #                          geo-db-backup-prod (Node + @aws-sdk): upload + re-read
 #                          sha256, server-side incremental copy of sentropic-geo,
-#                          inventory, manifest, latest pointer, retention purge
-#                          (delete-markers only). Identity: geo-backup-writer.
+#                          inventory, manifest, latest pointer; when the backup of
+#                          the day is COMPLETE, the purge plan in /work.
+#                          Identity geo-backup-writer: NO delete right.
+#   container     `purge`  same image: re-validates the plan, confirms by LIST that
+#                          its manifest exists, puts the delete-markers. Identity
+#                          geo-backup-purger (DeleteObject on pg/*, manifests/*,
+#                          docs-inventory/* + ListBucket; no GET, no PUT, no docs/).
+#                          No plan (backup partial) = nothing purged.
 # 0 python, 0 new image. Logs = verdict only (counts, backup keys, sha256).
+# `partial` (seed, objects pending) exits 0 with verdict PARTIAL in the manifest;
+# geo-backup-freshness (cronjob-backup-freshness.yaml) fails when it lasts.
 #
 # NETWORK: pod label role=pra-backup → existing netpols allow-geo-db-backup-to-postgis
 # (ingress postgis:5432) + allow-geo-db-backup-egress (DNS, postgis:5432,
 # S3 BHS 54.39.60.208/32:443) from netpol-geo-db-backup.k8s-apply.yaml (k8s lane).
-# No netpol change. Everything else is blocked, hence PUBLIC_HEALTH_URL="".
+# No netpol change. Everything else is blocked for this pod, hence PUBLIC_HEALTH_URL="".
 #
-# QUOTA (ns geo tenant-quota counts limits): pod = 1, requests cpu 50m / mem 192Mi,
-# limits cpu 500m / mem 768Mi (max of the init and main container).
+# QUOTA (ns geo tenant-quota): pod = 1, requests cpu 50m / mem 192Mi, limits
+# cpu 500m / mem 768Mi (init containers run one at a time: max of them and `purge`).
 # =============================================================================
 apiVersion: batch/v1
 kind: CronJob
@@ -63,9 +71,9 @@ spec:
         app.kubernetes.io/component: db-backup
     spec:
       # One retry for transient failures (exit 1). Exit 2/3/4 = no retry (a
-      # retry would re-dump prod for nothing): integrity refusal, purge failed
-      # after a valid manifest, manifest written as partial (the seed of the
-      # source copy ends as partial until complete, and resumes the next night).
+      # retry would re-dump prod for nothing): integrity refusal (nothing
+      # purged), purge failed after a valid manifest, source step failed as a
+      # whole after the PG part was recorded. A partial seed exits 0.
       backoffLimit: 1
       activeDeadlineSeconds: 10800
       ttlSecondsAfterFinished: 259200
@@ -172,16 +180,15 @@ spec:
               volumeMounts:
                 - { name: work, mountPath: /work }
                 - { name: scratch, mountPath: /tmp }
-          containers:
             - name: backup
               image: "ghcr.io/rhanka/geo-api@sha256:c2f03fd55ffed513f0112b3877cafde4fb383f758e8d5171feb2a2fcbef69373"
-              command: ["node", "/opt/backup/backup-daily.cjs"]
+              command: ["node", "/opt/backup/backup-daily.cjs", "backup"]
               env:
                 - { name: NODE_PATH, value: "/app/node_modules" }
                 - { name: NODE_OPTIONS, value: "--max-old-space-size=512 --dns-result-order=ipv4first" }
                 - { name: AWS_EC2_METADATA_DISABLED, value: "true" }
                 # Identity geo-backup-writer (SealedSecret, k8s lane): read sentropic-geo;
-                # geo-backup Put/Get/List/multipart + DeleteObject WITHOUT VersionId.
+                # geo-backup Put/Get/List/multipart. NO delete right (the purge is `purge`).
                 - { name: S3_ENDPOINT,   valueFrom: { secretKeyRef: { name: geo-backup-writer, key: S3_ENDPOINT } } }
                 - { name: S3_REGION,     valueFrom: { secretKeyRef: { name: geo-backup-writer, key: S3_REGION } } }
                 - { name: S3_ACCESS_KEY, valueFrom: { secretKeyRef: { name: geo-backup-writer, key: S3_ACCESS_KEY } } }
@@ -201,25 +208,57 @@ spec:
                 - { name: BACKUP_IMAGE, value: "ghcr.io/rhanka/geo-api@sha256:c2f03fd55ffed513f0112b3877cafde4fb383f758e8d5171feb2a2fcbef69373" }
                 - { name: COPY_CONCURRENCY, value: "8" }
                 # ~71k live objects / ~70 GB to seed: the seed spans several runs
-                # (status=partial, exit 4) and resumes each night; see README.md.
+                # (status=partial, exit 0, verdict PARTIAL) and resumes each night; see README.md.
                 - { name: DOCS_COPY_BUDGET_SECONDS, value: "7200" }
                 # Frozen 48.94 GB archive (one-time copy, README.md) + rebuildable PMTiles.
                 - { name: DOCS_EXCLUDE_PREFIXES, value: "ops/decommission/20260913/,pmtiles/" }
                 - { name: COPY_MULTIPART_THRESHOLD_BYTES, value: "4294967296" }
                 - { name: COPY_PART_BYTES, value: "536870912" }
-                # geo DB size is unknown (geo-api prod has no PG variable): conservative floor.
-                - { name: MIN_DUMP_BYTES, value: "65536" }
+                # Prod dump measured 19.4 MB (geo-db-backup-prod-29839615 logs): 1 MiB floor.
+                - { name: MIN_DUMP_BYTES, value: "1048576" }
                 - { name: MIN_DUMP_RATIO, value: "0.5" }
+                # Source guard: refuse (exit 2, no purge) on 0 object or < 0.5 x the previous inventory.
+                - { name: MIN_SOURCE_RATIO, value: "0.5" }
                 - { name: RETENTION_DAILY_DAYS, value: "7" }
                 - { name: RETENTION_WEEKLY_WEEKS, value: "4" }
                 - { name: RETENTION_MONTHLY_MONTHS, value: "6" }
                 - { name: RETENTION_MIN_KEEP, value: "7" }
-                - { name: PURGE_DRY_RUN, value: "false" }
               securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
               resources:
                 requests: { cpu: 50m, memory: 192Mi }
                 limits: { cpu: 500m, memory: 768Mi }
               volumeMounts:
                 - { name: work, mountPath: /work }
+                - { name: scratch, mountPath: /tmp }
+                - { name: script, mountPath: /opt/backup, readOnly: true }
+          containers:
+            # Runs only after `backup` exited 0. Executes /work/purge-plan.json, written
+            # by `backup` only when the backup of the day is complete.
+            - name: purge
+              image: "ghcr.io/rhanka/geo-api@sha256:c2f03fd55ffed513f0112b3877cafde4fb383f758e8d5171feb2a2fcbef69373"
+              command: ["node", "/opt/backup/backup-daily.cjs", "purge"]
+              env:
+                - { name: NODE_PATH, value: "/app/node_modules" }
+                - { name: NODE_OPTIONS, value: "--max-old-space-size=128 --dns-result-order=ipv4first" }
+                - { name: AWS_EC2_METADATA_DISABLED, value: "true" }
+                # Identity geo-backup-purger (SealedSecret, k8s lane): DeleteObject WITHOUT
+                # VersionId (delete-marker) on pg/*, manifests/*, docs-inventory/* + ListBucket. No GET, no PUT, no docs/.
+                - { name: S3_ENDPOINT,   valueFrom: { secretKeyRef: { name: geo-backup-purger, key: S3_ENDPOINT } } }
+                - { name: S3_REGION,     valueFrom: { secretKeyRef: { name: geo-backup-purger, key: S3_REGION } } }
+                - { name: S3_ACCESS_KEY, valueFrom: { secretKeyRef: { name: geo-backup-purger, key: S3_ACCESS_KEY } } }
+                - { name: S3_SECRET_KEY, valueFrom: { secretKeyRef: { name: geo-backup-purger, key: S3_SECRET_KEY } } }
+                - { name: BACKUP_BUCKET, valueFrom: { secretKeyRef: { name: geo-backup-purger, key: BACKUP_BUCKET } } }
+                - { name: S3_FORCE_PATH_STYLE, value: "false" }
+                - { name: EXPECTED_BACKUP_BUCKET, value: "geo-backup" }
+                - { name: WORK_DIR, value: "/work" }
+                # Re-validation of the plan (no date inside the daily window).
+                - { name: RETENTION_DAILY_DAYS, value: "7" }
+                - { name: PURGE_DRY_RUN, value: "false" }
+              securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+              resources:
+                requests: { cpu: 10m, memory: 64Mi }
+                limits: { cpu: 200m, memory: 256Mi }
+              volumeMounts:
+                - { name: work, mountPath: /work, readOnly: true }
                 - { name: scratch, mountPath: /tmp }
                 - { name: script, mountPath: /opt/backup, readOnly: true }

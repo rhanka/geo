@@ -13,7 +13,8 @@ operator workstation. Any S3 client works; do not add Python tooling to jobs.
 export AWS_ACCESS_KEY_ID=<reader S3_ACCESS_KEY> AWS_SECRET_ACCESS_KEY=<reader S3_SECRET_KEY> AWS_REGION=bhs
 S5="s5cmd --endpoint-url https://s3.bhs.io.cloud.ovh.net"
 B=s3://geo-backup
-$S5 cat $B/manifests/latest.json      # newest backup: date, status, manifestKey, pgSha256
+$S5 cat $B/manifests/latest.json      # newest backup: date, status, manifestKey, pgSha256,
+                                      # latestComplete (newest COMPLETE backup), partialSince
 D=2026-09-27
 ```
 
@@ -23,7 +24,8 @@ D=2026-09-27
 $S5 cp $B/manifests/$D.json manifest.json
 ```
 
-Use a manifest with `status: "complete"`. `status: "partial"` means the PG part
+Use a manifest with `status: "complete"` (`latest.json` `latestComplete` points
+to the newest one). `status: "partial"` (verdict `PARTIAL`) means the PG part
 is valid but some source objects were not in the backup that day
 (`docs.pending` / `docs.failed` > 0 — expected during the seed). The manifest
 gives the dump key + sha256, the database size, the PostgreSQL / PostGIS
