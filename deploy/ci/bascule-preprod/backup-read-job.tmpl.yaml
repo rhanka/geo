@@ -3,8 +3,8 @@
 #
 # BR_STEP=resolve : BACKUP_ID (latest | AAAA-MM-JJ) → date D + gardes (manifeste
 #                   `complete`, garde 24 h pour `latest`, sidecar sha256 == manifeste,
-#                   taille, sha256 du dump RECALCULÉ en flux — la préprod geo n'a pas
-#                   de PostgreSQL : le dump est vérifié, pas restauré) → PIN.
+#                   taille, sha256 du dump RECALCULÉ en flux, avant toute mutation ;
+#                   la restauration PG le retélécharge ensuite, db-restore-backup) → PIN.
 # BR_STEP=list    : chaque manifeste daté encore listé (date, statut, taille, sha).
 #
 # Identité = lecteur dédié préprod de geo-backup, Secret ${READER_SECRET}
