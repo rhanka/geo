@@ -82,3 +82,44 @@ Legacy SA token secrets (non-expiring, like the existing deployers): rotation = 
 3. latest dump present: `s3://radar-immobilier-backups-preprod/geo-postgres/prod/sets/<ts>/geo.dump`
    (`pg_restore --list` of it is readable).
 4. `.env` holds the current values (backup) at the documented owner location.
+
+## Daily prod backup identities (deploy/ci/backup/)
+
+Clone of the immo record (radar-immobilier#771), with the copy and the purge split
+between two identities (geo-cond review).
+
+| secret (k8s name) | keys | consumer | rights |
+| --- | --- | --- | --- |
+| `geo-backup-writer` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET`, `SOURCE_BUCKET` | initContainer `backup` of CronJob `geo-backup-daily` | read `sentropic-geo`; `geo-backup` Put/Get/List/multipart; **no delete of any kind** (no DeleteObject, no DeleteObjectVersion, no BypassGovernanceRetention) |
+| `geo-backup-purger` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` | container `purge` of CronJob `geo-backup-daily` | `geo-backup` DeleteObject without VersionId (delete-marker) restricted by ARN to `pg/*`, `manifests/*`, `docs-inventory/*` + ListBucket / GetBucketLocation; no GET, no PUT, no `docs/` |
+| `geo-backup-reader` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` | CronJob `geo-backup-freshness` + restores (`deploy/ci/backup/RESTORE.md`) | `geo-backup` GetObject (incl. versionId), ListBucket, ListBucketVersions |
+
+All three are SealedSecrets minted and sealed by the k8s lane (scope strict ns `geo`),
+committed verbatim as `deploy/ci/backup/geo-backup-sealedsecrets.yaml` (writer + reader)
+and `deploy/ci/backup/geo-backup-purger-sealed.yaml` (purger) — **commit pending an owner
+decision** — and applied by `bascule-bundle-cd.yml` job `apply-backup`, whose guard refuses
+to apply anything until the three are committed.
+
+**Rotation: every 90 days** (and at once on suspected exposure), one identity at a time:
+
+1. k8s lane: create a new S3 credential for the OVH user of the identity (the old one
+   stays valid for now).
+2. k8s lane: reseal the Secret with the new values (same name, same keys, scope strict
+   ns `geo`) and hand over the SealedSecret YAML.
+3. geo: replace that document in its committed file
+   (PR → merge → `apply-backup` applies it → the controller updates the Secret).
+4. Verify with the NEW credential:
+   - writer: one backup run (next night, or `workflow_dispatch` input
+     `backup_run_now=true`, outside 03:13–06:30 UTC) → `backup` step `VERDICT OK`,
+     `manifests/latest.json` date = today and `status: complete`;
+   - purger: the `purge` step of that run → `PURGE VERDICT OK` (a run with nothing to
+     purge still proves the LIST; the next purge date proves the DeleteObject);
+   - reader: the next `geo-backup-freshness` Job `Complete`, and a restore check of that
+     backup (`RESTORE.md` §0–1: download `pg/D/geo.dump`, `sha256sum -c` OK,
+     `pg_restore --list` lists).
+5. Only after the checks of that identity pass: k8s lane deletes its old credential.
+6. Update the `.env` recovery copy and record the rotation date (next due = +90 days).
+
+Verify recovery at any time: `kubectl -n geo get secret geo-backup-writer geo-backup-purger
+geo-backup-reader`; last `geo-backup-daily` and `geo-backup-freshness` Jobs `Complete`;
+`manifests/latest.json` of `geo-backup` fresh (`latestComplete.date` = today or yesterday).
