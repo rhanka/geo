@@ -129,9 +129,11 @@ jobs:
 
       # Kubeconfig = SA least-privilege ns-scopé geo-preprod (poc-k8s), base64 en GH secret.
       - name: Configure kubeconfig (preprod)
+        env:
+          KUBE_CONFIG_DATA_PREPROD: ${{ secrets.KUBE_CONFIG_DATA_PREPROD }}
         run: |
           mkdir -p "$HOME/.kube"
-          printf '%s' "${{ secrets.KUBE_CONFIG_DATA_PREPROD }}" | base64 -d > "$HOME/.kube/config"
+          printf '%s' "$KUBE_CONFIG_DATA_PREPROD" | base64 -d > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
           # Fail-fast clair si le secret est absent/vide (sinon l'échec surface plus tard,
           # opaque, au `kubectl apply`). Vert-par-omission = rouge.
