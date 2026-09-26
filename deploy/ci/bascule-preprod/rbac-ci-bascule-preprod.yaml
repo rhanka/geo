@@ -8,11 +8,19 @@
 #   - resolvePreprodImage : get deploy geo-api ; rollout (S5') : patch deploy geo-api + status (get/list/watch) ;
 #   - pods get/list/watch : diagnostic lecture seule + message de fin des Jobs de backup (MODE=restore|list)
 #     (JAMAIS pods/log : runner STATUS-ONLY, 0 kubectl logs) ;
-#   - secrets get/update UNIQUEMENT sur geo-backup-reader-preprod et geo-backup-restore-docs (Secrets
-#     pré-créés par k8s, RÉÉCRITS par la bascule MODE=restore|list depuis l'environment GitHub geo-bascule :
-#     kubectl replace --dry-run=server puis replace ; jamais create/patch/list ; jamais de SealedSecret).
-# EXCLUS : tout autre verbe/nom de Secret (l'identité éphémère docs-sync reste créée par k8s), networkpolicies,
-# pods/log, pods/exec, autres ns.
+#   - secrets get/update UNIQUEMENT sur geo-backup-reader-preprod, geo-backup-restore-docs et
+#     geo-postgis-credentials (Secrets pré-créés par k8s, RÉÉCRITS par la bascule MODE=restore|list depuis
+#     l'environment GitHub geo-bascule : kubectl replace --dry-run=server puis replace ; jamais
+#     create/patch/list ; jamais de SealedSecret) ;
+#   - restauration PG (MODE=restore, restore-pg.mjs pg-apply) : VÉRIFICATION SEULE de la présence du
+#     postgis préprod (get par nom du StatefulSet postgis, du Service geo-postgis et des NetworkPolicies
+#     geo-postgis-preprod + pra-restore-egress) puis rollout status du StatefulSet. postgis-preprod.yaml
+#     est appliqué UNE fois par l'opérateur (compte local geo-admin), JAMAIS par la CI : aucun
+#     create/patch/update sur statefulsets/services/networkpolicies (`create` n'est pas limitable par
+#     nom). get LIMITÉ PAR NOM (resourceNames) ; list/watch du seul StatefulSet postgis pour rollout
+#     status (fieldSelector metadata.name).
+# EXCLUS : tout autre verbe/nom de Secret (l'identité éphémère docs-sync reste créée par k8s), toute
+# mutation de statefulsets/services/networkpolicies, persistentvolumeclaims, pods/log, pods/exec, autres ns.
 # INSTALL : appliqué UNE fois (install-cd-bootstrap.sh, cluster-admin). Token permanent → KUBE_CONFIG_DATA_BASCULE_PREPROD.
 ---
 apiVersion: v1
@@ -48,7 +56,20 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get", "update"]          # kubectl replace (GET + PUT) des Secrets pré-créés
-    resourceNames: ["geo-backup-reader-preprod", "geo-backup-restore-docs"]
+    resourceNames: ["geo-backup-reader-preprod", "geo-backup-restore-docs", "geo-postgis-credentials"]
+  # ── restauration PG : postgis préprod appliqué par l'OPÉRATEUR, seulement VÉRIFIÉ par la CI (pg-apply) ──
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "list", "watch"]   # présence + rollout status (watch fieldSelector metadata.name)
+    resourceNames: ["postgis"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get"]
+    resourceNames: ["geo-postgis"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies"]
+    verbs: ["get"]
+    resourceNames: ["geo-postgis-preprod", "pra-restore-egress"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
