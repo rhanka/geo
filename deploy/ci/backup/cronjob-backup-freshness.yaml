@@ -75,7 +75,7 @@ spec:
                 - { name: NODE_PATH, value: "/app/node_modules" }
                 - { name: NODE_OPTIONS, value: "--max-old-space-size=96 --dns-result-order=ipv4first" }
                 - { name: AWS_EC2_METADATA_DISABLED, value: "true" }
-                # Identity geo-backup-reader (SealedSecret, k8s lane): read-only on geo-backup.
+                # Identity geo-backup-reader (Secret written by the CD from GitHub): read-only on geo-backup.
                 - { name: S3_ENDPOINT,   valueFrom: { secretKeyRef: { name: geo-backup-reader, key: S3_ENDPOINT } } }
                 - { name: S3_REGION,     valueFrom: { secretKeyRef: { name: geo-backup-reader, key: S3_REGION } } }
                 - { name: S3_ACCESS_KEY, valueFrom: { secretKeyRef: { name: geo-backup-reader, key: S3_ACCESS_KEY } } }

@@ -9,7 +9,8 @@
 // 0 network, 0 cluster, 0 real S3, 0 DB: pure helpers + the full runBackup flow
 // against an in-memory VERSIONED S3 fake (delete-markers, ListObjectVersions,
 // multipart upload + UploadPartCopy, Content-MD5 verification, pagination),
-// plus static checks of the CronJob / SealedSecrets / netpol / RBAC / CD wiring.
+// plus static checks of the CronJob / netpol / RBAC / CD wiring (incl. the step writing the
+// backup Secrets from the Environment geo-prod-bundle).
 //
 //   node deploy/ci/backup/backup-daily.selftest.mjs   → exit 0 when all pass.
 // =============================================================================
@@ -925,38 +926,92 @@ const secretRefs = (text) => [...text.matchAll(/secretKeyRef: \{ name: ([a-z0-9-
     [READER_KEYS.map((k) => `geo-backup-reader/${k}`), 3, 1]);
   ok('freshness pod needs no postgis access (no role=pra-backup)', !/role: pra-backup/.test(fcj));
 }
+// ── Backup identities: Environment geo-prod-bundle → core Secrets written by the CD.
+// Owner rule: NO SealedSecret committed for them; source of truth = GitHub + the k8s lane `.env`.
+const IDS = ['writer', 'reader', 'purger'];
+const WANT_KEYS = { writer: WRITER_KEYS, reader: READER_KEYS, purger: PURGER_KEYS };
+const GH_SECRETS = IDS.flatMap((id) => [`GEO_BACKUP_${id.toUpperCase()}_ACCESS_KEY`, `GEO_BACKUP_${id.toUpperCase()}_SECRET_KEY`]);
+const GH_VARS = ['BACKUP_S3_ENDPOINT', 'BACKUP_S3_REGION', 'BACKUP_BUCKET', 'BACKUP_SOURCE_BUCKET'];
+const wf = read('.github/workflows/bascule-bundle-cd.yml');
+const job = (/\n {2}apply-backup:\n([\s\S]*?)(?=\n {2}[a-z][a-z0-9-]*:\n|$)/.exec(wf) || [])[1] || '';
+const jobSteps = job.split(/\n(?= {6}- (?:name|uses): )/).slice(1);
+const secretStep = jobSteps.find((st) => /^ {6}- name: Write backup Secrets from GitHub/.test(st)) || '';
+// `run:` bodies of a workflow text (block `run: |` and one-line `run: …`).
+const runBodies = (text) => {
+  const out = []; const lines = text.split('\n');
+  for (let i = 0; i < lines.length; i += 1) {
+    const m = /^(\s*)(?:- )?run: ?(.*)$/.exec(lines[i]);
+    if (!m) continue;
+    if (!/^[|>]/.test(m[2])) { out.push(m[2]); continue; }
+    const body = [];
+    for (let j = i + 1; j < lines.length && (lines[j].trim() === '' || lines[j].search(/\S/) > m[1].length); j += 1) body.push(lines[j]);
+    out.push(body.join('\n'));
+  }
+  return out;
+};
+const secretRun = runBodies(secretStep).join('\n');
 {
   const dir = path.join(ROOT, 'deploy/ci/backup');
-  const files = fs.readdirSync(dir).filter((f) => /^geo-backup-.*sealed.*\.yaml$/.test(f));
-  const docs = files.flatMap((f) => fs.readFileSync(path.join(dir, f), 'utf8').split(/^---\s*$/m)).filter((d) => d.trim());
-  const byName = Object.fromEntries(docs.map((d) => [(/^ {2}name: (\S+)$/m.exec(d) || [])[1], d]));
-  const keys = (t) => [...t.matchAll(/^ {4}([A-Z_0-9]+): Ag/mg)].map((x) => x[1]).sort();
-  ok('committed SealedSecret files hold no plain Secret', docs.every((d) => !/^(kind: Secret|stringData:|data:)/m.test(d)));
-  for (const [name, want] of [['geo-backup-writer', WRITER_KEYS], ['geo-backup-reader', READER_KEYS], ['geo-backup-purger', PURGER_KEYS]]) {
-    const d = byName[name];
-    if (!d) { console.log(`  PENDING SealedSecret ${name} not committed yet (k8s lane, verbatim) — the CD guard refuses to apply until it is`); continue; }
-    ok(`${name} SealedSecret kind/ns`, /kind: SealedSecret/.test(d) && new RegExp(`name: ${name}\\n\\s+namespace: geo\\n`).test(d));
-    eq(`${name} keys`, keys(d), want);
-  }
+  const files = fs.readdirSync(dir);
+  ok('no SealedSecret committed for the backup identities (no *sealed* file, no kind: SealedSecret)',
+    !files.some((f) => /sealed/i.test(f)) && files.filter((f) => /\.ya?ml$/.test(f)).every((f) => !/^kind: SealedSecret/m.test(read(`deploy/ci/backup/${f}`))));
+  ok('CD apply-backup: no SealedSecret guard/apply/wait left in the job', !/kubectl[^\n]*sealedsecret|sealed[^\s]*\.ya?ml|kind: SealedSecret/i.test(active(job)));
+  const envMap = Object.fromEntries([...secretStep.matchAll(/^ {10}([A-Z0-9_]+): \$\{\{ (secrets|vars)\.([A-Z0-9_]+) \}\}$/mg)].map((x) => [x[1], `${x[2]}.${x[3]}`]));
+  eq('CD secret step: env = the 6 Environment secrets + the 4 Environment variables, same names',
+    envMap, Object.fromEntries([...GH_SECRETS.map((n) => [n, `secrets.${n}`]), ...GH_VARS.map((n) => [n, `vars.${n}`])]));
+  ok('CD workflow: no ${{ secrets.* }} interpolated in any run: block', runBodies(wf).every((b) => !/\$\{\{\s*secrets\./.test(b)));
+  ok('CD secret step: no ${{ }} expression at all in its run: block', secretRun.length > 0 && !secretRun.includes('${{'));
+  ok('CD apply-backup: no xtrace, no --from-literal (values never in argv or logs)', !/set -[a-z]*x|set -o xtrace|--from-literal/.test(active(job)));
+  const keysOf = (id) => ((new RegExp(`\\n\\s+\\[${id}\\]="([^"]*)"`).exec(secretRun) || [])[1] || '').split(/\s+/).filter(Boolean).sort();
+  for (const id of IDS) eq(`CD secret step: geo-backup-${id} keys`, keysOf(id), WANT_KEYS[id]);
+  const mounted = {};
+  for (const t of [cj, fcj]) for (const x of t.matchAll(/secretKeyRef: \{ name: geo-backup-([a-z]+), key: ([A-Z_0-9]+) \}/g)) (mounted[x[1]] ||= new Set()).add(x[2]);
+  eq('CD secret step keys = keys mounted by the CronJobs, per identity', IDS.map((id) => keysOf(id)), IDS.map((id) => [...(mounted[id] || [])].sort()));
+  const iGuard = secretRun.indexOf('(missing)'); const iBucket = secretRun.indexOf('EXPECTED_BACKUP_BUCKET');
+  const iGet = secretRun.indexOf('get secret'); const iReplace = secretRun.indexOf(' replace -f -');
+  ok('CD secret step: fail-closed order — values guard, bucket guard, Secrets exist, then replace',
+    iGuard > 0 && iGuard < iBucket && iBucket < iGet && iGet < iReplace && secretRun.indexOf('kubectl') > iGuard &&
+    secretRun.includes('EXPECTED_SOURCE_BUCKET') && /multi-line/.test(secretRun));
+  const kubectlCalls = [...active(secretRun).matchAll(/\bkubectl\s+(?:-n\s+"\$NAMESPACE"\s+)?([a-z-]+)([^\n]*)/g)].map((x) => [x[1], x[2]]);
+  eq('CD secret step: kubectl verbs = get, create (client-side), label (local), replace — never apply/patch/delete',
+    [...new Set(kubectlCalls.map((c) => c[0]))].sort(), ['create', 'get', 'label', 'replace']);
+  ok('CD secret step: create is client-side only (--dry-run=client), label is --local, replace reads stdin',
+    kubectlCalls.every(([v, rest]) => (v !== 'create' || /--dry-run=client/.test(rest)) && (v !== 'label' || /--local/.test(rest)) &&
+      (v !== 'replace' || /^ -f - /.test(rest))) &&
+    /create secret generic "geo-backup-\$\{id\}" --type=Opaque "\$\{args\[@\]\}" --dry-run=client -o yaml/.test(secretRun));
+  ok('CD secret step: values from 0600 files of a temp dir removed on exit', /umask 077/.test(secretRun) && /mktemp -d/.test(secretRun) &&
+    /trap 'rm -rf "\$tmp"' EXIT/.test(secretRun) && /--from-file=\$\{k\}=/.test(secretRun));
+  ok('CD secret step: Secrets labelled app.kubernetes.io/component=db-backup', /app\.kubernetes\.io\/component=db-backup/.test(secretRun));
+  const names = jobSteps.map((st) => (/- name: (.*)/.exec(st) || [])[1] || '');
+  const at = (p) => names.findIndex((n) => n.startsWith(p));
+  ok('CD apply-backup: selftest → kubeconfig → pre-flight → Secrets → ConfigMap/CronJobs', at('Selftest') > -1 && at('Selftest') < at('Configure kubeconfig') &&
+    at('Configure kubeconfig') < at('Pre-flight') && at('Pre-flight') < at('Write backup Secrets') && at('Write backup Secrets') < at('Apply script ConfigMap'));
 }
 {
   const rbac = read('deploy/ci/bascule-preprod/rbac-ci-bascule-prod.yaml');
-  ok('CD Role: backup SealedSecrets name-scoped (writer, reader, purger)',
-    /resourceNames: \["geo-db-ro-prod", "geo-pra-writer-prod", "geo-backup-writer", "geo-backup-reader", "geo-backup-purger"\]/.test(rbac));
+  const role = rbac.split(/^---\s*$/m).find((d) => /^kind: Role$/m.test(d) && /^ {2}name: geo-ci-bascule-prod$/m.test(d)) || '';
+  const list = (x) => (x || '').split(',').map((y) => y.trim()).filter(Boolean).map((y) => y.replace(/^"|"$/g, ''));
+  const rules = role.split(/\n {2}- apiGroups: /).slice(1).map((r) => ({
+    groups: list((/^\[([^\]]*)\]/.exec(r) || [])[1]),
+    resources: list((/\n {4}resources: \[([^\]]*)\]/.exec(r) || [])[1]),
+    verbs: list((/\n {4}verbs: \[([^\]]*)\]/.exec(r) || [])[1]),
+    names: list((/\n {4}resourceNames: \[([^\]]*)\]/.exec(r) || [])[1]),
+  }));
+  const secretRules = rules.filter((r) => r.groups.includes('') && r.resources.some((x) => x === 'secrets' || x === '*'));
+  eq('CD Role: core secrets = ONE rule, get/patch/update on the 3 backup names only (no create/list/watch/delete)',
+    secretRules.map((r) => [r.resources, [...r.verbs].sort(), [...r.names].sort()]),
+    [[['secrets'], ['get', 'patch', 'update'], ['geo-backup-purger', 'geo-backup-reader', 'geo-backup-writer']]]);
+  ok('CD Role: no wildcard verb or resource', rules.every((r) => !r.verbs.includes('*') && !r.resources.includes('*')));
+  eq('CD Role: sealedsecrets name-scoped to the 2 bundle SealedSecrets only (no backup name)',
+    rules.filter((r) => r.resources.includes('sealedsecrets') && r.names.length).map((r) => r.names), [['geo-db-ro-prod', 'geo-pra-writer-prod']]);
   ok('CD Role: backup script ConfigMap name-scoped', /resourceNames: \["geo-db-ro-role-sql", "geo-backup-daily-script"\]/.test(rbac));
   ok('CD Role: backup + freshness CronJobs name-scoped', /resourceNames: \["geo-db-backup-prod", "geo-backup-daily", "geo-backup-freshness"\]/.test(rbac));
-  const wf = read('.github/workflows/bascule-bundle-cd.yml');
-  const job = (/\n {2}apply-backup:\n([\s\S]*?)(?=\n {2}[a-z][a-z0-9-]*:\n|$)/.exec(wf) || [])[1] || '';
   ok('CD workflow: path trigger deploy/ci/backup/** + dispatch inputs', wf.includes("- 'deploy/ci/backup/**'") && /backup_run_now:/.test(wf) && /backup_include_archive:/.test(wf));
   ok('CD apply-backup: same owner gate (needs approve, attempt-bound) + vault Environment geo-prod-bundle', /needs: approve/.test(job) &&
     /environment: geo-prod-bundle/.test(job) && /needs\.approve\.outputs\.attempt == github\.run_attempt/.test(job));
   ok('CD apply-backup: armed by BASCULE_BUNDLE_CD_ENABLED AND BACKUP_DAILY_CD_ENABLED', /vars\.BASCULE_BUNDLE_CD_ENABLED == 'true'/.test(job) &&
     /vars\.BACKUP_DAILY_CD_ENABLED == 'true'/.test(job));
-  ok('CD apply-backup: guard requires the 3 committed SealedSecrets, before any cluster call',
-    job.includes('geo-backup-*sealed*.yaml') && ['geo-backup-writer', 'geo-backup-reader', 'geo-backup-purger'].every((n) => job.includes(n)) &&
-    job.includes('!= "3"') && job.indexOf('Guard') < job.indexOf('Configure kubeconfig'));
-  ok('CD apply-backup: selftest gate before the kubeconfig', job.indexOf('backup-daily.selftest.mjs') > -1 && job.indexOf('backup-daily.selftest.mjs') < job.indexOf('Configure kubeconfig'));
-  ok('CD apply-backup: applies SealedSecrets + script ConfigMap + both CronJobs, asserts the committed schedules',
+  ok('CD apply-backup: applies script ConfigMap + both CronJobs, asserts the committed schedules',
     job.includes('geo-backup-daily-script') && job.includes('cronjob-backup-daily.yaml') && job.includes('"23 3 * * *|false|Forbid"') &&
     job.includes('cronjob-backup-freshness.yaml') && job.includes('"47 7 * * *|false|Forbid"'));
   ok('CD apply-backup: manual run refused inside the 03:13–06:30 UTC window and while a run is active',
