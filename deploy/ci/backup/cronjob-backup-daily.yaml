@@ -1,0 +1,225 @@
+# =============================================================================
+# geo-backup-daily — DAILY PROD BACKUP (PostgreSQL + source bucket S3), ns geo.
+#
+# Port of the immo job (rhanka/radar-immobilier#771, radar-backup-daily).
+# A real backup, independent of the bascule: dated, retained, restorable by date,
+# in the DEDICATED bucket geo-backup (versioning ON, object-lock GOVERNANCE 7 d,
+# lifecycle — provisioned by the k8s lane, see README.md).
+# NOT the bascule trigger geo-db-backup-prod (*/5, suspended by design, under the
+# suspend-only VAP — untouched).
+#
+# Applied on merge by .github/workflows/bascule-bundle-cd.yml, job `apply-backup`
+# (permanent SA geo-ci-bascule-prod, Environment geo-prod-bundle, positive PROD
+# pre-flight, arming var BACKUP_DAILY_CD_ENABLED). The script is the ConfigMap
+# geo-backup-daily-script, rendered by that job from deploy/ci/backup/backup-daily.cjs.
+#
+# Pod = 2 steps, one coherent backup of day D (UTC):
+#   initContainer `dump`   postgis/postgis:16-3.4 (already in the cluster = the
+#                          postgis StatefulSet): DB assert → pg_dump -Fc (RO role
+#                          geo_db_ro_prod) → pg_restore --list (readability) →
+#                          sha256sum → pg_dumpall --globals-only --no-role-passwords
+#                          (best-effort) + DB size / versions in dump.env.
+#   container     `backup` geo-api image, SAME digest as the bascule dump CronJob
+#                          geo-db-backup-prod (Node + @aws-sdk): upload + re-read
+#                          sha256, server-side incremental copy of sentropic-geo,
+#                          inventory, manifest, latest pointer, retention purge
+#                          (delete-markers only). Identity: geo-backup-writer.
+# 0 python, 0 new image. Logs = verdict only (counts, backup keys, sha256).
+#
+# NETWORK: pod label role=pra-backup → existing netpols allow-geo-db-backup-to-postgis
+# (ingress postgis:5432) + allow-geo-db-backup-egress (DNS, postgis:5432,
+# S3 BHS 54.39.60.208/32:443) from netpol-geo-db-backup.k8s-apply.yaml (k8s lane).
+# No netpol change. Everything else is blocked, hence PUBLIC_HEALTH_URL="".
+#
+# QUOTA (ns geo tenant-quota counts limits): pod = 1, requests cpu 50m / mem 192Mi,
+# limits cpu 500m / mem 768Mi (max of the init and main container).
+# =============================================================================
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: geo-backup-daily
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: geo-backup-daily
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: db-backup
+    role: pra-backup
+spec:
+  # 03:23 UTC: one hour after the immo backup (02:23 UTC), off the 04:17 UTC
+  # monthly geo-fetch.
+  schedule: "23 3 * * *"
+  timeZone: "Etc/UTC"
+  suspend: false
+  concurrencyPolicy: Forbid
+  startingDeadlineSeconds: 3600
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 3
+  jobTemplate:
+    metadata:
+      # Job labels (the CD refuses a manual run while a Job with these labels is active).
+      labels:
+        app.kubernetes.io/name: geo-backup-daily
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: db-backup
+    spec:
+      # One retry for transient failures (exit 1). Exit 2/3/4 = no retry (a
+      # retry would re-dump prod for nothing): integrity refusal, purge failed
+      # after a valid manifest, manifest written as partial (the seed of the
+      # source copy ends as partial until complete, and resumes the next night).
+      backoffLimit: 1
+      activeDeadlineSeconds: 10800
+      ttlSecondsAfterFinished: 259200
+      podFailurePolicy:
+        rules:
+          - action: FailJob
+            onExitCodes:
+              operator: In
+              values: [2, 3, 4]
+          - action: Ignore
+            onPodConditions:
+              - type: DisruptionTarget
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: geo-backup-daily
+            app.kubernetes.io/part-of: geo
+            app.kubernetes.io/component: db-backup
+            role: pra-backup
+        spec:
+          restartPolicy: Never
+          automountServiceAccountToken: false
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1001
+            runAsGroup: 1001
+            fsGroup: 1001
+            seccompProfile: { type: RuntimeDefault }
+          volumes:
+            - { name: work, emptyDir: { sizeLimit: 8Gi } }
+            - { name: scratch, emptyDir: { sizeLimit: 256Mi } }
+            - name: script
+              configMap:
+                name: geo-backup-daily-script
+                defaultMode: 0444
+          initContainers:
+            - name: dump
+              image: postgis/postgis:16-3.4
+              command: ["/bin/sh", "-ceu"]
+              args:
+                - |
+                  # Exit 1 = retryable (DB unreachable, dump error); exit 2 = refusal (wrong DB).
+                  # Every pg tool is `|| exit 1` so its own exit code (psql: 2 = connection)
+                  # never collides with the no-retry codes of the podFailurePolicy.
+                  umask 077
+                  B=/usr/lib/postgresql/16/bin
+                  W=/work
+                  F="$EXPECTED_DATABASE.dump"
+                  DATE=$(date -u +%F)
+                  STARTED_AT=$(date -u +%FT%TZ)
+                  # Positive DB assert (same guard as geo-db-backup-prod).
+                  DB=$($B/psql -X -tAc 'select current_database()' | tr -d '[:space:]')
+                  [ -n "$DB" ] || { echo "[dump] ERROR database unreachable" >&2; exit 1; }
+                  [ "$DB" = "$EXPECTED_DATABASE" ] || { echo "[dump] ABORT connected database != EXPECTED_DATABASE" >&2; exit 2; }
+                  SERVER_VERSION=$($B/psql -X -tAc "select current_setting('server_version')") || exit 1
+                  POSTGIS_VERSION=$($B/psql -X -tAc "select coalesce((select extversion from pg_extension where extname = 'postgis'), 'absent')") || exit 1
+                  DB_SIZE_BYTES=$($B/psql -X -tAc "select pg_database_size(current_database())") || exit 1
+                  $B/pg_dump --format=custom --no-owner --no-privileges --file="$W/$F" || exit 1
+                  FINISHED_AT=$(date -u +%FT%TZ)
+                  # Readability: the archive TOC must list (a truncated file fails here).
+                  $B/pg_restore --list "$W/$F" > $W/dump.toc || exit 1
+                  TOC_ENTRIES=$(grep -c '^[0-9]' $W/dump.toc || true)
+                  [ "${TOC_ENTRIES:-0}" -gt 0 ] || { echo "[dump] ERROR empty TOC" >&2; exit 1; }
+                  # Schema version read from the dump itself, when the DB carries a drizzle
+                  # migrations table (none today on geo → empty file → schema.status=unknown).
+                  $B/pg_restore --data-only --schema=drizzle --table=__drizzle_migrations --file=$W/migrations.sql "$W/$F" 2>/dev/null || : > $W/migrations.sql
+                  (cd $W && sha256sum "$F" > "$F.sha256")
+                  # Globals (roles, memberships, tablespaces) WITHOUT passwords; best-effort for a RO role.
+                  if $B/pg_dumpall --globals-only --no-role-passwords --database="$PGDATABASE" --file=$W/globals.sql 2>$W/globals.err; then
+                    GLOBALS_STATUS=ok
+                  else
+                    GLOBALS_STATUS=failed
+                    echo "[dump] WARN globals not dumped: $(head -c 160 $W/globals.err | head -n 1)" >&2
+                    rm -f $W/globals.sql
+                  fi
+                  {
+                    echo "DATE=$DATE"
+                    echo "STARTED_AT=$STARTED_AT"
+                    echo "FINISHED_AT=$FINISHED_AT"
+                    echo "DATABASE=$DB"
+                    echo "SERVER_VERSION=$SERVER_VERSION"
+                    echo "POSTGIS_VERSION=$POSTGIS_VERSION"
+                    echo "PG_DUMP_VERSION=$($B/pg_dump --version)"
+                    echo "DB_SIZE_BYTES=$DB_SIZE_BYTES"
+                    echo "TOC_ENTRIES=$TOC_ENTRIES"
+                    echo "GLOBALS_STATUS=$GLOBALS_STATUS"
+                  } > $W/dump.env
+                  echo "[dump] ok date=$DATE bytes=$(wc -c < "$W/$F") db_size_bytes=$DB_SIZE_BYTES toc_entries=$TOC_ENTRIES globals=$GLOBALS_STATUS"
+              env:
+                - { name: HOME, value: "/work" }
+                - { name: PGHOST, value: "geo-postgis.geo.svc" }
+                - { name: PGPORT, value: "5432" }
+                - { name: PGCONNECT_TIMEOUT, value: "20" }
+                - { name: PGAPPNAME, value: "geo-backup-daily" }
+                - { name: EXPECTED_DATABASE, value: "geo" }
+                # RO SELECT-only role geo_db_ro_prod (pg_read_all_data), provisioned by the bascule bundle.
+                - { name: PGUSER,     valueFrom: { secretKeyRef: { name: geo-db-ro-prod, key: POSTGRES_USER } } }
+                - { name: PGPASSWORD, valueFrom: { secretKeyRef: { name: geo-db-ro-prod, key: POSTGRES_PASSWORD } } }
+                - { name: PGDATABASE, valueFrom: { secretKeyRef: { name: geo-db-ro-prod, key: POSTGRES_DB } } }
+              securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+              resources:
+                requests: { cpu: 50m, memory: 128Mi }
+                limits: { cpu: 500m, memory: 512Mi }
+              volumeMounts:
+                - { name: work, mountPath: /work }
+                - { name: scratch, mountPath: /tmp }
+          containers:
+            - name: backup
+              image: "ghcr.io/rhanka/geo-api@sha256:c2f03fd55ffed513f0112b3877cafde4fb383f758e8d5171feb2a2fcbef69373"
+              command: ["node", "/opt/backup/backup-daily.cjs"]
+              env:
+                - { name: NODE_PATH, value: "/app/node_modules" }
+                - { name: NODE_OPTIONS, value: "--max-old-space-size=512 --dns-result-order=ipv4first" }
+                - { name: AWS_EC2_METADATA_DISABLED, value: "true" }
+                # Identity geo-backup-writer (SealedSecret, k8s lane): read sentropic-geo;
+                # geo-backup Put/Get/List/multipart + DeleteObject WITHOUT VersionId.
+                - { name: S3_ENDPOINT,   valueFrom: { secretKeyRef: { name: geo-backup-writer, key: S3_ENDPOINT } } }
+                - { name: S3_REGION,     valueFrom: { secretKeyRef: { name: geo-backup-writer, key: S3_REGION } } }
+                - { name: S3_ACCESS_KEY, valueFrom: { secretKeyRef: { name: geo-backup-writer, key: S3_ACCESS_KEY } } }
+                - { name: S3_SECRET_KEY, valueFrom: { secretKeyRef: { name: geo-backup-writer, key: S3_SECRET_KEY } } }
+                - { name: BACKUP_BUCKET, valueFrom: { secretKeyRef: { name: geo-backup-writer, key: BACKUP_BUCKET } } }
+                - { name: SOURCE_BUCKET, valueFrom: { secretKeyRef: { name: geo-backup-writer, key: SOURCE_BUCKET } } }
+                - { name: S3_FORCE_PATH_STYLE, value: "false" }
+                # Positive guards: the secret must point at exactly these buckets / this DB.
+                - { name: EXPECTED_BACKUP_BUCKET, value: "geo-backup" }
+                - { name: EXPECTED_SOURCE_BUCKET, value: "sentropic-geo" }
+                - { name: EXPECTED_DATABASE, value: "geo" }
+                - { name: WORK_DIR, value: "/work" }
+                # Empty on purpose: the pod egress (netpol) only reaches DNS, postgis and S3.
+                - { name: PUBLIC_HEALTH_URL, value: "" }
+                # Empty on purpose: geo has no drizzle journal (schema.status=unknown).
+                - { name: DRIZZLE_JOURNAL, value: "" }
+                - { name: BACKUP_IMAGE, value: "ghcr.io/rhanka/geo-api@sha256:c2f03fd55ffed513f0112b3877cafde4fb383f758e8d5171feb2a2fcbef69373" }
+                - { name: COPY_CONCURRENCY, value: "8" }
+                # ~71k live objects / ~70 GB to seed: the seed spans several runs
+                # (status=partial, exit 4) and resumes each night; see README.md.
+                - { name: DOCS_COPY_BUDGET_SECONDS, value: "7200" }
+                # Frozen 48.94 GB archive (one-time copy, README.md) + rebuildable PMTiles.
+                - { name: DOCS_EXCLUDE_PREFIXES, value: "ops/decommission/20260913/,pmtiles/" }
+                - { name: COPY_MULTIPART_THRESHOLD_BYTES, value: "4294967296" }
+                - { name: COPY_PART_BYTES, value: "536870912" }
+                # geo DB size is unknown (geo-api prod has no PG variable): conservative floor.
+                - { name: MIN_DUMP_BYTES, value: "65536" }
+                - { name: MIN_DUMP_RATIO, value: "0.5" }
+                - { name: RETENTION_DAILY_DAYS, value: "7" }
+                - { name: RETENTION_WEEKLY_WEEKS, value: "4" }
+                - { name: RETENTION_MONTHLY_MONTHS, value: "6" }
+                - { name: RETENTION_MIN_KEEP, value: "7" }
+                - { name: PURGE_DRY_RUN, value: "false" }
+              securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
+              resources:
+                requests: { cpu: 50m, memory: 192Mi }
+                limits: { cpu: 500m, memory: 768Mi }
+              volumeMounts:
+                - { name: work, mountPath: /work }
+                - { name: scratch, mountPath: /tmp }
+                - { name: script, mountPath: /opt/backup, readOnly: true }

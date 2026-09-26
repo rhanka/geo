@@ -82,3 +82,36 @@ Legacy SA token secrets (non-expiring, like the existing deployers): rotation = 
 3. latest dump present: `s3://radar-immobilier-backups-preprod/geo-postgres/prod/sets/<ts>/geo.dump`
    (`pg_restore --list` of it is readable).
 4. `.env` holds the current values (backup) at the documented owner location.
+
+## Daily prod backup identities (deploy/ci/backup/)
+
+Clone of the immo record (radar-immobilier#771).
+
+| secret (k8s name) | keys | consumer | rights |
+| --- | --- | --- | --- |
+| `geo-backup-writer` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET`, `SOURCE_BUCKET` | CronJob `geo-backup-daily` | read `sentropic-geo`; `geo-backup` Put/Get/List/multipart + DeleteObject without VersionId (delete-marker only); no DeleteObjectVersion, no BypassGovernanceRetention |
+| `geo-backup-reader` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` | restores (`deploy/ci/backup/RESTORE.md`) | `geo-backup` GetObject (incl. versionId), ListBucket, ListBucketVersions |
+
+Both are SealedSecrets minted and sealed by the k8s lane (scope strict ns `geo`),
+committed verbatim as `deploy/ci/backup/geo-backup-sealedsecrets.yaml` (two documents)
+and applied by `bascule-bundle-cd.yml` job `apply-backup`.
+
+**Rotation: every 90 days** (and at once on suspected exposure), one identity at a time:
+
+1. k8s lane: create a new S3 credential for the OVH user of the identity (the old one
+   stays valid for now).
+2. k8s lane: reseal the Secret with the new values (same name, same keys, scope strict
+   ns `geo`) and hand over the SealedSecret YAML.
+3. geo: replace that document in `deploy/ci/backup/geo-backup-sealedsecrets.yaml`
+   (PR → merge → `apply-backup` applies it → the controller updates the Secret).
+4. Verify with the NEW credential:
+   - writer: one backup run (next night, or `workflow_dispatch` input
+     `backup_run_now=true`) → Job `Complete`, `manifests/latest.json` date = today and
+     `status: complete`;
+   - reader: a restore check of that backup (`RESTORE.md` §0–1: download
+     `pg/D/geo.dump`, `sha256sum -c` OK, `pg_restore --list` lists).
+5. Only after BOTH checks pass: k8s lane deletes the old credential of that user.
+6. Update the `.env` recovery copy and record the rotation date (next due = +90 days).
+
+Verify recovery at any time: `kubectl -n geo get secret geo-backup-writer geo-backup-reader`;
+last `geo-backup-daily` Job `Complete`; `manifests/latest.json` of `geo-backup` fresh.
