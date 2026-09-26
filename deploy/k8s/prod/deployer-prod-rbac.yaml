@@ -1,8 +1,9 @@
 # RBAC du déployeur CD prod `geo-cd-deployer` (ns geo, least-privilege) — ADR-0028 same-digest promotion.
 # Miroir RÉDUIT de deploy/k8s/preprod/deployer-preprod-rbac.yaml : la kustomization prod n'applique que
 # deployment + service + ingress (pas de netpol / Job de sync / sealed-secrets — « prod = source du cycle,
-# pas synchronisée », cf overlays/prod/kustomization.yaml). DROP vs préprod : batch/jobs,
-# bitnami.com/sealedsecrets, networking.k8s.io/networkpolicies. RBAC prod = sous-ensemble strict du préprod.
+# pas synchronisée », cf overlays/prod/kustomization.yaml). DROP vs préprod : bitnami.com/sealedsecrets,
+# networking.k8s.io/networkpolicies. AJOUT (porte backup pré-MEP de cd-prod) : batch/jobs
+# get/list/watch/create + batch/cronjobs get sur geo-backup-daily (voir les règles en bas).
 #
 # poc-k8s APPLIQUE ce manifest (crée la SA + Role + RoleBinding) DEPUIS le repo (jamais ad-hoc), puis
 # produit le kubeconfig (token TTL borné) → GH secret KUBE_CONFIG_DATA env-scopé `geo-prod`
@@ -50,6 +51,21 @@ rules:
   - apiGroups: [""]
     resources: ["events"]
     verbs: ["get", "list", "watch"] # diagnostics auto sur échec (read-only)
+  # Porte backup pré-MEP (deploy/ci/backup/premep-backup-gate.mjs) : liste les Jobs geo-backup-*
+  # actifs, crée geo-backup-premep-* --from=cronjob/geo-backup-daily, poll son .status. Pas de
+  # delete/patch/update (le Job créé est un vrai backup, nettoyé par son ttlSecondsAfterFinished).
+  # `create` n'est pas resourceName-scopable (nom inconnu avant création).
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
+    verbs: ["get", "list", "watch", "create"]
+  # `kubectl create job --from=cronjob/geo-backup-daily` lit le CronJob (et la porte y lit
+  # activeDeadlineSeconds) : get seul, sur ce seul nom.
+  - apiGroups: ["batch"]
+    resources: ["cronjobs"]
+    resourceNames: ["geo-backup-daily"]
+    verbs: ["get"]
+  # Verdict du backup = terminationMessage du conteneur `backup` (pods get/list ci-dessus) :
+  # AUCUN pods/log.
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
