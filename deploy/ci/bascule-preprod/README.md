@@ -71,6 +71,7 @@ Tout l'accès object-store/DB vit dans des Jobs verdict-only (creds via `secretK
 | `restore-mode.mjs` · `backup-restore.cjs` · `backup-read-job.tmpl.yaml` · `docs-restore-backup-job.tmpl.yaml` | `MODE=restore\|list` : restauration DEPUIS `geo-backup` (section « Restore depuis un backup »). |
 | `restore-pg.mjs` · `postgis-preprod.yaml` · `pg-check-job.tmpl.yaml` · `pg-snapshot-job.tmpl.yaml` · `db-restore-backup-job.tmpl.yaml` · `pg-rollback-job.tmpl.yaml` | Restauration PostgreSQL du postgis préprod en `MODE=restore` (S2 + G1, pg-check avant ; section « Restauration PostgreSQL »). |
 | `restore-mode.selftest.mjs` | Selftest hors ligne du mode restore/list (faux S3 versionné par identité, CLI réelle contre un faux kubectl). |
+| `restore-pg.docker.selftest.mjs` | Test Docker (Node + `docker`, `postgis/postgis:16-3.4`) du script réel du conteneur `restore` de S2 contre une source synthétique conforme à la TOC du dump prod (ou un vrai dump local via `RESTORE_DOCKER_DUMP`) ; SKIP journalisé sans Docker, échec si `RESTORE_DOCKER_REQUIRED=1` (CI). |
 | `geo-db-ro-prod-sealed.yaml`, `geo-pra-writer-prod-sealed.yaml` | SealedSecrets **committées par geo-cond** (scellées, validées) — appliquées par le bundle. |
 | `netpol-geo-db-backup.k8s-apply.yaml` | **À appliquer par k8s** (jamais par un workflow) : ingress postgis + egress des pods de backup (ns geo). |
 | `install-cd-bootstrap.sh` | Install one-time (k8s lane, cluster-admin, après merge) : RBAC des SA, 3 kubeconfigs GH, armement, dispatch du CD bundle. |
@@ -305,7 +306,7 @@ geo-api, 0 python, 0 image nouvelle). `BASCULE_SCHEDULE_ENABLED` inchangé.
 | S2.0 | `pg-apply` | **n'applique rien** : vérifie la présence (get par nom) du StatefulSet `postgis`, du Service `geo-postgis` et des NetworkPolicies `geo-postgis-preprod` + `pra-restore-egress` (namespace préprod imposé), puis `rollout status statefulset/postgis` ; une absence ⇒ échec clair « appliquer postgis-preprod.yaml par l'opérateur » (compte local geo-admin), rien de destructif |
 | S2.1 | `pg-check` | **AVANT toute action destructive** : `pg_isready` puis `SELECT 1` authentifié avec les identifiants du Secret, puis base connectée = `EXPECTED_DATABASE` ; échec ⇒ message clair, sortie 2, **ni snapshot ni pg_restore** (en DRY : informatif) |
 | G1 | `pg-snapshot` | G2 = aucune autre session client sur la base (`backend_type = 'client backend'`, hors la session du garde : autovacuum ignoré) ; snapshot `CREATE DATABASE geo_pra_rollback TEMPLATE geo` (le précédent supprimé : un emplacement) |
-| S2 | `pg-restore` | Job `fetch` (dump `pg/<D>/geo.dump` téléchargé, sha256 = manifeste = sidecar = PIN) + `restore` (G2, base du Secret = `EXPECTED_DATABASE`, TOC = manifeste, dbname de l'archive = `EXPECTED_DATABASE`, `pg_restore --clean --if-exists --no-owner --no-privileges --exit-on-error --single-transaction`) |
+| S2 | `pg-restore` | Job `fetch` (dump `pg/<D>/geo.dump` téléchargé, sha256 = manifeste = sidecar = PIN) + `restore` (G2, base du Secret = `EXPECTED_DATABASE`, TOC = manifeste, dbname de l'archive = `EXPECTED_DATABASE`, extensions de l'image présentes sur la cible (sinon sortie 2), liste `-L` = TOC moins les entrées EXTENSION/SCHEMA des extensions de l'image, `pg_restore --clean --if-exists --no-owner --no-privileges --exit-on-error --single-transaction --use-list`, puis contrôle post-restauration : postgis répond, nombre de tables = TOC) |
 | S2c | — | **N/A** : geo n'a ni migration ni ORM ni DDL applicatif (la base est lue telle quelle par `postgis-provider.ts`) |
 | S3' | `docs-restore` | G3 ; état AU JOUR D du préfixe servi `normalized/` d'après `docs-inventory/<D>.json` (sha256 = manifeste) : copie **côté serveur** signée par `geo-backup-restore-docs`, clé `geo-backup/docs/normalized/X` → `sentropic-geo-preprod/normalized/X` (préfixe `docs/` retiré, clé source conservée), depuis la version enregistrée, sinon celle dont l'ETag est celui de l'inventaire si l'objet a été réécrit depuis ; `UploadPartCopy` au-delà de 5 GiB (lève la limite du point ouvert 2 pour ce mode) ; additif ; `GrantFullControl id=<BASCULE_DOCS_SYNC_GRANTEE>` exactement comme docs-sync (même variable, même défaut : canonical id owner/serving de `sentropic-geo-preprod`) ; entrées `excluded` par le backup lui-même (préfixes exclus, backup toujours `complete`) traitées comme le backup les traite : non exigées, comptées à part (`excluded`) et journalisées ; tout autre objet absent du backup (`pending`, `failed`) ou sans version restaurable ⇒ refus avant la 1re copie |
 | S3b' | `recon-backup` | préprod ⊇ inventaire(D) sur `normalized/` (Key + Size) ; sentinel `recon.ok.json` (D + sha256 du manifeste) |
@@ -372,6 +373,97 @@ réécrit par la bascule depuis `geo-bascule`). Logique : `restore-pg.mjs`.
     node deploy/ci/bascule-preprod/bascule.mjs pg-rollback   # mêmes variables que le job restore
   ```
 - **S2c migrate : N/A** (aucune migration geo).
+- **Extensions de l'image exclues de la liste `-L`** (correctif de l'incident ci-dessous).
+  La cible est un postgis `postgis/postgis:16-3.4` dont `docker-entrypoint-initdb.d/10_postgis.sh`
+  crée déjà `postgis`, `postgis_topology`, `fuzzystrmatch` et `postgis_tiger_geocoder` (schémas
+  `topology`, `tiger`, `tiger_data`). Le conteneur `restore` :
+  1. garde toutes les gardes d'avant (sha256 = manifeste = sidecar = PIN dans `fetch`, G2,
+     base du Secret, nombre d'entrées TOC = manifeste, dbname de l'archive ; G1 reste AVANT S2) ;
+  2. vérifie que ces 4 extensions et 3 schémas existent sur la cible, sinon **sortie 2**
+     sans rien toucher ;
+  3. écrit `/tmp/restore.list` = `pg_restore --list` où seules les entrées
+     `EXTENSION`/`COMMENT - EXTENSION` de ces extensions et `SCHEMA`/`COMMENT - SCHEMA` de ces
+     schémas sont commentées (`;`). Les données ne sont jamais exclues : `TABLE DATA` (y compris
+     les tables de config des extensions, dont le dump ne porte que les lignes ajoutées par
+     l'utilisateur, 0 ligne au 2026-09-26) et `SEQUENCE SET` restent ;
+  4. `pg_restore --clean --if-exists --no-owner --no-privileges --exit-on-error
+     --single-transaction --use-list /tmp/restore.list` : `--clean` ne concerne que les entrées
+     de la liste (les extensions de la cible ne sont ni supprimées ni recréées), tout ou rien ;
+  5. contrôle post-restauration en lecture seule : `postgis_lib_version()` répond et le nombre
+     de tables hors extensions = nombre d'entrées `TABLE` de la liste. Un échec ici arrive
+     après le commit : le verdict demande `bascule.mjs pg-rollback` (snapshot G1).
+
+  Écart assumé avec la prod : `fuzzystrmatch` reste dans le schéma de la cible (`public`) au
+  lieu de `geo` ; geo n'appelle aucune fonction de `fuzzystrmatch`. Limite connue : si la prod
+  ajoute un jour des lignes utilisateur dans une table de config d'extension
+  (`spatial_ref_sys`…), un 2e restore sur la même base échouera sur une clé en double (transaction
+  annulée, base intacte) — à traiter à ce moment-là.
+  Références : PostgreSQL 16, [`pg_restore` `-l`/`-L`](https://www.postgresql.org/docs/16/app-pgrestore.html)
+  (« comment out lines with a semicolon » pour exclure des entrées d'une restauration),
+  [tables de config d'extension](https://www.postgresql.org/docs/16/extend-extensions.html#EXTEND-EXTENSIONS-CONFIG-TABLES)
+  (`pg_extension_config_dump` : seules les lignes filtrées sont vidées) ; PostGIS,
+  [hard upgrade](https://postgis.net/docs/postgis_installation.html#hard_upgrade) (restaurer dans
+  une base où les extensions PostGIS sont déjà installées plutôt que de les recréer depuis le dump).
+  Immo (`rhanka/radar-immobilier`, `db-restore-backup-job.tmpl.yaml`) garde le
+  `pg_restore --clean --if-exists --single-transaction` sans liste : son dump ne contient pas
+  `postgis_tiger_geocoder` avec `fuzzystrmatch` hors de `public`. Le mécanisme geo reste le même
+  (un seul `pg_restore` en place, une transaction) avec une liste `-L` en plus.
+
+#### Incident 2026-09-26 (run 36264826332) — `soundex` introuvable
+
+- **Symptôme** : S2 échoue, transaction annulée (état précédent conservé, snapshot G1
+  `geo_pra_rollback` présent) :
+  `ERROR: function soundex(character varying) does not exist` —
+  `Command was: CREATE EXTENSION IF NOT EXISTS postgis_tiger_geocoder WITH SCHEMA tiger;`
+- **TOC du vrai dump** `pg/2026-09-26/geo.dump` (sha256 `ddb88b69…3bf24d91`, 24 entrées,
+  pg_dump 16.4) : `SCHEMA geo, tiger, tiger_data, topology` (+ `COMMENT - SCHEMA topology`) ;
+  `EXTENSION fuzzystrmatch, postgis, postgis_tiger_geocoder, postgis_topology` (+ 4 `COMMENT`) ;
+  `TABLE geo.lots` + `TABLE DATA geo.lots` (45 099 lignes) + `INDEX geo.lots_geom_gix` ;
+  `TABLE DATA` des tables de config `public.spatial_ref_sys`, `tiger.geocode_settings`,
+  `tiger.pagc_gaz/lex/rules`, `topology.topology/layer` (0 ligne chacune) ;
+  `SEQUENCE SET topology.topology_id_seq`. Le SQL généré contient
+  `CREATE EXTENSION IF NOT EXISTS fuzzystrmatch WITH SCHEMA geo;` : **en prod, `fuzzystrmatch` est
+  dans le schéma `geo`**, pas dans `public` comme sur une base fraîche de l'image (origine de cet
+  état en prod : unknown).
+- **Cause** : avec `--clean`, pg_restore supprime les 4 extensions de la cible puis les recrée
+  depuis la TOC, `fuzzystrmatch` dans `geo`. Le script d'installation de
+  `postgis_tiger_geocoder` 3.4 appelle `tiger.SetSearchPathForInstall('tiger')`, qui fixe
+  `search_path = tiger, <reset_val de search_path>`, soit `tiger, "$user", public` ; l'index
+  `CREATE INDEX … (soundex(name))` ne trouve alors `soundex` que si le rôle qui restaure
+  s'appelle `geo`. Le superuser préprod ne s'appelle pas `geo` ⇒ échec. Vérifié en Docker sur le
+  vrai dump : rôle `postgres` ⇒ échec (en place ou dans une base `createdb -T template0`) ; rôle
+  `geo` ⇒ succès. L'option « base vierge `template0` + `ALTER DATABASE … RENAME` » ne corrige donc
+  pas : c'est la recréation de l'extension depuis le dump qui échoue, pas l'état de la cible.
+- **Pourquoi le test local de la relecture ne l'avait pas révélé** : il restaurait des données
+  synthétiques, pas le vrai dump, depuis une source sans l'état réel des extensions de la prod.
+  Une source initialisée par la même image a `fuzzystrmatch` dans `public` : sa TOC contient
+  `CREATE EXTENSION … fuzzystrmatch WITH SCHEMA public`, `soundex` est sur le `search_path`, et
+  l'ancienne commande réussit (vérifié : exit 0). Ce qui diffère du vrai dump, d'après sa TOC :
+  schéma de `fuzzystrmatch` (`geo` au lieu de `public`), combiné à un rôle de restauration
+  ≠ `geo`. La seule présence des 4 extensions ne suffit
+  pas à reproduire.
+- **Reproduction avec le vrai dump (poste opérateur, jamais en CI : le runner n'a aucune cred
+  S3 et le dump n'est jamais committé)** : télécharger `s3://geo-backup/pg/2026-09-26/geo.dump`
+  avec l'identité lecteur préprod (sha256 vérifié = manifeste), puis
+
+  ```bash
+  RESTORE_DOCKER_DUMP=/chemin/geo.dump node deploy/ci/bascule-preprod/restore-pg.docker.selftest.mjs
+  ```
+
+  Résultat (2026-09-26) : TOC = 24 entrées attendues ; ancienne commande ⇒ `function
+  soundex(character varying) does not exist`, cible inchangée ; template corrigé ⇒ restore 1
+  exit 0, restore 2 exit 0 (idempotent), `postgis_version()` OK, `geo.lots` = 45 099 lignes =
+  dump, index présent ; restore bloqué (vue dépendante) ⇒ exit 1, base intacte. 15/15.
+- **Test committé** : `restore-pg.docker.selftest.mjs` (Node + `docker`, image
+  `postgis/postgis:16-3.4`), lancé par la CI (`ci.yml`, job `verify`,
+  `RESTORE_DOCKER_REQUIRED=1`). Sans `RESTORE_DOCKER_DUMP`, il construit une **source
+  synthétique** qui reproduit la configuration du vrai dump (extensions de l'image,
+  `fuzzystrmatch` déplacé dans `geo`, `geo.lots` Polygon 4326 + index GiST ; TOC comparée aux 24
+  entrées du vrai dump) et restaure avec le **script réel** du conteneur `restore` du template
+  contre une cible fraîche au rôle ≠ `geo`. Il échoue avec l'ancien template
+  (`RESTORE_DOCKER_TEMPLATE=<ancien template>` : `soundex`, 5/6) et passe avec le nouveau (15/15).
+  Docker absent : `SKIP` journalisé (« ce n'est pas un succès »), ou échec si
+  `RESTORE_DOCKER_REQUIRED=1`.
 
 ### Contrat e2e (`CYCLE_ID`)
 

@@ -66,6 +66,13 @@ jobs:
           node deploy/ci/bascule-preprod/bascule.selftest.mjs
           node deploy/ci/bascule-preprod/served-ids.selftest.mjs
           node deploy/ci/bascule-preprod/restore-mode.selftest.mjs
+      # Restauration PG (S2) contre un vrai postgis/postgis:16-3.4 (Docker du runner) :
+      # source SYNTHÉTIQUE reproduisant les extensions/schémas du dump prod (jamais le
+      # dump lui-même : le runner n'a aucune cred S3). Docker requis ici : absent = échec.
+      - name: Validate bascule preprod PG restore (Docker selftest)
+        env:
+          RESTORE_DOCKER_REQUIRED: "1"
+        run: node deploy/ci/bascule-preprod/restore-pg.docker.selftest.mjs
       - name: Install Chromium for MapLibre mount e2e
         run: npx playwright install --with-deps chromium
       - name: Mount e2e (real MapLibre and Chromium)
