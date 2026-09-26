@@ -42,9 +42,10 @@
 # Environment geo-prod-bundle, same positive PROD pre-flight, its own arming switch
 # BACKUP_DAILY_CD_ENABLED and its own failure domain (no `needs` on apply-bundle, own concurrency
 # group: a backup apply problem never blocks the bascule bundle or its anti-RCE gate, and vice
-# versa). It applies the SealedSecrets geo-backup-writer/-reader (one committed file), the
-# ConfigMap geo-backup-daily-script (rendered from deploy/ci/backup/backup-daily.cjs) and the
-# CronJob geo-backup-daily. Same runner contract: kubectl only, 0 backup content read, 0 secret
+# versa). It applies the SealedSecrets geo-backup-writer/-reader/-purger (committed
+# deploy/ci/backup/geo-backup-*sealed*.yaml files), the ConfigMap geo-backup-daily-script
+# (rendered from deploy/ci/backup/backup-daily.cjs) and the CronJobs geo-backup-daily +
+# geo-backup-freshness. Same runner contract: kubectl only, 0 backup content read, 0 secret
 # material on the runner.
 name: bascule-bundle-cd (prod bundle apply, CD-native)
 
@@ -306,23 +307,28 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Fail-closed BEFORE touching the cluster: the SealedSecrets (minted and sealed by the k8s
-      # lane, scope strict ns geo) must be committed verbatim, both of them, nothing in clear.
+      # Fail-closed BEFORE touching the cluster: the 3 SealedSecrets (minted and sealed by the
+      # k8s lane, scope strict ns geo) must be committed verbatim in deploy/ci/backup/
+      # geo-backup-*sealed*.yaml — writer (copy, no delete), reader (restore, freshness),
+      # purger (DeleteObject only) — and nothing in clear.
       - name: Guard — backup SealedSecrets committed
         run: |
           set -euo pipefail
-          f="$BACKUP_DIR/geo-backup-sealedsecrets.yaml"
-          if [ ! -f "$f" ]; then
-            echo "::error title=Backup not ready::$f absent (SealedSecrets geo-backup-writer + geo-backup-reader from the k8s lane, committed verbatim). Nothing was applied."; exit 1
+          shopt -s nullglob
+          files=("$BACKUP_DIR"/geo-backup-*sealed*.yaml)
+          if [ "${#files[@]}" -eq 0 ]; then
+            echo "::error title=Backup not ready::no $BACKUP_DIR/geo-backup-*sealed*.yaml (SealedSecrets geo-backup-writer/-reader/-purger from the k8s lane, committed verbatim). Nothing was applied."; exit 1
           fi
-          for n in geo-backup-writer geo-backup-reader; do
-            if ! grep -Eq "^  name: ${n}$" "$f"; then
-              echo "::error title=Backup not ready::$f has no SealedSecret named ${n}. Nothing was applied."; exit 1
+          all="$(cat "${files[@]}")"
+          for n in geo-backup-writer geo-backup-reader geo-backup-purger; do
+            if ! grep -Eq "^  name: ${n}$" <<<"$all"; then
+              echo "::error title=Backup not ready::no committed SealedSecret named ${n}. Nothing was applied."; exit 1
             fi
           done
-          if [ "$(grep -c '^kind: SealedSecret$' "$f")" != "2" ] || grep -Eq '^(kind: Secret|stringData:|data:)' "$f"; then
-            echo "::error title=Backup not ready::$f must hold exactly 2 SealedSecrets and no plain Secret. Nothing was applied."; exit 1
+          if [ "$(grep -c '^kind: SealedSecret$' <<<"$all")" != "3" ] || grep -Eq '^(kind: Secret|stringData:|data:)' <<<"$all"; then
+            echo "::error title=Backup not ready::the committed files must hold exactly 3 SealedSecrets and no plain Secret. Nothing was applied."; exit 1
           fi
+          printf 'committed: %s\n' "${files[@]}"
 
       # The retention/manifest/upload/copy logic and the wiring must pass the selftest
       # (in-memory S3 fake, 0 network) before anything is applied.
@@ -364,14 +370,17 @@ jobs:
 
       # Committed SealedSecrets; the in-cluster controller materializes the core Secrets. The
       # runner never sees the plaintext and this SA has 0 secrets verbs.
-      - name: Apply SealedSecrets (geo-backup-writer + geo-backup-reader)
-        run: kubectl -n "$NAMESPACE" apply -f "$BACKUP_DIR/geo-backup-sealedsecrets.yaml"
+      - name: Apply SealedSecrets (geo-backup-writer + geo-backup-reader + geo-backup-purger)
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          for f in "$BACKUP_DIR"/geo-backup-*sealed*.yaml; do kubectl -n "$NAMESPACE" apply -f "$f"; done
 
       - name: Wait for SealedSecrets Synced (tolerant)
         run: |
           set -uo pipefail
           synced_deadline=$((SECONDS + 120))
-          for ss in geo-backup-writer geo-backup-reader; do
+          for ss in geo-backup-writer geo-backup-reader geo-backup-purger; do
             while :; do
               s="$(kubectl -n "$NAMESPACE" get sealedsecret "$ss" -o 'jsonpath={.status.conditions[?(@.type=="Synced")].status}' 2>/dev/null || true)"
               if [ "$s" = "True" ]; then echo "SealedSecret ${ss}: Synced=True"; break; fi
@@ -384,8 +393,8 @@ jobs:
           done
 
       # The script ships as a ConfigMap rendered from the committed file (single source of
-      # truth, the same bytes the selftest exercised), then the CronJob.
-      - name: Apply script ConfigMap + CronJob geo-backup-daily
+      # truth, the same bytes the selftest exercised), then the two CronJobs.
+      - name: Apply script ConfigMap + CronJobs geo-backup-daily + geo-backup-freshness
         run: |
           set -euo pipefail
           kubectl -n "$NAMESPACE" create configmap geo-backup-daily-script \
@@ -399,18 +408,32 @@ jobs:
           if [ "$got" != "23 3 * * *|false|Forbid" ]; then
             echo "::error title=geo-backup-daily not as committed::live spec '${got}' differs from the committed manifest."; exit 1
           fi
+          kubectl -n "$NAMESPACE" apply -f "$BACKUP_DIR/cronjob-backup-freshness.yaml"
+          got="$(kubectl -n "$NAMESPACE" get cronjob geo-backup-freshness -o jsonpath='{.spec.schedule}|{.spec.suspend}|{.spec.concurrencyPolicy}')"
+          echo "geo-backup-freshness schedule|suspend|concurrencyPolicy = ${got}"
+          if [ "$got" != "47 7 * * *|false|Forbid" ]; then
+            echo "::error title=geo-backup-freshness not as committed::live spec '${got}' differs from the committed manifest."; exit 1
+          fi
           echo "script sha256 = $(sha256sum "$BACKUP_DIR/backup-daily.cjs" | cut -d' ' -f1) (recorded by each run as manifest.tool.scriptSha256)"
 
       # backup_include_archive: the one-time copy of the frozen archive (README.md) is the same Job
       # with the archive prefix removed from DOCS_EXCLUDE_PREFIXES (client-side edit of the Job
       # rendered from the live CronJob; the CronJob itself is never changed).
+      # Refused inside the scheduled window (03:13–06:30 UTC: the 03:23 run, its 1 h starting
+      # deadline and 3 h deadline) and while another run is active.
       - name: Start one run now (workflow_dispatch input backup_run_now)
         if: github.event_name == 'workflow_dispatch' && inputs.backup_run_now
         env:
           INCLUDE_ARCHIVE: ${{ inputs.backup_include_archive }}
           ARCHIVE_PREFIX: ops/decommission/20260913/
+          WINDOW_START_MIN: "193"
+          WINDOW_END_MIN: "390"
         run: |
           set -euo pipefail
+          now_min=$((10#$(date -u +%H) * 60 + 10#$(date -u +%M)))
+          if [ "$now_min" -ge "$WINDOW_START_MIN" ] && [ "$now_min" -lt "$WINDOW_END_MIN" ]; then
+            echo "::error title=Inside the scheduled backup window::$(date -u +%H:%M) UTC is within 03:13–06:30 UTC (scheduled geo-backup-daily run). Dispatch again outside it."; exit 1
+          fi
           active="$(kubectl -n "$NAMESPACE" get jobs -l app.kubernetes.io/name=geo-backup-daily -o jsonpath='{range .items[?(@.status.active)]}{.metadata.name}{" "}{end}')"
           if [ -n "$active" ]; then
             echo "::error title=Backup run already active::${active}— not starting a second one (same bucket, same day)."; exit 1
@@ -438,7 +461,8 @@ jobs:
           {
             echo "### geo daily prod backup applied"
             echo ""
-            echo "- SealedSecrets: geo-backup-writer (job identity), geo-backup-reader (restore identity)"
+            echo "- SealedSecrets: geo-backup-writer (copy, no delete), geo-backup-purger (DeleteObject only), geo-backup-reader (restore + freshness)"
             echo "- ConfigMap: geo-backup-daily-script (from deploy/ci/backup/backup-daily.cjs)"
             echo "- CronJob: geo-backup-daily (23 3 * * * UTC, Forbid) → s3://geo-backup"
+            echo "- CronJob: geo-backup-freshness (47 7 * * * UTC) — fails when latest.json is stale or not complete for > 3 days"
           } >> "$GITHUB_STEP_SUMMARY"
