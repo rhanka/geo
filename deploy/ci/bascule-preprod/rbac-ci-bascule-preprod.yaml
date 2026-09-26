@@ -8,11 +8,18 @@
 #   - resolvePreprodImage : get deploy geo-api ; rollout (S5') : patch deploy geo-api + status (get/list/watch) ;
 #   - pods get/list/watch : diagnostic lecture seule + message de fin des Jobs de backup (MODE=restore|list)
 #     (JAMAIS pods/log : runner STATUS-ONLY, 0 kubectl logs) ;
-#   - secrets get/update UNIQUEMENT sur geo-backup-reader-preprod et geo-backup-restore-docs (Secrets
-#     pré-créés par k8s, RÉÉCRITS par la bascule MODE=restore|list depuis l'environment GitHub geo-bascule :
-#     kubectl replace --dry-run=server puis replace ; jamais create/patch/list ; jamais de SealedSecret).
-# EXCLUS : tout autre verbe/nom de Secret (l'identité éphémère docs-sync reste créée par k8s), networkpolicies,
-# pods/log, pods/exec, autres ns.
+#   - secrets get/update UNIQUEMENT sur geo-backup-reader-preprod, geo-backup-restore-docs et
+#     geo-postgis-credentials (Secrets pré-créés par k8s, RÉÉCRITS par la bascule MODE=restore|list depuis
+#     l'environment GitHub geo-bascule : kubectl replace --dry-run=server puis replace ; jamais
+#     create/patch/list ; jamais de SealedSecret) ;
+#   - restauration PG (MODE=restore, restore-pg.mjs pg-apply) : kubectl apply de postgis-preprod.yaml
+#     (StatefulSet postgis, Service geo-postgis, NetworkPolicies geo-postgis-preprod + pra-restore-egress)
+#     puis rollout status du StatefulSet. get/patch/list/watch LIMITÉS PAR NOM (resourceNames ; list/watch
+#     de rollout status passent par un fieldSelector metadata.name). `create` NE PEUT PAS être limité par
+#     nom (l'API ne connaît pas encore le nom à la création) : accordé sans resourceNames, uniquement pour
+#     ces 3 types, dans ce seul namespace — utile au 1er apply ; ensuite apply = get + patch.
+# EXCLUS : tout autre verbe/nom de Secret (l'identité éphémère docs-sync reste créée par k8s), delete de
+# statefulsets/services/networkpolicies, persistentvolumeclaims, pods/log, pods/exec, autres ns.
 # INSTALL : appliqué UNE fois (install-cd-bootstrap.sh, cluster-admin). Token permanent → KUBE_CONFIG_DATA_BASCULE_PREPROD.
 ---
 apiVersion: v1
@@ -48,7 +55,30 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get", "update"]          # kubectl replace (GET + PUT) des Secrets pré-créés
-    resourceNames: ["geo-backup-reader-preprod", "geo-backup-restore-docs"]
+    resourceNames: ["geo-backup-reader-preprod", "geo-backup-restore-docs", "geo-postgis-credentials"]
+  # ── restauration PG : postgis préprod appliqué par la bascule (pg-apply) ──
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get", "patch", "list", "watch"]   # apply (GET + PATCH) + rollout status (watch fieldSelector)
+    resourceNames: ["postgis"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["get", "patch"]
+    resourceNames: ["geo-postgis"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies"]
+    verbs: ["get", "patch"]
+    resourceNames: ["geo-postgis-preprod", "pra-restore-egress"]
+  # `create` non limitable par nom (API RBAC) : 1er apply seulement, ces 3 types, ce namespace.
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["create"]
+  - apiGroups: [""]
+    resources: ["services"]
+    verbs: ["create"]
+  - apiGroups: ["networking.k8s.io"]
+    resources: ["networkpolicies"]
+    verbs: ["create"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding

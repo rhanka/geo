@@ -1,0 +1,90 @@
+# =============================================================================
+# pg-rollback-job.tmpl.yaml — ROLLBACK G1 de la base préprod : la base
+# EXPECTED_DATABASE est recréée depuis le snapshot pris par G1 avant la dernière
+# restauration (`CREATE DATABASE … TEMPLATE snapshot`). Commande manuelle
+# (restore-pg.mjs pg-rollback, G3 CONFIRM exigé), jamais enchaînée automatiquement.
+#
+# Refus (sortie 2, rien touché) : snapshot absent, ou autre session sur la base
+# (G2). Le snapshot est conservé (rejouable).
+#
+# Pod `role=pra-restore`. Superuser préprod = PG* libpq depuis ${PG_SECRET}.
+# Placeholders : ${JOB_NAME} ${NAMESPACE} ${PG_IMAGE} ${PG_SERVICE} ${PG_SECRET}
+# ${EXPECTED_DATABASE} ${PG_SNAPSHOT_DB} ${TTL_SECONDS}. $VAR = variables d'exécution.
+# =============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    role: pra-restore
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: pra-restore
+    sentropic.io/bascule: pg-rollback
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: ${TTL_SECONDS}
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      labels:
+        role: pra-restore
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: pra-restore
+        sentropic.io/bascule: pg-rollback
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: tmp
+          emptyDir: { sizeLimit: 16Mi }
+      containers:
+        - name: rollback
+          image: ${PG_IMAGE}
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "-c"]
+          args:
+            - |
+              set -uo pipefail
+              T=/dev/termination-log
+              fin() { printf '{"ok":%s,"step":"pg-rollback","snapshot":"%s","reason":"%s"}' "$1" "$PG_SNAPSHOT_DB" "$2" > "$T" 2>/dev/null || true; }
+              name_re='^[a-z_][a-z0-9_]{0,62}$'
+              if ! [[ "$EXPECTED_DATABASE" =~ $name_re ]] || ! [[ "$PG_SNAPSHOT_DB" =~ $name_re ]] || [ "$EXPECTED_DATABASE" = "$PG_SNAPSHOT_DB" ]; then
+                fin false "invalid database or snapshot name"; exit 2
+              fi
+              q() { psql -X -v ON_ERROR_STOP=1 -d postgres -tAc "$1"; }
+              snap="$(q "select count(*) from pg_database where datname = '$PG_SNAPSHOT_DB'")" || { fin false "postgres unreachable"; exit 1; }
+              if [ "$snap" != "1" ]; then fin false "no G1 snapshot to roll back to, nothing touched"; exit 2; fi
+              busy="$(q "select count(*) from pg_stat_activity where datname in ('$EXPECTED_DATABASE', '$PG_SNAPSHOT_DB') and pid <> pg_backend_pid()")" || { fin false "pg_stat_activity unreadable"; exit 1; }
+              if [ "$busy" != "0" ]; then fin false "G2: $busy active session(s), nothing touched"; exit 2; fi
+              q "drop database if exists \"$EXPECTED_DATABASE\"" > /dev/null || { fin false "target database not dropped"; exit 1; }
+              q "create database \"$EXPECTED_DATABASE\" template \"$PG_SNAPSHOT_DB\"" > /dev/null || { fin false "database not recreated from the snapshot"; exit 1; }
+              fin true ""
+              echo "[rollback] OK - $EXPECTED_DATABASE recreee depuis $PG_SNAPSHOT_DB (snapshot conserve)"
+          env:
+            - { name: PGHOST, value: "${PG_SERVICE}" }
+            - { name: PGPORT, value: "5432" }
+            - { name: PGCONNECT_TIMEOUT, value: "10" }
+            - { name: PGAPPNAME, value: "geo-bascule-pg-rollback" }
+            - { name: EXPECTED_DATABASE, value: "${EXPECTED_DATABASE}" }
+            - { name: PG_SNAPSHOT_DB, value: "${PG_SNAPSHOT_DB}" }
+            - { name: PGUSER, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_USER } } }
+            - { name: PGPASSWORD, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_PASSWORD } } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { cpu: 100m, memory: 64Mi }
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }

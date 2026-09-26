@@ -1,0 +1,102 @@
+# =============================================================================
+# pg-snapshot-job.tmpl.yaml — GARDE G1 de la bascule MODE=restore : SNAPSHOT de la
+# base préprod AVANT la restauration PG (S2).
+#
+# Snapshot = copie de la base dans la même instance : `CREATE DATABASE
+# "${PG_SNAPSHOT_DB}" TEMPLATE "${EXPECTED_DATABASE}"` (le précédent snapshot est
+# d'abord supprimé : un seul emplacement). Rollback = restore-pg.mjs pg-rollback
+# (base recréée depuis ce snapshot). Aucun stockage ni identité supplémentaire ; la
+# base préprod est jetable et alimentée seulement par des backups (le PVC 2Gi
+# contient la base + son snapshot : le dump prod mesure 19,4 MB).
+#
+# GARDE G2 (équivalent geo du quiesce) : AUCUNE autre session sur la base cible
+# (geo-api préprod ne s'y connecte pas : netpol geo-postgis-preprod). Une session
+# active ⇒ refus (sortie 2), rien n'est touché. CREATE DATABASE … TEMPLATE l'exige
+# de toute façon.
+#
+# Pod `role=pra-restore` (netpol pra-restore-egress). Superuser préprod = PG* libpq
+# depuis le Secret ${PG_SECRET}, session sur la base de maintenance `postgres`.
+# Placeholders : ${JOB_NAME} ${NAMESPACE} ${PG_IMAGE} ${PG_SERVICE} ${PG_SECRET}
+# ${EXPECTED_DATABASE} ${PG_SNAPSHOT_DB} ${TTL_SECONDS}. $VAR = variables d'exécution.
+# =============================================================================
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ${JOB_NAME}
+  namespace: ${NAMESPACE}
+  labels:
+    role: pra-restore
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/component: pra-restore
+    sentropic.io/bascule: pg-snapshot
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: ${TTL_SECONDS}
+  activeDeadlineSeconds: 600
+  template:
+    metadata:
+      labels:
+        role: pra-restore
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/component: pra-restore
+        sentropic.io/bascule: pg-snapshot
+    spec:
+      restartPolicy: Never
+      automountServiceAccountToken: false
+      enableServiceLinks: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 999
+        seccompProfile:
+          type: RuntimeDefault
+      volumes:
+        - name: tmp
+          emptyDir: { sizeLimit: 16Mi }
+      containers:
+        - name: snapshot
+          image: ${PG_IMAGE}
+          imagePullPolicy: IfNotPresent
+          command: ["bash", "-c"]
+          args:
+            - |
+              set -uo pipefail
+              T=/dev/termination-log
+              fin() { printf '{"ok":%s,"step":"pg-snapshot","snapshot":"%s","sizeBytes":%s,"reason":"%s"}' "$1" "$PG_SNAPSHOT_DB" "$2" "$3" > "$T" 2>/dev/null || true; }
+              name_re='^[a-z_][a-z0-9_]{0,62}$'
+              if ! [[ "$EXPECTED_DATABASE" =~ $name_re ]] || ! [[ "$PG_SNAPSHOT_DB" =~ $name_re ]] || [ "$EXPECTED_DATABASE" = "$PG_SNAPSHOT_DB" ]; then
+                fin false null "invalid database or snapshot name"; exit 2
+              fi
+              q() { psql -X -v ON_ERROR_STOP=1 -d postgres -tAc "$1"; }
+              exists="$(q "select count(*) from pg_database where datname = '$EXPECTED_DATABASE'")" || { fin false null "postgres unreachable"; exit 1; }
+              if [ "$exists" != "1" ]; then fin false null "target database absent"; exit 2; fi
+              busy="$(q "select count(*) from pg_stat_activity where datname = '$EXPECTED_DATABASE' and pid <> pg_backend_pid()")" || { fin false null "pg_stat_activity unreadable"; exit 1; }
+              if [ "$busy" != "0" ]; then
+                echo "[snapshot] REFUS - $busy session(s) active(s) sur $EXPECTED_DATABASE (G2) : rien n'est touche"
+                fin false null "G2: $busy active session(s) on the target database, nothing touched"; exit 2
+              fi
+              q "drop database if exists \"$PG_SNAPSHOT_DB\"" > /dev/null || { fin false null "previous snapshot not dropped"; exit 1; }
+              q "create database \"$PG_SNAPSHOT_DB\" template \"$EXPECTED_DATABASE\"" > /dev/null || { fin false null "snapshot not created (CREATE DATABASE TEMPLATE)"; exit 1; }
+              size="$(q "select pg_database_size('$PG_SNAPSHOT_DB')" | tr -cd '0-9')"
+              fin true "${size:-null}" ""
+              echo "[snapshot] OK - $EXPECTED_DATABASE copiee dans $PG_SNAPSHOT_DB (octets=$size)"
+          env:
+            - { name: PGHOST, value: "${PG_SERVICE}" }
+            - { name: PGPORT, value: "5432" }
+            - { name: PGCONNECT_TIMEOUT, value: "10" }
+            - { name: PGAPPNAME, value: "geo-bascule-pg-snapshot" }
+            - { name: EXPECTED_DATABASE, value: "${EXPECTED_DATABASE}" }
+            - { name: PG_SNAPSHOT_DB, value: "${PG_SNAPSHOT_DB}" }
+            - { name: PGUSER, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_USER } } }
+            - { name: PGPASSWORD, valueFrom: { secretKeyRef: { name: ${PG_SECRET}, key: POSTGRES_PASSWORD } } }
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests: { cpu: 10m, memory: 32Mi }
+            limits: { cpu: 100m, memory: 64Mi }
+          volumeMounts:
+            - { name: tmp, mountPath: /tmp }
