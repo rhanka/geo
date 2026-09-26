@@ -1085,6 +1085,31 @@ const secretRun = runBodies(secretStep).join('\n');
   ok('CI runs this selftest', ci.includes('node deploy/ci/backup/backup-daily.selftest.mjs'));
 }
 
+// ── termination message (read by the cd-prod pre-MEP gate, kubectl-only) ─────
+{
+  const complete = lib.terminationRecord('backup', {
+    exitCode: 0, verdict: 'OK',
+    manifest: { status: 'complete', date: '2026-09-26', docs: { status: 'complete' } },
+    pointer: { latestComplete: { date: '2026-09-26' } },
+  });
+  eq('termination record: complete backup', complete, {
+    format: lib.TERMINATION_FORMAT, mode: 'backup', exitCode: 0, verdict: 'OK', status: 'complete', date: '2026-09-26', docsStatus: 'complete', latestComplete: '2026-09-26',
+  });
+  const partial = lib.terminationRecord('backup', {
+    exitCode: 0, verdict: 'PARTIAL', manifest: { status: 'partial', date: '2026-09-26', docs: { status: 'partial' } }, pointer: { latestComplete: null },
+  });
+  eq('termination record: partial backup exits 0 but says PARTIAL', [partial.exitCode, partial.verdict, partial.status, partial.latestComplete], [0, 'PARTIAL', 'partial', null]);
+  eq('termination record: failure', lib.terminationRecord('backup', null, new lib.BackupError(2, 'x')), { format: lib.TERMINATION_FORMAT, mode: 'backup', exitCode: 2, verdict: 'FAIL' });
+  eq('termination record: purge skipped / freshness stale', [lib.terminationRecord('purge', { exitCode: 0, skipped: true }).verdict,
+    lib.terminationRecord('freshness', { exitCode: 5, ok: false }).verdict], ['SKIPPED', 'STALE']);
+  const tl = path.join(TMP, 'termination-log');
+  ok('termination message: absent file → no write (outside k8s)', lib.writeTerminationMessage(complete, tl) === false && !fs.existsSync(tl));
+  fs.writeFileSync(tl, '');
+  ok('termination message: kubelet file present → JSON verdict written, no secret-like field',
+    lib.writeTerminationMessage(complete, tl) === true && JSON.parse(fs.readFileSync(tl, 'utf8')).verdict === 'OK' &&
+    !/key|secret|bucket|endpoint/i.test(Object.keys(JSON.parse(fs.readFileSync(tl, 'utf8'))).join(',')));
+}
+
 fs.rmSync(TMP, { recursive: true, force: true });
 console.log(`\n${passed} passed, ${failed} failed`);
 process.exit(failed ? 1 : 0);
