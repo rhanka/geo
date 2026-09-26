@@ -509,6 +509,39 @@ for (const [tmpl, vars] of Object.entries({
     ra.indexOf('"$PGDATABASE" != "$EXPECTED_DATABASE"') < ra.indexOf("pg_stat_activity") &&
     ra.indexOf("pg_stat_activity") < ra.indexOf("EXPECTED_TOC_ENTRIES") && ra.indexOf("EXPECTED_TOC_ENTRIES") < ra.indexOf("dbname:") &&
     ra.indexOf("dbname:") < ra.indexOf("pg_restore --clean"));
+  // Incident 2026-09-26 (soundex / postgis_tiger_geocoder) : extensions de l'image exclues
+  // de la liste -L, prérequis vérifiés avant, --single-transaction conservé, sanité après.
+  ok("S2 — extensions et schémas de l'image nommés (fuzzystrmatch postgis postgis_tiger_geocoder postgis_topology ; tiger tiger_data topology)",
+    ra.includes('IMAGE_EXTENSIONS="fuzzystrmatch postgis postgis_tiger_geocoder postgis_topology"') && ra.includes('IMAGE_EXT_SCHEMAS="tiger tiger_data topology"'));
+  ok("S2 — cible sans extension/schéma de l'image ⇒ refus exit 2 AVANT pg_restore", /fin false "\$toc" "target lacks image extensions[^"]*"; exit 2/.test(ra) &&
+    ra.indexOf("target lacks image extensions") < ra.indexOf("pg_restore --clean") && ra.indexOf("dbname:") < ra.indexOf("from pg_extension"));
+  ok("S2 — liste -L : seules EXTENSION/COMMENT EXTENSION et SCHEMA/COMMENT SCHEMA commentées (données jamais exclues)",
+    /\$4 == "EXTENSION"/.test(ra) && /\$4 == "COMMENT" && \$6 == "EXTENSION"/.test(ra) && /\$4 == "SCHEMA"/.test(ra) && /\$4 == "COMMENT" && \$6 == "SCHEMA"/.test(ra) &&
+    !/"TABLE"[^\n]*print ";"/.test(ra) && /print ";" \$0/.test(ra));
+  ok("S2 — pg_restore … --single-transaction --use-list /tmp/restore.list", /--exit-on-error --single-transaction \\\n\s+--use-list \/tmp\/restore\.list \\\n\s+--dbname "\$PGDATABASE"/.test(ra));
+  ok("S2 — contrôle post-restauration : postgis_lib_version() + nombre de tables = TOC, sinon consigne pg-rollback",
+    ra.indexOf("postgis_lib_version()") > ra.indexOf("--use-list") && /"\$got_tables" != "\$user_tables"/.test(ra) && /run bascule\.mjs pg-rollback/.test(ra) &&
+    ra.indexOf("fin true") > ra.indexOf("got_tables"));
+  {
+    // Le filtre awk du template appliqué à la TOC réelle du dump 2026-09-26 (sans OID réels).
+    const TOC = ["10; 2615 1 SCHEMA - geo geo", "11; 2615 2 SCHEMA - tiger geo", "12; 2615 3 SCHEMA - tiger_data geo", "13; 2615 4 SCHEMA - topology geo",
+      "4658; 0 0 COMMENT - SCHEMA topology geo", "2; 3079 5 EXTENSION - fuzzystrmatch ", "4659; 0 0 COMMENT - EXTENSION fuzzystrmatch ",
+      "3; 3079 6 EXTENSION - postgis ", "4660; 0 0 COMMENT - EXTENSION postgis ", "4; 3079 7 EXTENSION - postgis_tiger_geocoder ",
+      "4661; 0 0 COMMENT - EXTENSION postgis_tiger_geocoder ", "5; 3079 8 EXTENSION - postgis_topology ", "4662; 0 0 COMMENT - EXTENSION postgis_topology ",
+      "285; 1259 9 TABLE geo lots geo", "4650; 0 9 TABLE DATA geo lots geo", "4465; 0 10 TABLE DATA public spatial_ref_sys geo",
+      "4466; 0 11 TABLE DATA tiger geocode_settings geo", "4467; 0 12 TABLE DATA tiger pagc_gaz geo", "4468; 0 13 TABLE DATA tiger pagc_lex geo",
+      "4469; 0 14 TABLE DATA tiger pagc_rules geo", "4471; 0 15 TABLE DATA topology topology geo", "4472; 0 16 TABLE DATA topology layer geo",
+      "4663; 0 0 SEQUENCE SET topology topology_id_seq geo", "4501; 1259 17 INDEX geo lots_geom_gix geo"];
+    const awkBlock = /(awk -v exts=[\s\S]*?\{ print \}' )\/tmp\/toc\.txt/.exec(ra);
+    const script = awkBlock ? `IMAGE_EXTENSIONS="fuzzystrmatch postgis postgis_tiger_geocoder postgis_topology"; IMAGE_EXT_SCHEMAS="tiger tiger_data topology"; ${awkBlock[1]}` : "exit 9";
+    const r = spawnSync("bash", ["-c", script], { input: `;\n; Selected TOC Entries:\n;\n${TOC.join("\n")}\n`, encoding: "utf8" });
+    const lines = r.stdout.split("\n");
+    const excluded = lines.filter((l) => /^;\d/.test(l)).map((l) => l.replace(/^;\d+; \S+ \S+ /, "").trim());
+    eq("S2 — filtre awk sur la TOC réelle : 12 entrées exclues (4 EXTENSION + 4 COMMENT, 3 SCHEMA tiger/tiger_data/topology + 1 COMMENT)", [r.status, excluded.length], [0, 12]);
+    ok("S2 — filtre awk : SCHEMA geo, TABLE/TABLE DATA/INDEX/SEQUENCE SET conservés (12 entrées restaurées)",
+      lines.filter((l) => /^\d/.test(l)).length === 12 && lines.includes("10; 2615 1 SCHEMA - geo geo") && lines.includes("4650; 0 9 TABLE DATA geo lots geo") &&
+      lines.includes("4465; 0 10 TABLE DATA public spatial_ref_sys geo") && lines.includes("4501; 1259 17 INDEX geo lots_geom_gix geo"));
+  }
   const m = rst.match(/command: \["node", "-e"\]\n {10}args:\n {12}- \|\n([\s\S]*?)\n {10}env:/);
   ok("S2 — script fetch embarqué à l'octet", m && m[1].split("\n").map((l) => l.replace(/^ {14}/, "")).join("\n").trimEnd() === SCRIPT.trimEnd());
   const rbk = render("pg-rollback-job.tmpl.yaml", pgRenders["pg-rollback-job.tmpl.yaml"]).text;
