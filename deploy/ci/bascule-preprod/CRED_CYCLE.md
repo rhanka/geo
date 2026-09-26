@@ -9,6 +9,10 @@ and no GH secret carries these creds.** A `.env` copy stays the recovery conveni
 governed k8s↔tenant cred cycle (CLAUDE.md), so recovery is verifiable at any time — no
 per-act owner GO.
 
+**Scope of the SealedSecret model: the two bundle Secrets only.** The daily prod backup
+identities (last section) follow the owner rule "no SealedSecret committed": their source
+of truth is the GitHub Environment `geo-prod-bundle` + `.env`, and the CD writes them.
+
 ## Minted secrets — ns geo (prod), bundle SealedSecrets
 
 | secret (k8s name, hyphen) | keys | consumer | sealed by |
@@ -39,7 +43,7 @@ RFC1123); the PG ROLE name and the `POSTGRES_USER` VALUE are underscored (`geo_d
 via psql `\getenv` (never in argv/logs). To confirm on the geo postgis: `log_statement=none`
 (immo measured it on theirs) so the `ALTER ROLE … PASSWORD` statement is not logged.
 
-## GH secrets (kubeconfigs only — never an app cred) — Environment secrets, main-only
+## GH secrets — Environment secrets, main-only
 
 The three bascule kubeconfigs are **GitHub Environment secrets**, set with
 `gh secret set <NAME> --repo rhanka/geo --env <vault>`. Each vault Environment has **no
@@ -51,6 +55,10 @@ by a job started from `main` (a dispatch or re-run on any other branch cannot re
 | `KUBE_CONFIG_DATA_PROD` | `geo-prod-bundle` | `geo-ci-bascule-prod` (ns geo) | `bascule-bundle-cd.yml` job `apply-bundle` | `install-cd-bootstrap.sh` step 2 |
 | `KUBE_CONFIG_DATA_BASCULE_PREPROD` | `geo-bascule` | `geo-ci-bascule-preprod` (ns geo-preprod) | `bascule-preprod.yml` jobs `pg` + `s3` | step 2 |
 | `KUBE_CONFIG_DATA_PROD_TRIGGER` | `geo-bascule` | `geo-ci-trigger-prod` (ns geo) | `bascule-preprod.yml` job `pg` | step 5 (after the bundle CD run and its anti-RCE gate) |
+
+The vault `geo-prod-bundle` also holds the daily prod backup identities
+(`GEO_BACKUP_{WRITER,READER,PURGER}_{ACCESS,SECRET}_KEY` + 4 variables, see the last section),
+read by `bascule-bundle-cd.yml` job `apply-backup`.
 
 The vault Environments add no approval: the owner gate of `bascule-bundle-cd.yml` stays the
 `approve` job (Environment `geo-prod`, required reviewer). Out of the bascule but same rule:
@@ -88,26 +96,35 @@ Legacy SA token secrets (non-expiring, like the existing deployers): rotation = 
 Clone of the immo record (radar-immobilier#771), with the copy and the purge split
 between two identities (geo-cond review).
 
-| secret (k8s name) | keys | consumer | rights |
-| --- | --- | --- | --- |
-| `geo-backup-writer` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET`, `SOURCE_BUCKET` | initContainer `backup` of CronJob `geo-backup-daily` | read `sentropic-geo`; `geo-backup` Put/Get/List/multipart; **no delete of any kind** (no DeleteObject, no DeleteObjectVersion, no BypassGovernanceRetention) |
-| `geo-backup-purger` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` | container `purge` of CronJob `geo-backup-daily` | `geo-backup` DeleteObject without VersionId (delete-marker) restricted by ARN to `pg/*`, `manifests/*`, `docs-inventory/*` + ListBucket / GetBucketLocation; no GET, no PUT, no `docs/` |
-| `geo-backup-reader` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` | CronJob `geo-backup-freshness` + restores (`deploy/ci/backup/RESTORE.md`) | `geo-backup` GetObject (incl. versionId), ListBucket, ListBucketVersions |
+| secret (k8s name) | keys | GitHub source (Environment `geo-prod-bundle`) | consumer | rights |
+| --- | --- | --- | --- | --- |
+| `geo-backup-writer` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET`, `SOURCE_BUCKET` | secrets `GEO_BACKUP_WRITER_ACCESS_KEY`, `GEO_BACKUP_WRITER_SECRET_KEY` | initContainer `backup` of CronJob `geo-backup-daily` | read `sentropic-geo`; `geo-backup` Put/Get/List/multipart; **no delete of any kind** (no DeleteObject, no DeleteObjectVersion, no BypassGovernanceRetention) |
+| `geo-backup-purger` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` | secrets `GEO_BACKUP_PURGER_ACCESS_KEY`, `GEO_BACKUP_PURGER_SECRET_KEY` | container `purge` of CronJob `geo-backup-daily` | `geo-backup` DeleteObject without VersionId (delete-marker) restricted by ARN to `pg/*`, `manifests/*`, `docs-inventory/*` + ListBucket / GetBucketLocation; no GET, no PUT, no `docs/` |
+| `geo-backup-reader` | `S3_ENDPOINT`, `S3_REGION`, `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `BACKUP_BUCKET` | secrets `GEO_BACKUP_READER_ACCESS_KEY`, `GEO_BACKUP_READER_SECRET_KEY` | CronJob `geo-backup-freshness` + restores (`deploy/ci/backup/RESTORE.md`) | `geo-backup` GetObject (incl. versionId), ListBucket, ListBucketVersions |
 
-All three are SealedSecrets minted and sealed by the k8s lane (scope strict ns `geo`),
-committed verbatim as `deploy/ci/backup/geo-backup-sealedsecrets.yaml` (writer + reader)
-and `deploy/ci/backup/geo-backup-purger-sealed.yaml` (purger) — **commit pending an owner
-decision** — and applied by `bascule-bundle-cd.yml` job `apply-backup`, whose guard refuses
-to apply anything until the three are committed.
+Shared keys come from the Environment variables `BACKUP_S3_ENDPOINT` (→ `S3_ENDPOINT`),
+`BACKUP_S3_REGION` (→ `S3_REGION`), `BACKUP_BUCKET` (→ `BACKUP_BUCKET`, `geo-backup`) and
+`BACKUP_SOURCE_BUCKET` (→ writer `SOURCE_BUCKET`, `sentropic-geo`).
+
+**Source of truth: GitHub Environment `geo-prod-bundle` + `.env`. No SealedSecret, nothing
+committed.** The k8s lane sets the 6 secrets and 4 variables in the vault (main only) and keeps
+the same values in its `.env` recovery copy at the documented owner location. The three k8s
+Secrets (ns `geo`, type `Opaque`) are pre-created by the k8s lane; `bascule-bundle-cd.yml` job
+`apply-backup` rewrites them from GitHub at every run (`kubectl replace`: exact key set, no
+`last-applied-configuration` copy of the values). The SA `geo-ci-bascule-prod` holds
+get/patch/update on these three names only — no create, list, watch or delete on Secrets.
 
 **Rotation: every 90 days** (and at once on suspected exposure), one identity at a time:
 
-1. k8s lane: create a new S3 credential for the OVH user of the identity (the old one
-   stays valid for now).
-2. k8s lane: reseal the Secret with the new values (same name, same keys, scope strict
-   ns `geo`) and hand over the SealedSecret YAML.
-3. geo: replace that document in its committed file
-   (PR → merge → `apply-backup` applies it → the controller updates the Secret).
+1. k8s lane: create a new S3 credential for the OVH user of the identity (re-POST
+   `s3Credentials`; the old one stays valid for now).
+2. k8s lane, same moment: set the new values in the vault
+   (`gh secret set GEO_BACKUP_<WRITER|PURGER|READER>_ACCESS_KEY --env geo-prod-bundle --repo
+   rhanka/geo`, same for `_SECRET_KEY`; single-line values — the CD refuses a multi-line one)
+   **and** in the `.env` recovery copy.
+3. `workflow_dispatch` of `bascule-bundle-cd` (owner approval; no `backup_run_now` needed):
+   `apply-backup` rewrites the Secret; its log shows `secret/geo-backup-<id> replaced from
+   GitHub — keys: …`. No PR, no commit.
 4. Verify with the NEW credential:
    - writer: one backup run (next night, or `workflow_dispatch` input
      `backup_run_now=true`, outside 03:13–06:30 UTC) → `backup` step `VERDICT OK`,
@@ -118,8 +135,13 @@ to apply anything until the three are committed.
      backup (`RESTORE.md` §0–1: download `pg/D/geo.dump`, `sha256sum -c` OK,
      `pg_restore --list` lists).
 5. Only after the checks of that identity pass: k8s lane deletes its old credential.
-6. Update the `.env` recovery copy and record the rotation date (next due = +90 days).
+6. Record the rotation date (next due = +90 days).
 
-Verify recovery at any time: `kubectl -n geo get secret geo-backup-writer geo-backup-purger
-geo-backup-reader`; last `geo-backup-daily` and `geo-backup-freshness` Jobs `Complete`;
-`manifests/latest.json` of `geo-backup` fresh (`latestComplete.date` = today or yesterday).
+Verify recovery at any time (any operator/owner/AI, no owner GO):
+- `gh secret list --repo rhanka/geo --env geo-prod-bundle` lists the 6 `GEO_BACKUP_*` secrets
+  and `gh variable list --repo rhanka/geo --env geo-prod-bundle` the 4 variables; the `.env`
+  copy holds the same values;
+- `kubectl -n geo get secret geo-backup-writer geo-backup-purger geo-backup-reader`; the last
+  `apply-backup` run is green;
+- last `geo-backup-daily` and `geo-backup-freshness` Jobs `Complete`; `manifests/latest.json`
+  of `geo-backup` fresh (`latestComplete.date` = today or yesterday).

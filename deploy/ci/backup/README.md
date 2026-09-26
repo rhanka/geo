@@ -17,9 +17,12 @@ dumps go to the immo bucket `radar-immobilier-backups-preprod/geo-postgres/`).
 | `cronjob-backup-freshness.yaml` | CronJob `geo-backup-freshness` (ns `geo`): daily check of `manifests/latest.json` (reader) |
 | `backup-daily.cjs` | Node script, modes `backup` / `purge` / `freshness` (shipped as ConfigMap `geo-backup-daily-script`) |
 | `backup-daily.selftest.mjs` | Offline selftest (in-memory versioned S3 fake, per-identity access model, wiring checks), run by CI and by the CD before any apply |
-| `geo-backup-sealedsecrets.yaml` + `geo-backup-purger-sealed.yaml` | **TODO — to commit verbatim** (owner decision pending): the three SealedSecrets `geo-backup-writer`, `geo-backup-reader`, `geo-backup-purger` minted and sealed by the k8s lane (scope strict ns `geo`). Until all three are committed (any `geo-backup-*sealed*.yaml`), the CD job refuses to apply anything. |
 | [`RETENTION.md`](RETENTION.md) | Retention policy and how it is enforced |
 | [`RESTORE.md`](RESTORE.md) | Restore a backup of date D (PG + objects) |
+
+No credential is committed here, sealed or not: the three S3 identities live in
+the GitHub Environment `geo-prod-bundle` (+ the k8s lane `.env` recovery copy)
+and the CD writes them into the cluster — see [Credentials](#credentials).
 
 ## What one run produces (day D, UTC)
 
@@ -168,12 +171,50 @@ the archive objects as `backed-up`.
   `S3_SECRET_KEY`, `BACKUP_BUCKET`): read-only on `geo-backup` (GetObject incl.
   versionId, ListBucket, ListBucketVersions). Used by `geo-backup-freshness` and
   for restores; never mounted by `geo-backup-daily`.
-- **TODO (owner decision pending)**: commit the SealedSecrets handed over by the
-  k8s lane, verbatim, as `deploy/ci/backup/geo-backup-sealedsecrets.yaml`
-  (writer + reader) and `deploy/ci/backup/geo-backup-purger-sealed.yaml`. The CD
-  guard refuses to apply until the committed `geo-backup-*sealed*.yaml` files
-  hold exactly these three SealedSecrets and no plain Secret.
+- The three k8s Secrets above are **pre-created** in ns `geo` by the k8s lane
+  (type `Opaque`; mind the ns `geo` Secret quota); their content is written by
+  the CD from GitHub (below). No SealedSecret.
 - Rotation every 90 days: `../bascule-preprod/CRED_CYCLE.md`.
+
+## Credentials
+
+**Source of truth: the GitHub Environment `geo-prod-bundle` + the `.env`
+recovery copy of the k8s lane. No SealedSecret.** `geo-prod-bundle` is the
+existing vault of this workflow (deployment branch policy `main` only, no
+reviewer; the owner gate stays the `approve` job). The k8s lane fills it;
+nothing about these values is committed.
+
+| k8s Secret / key | `geo-backup-writer` | `geo-backup-reader` | `geo-backup-purger` |
+| --- | --- | --- | --- |
+| `S3_ENDPOINT` | variable `BACKUP_S3_ENDPOINT` | same | same |
+| `S3_REGION` | variable `BACKUP_S3_REGION` | same | same |
+| `S3_ACCESS_KEY` | secret `GEO_BACKUP_WRITER_ACCESS_KEY` | secret `GEO_BACKUP_READER_ACCESS_KEY` | secret `GEO_BACKUP_PURGER_ACCESS_KEY` |
+| `S3_SECRET_KEY` | secret `GEO_BACKUP_WRITER_SECRET_KEY` | secret `GEO_BACKUP_READER_SECRET_KEY` | secret `GEO_BACKUP_PURGER_SECRET_KEY` |
+| `BACKUP_BUCKET` | variable `BACKUP_BUCKET` (= `geo-backup`) | same | same |
+| `SOURCE_BUCKET` | variable `BACKUP_SOURCE_BUCKET` (= `sentropic-geo`) | — | — |
+
+The step **Write backup Secrets from GitHub** of job `apply-backup` runs at
+every CD run, before the ConfigMap and the CronJobs:
+
+1. **Fail-closed guard, before any write**: the 6 secrets and 4 variables are set
+   and single-line (a missing or multi-line value is named — never printed —
+   and nothing is applied); `BACKUP_BUCKET` / `BACKUP_SOURCE_BUCKET` equal the
+   `EXPECTED_*` guards of `cronjob-backup-daily.yaml`; the three Secrets exist.
+2. For each identity: render the Secret client-side (`kubectl create secret
+   generic --dry-run=client`, each value read from a file of a `0700` temp dir —
+   never in argv, never echoed; the dir is removed on exit), label it
+   `app.kubernetes.io/component: db-backup`, then `kubectl replace` (GET + PUT).
+   The PUT makes the live key set **exactly** the one the CronJobs mount (a stale
+   extra key is dropped) and writes no `last-applied-configuration` annotation
+   (a client-side `kubectl apply` would copy the credentials into it).
+3. The key set returned by the server is compared with the expected one.
+
+Values reach the script through the step `env:` only (never a `${{ }}` inside
+`run:`), GitHub masks the secrets, there is no `set -x`; the log carries
+names and key names only. The SA `geo-ci-bascule-prod` holds
+**get/patch/update on these three Secret names only** — no create, list, watch
+or delete on Secrets (`../bascule-preprod/rbac-ci-bascule-prod.yaml`): a
+missing Secret is a hard error, never a create.
 
 DB access reuses the RO role secret `geo-db-ro-prod` (bascule bundle, role
 `geo_db_ro_prod` = `pg_read_all_data`). Network: the `geo-backup-daily` pod
@@ -194,10 +235,10 @@ egress policy and reaches S3 as is.
 guards as the bascule bundle: owner gate `approve` (attempt-bound) on dispatch
 and re-runs, vault Environment `geo-prod-bundle` (main only), permanent SA
 `geo-ci-bascule-prod` (`KUBE_CONFIG_DATA_PROD`), positive PROD apiserver
-pre-flight, runner = kubectl only. Steps: guard (the 3 committed SealedSecrets)
-→ selftest (fail-closed before any apply) → apply the SealedSecrets → wait
-Synced (tolerant) → render the ConfigMap from `backup-daily.cjs` and apply it →
-apply both CronJobs and assert their live schedule/suspend/concurrency.
+pre-flight, runner = kubectl only. Steps: selftest (fail-closed before any
+apply) → write the three Secrets from GitHub ([Credentials](#credentials)) →
+render the ConfigMap from `backup-daily.cjs` and apply it → apply both CronJobs
+and assert their live schedule/suspend/concurrency.
 Triggered on push to `main` touching `deploy/ci/backup/**`; independent of
 `apply-bundle` (no `needs` between them, own concurrency group). A push under
 `deploy/ci/backup/**` also re-runs `apply-bundle` (idempotent), as on immo.
@@ -206,21 +247,27 @@ Manual runs (`backup_run_now`, optionally `backup_include_archive`) are refused
 inside the scheduled window (03:13–06:30 UTC) and while another
 `geo-backup-daily` Job is active.
 
-Activation order (once):
+Activation order (once; nothing is committed for the credentials):
 
-1. Commit the three SealedSecrets (TODO above) — in this PR or a follow-up;
-   merging without them is safe (the job is not armed, and the guard refuses
-   anyway).
-2. Merge (the `apply-backup` job stays skipped: not armed yet).
+1. k8s lane: set the 6 secrets and 4 variables of [Credentials](#credentials)
+   in the Environment `geo-prod-bundle` (`gh secret set … --env geo-prod-bundle`,
+   `gh variable set … --env geo-prod-bundle`; same values in `.env`).
+2. k8s lane: pre-create the three Secrets `geo-backup-writer`,
+   `geo-backup-reader`, `geo-backup-purger` in ns `geo` (type `Opaque`, any
+   placeholder content — the CD replaces it). If SealedSecret objects of these
+   names were ever applied in-cluster, delete them with `--cascade=orphan`
+   first, or their owned Secrets are garbage-collected.
 3. k8s lane re-applies `deploy/ci/bascule-preprod/rbac-ci-bascule-prod.yaml`
    (install-time, cluster-admin): the SA gains name-scoped get/patch/update on
-   `geo-backup-writer`, `geo-backup-reader`, `geo-backup-purger`
-   (sealedsecrets), `geo-backup-daily-script` (configmap), `geo-backup-daily`,
-   `geo-backup-freshness` (cronjobs).
+   the Secrets `geo-backup-writer`, `geo-backup-reader`, `geo-backup-purger`,
+   the ConfigMap `geo-backup-daily-script`, the CronJobs `geo-backup-daily`,
+   `geo-backup-freshness`.
 4. Set the repo variable `BACKUP_DAILY_CD_ENABLED=true`.
-5. `workflow_dispatch` of `bascule-bundle-cd` (owner approval; input
-   `backup_run_now=true` also starts a first run, outside 03:13–06:30 UTC), or
-   wait for the next change under `deploy/ci/backup/`. A freshness run before the
+5. `workflow_dispatch` of `bascule-bundle-cd` (owner approval) **without**
+   `backup_run_now`: `apply-backup` writes the three Secrets and applies the
+   ConfigMap and the CronJobs; its log shows `secret/geo-backup-<id> replaced
+   from GitHub — keys: …` for the three. A dispatch with `backup_run_now=true`
+   also starts a first run (outside 03:13–06:30 UTC). A freshness run before the
    first backup fails once (no `latest.json` yet): expected.
 
 ## Verification
@@ -271,8 +318,8 @@ legitimate large cleanup, set it to 0 by PR for one run, then back.
 | Schedule | 02:23 UTC | 03:23 UTC | staggered |
 | Requests | 100m/128Mi + 50m/192Mi | 50m/128Mi + 50m/192Mi | `tenant-quota` of ns geo counts requests and limits |
 | Schema version | drizzle migrations from the dump | same parser, `unknown` on geo (no table) | tenant-agnostic |
-| SealedSecrets | two files | committed verbatim as handed over (writer + reader in one file, purger in another) | as handed over |
-| CD job | armed by `BACKUP_DAILY_CD_ENABLED` | same + geo owner gate (`needs: approve`, attempt-bound), vault `geo-prod-bundle`, own concurrency group, guard on the 3 SealedSecrets, manual run refused in the 03:13–06:30 window or while one is active | geo CD conventions |
+| Credentials | GitHub Environment `radar-backup-prod` → Secrets written by the CD | GitHub Environment `geo-prod-bundle` (the existing vault) → Secrets written by the CD | owner rule: no SealedSecret committed; geo already had a main-only vault for this job |
+| CD job | armed by `BACKUP_DAILY_CD_ENABLED` | same + geo owner gate (`needs: approve`, attempt-bound), vault `geo-prod-bundle`, own concurrency group, manual run refused in the 03:13–06:30 window or while one is active | geo CD conventions |
 | Docs history | noncurrent 7 d bucket-wide (at #771 time) | noncurrent **190 d** on `docs/`, 7 d on dated prefixes | provisioned that way by the k8s lane |
 
 The geo-cond review items (writer without delete + separate purger, `partial` =

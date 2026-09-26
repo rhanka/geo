@@ -42,11 +42,13 @@
 # Environment geo-prod-bundle, same positive PROD pre-flight, its own arming switch
 # BACKUP_DAILY_CD_ENABLED and its own failure domain (no `needs` on apply-bundle, own concurrency
 # group: a backup apply problem never blocks the bascule bundle or its anti-RCE gate, and vice
-# versa). It applies the SealedSecrets geo-backup-writer/-reader/-purger (committed
-# deploy/ci/backup/geo-backup-*sealed*.yaml files), the ConfigMap geo-backup-daily-script
-# (rendered from deploy/ci/backup/backup-daily.cjs) and the CronJobs geo-backup-daily +
-# geo-backup-freshness. Same runner contract: kubectl only, 0 backup content read, 0 secret
-# material on the runner.
+# versa). It writes the core Secrets geo-backup-writer/-reader/-purger from the secrets and
+# variables of the Environment geo-prod-bundle — NO SealedSecret, nothing committed: the three
+# Secrets are pre-created by the k8s lane and replaced by name (get/patch/update, no create) —,
+# then applies the ConfigMap geo-backup-daily-script (rendered from
+# deploy/ci/backup/backup-daily.cjs) and the CronJobs geo-backup-daily + geo-backup-freshness.
+# Runner contract: kubectl only, 0 backup content read; the three S3 credentials transit the
+# runner as masked env values and 0600 temp files, never argv, never logged.
 name: bascule-bundle-cd (prod bundle apply, CD-native)
 
 on:
@@ -288,7 +290,9 @@ jobs:
     needs: approve
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # Same vault as apply-bundle: KUBE_CONFIG_DATA_PROD is readable from main only.
+    # Same vault as apply-bundle, readable from main only: KUBE_CONFIG_DATA_PROD, plus the three
+    # backup identities (secrets GEO_BACKUP_{WRITER,READER,PURGER}_{ACCESS,SECRET}_KEY) and the
+    # variables BACKUP_S3_ENDPOINT / BACKUP_S3_REGION / BACKUP_BUCKET / BACKUP_SOURCE_BUCKET.
     environment: geo-prod-bundle
     # Two switches: the bundle CD is armed (the permanent SA exists) AND the k8s lane armed the
     # backup AFTER re-applying rbac-ci-bascule-prod.yaml (the new name-scoped verbs). Merging can
@@ -306,29 +310,6 @@ jobs:
       BACKUP_DIR: deploy/ci/backup
     steps:
       - uses: actions/checkout@v4
-
-      # Fail-closed BEFORE touching the cluster: the 3 SealedSecrets (minted and sealed by the
-      # k8s lane, scope strict ns geo) must be committed verbatim in deploy/ci/backup/
-      # geo-backup-*sealed*.yaml — writer (copy, no delete), reader (restore, freshness),
-      # purger (DeleteObject only) — and nothing in clear.
-      - name: Guard — backup SealedSecrets committed
-        run: |
-          set -euo pipefail
-          shopt -s nullglob
-          files=("$BACKUP_DIR"/geo-backup-*sealed*.yaml)
-          if [ "${#files[@]}" -eq 0 ]; then
-            echo "::error title=Backup not ready::no $BACKUP_DIR/geo-backup-*sealed*.yaml (SealedSecrets geo-backup-writer/-reader/-purger from the k8s lane, committed verbatim). Nothing was applied."; exit 1
-          fi
-          all="$(cat "${files[@]}")"
-          for n in geo-backup-writer geo-backup-reader geo-backup-purger; do
-            if ! grep -Eq "^  name: ${n}$" <<<"$all"; then
-              echo "::error title=Backup not ready::no committed SealedSecret named ${n}. Nothing was applied."; exit 1
-            fi
-          done
-          if [ "$(grep -c '^kind: SealedSecret$' <<<"$all")" != "3" ] || grep -Eq '^(kind: Secret|stringData:|data:)' <<<"$all"; then
-            echo "::error title=Backup not ready::the committed files must hold exactly 3 SealedSecrets and no plain Secret. Nothing was applied."; exit 1
-          fi
-          printf 'committed: %s\n' "${files[@]}"
 
       # The retention/manifest/upload/copy logic and the wiring must pass the selftest
       # (in-memory S3 fake, 0 network) before anything is applied.
@@ -368,28 +349,102 @@ jobs:
           kubectl -n "$NAMESPACE" get deploy geo-api -o name
           echo "pre-flight OK — ${expected} / namespace ${NAMESPACE}"
 
-      # Committed SealedSecrets; the in-cluster controller materializes the core Secrets. The
-      # runner never sees the plaintext and this SA has 0 secrets verbs.
-      - name: Apply SealedSecrets (geo-backup-writer + geo-backup-reader + geo-backup-purger)
+      # ── Backup identities: Environment geo-prod-bundle → core Secrets (NO SealedSecret) ──
+      # Source of truth = the secrets/variables of the Environment geo-prod-bundle + the `.env`
+      # recovery copy of the k8s lane (deploy/ci/bascule-preprod/CRED_CYCLE.md). Nothing about
+      # these credentials is committed, sealed or not.
+      # The three Secrets are PRE-CREATED by the k8s lane: this SA holds
+      # get/patch/update on exactly these three names and NO create/list/watch/
+      # delete — a missing Secret is a hard error here, never a create.
+      # Method: `kubectl replace` (GET + PUT = get + update) of an object rendered
+      # client-side (`kubectl create secret generic --dry-run=client`, each value read
+      # from a file in a 0700 temp dir: never in argv, never echoed). The PUT makes
+      # the live data EXACTLY the key set below (a stale extra key is dropped),
+      # writes no last-applied annotation (a client-side `kubectl apply` would copy
+      # the credentials into it) and clears any former ownerReference.
+      # Values reach the script through `env:` only (never a `${{ }}` inside `run:`);
+      # GitHub masks the secrets; no `set -x`; logs carry names and key names only.
+      # Fail-closed: every check (10 GitHub values present and single-line, bucket
+      # variables = the CronJob guards, the 3 Secrets exist) runs before any write.
+      - name: Write backup Secrets from GitHub (geo-backup-writer + geo-backup-reader + geo-backup-purger)
+        env:
+          GEO_BACKUP_WRITER_ACCESS_KEY: ${{ secrets.GEO_BACKUP_WRITER_ACCESS_KEY }}
+          GEO_BACKUP_WRITER_SECRET_KEY: ${{ secrets.GEO_BACKUP_WRITER_SECRET_KEY }}
+          GEO_BACKUP_READER_ACCESS_KEY: ${{ secrets.GEO_BACKUP_READER_ACCESS_KEY }}
+          GEO_BACKUP_READER_SECRET_KEY: ${{ secrets.GEO_BACKUP_READER_SECRET_KEY }}
+          GEO_BACKUP_PURGER_ACCESS_KEY: ${{ secrets.GEO_BACKUP_PURGER_ACCESS_KEY }}
+          GEO_BACKUP_PURGER_SECRET_KEY: ${{ secrets.GEO_BACKUP_PURGER_SECRET_KEY }}
+          BACKUP_S3_ENDPOINT: ${{ vars.BACKUP_S3_ENDPOINT }}
+          BACKUP_S3_REGION: ${{ vars.BACKUP_S3_REGION }}
+          BACKUP_BUCKET: ${{ vars.BACKUP_BUCKET }}
+          BACKUP_SOURCE_BUCKET: ${{ vars.BACKUP_SOURCE_BUCKET }}
         run: |
           set -euo pipefail
-          shopt -s nullglob
-          for f in "$BACKUP_DIR"/geo-backup-*sealed*.yaml; do kubectl -n "$NAMESPACE" apply -f "$f"; done
+          umask 077
+          # Keys of each Secret = exactly what the CronJobs mount (checked by the selftest).
+          declare -A KEYS=(
+            [writer]="S3_ENDPOINT S3_REGION S3_ACCESS_KEY S3_SECRET_KEY BACKUP_BUCKET SOURCE_BUCKET"
+            [reader]="S3_ENDPOINT S3_REGION S3_ACCESS_KEY S3_SECRET_KEY BACKUP_BUCKET"
+            [purger]="S3_ENDPOINT S3_REGION S3_ACCESS_KEY S3_SECRET_KEY BACKUP_BUCKET"
+          )
+          # Shared (non-secret) values: GitHub variable feeding each key.
+          declare -A FROM_VAR=([S3_ENDPOINT]=BACKUP_S3_ENDPOINT [S3_REGION]=BACKUP_S3_REGION [BACKUP_BUCKET]=BACKUP_BUCKET [SOURCE_BUCKET]=BACKUP_SOURCE_BUCKET)
 
-      - name: Wait for SealedSecrets Synced (tolerant)
-        run: |
-          set -uo pipefail
-          synced_deadline=$((SECONDS + 120))
-          for ss in geo-backup-writer geo-backup-reader geo-backup-purger; do
-            while :; do
-              s="$(kubectl -n "$NAMESPACE" get sealedsecret "$ss" -o 'jsonpath={.status.conditions[?(@.type=="Synced")].status}' 2>/dev/null || true)"
-              if [ "$s" = "True" ]; then echo "SealedSecret ${ss}: Synced=True"; break; fi
-              if [ "$SECONDS" -ge "$synced_deadline" ]; then
-                echo "::warning title=SealedSecret sync unconfirmed::${ss} did not report Synced=True within the poll window (status='${s:-<empty>}'). The CronJob pod is the backstop: it cannot start without geo-backup-writer."
-                break
-              fi
-              sleep 5
+          # 1. GitHub values present and single-line (names only in the log).
+          bad=""
+          for v in GEO_BACKUP_WRITER_ACCESS_KEY GEO_BACKUP_WRITER_SECRET_KEY \
+                   GEO_BACKUP_READER_ACCESS_KEY GEO_BACKUP_READER_SECRET_KEY \
+                   GEO_BACKUP_PURGER_ACCESS_KEY GEO_BACKUP_PURGER_SECRET_KEY \
+                   BACKUP_S3_ENDPOINT BACKUP_S3_REGION BACKUP_BUCKET BACKUP_SOURCE_BUCKET; do
+            if [ -z "${!v:-}" ]; then bad="${bad} ${v}(missing)"; continue; fi
+            case "${!v}" in *$'\n'*|*$'\r'*) bad="${bad} ${v}(multi-line)" ;; esac
+          done
+          if [ -n "$bad" ]; then
+            echo "::error title=Backup credentials missing or invalid in GitHub::Environment geo-prod-bundle:${bad}. Nothing was applied."; exit 1
+          fi
+
+          # 2. Bucket variables = the positive guards of the committed CronJob.
+          cj="$BACKUP_DIR/cronjob-backup-daily.yaml"
+          exp_backup="$(sed -n 's/.*name: EXPECTED_BACKUP_BUCKET, value: "\([^"]*\)".*/\1/p' "$cj" | sort -u)"
+          exp_source="$(sed -n 's/.*name: EXPECTED_SOURCE_BUCKET, value: "\([^"]*\)".*/\1/p' "$cj" | sort -u)"
+          if [ -z "$exp_backup" ] || [ -z "$exp_source" ] || [ "$BACKUP_BUCKET" != "$exp_backup" ] || [ "$BACKUP_SOURCE_BUCKET" != "$exp_source" ]; then
+            echo "::error title=Backup bucket variables mismatch::BACKUP_BUCKET='${BACKUP_BUCKET}' / BACKUP_SOURCE_BUCKET='${BACKUP_SOURCE_BUCKET}' must equal the CronJob guards '${exp_backup}' / '${exp_source}'. Nothing was applied."; exit 1
+          fi
+
+          # 3. The three Secrets exist (pre-created by the k8s lane; this SA cannot create).
+          for id in writer reader purger; do
+            if ! kubectl -n "$NAMESPACE" get secret "geo-backup-${id}" -o name >/dev/null; then
+              echo "::error title=Backup Secret not pre-created::secret/geo-backup-${id} is absent or not readable by geo-ci-bascule-prod (k8s lane: pre-create the three Secrets, re-apply rbac-ci-bascule-prod.yaml). Nothing was applied."; exit 1
+            fi
+          done
+
+          # 4. Render (values from 0600 files), label, PUT; check the key set the server returns.
+          tmp="$(mktemp -d "${RUNNER_TEMP:-/tmp}/geo-backup-secrets.XXXXXX")"
+          trap 'rm -rf "$tmp"' EXIT
+          for id in writer reader purger; do
+            ID="${id^^}"
+            read -ra keys <<< "${KEYS[$id]}"
+            mkdir "$tmp/$id"
+            args=()
+            for k in "${keys[@]}"; do
+              case "$k" in
+                S3_ACCESS_KEY) src="GEO_BACKUP_${ID}_ACCESS_KEY" ;;
+                S3_SECRET_KEY) src="GEO_BACKUP_${ID}_SECRET_KEY" ;;
+                *) src="${FROM_VAR[$k]}" ;;
+              esac
+              printf '%s' "${!src}" > "$tmp/$id/$k"
+              args+=("--from-file=${k}=${tmp}/${id}/${k}")
             done
+            live="$(kubectl -n "$NAMESPACE" create secret generic "geo-backup-${id}" --type=Opaque "${args[@]}" --dry-run=client -o yaml \
+              | kubectl label --local -f - app.kubernetes.io/name=geo-backup-daily app.kubernetes.io/part-of=geo app.kubernetes.io/component=db-backup -o yaml \
+              | kubectl -n "$NAMESPACE" replace -f - -o json \
+              | node -e 'let s="";process.stdin.on("data",(c)=>{s+=c;}).on("end",()=>{let k="<unreadable>";try{k=Object.keys(JSON.parse(s).data||{}).sort().join(" ");}catch{}process.stdout.write(k);});')"
+            rm -rf "${tmp:?}/${id}"
+            want="$(printf '%s\n' "${keys[@]}" | sort | paste -sd' ' -)"
+            if [ "$live" != "$want" ]; then
+              echo "::error title=geo-backup-${id} keys differ::server returned keys '${live}', expected '${want}'."; exit 1
+            fi
+            echo "secret/geo-backup-${id} replaced from GitHub — keys: ${live}"
           done
 
       # The script ships as a ConfigMap rendered from the committed file (single source of
@@ -461,7 +516,7 @@ jobs:
           {
             echo "### geo daily prod backup applied"
             echo ""
-            echo "- SealedSecrets: geo-backup-writer (copy, no delete), geo-backup-purger (DeleteObject only), geo-backup-reader (restore + freshness)"
+            echo "- Secrets (from Environment geo-prod-bundle, no SealedSecret): geo-backup-writer (copy, no delete), geo-backup-purger (DeleteObject only), geo-backup-reader (restore + freshness)"
             echo "- ConfigMap: geo-backup-daily-script (from deploy/ci/backup/backup-daily.cjs)"
             echo "- CronJob: geo-backup-daily (23 3 * * * UTC, Forbid) → s3://geo-backup"
             echo "- CronJob: geo-backup-freshness (47 7 * * * UTC) — fails when latest.json is stale or not complete for > 3 days"
