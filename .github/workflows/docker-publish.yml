@@ -6,6 +6,16 @@ name: Docker Publish
 #   - `workflow_dispatch` lets the owner build/push on demand (optional tag).
 # The actual `push: true` is additionally guarded per-step so an image is only
 # pushed for a tag or an explicit dispatch.
+#
+# OWNER GATE on the MANUAL paths only (job `approve`, Environment `geo-release`,
+# required reviewer = owner): a workflow_dispatch, or ANY re-run attempt
+# (github.run_attempt > 1), pauses the three build jobs until the owner approves.
+# Reason: an Actions "write" token (e.g. the immo orchestrator's GEO_DISPATCH_TOKEN)
+# can dispatch this workflow on ANY existing branch and choose the pushed tag
+# (`inputs.tag`), i.e. overwrite a GHCR tag with unreviewed code. The FIRST attempt
+# of a `v*` tag push stays automatic (0 click). The approval is bound to the attempt
+# (outputs.attempt == github.run_attempt). To re-run after a failure, use
+# "Re-run all jobs" (a "Re-run failed jobs" skips the build jobs by design).
 on:
   push:
     tags:
@@ -32,7 +42,34 @@ env:
   IMAGE: ghcr.io/rhanka/geo-api
 
 jobs:
+  # OWNER GATE — manual paths only (dispatch, or re-run attempt > 1). Skipped on the
+  # first attempt of a tag push. Runs nothing before approval; no checkout, no token scope.
+  approve:
+    if: ${{ github.event_name == 'workflow_dispatch' || github.run_attempt != '1' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    environment: geo-release
+    permissions: {}
+    outputs:
+      attempt: ${{ steps.bind.outputs.attempt }}
+    steps:
+      - name: Bind the owner approval to this run attempt
+        id: bind
+        env:
+          REQUESTED_TAG: ${{ inputs.tag }}
+        run: |
+          echo "attempt=${GITHUB_RUN_ATTEMPT}" >> "$GITHUB_OUTPUT"
+          echo "owner-approved: event=${GITHUB_EVENT_NAME} ref=${GITHUB_REF} sha=${GITHUB_SHA} tag-input=${REQUESTED_TAG:-<none>} attempt=${GITHUB_RUN_ATTEMPT} triggering_actor=${GITHUB_TRIGGERING_ACTOR}" | tee -a "$GITHUB_STEP_SUMMARY"
+
   build-and-push-extraction:
+    needs: approve
+    # GATE: runs iff (a) `approve` succeeded IN THIS ATTEMPT, or (b) first attempt of a
+    # non-dispatch (tag push) run, where `approve` is skipped. `!cancelled()` stops the
+    # default success() check from cascading the skip of `approve` onto this job.
+    if: >-
+      ${{ !cancelled() &&
+      ((needs.approve.result == 'success' && needs.approve.outputs.attempt == github.run_attempt) ||
+      (needs.approve.result == 'skipped' && github.event_name != 'workflow_dispatch' && github.run_attempt == '1')) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -91,6 +128,12 @@ jobs:
           echo "ghcr.io/rhanka/${IMAGE_NAME}@${DIGEST}" | tee -a "$GITHUB_STEP_SUMMARY"
 
   build-and-push:
+    needs: approve
+    # Same GATE as build-and-push-extraction.
+    if: >-
+      ${{ !cancelled() &&
+      ((needs.approve.result == 'success' && needs.approve.outputs.attempt == github.run_attempt) ||
+      (needs.approve.result == 'skipped' && github.event_name != 'workflow_dispatch' && github.run_attempt == '1')) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -165,10 +208,14 @@ jobs:
       # NEVER fails the build; anonymous pull is verified before changing a runtime pin.
       - name: Probe GHCR anonymous pull (non-blocking)
         if: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
+        # The tag list carries the dispatch `tag` input: read it through env, never
+        # interpolate it into the script (script-injection hardening).
+        env:
+          IMAGE_TAGS: ${{ steps.tags.outputs.tags }}
         run: |
           set -uo pipefail
           repo="rhanka/geo-api"
-          first="${{ steps.tags.outputs.tags }}"
+          first="${IMAGE_TAGS}"
           first="${first%%,*}"
           ref_tag="${first##*:}"
           tok=$(curl -s "https://ghcr.io/token?scope=repository:${repo}:pull" | jq -r '.token // empty')
@@ -190,6 +237,12 @@ jobs:
   # Les manifestes utilisent le digest GHCR publié ; les déploiements sont
   # indépendants de ce workflow de construction.
   build-and-push-capture:
+    needs: approve
+    # Same GATE as build-and-push-extraction.
+    if: >-
+      ${{ !cancelled() &&
+      ((needs.approve.result == 'success' && needs.approve.outputs.attempt == github.run_attempt) ||
+      (needs.approve.result == 'skipped' && github.event_name != 'workflow_dispatch' && github.run_attempt == '1')) }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -213,11 +266,15 @@ jobs:
       # Le SHA court, jamais `:latest` seul. Un tag mouvant peut pointer ailleurs
       # demain sans que rien ne le signale — c'est ce qui tient sentropic-preprod
       # en panne. Le deploiement, lui, s'epingle PAR DIGEST (sortie `digest`).
+      # `inputs.tag` passe par env (jamais interpolé dans le script) : une valeur de
+      # dispatch comme `$(…)` resterait une simple chaîne, pas du shell exécuté.
       - name: Compute capture image tag
         id: tags
+        env:
+          REQUESTED_TAG: ${{ inputs.tag }}
         run: |
           short="$(git rev-parse --short HEAD)"
-          requested="${{ inputs.tag }}"
+          requested="${REQUESTED_TAG:-}"
           tag="${requested:-$short}"
           echo "tag=${tag}" >> "$GITHUB_OUTPUT"
           echo "tags=ghcr.io/rhanka/geo-capture:${tag}" >> "$GITHUB_OUTPUT"
