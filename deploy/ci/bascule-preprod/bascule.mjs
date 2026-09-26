@@ -435,6 +435,11 @@ function runJobFromTemplate({ tmpl, jobName, vars, timeoutSec, failClosed = true
   writeFileSync(rendered, renderTemplate(join(import.meta.dirname, tmpl), vars), { mode: 0o600 });
   run("kubectl", ["-n", ns, "delete", "job", jobName, "--ignore-not-found"], { allowFail: true });
   run("kubectl", ["-n", ns, "apply", "-f", rendered]);
+  // uid de CETTE instance du Job : son verdict n'est lu que sur SES pods (un pod de
+  // l'instance précédente supprimée peut encore être listé sous le même job-name).
+  const uidRes = run("kubectl", ["-n", ns, "get", "job", jobName, "-o", "jsonpath={.metadata.uid}"], { capture: true, allowFail: true });
+  const uid = uidRes.status === 0 && /^[0-9a-f-]{36}$/.test((uidRes.stdout || "").trim()) ? uidRes.stdout.trim() : null;
+  if (!uid) warn(`Job ${jobName} — uid illisible : son message de fin ne sera pas lu.`);
   const inspect = `inspecter in-cluster : kubectl -n ${ns} logs job/${jobName} --all-containers`;
   const deadline = Date.now() + timeoutSec * 1000;
   for (;;) {
@@ -442,15 +447,15 @@ function runJobFromTemplate({ tmpl, jobName, vars, timeoutSec, failClosed = true
     let status = {};
     try { status = st.stdout && st.stdout.trim() ? JSON.parse(st.stdout) : {}; } catch { status = {}; }
     const v = classifyJobStatus(status);
-    if (v.done && v.ok) { log(`Job ${jobName} terminé OK (.status=succeeded)`); return { ok: true, state: "succeeded", jobName }; }
+    if (v.done && v.ok) { log(`Job ${jobName} terminé OK (.status=succeeded)`); return { ok: true, state: "succeeded", jobName, uid }; }
     if (v.done && !v.ok) {
       const msg = `Job ${jobName} en ÉCHEC (.status=failed) — étape avortée (fail-closed). ${inspect} (0 logs runner).`;
-      if (!failClosed) { warn(msg); return { ok: false, state: "failed", jobName }; }
+      if (!failClosed) { warn(msg); return { ok: false, state: "failed", jobName, uid }; }
       die(msg);
     }
     if (Date.now() >= deadline) {
       const msg = `Job ${jobName} non terminé dans ${timeoutSec}s — étape avortée. ${inspect} (0 logs runner).`;
-      if (!failClosed) { warn(msg); return { ok: false, state: "timeout", jobName }; }
+      if (!failClosed) { warn(msg); return { ok: false, state: "timeout", jobName, uid }; }
       die(msg);
     }
     spawnSync("bash", ["-lc", "sleep 10"], { stdio: "ignore" });
