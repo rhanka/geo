@@ -133,6 +133,25 @@ export function canonicalizeZoneCodeForJoin(value: unknown): string {
 }
 
 /**
+ * Canonical cadastral lot number for the geo↔immo join: strip all whitespace,
+ * keep case and dashes verbatim. Single source of the lot join key — the
+ * lot-side mirror of {@link canonicalizeZoneCodeForJoin}. The served contract
+ * (`geo-served-contract`), the zero-copy immo index (`build-index-immo`) and the
+ * bascule `served-ids` bind to it on both sides, so `ogc:lots:<slug>:<no_lot>`
+ * tokens are byte-identical by construction rather than by measurement.
+ *
+ * `/\s+/` (all whitespace) is a robust superset of the historical literal-space
+ * strip used across acquisition (`build-index-immo`, `cadastre-clip-sda`,
+ * `role-foncier`, `noLotKeyOf` = `replace(/ /g, "")`): byte-identical for
+ * cadastre lot numbers (digits + dashes, no tab/NBSP), and it also matches immo's
+ * `normalizeNoLot` (`replace(/\s+/g, "")`) so both sides are PROVEN identical
+ * rather than "in practice". `null`/`undefined` normalize to `""`.
+ */
+export function canonicalizeNoLotForJoin(value: unknown): string {
+  return String(value ?? "").replace(/\s+/g, "");
+}
+
+/**
  * The numeric zone identifier of a code, or null when it has no ONE unambiguous
  * number. A code is eligible for the numeric-vintage bridge iff its canonical form
  * carries EXACTLY ONE contiguous digit run (surrounding alpha/dash segments are
