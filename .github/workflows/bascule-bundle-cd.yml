@@ -62,7 +62,7 @@ on:
   workflow_dispatch:
     inputs:
       backup_run_now:
-        description: "apply-backup: also start one geo-backup-daily run now (create job --from=cronjob)"
+        description: "apply-backup: also start one geo-backup-daily run now (create job --from=cronjob); apply-bundle is skipped"
         type: boolean
         default: false
       backup_include_archive:
@@ -104,8 +104,18 @@ jobs:
     # GATE: runs iff (a) `approve` succeeded IN THIS ATTEMPT, or (b) first attempt of a
     # non-dispatch (push) run, where `approve` is skipped. `!cancelled()` stops the default
     # success() check from cascading the skip of `approve` onto this job.
+    #
+    # SKIPPED on a `backup_run_now` dispatch (port of radar-immobilier#773): that dispatch exists
+    # to start a backup, and re-applying the (idempotent) bundle at the same time runs its RO-role
+    # Job next to the backup pod (both jobs observed together, run 36241832422; on immo this made
+    # the RO-role Job unschedulable — Insufficient cpu → DeadlineExceeded, run 36225276353).
+    # Skipping is the simplest safe choice: nothing in the bundle is needed by the backup
+    # (geo-db-ro-prod already exists), and a plain dispatch or a push touching the bundle still
+    # re-applies it. Sequencing with `needs` was rejected: it would still load the node right
+    # before the backup and tie the backup to the bundle's anti-RCE gate.
     if: >-
       ${{ !cancelled() && vars.BASCULE_BUNDLE_CD_ENABLED == 'true' &&
+      !(github.event_name == 'workflow_dispatch' && inputs.backup_run_now) &&
       ((needs.approve.result == 'success' && needs.approve.outputs.attempt == github.run_attempt) ||
       (needs.approve.result == 'skipped' && github.event_name != 'workflow_dispatch' && github.run_attempt == '1')) }}
     concurrency:

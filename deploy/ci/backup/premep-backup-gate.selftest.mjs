@@ -169,6 +169,30 @@ ok('config: invalid run attempt refused', (() => { try { gate.readGateConfig({ .
   const res = await runW(w);
   ok('created Job exit 0 but verdict PARTIAL: refused (backup not complete)', !res.go && res.err.title === 'backup not complete');
 }
+// ── 7b. created Job succeeds but records incomplete / TERMINATED → refuse ──
+{
+  const inc = JSON.stringify({ format: gate.VERDICT_FORMAT, mode: 'backup', exitCode: 0, verdict: 'INCOMPLETE', status: 'incomplete', date: '2026-09-26', partialReason: 'objects failed' });
+  const w = mkWorld({ jobs: prevComplete, onCreate: finish('complete', inc) });
+  const res = await runW(w);
+  ok('created Job verdict INCOMPLETE: refused (backup not complete), reason logged', !res.go && res.err.title === 'backup not complete' && /status=incomplete/.test(res.err.message) &&
+    res.logs.some((l) => l.includes('reason="objects failed"')));
+  const term = JSON.stringify({ format: gate.VERDICT_FORMAT, mode: 'backup', exitCode: 1, verdict: 'TERMINATED', status: 'partial', date: '2026-09-26', partialReason: 'terminated (SIGTERM) before the copy finished' });
+  const w2 = mkWorld({ jobs: prevComplete, onCreate: finish('complete', term) });
+  const res2 = await runW(w2);
+  ok('created Job verdict TERMINATED: refused (backup not complete)', !res2.go && res2.err.title === 'backup not complete' && /verdict=TERMINATED/.test(res2.err.message));
+  // TERMINATED exits 1: its pod is Failed, never read as a success; a Complete Job whose only
+  // readable verdict sits on a Failed pod = unknown → refused.
+  const w3 = mkWorld({ jobs: prevComplete, onCreate: (x, name) => { x.jobs[name] = { job: jobObj(name, 'complete'), pods: [podObj(name, 'Failed', verdictMsg('complete'))] }; } });
+  const res3 = await runW(w3);
+  ok('verdict only on a Failed pod: unknown → refused', !res3.go && /unreadable/.test(res3.err.message));
+  const prevInc = { 'geo-backup-daily-29840000': { job: jobObj('geo-backup-daily-29840000', 'complete'), pods: [podObj('geo-backup-daily-29840000', 'Succeeded', inc)] } };
+  const w4 = mkWorld({ jobs: prevInc });
+  const res4 = await runW(w4);
+  ok('last backup incomplete: refused (seed not complete), nothing created', !res4.go && res4.err.title === 'backup seed not complete' && noWrite(w4));
+  ok('isCompleteVerdict: only status=complete + verdict=OK + exit 0', gate.isCompleteVerdict(JSON.parse(verdictMsg('complete'))) &&
+    !gate.isCompleteVerdict({ ...JSON.parse(verdictMsg('complete')), verdict: 'OK-PURGE-PLAN-FAILED', exitCode: 3 }) &&
+    !gate.isCompleteVerdict(JSON.parse(term)) && !gate.isCompleteVerdict(JSON.parse(inc)) && !gate.isCompleteVerdict(null));
+}
 // ── 8. created Job succeeds without termination message (older script) → refuse ──
 {
   const w = mkWorld({ jobs: prevComplete, onCreate: finish('complete', null) });

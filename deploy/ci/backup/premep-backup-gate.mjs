@@ -28,7 +28,10 @@
 //   5. create geo-backup-premep-<sha7>-<run_id>-<run_attempt>;
 //   6. poll .status until Complete (→ verdict) / Failed / FailureTarget (refuse)
 //      or activeDeadlineSeconds + DEADLINE_MARGIN_SECONDS (refuse); then the
-//      created Job's verdict MUST be explicitly `complete` / OK (unknown = refuse).
+//      created Job's verdict MUST be explicitly status=complete + verdict=OK.
+//      Manifest model (backup-daily.cjs): complete | partial | incomplete; verdicts
+//      OK | PARTIAL | INCOMPLETE | TERMINATED | OK-PURGE-PLAN-FAILED | FAIL. Anything
+//      but complete/OK — partial, incomplete, TERMINATED, FAIL, unknown or absent — refuses.
 //
 // ENV (CLI): GIT_SHA (40 hex), RUN_ID, RUN_ATTEMPT (digits) — required.
 //   Optional: NAMESPACE=geo, CRONJOB=geo-backup-daily, JOB_PREFIX=geo-backup-,
@@ -120,7 +123,9 @@ export function verdictFromPods(pods) {
   return null;
 }
 export const isCompleteVerdict = (v) => !!v && v.exitCode === 0 && v.verdict === 'OK' && v.status === 'complete';
-const describeVerdict = (v) => (v ? `verdict=${v.verdict} status=${v.status} date=${v.date} latest_complete=${v.latestComplete || 'none'}` : 'verdict=unknown');
+const describeVerdict = (v) => (v
+  ? `verdict=${v.verdict} status=${v.status} date=${v.date} latest_complete=${v.latestComplete || 'none'}${v.partialReason ? ` reason="${String(v.partialReason).slice(0, 200)}"` : ''}`
+  : 'verdict=unknown');
 
 // ── kubectl access (read + one create) ───────────────────────────────────────
 async function getJson(kubectl, args, what) {
