@@ -113,9 +113,11 @@ jobs:
 
       # Kubeconfig SA least-priv ns geo (hlhedx), ENV-scopé geo-prod (derrière le required-reviewer).
       - name: Configure kubeconfig (prod)
+        env:
+          KUBE_CONFIG_DATA: ${{ secrets.KUBE_CONFIG_DATA }}
         run: |
           mkdir -p "$HOME/.kube"
-          printf '%s' "${{ secrets.KUBE_CONFIG_DATA }}" | base64 -d > "$HOME/.kube/config"
+          printf '%s' "$KUBE_CONFIG_DATA" | base64 -d > "$HOME/.kube/config"
           chmod 600 "$HOME/.kube/config"
           # Fail-fast clair si le secret est absent/vide (vert-par-omission = rouge).
           test -s "$HOME/.kube/config" || { echo "::error::KUBE_CONFIG_DATA absent ou vide — kubeconfig requis pour deploy-prod (env geo-prod)"; exit 1; }
