@@ -81,6 +81,10 @@ jobs:
     # si armé via vars.BASCULE_SCHEDULE_ENABLED == 'true' (OFF par défaut).
     if: ${{ github.event_name != 'schedule' || vars.BASCULE_SCHEDULE_ENABLED == 'true' }}
     runs-on: ubuntu-latest
+    # Coffre `geo-bascule` (0 reviewer, branche de déploiement = main SEULE) : porte
+    # KUBE_CONFIG_DATA_BASCULE_PREPROD + KUBE_CONFIG_DATA_PROD_TRIGGER → lisibles
+    # UNIQUEMENT depuis main. Jambe autonome (aucune approbation), 0 `needs:`.
+    environment: geo-bascule
     # Iso immo (120) : freshness bornée par DUMP_TIMEOUT (1800 s) + CHECK_POLL_BUFFER.
     timeout-minutes: 120
     env:
@@ -229,6 +233,10 @@ jobs:
     # Même armement que la jambe pg (dispatch = toujours ; schedule = si armé).
     if: ${{ github.event_name != 'schedule' || vars.BASCULE_SCHEDULE_ENABLED == 'true' }}
     runs-on: ubuntu-latest
+    # Coffre `geo-bascule` (0 reviewer, branche de déploiement = main SEULE) : porte
+    # KUBE_CONFIG_DATA_BASCULE_PREPROD → lisible UNIQUEMENT depuis main. Jambe
+    # autonome (aucune approbation), 0 `needs:`.
+    environment: geo-bascule
     # ÉCART geo : 180 min (immo 120) — la copie server-side de normalized/ est plus longue.
     timeout-minutes: 180
     env:
