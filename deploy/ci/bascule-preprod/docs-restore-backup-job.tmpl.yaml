@@ -17,12 +17,13 @@
 # Identités (clés S3_ACCESS_KEY / S3_SECRET_KEY) :
 #   lecteur ${READER_SECRET} (geo-backup-reader-preprod, + clé BACKUP_BUCKET) :
 #           manifeste + inventaire.
-#   copie   ${COPY_SECRET} : liste les versions de <backup>/docs/ (sinon repli :
-#           versionIds enregistrés, les autres vérifiés par HEAD), SIGNE la copie
-#           serveur (GetObject sur <backup>/docs/* — pas de permission
-#           GetObjectVersion distincte chez OVH) et liste/écrit le bucket préprod
-#           (ListBucket + PutObject + PutObjectAcl, sans delete). PRÉREQUIS k8s —
-#           voir README « Restore depuis un backup ».
+#   copie   ${COPY_SECRET} (geo-backup-restore-docs, identité DÉDIÉE créée par k8s,
+#           Secret pré-créé RÉÉCRIT par la bascule depuis geo-bascule) : liste les
+#           versions de <backup>/docs/ (sinon repli : versionIds enregistrés, les
+#           autres vérifiés par HEAD), SIGNE la copie serveur (GetObject sur
+#           <backup>/docs/* — pas de permission GetObjectVersion distincte chez OVH)
+#           et liste/écrit le bucket préprod (ListBucket + PutObject + PutObjectAcl,
+#           sans delete).
 # GrantFullControl id=${COPY_GRANTEE} (identité serving préprod) comme docs-sync.
 #
 # Label pod app.kubernetes.io/name=geo-preprod-sync → NetworkPolicy EXISTANTE
