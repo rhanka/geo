@@ -61,8 +61,15 @@ REQ_REVIEWERS="$(gh api "repos/${GH_REPO}/environments/${SECRET_ENV}" \
 [ "${REQ_REVIEWERS:-0}" -ge 1 ] 2>/dev/null \
   || { echo "❌ Environment ${SECRET_ENV} SANS required-reviewer — refus (secret env-scopé sur un gate absent = BYPASS). L'owner pose le reviewer d'abord (cd-prod-owner-setup.sh)."; exit 1; }
 
-# Pousse le secret GitHub ENV-scopé (contenu du fichier, jamais echo) + shred (le trap couvre les erreurs).
-gh secret set "$SECRET_NAME" -R "$GH_REPO" --env "$SECRET_ENV" < "$KCFG"
+# Pousse le secret GitHub ENV-scopé (jamais echo) + shred (le trap couvre les erreurs).
+# FORMAT = kubeconfig ENCODÉ BASE64 sur une ligne : cd-prod.yml fait `printf '%s' "$KUBE_CONFIG_DATA" | base64 -d`.
+# (Incident 2026-09-28 : le kubeconfig poussé en clair a fait échouer cd-prod sur « base64: invalid input ».)
+# Contrôle aller-retour AVANT de pousser : le décodage doit redonner exactement le fichier.
+KCFG_B64="$(base64 -w0 < "$KCFG")"
+printf '%s' "$KCFG_B64" | base64 -d | cmp -s - "$KCFG" \
+  || { echo "❌ encodage base64 du kubeconfig incohérent — rien poussé"; exit 1; }
+printf '%s' "$KCFG_B64" | gh secret set "$SECRET_NAME" -R "$GH_REPO" --env "$SECRET_ENV"
+unset KCFG_B64
 
 # self-verify : le secret existe (env-scopé) + le kubeconfig peut DÉPLOYER les 3 KINDS de l'overlay prod
 # (Deployment+Service+Ingress). On valide le RBAC COMPLET au provisioning (co-val i-infra) : un check
