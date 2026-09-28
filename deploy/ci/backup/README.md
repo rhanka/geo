@@ -437,7 +437,7 @@ copies, (3) no handling of SIGTERM, so the kill left nothing recorded.
 | Excluded prefixes | none | `ops/decommission/20260913/`, `pmtiles/` | frozen archive (one-time copy) + rebuildable archives |
 | One-time archive copy | — | dispatch input `backup_include_archive` | committed path, no ad-hoc command |
 | Schedule | 02:23 UTC | 03:23 UTC | staggered |
-| Requests | 100m/128Mi + 50m/192Mi | 50m/128Mi + 50m/192Mi | `tenant-quota` of ns geo counts requests and limits |
+| Requests | 100m/128Mi + 50m/192Mi | 10m/128Mi + 10m/192Mi (CPU lowered from 50m on 2026-09-28; limits unchanged) | `tenant-quota` of ns geo counts requests and limits; on the ~95 %-reserved single node a 50m pre-MEP backup pod stayed unscheduled 69 min during the immo prod refresh |
 | Schema version | drizzle migrations from the dump | same parser, `unknown` on geo (no table) | tenant-agnostic |
 | Credentials | GitHub Environment `radar-backup-prod` → Secrets written by the CD | GitHub Environment `geo-prod-bundle` (the existing vault) → Secrets written by the CD | owner rule: no SealedSecret committed; geo already had a main-only vault for this job |
 | CD job | armed by `BACKUP_DAILY_CD_ENABLED` | same + geo owner gate (`needs: approve`, attempt-bound), vault `geo-prod-bundle`, own concurrency group, manual run refused in the 03:13–06:30 window or while one is active | geo CD conventions |
