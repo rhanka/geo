@@ -40,8 +40,12 @@
 # S3 BHS 54.39.60.208/32:443) from netpol-geo-db-backup.k8s-apply.yaml (k8s lane).
 # No netpol change. Everything else is blocked for this pod, hence PUBLIC_HEALTH_URL="".
 #
-# QUOTA (ns geo tenant-quota): pod = 1, requests cpu 50m / mem 192Mi, limits
+# QUOTA (ns geo tenant-quota): pod = 1, requests cpu 10m / mem 192Mi, limits
 # cpu 500m / mem 768Mi (init containers run one at a time: max of them and `purge`).
+# CPU request 50m → 10m (2026-09-28) : le nœud unique est ~95 % RÉSERVÉ en requests
+# (consommation réelle faible) ; à 50m le pod pré-MEP est resté non planifié 69 min
+# pendant le refresh prod immo (FailedScheduling « Insufficient cpu »). Les limits,
+# elles, sont inchangées : le pod peut toujours consommer jusqu'à 500m.
 # =============================================================================
 apiVersion: batch/v1
 kind: CronJob
@@ -186,7 +190,7 @@ spec:
                 - { name: PGDATABASE, valueFrom: { secretKeyRef: { name: geo-db-ro-prod, key: POSTGRES_DB } } }
               securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
               resources:
-                requests: { cpu: 50m, memory: 128Mi }
+                requests: { cpu: 10m, memory: 128Mi }
                 limits: { cpu: 500m, memory: 512Mi }
               volumeMounts:
                 - { name: work, mountPath: /work }
@@ -244,7 +248,7 @@ spec:
                 - { name: RETENTION_MIN_KEEP, value: "7" }
               securityContext: { allowPrivilegeEscalation: false, readOnlyRootFilesystem: true, capabilities: { drop: ["ALL"] } }
               resources:
-                requests: { cpu: 50m, memory: 192Mi }
+                requests: { cpu: 10m, memory: 192Mi }
                 limits: { cpu: 500m, memory: 768Mi }
               volumeMounts:
                 - { name: work, mountPath: /work }
