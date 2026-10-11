@@ -1,4 +1,4 @@
-import maplibregl from "maplibre-gl";
+import { Map as MapLibreMap } from "maplibre-gl";
 
 import { mount } from "../src/index.ts";
 
@@ -77,11 +77,11 @@ const syncLayers = [{
 const observedRenderedLayerIds = [];
 const observedHoverHits = [];
 const observedSelectHits = [];
-const nativeQueryRenderedFeatures = maplibregl.Map.prototype.queryRenderedFeatures;
+const nativeQueryRenderedFeatures = MapLibreMap.prototype.queryRenderedFeatures;
 
 // This is observation, not a mock: the original MapLibre method executes and
 // returns the GPU-rendered features that the mount's real hover binding reads.
-maplibregl.Map.prototype.queryRenderedFeatures = function (...args) {
+MapLibreMap.prototype.queryRenderedFeatures = function (...args) {
   const features = nativeQueryRenderedFeatures.apply(this, args);
   observedRenderedLayerIds.push(features.map((feature) => feature.layer.id));
   return features;

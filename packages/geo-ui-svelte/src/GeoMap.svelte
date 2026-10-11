@@ -242,7 +242,11 @@
     let hoveredId: string | number | undefined;
 
     void (async () => {
-      const maplibregl = (await import("maplibre-gl")).default;
+      const {
+        Map: MapLibreMap,
+        NavigationControl,
+        AttributionControl,
+      } = await import("maplibre-gl");
       // MapLibre's CSS is loaded dynamically too, so SSR never imports it.
       await import("maplibre-gl/dist/maplibre-gl.css");
       if (disposed || !container) return;
@@ -287,7 +291,7 @@
         return fillColor;
       })();
 
-      map = new maplibregl.Map({
+      map = new MapLibreMap({
         container,
         // Tokenized blank background — NO external tiles (ODbL-safe; PMTiles
         // basemap is a later increment). The data layers carry all meaning.
@@ -308,11 +312,11 @@
       });
 
       map.addControl(
-        new maplibregl.NavigationControl({ showCompass: false }),
+        new NavigationControl({ showCompass: false }),
         "top-right",
       );
       map.addControl(
-        new maplibregl.AttributionControl({ compact: true }),
+        new AttributionControl({ compact: true }),
         "bottom-right",
       );
 
