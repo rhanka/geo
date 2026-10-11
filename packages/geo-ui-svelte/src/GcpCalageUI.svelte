@@ -484,12 +484,16 @@
 
     void (async () => {
       try {
-        const maplibregl = (await import("maplibre-gl")).default;
+        const {
+          Map: MapLibreMap,
+          Marker,
+          NavigationControl,
+        } = await import("maplibre-gl");
         await import("maplibre-gl/dist/maplibre-gl.css");
         if (disposed || !mapContainer) return;
 
-        MarkerCtor = maplibregl.Marker;
-        const nextMap = new maplibregl.Map({
+        MarkerCtor = Marker;
+        const nextMap = new MapLibreMap({
           container: mapContainer,
           style: (mapStyle ?? blankMapStyle()) as never,
           center: mapCenter as [number, number],
@@ -499,7 +503,7 @@
         map = nextMap;
 
         nextMap.addControl(
-          new maplibregl.NavigationControl({ showCompass: false }),
+          new NavigationControl({ showCompass: false }),
           "top-right",
         );
         nextMap.on("click", (event) => {
