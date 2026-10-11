@@ -5,7 +5,8 @@
  * 2D binding and owns the MapLibre instance mounted inside the stable host.
  */
 
-import maplibregl, {
+import {
+  Map as MapLibreMap,
   type AddLayerObject,
   type GeoJSONSource,
   type Map,
@@ -61,7 +62,7 @@ export const mount: MountGeoMap<MapContainer> = (host, options): GeoMapHandle =>
   if (options.renderer === "3d") throw new Error(PENDING_3D);
 
   const { sources = {}, ...rendererOptions } = (options.options ?? {}) as MountRendererOptions;
-  const map = new maplibregl.Map({
+  const map = new MapLibreMap({
     ...rendererOptions,
     container: host,
     style: { version: 8, sources: {}, layers: [] },
@@ -281,7 +282,9 @@ class MaplibreMountTarget implements
   }
 
   setPaintProperty(id: string, property: string, value: unknown): void {
-    this.#map.setPaintProperty(id, property, value);
+    // MapLibre 6 types `property` as a closed union; the reconciler passes
+    // runtime-validated paint keys, so widen at this single boundary.
+    this.#map.setPaintProperty(id, property as never, value as never);
   }
 
   setStyle(style: MaplibreBasemapStyle): void {
