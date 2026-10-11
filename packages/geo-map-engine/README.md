@@ -35,6 +35,29 @@ Because both implement the *same* frozen interface, the mock→engine swap is cl
   (`setLayers`/`setBasemap`/`setViewport`/`setRenderer`/`setTokens` + imperative camera/query),
   `GeoMapEvents`, `GeoFeatureHit`.
 
+## MapLibre 6 worker (consumer contract)
+
+The 2D binding requires `maplibre-gl` `^6.4.1` (named imports only; 6.x ships no default
+export). MapLibre 6 resolves its module worker **beside its own runtime module**
+(`new URL("./maplibre-gl-worker.mjs", import.meta.url)`). Once a bundler relocates that runtime
+(Vite dependency pre-bundling into `.vite/deps`, hashed production chunks), no worker sits
+beside it and the map never loads.
+
+The consuming application must therefore hand MapLibre the worker asset **once, before the
+first map is constructed** (this applies equally to `@sentropic/geo-ui-svelte`'s `GeoMap`):
+
+```ts
+import { setWorkerUrl } from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url"; // Vite
+
+setWorkerUrl(maplibreWorkerUrl);
+```
+
+`maplibre-gl-worker.mjs` is self-contained (`maplibre-gl-shared.mjs` is an empty placeholder in
+production builds), so emitting it as a plain asset is sufficient. Keep a single resolved
+`maplibre-gl` copy (`npm ls maplibre-gl --all`): `setWorkerUrl` configures the instance it is
+imported from. `e2e/main.js` exercises this contract in real Chromium.
+
 ## Stability
 
 **Any change to the frozen public types = a new major version (semver) + an ADR — never silent.**

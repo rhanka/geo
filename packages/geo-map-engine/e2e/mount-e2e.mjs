@@ -29,7 +29,11 @@ try {
   page.on("pageerror", (error) => browserErrors.push(error.stack ?? error.message));
 
   await page.goto(new URL("e2e/index.html", url).toString(), { waitUntil: "networkidle" });
-  await page.waitForFunction(() => window.__mountReady === true);
+  await page.waitForFunction(() => window.__mountReady === true).catch((error) => {
+    // A map that never loads (e.g. a missing MapLibre worker) only surfaces in
+    // the browser console; keep it in the failure instead of a bare timeout.
+    throw new Error(`${error.message}\nErreurs navigateur:\n${browserErrors.join("\n")}`);
+  });
 
   const host = await page.locator("#map-host").boundingBox();
   assert.ok(host, "Le host MapLibre est absent");
