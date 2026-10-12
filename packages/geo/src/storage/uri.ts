@@ -59,6 +59,8 @@ export interface CreateStoreOptions {
   httpTimeouts?: S3HttpTimeouts;
   /** S3 only: idle bound of an unread stream body. See {@link S3StoreConfig.bodyIdleTimeoutMs}. */
   bodyIdleTimeoutMs?: number;
+  /** S3 only: bound on a chunk held by the consumer. See {@link S3StoreConfig.bodyHoldTimeoutMs}. */
+  bodyHoldTimeoutMs?: number;
 }
 
 /**
@@ -74,6 +76,7 @@ export function createStore(uri: string, opts: CreateStoreOptions = {}): Store {
   const config: S3StoreConfig = { bucket: parsed.bucket };
   if (parsed.prefix !== undefined) config.prefix = parsed.prefix;
   if (opts.bodyIdleTimeoutMs !== undefined) config.bodyIdleTimeoutMs = opts.bodyIdleTimeoutMs;
+  if (opts.bodyHoldTimeoutMs !== undefined) config.bodyHoldTimeoutMs = opts.bodyHoldTimeoutMs;
   if (opts.httpTimeouts !== undefined) config.httpTimeouts = opts.httpTimeouts;
 
   if (opts.client !== undefined) {
