@@ -67,6 +67,16 @@ export interface S3HttpTimeouts {
 }
 
 /**
+ * Timeouts for the S3 store of a read-only API server (`api/server.ts`, the
+ * `geo serve` CLI): a saturated pool or a stalled endpoint fails a request
+ * instead of hanging every request forever. Never a default for writers.
+ */
+export const READ_SERVER_S3_HTTP_TIMEOUTS: Readonly<S3HttpTimeouts> = Object.freeze({
+  connectionTimeoutMs: 5_000,
+  requestTimeoutMs: 20_000,
+});
+
+/**
  * Default idle bound for an unread {@link S3Store.getStream} body. The SDK pool
  * holds at most 50 sockets and a body that is neither drained nor destroyed
  * keeps its socket forever (no default socket timeout covers the body phase),
@@ -325,14 +335,16 @@ function idleGuardedStream(body: unknown, guard: BodyGuard, signal?: AbortSignal
   if (!isDestroyable(body)) return source;
 
   let timer: ReturnType<typeof setTimeout> | undefined;
+  // Every release path (abort, timer, completion) also drops the abort
+  // listener — including a never-iterated body released by its idle timer.
   const release = (): void => {
+    signal?.removeEventListener("abort", release);
     if (body.destroyed !== true) body.destroy();
   };
   if (signal) {
     if (signal.aborted) release();
     else signal.addEventListener("abort", release, { once: true });
   }
-  const unlisten = (): void => signal?.removeEventListener("abort", release);
   const arm = (ms: number): void => {
     if (timer !== undefined) clearTimeout(timer);
     timer = undefined;
@@ -352,7 +364,6 @@ function idleGuardedStream(body: unknown, guard: BodyGuard, signal?: AbortSignal
       }
     } finally {
       arm(0);
-      unlisten();
       release();
     }
   })();
