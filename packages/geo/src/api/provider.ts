@@ -114,6 +114,12 @@ export interface FeatureProvider {
    * when no manifest is present.
    */
   getCoherence?(): Promise<CoherenceInfo | undefined>;
+  /**
+   * Optional deep liveness check of the data read path (e.g. read the first
+   * bytes of one served shape). Rejects when the read path is unusable; `/health`
+   * bounds it with a deadline, so a hung read surfaces as unhealthy.
+   */
+  checkHealth?(): Promise<{ collection?: string }>;
 }
 
 /**
