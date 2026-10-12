@@ -74,6 +74,24 @@ function parseBBox(
   return [parts[0]!, parts[1]!, parts[2]!, parts[3]!];
 }
 
+/** Deadline of the `/health` shape read. */
+const DEFAULT_HEALTH_DEADLINE_MS = 5_000;
+/** How long a `/health` verdict is reused before the next shape read. */
+const DEFAULT_HEALTH_CACHE_MS = 10_000;
+
+/** Outcome of one `/health` shape read; `reason` is a stable public code. */
+type HealthVerdict =
+  | { ok: true; collection?: string }
+  | { ok: false; reason: "shape-read-failed" | "shape-read-timeout" };
+
+/** Tunables of {@link createApp}. */
+export interface AppOptions {
+  /** Deadline of the `/health` shape read (default 5 s). */
+  healthDeadlineMs?: number;
+  /** Reuse window of a `/health` verdict (default 10 s); `0` probes on every call. */
+  healthCacheMs?: number;
+}
+
 /**
  * Construct the OGC API – Features app backed by the given provider.
  *
@@ -87,7 +105,10 @@ export function createApp(
   provider: FeatureProvider,
   inventory: InventoryEntry[] = [],
   reglementProvider?: ReglementDocProvider,
+  options: AppOptions = {},
 ): Hono {
+  const healthDeadlineMs = options.healthDeadlineMs ?? DEFAULT_HEALTH_DEADLINE_MS;
+  const healthCacheMs = options.healthCacheMs ?? DEFAULT_HEALTH_CACHE_MS;
   const app = new Hono();
 
   // Public, read-only open-data API: allow any origin so the static site
@@ -148,6 +169,61 @@ export function createApp(
 
   // ── Conformance ─────────────────────────────────────────────────────────────
   app.get("/conformance", (c) => c.json({ conformsTo: [...CONFORMANCE_CLASSES] }));
+
+  // ── Health (deep) ───────────────────────────────────────────────────────────
+  // `/conformance` is static and stays green while every data read hangs (the
+  // 2026-10-12 incident: S3 socket pool exhausted, `/items` hung, probes green).
+  // This route exercises the real read path — the provider reads the first
+  // bytes of one served shape — under a deadline, and answers 503 otherwise.
+  // The route is public, so the S3 read is shared: one probe in flight at a
+  // time; at its deadline the probe is aborted (releasing its S3 request/body)
+  // and its slot is freed even if the provider ignores the signal (e.g. a cold
+  // index read, itself bounded by the S3 client timeouts). Every verdict,
+  // timeouts included, is reused for `healthCacheMs`: whatever the call rate, at
+  // most one new probe per window. Clients get a generic reason; the underlying
+  // error is logged server-side only.
+  let inFlight: Promise<HealthVerdict> | undefined;
+  let cached: { at: number; verdict: HealthVerdict } | undefined;
+  const runProbe = (
+    check: (signal: AbortSignal) => Promise<{ collection?: string }>,
+  ): Promise<HealthVerdict> => {
+    if (inFlight) return inFlight;
+    const controller = new AbortController();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const deadline = new Promise<HealthVerdict>((resolve) => {
+      timer = setTimeout(() => {
+        controller.abort(new Error("health deadline"));
+        resolve({ ok: false, reason: "shape-read-timeout" });
+      }, healthDeadlineMs);
+    });
+    const probe = check(controller.signal)
+      .then((result): HealthVerdict => ({ ok: true, ...result }))
+      .catch((error: unknown): HealthVerdict => {
+        if (controller.signal.aborted) return { ok: false, reason: "shape-read-timeout" };
+        // eslint-disable-next-line no-console
+        console.error("[health] shape read failed:", error);
+        return { ok: false, reason: "shape-read-failed" };
+      });
+    inFlight = Promise.race([probe, deadline]).then((verdict) => {
+      clearTimeout(timer);
+      cached = { at: Date.now(), verdict };
+      inFlight = undefined;
+      return verdict;
+    });
+    return inFlight;
+  };
+
+  app.get("/health", async (c) => {
+    const check = provider.checkHealth?.bind(provider);
+    if (!check) return c.json({ status: "ok", probe: "none" });
+
+    const verdict =
+      cached && Date.now() - cached.at < healthCacheMs ? cached.verdict : await runProbe(check);
+
+    return verdict.ok
+      ? c.json({ status: "ok", probe: "shape-read", ...(verdict.collection ? { collection: verdict.collection } : {}) })
+      : c.json({ status: "unavailable", probe: "shape-read", reason: verdict.reason }, 503);
+  });
 
   // ── Source catalog (inventory) ───────────────────────────────────────────────
   // Distinct from the served `/collections`: this describes the upstream geo
@@ -231,11 +307,13 @@ export function createApp(
     const selfUrl = new URL(c.req.url);
 
     const stream = provider.streamItems
-      ? await provider.streamItems(id, bbox ? { bbox } : {})
+      ? await provider.streamItems(id, bbox ? { bbox } : {}, c.req.raw.signal)
       : undefined;
     if (stream) {
       c.header("Content-Type", MEDIA_GEOJSON);
-      return c.body(streamItemsResponse(stream, { id, base, selfUrl, limit, offset }));
+      return c.body(
+        streamItemsResponse(stream, { id, base, selfUrl, limit, offset }, c.req.raw.signal),
+      );
     }
 
     const query: ItemsQuery = { limit, offset, ...(bbox ? { bbox } : {}) };
@@ -346,7 +424,7 @@ export function createApp(
         );
       }
 
-      const stream = await reglementProvider.streamPdf(slug);
+      const stream = await reglementProvider.streamPdf(slug, c.req.raw.signal);
       if (!stream) {
         return c.json({ code: "NotFound", description: `Octets absents pour règlement ${slug}` }, 404);
       }
@@ -357,30 +435,53 @@ export function createApp(
       c.header("Content-Disposition", `attachment; filename="${safe}.pdf"`);
       // Preuve-v2 en en-tête pour l'auditabilité (le .meta.json porte le détail).
       c.header("X-Reglement-Sha256", meta.proof.sha256);
-      return c.body(byteStreamToReadable(stream));
+      return c.body(byteStreamToReadable(stream, c.req.raw.signal));
     });
   }
 
   return app;
 }
 
+/**
+ * Release `iterator` when the client goes away. The Node adapter cancels the
+ * response stream only once it has started writing it; a client that leaves
+ * earlier would otherwise leave the source (and its S3 socket) open.
+ */
+function releaseOnAbort(iterator: AsyncIterator<unknown>, signal: AbortSignal | undefined): () => void {
+  if (!signal) return () => {};
+  const release = (): void => {
+    void iterator.return?.()?.catch(() => {});
+  };
+  if (signal.aborted) {
+    release();
+    return () => {};
+  }
+  signal.addEventListener("abort", release, { once: true });
+  // Called once the response is finished, so a completed stream keeps no listener.
+  return () => signal.removeEventListener("abort", release);
+}
+
 /** Adapte un {@link ByteStream} (AsyncIterable) en `ReadableStream` pour `c.body`. */
-function byteStreamToReadable(stream: ByteStream): ReadableStream<Uint8Array> {
+function byteStreamToReadable(stream: ByteStream, signal?: AbortSignal): ReadableStream<Uint8Array> {
   const iterator = stream[Symbol.asyncIterator]();
+  const dispose = releaseOnAbort(iterator, signal);
   return new ReadableStream<Uint8Array>({
     async pull(controller) {
       try {
         const next = await iterator.next();
         if (next.done) {
+          dispose();
           controller.close();
           return;
         }
         controller.enqueue(next.value);
       } catch (err) {
+        dispose();
         controller.error(err instanceof Error ? err : new Error(String(err)));
       }
     },
     async cancel() {
+      dispose();
       await iterator.return?.();
     },
   });
@@ -402,9 +503,11 @@ interface StreamResponseContext {
 function streamItemsResponse(
   stream: ItemsStream,
   context: StreamResponseContext,
+  signal?: AbortSignal,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
   const iterator = stream.features[Symbol.asyncIterator]();
+  const dispose = releaseOnAbort(iterator, signal);
   let headerWritten = false;
   let firstFeature = true;
   let numberMatched = 0;
@@ -457,13 +560,16 @@ function streamItemsResponse(
           links.push({ href: next.toString(), rel: "next", type: MEDIA_GEOJSON, title: "Next page" });
         }
         const tail = `],"numberMatched":${numberMatched},"numberReturned":${numberReturned},"timeStamp":${JSON.stringify(new Date().toISOString())},"links":${JSON.stringify(links)}}`;
+        dispose();
         controller.enqueue(encoder.encode(tail));
         controller.close();
       } catch (error) {
+        dispose();
         controller.error(error);
       }
     },
     async cancel() {
+      dispose();
       await iterator.return?.();
     },
   });

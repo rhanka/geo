@@ -10,9 +10,14 @@
 
 export const VERSION = "0.1.0";
 
-export type { ByteStream, PutOptions, Store } from "./store.js";
+export type { ByteStream, GetStreamOptions, PutOptions, Store } from "./store.js";
 export { FsStore } from "./fs-store.js";
-export { S3Store, type S3StoreConfig } from "./s3-store.js";
+export {
+  S3Store,
+  READ_SERVER_S3_HTTP_TIMEOUTS,
+  type S3HttpTimeouts,
+  type S3StoreConfig,
+} from "./s3-store.js";
 export { isCanonicalGeojsonKey, stemOf, servedCollectionId, servedDatasetIds } from "./canonical-key.js";
 export {
   ovhSafeS3ClientOptions,

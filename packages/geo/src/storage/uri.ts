@@ -12,7 +12,7 @@
 import type { S3Client } from "@aws-sdk/client-s3";
 
 import { FsStore } from "./fs-store.js";
-import { S3Store, type S3StoreConfig } from "./s3-store.js";
+import { S3Store, type S3HttpTimeouts, type S3StoreConfig } from "./s3-store.js";
 import type { Store } from "./store.js";
 
 /** A parsed store target. */
@@ -55,6 +55,12 @@ export interface CreateStoreOptions {
   accessKeyId?: string;
   secretAccessKey?: string;
   forcePathStyle?: boolean;
+  /** S3 only: client HTTP timeouts (opt-in, read-only servers). See {@link S3StoreConfig.httpTimeouts}. */
+  httpTimeouts?: S3HttpTimeouts;
+  /** S3 only: idle bound of an unread stream body. See {@link S3StoreConfig.bodyIdleTimeoutMs}. */
+  bodyIdleTimeoutMs?: number;
+  /** S3 only: bound on a chunk held by the consumer. See {@link S3StoreConfig.bodyHoldTimeoutMs}. */
+  bodyHoldTimeoutMs?: number;
 }
 
 /**
@@ -69,6 +75,9 @@ export function createStore(uri: string, opts: CreateStoreOptions = {}): Store {
 
   const config: S3StoreConfig = { bucket: parsed.bucket };
   if (parsed.prefix !== undefined) config.prefix = parsed.prefix;
+  if (opts.bodyIdleTimeoutMs !== undefined) config.bodyIdleTimeoutMs = opts.bodyIdleTimeoutMs;
+  if (opts.bodyHoldTimeoutMs !== undefined) config.bodyHoldTimeoutMs = opts.bodyHoldTimeoutMs;
+  if (opts.httpTimeouts !== undefined) config.httpTimeouts = opts.httpTimeouts;
 
   if (opts.client !== undefined) {
     config.client = opts.client;

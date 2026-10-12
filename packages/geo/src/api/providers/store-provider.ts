@@ -151,14 +151,19 @@ export class StoreProvider implements FeatureProvider {
    * for legacy in-memory test doubles; S3Store and FsStore always implement
    * `getStream`, so the served production path cannot materialize an object.
    */
-  async #getStream(key: string): Promise<ByteStream | undefined> {
+  async #getStream(key: string, signal?: AbortSignal): Promise<ByteStream | undefined> {
     try {
-      if (this.#store.getStream) return await this.#store.getStream(key);
-      const bytes = await this.#store.get(key);
-      return bytes === undefined ? undefined : oneChunk(bytes);
+      return await this.#openStream(key, signal);
     } catch {
       return undefined;
     }
+  }
+
+  /** {@link #getStream} without error swallowing; `signal` cancels the S3 read. */
+  async #openStream(key: string, signal?: AbortSignal): Promise<ByteStream | undefined> {
+    if (this.#store.getStream) return this.#store.getStream(key, signal ? { signal } : undefined);
+    const bytes = await this.#store.get(key);
+    return bytes === undefined ? undefined : oneChunk(bytes);
   }
 
   async listCollections(): Promise<CollectionInfo[]> {
@@ -189,6 +194,7 @@ export class StoreProvider implements FeatureProvider {
   async streamItems(
     id: string,
     query: Pick<ItemsQuery, "bbox">,
+    signal?: AbortSignal,
   ): Promise<ItemsStream | undefined> {
     const map = await this.#ensureIndexed();
     const entry = map.get(id);
@@ -197,16 +203,55 @@ export class StoreProvider implements FeatureProvider {
       // Validate the complete object before Hono commits a 200. A second
       // stream is deliberate: it preserves JSON.parse's all-or-nothing
       // contract without retaining the feature collection in memory.
-      const validationSource = await this.#getStream(entry.geojsonKey);
+      // `signal` (the HTTP request's) releases either S3 read as soon as the
+      // client leaves, even while a chunk is pending.
+      const validationSource = await this.#getStream(entry.geojsonKey, signal);
       if (!validationSource) return undefined;
       await validateFeatureCollectionStream(validationSource);
 
-      const source = await this.#getStream(entry.geojsonKey);
-      if (!source) return undefined;
-      return { features: matchingFeatures(parseFeatureCollectionStream(source), query.bbox) };
+      // The served pass opens its S3 body only on the first pull: a response
+      // that is never written (client gone during validation) then holds no
+      // pooled socket at all.
+      return {
+        features: matchingFeatures(
+          parseFeatureCollectionStream(this.#lazyStream(entry.geojsonKey, signal)),
+          query.bbox,
+        ),
+      };
     } catch {
       return undefined;
     }
+  }
+
+  async *#lazyStream(key: string, signal?: AbortSignal): ByteStream {
+    if (signal?.aborted) return;
+    const source = await this.#getStream(key, signal);
+    if (!source) throw new Error(`object vanished after validation: ${key}`);
+    yield* source;
+  }
+
+  /**
+   * Liveness of the read path: open the first indexed collection's GeoJSON and
+   * read its first chunk, then release it. Resolves with the probed collection
+   * id; rejects when nothing is indexed or the object cannot be read. `signal`
+   * cancels the S3 read (request or open body) so a timed-out probe releases
+   * its socket at once.
+   */
+  async checkHealth(signal?: AbortSignal): Promise<{ collection: string }> {
+    const map = await this.#ensureIndexed();
+    const first = map.values().next();
+    if (first.done) throw new Error("no collection indexed");
+    const entry = first.value;
+    const stream = await this.#openStream(entry.geojsonKey, signal);
+    if (!stream) throw new Error(`shape unreadable: ${entry.info.id}`);
+    const iterator = stream[Symbol.asyncIterator]();
+    try {
+      const chunk = await iterator.next();
+      if (chunk.done || chunk.value.byteLength === 0) throw new Error(`shape empty: ${entry.info.id}`);
+    } finally {
+      await iterator.return?.();
+    }
+    return { collection: entry.info.id };
   }
 
   async getItem(id: string, featureId: string): Promise<ServedFeature | undefined> {

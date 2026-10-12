@@ -15,7 +15,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 import { ovhSafeS3ClientOptions } from "./s3-client-config.js";
-import type { ByteStream, PutOptions, Store } from "./store.js";
+import type { ByteStream, GetStreamOptions, PutOptions, Store } from "./store.js";
 
 /** Connection + addressing settings for an {@link S3Store}. */
 export interface S3StoreConfig {
@@ -33,18 +33,82 @@ export interface S3StoreConfig {
   secretAccessKey?: string;
   /** Use path-style addressing. Defaults to `false` (virtual-hosted). */
   forcePathStyle?: boolean;
+  /**
+   * HTTP timeouts of the built client (ignored with an injected `client`).
+   * Opt-in: `requestTimeoutMs` runs until the response headers, which for a
+   * `PutObject` arrive only after the whole upload — so it is set by read-only
+   * servers (geo-api), never by default for writers.
+   */
+  httpTimeouts?: S3HttpTimeouts;
+  /**
+   * Destroy a body that is never iterated, or from which S3 sends nothing, for
+   * this long, releasing its pooled socket. Defaults to
+   * {@link DEFAULT_BODY_IDLE_TIMEOUT_MS}; `0` disables the guard.
+   */
+  bodyIdleTimeoutMs?: number;
+  /**
+   * Destroy a body whose consumer holds one chunk this long without asking for
+   * the next (a client that stopped reading without disconnecting). Much
+   * larger than {@link bodyIdleTimeoutMs} so slow but live clients are never
+   * cut. Defaults to {@link DEFAULT_BODY_HOLD_TIMEOUT_MS}; `0` disables it.
+   */
+  bodyHoldTimeoutMs?: number;
 }
+
+/** HTTP timeouts for the S3 client's request handler. */
+export interface S3HttpTimeouts {
+  /** TCP/TLS connect bound. */
+  connectionTimeoutMs?: number;
+  /**
+   * Bound from send to response headers, including the wait for a free pooled
+   * socket — an exhausted pool fails instead of queueing forever.
+   */
+  requestTimeoutMs?: number;
+}
+
+/**
+ * Timeouts for the S3 store of a read-only API server (`api/server.ts`, the
+ * `geo serve` CLI): a saturated pool or a stalled endpoint fails a request
+ * instead of hanging every request forever. Never a default for writers.
+ */
+export const READ_SERVER_S3_HTTP_TIMEOUTS: Readonly<S3HttpTimeouts> = Object.freeze({
+  connectionTimeoutMs: 5_000,
+  requestTimeoutMs: 20_000,
+});
+
+/**
+ * Default idle bound for an unread {@link S3Store.getStream} body. The SDK pool
+ * holds at most 50 sockets and a body that is neither drained nor destroyed
+ * keeps its socket forever (no default socket timeout covers the body phase),
+ * so an abandoned stream would otherwise leak a socket for the process lifetime.
+ */
+export const DEFAULT_BODY_IDLE_TIMEOUT_MS = 120_000;
+
+/**
+ * Default bound on a single chunk held by the consumer (downstream
+ * backpressure). A live client drains a chunk in far less; a client that stops
+ * reading without disconnecting would otherwise pin the socket forever.
+ */
+export const DEFAULT_BODY_HOLD_TIMEOUT_MS = 600_000;
+
+/** Pool size of the built client (the SDK default, made explicit). */
+const MAX_SOCKETS = 50;
 
 /** A {@link Store} backed by S3-compatible object storage. */
 export class S3Store implements Store {
   readonly bucket: string;
   readonly prefix: string;
   private readonly client: S3Client;
+  private readonly bodyGuard: BodyGuard;
 
   constructor(config: S3StoreConfig) {
     this.bucket = config.bucket;
     this.prefix = normalizePrefix(config.prefix);
     this.client = config.client ?? buildClient(config);
+    this.bodyGuard = {
+      idleMs: config.bodyIdleTimeoutMs ?? DEFAULT_BODY_IDLE_TIMEOUT_MS,
+      holdMs: config.bodyHoldTimeoutMs ?? DEFAULT_BODY_HOLD_TIMEOUT_MS,
+    };
   }
 
   /** Map a store key to the full S3 object key (prefix-joined). */
@@ -73,7 +137,9 @@ export class S3Store implements Store {
         new GetObjectCommand({ Bucket: this.bucket, Key: this.objectKey(key) }),
       );
       if (out.Body === undefined) return undefined;
-      return await bodyToBytes(out.Body);
+      // Same release guarantee as getStream: a body that stalls after its
+      // headers is destroyed instead of pinning its socket forever.
+      return await bodyToBytes(idleGuardedStream(out.Body, this.bodyGuard));
     } catch (err) {
       if (isNotFound(err)) return undefined;
       throw err;
@@ -84,13 +150,16 @@ export class S3Store implements Store {
    * Open an object as an SDK byte stream. Unlike {@link get}, this never
    * concatenates the body, which is required by geo-api for large GeoJSON.
    */
-  async getStream(key: string): Promise<ByteStream | undefined> {
+  async getStream(key: string, opts?: GetStreamOptions): Promise<ByteStream | undefined> {
     try {
+      // The SDK keeps its abort listener until the request closes, so an abort
+      // after the headers also destroys the open body.
       const out = await this.client.send(
         new GetObjectCommand({ Bucket: this.bucket, Key: this.objectKey(key) }),
+        opts?.signal ? { abortSignal: opts.signal } : {},
       );
       if (out.Body === undefined) return undefined;
-      return bodyToStream(out.Body);
+      return idleGuardedStream(out.Body, this.bodyGuard, opts?.signal);
     } catch (err) {
       if (isNotFound(err)) return undefined;
       throw err;
@@ -151,9 +220,29 @@ function buildClient(config: S3StoreConfig): S3Client {
     region?: string;
     forcePathStyle: boolean;
     credentials?: { accessKeyId: string; secretAccessKey: string };
+    requestHandler: {
+      connectionTimeout?: number;
+      requestTimeout?: number;
+      throwOnRequestTimeout?: boolean;
+      httpsAgent: { keepAlive: boolean; maxSockets: number };
+      httpAgent: { keepAlive: boolean; maxSockets: number };
+    };
   } = {
     forcePathStyle: config.forcePathStyle ?? false,
+    requestHandler: {
+      httpsAgent: { keepAlive: true, maxSockets: MAX_SOCKETS },
+      httpAgent: { keepAlive: true, maxSockets: MAX_SOCKETS },
+    },
   };
+  const timeouts = config.httpTimeouts;
+  if (timeouts?.connectionTimeoutMs !== undefined) {
+    opts.requestHandler.connectionTimeout = timeouts.connectionTimeoutMs;
+  }
+  if (timeouts?.requestTimeoutMs !== undefined) {
+    opts.requestHandler.requestTimeout = timeouts.requestTimeoutMs;
+    // Without this the SDK only logs a warning and keeps waiting.
+    opts.requestHandler.throwOnRequestTimeout = true;
+  }
   if (config.endpoint !== undefined) opts.endpoint = config.endpoint;
   if (config.region !== undefined) opts.region = config.region;
   if (config.accessKeyId !== undefined && config.secretAccessKey !== undefined) {
@@ -207,6 +296,77 @@ function bodyToStream(body: unknown): ByteStream {
   if (isAsyncIterable(body)) return asByteStream(body);
   if (hasTransformToByteArray(body)) return transformedBody(body);
   throw new Error("unsupported S3 GetObject Body type");
+}
+
+interface DestroyableBody {
+  destroy(): void;
+  readonly destroyed?: boolean;
+}
+
+function isDestroyable(value: unknown): value is DestroyableBody {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as { destroy?: unknown }).destroy === "function"
+  );
+}
+
+/** Bounds of {@link idleGuardedStream}; `0` disables a bound. */
+interface BodyGuard {
+  /** Body never iterated, or S3 silent while a chunk is awaited. */
+  idleMs: number;
+  /** One chunk held by the consumer (downstream backpressure). */
+  holdMs: number;
+}
+
+/**
+ * Wrap a `GetObject` body so it cannot pin its pooled socket forever. The body
+ * is destroyed when it is never iterated within `idleMs` (e.g. the HTTP client
+ * left before the response was written), when S3 sends nothing for `idleMs`
+ * while a chunk is awaited, when the consumer holds one chunk for `holdMs`
+ * (a client that stopped reading without disconnecting — far longer, so slow
+ * but live clients are never cut), on `signal` abort, and as soon as the
+ * consumer stops early (`return()`/`break`). `destroy()` is called without an
+ * error so an un-iterated body cannot raise an unhandled `'error'` event; a
+ * later read then fails with a premature-close error instead of hanging.
+ */
+function idleGuardedStream(body: unknown, guard: BodyGuard, signal?: AbortSignal): ByteStream {
+  const source = bodyToStream(body);
+  if (!isDestroyable(body)) return source;
+
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  // Every release path (abort, timer, completion) also drops the abort
+  // listener — including a never-iterated body released by its idle timer.
+  const release = (): void => {
+    signal?.removeEventListener("abort", release);
+    if (body.destroyed !== true) body.destroy();
+  };
+  if (signal) {
+    if (signal.aborted) release();
+    else signal.addEventListener("abort", release, { once: true });
+  }
+  const arm = (ms: number): void => {
+    if (timer !== undefined) clearTimeout(timer);
+    timer = undefined;
+    if (ms <= 0) return;
+    timer = setTimeout(release, ms);
+    // Never keep the process alive just for this guard.
+    (timer as { unref?: () => void }).unref?.();
+  };
+
+  arm(guard.idleMs);
+  return (async function* guarded(): ByteStream {
+    try {
+      for await (const chunk of source) {
+        arm(guard.holdMs); // consumer holds the chunk: backpressure bound
+        yield chunk;
+        arm(guard.idleMs); // waiting on S3 again
+      }
+    } finally {
+      arm(0);
+      release();
+    }
+  })();
 }
 
 async function* oneChunk(bytes: Uint8Array): ByteStream {

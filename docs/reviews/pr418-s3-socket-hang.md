@@ -1,0 +1,107 @@
+---
+status: completed
+review-author:
+  host: claude
+  model: claude-opus-5-5
+  effort: low
+target-ref: ee67940d4653c875a25983ad9bf77f0e305bb180 (final reviewed; diff c592d883...ee67940, PR #418)
+legs:
+  - path: docs/reviews/pr418-s3-socket-hang-leg-terra.md
+    status: completed
+  - path: docs/reviews/pr418-s3-socket-hang-leg-luna.md
+    status: completed
+  - path: docs/reviews/pr418-s3-socket-hang-r2-leg-terra.md
+    status: failed
+  - path: docs/reviews/pr418-s3-socket-hang-r2-leg-luna.md
+    status: completed
+  - path: docs/reviews/pr418-s3-socket-hang-r3-leg-terra.md
+    status: completed
+  - path: docs/reviews/pr418-s3-socket-hang-r3-leg-luna.md
+    status: completed
+  - path: docs/reviews/pr418-s3-socket-hang-r4-leg-terra.md
+    status: completed
+consensus-verdict: GO — luna GO-with-fixes on 00d0eff (r3, fixes applied in ee67940), terra GO-with-fixes on ee67940 (r4); no blocking finding left; deferred items listed under Residual
+---
+
+# Review dossier — PR #418 geo-api S3 socket leak (hotfix)
+
+Incident 2026-10-12 13:50-14:16 UTC: `/collections/<id>/items` hung for every city while
+`/collections` answered; fixed operationally by `rollout restart`. Root cause: S3 GetObject bodies
+neither drained nor destroyed pin pooled sockets (pool 50, no client timeouts); a client leaving
+during the `/items` validation pass left the already-opened served body open forever
+(`@hono/node-server` 2.1.0 never cancels a response whose writable is already destroyed).
+
+Selection: author host `claude` → Codex-hosted legs (`gpt-5.6-terra`, `gpt-5.6-luna`), blind,
+dispatched with `codex exec` (h2a identity unavailable in this session). Requested model/effort
+only; effective identity not attested.
+
+## Reconciliation (round 1, target b68b911)
+
+| Finding | Leg | Classification | Rationale / resolution |
+| --- | --- | --- | --- |
+| `/health` deadline does not cancel the S3 read; a stalled body stays open | terra F1, luna F2 (blocking) | **accept → fixed** | `Store.getStream(key, { signal })`; `S3Store` passes it as the SDK `abortSignal` (kept until request close, so it also destroys an open body) and destroys the body on abort; the shared probe aborts at its own deadline. Test: a stalled first chunk is released at the deadline. |
+| 120 s idle guard kills legitimate slow-client downloads (backpressure) | terra F2 (blocking) | **accept → fixed** | The guard is now suspended while the consumer holds a chunk; it only bounds a never-iterated body and S3-side stalls. Abandonment while consuming is handled by cancellation (adapter cancel + `releaseOnAbort`). Tests: slow consumer kept past the bound; S3 stall while awaiting a chunk fails instead of hanging. |
+| Public `/health` = uncapped S3 amplification | luna F1 (blocking) | **accept → fixed** | Single-flight probe + verdict cache (10 s): at most one GetObject per window whatever the call rate. Test: 6 calls → 1 read; hanging read → 3 calls, 1 read. |
+| `/health` exposes raw S3/transport error text | luna F3 (blocking) | **accept → fixed** | Stable public codes `shape-read-failed` / `shape-read-timeout`; detail logged server-side only. Test asserts no error text in the body. |
+| `S3Store.get()` body unguarded (index/meta/registry reads) | luna F5 (blocking) | **accept → fixed** | `get()` consumes through the same guard. Test: body stalling after headers fails instead of hanging. |
+| k8s probes still on static `/conformance` | luna F4 (blocking for detection) | **defer (owner decision)** | Wiring liveness/readiness to `/health` is an explicit, not-yet-taken owner decision (restart also on external S3 outage). `/health` is ready for it. |
+| Smithy `socketTimeout` narrative inaccurate | terra F3 (non-blocking) | **accept → corrected** | Below 6 s it registers on the socket at once and covers the body; at ≥ 6 s registration is deferred 3 s and that timer is cleared at response, so fast responses get no body bound. No `socketTimeout` was configured before anyway. PR description corrected. |
+| No end-to-end test through the real Node adapter | terra (coverage note) | **accept → added** | `items-client-abort.test.ts`: real `@hono/node-server`, client destroyed mid-validation → served body never opened. Red-checked: with an eager served stream the test fails (2 opens). |
+| Explicit `maxAttempts`, concurrency/slow-client policy | luna F6 (non-blocking) | **defer** | Bounded vs. the previous infinite hang; SDK default retries kept. To document with the probe decision. |
+
+Verification on the round-2 commit: `npm test --workspace @sentropic/geo` 50 files / 539 tests;
+`npm run check --workspace @sentropic/geo` clean.
+
+## Round 2 (target 6b25d9a)
+
+Legs: `pr418-s3-socket-hang-r2-leg-terra.md` (status `failed`), `pr418-s3-socket-hang-r2-leg-luna.md`
+(completed, NO-GO). **Validity note:** the author edited the shared worktree while both legs ran;
+terra's red test (`health.test.ts:100`, 3 reads) came from those uncommitted edits, not from
+6b25d9a (where the suite was 539/539 green). Its findings are still substantive and are reconciled
+below; round 3 is dispatched on a committed, untouched tree.
+
+| Finding | Leg | Classification | Rationale / resolution |
+| --- | --- | --- | --- |
+| `/items` client abort not propagated to a pending served S3 read (only the 120 s guard) | luna F2, terra F2b (blocking) | **accept → fixed** | `streamItems(id, query, signal)` passes the request signal to both validation and served `getStream`; `streamPdf(slug, signal)` likewise. Real-adapter e2e: served read stalled, client destroyed → released at once; red-checked (fails without the signal). |
+| `/health` single-flight held forever by a non-cooperative/cold probe; cold index not cancellable | luna F1, terra F1 (blocking) | **accept → fixed** | The shared probe races its own deadline: aborts the signal, settles `shape-read-timeout`, caches it and frees the slot even if the provider never settles. Cold index reads stay bounded by the S3 client timeouts + `get()` guard. Test: hanging cold `list()` → 503 twice, one `list()`. |
+| Consumer holding a chunk forever (stopped reading, still connected) pins the socket | terra F2a (blocking) | **accept → fixed** | Separate hold bound `bodyHoldTimeoutMs` (default 10 min per held chunk) — slow but live clients are never cut; pre-PR this path was unbounded too. Test: held chunk past the bound → destroyed. |
+| Abort listeners not removed on normal completion | luna F3 (non-blocking) | **accept → fixed** | `releaseOnAbort` returns a dispose called on close/error/cancel; the body guard unlistens in `finally`. |
+| `/health` bypasses the `get()` fallback; `GetStreamOptions` not exported | luna F5 (non-blocking) | **accept → fixed** | `checkHealth` uses the provider's open helper with fallback; type re-exported from `storage/index.ts`. |
+| e2e comment names the wrong adapter branch | terra F3 (non-blocking) | **accept → fixed** | Comment now describes the actual path (close→cancel listener attached after the socket closed). |
+| Probe wiring, retries/limits | luna F4/F6 (non-blocking) | **defer (owner decision / follow-up)** | Unchanged from round 1. |
+
+Verification after the fixes: `npm test --workspace @sentropic/geo` 50 files / 542 tests;
+typecheck clean.
+
+## Round 3 (target 00d0eff, committed and untouched during review)
+
+Legs: `pr418-s3-socket-hang-r3-leg-terra.md` (NO-GO), `pr418-s3-socket-hang-r3-leg-luna.md`
+(GO-with-fixes). Both confirm every round-2 fix (signal propagation, real-adapter e2e, health
+single-flight/deadline/cache, idle vs hold bounds) and 542/542 tests.
+
+| Finding | Leg | Classification | Rationale / resolution |
+| --- | --- | --- | --- |
+| `geo serve --data s3://…` (CLI server) builds its S3 store without read timeouts: pre-header waits unbounded, pool exhaustion still reachable there | terra F1 (blocking) | **accept → fixed** | Shared `READ_SERVER_S3_HTTP_TIMEOUTS` (storage) used by both `api/server.ts` and the CLI `startServer`; `serve.test.ts` asserts it is passed. The timeout behaviour itself is proven against the real SDK in `s3-store-socket-release.test.ts`. |
+| `GetStreamOptions` not re-exported (round-2 edit had not been applied) | terra F2, luna F1 (non-blocking) | **accept → fixed** | Re-exported from `storage/index.ts`, with `S3HttpTimeouts`. |
+| Never-iterated body released by its idle timer keeps its abort listener | luna F3 (non-blocking) | **accept → fixed** | `release()` drops the listener on every path. Test added. |
+| 50 held chunks × 10 min can still starve the pool | luna F2 (non-blocking) | **defer** | Finite bound (pre-PR: unbounded); capacity/admission policy is the deferred F6 follow-up. |
+
+Verification: `npm test --workspace @sentropic/geo` 50 files / 543 tests; typecheck clean.
+
+## Round 4 (target ee67940, terra only)
+
+terra r4: round-3 blocker fixed and tested (both API-server entry points use the shared read
+timeouts; real-SDK pre-header test). Verdict GO-with-fixes; one finding:
+
+| Finding | Leg | Classification | Rationale |
+| --- | --- | --- | --- |
+| CPTAQ normalization runner builds a raw S3Client with no request/body bounds | terra F1 (non-blocking) | **defer (follow-up)** | Pre-existing, one-shot CLI with 4 fixed reads; not an HTTP server, cannot exhaust the geo-api pool. |
+
+## Residual (not blocking, tracked)
+
+- k8s liveness/readiness still on `/conformance`; wiring `/health` is a pending owner decision
+  (restart vs. unready on external S3 outage; align probe timeout with the 5 s deadline).
+- Retry budget (`maxAttempts`), admission/concurrency and slow-client capacity policy (50 sockets ×
+  10 min hold bound).
+- CPTAQ runner S3 read bounds.
+- No reproduction of the incident on the cluster; proof is the real-adapter e2e and real-SDK tests.
