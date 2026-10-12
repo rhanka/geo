@@ -74,6 +74,15 @@ function parseBBox(
   return [parts[0]!, parts[1]!, parts[2]!, parts[3]!];
 }
 
+/** Deadline of the `/health` shape read. */
+const DEFAULT_HEALTH_DEADLINE_MS = 5_000;
+
+/** Tunables of {@link createApp}. */
+export interface AppOptions {
+  /** Deadline of the `/health` shape read (default 5 s). */
+  healthDeadlineMs?: number;
+}
+
 /**
  * Construct the OGC API – Features app backed by the given provider.
  *
@@ -87,7 +96,9 @@ export function createApp(
   provider: FeatureProvider,
   inventory: InventoryEntry[] = [],
   reglementProvider?: ReglementDocProvider,
+  options: AppOptions = {},
 ): Hono {
+  const healthDeadlineMs = options.healthDeadlineMs ?? DEFAULT_HEALTH_DEADLINE_MS;
   const app = new Hono();
 
   // Public, read-only open-data API: allow any origin so the static site
@@ -148,6 +159,39 @@ export function createApp(
 
   // ── Conformance ─────────────────────────────────────────────────────────────
   app.get("/conformance", (c) => c.json({ conformsTo: [...CONFORMANCE_CLASSES] }));
+
+  // ── Health (deep) ───────────────────────────────────────────────────────────
+  // `/conformance` is static and stays green while every data read hangs (the
+  // 2026-10-12 incident: S3 socket pool exhausted, `/items` hung, probes green).
+  // This route exercises the real read path — the provider reads the first
+  // bytes of one served shape — under a deadline, and answers 503 otherwise.
+  app.get("/health", async (c) => {
+    if (!provider.checkHealth) return c.json({ status: "ok", probe: "none" });
+    const started = Date.now();
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const deadline = new Promise<never>((_, reject) => {
+      timer = setTimeout(
+        () => reject(new Error(`shape read exceeded ${healthDeadlineMs} ms`)),
+        healthDeadlineMs,
+      );
+    });
+    try {
+      const probe = await Promise.race([provider.checkHealth(), deadline]);
+      return c.json({ status: "ok", probe: "shape-read", ...probe, ms: Date.now() - started });
+    } catch (error) {
+      return c.json(
+        {
+          status: "unavailable",
+          probe: "shape-read",
+          reason: error instanceof Error ? error.message : String(error),
+          ms: Date.now() - started,
+        },
+        503,
+      );
+    } finally {
+      clearTimeout(timer);
+    }
+  });
 
   // ── Source catalog (inventory) ───────────────────────────────────────────────
   // Distinct from the served `/collections`: this describes the upstream geo
@@ -235,7 +279,9 @@ export function createApp(
       : undefined;
     if (stream) {
       c.header("Content-Type", MEDIA_GEOJSON);
-      return c.body(streamItemsResponse(stream, { id, base, selfUrl, limit, offset }));
+      return c.body(
+        streamItemsResponse(stream, { id, base, selfUrl, limit, offset }, c.req.raw.signal),
+      );
     }
 
     const query: ItemsQuery = { limit, offset, ...(bbox ? { bbox } : {}) };
@@ -357,16 +403,31 @@ export function createApp(
       c.header("Content-Disposition", `attachment; filename="${safe}.pdf"`);
       // Preuve-v2 en en-tête pour l'auditabilité (le .meta.json porte le détail).
       c.header("X-Reglement-Sha256", meta.proof.sha256);
-      return c.body(byteStreamToReadable(stream));
+      return c.body(byteStreamToReadable(stream, c.req.raw.signal));
     });
   }
 
   return app;
 }
 
+/**
+ * Release `iterator` when the client goes away. The Node adapter cancels the
+ * response stream only once it has started writing it; a client that leaves
+ * earlier would otherwise leave the source (and its S3 socket) open.
+ */
+function releaseOnAbort(iterator: AsyncIterator<unknown>, signal: AbortSignal | undefined): void {
+  if (!signal) return;
+  const release = (): void => {
+    void iterator.return?.()?.catch(() => {});
+  };
+  if (signal.aborted) release();
+  else signal.addEventListener("abort", release, { once: true });
+}
+
 /** Adapte un {@link ByteStream} (AsyncIterable) en `ReadableStream` pour `c.body`. */
-function byteStreamToReadable(stream: ByteStream): ReadableStream<Uint8Array> {
+function byteStreamToReadable(stream: ByteStream, signal?: AbortSignal): ReadableStream<Uint8Array> {
   const iterator = stream[Symbol.asyncIterator]();
+  releaseOnAbort(iterator, signal);
   return new ReadableStream<Uint8Array>({
     async pull(controller) {
       try {
@@ -402,9 +463,11 @@ interface StreamResponseContext {
 function streamItemsResponse(
   stream: ItemsStream,
   context: StreamResponseContext,
+  signal?: AbortSignal,
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
   const iterator = stream.features[Symbol.asyncIterator]();
+  releaseOnAbort(iterator, signal);
   let headerWritten = false;
   let firstFeature = true;
   let numberMatched = 0;

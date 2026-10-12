@@ -33,18 +33,55 @@ export interface S3StoreConfig {
   secretAccessKey?: string;
   /** Use path-style addressing. Defaults to `false` (virtual-hosted). */
   forcePathStyle?: boolean;
+  /**
+   * HTTP timeouts of the built client (ignored with an injected `client`).
+   * Opt-in: `requestTimeoutMs` runs until the response headers, which for a
+   * `PutObject` arrive only after the whole upload — so it is set by read-only
+   * servers (geo-api), never by default for writers.
+   */
+  httpTimeouts?: S3HttpTimeouts;
+  /**
+   * Destroy a {@link getStream} body that its consumer has not pulled for this
+   * long, releasing its pooled socket. Defaults to
+   * {@link DEFAULT_BODY_IDLE_TIMEOUT_MS}; `0` disables the guard.
+   */
+  bodyIdleTimeoutMs?: number;
 }
+
+/** HTTP timeouts for the S3 client's request handler. */
+export interface S3HttpTimeouts {
+  /** TCP/TLS connect bound. */
+  connectionTimeoutMs?: number;
+  /**
+   * Bound from send to response headers, including the wait for a free pooled
+   * socket — an exhausted pool fails instead of queueing forever.
+   */
+  requestTimeoutMs?: number;
+}
+
+/**
+ * Default idle bound for an unread {@link S3Store.getStream} body. The SDK pool
+ * holds at most 50 sockets and a body that is neither drained nor destroyed
+ * keeps its socket forever (no default socket timeout covers the body phase),
+ * so an abandoned stream would otherwise leak a socket for the process lifetime.
+ */
+export const DEFAULT_BODY_IDLE_TIMEOUT_MS = 120_000;
+
+/** Pool size of the built client (the SDK default, made explicit). */
+const MAX_SOCKETS = 50;
 
 /** A {@link Store} backed by S3-compatible object storage. */
 export class S3Store implements Store {
   readonly bucket: string;
   readonly prefix: string;
   private readonly client: S3Client;
+  private readonly bodyIdleTimeoutMs: number;
 
   constructor(config: S3StoreConfig) {
     this.bucket = config.bucket;
     this.prefix = normalizePrefix(config.prefix);
     this.client = config.client ?? buildClient(config);
+    this.bodyIdleTimeoutMs = config.bodyIdleTimeoutMs ?? DEFAULT_BODY_IDLE_TIMEOUT_MS;
   }
 
   /** Map a store key to the full S3 object key (prefix-joined). */
@@ -90,7 +127,7 @@ export class S3Store implements Store {
         new GetObjectCommand({ Bucket: this.bucket, Key: this.objectKey(key) }),
       );
       if (out.Body === undefined) return undefined;
-      return bodyToStream(out.Body);
+      return idleGuardedStream(out.Body, this.bodyIdleTimeoutMs);
     } catch (err) {
       if (isNotFound(err)) return undefined;
       throw err;
@@ -151,9 +188,29 @@ function buildClient(config: S3StoreConfig): S3Client {
     region?: string;
     forcePathStyle: boolean;
     credentials?: { accessKeyId: string; secretAccessKey: string };
+    requestHandler: {
+      connectionTimeout?: number;
+      requestTimeout?: number;
+      throwOnRequestTimeout?: boolean;
+      httpsAgent: { keepAlive: boolean; maxSockets: number };
+      httpAgent: { keepAlive: boolean; maxSockets: number };
+    };
   } = {
     forcePathStyle: config.forcePathStyle ?? false,
+    requestHandler: {
+      httpsAgent: { keepAlive: true, maxSockets: MAX_SOCKETS },
+      httpAgent: { keepAlive: true, maxSockets: MAX_SOCKETS },
+    },
   };
+  const timeouts = config.httpTimeouts;
+  if (timeouts?.connectionTimeoutMs !== undefined) {
+    opts.requestHandler.connectionTimeout = timeouts.connectionTimeoutMs;
+  }
+  if (timeouts?.requestTimeoutMs !== undefined) {
+    opts.requestHandler.requestTimeout = timeouts.requestTimeoutMs;
+    // Without this the SDK only logs a warning and keeps waiting.
+    opts.requestHandler.throwOnRequestTimeout = true;
+  }
   if (config.endpoint !== undefined) opts.endpoint = config.endpoint;
   if (config.region !== undefined) opts.region = config.region;
   if (config.accessKeyId !== undefined && config.secretAccessKey !== undefined) {
@@ -207,6 +264,62 @@ function bodyToStream(body: unknown): ByteStream {
   if (isAsyncIterable(body)) return asByteStream(body);
   if (hasTransformToByteArray(body)) return transformedBody(body);
   throw new Error("unsupported S3 GetObject Body type");
+}
+
+interface DestroyableBody {
+  destroy(): void;
+  readonly destroyed?: boolean;
+}
+
+function isDestroyable(value: unknown): value is DestroyableBody {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as { destroy?: unknown }).destroy === "function"
+  );
+}
+
+/**
+ * Wrap a `GetObject` body so an abandoned stream cannot pin its pooled socket.
+ * The body is destroyed once no chunk has moved for `idleMs` — whether the
+ * consumer stopped pulling, never started iterating (e.g. the HTTP client left
+ * before the response was written), or S3 stalled mid-body — and as soon as the
+ * consumer stops early (`return()`/`break`). `destroy()` is called without an
+ * error so an un-iterated body cannot raise an unhandled `'error'` event; a
+ * later read then fails with a premature-close error instead of hanging.
+ */
+function idleGuardedStream(body: unknown, idleMs: number): ByteStream {
+  const source = bodyToStream(body);
+  if (idleMs <= 0 || !isDestroyable(body)) return source;
+
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  const release = (): void => {
+    if (body.destroyed !== true) body.destroy();
+  };
+  const disarm = (): void => {
+    if (timer !== undefined) clearTimeout(timer);
+    timer = undefined;
+  };
+  const rearm = (): void => {
+    disarm();
+    timer = setTimeout(release, idleMs);
+    // Never keep the process alive just for this guard.
+    (timer as { unref?: () => void }).unref?.();
+  };
+
+  rearm();
+  return (async function* guarded(): ByteStream {
+    try {
+      for await (const chunk of source) {
+        rearm();
+        yield chunk;
+        rearm();
+      }
+    } finally {
+      disarm();
+      release();
+    }
+  })();
 }
 
 async function* oneChunk(bytes: Uint8Array): ByteStream {
