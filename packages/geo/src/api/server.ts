@@ -29,6 +29,7 @@ import { createApp } from "./app.js";
 import { makeProvider } from "./providers/make-provider.js";
 import { makeReglementProvider } from "./providers/make-reglement-provider.js";
 import { buildInventory } from "../catalog/index.js";
+import { READ_SERVER_S3_HTTP_TIMEOUTS } from "../storage/index.js";
 import { loadContinentRegistries } from "../cli/continents.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -39,7 +40,11 @@ const defaultDataDir = resolve(here, "../../../../data/normalized");
 const dataLocation =
   process.env["GEO_DATA_URI"] ?? process.env["GEO_DATA_DIR"] ?? defaultDataDir;
 
-const provider = makeProvider(dataLocation);
+// The API only reads S3: bound the connect and the wait for response headers
+// (which includes waiting for a free pooled socket), so a saturated pool or a
+// stalled endpoint fails a request instead of hanging every request forever.
+const storeOptions = { httpTimeouts: READ_SERVER_S3_HTTP_TIMEOUTS };
+const provider = makeProvider(dataLocation, storeOptions);
 // Inject the source catalog (optional continents, dynamically loaded) so
 // `/sources` is populated in Docker/k8s without a hard dependency edge.
 const inventory = buildInventory(await loadContinentRegistries());
@@ -47,7 +52,7 @@ const inventory = buildInventory(await loadContinentRegistries());
 // registry (outside `normalized/`). `undefined` in local-dir dev — the OGC
 // surface is unaffected. Registry is loaded once at boot (post-capture back-fill
 // is picked up at the next deploy).
-const reglementProvider = await makeReglementProvider(dataLocation);
+const reglementProvider = await makeReglementProvider(dataLocation, undefined, storeOptions);
 const app = createApp(provider, inventory, reglementProvider);
 
 const port = Number(process.env.PORT ?? 8787);

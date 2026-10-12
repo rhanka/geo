@@ -23,7 +23,10 @@ import {
   FileProvider,
   type FeatureProvider,
 } from "../../api/index.js";
-import { createStore as defaultCreateStore } from "../../storage/index.js";
+import {
+  createStore as defaultCreateStore,
+  READ_SERVER_S3_HTTP_TIMEOUTS,
+} from "../../storage/index.js";
 import type { InventoryEntry } from "../../catalog/index.js";
 
 import { resolveDataDir } from "../paths.js";
@@ -84,11 +87,12 @@ export function startServer(options: ServeOptions = {}, deps: ServeDeps = {}): S
   const port = options.port ?? DEFAULT_PORT;
 
   // `createStore` roots the store at the URI's bucket/prefix (or fs dir), so the
-  // StoreProvider lists from the store root (empty prefix).
+  // StoreProvider lists from the store root (empty prefix). Read-server S3
+  // timeouts, as in `api/server.ts`: a stalled S3 must not exhaust the pool.
   const provider = deps.makeProvider
     ? deps.makeProvider(dataLocation)
     : isStoreUri(dataLocation)
-      ? new StoreProvider(createStore(dataLocation))
+      ? new StoreProvider(createStore(dataLocation, { httpTimeouts: READ_SERVER_S3_HTTP_TIMEOUTS }))
       : new FileProvider(dataLocation);
 
   const app = createApp(provider, deps.inventory ?? []);
