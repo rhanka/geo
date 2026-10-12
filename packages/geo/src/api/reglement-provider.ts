@@ -83,8 +83,9 @@ export interface ReglementDocProvider {
   /**
    * Les octets PDF pour un slug, ou `undefined` si inconnu OU non-téléchargeable
    * (licence `restricted` ⇒ link-only, aucun octet). Préfère le streaming.
+   * `signal` (abort de la requête HTTP) libère la lecture S3 dès le départ du client.
    */
-  streamPdf(slug: string): Promise<ByteStream | undefined>;
+  streamPdf(slug: string, signal?: AbortSignal): Promise<ByteStream | undefined>;
 }
 
 /** `sha256:<hex>` → `<hex>` (le nom de la clé CAS est le hex nu). */
@@ -129,12 +130,12 @@ export class StoreReglementDocProvider implements ReglementDocProvider {
     return e ? metaOf(slug, e) : undefined;
   }
 
-  async streamPdf(slug: string): Promise<ByteStream | undefined> {
+  async streamPdf(slug: string, signal?: AbortSignal): Promise<ByteStream | undefined> {
     const e = this.#registry[slug];
     // Inconnu, ou restricted (link-only) : aucun octet servi.
     if (!e || e.licence !== "public") return undefined;
     const key = reglementCasKey(e);
-    if (this.#store.getStream) return this.#store.getStream(key);
+    if (this.#store.getStream) return this.#store.getStream(key, signal ? { signal } : undefined);
     const bytes = await this.#store.get(key);
     return bytes === undefined ? undefined : oneChunk(bytes);
   }
