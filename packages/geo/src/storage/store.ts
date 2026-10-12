@@ -16,6 +16,15 @@ export interface PutOptions {
   contentType?: string;
 }
 
+/** Options accepted by {@link Store.getStream}. */
+export interface GetStreamOptions {
+  /**
+   * Cancels the read: before the response it aborts the request; afterwards it
+   * releases the open body (a pending chunk read then fails). Optional to honour.
+   */
+  signal?: AbortSignal;
+}
+
 /** A byte source which yields bounded chunks instead of one whole object. */
 export type ByteStream = AsyncIterable<Uint8Array>;
 
@@ -32,7 +41,7 @@ export interface Store {
    * compatible. Runtime stores implement it; callers serving large objects
    * must prefer it to {@link Store.get}.
    */
-  getStream?(key: string): Promise<ByteStream | undefined>;
+  getStream?(key: string, opts?: GetStreamOptions): Promise<ByteStream | undefined>;
   /** Whether an object exists at `key`. */
   has(key: string): Promise<boolean>;
   /** List keys, optionally restricted to those starting with `prefix`. */
