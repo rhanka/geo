@@ -29,6 +29,7 @@ import { createApp } from "./app.js";
 import { makeProvider } from "./providers/make-provider.js";
 import { makeReglementProvider } from "./providers/make-reglement-provider.js";
 import { buildInventory } from "../catalog/index.js";
+import { READ_SERVER_S3_HTTP_TIMEOUTS } from "../storage/index.js";
 import { loadContinentRegistries } from "../cli/continents.js";
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -42,7 +43,7 @@ const dataLocation =
 // The API only reads S3: bound the connect and the wait for response headers
 // (which includes waiting for a free pooled socket), so a saturated pool or a
 // stalled endpoint fails a request instead of hanging every request forever.
-const storeOptions = { httpTimeouts: { connectionTimeoutMs: 5_000, requestTimeoutMs: 20_000 } };
+const storeOptions = { httpTimeouts: READ_SERVER_S3_HTTP_TIMEOUTS };
 const provider = makeProvider(dataLocation, storeOptions);
 // Inject the source catalog (optional continents, dynamically loaded) so
 // `/sources` is populated in Docker/k8s without a hard dependency edge.

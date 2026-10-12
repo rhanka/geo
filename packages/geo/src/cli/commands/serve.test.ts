@@ -10,7 +10,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import { FileProvider, StoreProvider, type FeatureProvider } from "../../api/index.js";
-import type { Store } from "../../storage/index.js";
+import { READ_SERVER_S3_HTTP_TIMEOUTS, type Store } from "../../storage/index.js";
 
 import { startServer } from "./serve.js";
 
@@ -61,7 +61,12 @@ describe("startServer provider routing", () => {
       { createApp: h.createApp, serve: h.serve, createStore: h.createStore },
     );
     expect(h.provider()).toBeInstanceOf(StoreProvider);
-    expect(h.createStore).toHaveBeenCalledWith("s3://sentropic-geo/normalized");
+    // Read-server S3 timeouts (same as api/server.ts): a stalled S3 fails a
+    // request instead of exhausting the socket pool (2026-10-12 incident).
+    expect(h.createStore).toHaveBeenCalledWith("s3://sentropic-geo/normalized", {
+      httpTimeouts: READ_SERVER_S3_HTTP_TIMEOUTS,
+    });
+    expect(READ_SERVER_S3_HTTP_TIMEOUTS.requestTimeoutMs).toBeGreaterThan(0);
     // Store URIs are not path-resolved.
     expect(handle.dataDir).toBe("s3://sentropic-geo/normalized");
   });
@@ -73,7 +78,9 @@ describe("startServer provider routing", () => {
       { createApp: h.createApp, serve: h.serve, createStore: h.createStore },
     );
     expect(h.provider()).toBeInstanceOf(StoreProvider);
-    expect(h.createStore).toHaveBeenCalledWith("fs:/var/data");
+    expect(h.createStore).toHaveBeenCalledWith("fs:/var/data", {
+      httpTimeouts: READ_SERVER_S3_HTTP_TIMEOUTS,
+    });
   });
 
   it("honors an injected makeProvider override", () => {
