@@ -103,7 +103,12 @@ export interface FeatureProvider {
    * large sequential object use this to avoid materializing either the source
    * FeatureCollection or the selected page.
    */
-  streamItems?(id: string, query: Pick<ItemsQuery, "bbox">): Promise<ItemsStream | undefined>;
+  streamItems?(
+    id: string,
+    query: Pick<ItemsQuery, "bbox">,
+    /** The HTTP request's signal: aborting it releases the underlying reads. */
+    signal?: AbortSignal,
+  ): Promise<ItemsStream | undefined>;
   /** A single feature by id, or `undefined` if collection/feature is unknown. */
   getItem(id: string, featureId: string): Promise<ServedFeature | undefined>;
   /**
@@ -114,6 +119,13 @@ export interface FeatureProvider {
    * when no manifest is present.
    */
   getCoherence?(): Promise<CoherenceInfo | undefined>;
+  /**
+   * Optional deep liveness check of the data read path (e.g. read the first
+   * bytes of one served shape). Rejects when the read path is unusable; `/health`
+   * bounds it with a deadline and aborts `signal` when it expires, so a hung
+   * read surfaces as unhealthy and releases its resources.
+   */
+  checkHealth?(signal?: AbortSignal): Promise<{ collection?: string }>;
 }
 
 /**
