@@ -41,11 +41,18 @@ export interface S3StoreConfig {
    */
   httpTimeouts?: S3HttpTimeouts;
   /**
-   * Destroy a {@link getStream} body that its consumer has not pulled for this
-   * long, releasing its pooled socket. Defaults to
+   * Destroy a body that is never iterated, or from which S3 sends nothing, for
+   * this long, releasing its pooled socket. Defaults to
    * {@link DEFAULT_BODY_IDLE_TIMEOUT_MS}; `0` disables the guard.
    */
   bodyIdleTimeoutMs?: number;
+  /**
+   * Destroy a body whose consumer holds one chunk this long without asking for
+   * the next (a client that stopped reading without disconnecting). Much
+   * larger than {@link bodyIdleTimeoutMs} so slow but live clients are never
+   * cut. Defaults to {@link DEFAULT_BODY_HOLD_TIMEOUT_MS}; `0` disables it.
+   */
+  bodyHoldTimeoutMs?: number;
 }
 
 /** HTTP timeouts for the S3 client's request handler. */
@@ -67,6 +74,13 @@ export interface S3HttpTimeouts {
  */
 export const DEFAULT_BODY_IDLE_TIMEOUT_MS = 120_000;
 
+/**
+ * Default bound on a single chunk held by the consumer (downstream
+ * backpressure). A live client drains a chunk in far less; a client that stops
+ * reading without disconnecting would otherwise pin the socket forever.
+ */
+export const DEFAULT_BODY_HOLD_TIMEOUT_MS = 600_000;
+
 /** Pool size of the built client (the SDK default, made explicit). */
 const MAX_SOCKETS = 50;
 
@@ -75,13 +89,16 @@ export class S3Store implements Store {
   readonly bucket: string;
   readonly prefix: string;
   private readonly client: S3Client;
-  private readonly bodyIdleTimeoutMs: number;
+  private readonly bodyGuard: BodyGuard;
 
   constructor(config: S3StoreConfig) {
     this.bucket = config.bucket;
     this.prefix = normalizePrefix(config.prefix);
     this.client = config.client ?? buildClient(config);
-    this.bodyIdleTimeoutMs = config.bodyIdleTimeoutMs ?? DEFAULT_BODY_IDLE_TIMEOUT_MS;
+    this.bodyGuard = {
+      idleMs: config.bodyIdleTimeoutMs ?? DEFAULT_BODY_IDLE_TIMEOUT_MS,
+      holdMs: config.bodyHoldTimeoutMs ?? DEFAULT_BODY_HOLD_TIMEOUT_MS,
+    };
   }
 
   /** Map a store key to the full S3 object key (prefix-joined). */
@@ -112,7 +129,7 @@ export class S3Store implements Store {
       if (out.Body === undefined) return undefined;
       // Same release guarantee as getStream: a body that stalls after its
       // headers is destroyed instead of pinning its socket forever.
-      return await bodyToBytes(idleGuardedStream(out.Body, this.bodyIdleTimeoutMs));
+      return await bodyToBytes(idleGuardedStream(out.Body, this.bodyGuard));
     } catch (err) {
       if (isNotFound(err)) return undefined;
       throw err;
@@ -132,7 +149,7 @@ export class S3Store implements Store {
         opts?.signal ? { abortSignal: opts.signal } : {},
       );
       if (out.Body === undefined) return undefined;
-      return idleGuardedStream(out.Body, this.bodyIdleTimeoutMs, opts?.signal);
+      return idleGuardedStream(out.Body, this.bodyGuard, opts?.signal);
     } catch (err) {
       if (isNotFound(err)) return undefined;
       throw err;
@@ -284,18 +301,26 @@ function isDestroyable(value: unknown): value is DestroyableBody {
   );
 }
 
+/** Bounds of {@link idleGuardedStream}; `0` disables a bound. */
+interface BodyGuard {
+  /** Body never iterated, or S3 silent while a chunk is awaited. */
+  idleMs: number;
+  /** One chunk held by the consumer (downstream backpressure). */
+  holdMs: number;
+}
+
 /**
  * Wrap a `GetObject` body so it cannot pin its pooled socket forever. The body
  * is destroyed when it is never iterated within `idleMs` (e.g. the HTTP client
  * left before the response was written), when S3 sends nothing for `idleMs`
- * while a chunk is awaited, and as soon as the consumer stops early
- * (`return()`/`break`). The bound is suspended while the consumer holds a chunk:
- * that is downstream backpressure (a slow but live HTTP client), whose
- * abandonment is signalled by cancellation instead. `destroy()` is called
- * without an error so an un-iterated body cannot raise an unhandled `'error'`
- * event; a later read then fails with a premature-close error instead of hanging.
+ * while a chunk is awaited, when the consumer holds one chunk for `holdMs`
+ * (a client that stopped reading without disconnecting — far longer, so slow
+ * but live clients are never cut), on `signal` abort, and as soon as the
+ * consumer stops early (`return()`/`break`). `destroy()` is called without an
+ * error so an un-iterated body cannot raise an unhandled `'error'` event; a
+ * later read then fails with a premature-close error instead of hanging.
  */
-function idleGuardedStream(body: unknown, idleMs: number, signal?: AbortSignal): ByteStream {
+function idleGuardedStream(body: unknown, guard: BodyGuard, signal?: AbortSignal): ByteStream {
   const source = bodyToStream(body);
   if (!isDestroyable(body)) return source;
 
@@ -307,28 +332,27 @@ function idleGuardedStream(body: unknown, idleMs: number, signal?: AbortSignal):
     if (signal.aborted) release();
     else signal.addEventListener("abort", release, { once: true });
   }
-  if (idleMs <= 0) return source;
-  const disarm = (): void => {
+  const unlisten = (): void => signal?.removeEventListener("abort", release);
+  const arm = (ms: number): void => {
     if (timer !== undefined) clearTimeout(timer);
     timer = undefined;
-  };
-  const rearm = (): void => {
-    disarm();
-    timer = setTimeout(release, idleMs);
+    if (ms <= 0) return;
+    timer = setTimeout(release, ms);
     // Never keep the process alive just for this guard.
     (timer as { unref?: () => void }).unref?.();
   };
 
-  rearm();
+  arm(guard.idleMs);
   return (async function* guarded(): ByteStream {
     try {
       for await (const chunk of source) {
-        disarm(); // consumer holds the chunk: backpressure, not a stall
+        arm(guard.holdMs); // consumer holds the chunk: backpressure bound
         yield chunk;
-        rearm(); // waiting on S3 again
+        arm(guard.idleMs); // waiting on S3 again
       }
     } finally {
-      disarm();
+      arm(0);
+      unlisten();
       release();
     }
   })();
