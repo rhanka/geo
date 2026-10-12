@@ -2,15 +2,21 @@
 status: completed
 review-author:
   host: claude
-  model: claude-sonnet-5-5 (ad163ff) + claude-opus-5-5 (3c311bc and round-2 fixes)
+  model: claude-sonnet-5-5 (ad163ff) + claude-opus-5-5 (3c311bc and later fixes)
   effort: low
-target-ref: 3c311bc23fd280d6137bc4f33577b7a442369b8a (round 1, diff cfeb5875...3c311bc, PR #416)
+target-ref: 1641a453e99278d6ae9f2472b2600ab24eafef1e (final reviewed; diff cfeb5875...1641a45, PR #416)
 legs:
   - path: docs/reviews/pr416-maplibre6-leg-terra.md
     status: completed
   - path: docs/reviews/pr416-maplibre6-leg-luna.md
     status: completed
-consensus-verdict: NO-GO on 3c311bc (2/2), blocking findings fixed in round-2 commit; round 2 re-review required
+  - path: docs/reviews/pr416-maplibre6-r2-leg-terra.md
+    status: completed
+  - path: docs/reviews/pr416-maplibre6-r2-leg-luna.md
+    status: completed
+  - path: docs/reviews/pr416-maplibre6-r3-leg-luna.md
+    status: completed
+consensus-verdict: GO — terra GO on 100ac69 (r2), luna GO-with-fixes on 1641a45 (r3); no blocking finding left; luna r3 F2 (non-blocking) fixed after review
 ---
 
 # Review dossier — PR #416 maplibre-gl >= 6.4.1
@@ -45,6 +51,30 @@ import left, named imports in the packed engine dist, `setPaintProperty` cast co
 internal boundary, attribution paths sanitized/text-only, geo-core `^0.6.0` compatible with a
 pinned 0.6.1.
 
-## Round 2
+## Round 2 (target 100ac69)
 
-Pending: re-run both legs on the round-2 commit.
+CI `verify` run 38201424965 = success on 100ac69; its `Mount e2e` step logged
+`mount e2e [dev] OK — worker 200 text/javascript …/maplibre-gl/dist/maplibre-gl-worker.mjs` and
+`mount e2e [preview] OK — worker 200 text/javascript …/assets/maplibre-gl-worker-DxGNRm0a.mjs`.
+
+| Finding | Leg | Classification | Rationale / resolution |
+| --- | --- | --- | --- |
+| Browser proof not available on the reviewer host | terra (non-blocking) | **accept → resolved** | CI run 38201424965 above: real Chromium, dev + production preview, worker 200 + JS MIME. |
+| Published UI default is Vite-only (`?url`); a non-Vite consumer could reach `setWorkerUrl(undefined)` | luna F1 (blocking) | **partial accept** | Accepted: explicit failure + documented non-Vite path (application calls `setWorkerUrl` first; the default is then never reached) — commit 1641a45. Rejected: full bundler neutrality — the UI already ships Svelte source and already relied on the bundler for `import("maplibre-gl/dist/maplibre-gl.css")` on main (confirmed by luna r3); immo builds with Vite 6. |
+
+terra r2 verdict: GO. luna r2 verdict: NO-GO (F1), re-reviewed in round 3.
+
+## Round 3 (target 1641a45, luna only)
+
+luna r3: F1 "acceptably bounded (non-blocking)"; new F2 (low, non-blocking): an application URL set
+while an unresolvable loader is pending was rejected instead of kept. **accept → fixed** in the
+follow-up commit (re-check `getWorkerUrl()` before validating the loader result, + unit test).
+luna r3 verdict: GO-with-fixes.
+
+## Residual (not blocking, tracked)
+
+- Dedicated real-browser e2e of a Svelte consumer (`GeoMap`) in a production build — the worker
+  contract is browser-proven through the engine e2e (dev + preview) and the `apps/site` production
+  build emits the hashed worker; immo's receipt (handoff step 1) exercises GeoView/Cadastre in a
+  production stack.
+- Non-Vite bundlers: supported only through an application-provided `setWorkerUrl` (documented).

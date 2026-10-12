@@ -35,6 +35,8 @@ export async function ensureMaplibreWorker(
 ): Promise<void> {
   if (maplibre.getWorkerUrl()) return;
   const url: unknown = await loadWorkerUrl();
+  // An application URL set while the loader was pending wins, whatever it resolved to.
+  if (maplibre.getWorkerUrl()) return;
   if (typeof url !== "string" || url === "") {
     // A bundler without Vite's `?url` support resolves to something else: fail
     // loudly instead of handing MapLibre an unusable worker URL.
@@ -42,5 +44,5 @@ export async function ensureMaplibreWorker(
       "MapLibre worker URL unresolved: call maplibre-gl setWorkerUrl(<worker asset URL>) before mounting a map",
     );
   }
-  if (!maplibre.getWorkerUrl()) maplibre.setWorkerUrl(url);
+  maplibre.setWorkerUrl(url);
 }
