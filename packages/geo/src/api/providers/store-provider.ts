@@ -201,12 +201,46 @@ export class StoreProvider implements FeatureProvider {
       if (!validationSource) return undefined;
       await validateFeatureCollectionStream(validationSource);
 
-      const source = await this.#getStream(entry.geojsonKey);
-      if (!source) return undefined;
-      return { features: matchingFeatures(parseFeatureCollectionStream(source), query.bbox) };
+      // The served pass opens its S3 body only on the first pull: a response
+      // that is never written (client gone during validation) then holds no
+      // pooled socket at all.
+      return {
+        features: matchingFeatures(
+          parseFeatureCollectionStream(this.#lazyStream(entry.geojsonKey)),
+          query.bbox,
+        ),
+      };
     } catch {
       return undefined;
     }
+  }
+
+  async *#lazyStream(key: string): ByteStream {
+    const source = await this.#getStream(key);
+    if (!source) throw new Error(`object vanished after validation: ${key}`);
+    yield* source;
+  }
+
+  /**
+   * Liveness of the read path: open the first indexed collection's GeoJSON and
+   * read its first chunk, then release it. Resolves with the probed collection
+   * id; rejects when nothing is indexed or the object cannot be read.
+   */
+  async checkHealth(): Promise<{ collection: string }> {
+    const map = await this.#ensureIndexed();
+    const first = map.values().next();
+    if (first.done) throw new Error("no collection indexed");
+    const entry = first.value;
+    const stream = await this.#store.getStream?.(entry.geojsonKey);
+    if (!stream) throw new Error(`shape unreadable: ${entry.info.id}`);
+    const iterator = stream[Symbol.asyncIterator]();
+    try {
+      const chunk = await iterator.next();
+      if (chunk.done || chunk.value.byteLength === 0) throw new Error(`shape empty: ${entry.info.id}`);
+    } finally {
+      await iterator.return?.();
+    }
+    return { collection: entry.info.id };
   }
 
   async getItem(id: string, featureId: string): Promise<ServedFeature | undefined> {
