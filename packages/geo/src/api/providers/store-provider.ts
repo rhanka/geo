@@ -151,14 +151,19 @@ export class StoreProvider implements FeatureProvider {
    * for legacy in-memory test doubles; S3Store and FsStore always implement
    * `getStream`, so the served production path cannot materialize an object.
    */
-  async #getStream(key: string): Promise<ByteStream | undefined> {
+  async #getStream(key: string, signal?: AbortSignal): Promise<ByteStream | undefined> {
     try {
-      if (this.#store.getStream) return await this.#store.getStream(key);
-      const bytes = await this.#store.get(key);
-      return bytes === undefined ? undefined : oneChunk(bytes);
+      return await this.#openStream(key, signal);
     } catch {
       return undefined;
     }
+  }
+
+  /** {@link #getStream} without error swallowing; `signal` cancels the S3 read. */
+  async #openStream(key: string, signal?: AbortSignal): Promise<ByteStream | undefined> {
+    if (this.#store.getStream) return this.#store.getStream(key, signal ? { signal } : undefined);
+    const bytes = await this.#store.get(key);
+    return bytes === undefined ? undefined : oneChunk(bytes);
   }
 
   async listCollections(): Promise<CollectionInfo[]> {
@@ -189,6 +194,7 @@ export class StoreProvider implements FeatureProvider {
   async streamItems(
     id: string,
     query: Pick<ItemsQuery, "bbox">,
+    signal?: AbortSignal,
   ): Promise<ItemsStream | undefined> {
     const map = await this.#ensureIndexed();
     const entry = map.get(id);
@@ -197,7 +203,9 @@ export class StoreProvider implements FeatureProvider {
       // Validate the complete object before Hono commits a 200. A second
       // stream is deliberate: it preserves JSON.parse's all-or-nothing
       // contract without retaining the feature collection in memory.
-      const validationSource = await this.#getStream(entry.geojsonKey);
+      // `signal` (the HTTP request's) releases either S3 read as soon as the
+      // client leaves, even while a chunk is pending.
+      const validationSource = await this.#getStream(entry.geojsonKey, signal);
       if (!validationSource) return undefined;
       await validateFeatureCollectionStream(validationSource);
 
@@ -206,7 +214,7 @@ export class StoreProvider implements FeatureProvider {
       // pooled socket at all.
       return {
         features: matchingFeatures(
-          parseFeatureCollectionStream(this.#lazyStream(entry.geojsonKey)),
+          parseFeatureCollectionStream(this.#lazyStream(entry.geojsonKey, signal)),
           query.bbox,
         ),
       };
@@ -215,8 +223,9 @@ export class StoreProvider implements FeatureProvider {
     }
   }
 
-  async *#lazyStream(key: string): ByteStream {
-    const source = await this.#getStream(key);
+  async *#lazyStream(key: string, signal?: AbortSignal): ByteStream {
+    if (signal?.aborted) return;
+    const source = await this.#getStream(key, signal);
     if (!source) throw new Error(`object vanished after validation: ${key}`);
     yield* source;
   }
@@ -233,7 +242,7 @@ export class StoreProvider implements FeatureProvider {
     const first = map.values().next();
     if (first.done) throw new Error("no collection indexed");
     const entry = first.value;
-    const stream = await this.#store.getStream?.(entry.geojsonKey, signal ? { signal } : undefined);
+    const stream = await this.#openStream(entry.geojsonKey, signal);
     if (!stream) throw new Error(`shape unreadable: ${entry.info.id}`);
     const iterator = stream[Symbol.asyncIterator]();
     try {

@@ -85,12 +85,12 @@ describe("GET /health", () => {
     expect(store.streamCalls).toEqual(["zones.geojson"]);
   });
 
-  it("keeps a single in-flight read while it hangs, and answers with a generic reason", async () => {
+  it("starts no new read while a timed-out verdict is cached, and answers with a generic reason", async () => {
     const store = new MemoryStore({ "zones.geojson": COLLECTION });
     const provider = new StoreProvider(store);
     await provider.listCollections();
     store.hang = true;
-    const app = createApp(provider, [], undefined, { healthDeadlineMs: 20, healthCacheMs: 0 });
+    const app = createApp(provider, [], undefined, { healthDeadlineMs: 20, healthCacheMs: 60_000 });
 
     for (let i = 0; i < 3; i++) {
       const res = await app.request(`${ORIGIN}/health`);
@@ -126,6 +126,30 @@ describe("GET /health", () => {
     expect(res.status).toBe(503);
     await new Promise((resolve) => setTimeout(resolve, 10));
     expect(released).toBe(true);
+  });
+
+  it("answers 503 on a cold probe whose index read hangs, without starting a second read", async () => {
+    let listCalls = 0;
+    const hangingIndex: Store = {
+      put: async () => {},
+      get: async () => undefined,
+      has: async () => true,
+      list: () => {
+        listCalls++;
+        return new Promise<string[]>(() => {}); // cold index: S3 list never answers
+      },
+    };
+    const app = createApp(new StoreProvider(hangingIndex), [], undefined, {
+      healthDeadlineMs: 20,
+      healthCacheMs: 0,
+    });
+
+    for (let i = 0; i < 2; i++) {
+      const res = await app.request(`${ORIGIN}/health`);
+      expect(res.status).toBe(503);
+      expect(await res.json()).toMatchObject({ reason: "shape-read-timeout" });
+    }
+    expect(listCalls).toBe(1);
   });
 
   it("never exposes the underlying error text", async () => {

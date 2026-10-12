@@ -42,6 +42,27 @@ only; effective identity not attested.
 Verification on the round-2 commit: `npm test --workspace @sentropic/geo` 50 files / 539 tests;
 `npm run check --workspace @sentropic/geo` clean.
 
-## Round 2
+## Round 2 (target 6b25d9a)
+
+Legs: `pr418-s3-socket-hang-r2-leg-terra.md` (status `failed`), `pr418-s3-socket-hang-r2-leg-luna.md`
+(completed, NO-GO). **Validity note:** the author edited the shared worktree while both legs ran;
+terra's red test (`health.test.ts:100`, 3 reads) came from those uncommitted edits, not from
+6b25d9a (where the suite was 539/539 green). Its findings are still substantive and are reconciled
+below; round 3 is dispatched on a committed, untouched tree.
+
+| Finding | Leg | Classification | Rationale / resolution |
+| --- | --- | --- | --- |
+| `/items` client abort not propagated to a pending served S3 read (only the 120 s guard) | luna F2, terra F2b (blocking) | **accept → fixed** | `streamItems(id, query, signal)` passes the request signal to both validation and served `getStream`; `streamPdf(slug, signal)` likewise. Real-adapter e2e: served read stalled, client destroyed → released at once; red-checked (fails without the signal). |
+| `/health` single-flight held forever by a non-cooperative/cold probe; cold index not cancellable | luna F1, terra F1 (blocking) | **accept → fixed** | The shared probe races its own deadline: aborts the signal, settles `shape-read-timeout`, caches it and frees the slot even if the provider never settles. Cold index reads stay bounded by the S3 client timeouts + `get()` guard. Test: hanging cold `list()` → 503 twice, one `list()`. |
+| Consumer holding a chunk forever (stopped reading, still connected) pins the socket | terra F2a (blocking) | **accept → fixed** | Separate hold bound `bodyHoldTimeoutMs` (default 10 min per held chunk) — slow but live clients are never cut; pre-PR this path was unbounded too. Test: held chunk past the bound → destroyed. |
+| Abort listeners not removed on normal completion | luna F3 (non-blocking) | **accept → fixed** | `releaseOnAbort` returns a dispose called on close/error/cancel; the body guard unlistens in `finally`. |
+| `/health` bypasses the `get()` fallback; `GetStreamOptions` not exported | luna F5 (non-blocking) | **accept → fixed** | `checkHealth` uses the provider's open helper with fallback; type re-exported from `storage/index.ts`. |
+| e2e comment names the wrong adapter branch | terra F3 (non-blocking) | **accept → fixed** | Comment now describes the actual path (close→cancel listener attached after the socket closed). |
+| Probe wiring, retries/limits | luna F4/F6 (non-blocking) | **defer (owner decision / follow-up)** | Unchanged from round 1. |
+
+Verification after the fixes: `npm test --workspace @sentropic/geo` 50 files / 542 tests;
+typecheck clean.
+
+## Round 3
 
 Pending.

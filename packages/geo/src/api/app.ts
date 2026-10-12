@@ -176,9 +176,11 @@ export function createApp(
   // This route exercises the real read path — the provider reads the first
   // bytes of one served shape — under a deadline, and answers 503 otherwise.
   // The route is public, so the S3 read is shared: one probe in flight at a
-  // time, cancelled at its own deadline (which releases its S3 request/body),
-  // and its verdict is reused for `healthCacheMs` — whatever the call rate, at
-  // most one GetObject per window. Clients get a generic reason; the underlying
+  // time; at its deadline the probe is aborted (releasing its S3 request/body)
+  // and its slot is freed even if the provider ignores the signal (e.g. a cold
+  // index read, itself bounded by the S3 client timeouts). Every verdict,
+  // timeouts included, is reused for `healthCacheMs`: whatever the call rate, at
+  // most one new probe per window. Clients get a generic reason; the underlying
   // error is logged server-side only.
   let inFlight: Promise<HealthVerdict> | undefined;
   let cached: { at: number; verdict: HealthVerdict } | undefined;
@@ -187,21 +189,27 @@ export function createApp(
   ): Promise<HealthVerdict> => {
     if (inFlight) return inFlight;
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(new Error("health deadline")), healthDeadlineMs);
-    inFlight = check(controller.signal)
-      .then((probe): HealthVerdict => ({ ok: true, ...probe }))
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    const deadline = new Promise<HealthVerdict>((resolve) => {
+      timer = setTimeout(() => {
+        controller.abort(new Error("health deadline"));
+        resolve({ ok: false, reason: "shape-read-timeout" });
+      }, healthDeadlineMs);
+    });
+    const probe = check(controller.signal)
+      .then((result): HealthVerdict => ({ ok: true, ...result }))
       .catch((error: unknown): HealthVerdict => {
         if (controller.signal.aborted) return { ok: false, reason: "shape-read-timeout" };
         // eslint-disable-next-line no-console
         console.error("[health] shape read failed:", error);
         return { ok: false, reason: "shape-read-failed" };
-      })
-      .then((verdict) => {
-        clearTimeout(timer);
-        cached = { at: Date.now(), verdict };
-        inFlight = undefined;
-        return verdict;
       });
+    inFlight = Promise.race([probe, deadline]).then((verdict) => {
+      clearTimeout(timer);
+      cached = { at: Date.now(), verdict };
+      inFlight = undefined;
+      return verdict;
+    });
     return inFlight;
   };
 
@@ -209,20 +217,8 @@ export function createApp(
     const check = provider.checkHealth?.bind(provider);
     if (!check) return c.json({ status: "ok", probe: "none" });
 
-    let verdict: HealthVerdict;
-    if (cached && Date.now() - cached.at < healthCacheMs) {
-      verdict = cached.verdict;
-    } else {
-      let timer: ReturnType<typeof setTimeout> | undefined;
-      const deadline = new Promise<HealthVerdict>((resolve) => {
-        timer = setTimeout(() => resolve({ ok: false, reason: "shape-read-timeout" }), healthDeadlineMs);
-      });
-      try {
-        verdict = await Promise.race([runProbe(check), deadline]);
-      } finally {
-        clearTimeout(timer);
-      }
-    }
+    const verdict =
+      cached && Date.now() - cached.at < healthCacheMs ? cached.verdict : await runProbe(check);
 
     return verdict.ok
       ? c.json({ status: "ok", probe: "shape-read", ...(verdict.collection ? { collection: verdict.collection } : {}) })
@@ -311,7 +307,7 @@ export function createApp(
     const selfUrl = new URL(c.req.url);
 
     const stream = provider.streamItems
-      ? await provider.streamItems(id, bbox ? { bbox } : {})
+      ? await provider.streamItems(id, bbox ? { bbox } : {}, c.req.raw.signal)
       : undefined;
     if (stream) {
       c.header("Content-Type", MEDIA_GEOJSON);
@@ -428,7 +424,7 @@ export function createApp(
         );
       }
 
-      const stream = await reglementProvider.streamPdf(slug);
+      const stream = await reglementProvider.streamPdf(slug, c.req.raw.signal);
       if (!stream) {
         return c.json({ code: "NotFound", description: `Octets absents pour règlement ${slug}` }, 404);
       }
@@ -451,33 +447,41 @@ export function createApp(
  * response stream only once it has started writing it; a client that leaves
  * earlier would otherwise leave the source (and its S3 socket) open.
  */
-function releaseOnAbort(iterator: AsyncIterator<unknown>, signal: AbortSignal | undefined): void {
-  if (!signal) return;
+function releaseOnAbort(iterator: AsyncIterator<unknown>, signal: AbortSignal | undefined): () => void {
+  if (!signal) return () => {};
   const release = (): void => {
     void iterator.return?.()?.catch(() => {});
   };
-  if (signal.aborted) release();
-  else signal.addEventListener("abort", release, { once: true });
+  if (signal.aborted) {
+    release();
+    return () => {};
+  }
+  signal.addEventListener("abort", release, { once: true });
+  // Called once the response is finished, so a completed stream keeps no listener.
+  return () => signal.removeEventListener("abort", release);
 }
 
 /** Adapte un {@link ByteStream} (AsyncIterable) en `ReadableStream` pour `c.body`. */
 function byteStreamToReadable(stream: ByteStream, signal?: AbortSignal): ReadableStream<Uint8Array> {
   const iterator = stream[Symbol.asyncIterator]();
-  releaseOnAbort(iterator, signal);
+  const dispose = releaseOnAbort(iterator, signal);
   return new ReadableStream<Uint8Array>({
     async pull(controller) {
       try {
         const next = await iterator.next();
         if (next.done) {
+          dispose();
           controller.close();
           return;
         }
         controller.enqueue(next.value);
       } catch (err) {
+        dispose();
         controller.error(err instanceof Error ? err : new Error(String(err)));
       }
     },
     async cancel() {
+      dispose();
       await iterator.return?.();
     },
   });
@@ -503,7 +507,7 @@ function streamItemsResponse(
 ): ReadableStream<Uint8Array> {
   const encoder = new TextEncoder();
   const iterator = stream.features[Symbol.asyncIterator]();
-  releaseOnAbort(iterator, signal);
+  const dispose = releaseOnAbort(iterator, signal);
   let headerWritten = false;
   let firstFeature = true;
   let numberMatched = 0;
@@ -556,13 +560,16 @@ function streamItemsResponse(
           links.push({ href: next.toString(), rel: "next", type: MEDIA_GEOJSON, title: "Next page" });
         }
         const tail = `],"numberMatched":${numberMatched},"numberReturned":${numberReturned},"timeStamp":${JSON.stringify(new Date().toISOString())},"links":${JSON.stringify(links)}}`;
+        dispose();
         controller.enqueue(encoder.encode(tail));
         controller.close();
       } catch (error) {
+        dispose();
         controller.error(error);
       }
     },
     async cancel() {
+      dispose();
       await iterator.return?.();
     },
   });

@@ -54,6 +54,16 @@ describe("S3Store.getStream releases its pooled socket", () => {
     expect(bodies[0]!.destroyed).toBe(true);
   });
 
+  it("destroys the body when the consumer holds one chunk past the hold bound (stopped reading, still connected)", async () => {
+    const { client, bodies } = streamingClient();
+    const store = new S3Store({ bucket: "b", client, bodyIdleTimeoutMs: 60_000, bodyHoldTimeoutMs: 30 });
+
+    const iterator = (await store.getStream("k"))![Symbol.asyncIterator]();
+    await iterator.next();
+    await sleep(80);
+    expect(bodies[0]!.destroyed).toBe(true);
+  });
+
   it("keeps the body while a slow consumer holds a chunk (downstream backpressure)", async () => {
     const { client, bodies } = streamingClient();
     const store = new S3Store({ bucket: "b", client, bodyIdleTimeoutMs: 30 });
