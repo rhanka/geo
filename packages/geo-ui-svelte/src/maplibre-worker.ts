@@ -7,6 +7,11 @@
  * never loads. `GeoMap` and `GcpCalageUI` therefore hand MapLibre the worker
  * asset before their first `Map`, unless the application already configured one
  * (`setWorkerUrl` called earlier wins and is never overwritten).
+ *
+ * The default loader relies on Vite's `?url` import (this package ships Svelte
+ * source and already relies on the bundler for its CSS import). With any other
+ * bundler, the application calls MapLibre's `setWorkerUrl` itself before the
+ * first map; the default loader is then never reached.
  */
 
 /** The two MapLibre 6 named exports this module needs (the module itself is SSR-unsafe). */
@@ -29,6 +34,13 @@ export async function ensureMaplibreWorker(
   loadWorkerUrl: () => Promise<string> = bundledWorkerUrl,
 ): Promise<void> {
   if (maplibre.getWorkerUrl()) return;
-  const url = await loadWorkerUrl();
+  const url: unknown = await loadWorkerUrl();
+  if (typeof url !== "string" || url === "") {
+    // A bundler without Vite's `?url` support resolves to something else: fail
+    // loudly instead of handing MapLibre an unusable worker URL.
+    throw new Error(
+      "MapLibre worker URL unresolved: call maplibre-gl setWorkerUrl(<worker asset URL>) before mounting a map",
+    );
+  }
   if (!maplibre.getWorkerUrl()) maplibre.setWorkerUrl(url);
 }

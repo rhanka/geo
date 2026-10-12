@@ -57,7 +57,11 @@ setWorkerUrl(maplibreWorkerUrl);
 `ensureMaplibreWorker(maplibre)` before their first map, which sets the same `?url` asset only
 when no worker URL is configured yet (an application-provided URL is never overwritten). An
 application mixing both packages can call `ensureMaplibreWorker(await import("maplibre-gl"))` once
-at startup so that whichever map mounts first finds the worker configured.
+at startup so that whichever map mounts first finds the worker configured. That default relies on
+Vite's `?url` import (the UI ships Svelte source and already relies on the bundler for its CSS
+import); with another bundler, call `setWorkerUrl(<worker asset URL>)` yourself before the first
+map — the UI then never reaches its default, and an unresolved default throws explicitly instead
+of configuring an unusable worker.
 
 Hosting requirements for the emitted worker asset (production):
 

@@ -36,6 +36,13 @@ describe("ensureMaplibreWorker", () => {
     expect(maplibre.url).toBe("/app/worker.mjs");
   });
 
+  it("fails loudly when the loader does not resolve to a URL (non-Vite bundler)", async () => {
+    const maplibre = fakeMaplibre();
+    const notAUrl = (async () => undefined) as unknown as () => Promise<string>;
+    await expect(ensureMaplibreWorker(maplibre, notAUrl)).rejects.toThrow(/setWorkerUrl/);
+    expect(maplibre.url).toBe("");
+  });
+
   it("resolves the real bundled worker asset through Vite's ?url import", async () => {
     const maplibre = fakeMaplibre();
     await ensureMaplibreWorker(maplibre);
