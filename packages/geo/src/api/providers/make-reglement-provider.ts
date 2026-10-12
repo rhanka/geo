@@ -16,7 +16,7 @@
  * `registry/reglement-doc-serving.json` est pris au prochain deploy. Absent/illisible
  * → vide (aucun règlement servi — jamais une entrée fabriquée).
  */
-import { createStore, parseStoreUri } from "../../storage/index.js";
+import { createStore, parseStoreUri, type CreateStoreOptions } from "../../storage/index.js";
 import type { Store } from "../../storage/index.js";
 import {
   StoreReglementDocProvider,
@@ -67,10 +67,11 @@ export async function loadReglementRegistry(store: Store): Promise<ReglementDocR
 export async function makeReglementProvider(
   dataLocation: string,
   reglementUri: string | undefined = process.env["GEO_REGLEMENT_URI"],
+  storeOptions: CreateStoreOptions = {},
 ): Promise<ReglementDocProvider | undefined> {
   const storeUri = reglementStoreUri(dataLocation, reglementUri);
   if (storeUri === undefined) return undefined;
-  const store = createStore(storeUri);
+  const store = createStore(storeUri, storeOptions);
   const registry = await loadReglementRegistry(store);
   return new StoreReglementDocProvider(store, registry);
 }
