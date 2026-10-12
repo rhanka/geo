@@ -4,13 +4,23 @@ review-author:
   host: claude
   model: claude-opus-5-5
   effort: low
-target-ref: b68b91157b4330351efdea85d36e8a13dac33f1b (round 1, diff c592d883...b68b911, PR #418)
+target-ref: ee67940d4653c875a25983ad9bf77f0e305bb180 (final reviewed; diff c592d883...ee67940, PR #418)
 legs:
   - path: docs/reviews/pr418-s3-socket-hang-leg-terra.md
     status: completed
   - path: docs/reviews/pr418-s3-socket-hang-leg-luna.md
     status: completed
-consensus-verdict: NO-GO on b68b911 (2/2); accepted blocking findings fixed in the round-2 commit; round 2 re-review required
+  - path: docs/reviews/pr418-s3-socket-hang-r2-leg-terra.md
+    status: failed
+  - path: docs/reviews/pr418-s3-socket-hang-r2-leg-luna.md
+    status: completed
+  - path: docs/reviews/pr418-s3-socket-hang-r3-leg-terra.md
+    status: completed
+  - path: docs/reviews/pr418-s3-socket-hang-r3-leg-luna.md
+    status: completed
+  - path: docs/reviews/pr418-s3-socket-hang-r4-leg-terra.md
+    status: completed
+consensus-verdict: GO — luna GO-with-fixes on 00d0eff (r3, fixes applied in ee67940), terra GO-with-fixes on ee67940 (r4); no blocking finding left; deferred items listed under Residual
 ---
 
 # Review dossier — PR #418 geo-api S3 socket leak (hotfix)
@@ -78,6 +88,20 @@ single-flight/deadline/cache, idle vs hold bounds) and 542/542 tests.
 
 Verification: `npm test --workspace @sentropic/geo` 50 files / 543 tests; typecheck clean.
 
-## Round 4
+## Round 4 (target ee67940, terra only)
 
-Pending (terra only, on its round-3 blocking finding).
+terra r4: round-3 blocker fixed and tested (both API-server entry points use the shared read
+timeouts; real-SDK pre-header test). Verdict GO-with-fixes; one finding:
+
+| Finding | Leg | Classification | Rationale |
+| --- | --- | --- | --- |
+| CPTAQ normalization runner builds a raw S3Client with no request/body bounds | terra F1 (non-blocking) | **defer (follow-up)** | Pre-existing, one-shot CLI with 4 fixed reads; not an HTTP server, cannot exhaust the geo-api pool. |
+
+## Residual (not blocking, tracked)
+
+- k8s liveness/readiness still on `/conformance`; wiring `/health` is a pending owner decision
+  (restart vs. unready on external S3 outage; align probe timeout with the 5 s deadline).
+- Retry budget (`maxAttempts`), admission/concurrency and slow-client capacity policy (50 sockets ×
+  10 min hold bound).
+- CPTAQ runner S3 read bounds.
+- No reproduction of the incident on the cluster; proof is the real-adapter e2e and real-SDK tests.
