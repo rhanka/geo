@@ -1,26 +1,55 @@
 import assert from "node:assert/strict";
+import { mkdtemp, rm } from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 import { chromium } from "playwright";
-import { createServer } from "vite";
+import { build, createServer, preview } from "vite";
 
 const packageRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const server = await createServer({
-  root: packageRoot,
-  logLevel: "error",
-  // This single-run harness never serves a hot update; disabling Vite's file
-  // watcher keeps its Chromium proof independent from host watcher limits.
-  server: { host: "127.0.0.1", port: 0, watch: null },
-});
+const listen = { host: "127.0.0.1", port: 0 };
 
-let browser;
+const browser = await chromium.launch({ headless: true });
 try {
-  await server.listen();
-  const url = server.resolvedUrls?.local[0];
-  assert.ok(url, "Vite n'a pas exposé d'URL locale");
+  // 1. Vite dev server: the runtime is pre-bundled into `.vite/deps`.
+  const devServer = await createServer({
+    root: packageRoot,
+    logLevel: "error",
+    // This single-run harness never serves a hot update; disabling Vite's file
+    // watcher keeps its Chromium proof independent from host watcher limits.
+    server: { ...listen, watch: null },
+  });
+  try {
+    await devServer.listen();
+    await runScenario("dev", new URL("e2e/index.html", devServer.resolvedUrls?.local[0]).toString());
+  } finally {
+    await devServer.close();
+  }
 
-  browser = await chromium.launch({ headless: true });
+  // 2. Production build served statically: the runtime and the worker are
+  // hashed assets, which is the hosting shape a consuming application ships.
+  const outDir = await mkdtemp(path.join(os.tmpdir(), "geo-mount-e2e-"));
+  try {
+    await build({
+      root: packageRoot,
+      logLevel: "error",
+      build: { outDir, emptyOutDir: true, rollupOptions: { input: path.join(packageRoot, "e2e/index.html") } },
+    });
+    const previewServer = await preview({ root: packageRoot, logLevel: "error", build: { outDir }, preview: listen });
+    try {
+      await runScenario("preview", new URL("e2e/index.html", previewServer.resolvedUrls?.local[0]).toString());
+    } finally {
+      await previewServer.close();
+    }
+  } finally {
+    await rm(outDir, { recursive: true, force: true });
+  }
+} finally {
+  await browser.close();
+}
+
+async function runScenario(mode, pageUrl) {
   const page = await browser.newPage({ viewport: { width: 960, height: 640 }, deviceScaleFactor: 1 });
   const browserErrors = [];
   page.on("console", (message) => {
@@ -28,12 +57,29 @@ try {
   });
   page.on("pageerror", (error) => browserErrors.push(error.stack ?? error.message));
 
-  await page.goto(new URL("e2e/index.html", url).toString(), { waitUntil: "networkidle" });
+  await page.goto(pageUrl, { waitUntil: "networkidle" });
   await page.waitForFunction(() => window.__mountReady === true).catch((error) => {
     // A map that never loads (e.g. a missing MapLibre worker) only surfaces in
     // the browser console; keep it in the failure instead of a bare timeout.
-    throw new Error(`${error.message}\nErreurs navigateur:\n${browserErrors.join("\n")}`);
+    throw new Error(`[${mode}] ${error.message}\nErreurs navigateur:\n${browserErrors.join("\n")}`);
   });
+
+  // The running module workers must come from the explicitly configured asset,
+  // served as executable JavaScript (no HTML fallback, no missing hashed file).
+  const workerUrls = page.workers().map((worker) => worker.url());
+  assert.ok(
+    workerUrls.length > 0 && workerUrls.every((url) => /maplibre-gl-worker[^/]*\.mjs/.test(url)),
+    `[${mode}] workers MapLibre inattendus: ${JSON.stringify(workerUrls)}`,
+  );
+  const workerResponses = [];
+  for (const url of new Set(workerUrls)) {
+    const response = await page.request.get(url);
+    workerResponses.push({ url, status: response.status(), contentType: response.headers()["content-type"] ?? "" });
+  }
+  for (const response of workerResponses) {
+    assert.equal(response.status, 200, `[${mode}] worker MapLibre: ${JSON.stringify(response)}`);
+    assert.match(response.contentType, /javascript/, `[${mode}] MIME worker: ${JSON.stringify(response)}`);
+  }
 
   const host = await page.locator("#map-host").boundingBox();
   assert.ok(host, "Le host MapLibre est absent");
@@ -125,9 +171,8 @@ try {
   assert.deepEqual(browserErrors, [], browserErrors.join("\n"));
 
   await page.evaluate(() => window.__mountE2e.handle.destroy());
-} finally {
-  await browser?.close();
-  await server.close();
+  await page.close();
+  console.log(`mount e2e [${mode}] OK — worker ${workerResponses.map((r) => `${r.status} ${r.contentType} ${r.url}`).join(", ")}`);
 }
 
 function assertBoundsClose(actual, expected) {
