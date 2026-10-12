@@ -1,6 +1,14 @@
-import maplibregl from "maplibre-gl";
+import { Map as MapLibreMap, setWorkerUrl } from "maplibre-gl";
+import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 
 import { mount } from "../src/index.ts";
+
+// MapLibre 6 resolves its module worker beside its own runtime module
+// (`import.meta.url`). A bundler that relocates the runtime (Vite pre-bundling
+// into `.vite/deps`, hashed production chunks) leaves no worker there, so the
+// map never loads. The consumer contract is to hand MapLibre the worker asset
+// explicitly, before the first Map is constructed.
+setWorkerUrl(maplibreWorkerUrl);
 
 const tokens = {
   "surface-default": "#f8fafc",
@@ -77,11 +85,11 @@ const syncLayers = [{
 const observedRenderedLayerIds = [];
 const observedHoverHits = [];
 const observedSelectHits = [];
-const nativeQueryRenderedFeatures = maplibregl.Map.prototype.queryRenderedFeatures;
+const nativeQueryRenderedFeatures = MapLibreMap.prototype.queryRenderedFeatures;
 
 // This is observation, not a mock: the original MapLibre method executes and
 // returns the GPU-rendered features that the mount's real hover binding reads.
-maplibregl.Map.prototype.queryRenderedFeatures = function (...args) {
+MapLibreMap.prototype.queryRenderedFeatures = function (...args) {
   const features = nativeQueryRenderedFeatures.apply(this, args);
   observedRenderedLayerIds.push(features.map((feature) => feature.layer.id));
   return features;
