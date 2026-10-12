@@ -63,6 +63,21 @@ below; round 3 is dispatched on a committed, untouched tree.
 Verification after the fixes: `npm test --workspace @sentropic/geo` 50 files / 542 tests;
 typecheck clean.
 
-## Round 3
+## Round 3 (target 00d0eff, committed and untouched during review)
 
-Pending.
+Legs: `pr418-s3-socket-hang-r3-leg-terra.md` (NO-GO), `pr418-s3-socket-hang-r3-leg-luna.md`
+(GO-with-fixes). Both confirm every round-2 fix (signal propagation, real-adapter e2e, health
+single-flight/deadline/cache, idle vs hold bounds) and 542/542 tests.
+
+| Finding | Leg | Classification | Rationale / resolution |
+| --- | --- | --- | --- |
+| `geo serve --data s3://…` (CLI server) builds its S3 store without read timeouts: pre-header waits unbounded, pool exhaustion still reachable there | terra F1 (blocking) | **accept → fixed** | Shared `READ_SERVER_S3_HTTP_TIMEOUTS` (storage) used by both `api/server.ts` and the CLI `startServer`; `serve.test.ts` asserts it is passed. The timeout behaviour itself is proven against the real SDK in `s3-store-socket-release.test.ts`. |
+| `GetStreamOptions` not re-exported (round-2 edit had not been applied) | terra F2, luna F1 (non-blocking) | **accept → fixed** | Re-exported from `storage/index.ts`, with `S3HttpTimeouts`. |
+| Never-iterated body released by its idle timer keeps its abort listener | luna F3 (non-blocking) | **accept → fixed** | `release()` drops the listener on every path. Test added. |
+| 50 held chunks × 10 min can still starve the pool | luna F2 (non-blocking) | **defer** | Finite bound (pre-PR: unbounded); capacity/admission policy is the deferred F6 follow-up. |
+
+Verification: `npm test --workspace @sentropic/geo` 50 files / 543 tests; typecheck clean.
+
+## Round 4
+
+Pending (terra only, on its round-3 blocking finding).

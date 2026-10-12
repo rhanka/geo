@@ -12,7 +12,7 @@ import { createServer, type AddressInfo, type Socket } from "node:net";
 import { PassThrough } from "node:stream";
 
 import type { S3Client } from "@aws-sdk/client-s3";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import { S3Store } from "./s3-store.js";
 
@@ -87,6 +87,18 @@ describe("S3Store.getStream releases its pooled socket", () => {
 
     await expect(store.get("k")).rejects.toThrow();
     expect(bodies[0]!.destroyed).toBe(true);
+  });
+
+  it("drops its abort listener when a never-iterated body is released by the idle timer", async () => {
+    const { client, bodies } = streamingClient();
+    const store = new S3Store({ bucket: "b", client, bodyIdleTimeoutMs: 30 });
+    const controller = new AbortController();
+    const removeSpy = vi.spyOn(controller.signal, "removeEventListener");
+
+    await store.getStream("k", { signal: controller.signal });
+    await sleep(80);
+    expect(bodies[0]!.destroyed).toBe(true);
+    expect(removeSpy).toHaveBeenCalledWith("abort", expect.any(Function));
   });
 
   it("destroys the body as soon as the consumer stops early", async () => {
