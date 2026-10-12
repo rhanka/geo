@@ -5,3 +5,9 @@
  * global CSS-modules type into the package tsconfig.
  */
 declare module "maplibre-gl/dist/maplibre-gl.css";
+
+/** Vite `?url` import of the MapLibre 6 module worker (see `maplibre-worker.ts`). */
+declare module "maplibre-gl/dist/maplibre-gl-worker.mjs?url" {
+  const url: string;
+  export default url;
+}

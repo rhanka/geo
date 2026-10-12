@@ -107,6 +107,7 @@
     DEFAULT_CHOROPLETH_RAMP,
   } from "./choropleth.js";
   import { buildPointLayer, type PointLayerKind } from "./point-layers.js";
+  import { ensureMaplibreWorker } from "./maplibre-worker.js";
 
   /**
    * Resolve a `var(--st-…, #fallback)` (or plain) colour string to a concrete
@@ -242,11 +243,9 @@
     let hoveredId: string | number | undefined;
 
     void (async () => {
-      const {
-        Map: MapLibreMap,
-        NavigationControl,
-        AttributionControl,
-      } = await import("maplibre-gl");
+      const maplibre = await import("maplibre-gl");
+      const { Map: MapLibreMap, NavigationControl, AttributionControl } = maplibre;
+      await ensureMaplibreWorker(maplibre);
       // MapLibre's CSS is loaded dynamically too, so SSR never imports it.
       await import("maplibre-gl/dist/maplibre-gl.css");
       if (disposed || !container) return;

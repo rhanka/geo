@@ -200,6 +200,7 @@
 
 <script lang="ts">
   import { onDestroy, onMount } from "svelte";
+  import { ensureMaplibreWorker } from "./maplibre-worker.js";
 
   let {
     imageUrl,
@@ -484,11 +485,9 @@
 
     void (async () => {
       try {
-        const {
-          Map: MapLibreMap,
-          Marker,
-          NavigationControl,
-        } = await import("maplibre-gl");
+        const maplibre = await import("maplibre-gl");
+        const { Map: MapLibreMap, Marker, NavigationControl } = maplibre;
+        await ensureMaplibreWorker(maplibre);
         await import("maplibre-gl/dist/maplibre-gl.css");
         if (disposed || !mapContainer) return;
 
