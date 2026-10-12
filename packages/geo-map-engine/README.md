@@ -43,8 +43,8 @@ export). MapLibre 6 resolves its module worker **beside its own runtime module**
 (Vite dependency pre-bundling into `.vite/deps`, hashed production chunks), no worker sits
 beside it and the map never loads.
 
-The consuming application must therefore hand MapLibre the worker asset **once, before the
-first map is constructed** (this applies equally to `@sentropic/geo-ui-svelte`'s `GeoMap`):
+An application that calls `mount` must therefore hand MapLibre the worker asset **once, before
+the first map is constructed**:
 
 ```ts
 import { setWorkerUrl } from "maplibre-gl";
@@ -53,10 +53,30 @@ import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url"; // 
 setWorkerUrl(maplibreWorkerUrl);
 ```
 
-`maplibre-gl-worker.mjs` is self-contained (`maplibre-gl-shared.mjs` is an empty placeholder in
-production builds), so emitting it as a plain asset is sufficient. Keep a single resolved
-`maplibre-gl` copy (`npm ls maplibre-gl --all`): `setWorkerUrl` configures the instance it is
-imported from. `e2e/main.js` exercises this contract in real Chromium.
+`@sentropic/geo-ui-svelte` does this itself: `GeoMap` and `GcpCalageUI` call its exported
+`ensureMaplibreWorker(maplibre)` before their first map, which sets the same `?url` asset only
+when no worker URL is configured yet (an application-provided URL is never overwritten). An
+application mixing both packages can call `ensureMaplibreWorker(await import("maplibre-gl"))` once
+at startup so that whichever map mounts first finds the worker configured.
+
+Hosting requirements for the emitted worker asset (production):
+
+- **Self-contained module.** `maplibre-gl-worker.mjs` imports nothing (`maplibre-gl-shared.mjs`
+  is an empty placeholder in the published build), so emitting it as a plain hashed asset is
+  sufficient; deploy it together with the chunks that reference it.
+- **MIME.** Serve it as JavaScript (`text/javascript` or `application/javascript`) with HTTP 200.
+  An SPA fallback returning `index.html` for a missing asset makes the worker fail.
+- **Same origin.** A same-origin URL is loaded directly as a module worker
+  (`new Worker(url, { type: "module" })`); CSP needs `worker-src 'self'` (or `script-src 'self'`
+  when `worker-src` is absent).
+- **Cross origin (CDN).** For a cross-origin URL MapLibre wraps the module in a `blob:` URL;
+  CSP must then also allow `worker-src blob:`, and the asset must be served with CORS headers.
+- **Single copy.** Keep a single resolved `maplibre-gl` (`npm ls maplibre-gl --all`):
+  `setWorkerUrl` configures the instance it is imported from.
+
+`e2e/mount-e2e.mjs` exercises this contract in real Chromium twice: against the Vite dev server
+and against a production build served by `vite preview`, asserting that every running worker is
+the configured `maplibre-gl-worker*.mjs` asset served with HTTP 200 and a JavaScript MIME type.
 
 ## Stability
 
