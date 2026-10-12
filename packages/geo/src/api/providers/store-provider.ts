@@ -224,14 +224,16 @@ export class StoreProvider implements FeatureProvider {
   /**
    * Liveness of the read path: open the first indexed collection's GeoJSON and
    * read its first chunk, then release it. Resolves with the probed collection
-   * id; rejects when nothing is indexed or the object cannot be read.
+   * id; rejects when nothing is indexed or the object cannot be read. `signal`
+   * cancels the S3 read (request or open body) so a timed-out probe releases
+   * its socket at once.
    */
-  async checkHealth(): Promise<{ collection: string }> {
+  async checkHealth(signal?: AbortSignal): Promise<{ collection: string }> {
     const map = await this.#ensureIndexed();
     const first = map.values().next();
     if (first.done) throw new Error("no collection indexed");
     const entry = first.value;
-    const stream = await this.#store.getStream?.(entry.geojsonKey);
+    const stream = await this.#store.getStream?.(entry.geojsonKey, signal ? { signal } : undefined);
     if (!stream) throw new Error(`shape unreadable: ${entry.info.id}`);
     const iterator = stream[Symbol.asyncIterator]();
     try {
