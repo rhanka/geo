@@ -117,9 +117,10 @@ export interface FeatureProvider {
   /**
    * Optional deep liveness check of the data read path (e.g. read the first
    * bytes of one served shape). Rejects when the read path is unusable; `/health`
-   * bounds it with a deadline, so a hung read surfaces as unhealthy.
+   * bounds it with a deadline and aborts `signal` when it expires, so a hung
+   * read surfaces as unhealthy and releases its resources.
    */
-  checkHealth?(): Promise<{ collection?: string }>;
+  checkHealth?(signal?: AbortSignal): Promise<{ collection?: string }>;
 }
 
 /**
