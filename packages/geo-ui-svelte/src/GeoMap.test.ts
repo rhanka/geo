@@ -55,12 +55,16 @@ vi.mock("maplibre-gl", () => {
       this.handlers.get(`${type}:${layerId}`)?.(event);
     }
   }
+  // Named exports only, as MapLibre 6 ships no default export.
+  let workerUrl = "";
   return {
-    default: {
-      Map: FakeMap,
-      NavigationControl: class {},
-      AttributionControl: class {},
+    getWorkerUrl: () => workerUrl,
+    setWorkerUrl: (url: string) => {
+      workerUrl = url;
     },
+    Map: FakeMap,
+    NavigationControl: class {},
+    AttributionControl: class {},
   };
 });
 
