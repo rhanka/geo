@@ -73,6 +73,84 @@ describe("GET /health", () => {
     expect(await res.json()).toMatchObject({ status: "unavailable", probe: "shape-read" });
   });
 
+  it("shares one shape read across concurrent and repeated calls (public route, no S3 amplification)", async () => {
+    const store = new MemoryStore({ "zones.geojson": COLLECTION });
+    const app = createApp(new StoreProvider(store), [], undefined, { healthCacheMs: 60_000 });
+
+    const responses = await Promise.all(
+      Array.from({ length: 5 }, () => app.request(`${ORIGIN}/health`)),
+    );
+    expect(responses.map((r) => r.status)).toEqual([200, 200, 200, 200, 200]);
+    await app.request(`${ORIGIN}/health`);
+    expect(store.streamCalls).toEqual(["zones.geojson"]);
+  });
+
+  it("keeps a single in-flight read while it hangs, and answers with a generic reason", async () => {
+    const store = new MemoryStore({ "zones.geojson": COLLECTION });
+    const provider = new StoreProvider(store);
+    await provider.listCollections();
+    store.hang = true;
+    const app = createApp(provider, [], undefined, { healthDeadlineMs: 20, healthCacheMs: 0 });
+
+    for (let i = 0; i < 3; i++) {
+      const res = await app.request(`${ORIGIN}/health`);
+      expect(res.status).toBe(503);
+      expect(await res.json()).toEqual({ status: "unavailable", probe: "shape-read", reason: "shape-read-timeout" });
+    }
+    expect(store.streamCalls).toEqual(["zones.geojson"]);
+  });
+
+  it("cancels the timed-out shape read so its S3 body is released at the deadline", async () => {
+    let released = false;
+    const stalled: Store = {
+      put: async () => {},
+      get: async () => undefined,
+      has: async () => true,
+      list: async () => ["zones.geojson"],
+      // Headers arrived, then the body stalls: the first chunk never comes.
+      getStream: async (_key, opts) => ({
+        [Symbol.asyncIterator]: () => ({
+          next: () =>
+            new Promise<IteratorResult<Uint8Array>>((_, reject) => {
+              opts?.signal?.addEventListener("abort", () => {
+                released = true;
+                reject(new Error("aborted"));
+              });
+            }),
+        }),
+      }),
+    };
+    const app = createApp(new StoreProvider(stalled), [], undefined, { healthDeadlineMs: 30 });
+
+    const res = await app.request(`${ORIGIN}/health`);
+    expect(res.status).toBe(503);
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    expect(released).toBe(true);
+  });
+
+  it("never exposes the underlying error text", async () => {
+    const provider: FeatureProvider = {
+      listCollections: async () => [],
+      getCollection: async () => undefined,
+      getItems: async () => undefined,
+      getItem: async () => undefined,
+      checkHealth: async () => {
+        throw new Error("connect ECONNREFUSED s3.internal.example:443 bucket=secret-bucket");
+      },
+    };
+    const originalError = console.error;
+    console.error = () => {};
+    try {
+      const res = await createApp(provider).request(`${ORIGIN}/health`);
+      expect(res.status).toBe(503);
+      const text = await res.text();
+      expect(text).not.toMatch(/ECONNREFUSED|secret-bucket|s3\.internal/);
+      expect(JSON.parse(text)).toEqual({ status: "unavailable", probe: "shape-read", reason: "shape-read-failed" });
+    } finally {
+      console.error = originalError;
+    }
+  });
+
   it("answers 503 when no collection is indexed", async () => {
     const app = createApp(new StoreProvider(new MemoryStore({})));
     const res = await app.request(`${ORIGIN}/health`);
