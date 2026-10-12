@@ -15,7 +15,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 import { ovhSafeS3ClientOptions } from "./s3-client-config.js";
-import type { ByteStream, PutOptions, Store } from "./store.js";
+import type { ByteStream, GetStreamOptions, PutOptions, Store } from "./store.js";
 
 /** Connection + addressing settings for an {@link S3Store}. */
 export interface S3StoreConfig {
@@ -110,7 +110,9 @@ export class S3Store implements Store {
         new GetObjectCommand({ Bucket: this.bucket, Key: this.objectKey(key) }),
       );
       if (out.Body === undefined) return undefined;
-      return await bodyToBytes(out.Body);
+      // Same release guarantee as getStream: a body that stalls after its
+      // headers is destroyed instead of pinning its socket forever.
+      return await bodyToBytes(idleGuardedStream(out.Body, this.bodyIdleTimeoutMs));
     } catch (err) {
       if (isNotFound(err)) return undefined;
       throw err;
@@ -121,13 +123,16 @@ export class S3Store implements Store {
    * Open an object as an SDK byte stream. Unlike {@link get}, this never
    * concatenates the body, which is required by geo-api for large GeoJSON.
    */
-  async getStream(key: string): Promise<ByteStream | undefined> {
+  async getStream(key: string, opts?: GetStreamOptions): Promise<ByteStream | undefined> {
     try {
+      // The SDK keeps its abort listener until the request closes, so an abort
+      // after the headers also destroys the open body.
       const out = await this.client.send(
         new GetObjectCommand({ Bucket: this.bucket, Key: this.objectKey(key) }),
+        opts?.signal ? { abortSignal: opts.signal } : {},
       );
       if (out.Body === undefined) return undefined;
-      return idleGuardedStream(out.Body, this.bodyIdleTimeoutMs);
+      return idleGuardedStream(out.Body, this.bodyIdleTimeoutMs, opts?.signal);
     } catch (err) {
       if (isNotFound(err)) return undefined;
       throw err;
@@ -280,22 +285,29 @@ function isDestroyable(value: unknown): value is DestroyableBody {
 }
 
 /**
- * Wrap a `GetObject` body so an abandoned stream cannot pin its pooled socket.
- * The body is destroyed once no chunk has moved for `idleMs` — whether the
- * consumer stopped pulling, never started iterating (e.g. the HTTP client left
- * before the response was written), or S3 stalled mid-body — and as soon as the
- * consumer stops early (`return()`/`break`). `destroy()` is called without an
- * error so an un-iterated body cannot raise an unhandled `'error'` event; a
- * later read then fails with a premature-close error instead of hanging.
+ * Wrap a `GetObject` body so it cannot pin its pooled socket forever. The body
+ * is destroyed when it is never iterated within `idleMs` (e.g. the HTTP client
+ * left before the response was written), when S3 sends nothing for `idleMs`
+ * while a chunk is awaited, and as soon as the consumer stops early
+ * (`return()`/`break`). The bound is suspended while the consumer holds a chunk:
+ * that is downstream backpressure (a slow but live HTTP client), whose
+ * abandonment is signalled by cancellation instead. `destroy()` is called
+ * without an error so an un-iterated body cannot raise an unhandled `'error'`
+ * event; a later read then fails with a premature-close error instead of hanging.
  */
-function idleGuardedStream(body: unknown, idleMs: number): ByteStream {
+function idleGuardedStream(body: unknown, idleMs: number, signal?: AbortSignal): ByteStream {
   const source = bodyToStream(body);
-  if (idleMs <= 0 || !isDestroyable(body)) return source;
+  if (!isDestroyable(body)) return source;
 
   let timer: ReturnType<typeof setTimeout> | undefined;
   const release = (): void => {
     if (body.destroyed !== true) body.destroy();
   };
+  if (signal) {
+    if (signal.aborted) release();
+    else signal.addEventListener("abort", release, { once: true });
+  }
+  if (idleMs <= 0) return source;
   const disarm = (): void => {
     if (timer !== undefined) clearTimeout(timer);
     timer = undefined;
@@ -311,9 +323,9 @@ function idleGuardedStream(body: unknown, idleMs: number): ByteStream {
   return (async function* guarded(): ByteStream {
     try {
       for await (const chunk of source) {
-        rearm();
+        disarm(); // consumer holds the chunk: backpressure, not a stall
         yield chunk;
-        rearm();
+        rearm(); // waiting on S3 again
       }
     } finally {
       disarm();

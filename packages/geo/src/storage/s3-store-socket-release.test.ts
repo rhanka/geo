@@ -43,16 +43,40 @@ describe("S3Store.getStream releases its pooled socket", () => {
     expect(bodies[0]!.destroyed).toBe(true);
   });
 
-  it("destroys a body whose consumer stopped pulling, and the next pull fails instead of hanging", async () => {
+  it("destroys a body when S3 stalls while a chunk is awaited, and the read fails instead of hanging", async () => {
     const { client, bodies } = streamingClient();
     const store = new S3Store({ bucket: "b", client, bodyIdleTimeoutMs: 30 });
 
     const iterator = (await store.getStream("k"))![Symbol.asyncIterator]();
     expect((await iterator.next()).done).toBe(false);
-
-    await sleep(80);
-    expect(bodies[0]!.destroyed).toBe(true);
+    // S3 sends nothing more: the pending next() must not hang.
     await expect(iterator.next()).rejects.toThrow();
+    expect(bodies[0]!.destroyed).toBe(true);
+  });
+
+  it("keeps the body while a slow consumer holds a chunk (downstream backpressure)", async () => {
+    const { client, bodies } = streamingClient();
+    const store = new S3Store({ bucket: "b", client, bodyIdleTimeoutMs: 30 });
+
+    const iterator = (await store.getStream("k"))![Symbol.asyncIterator]();
+    await iterator.next();
+    await sleep(80); // consumer paused for longer than the idle bound
+    expect(bodies[0]!.destroyed).toBe(false);
+
+    bodies[0]!.end('"end":0}');
+    const rest: string[] = [];
+    for (let next = await iterator.next(); !next.done; next = await iterator.next()) {
+      rest.push(new TextDecoder().decode(next.value));
+    }
+    expect(rest.join("")).toContain('"end":0}');
+  });
+
+  it("get(): a body that stalls after its headers is destroyed and the read fails instead of hanging", async () => {
+    const { client, bodies } = streamingClient();
+    const store = new S3Store({ bucket: "b", client, bodyIdleTimeoutMs: 30 });
+
+    await expect(store.get("k")).rejects.toThrow();
+    expect(bodies[0]!.destroyed).toBe(true);
   });
 
   it("destroys the body as soon as the consumer stops early", async () => {

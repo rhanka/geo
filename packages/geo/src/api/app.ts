@@ -76,11 +76,20 @@ function parseBBox(
 
 /** Deadline of the `/health` shape read. */
 const DEFAULT_HEALTH_DEADLINE_MS = 5_000;
+/** How long a `/health` verdict is reused before the next shape read. */
+const DEFAULT_HEALTH_CACHE_MS = 10_000;
+
+/** Outcome of one `/health` shape read; `reason` is a stable public code. */
+type HealthVerdict =
+  | { ok: true; collection?: string }
+  | { ok: false; reason: "shape-read-failed" | "shape-read-timeout" };
 
 /** Tunables of {@link createApp}. */
 export interface AppOptions {
   /** Deadline of the `/health` shape read (default 5 s). */
   healthDeadlineMs?: number;
+  /** Reuse window of a `/health` verdict (default 10 s); `0` probes on every call. */
+  healthCacheMs?: number;
 }
 
 /**
@@ -99,6 +108,7 @@ export function createApp(
   options: AppOptions = {},
 ): Hono {
   const healthDeadlineMs = options.healthDeadlineMs ?? DEFAULT_HEALTH_DEADLINE_MS;
+  const healthCacheMs = options.healthCacheMs ?? DEFAULT_HEALTH_CACHE_MS;
   const app = new Hono();
 
   // Public, read-only open-data API: allow any origin so the static site
@@ -165,32 +175,58 @@ export function createApp(
   // 2026-10-12 incident: S3 socket pool exhausted, `/items` hung, probes green).
   // This route exercises the real read path — the provider reads the first
   // bytes of one served shape — under a deadline, and answers 503 otherwise.
+  // The route is public, so the S3 read is shared: one probe in flight at a
+  // time, cancelled at its own deadline (which releases its S3 request/body),
+  // and its verdict is reused for `healthCacheMs` — whatever the call rate, at
+  // most one GetObject per window. Clients get a generic reason; the underlying
+  // error is logged server-side only.
+  let inFlight: Promise<HealthVerdict> | undefined;
+  let cached: { at: number; verdict: HealthVerdict } | undefined;
+  const runProbe = (
+    check: (signal: AbortSignal) => Promise<{ collection?: string }>,
+  ): Promise<HealthVerdict> => {
+    if (inFlight) return inFlight;
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(new Error("health deadline")), healthDeadlineMs);
+    inFlight = check(controller.signal)
+      .then((probe): HealthVerdict => ({ ok: true, ...probe }))
+      .catch((error: unknown): HealthVerdict => {
+        if (controller.signal.aborted) return { ok: false, reason: "shape-read-timeout" };
+        // eslint-disable-next-line no-console
+        console.error("[health] shape read failed:", error);
+        return { ok: false, reason: "shape-read-failed" };
+      })
+      .then((verdict) => {
+        clearTimeout(timer);
+        cached = { at: Date.now(), verdict };
+        inFlight = undefined;
+        return verdict;
+      });
+    return inFlight;
+  };
+
   app.get("/health", async (c) => {
-    if (!provider.checkHealth) return c.json({ status: "ok", probe: "none" });
-    const started = Date.now();
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    const deadline = new Promise<never>((_, reject) => {
-      timer = setTimeout(
-        () => reject(new Error(`shape read exceeded ${healthDeadlineMs} ms`)),
-        healthDeadlineMs,
-      );
-    });
-    try {
-      const probe = await Promise.race([provider.checkHealth(), deadline]);
-      return c.json({ status: "ok", probe: "shape-read", ...probe, ms: Date.now() - started });
-    } catch (error) {
-      return c.json(
-        {
-          status: "unavailable",
-          probe: "shape-read",
-          reason: error instanceof Error ? error.message : String(error),
-          ms: Date.now() - started,
-        },
-        503,
-      );
-    } finally {
-      clearTimeout(timer);
+    const check = provider.checkHealth?.bind(provider);
+    if (!check) return c.json({ status: "ok", probe: "none" });
+
+    let verdict: HealthVerdict;
+    if (cached && Date.now() - cached.at < healthCacheMs) {
+      verdict = cached.verdict;
+    } else {
+      let timer: ReturnType<typeof setTimeout> | undefined;
+      const deadline = new Promise<HealthVerdict>((resolve) => {
+        timer = setTimeout(() => resolve({ ok: false, reason: "shape-read-timeout" }), healthDeadlineMs);
+      });
+      try {
+        verdict = await Promise.race([runProbe(check), deadline]);
+      } finally {
+        clearTimeout(timer);
+      }
     }
+
+    return verdict.ok
+      ? c.json({ status: "ok", probe: "shape-read", ...(verdict.collection ? { collection: verdict.collection } : {}) })
+      : c.json({ status: "unavailable", probe: "shape-read", reason: verdict.reason }, 503);
   });
 
   // ── Source catalog (inventory) ───────────────────────────────────────────────
