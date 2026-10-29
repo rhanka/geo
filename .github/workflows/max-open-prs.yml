@@ -3,11 +3,14 @@ name: max-open-prs
 # Grave la règle du principe fondateur (CLAUDE.md — CONVERGENCE origin/main) :
 # jamais plus de 2 PR non-dependabot ouvertes vers `main`. Échoue sinon.
 
+# Runner-slot budget (compte plafonné à 20 jobs concurrents) : le compte de PR ne
+# change pas sur un push (`synchronize`), et la garde n'est pas un check requis ;
+# l'ouverture suffit à bloquer une 3ᵉ PR, le cron quotidien signale la dérive.
 on:
   pull_request:
-    types: [opened, reopened, synchronize, ready_for_review]
+    types: [opened, reopened, ready_for_review]
   schedule:
-    - cron: '17 * * * *'
+    - cron: '17 6 * * *'
   workflow_dispatch:
 
 permissions:
