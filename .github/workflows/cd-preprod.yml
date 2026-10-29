@@ -106,6 +106,9 @@ jobs:
       - name: Build and push geo-api (→ digest immuable)
         id: build
         uses: docker/build-push-action@v6
+        env:
+          # Build record (.dockerbuild) is never consumed: keep it 1 day, not 90.
+          DOCKER_BUILD_RECORD_RETENTION_DAYS: 1
         with:
           context: .
           file: ./Dockerfile
@@ -117,8 +120,10 @@ jobs:
           tags: ${{ env.IMAGE }}:main-${{ github.sha }}
           provenance: true
           sbom: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Same scope as the geo-api build in docker-publish.yml (same Dockerfile):
+          # tag builds reuse main's layers, other images no longer evict them.
+          cache-from: type=gha,scope=geo-api
+          cache-to: type=gha,mode=max,scope=geo-api
 
       - name: Install kubectl + kustomize
         run: |
