@@ -107,6 +107,9 @@ jobs:
       - name: Build and push extraction image
         id: build
         uses: docker/build-push-action@v6
+        env:
+          # Build record (.dockerbuild) is never consumed: keep it 1 day, not 90.
+          DOCKER_BUILD_RECORD_RETENTION_DAYS: 1
         with:
           context: ${{ matrix.context }}
           file: ${{ matrix.dockerfile }}
@@ -185,6 +188,8 @@ jobs:
 
       - name: Build and push image
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_RECORD_RETENTION_DAYS: 1
         with:
           context: .
           file: ./Dockerfile
@@ -198,8 +203,9 @@ jobs:
           tags: ${{ steps.tags.outputs.tags }}
           provenance: true
           sbom: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Shared with cd-preprod.yml (same Dockerfile, built on main).
+          cache-from: type=gha,scope=geo-api
+          cache-to: type=gha,mode=max,scope=geo-api
 
       # Anonymous public-pull probe (NON-BLOCKING warning). A newly-created
       # user-scoped GHCR package is PRIVATE by default, so this logs whether
@@ -283,6 +289,8 @@ jobs:
       - name: Build and push geo-capture
         id: build
         uses: docker/build-push-action@v6
+        env:
+          DOCKER_BUILD_RECORD_RETENTION_DAYS: 1
         with:
           context: .
           file: ./deploy/capture-job/Dockerfile
@@ -291,8 +299,8 @@ jobs:
           tags: ${{ steps.tags.outputs.tags }}
           provenance: true
           sbom: true
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=geo-capture
+          cache-to: type=gha,mode=max,scope=geo-capture
 
       # Le digest est ce qu'on epingle dans les manifestes. L'afficher ici evite
       # d'avoir a le retrouver a la main dans les logs du build.
