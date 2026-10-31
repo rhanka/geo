@@ -983,7 +983,7 @@ a paired radar PR.
 
    | lot | content | rollback |
    |---|---|---|
-   | L0 | this ADR; s3-dag canary on the existing PV chain (preprod bucket, runbook gates); paired radar doc PR; hygiene below | n/a |
+   | L0 | this ADR; s3-dag canary on the existing PV chain (preprod bucket, runbook gates); paired radar doc PR; refresh-pv LLM baseline measured over 7 days (radar); hygiene below | n/a |
    | L1 | radar to Engram 0.23 (+F-EN4); shared profile v2.2 published with digest; geo graphify 0.17.1 PV profile aligned | repin Engram 0.21.2 |
    | L2 | F-CM1..F-CM3 in preprod with one Job; flag `REFRESH_LLM_TRANSPORT=gateway` | flag back to `keyring` |
    | L3 | `detect → capture → text` shadow on radar's 528 cities, one DAG per city | stop the DAG |
@@ -1037,12 +1037,15 @@ node count: `unverified`.
 
 Owner answers, **relayed** by the immo conductor on 2026-10-31 (relay, not a first-hand record; to be
 confirmed in the ratification record):
-1. Yes to pooling personal seats in batch behind the gateway, provided their terms of use allow it, checked
-   before L2. Wording gap to settle at ratification: the relay names "Codex, Claude Code", the question named
-   Codex and **Cloud Code** (Google, Gemini leg of ADR-0034); which seats are covered is `unknown`.
+1. Yes to pooling personal **Codex and Claude Code** seats in batch behind the gateway, provided their terms
+   of use allow it, checked before L2 (the question put to the owner named exactly these two). **Cloud Code**
+   (Google `CloudCodeRuntimeClient`, Gemini leg of ADR-0034) was not asked: `unknown`, question relayed to
+   the owner.
 2. Shadow budget up to 2× the current refresh LLM cost during coexistence, with a kill-switch above it.
-   The current refresh LLM cost is `unknown` here (to measure from radar's usage receipts before L4); the
-   sample itself is not fixed yet.
+   No refresh-pv-specific baseline exists: radar's only figure is a monthly seat-cost report
+   (2026-08-12 → 2026-09-10, LLM allocation 96.48 CAD/month incl. ×1.15 margin, 12.37 B tokens, no
+   per-pipeline split). Therefore L0 measures the refresh-pv baseline (tokens and receipts per run over 7
+   days) and the 2× cap applies to that measured figure. The L4 sample stays open until then.
 
 **Consequence.** No code changes with this ADR. Geo work starts at the L0 canary, behind the existing
 runbook gates (VAP + run go, then ratification go). The study is kept durably in radar:
