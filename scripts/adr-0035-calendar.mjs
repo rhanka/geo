@@ -44,6 +44,7 @@ track(l0end, [
 track(l0end, [
   ['L1.g', 'Pin shared profile (git sha + digest, CI check)', 'wd', 2],
   ['L2.g', 'Lane SA + token exchange, flag', 'wd', 3],
+  ['L2.v', 'Job-creator SA boundary (VAP), negative test (1 + 1)', 'wd', 2],
 ], '[geo] ');
 // Critical path, part 2: L3 then L4 (geo).
 const l3end = track(l0end, [
@@ -66,7 +67,10 @@ const l5end = track(g3end, [1, 2, 3].map((i) => [`L5.${i}`, `Preprod cohort ${i}
 const g4end = track(l5end, [['G4', 'Owner go: prod', 'wd', 2]]);
 const l6end = track(g4end, [1, 2, 3].flatMap((i) => [[`L6.${i}a`, `Prod cohort ${i} approval (geo-prod)`, 'wd', 1], [`L6.${i}`, `Prod cohort ${i} window`, 'cal', 7]]));
 // L7 inside the 28-day window.
-track(l6end, [['L7.g', 'join + contract geo_resolutions source (3 + 2 buffer)', 'wd', 5]], '[geo] ');
+track(l6end, [
+  ['L7.g', 'join + contract geo_resolutions source (3 + 2 buffer)', 'wd', 5],
+  ['L7.m', 'F-CM5 geo MCP provider in s3-dag 0.2.0, city freshness (3 + 2 buffer)', 'wd', 5],
+], '[geo] ');
 track(l6end, [
   ['L7.r', 'geo_resolutions writer + shadow diff (1)', 'wd', 1],
   ['L7.s', 'Shadow period (radar proposal)', 'cal', 7],

@@ -51,7 +51,8 @@ separately as go/no-go gates.
 | **L1.r** | Radar to Engram 0.24.0: bump (19 imported symbols identical, checked in 0.23.0), then F-EN4 adoption; fix on purpose the stale `packageVersion: "0.18.0"` in the refresh run identity (`refresh-pv.ts:247`), an identity change for in-flight city states | radar | F-EN4 published (no published Engram has it, 0.23.0 and 0.23.1 checked) | radar suites green on 0.24.0; merge keeps both citations; one v101b run | 0.5 + 0.5 (F-EN4) + 0.5 buffer agent-day (radar #932) | repin 0.21.2 |
 | **L1.p** | Shared profile v2.2 published with digest: Engram project folder `radar/ontology/pv-signals/` pointing at the whole radar profile (787 lines, 9 types, no fork), interim radar digest + CI, switched to F-EN2 when it ships; profile versioning rule (OQ-12) settled | radar + geo | OQ-12 agreed by both conductors; F-EN2 for the final digest | digest published; CI fails on digest drift; OQ-12 recorded in ADR-0035 | inside L1.r for radar; OQ-12: 1 wd geo. The interim → F-EN2 digest switch forces one reviewed digest bump (R11) | previous digest |
 | **L1.g** | Geo consumes the profile read-only by `git sha + digest`, CI digest check; graphify 0.17.1 PV profile aligned | geo | G2; L1.p | CI fails on a digest mismatch (negative test) | 1 + 1 wd (capture proof index #165–#170: 1 wd) | pin previous digest |
-| **L2.c** | F-CM1, F-CM2, F-CM3 usable in preprod | sentropic | owner Q1 answer (seats) + terms-of-use check; Cloud Code question answered | F-CM acceptance tests from `requests-cluster-mesh.md` pass in preprod | `pending sentropic assessment` | n/a |
+| **L2.c** | F-CM1, F-CM2, F-CM3 usable in preprod (amended contracts, section 2) | sentropic | ADR-0035 ratified **and** a slot in the sentropic queue; owner Q1 answer (seats) + terms-of-use check; Cloud Code question answered | sentropic exit criteria: 4 concurrent callers across 2 replicas, no provider credential in Job specs, shared 429 honoured, cap never jointly exceeded, forged lane refused, offboarding effective within one token lifetime | `unknown` (sentropic: no date before ratification and slotting) | n/a |
+| **L2.v** | Job-creator boundary: whoever creates a Job can pick its service account, so a lane is only an accounting label until an admission policy (VAP) or namespace isolation constrains that choice (`s3-dag/src/identity.ts:22`, sentropic F-CM3 acceptance) | k8s + geo | G2 | a Job of one lane cannot run under another lane's SA (negative test) | geo 1 + 1 wd (VAP pattern of `vap-ci-trigger-suspend-only.yaml`); k8s part `unknown` | remove the policy |
 | **L2.g** | Geo extract node: lane service account, token exchange (F-CM3), flag `REFRESH_LLM_TRANSPORT=gateway` | geo | G2; L2.c | one Job calls the gateway in preprod, no credential in the pod spec | 2 + 1 wd (s3-dag identity PRs, same burst) | flag back to `keyring` |
 | **L3.b** | Extend `pv-capture-backlog` to radar's 528 cities, one DAG per city, `concurrencyKey = source host`; bounded-memory streaming collection (Track `01M41PRZG9JB8CTE805D23TAE1`, canary: 172 MB vsad.ca PDF under 768 Mi) | geo | G2; `geo` quota figure (k8s); L3 thresholds confirmed by both conductors in the L3 PR | PR merged; memory canary passes | 5 + 3 wd (PV chain: 2 wd; +3 wd for streaming and refreshing the June radar adapter copy, an explicit hypothesis) | stop the DAG |
 | **L3.r** | Shadow `detect → capture → text`, 3 consecutive geo cycles; parity on sha sets (ADR-0035 gate values) | geo | L3.b | L3 parity thresholds met | 3 cal d run (hypothesis: one cycle ≤ 1 day, **`unknown` until the first cycle is measured**) + 1 + 2 wd analysis and re-run | stop the DAG |
@@ -63,6 +64,7 @@ separately as go/no-go gates.
 | **G4** | Owner go: prod | owner | L5 exit | recorded go | gate, 2 wd allowed (hypothesis) | stay in preprod |
 | **L6** | Prod cohorts; each widening is a geo-prod Environment approval | geo + radar | G4 | same criteria as L5, in prod | N × (1 wd approval + 7 cal d), N = 3 (hypothesis) | same as L5 |
 | **L7** | `join` (lot, zone; role only after the Loi 25 decision); `geo_resolutions` fed from the contract. Radar has **two** writers to switch: the `run-geo-mapper` Job and the `populate-geo` daily CronJob (`--no-resolve`) | geo + radar | L6 started; Loi 25 owner decision for role (else role excluded); contract zone/lot ids resolvable to radar canonical ids (`unverified`) | resolution rate reported; both radar writers off; consistency E1 unchanged on identical input | **inside the 28-day window**, not on the critical path: geo 3 + 2 wd; radar 1 + 0.5 agent-day + 7 cal d shadow (radar #253) | re-enable the Jobs |
+| **L7.m** | F-CM5 as amended by sentropic: a **geo-owned** read-only MCP provider (overview, runs, freshness) on cluster-mesh's existing MCP composition, in `@sentropic/s3-dag` 0.2.0; add the city dimension to `RefreshFreshness` (lane-level today, `supervision.ts:44`) and bind reads to an authorized tenant/workspace (the `runs/` read lists the whole prefix today, `supervision.ts:117`) | geo | F-CM3 read authority; immo-mcp receiving side | the 3 tools serve authorized `geo-pv` reads and refuse cross-tenant and cross-workspace access before any read | 3 + 2 wd **inside W28** (s3-dag supervision `/v1/refresh` was built in the #247 burst; +2 wd for tenant binding and the city key) | unregister the provider |
 | **W28** | 28 cal d after the last cohort, radar CronJob deployed and suspended | — | L6 last cohort | ADR-0035 exit criteria held for 28 d | 28 cal d (fixed) | radar re-arms its CronJob |
 | **G6** | Owner go: L8 | owner | W28 | recorded go | gate, 2 wd allowed (hypothesis) | — |
 | **L8** | Radar: retire `radar-refresh-pv`, watchdog, keyring PVC and the seat secrets, the `refresh-*` modules not reused by pv-consume, the **PV use** of RECUEIL (the module is shared with 5 other callers and stays) and the `signals.ts` seed count. Radar's enrichment (`graphify-34-enrichment.ts`) **stays** (facets, vivier). Geo: PV adapters into `qc-sources` | radar + geo | G6; every city in the allowlist; F-EN5..F-EN9 needed by radar (P2); owner go for deleting the PVC and secrets | no manifest or workflow still names `radar-refresh-pv`; geo adapters merged | radar 1 (+0.5 if PV adapters/RECUEIL in scope) agent-day (radar #683, #728); geo 2 + 1 wd (`qc-sources` port: 6 wd for the whole package, this is a subset) | pinned previous tag |
@@ -71,12 +73,21 @@ separately as go/no-go gates.
 
 | dependency | needed by | owner | committed date | status as given by the owner |
 |---|---|---|---|---|
-| F-CM1 gateway pool state (k8s batch profile) | L2.c | sentropic | **pending sentropic assessment** | assessment running (Astra, read-only), answer to come with a hash; blocked by owner Q1 on pooled seats |
-| F-CM2 budget admission + shared 429 cooldown | L2.c | sentropic | **pending sentropic assessment** | same |
-| F-CM3 workload identity per lane SA | L2.c | sentropic | **pending sentropic assessment** | same |
-| F-CM4 usage-receipt ledger | before L8 (P2) | sentropic | **pending sentropic assessment** | same |
-| F-CM5 MCP supervision over s3-dag | before L8 (P2) | sentropic | **pending sentropic assessment** | same |
-| F-CM6, F-CM7, F-CM8 | not required (P3) | sentropic | **pending sentropic assessment** | same |
+| F-CM1 gateway pool state (k8s batch profile) | L2.c | sentropic | `unknown` | **amend**: shared batch profile; cluster-mesh 0.27.0 / llm-mesh 0.33.0 / llm-gateway 0.23.0 (proposed allocations). Blockers: ADR-0035, queue slot, F-CM3, qualified shared pool/vault, Codex/Claude terms; Cloud Code `unknown`. Lease deadline semantics amended (the account lease has no expiry field today) |
+| F-CM2 budget admission + shared 429 cooldown | L2.c | sentropic | `unknown` | **amend**: reuse the existing llm-gateway admission and cooldown, with a cluster-mesh compose profile on top (answer to (d)); GW 0.23.0 / CM 0.27.0 / LM 0.33.0. Blockers: ADR/queue, enforceable lane identity, caps and periods, qualified shared state, typed refusals |
+| F-CM3 workload identity per lane SA | L2.c | sentropic | `unknown` | **amend**: verified SA binding, CM 0.27.0. Blockers: ADR/queue, identity core A2/A4 authority, Kubernetes issuer, SA-choice control (L2.v), revocation |
+| F-CM4 usage-receipt ledger | before L8 (P2) | sentropic | `unknown` | **accept**: complete the existing ledger; GW 0.24.0 / CM 0.28.0. Blockers: ADR/queue, F-CM2/F-CM3, correlation schema, authorized export, geo/radar reconciliation |
+| F-CM5 MCP supervision over s3-dag | before L8 (P2) | **geo** (amended) | `unknown` | **amend**: geo-owned adapter in s3-dag 0.2.0, cluster-mesh 0.27.0 MCP surface reused → lot L7.m. Blockers: F-CM3 read authority, isolated reads, city freshness, immo-mcp receiving |
+| F-CM6 provenance attestation (P3) | not required | geo (s3-dag 0.3.0) + sentropic | `unknown` | **amend**: domain attestation in s3-dag 0.3.0, CM 0.29.0 only if key binding is needed. Not in this plan |
+| F-CM7 durable messaging (P3) | not required | sentropic | none | **refuse** the general broker; CAS polling of `latest.json` stays (the accepted fallback) |
+| F-CM8 cross-server discovery (P3) | not required | sentropic | `unknown` | **amend**: explicit, revocable enrolment, CM 0.29.0 (provisional); only if a second cluster joins |
+
+Sentropic source: `assessment.md` (Astra, read-only, sha256
+`70876567889abf4f96b41966e2f08396b6ac52bd2048807cc54ebcd72926c757`), today in sentropic's local `.tmp/geo-fcm/`,
+to be committed by sentropic (Track). **No F-CM preprod date is committed**: every ID stays `unknown` until
+ADR-0035 is ratified and the work gets a slot. The sentropic queue ahead of it is: identity A2/A4 (anchor
+≈ 2026-11-04) → remote control RC2+ → memory 3×3 co-brainstorm → federation r6 → daily cyber → PG18 (anchor
+≈ 2026-11-09). No geo slot is reserved ahead of that queue.
 | F-EN1 incremental extraction + coverage registry | L4.g | gr-conductor (engram) | `unknown` | accepted (amended), target 0.24.0; blocked by P1 spec review round 3 |
 | F-EN2 profile bundle + digest + compatibility | L1.p | gr-conductor | `unknown` | accepted (amended), 0.24.0; same blocker |
 | F-EN3 headless bounded batch with receipts | L4.g | gr-conductor | `unknown` | accepted, 0.24.0; same blocker |
@@ -97,12 +108,23 @@ T0 ratification → L0.a → L0.b (+ L0.b' VAP, k8s) → G1 → L0.c → G2 → 
 G3 → L5 (3 × 7 cal d) → G4 → L6 (3 × (1 wd + 7 cal d)) → W28 (28 cal d) → G6 → L8.
 
 L1 and L2 run **beside** L3 and do not drive the path **if** F-EN2/F-EN4 (0.24.0) and F-CM1..F-CM3 are usable
-by the end of L3.r. Each is `unknown` or `pending` today, so **the real critical path is set by the later of those
-external dates and the end of L3.r**. Until their owners give dates, the calendar below is an **earliest-start
-lower bound, not a commitment**.
+by the end of L3.r. Each is `unknown` today, so **the real critical path is set by the later of those external
+dates and the end of L3.r**. Until their owners give dates, the calendar below is an **earliest-start lower bound,
+not a commitment**.
+
+**Dating rule (structural).** Sentropic commits F-CM dates only **after** ratification and slotting, and Engram
+only after its P1 spec review. A fully dated plan therefore cannot exist **before** T0. What can be secured
+before T0 is the part that depends on no external owner: **L0 and L3 (no LLM, no F-CM, no Engram)**, about
+14 + 14 wd on the geo side. Options for the owner (not decided here):
+- **A.** Ratify ADR-0035 whole; external owners date their lots within an agreed delay after T0; add a go/no-go
+  **G2b "dated plan"** before L4.g starts, where the owner sees every committed date and can stop.
+- **B.** Ratify ADR-0035 for L0–L3 only (no LLM path); ratify L4+ later, once F-CM and F-EN dates are committed.
+- **C.** Wait for dated commitments before any ratification: sentropic says this cannot happen, so the plan stays
+  undated.
 
 Totals:
-- geo, all lots (including those beside the path or inside W28): build **34 wd** + explicit buffers **22 wd**;
+- geo, all lots (including those beside the path or inside W28): build **38 wd** + explicit buffers **25 wd**
+  (L2.v and L7.m added after the sentropic assessment);
 - radar (its own estimates): **7 agent-days** (7.5 with the L8 option) + buffer **1.5 agent-days**, plus the 7-day
   baseline clock and a 7-day L7 shadow. No radar lot lands on the critical path: L0.r runs beside L0, L1.r beside
   L3, L4.c and the L5/L6 radar work beside L4.g, L7 inside W28, and L8 radar beside L8 geo;
@@ -128,6 +150,7 @@ review with the Product Owner) and that every external dependency is ready when 
 | L1.g | [geo] Pin shared profile (git sha + digest, CI check) | 2 wd | 2026-12-04 | 2026-12-07 |
 | L3.b | Extend chain to 528 cities + bounded-memory collection | 8 wd | 2026-12-04 | 2026-12-15 |
 | L2.g | [geo] Lane SA + token exchange, flag | 3 wd | 2026-12-08 | 2026-12-10 |
+| L2.v | [geo] Job-creator SA boundary (VAP), negative test (1 + 1) | 2 wd | 2026-12-11 | 2026-12-14 |
 | L3.r | Shadow: 3 consecutive geo cycles | 3 cal d | 2026-12-16 | 2026-12-18 |
 | L3.p | Parity analysis + re-run margin | 3 wd | 2026-12-21 | 2026-12-23 |
 | L4.c | [radar] radar-pv-consume: contract client, mapping, dry-run report (2 + 1 buffer) | 3 wd | 2026-12-24 | 2026-12-29 |
@@ -149,6 +172,7 @@ review with the Product Owner) and that every external dependency is ready when 
 | L7.r | [radar] geo_resolutions writer + shadow diff (1) | 1 wd | 2027-03-16 | 2027-03-16 |
 | W28 | 28-day window before L8 (L7 runs inside) | 28 cal d | 2027-03-16 | 2027-04-12 |
 | L7.s | [radar] Shadow period (radar proposal) | 7 cal d | 2027-03-17 | 2027-03-23 |
+| L7.m | [geo] F-CM5 geo MCP provider in s3-dag 0.2.0, city freshness (3 + 2 buffer) | 5 wd | 2027-03-23 | 2027-03-30 |
 | L7.o | [radar] Switch off run-geo-mapper and populate-geo resolve (0.5) | 1 wd | 2027-03-24 | 2027-03-24 |
 | G6 | Owner go: L8 | 2 wd | 2027-04-13 | 2027-04-14 |
 | L8.r | [radar] Retire refresh-pv, watchdog, keyring PVC, PV use of RECUEIL (1 + 0.5 option) | 2 wd | 2027-04-15 | 2027-04-16 |
@@ -177,7 +201,8 @@ working day. Rerun the script with a new T0 or new durations; never edit the tab
 | # | risk | effect | mitigation |
 |---|---|---|---|
 | R1 | **2-open-PR limit** (geo `CLAUDE.md`, CI guard). Today #427 and #363 are open: **no new geo PR can open before one closes** | serialises L0.a, L0.b, L1.g, L2.g, L3.b | merge #427 at ratification; owner decides on #363 (ADR-0032, `proposed` since 2026-09-06), which ADR-0035 item 5 may supersede |
-| R2 | F-CM1..F-CM3 dates later than the end of L3.r | L4 waits; the path moves by the gap | ask for dates now (done); L3 has no LLM, so it moves forward meanwhile; L4.g can build against F-CM interfaces with a stub, but L4.r cannot run before F-CM is usable |
+| R2 | F-CM1..F-CM3 dates later than the end of L3.r. **Likely**: sentropic gives no date before ratification and slotting, and five programmes are queued ahead (identity A2/A4, RC2+, memory 3×3, federation r6, daily cyber) | L4 waits; the path moves by the gap | dates asked (sentropic answered: `unknown` until slotting); L3 has no LLM, so it moves forward meanwhile; L4.g can build against F-CM interfaces with a stub, but L4.r cannot run before F-CM is usable; owner options A/B in section 3 |
+| R15 | Lane identity bypass: a Job creator can pick another lane's service account and escape its budget cap | F-CM2/F-CM3 acceptance fails | lot L2.v (VAP or namespace isolation), negative test before L2.c is accepted |
 | R3 | Engram 0.24.0 later than the end of L3.r | same as R2 | same; F-EN P1 spec review is the first unblocking event |
 | R4 | `geo` quota or node capacity insufficient (single node measured ~95 % CPU reserved on 2026-09-28) | G1 and L3.b blocked, or L3 cycles too slow | quota figure asked now; L3 concurrency starts at 4 capture Jobs (hypothesis) and grows only when measured |
 | R5 | A canary proof fails at G2 | Argo fallback, this plan reopens | no-go point G2; the fallback is documented in ADR-0035 item 2 |
@@ -198,6 +223,7 @@ working day. Rerun the script with a new T0 or new durations; never edit the tab
 | T0 | ratification of ADR-0035 | nothing starts; radar unchanged |
 | G1 | 2026-11-25 | canary not run; radar unchanged |
 | G2 | 2026-12-02 | canary not ratified → Argo fallback or stop; radar unchanged |
+| G2b (options A/B, section 3) | when F-CM and F-EN dates are committed, before L4.g | stop before any LLM-path work; L3 shadow can keep running or stop |
 | G3 | 2027-01-22 | stop after shadow; radar unchanged, geo shadow DAGs stopped |
 | G4 | 2027-02-16 | stay in preprod; radar keeps prod |
 | each L6 cohort approval | 2027-02-18, 02-26, 03-08 | stop widening; cohorts already moved can roll back per city |
