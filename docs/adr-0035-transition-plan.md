@@ -4,9 +4,12 @@ Status: **draft for the owner decision dossier**, 2026-10-31. Companion of ADR-0
 `proposed`). It changes no code and starts no lot: nothing begins before the owner ratifies ADR-0035 with an
 owner-direct record.
 
-Author: geo-cond. Radar-side lots carry radar's own estimates, sent separately by the immo conductor; this file
-does not estimate them (marked `pending radar estimate`). External dates are those given by their owner; a
-missing date is `unknown` or `pending`, with the name of whoever has to give it.
+Author: geo-cond. Radar-side lots carry **radar's own estimates**, written by the immo conductor and not by geo:
+`radar-lots-estimates.md` (radar `origin/main` `9ca451cf7`, 2026-10-31, sha256
+`767b8abaffdce9a1513e7efc91e948831799424bad9f3b49a5c7c45cb58016f8`), to be committed by radar in
+rhanka/radar-immobilier PR #960 next to `docs/spec/reports/etude-geo-dag/consensus-v3.md`. Radar counts in
+agent-days (CI and review included); the calendar rounds them **up** to whole working days. External dates are
+those given by their owner; a missing date is `unknown` or `pending`, with the name of whoever has to give it.
 
 ## 0. How durations are estimated
 
@@ -43,25 +46,25 @@ separately as go/no-go gates.
 | **G1** | Owner go: VAP + apply + run of the canary | owner | L0.b + L0.b' done; `geo` quota figure known | recorded go | gate, 2 wd allowed (hypothesis) | stop |
 | **L0.c** | Canary run on the preprod bucket: 4 owner proofs (crash recovery, real quota respect, complete immo read-model via `/v1/refresh/*`, index rebuild from S3 only) + 3 negative refusals; report | geo | G1 | 4/4 proofs and 3/3 refusals observed and recorded in the report | 2 + 1 wd (backup + restore: 10 PRs, run, verdict, in ~13 h) | delete the canary run prefix `preprod-runs/<sha>/` |
 | **G2** | Owner go: canary ratification. **No-go = Argo fallback** (ADR-0035 item 2), which reopens this plan | owner | L0.c report | recorded go, or recorded fallback | gate, 2 wd allowed (hypothesis) | — |
-| **L0.r** | Refresh-pv LLM baseline over 7 days (tokens and receipts per run) | radar | ADR-0035 ratified | baseline report | `pending radar estimate` (fixed 7 cal d inside) | n/a |
-| **L1.r** | Radar to Engram 0.24.0 (F-EN4; see section 2) | radar | F-EN1..F-EN4 published in 0.24.0 | radar CI green on 0.24.0 | `pending radar estimate` | repin 0.21.2 |
-| **L1.p** | Shared profile v2.2 published with digest (radar folder `radar/ontology/pv-signals/`); profile versioning rule (OQ-12) settled | radar + geo | F-EN2 in 0.24.0; OQ-12 agreed by both conductors | digest published; OQ-12 recorded in ADR-0035 | `pending radar estimate` for publication; OQ-12: 1 wd geo | previous digest |
+| **L0.r** | Refresh-pv LLM baseline over 7 days. Tokens are recorded nowhere today: instrument first (usage hook → receipt `tokensIn`/`tokensOut`, nullable; migration on `refresh_document_outcomes`; SQL report by `cycle_id`), then measure | radar | ADR-0035 ratified; prod CronJob actually running for the 7 days | baseline report (receipts, tokens per provider/model/transition) | 0.5 agent-day (radar #806, #732) + release and prod promotion (2 wd, hypothesis) + **7 cal d** | n/a |
+| **L1.r** | Radar to Engram 0.24.0: bump (19 imported symbols identical, checked in 0.23.0), then F-EN4 adoption; fix on purpose the stale `packageVersion: "0.18.0"` in the refresh run identity (`refresh-pv.ts:247`), an identity change for in-flight city states | radar | F-EN4 published (no published Engram has it, 0.23.0 and 0.23.1 checked) | radar suites green on 0.24.0; merge keeps both citations; one v101b run | 0.5 + 0.5 (F-EN4) + 0.5 buffer agent-day (radar #932) | repin 0.21.2 |
+| **L1.p** | Shared profile v2.2 published with digest: Engram project folder `radar/ontology/pv-signals/` pointing at the whole radar profile (787 lines, 9 types, no fork), interim radar digest + CI, switched to F-EN2 when it ships; profile versioning rule (OQ-12) settled | radar + geo | OQ-12 agreed by both conductors; F-EN2 for the final digest | digest published; CI fails on digest drift; OQ-12 recorded in ADR-0035 | inside L1.r for radar; OQ-12: 1 wd geo. The interim → F-EN2 digest switch forces one reviewed digest bump (R11) | previous digest |
 | **L1.g** | Geo consumes the profile read-only by `git sha + digest`, CI digest check; graphify 0.17.1 PV profile aligned | geo | G2; L1.p | CI fails on a digest mismatch (negative test) | 1 + 1 wd (capture proof index #165–#170: 1 wd) | pin previous digest |
 | **L2.c** | F-CM1, F-CM2, F-CM3 usable in preprod | sentropic | owner Q1 answer (seats) + terms-of-use check; Cloud Code question answered | F-CM acceptance tests from `requests-cluster-mesh.md` pass in preprod | `pending sentropic assessment` | n/a |
 | **L2.g** | Geo extract node: lane service account, token exchange (F-CM3), flag `REFRESH_LLM_TRANSPORT=gateway` | geo | G2; L2.c | one Job calls the gateway in preprod, no credential in the pod spec | 2 + 1 wd (s3-dag identity PRs, same burst) | flag back to `keyring` |
 | **L3.b** | Extend `pv-capture-backlog` to radar's 528 cities, one DAG per city, `concurrencyKey = source host`; bounded-memory streaming collection (Track `01M41PRZG9JB8CTE805D23TAE1`, canary: 172 MB vsad.ca PDF under 768 Mi) | geo | G2; `geo` quota figure (k8s); L3 thresholds confirmed by both conductors in the L3 PR | PR merged; memory canary passes | 5 + 3 wd (PV chain: 2 wd; +3 wd for streaming and refreshing the June radar adapter copy, an explicit hypothesis) | stop the DAG |
 | **L3.r** | Shadow `detect → capture → text`, 3 consecutive geo cycles; parity on sha sets (ADR-0035 gate values) | geo | L3.b | L3 parity thresholds met | 3 cal d run (hypothesis: one cycle ≤ 1 day, **`unknown` until the first cycle is measured**) + 1 + 2 wd analysis and re-run | stop the DAG |
-| **L4.g** | Nodes `extract → verify → reconcile → signals → promote`; radar `signals.ts` rules ported unchanged with a golden test; contract writer `exports/immo/pv-signals/v1/` with its size budget | geo | L1.g, L2.g, L3.r done; F-EN1, F-EN3, F-EN4 in 0.24.0; verify path decided (R6); L4 thresholds confirmed | PR merged; golden test 100 % identical signals | 9 + 5 wd (zoning events v2: 9 wd; served contract: 1–2 wd; s3-dag nodes: one burst) | revert PR; contract prefix unpublished |
+| **L4.g** | Nodes `extract → verify → reconcile → signals → promote`; signals ported from radar's **live** path (profile-driven extraction with the shared profile, then the deterministic enrichment of `graphify-34-enrichment.ts`: `etape`, `instrument`, and the materialization in `graph-store.ts`), with a golden test against that code. `exploitation/signals.ts` only feeds a count in radar's seed route and is **not** the reference. Contract writer `exports/immo/pv-signals/v1/` with its size budget | geo | L1.g, L2.g, L3.r done; F-EN1, F-EN3, F-EN4 in 0.24.0; verify path decided (R6); split of `etape`/`instrument` derivation decided (R12); L4 thresholds confirmed | PR merged; golden test 100 % identical signals vs the live path | 9 + 5 wd (zoning events v2: 9 wd; served contract: 1–2 wd; s3-dag nodes: one burst) | revert PR; contract prefix unpublished |
 | **L4.r** | Shadow on the Q2 sample (budget ≤ 2× the L0.r baseline, kill-switch above it) + v101b benchmark | geo | L4.g; L0.r baseline; owner Q2 sample | L4 parity thresholds met (ADR-0035) | 3 + 2 wd (hypothesis; run length depends on the sample size, `unknown`) | stop |
-| **L4.c** | `radar-pv-consume` dry-run: canonical and signal diff per city and kind, facets before = after | radar | L4.r output | radar's L4 criteria | `pending radar estimate` | stop |
+| **L4.c** | `radar-pv-consume`: contract client (schemas, sha256 checks, size budgets, incomplete snapshot refused), `event_id` → `::` mapping table written in the projection transaction, merge onto the canonical baseline (never the contract alone, since `upsertGraphAtomic` deletes absent nodes), dry-run report per city/kind via `upsertGraphAtomic(..., { preview: true })` | radar | contract v1 field names confirmed by geo-cond; read-only credential on `exports/immo/pv-signals/` (k8s mint + rotation); a golden contract fixture, so the build runs **beside L4.g** | dry-run report: canonical and signal diff, Jaccard, facets before = after, `needs_review` rate | 2 + 1 buffer agent-days (radar #679, #853, #825) | stop |
 | **G3** | Owner go: L4 parity accepted, start L5 | owner | L4.r + L4.c | recorded go | gate, 2 wd allowed (hypothesis) | stop at L4 |
-| **L5** | Preprod cohorts by allowlist, radar refresh skips them; rollback rehearsed once inside the windows | geo + radar | G3 | each cohort: 0 incomplete snapshot read as complete, `latest.json` age ≤ 6 h p95, 0 dropped signal; rehearsal done | **N × 7 cal d**, N `unknown`; plan uses **N = 3** (hypothesis); geo allowlist mechanics 1 + 1 wd, done during L4 | remove the city from the allowlist + canonical pre-image |
+| **L5** | Preprod cohorts by allowlist (one ConfigMap read by both CronJobs; radar refresh skips it at `configOnlyCitySlugs()`); rollback rehearsed once inside the windows | geo + radar | G3 | each cohort: 0 incomplete snapshot read as complete, `latest.json` age ≤ 6 h p95, 0 dropped signal; rehearsal done | **N × 7 cal d**, N `unknown`; plan uses **N = 3** (hypothesis); geo allowlist mechanics 1 + 1 wd and radar 1 agent-day (allowlist, prod overlay, rollback runbook), both done during L4 | remove the city from the allowlist + canonical pre-image |
 | **G4** | Owner go: prod | owner | L5 exit | recorded go | gate, 2 wd allowed (hypothesis) | stay in preprod |
 | **L6** | Prod cohorts; each widening is a geo-prod Environment approval | geo + radar | G4 | same criteria as L5, in prod | N × (1 wd approval + 7 cal d), N = 3 (hypothesis) | same as L5 |
-| **L7** | `join` (lot, zone; role only after the Loi 25 decision); `geo_resolutions` from the contract; `run-geo-mapper` shadow then off (radar) | geo + radar | L6 started; Loi 25 owner decision for role (else role excluded) | resolution rate reported; radar's mapper off | geo 3 + 2 wd, **inside the 28-day window**, not on the critical path; radar part `pending radar estimate` | re-enable the Job |
+| **L7** | `join` (lot, zone; role only after the Loi 25 decision); `geo_resolutions` fed from the contract. Radar has **two** writers to switch: the `run-geo-mapper` Job and the `populate-geo` daily CronJob (`--no-resolve`) | geo + radar | L6 started; Loi 25 owner decision for role (else role excluded); contract zone/lot ids resolvable to radar canonical ids (`unverified`) | resolution rate reported; both radar writers off; consistency E1 unchanged on identical input | **inside the 28-day window**, not on the critical path: geo 3 + 2 wd; radar 1 + 0.5 agent-day + 7 cal d shadow (radar #253) | re-enable the Jobs |
 | **W28** | 28 cal d after the last cohort, radar CronJob deployed and suspended | — | L6 last cohort | ADR-0035 exit criteria held for 28 d | 28 cal d (fixed) | radar re-arms its CronJob |
 | **G6** | Owner go: L8 | owner | W28 | recorded go | gate, 2 wd allowed (hypothesis) | — |
-| **L8** | Retire `radar-refresh-pv`, watchdog, keyring PVC, RECUEIL, radar signal derivation (radar); PV adapters into geo `qc-sources` (geo) | radar + geo | G6; every city in the allowlist; F-EN5..F-EN9 needed by radar (P2) | radar objects removed; geo adapters merged | radar `pending radar estimate`; geo 2 + 1 wd (`qc-sources` port: 6 wd for the whole package, this is a subset) | pinned previous tag |
+| **L8** | Radar: retire `radar-refresh-pv`, watchdog, keyring PVC and the seat secrets, the `refresh-*` modules not reused by pv-consume, the **PV use** of RECUEIL (the module is shared with 5 other callers and stays) and the `signals.ts` seed count. Radar's enrichment (`graphify-34-enrichment.ts`) **stays** (facets, vivier). Geo: PV adapters into `qc-sources` | radar + geo | G6; every city in the allowlist; F-EN5..F-EN9 needed by radar (P2); owner go for deleting the PVC and secrets | no manifest or workflow still names `radar-refresh-pv`; geo adapters merged | radar 1 (+0.5 if PV adapters/RECUEIL in scope) agent-day (radar #683, #728); geo 2 + 1 wd (`qc-sources` port: 6 wd for the whole package, this is a subset) | pinned previous tag |
 
 ## 2. External dependencies
 
@@ -97,48 +100,74 @@ by the end of L3.r. Each is `unknown` or `pending` today, so **the real critical
 external dates and the end of L3.r**. Until their owners give dates, the calendar below is an **earliest-start
 lower bound, not a commitment**.
 
-Totals, all geo lots (including those beside the path or inside W28): build **34 wd** + explicit buffers **22 wd**.
-Owner gates: **10 wd** (G1, G2, G3, G4, G6) + **3 wd** of prod cohort approvals. Fixed windows: **70 cal d**
-(3 × 7 + 3 × 7 + 28), plus the L3 run.
+Totals:
+- geo, all lots (including those beside the path or inside W28): build **34 wd** + explicit buffers **22 wd**;
+- radar (its own estimates): **7 agent-days** (7.5 with the L8 option) + buffer **1.5 agent-days**, plus the 7-day
+  baseline clock and a 7-day L7 shadow. No radar lot lands on the critical path: L0.r runs beside L0, L1.r beside
+  L3, L4.c and the L5/L6 radar work beside L4.g, L7 inside W28, and L8 radar beside L8 geo;
+- owner gates: **10 wd** (G1, G2, G3, G4, G6) + **3 wd** of prod cohort approvals;
+- fixed windows: **70 cal d** (3 × 7 + 3 × 7 + 28), plus the L3 run.
 
-**Earliest-start calendar**, computed by `node scripts/adr-0035-calendar.mjs 2026-11-16` (working days, Quebec
-holidays). It
-assumes **T0 = 2026-11-16** (hypothesis: ratification after the review with the Product Owner) and that every
-external dependency is ready when needed:
+**Earliest-start calendar**, output of `node scripts/adr-0035-calendar.mjs 2026-11-16` (working days, Quebec
+holidays; radar agent-days rounded up). It assumes **T0 = 2026-11-16** (hypothesis: ratification after the
+review with the Product Owner) and that every external dependency is ready when needed. Rows tagged `[radar]` or
+`[geo]` run beside the critical path; untagged rows are the critical path.
 
 | step | content | duration | start | end |
 |---|---|---|---|---|
 | L0.a | Hygiene PR | 2 wd | 2026-11-16 | 2026-11-17 |
+| L0.r1 | [radar] Token instrumentation (0.5 agent-day) | 1 wd | 2026-11-16 | 2026-11-16 |
+| L0.r2 | [radar] Release + prod promotion (hypothesis) | 2 wd | 2026-11-17 | 2026-11-18 |
 | L0.b | Canary build (remaining pieces) | 5 wd | 2026-11-18 | 2026-11-24 |
+| L0.r3 | [radar] Baseline measurement window | 7 cal d | 2026-11-19 | 2026-11-25 |
 | G1 | Owner go: VAP + apply + run | 2 wd | 2026-11-25 | 2026-11-26 |
 | L0.c | Canary run, 4 proofs + 3 refusals, report | 3 wd | 2026-11-27 | 2026-12-01 |
 | G2 | Owner go: canary ratification | 2 wd | 2026-12-02 | 2026-12-03 |
-| L1.g / L2.g | beside L3 (needs F-EN2 and F-CM1..3) | 2 + 3 wd | 2026-12-04 | 2026-12-10 |
+| L1.r | [radar] Engram 0.24.0 bump + profile folder + digest CI, then F-EN4 adoption (0.5 + 0.5 + 0.5 buffer) | 2 wd | 2026-12-04 | 2026-12-07 |
+| L1.g | [geo] Pin shared profile (git sha + digest, CI check) | 2 wd | 2026-12-04 | 2026-12-07 |
 | L3.b | Extend chain to 528 cities + bounded-memory collection | 8 wd | 2026-12-04 | 2026-12-15 |
+| L2.g | [geo] Lane SA + token exchange, flag | 3 wd | 2026-12-08 | 2026-12-10 |
 | L3.r | Shadow: 3 consecutive geo cycles | 3 cal d | 2026-12-16 | 2026-12-18 |
 | L3.p | Parity analysis + re-run margin | 3 wd | 2026-12-21 | 2026-12-23 |
+| L4.c | [radar] radar-pv-consume: contract client, mapping, dry-run report (2 + 1 buffer) | 3 wd | 2026-12-24 | 2026-12-29 |
 | L4.g | extract/verify/reconcile/signals/contract build | 14 wd | 2026-12-24 | 2027-01-14 |
+| L5/6.r | [radar] Allowlist + refresh skip, prod overlay, rollback runbook (1) | 1 wd | 2026-12-30 | 2026-12-30 |
 | L4.r | Shadow on Q2 sample + v101b + radar dry-run | 5 wd | 2027-01-15 | 2027-01-21 |
 | G3 | Owner go: L4 parity accepted | 2 wd | 2027-01-22 | 2027-01-25 |
-| L5.1–L5.3 | Preprod cohort windows | 3 × 7 cal d | 2027-01-26 | 2027-02-15 |
+| L5.1 | Preprod cohort 1 window | 7 cal d | 2027-01-26 | 2027-02-01 |
+| L5.2 | Preprod cohort 2 window | 7 cal d | 2027-02-02 | 2027-02-08 |
+| L5.3 | Preprod cohort 3 window | 7 cal d | 2027-02-09 | 2027-02-15 |
 | G4 | Owner go: prod | 2 wd | 2027-02-16 | 2027-02-17 |
-| L6.1–L6.3 | Prod cohorts (1 wd approval + 7 cal d each) | 3 × 8 | 2027-02-18 | 2027-03-15 |
-| W28 | 28-day window before L8 (L7 inside) | 28 cal d | 2027-03-16 | 2027-04-12 |
+| L6.1a | Prod cohort 1 approval (geo-prod) | 1 wd | 2027-02-18 | 2027-02-18 |
+| L6.1 | Prod cohort 1 window | 7 cal d | 2027-02-19 | 2027-02-25 |
+| L6.2a | Prod cohort 2 approval (geo-prod) | 1 wd | 2027-02-26 | 2027-02-26 |
+| L6.2 | Prod cohort 2 window | 7 cal d | 2027-02-27 | 2027-03-05 |
+| L6.3a | Prod cohort 3 approval (geo-prod) | 1 wd | 2027-03-08 | 2027-03-08 |
+| L6.3 | Prod cohort 3 window | 7 cal d | 2027-03-09 | 2027-03-15 |
+| L7.g | [geo] join + contract geo_resolutions source (3 + 2 buffer) | 5 wd | 2027-03-16 | 2027-03-22 |
+| L7.r | [radar] geo_resolutions writer + shadow diff (1) | 1 wd | 2027-03-16 | 2027-03-16 |
+| W28 | 28-day window before L8 (L7 runs inside) | 28 cal d | 2027-03-16 | 2027-04-12 |
+| L7.s | [radar] Shadow period (radar proposal) | 7 cal d | 2027-03-17 | 2027-03-23 |
+| L7.o | [radar] Switch off run-geo-mapper and populate-geo resolve (0.5) | 1 wd | 2027-03-24 | 2027-03-24 |
 | G6 | Owner go: L8 | 2 wd | 2027-04-13 | 2027-04-14 |
-| L8 (geo) | PV adapters into qc-sources | 3 wd | 2027-04-15 | 2027-04-19 |
+| L8.r | [radar] Retire refresh-pv, watchdog, keyring PVC, PV use of RECUEIL (1 + 0.5 option) | 2 wd | 2027-04-15 | 2027-04-16 |
+| L8.g | [geo] PV adapters into qc-sources | 3 wd | 2027-04-15 | 2027-04-19 |
 
-Lower bound for the end of L8 (geo side): **2027-04-19**, before radar's L8 estimate. Each working day of
-slip on a critical-path step moves every later date by one working day. Rerun the script with a new T0 or new
-durations; never edit the table by hand.
+Lower bound for the end of L8, radar and geo together: **2027-04-19**. Radar's estimates do not move it: every
+radar lot fits beside a geo step. Each working day of slip on a critical-path step moves every later date by one
+working day. Rerun the script with a new T0 or new durations; never edit the table by hand.
 
 ## 4. Radar windows that constrain the plan
 
 - **Classification pilot**: radar's pilot keeps its own Engram pin on 0.21.2 until it ends. Radar is decoupling
-  that pin, so L1.r is no longer gated by the pilot (gr-conductor, 2026-10-31). Pilot end date: `pending radar
-  estimate`.
-- **Refresh-pv baseline, 7 days, in L0 (L0.r)**: it can start at T0 in parallel with the geo canary. It must end
-  before L4.r, because the Q2 budget is 2× that measured baseline. With T0 = 2026-11-16 it fits easily before
-  2027-01-15. Radar gives the exact window.
+  that pin, so L1.r is no longer gated by the pilot (gr-conductor and radar, 2026-10-31). Pilot end date:
+  `unknown` (pass 1 in progress; radar gives it). Radar's caution: the pilot fills its deps volume with `npm ci`
+  on the repo lock, so L1.r on radar main must either follow the pilot's L2 or freeze that volume.
+- **Refresh-pv baseline, 7 days, in L0 (L0.r)**: tokens are recorded nowhere today, so 0.5 agent-day of
+  instrumentation and a prod release come first, then the 7-day clock. It must end before L4.r, because the Q2
+  budget is 2× that measured baseline. Earliest: 2026-11-19 → 2026-11-25, well before L4.r (2027-01-15). It is
+  valid only if the prod CronJob actually runs all 7 days (live state `unverified`). The 2× cap is a cost cap:
+  seat-based usage needs a token-to-CAD rule, to set with the owner's Q2 answer.
 - Radar refresh slots (05:17, 11:17, 17:17, 23:17 UTC) and geo backup window (03:13–06:30 UTC): geo runs and
   cohort widenings avoid them.
 
@@ -155,6 +184,10 @@ durations; never edit the table by hand.
 | R7 | One geo L3 cycle longer than 1 day (`unknown` today) | L3.r longer | measure the first cycle and recompute the calendar |
 | R8 | Year-end period (L4.g spans 2026-12-24 → 2027-01-14) | lower availability for reviews and owner gates | the buffers stay explicit; G3 is not scheduled before 2027-01-22 |
 | R9 | L3 or L4 parity not reached (robots, IP blocks, signal drift) | re-run and analysis | 2 wd re-run margin in L3.p and L4.r; cities below threshold are listed, not hidden |
+| R11 | Interim radar profile digest differs from the later F-EN2 digest | one extra digest bump, reviewed by both conductors | planned in L1.p; the bump is a reviewed change, not a surprise |
+| R12 | Signal derivation is split today between the LLM extraction and radar's deterministic enrichment (`etape`, `instrument`), which radar keeps for facets and vivier | contract fields `etape`/`etape_date` could be derived twice, or differently | decide at L4 entry who derives `etape` (geo in the contract, or radar's enrichment only); the L4 golden test targets the live path either way |
+| R13 | `event_id` → `::` mapping misses existing radar nodes | duplicated or orphaned signals and facets | radar's L4 dry-run: 0 orphan facet, 0 canonical node lost, before G3 |
+| R14 | Contract zone/lot ids not resolvable to radar canonical ids (`unverified`) | L7 coverage drops | checked in the L7 shadow before both radar writers go off |
 | R10 | Owner gates taking longer than the 2 wd allowed | each gate moves the path | gates are listed by name; the owner can batch G1/G2 if wanted |
 
 ## 6. Go / no-go points where the owner can stop
