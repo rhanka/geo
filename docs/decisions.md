@@ -1035,6 +1035,15 @@ node count: `unverified`.
    cross-user grants are gated in the gateway pool)? If not, which provider accounts back it?
 2. What LLM budget, and on which sample, is accepted for the L4 shadow double run?
 
+Owner answers, **relayed** by the immo conductor on 2026-10-31 (relay, not a first-hand record; to be
+confirmed in the ratification record):
+1. Yes to pooling personal seats in batch behind the gateway, provided their terms of use allow it, checked
+   before L2. Wording gap to settle at ratification: the relay names "Codex, Claude Code", the question named
+   Codex and **Cloud Code** (Google, Gemini leg of ADR-0034); which seats are covered is `unknown`.
+2. Shadow budget up to 2× the current refresh LLM cost during coexistence, with a kill-switch above it.
+   The current refresh LLM cost is `unknown` here (to measure from radar's usage receipts before L4); the
+   sample itself is not fixed yet.
+
 **Consequence.** No code changes with this ADR. Geo work starts at the L0 canary, behind the existing
 runbook gates (VAP + run go, then ratification go). The study is kept durably in radar:
 rhanka/radar-immobilier#960 (`docs/spec/reports/etude-geo-dag/consensus-v3.md`), which also carries the
