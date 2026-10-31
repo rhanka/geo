@@ -6,8 +6,9 @@ owner-direct record.
 
 Author: geo-cond. Radar-side lots carry **radar's own estimates**, written by the immo conductor and not by geo:
 `radar-lots-estimates.md` (radar `origin/main` `9ca451cf7`, 2026-10-31, sha256
-`767b8abaffdce9a1513e7efc91e948831799424bad9f3b49a5c7c45cb58016f8`), to be committed by radar in
-rhanka/radar-immobilier PR #960 next to `docs/spec/reports/etude-geo-dag/consensus-v3.md`. Radar counts in
+`767b8abaffdce9a1513e7efc91e948831799424bad9f3b49a5c7c45cb58016f8`), at
+`rhanka/radar-immobilier` main `docs/spec/reports/etude-geo-dag/radar-lots-estimates.md` (committed by
+rhanka/radar-immobilier#967). Radar counts in
 agent-days (CI and review included); the calendar rounds them **up** to whole working days. External dates are
 those given by their owner; a missing date is `unknown` or `pending`, with the name of whoever has to give it.
 
