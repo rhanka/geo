@@ -83,8 +83,9 @@ separately as go/no-go gates.
 | F-CM8 cross-server discovery (P3) | not required | sentropic | `unknown` | **amend**: explicit, revocable enrolment, CM 0.29.0 (provisional); only if a second cluster joins |
 
 Sentropic source: `assessment.md` (Astra, read-only, sha256
-`70876567889abf4f96b41966e2f08396b6ac52bd2048807cc54ebcd72926c757`), today in sentropic's local `.tmp/geo-fcm/`,
-to be committed by sentropic (Track). **No F-CM preprod date is committed**: every ID stays `unknown` until
+`70876567889abf4f96b41966e2f08396b6ac52bd2048807cc54ebcd72926c757`, 35,450 bytes), at `rhanka/sentropic` main
+`docs/specs/geo-fcm/assessment.md` (docs-only PR in progress, indexed in `docs/specs/INDEX-durable-artifacts.md`
+with its Track item). **No F-CM preprod date is committed**: every ID stays `unknown` until
 ADR-0035 is ratified and the work gets a slot. The sentropic queue ahead of it is: identity A2/A4 (anchor
 ≈ 2026-11-04) → remote control RC2+ → memory 3×3 co-brainstorm → federation r6 → daily cyber → PG18 (anchor
 ≈ 2026-11-09). No geo slot is reserved ahead of that queue.
