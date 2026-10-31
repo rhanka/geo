@@ -914,9 +914,11 @@ a paired radar PR.
 - ADR-0023 gives geo PV acquisition, indexing and the served PV events; immo stays a consumer. Owner record
   of 2026-09-25 (ADR-0034): "à terme on reversera les job de pv d'immo vers geo".
 - Radar still runs its own PV chain: CronJob `radar-refresh-pv` (`0 5,11,17,23 * * *`, one sequential pod,
-  ~528 cities, at most 1 document per city per pass, keyring PVC singleton) and derives signals in
-  `api/src/services/exploitation/signals.ts` (kinds `ppcmoi`, `derogation`, `cptaq-dezonage`,
-  `residential-rezoning`, `intention`, `precedent`). Radar docs still claim PV acquisition and signal
+  ~528 cities, at most 1 document per city per pass, keyring PVC singleton). Its live signals come from the
+  profile-driven LLM extraction, then the deterministic enrichment of `graphify-34-enrichment.ts` (`etape`,
+  `instrument`) and the materialization in `graph-store.ts`; `api/src/services/exploitation/signals.ts` only
+  feeds a count in the seed route (radar estimates, 2026-10-31). Kinds: `ppcmoi`, `derogation`,
+  `cptaq-dezonage`, `residential-rezoning`, `intention`, `precedent`. Radar docs still claim PV acquisition and signal
   delivery for immo (radar `docs/architecture.md` l.560, `SPEC_EVOL_REFRESH_018.md` l.7), against ADR-0023.
 - Geo already has a PV chain: `acquisition/src/lib/pv-capture-backlog.ts`, `pv-capture-backlog-run.ts`,
   `deploy/capture-job/cronjob-capture-refresh.yaml`, `deploy/k8s/pv-probable-backlog-cronjob.yaml`.
@@ -932,7 +934,7 @@ a paired radar PR.
    |---|---|---|
    | detect, capture, text, extraction, removal-only verification | geo | one chain; geo's `pv-capture-backlog` is extended, no new chain |
    | reconcile into served PV events | geo | `SPEC_QC_ZONING_EVENTS_V2` (v2.1), `event_id = sha256(muni \| source_ref \| detection_anchor)` |
-   | signal detection | geo | radar `signals.ts` rules ported **unchanged** (kinds, mandatory `evidenceRefs`, weak kinds capped, `needs_review`) |
+   | signal detection | geo | radar's **live** path ported **unchanged**: profile-driven extraction with the shared profile (kinds, mandatory `evidenceRefs`, weak kinds capped, `needs_review`); radar's deterministic enrichment (`graphify-34-enrichment.ts`: `etape`, `instrument`) stays in radar for facets and vivier, and who derives `etape` in the contract is settled at L4 entry. `signals.ts` (seed route only) is not the reference |
    | join to lot, zone, role (no owner fields, Loi 25) | geo | after the Loi 25 decision on role |
    | canonical merge, facets, scoring, app | radar | radar stays the sole writer of its graph (`upsertGraphAtomic`); geo never writes it |
    | PV ontology profile | radar + geo, jointly | one versioned artifact with a digest; a change needs both conductors' review and a digest bump; the digest is pinned in every run identity. Engram supplies bundle and validation mechanics only |
@@ -965,7 +967,8 @@ a paired radar PR.
 
    **Radar consumer side.** `radar-pv-consume` does no scraping, no LLM call and no local signal derivation.
    The `event_id` → `::` mapping runs inside the guarded canonical merge (`upsertGraphAtomic`); facets and
-   scoring attach after it. `geo_resolutions` is fed from `join`; `run-geo-mapper` goes shadow, then off, in L7.
+   scoring attach after it. `geo_resolutions` is fed from `join`; both current writers (`run-geo-mapper` and
+   the `populate-geo` daily CronJob) go shadow, then off, in L7.
 
 5. **LLM engine (amends ADR-0034, conditionally).** ADR-0034 stands until the owner answers Q1 below. Moving
    extraction to the cluster-mesh gateway pool (pooled seats, budget admission, shared 429 cooldown, usage
@@ -977,20 +980,21 @@ a paired radar PR.
    `docs/spec/reports/etude-geo-dag/`): cluster-mesh F-CM1..F-CM8, among them F-CM1/F-CM2 (pool state, budget
    admission, 429 cooldown) and F-CM3 (workload identity per lane service account), P1, part of L2, and
    F-CM5 (MCP supervision over the s3-dag read-model); Engram F-EN1..F-EN9, among them F-EN4
-   (citation-preserving `mergeExtractions`, the reason for Engram 0.23 in L1).
+   (citation-preserving `mergeExtractions`, the reason for the Engram bump in L1; target 0.24.0, as no
+   published 0.23.x carries it).
 
 7. **Migration, no radar downtime.** The old path is never removed in the step that arms the new one.
 
    | lot | content | rollback |
    |---|---|---|
    | L0 | this ADR; s3-dag canary on the existing PV chain (preprod bucket, runbook gates); paired radar doc PR; refresh-pv LLM baseline measured over 7 days (radar); hygiene below | n/a |
-   | L1 | radar to Engram 0.23 (+F-EN4); shared profile v2.2 published with digest; geo graphify 0.17.1 PV profile aligned | repin Engram 0.21.2 |
+   | L1 | radar to Engram 0.24.0 (+F-EN4); fix on purpose the stale `packageVersion: "0.18.0"` in the refresh run identity (`refresh-pv.ts:247`); shared profile v2.2 published with digest; geo graphify 0.17.1 PV profile aligned | repin Engram 0.21.2 |
    | L2 | F-CM1..F-CM3 in preprod with one Job; flag `REFRESH_LLM_TRANSPORT=gateway` | flag back to `keyring` |
    | L3 | `detect → capture → text` shadow on radar's 528 cities, one DAG per city | stop the DAG |
    | L4 | extraction to promotion shadow on the Q2 sample; `radar-pv-consume` dry-run | stop |
    | L5, L6 | preprod, then prod, city cohorts by allowlist; radar refresh skips them; rollback rehearsed once in preprod before L6 | remove the city from the allowlist + canonical pre-image |
-   | L7 | `join`; `geo_resolutions` from the contract; `run-geo-mapper` shadow then off | re-enable the Job |
-   | L8 | retire `radar-refresh-pv`, `radar-refresh-pending-watchdog`, the keyring PVC, RECUEIL and radar signal derivation; PV adapters move to geo `qc-sources` | pinned previous tag |
+   | L7 | `join`; `geo_resolutions` from the contract; `run-geo-mapper` and `populate-geo` resolution shadow then off | re-enable the Jobs |
+   | L8 | retire `radar-refresh-pv`, `radar-refresh-pending-watchdog`, the keyring PVC, the PV use of RECUEIL (the module is shared and stays) and the `signals.ts` seed count; radar's enrichment stays; PV adapters move to geo `qc-sources` | pinned previous tag |
 
    Hard order: no L1+ geo work before the canary proofs; no L3 without the `geo` namespace quota figure,
    which poc-k8s holds (geo is the tenant using `tenant-quota`); no L3 before the L3 thresholds below are
@@ -1013,8 +1017,8 @@ cities (82.4 %), 93 broken sources (17.6 %); 19 906 PDF sha on 436 cities.
   recall of radar sha in geo ≥ 98 % overall and ≥ 95 % per city, cities below listed; geo-only documents
   are reported as gains; geo city error rate ≤ 17.6 %, and no city radar reaches fails in geo on 2
   consecutive cycles; text-extraction success on common PDFs ≥ radar's.
-- **L4 parity** (Q2 sample + `radar-pv-consume` dry-run): ported rules vs `signals.ts` on the same
-  extraction give identical signals (kind, `event_id`, `evidenceRefs`), 100 %, as a golden test; v101b
+- **L4 parity** (Q2 sample + `radar-pv-consume` dry-run): geo signals vs radar's live path (profile-driven
+  extraction + `graphify-34-enrichment.ts`) on the same extraction give identical signals (kind, `event_id`, `evidenceRefs`), 100 %, as a golden test; v101b
   benchmark primary ≥ 95/100 and within 5 points of radar's same-run score, fallback ≥ 85/100; Jaccard on
   `(event_id, kind)` ≥ 0.90 for `ppcmoi`, `derogation`, `cptaq-dezonage`, `residential-rezoning` and ≥ 0.80
   for `intention`, `precedent`, per-kind count gap ≤ 10 %; `evidenceRefs` on 100 % of signals; 0 orphaned
