@@ -15,15 +15,18 @@ Scope = exactly four pieces: **geo's PV chain on radar's cities**, **radar's ext
 **v1 contract**, and **radar-pv-consume in dry-run**. Same code, same Engram version (radar's pin), same model
 policy (ADR-0034, accepted), same in-pod seat transport as radar today. Everything else is in section 6.
 
-**Effort**: geo = 14 agent-days of build (short plan S1 + S2, buffers included: 5 + 9). One agent cannot do it in
-7 days. **Three geo lanes in parallel + the radar lane** make it fit:
+**Effort vs capacity** (two different figures, both stated):
+- **Effort**, geo: **16 agent-days**, buffers included = short plan S1 + S2 (5 + 9 = 14) + the parity tool
+  (2, new: in the short plan it was folded into S3.p). One agent cannot do it in 7 days.
+- **Capacity**, geo: **3 lanes × 7 days = 21 agent-days**, so **5 agent-days of slack**, shown per lane below.
+- **Three geo lanes in parallel + the radar lane** make it fit:
 
-| lane | owner | D1 | D2–D4 | D5–D6 | D7 | agent-days | basis |
+| lane | owner | D1 | D2–D4 | D5–D6 | D7 | effort (build + buffer) / slack in the 7 days | basis |
 |---|---|---|---|---|---|---|---|
-| **G-A capture** | geo | read radar's city + source list; contract of capture outputs (S3 text keys) frozen with G-B | extend `pv-capture-backlog` to the 528 cities; size guard (`too-large` status); CronJob dedup + digest pins | preprod run on the 528 cities, including the 183-day backfill used by the L3 parity; measure throughput | fixes | 5 + 2 margin | geo PV chain built in 2 wd (2026-07-26 → 07-29) |
-| **G-B extraction** | geo | port plan; Engram pin = radar's | port `refresh-profile`, `refresh-model-policy`, `refresh-verification`, merge of `refresh-run` (~3 100 LOC + tests) **unchanged**; keyring `flock` + pending watchdog | job wrapper reading G-A's text keys; preprod run on 20 documents with the geo keyring | fixes | 7 | `qc-sources` port, 241 files in 6 wd |
-| **G-C contract + parity** | geo | **freeze contract v1** (field list, section 5) + golden fixture, shared with radar | writer `exports/immo/pv-signals/v1/` (per-city objects → snapshot → verify → CAS pointer, size budget); parity tool (L3 sha sets; L4 identical signals on the same extraction, Jaccard per kind, `needs_review`) | integrate G-B → writer; end-to-end preprod smoke | one preprod rollback rehearsal with radar | 7 | served contract built in 1–2 wd; capture proof index in 1 wd |
-| **R radar** | radar | token instrumentation (0.5) | `radar-pv-consume` dry-run (2): contract client, `event_id` → `::` mapping, dry-run report | allowlist + refresh skip + rollback script (1); dry-run on G-C's preprod contract | rehearsal with G-C | 3.5 | `radar-lots-estimates.md` |
+| **G-A capture** | geo | read radar's city + source list; contract of capture outputs (S3 text keys) frozen with G-B | extend `pv-capture-backlog` to the 528 cities; size guard (`too-large` status); CronJob dedup + digest pins | preprod run on the 528 cities, including the 183-day backfill used by the L3 parity; measure throughput | fixes | 3 + 2 = 5 / slack 2 | geo PV chain built in 2 wd (2026-07-26 → 07-29) |
+| **G-B extraction** | geo | port plan; Engram pin = radar's | port `refresh-profile`, `refresh-model-policy`, `refresh-verification`, merge of `refresh-run` (~3 100 LOC + tests) **unchanged**; keyring `flock` + pending watchdog | job wrapper reading G-A's text keys; preprod run on 20 documents with the geo keyring | fixes | 4 + 2 = 6 / slack 1 | `qc-sources` port, 241 files in 6 wd (short plan S2 minus its contract part) |
+| **G-C contract + parity** | geo | **freeze contract v1** (field list, section 5) + golden fixture, shared with radar | writer `exports/immo/pv-signals/v1/` (per-city objects → snapshot → verify → CAS pointer, size budget); parity tool (L3 sha sets; L4 identical signals on the same extraction, Jaccard per kind, `needs_review`) | integrate G-B → writer; end-to-end preprod smoke | one preprod rollback rehearsal with radar | contract 2 + 1, parity tool 2 (hypothesis) = 5 / slack 2 | served contract built in 1–2 wd; capture proof index in 1 wd |
+| **R radar** | radar | token instrumentation (0.5) | `radar-pv-consume` dry-run (2): contract client, `event_id` → `::` mapping, dry-run report | allowlist + refresh skip + rollback script (1); dry-run on G-C's preprod contract | rehearsal with G-C | 3.5 / slack 3.5 | `radar-lots-estimates.md` |
 
 **Dependencies between lanes** (all frozen on D1, so the lanes then work apart):
 - G-C → G-B and R: the contract v1 field list and golden fixture (D1). R builds against the fixture, not against
@@ -102,7 +105,7 @@ in `docs/adr-0035-transition-plan.md`.
 
 | # | risk | mitigation |
 |---|---|---|
-| I1 | A lane slips (G-B is the longest, 7 agent-days with no margin) | D1 freezes all interfaces; G-B's port is unchanged code, not a rewrite; if G-B is not merged on D7, the shadow does not start and the go is not asked |
+| I1 | A lane slips (G-B is the tightest: 6 agent-days of effort, 1 day of slack) | D1 freezes all interfaces; G-B's port is unchanged code, not a rewrite; if G-B is not merged on D7, the shadow does not start and the go is not asked |
 | I2 | 183-day backfill throughput unknown (capture of ~20 000 radar-known PDFs) | measured on D5; if it cannot finish by D7, the L3 parity is computed on the cities fully backfilled and the others are listed `unverified`, not passed |
 | I3 | 24 h shadow sees each slot once only | per-city re-run rule; kinds with too few cases `unverified`; radar suspended (not removed) after cut-over |
 | I4 | One extraction pod and seat keyring in geo, as in radar today | `flock` + pending watchdog ported; parallel extraction comes later with F-CM |
