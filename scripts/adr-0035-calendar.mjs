@@ -29,6 +29,19 @@ const print = (endLabel, end) => {
   console.log('| step | content | duration | start | end |\n|---|---|---|---|---|');
   for (const r of rows) console.log(`| ${r.join(' | ')} |`);
 };
+// One-iteration plan (docs/adr-0035-one-iteration-plan.md): `node scripts/adr-0035-calendar.mjs <T0> one`.
+// Agents work every calendar day, so the iteration is counted in calendar days; T0 = D1.
+if (process.argv[3] === 'one') {
+  const devEnd = track(t0, [['D1–D7', 'Development, 4 parallel lanes (G-A capture, G-B extraction, G-C contract + parity, R radar)', 'cal', 7]]);
+  const end = track(devEnd, [
+    ['G0', 'Owner approval: deploy the shadow jobs (geo-prod Environment), then shadow starts at the next radar slot', 'cal', 1],
+    ['T1', 'Shadow: 4 consecutive cycles (24 h), radar authoritative, radar dry-run each cycle', 'cal', 1],
+    ['T2', 'Parity report against the ADR-0035 gate values; re-run cycle only for failed cities', 'cal', 1],
+    ['G1+C', 'Owner go, then cut-over in 2 waves the same day (2 radar slots); radar suspended', 'cal', 1],
+  ]);
+  print('iteration (dev + test + cut-over) ends before', end);
+  process.exit(0);
+}
 // Short plan (docs/adr-0035-short-plan.md): `node scripts/adr-0035-calendar.mjs <T0> short [one-slot]`.
 // `one-slot` = only one geo PR slot free (2-open-PR limit), so S1 and S2 run one after the other.
 if (process.argv[3] === 'short') {
