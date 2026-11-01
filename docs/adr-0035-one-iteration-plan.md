@@ -26,7 +26,7 @@ policy (ADR-0034, accepted), same in-pod seat transport as radar today. Everythi
 | **G-A capture** | geo | read radar's city + source list; contract of capture outputs (S3 text keys) frozen with G-B | extend `pv-capture-backlog` to the 528 cities; size guard (`too-large` status); CronJob dedup + digest pins | preprod run on the 528 cities, including the 183-day backfill used by the L3 parity; measure throughput | fixes | 3 + 2 = 5 / slack 2 | geo PV chain built in 2 wd (2026-07-26 → 07-29) |
 | **G-B extraction** | geo | port plan; Engram pin = radar's | port `refresh-profile`, `refresh-model-policy`, `refresh-verification`, merge of `refresh-run` (~3 100 LOC + tests) **unchanged**; keyring `flock` + pending watchdog | job wrapper reading G-A's text keys; preprod run on 20 documents with the geo keyring | fixes | 4 + 2 = 6 / slack 1 | `qc-sources` port, 241 files in 6 wd (short plan S2 minus its contract part) |
 | **G-C contract + parity** | geo | **freeze contract v1** (field list, section 5) + golden fixture, shared with radar | writer `exports/immo/pv-signals/v1/` (per-city objects → snapshot → verify → CAS pointer, size budget); parity tool (L3 sha sets; L4 graph delta built by radar's code from geo's extraction vs radar's own, Jaccard per signal category, `needs_review`) | integrate G-B → writer; end-to-end preprod smoke | one preprod rollback rehearsal with radar | contract 2 + 1, parity tool 2 (hypothesis) = 5 / slack 2 | served contract built in 1–2 wd; capture proof index in 1 wd |
-| **R radar** | radar | token instrumentation (0.5) | `radar-pv-consume` dry-run: contract client, then radar's existing `extractionToV23Graph` → enrich → `upsertGraphAtomic(..., { preview: true })` on geo's extractions; Source re-binding by `docSha`; `rawRef` → geo | allowlist + refresh skip + rollback script; dry-run on G-C's preprod contract | rehearsal with G-C | 3.5 before the review; **radar re-estimates** with the re-binding and `rawRef` items | `radar-lots-estimates.md` |
+| **R radar** | radar | token instrumentation (0.5) | `radar-pv-consume` dry-run: contract client, then radar's existing `extractionToV23Graph` → enrich → `upsertGraphAtomic(..., { preview: true })` on geo's extractions; Source re-binding by `docSha`; `rawRef` → geo | allowlist + refresh skip + rollback script; dry-run on G-C's preprod contract | rehearsal with G-C | reader dry-run 2 + Source re-binding 0.5 + `rawRef` repoint 0.5 + 2-wave suspend switch 1 + token instrumentation 0.5 = **4.5 + 1 buffer = 5.5 / slack 1.5** (radar re-estimate) | `radar-lots-estimates.md`, "One-iteration lane R" |
 
 **Dependencies between lanes** (all frozen on D1, so the lanes then work apart):
 - G-C → G-B and R: the contract v1 field list and golden fixture (D1). R builds against the fixture, not against
@@ -83,7 +83,7 @@ needs **two free PR slots** (blocker B2).
 | B2 | **2-open-PR limit**: #427 and #363 are open today; the iteration needs 2 free slots for PR-1 and PR-2 | owner decides; geo-cond executes | #427 merged at ratification, and #363 closed or merged by owner decision, **or** an owner waiver of the limit for this iteration |
 | B3 | **`geo` namespace quota** | k8s | current figure given, and headroom confirmed for the shadow, while radar still runs. Added in ns `geo` (radar figures, main/preprod): extraction pod **50m/512Mi requests, 150m/1536Mi limits** (heap 1024, emptyDir 512Mi; init 5m/16Mi → 50m/64Mi); watchdog **10m/64Mi requests, 100m/128Mi limits** (every 5 min, 180 s); up to 4 capture Jobs **60m/120Mi requests, 150m/176Mi limits** each; 1 PVC 1Gi (B4) |
 | B4 | **Seat keyring for the geo extraction pod** (old S2.k) | k8s mints, radar gives its enrolment procedure, owner checks terms of use | credentials in ns `geo` on **geo's own keyring PVC** (1Gi RWO, `csi-cinder-high-speed-gen2`, as radar's; sharing radar's PVC is excluded: an RWO attach collision kept both passes Pending 4 h 30 on 2026-10-09); rotation cycle written in `.env` + docs; Codex and Claude Code terms checked (owner Q1); Cloud Code decided (open question) |
-| B5 | Radar read-only credential on `exports/immo/pv-signals/` **and** `extractions/cas/` (and geo `raw/` for `rawRef`) in both buckets | k8s | minted, with rotation; needed by R on D5 |
+| B5 | Radar read-only credential on `exports/immo/pv-signals/`, `extractions/cas/`, the text prefix of `text_key`, and geo `raw/` (for `rawRef`) in both buckets | k8s | minted, with rotation; needed by R on D5 |
 | B6 | Contract v1 field list (section 5) | geo-cond + immo | agreed before D1 (one exchange) |
 
 ## 5. Contract v1, minimal (to agree in B6)
@@ -99,8 +99,11 @@ list. Radar then builds its graph with its own code, so node ids (`<prefix>-<cit
 - `latest.json` → `snapshots/<sha256>.json` (city index: slug, revision sha256, object URI, counts) → per-city
   `cities/<slug>/<sha256>.json`: one record per document with `doc_sha`, `source_url`, `retrieved_at`, `raw_ref`
   (geo S3 key of the raw bytes), `coverage_state` (**radar's enum**: `pending`, `covered`, `abandoned`),
-  `model_receipts`, run identity (`profile_hash`, `registry_hash`, `engram_version`, `model_policy`) and
-  `extraction_cas_key` + its sha256.
+  `model_receipts`, run identity (`profile_hash`, `registry_hash`, `engram_version`, `model_policy`),
+  `extraction_cas_key` + its sha256, and **`text_key` + its sha256**: the per-page text produced by geo's `text`
+  step (`pdftotext`), which radar's `refsFor` needs for every citation (`refresh-v23.ts:68`). Decision for B6:
+  the text travels **by key in the contract**, read by radar through B5, so every citation can be checked against
+  the exact text geo extracted from.
 - The extraction objects, exactly as the ported code produces them, are immutable objects under
   `extractions/cas/<sha256>.json` in the same bucket; the per-city object references them by key. Their evidence
   refs keep radar's shape (`docSha`, `rawRef`, `page`, `excerpt`, `sourceUrl`, `documentDate`, `publishedAt`,
@@ -110,7 +113,13 @@ list. Radar then builds its graph with its own code, so node ids (`<prefix>-<cit
 - v1 is **add-only** (no tombstone). Size budget and write order as in ADR-0035 item 4, applied to the index and
   per-city objects; extraction objects are outside that budget.
 - Radar side, before cut-over: re-bind Source ids by `docSha` (`refresh-run.ts:550-564`) and point `rawRef`
-  at geo (`routes/documents.ts:23-40`). Both belong to lane R; radar re-estimates R with them.
+  at geo (`routes/documents.ts:23-40`), both in lane R. Geo's `raw/` cannot cover 100 % of the documents radar
+  cited **before** the transfer (radar's own captures). Decision: radar **keeps a read-only fallback** to its own
+  storage for documents absent from geo's `raw/`; the resolver tries geo first. Gate before cut-over: 100 % of
+  the documents cited **during the shadow** are present in geo's `raw/`, and 0 citation of the replay sample
+  resolves to 404.
+- Radar's prod overlay forces `suspend: false`, so a release would re-arm radar's refresh after wave 2; the
+  suspend switch handles it in lane R (radar).
 - The event-level contract of ADR-0035 item 4 (served PV events, `event_id`) comes after the iteration.
 
 ## 6. After the iteration (not built in D1–D7)
