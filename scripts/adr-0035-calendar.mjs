@@ -23,6 +23,43 @@ const track = (from, steps, tag = '') => {
   return cur;
 };
 const t0 = new Date(`${T0}T00:00:00Z`);
+const print = (endLabel, end) => {
+  rows.sort((a, b) => (a[3] < b[3] ? -1 : a[3] > b[3] ? 1 : 0));
+  console.log(`T0 = ${T0} ; ${endLabel} ${iso(end)}`);
+  console.log('| step | content | duration | start | end |\n|---|---|---|---|---|');
+  for (const r of rows) console.log(`| ${r.join(' | ')} |`);
+};
+// Short plan (docs/adr-0035-short-plan.md): `node scripts/adr-0035-calendar.mjs <T0> short [one-slot]`.
+// `one-slot` = only one geo PR slot free (2-open-PR limit), so S1 and S2 run one after the other.
+if (process.argv[3] === 'short') {
+  const oneSlot = process.argv[4] === 'one-slot';
+  const s1end = track(t0, [['S1', 'Capture: radar 528 cities on the existing geo PV chain, size guard, CronJob dedup (3 + 2)', 'wd', 5]], '[geo] ');
+  const buildEnd = track(oneSlot ? s1end : t0, [['S2', 'Extraction: port radar refresh extraction as-is + contract writer (6 + 3)', 'wd', 9]], '[geo] ');
+  track(t0, [['S2.k', 'Seat keyring for the geo extraction pod: mint + rotation documented (hypothesis)', 'wd', 2]], '[k8s+radar] ');
+  track(t0, [
+    ['L0.r1', 'Token instrumentation (0.5 agent-day)', 'wd', 1],
+    ['L0.r2', 'Release + prod promotion (hypothesis)', 'wd', 2],
+    ['L0.r3', 'Baseline measurement window', 'cal', 7],
+  ], '[radar] ');
+  track(t0, [
+    ['L4.c', 'radar-pv-consume: contract client, mapping, dry-run report (2 + 1 buffer)', 'wd', 3],
+    ['L5/6.r', 'Allowlist + refresh skip, rollback script (1)', 'wd', 1],
+  ], '[radar] ');
+  const shadowEnd = track(buildEnd, [
+    ['S3', 'Single shadow window: geo capture + extraction on 528 cities, radar unchanged; radar dry-run; rollback rehearsed in preprod', 'cal', 7],
+    ['S3.p', 'Parity report (L3 + L4 gate values) + 1 wd margin', 'wd', 3],
+    ['G1', 'Owner go: cut-over (geo-prod Environment)', 'wd', 1],
+  ]);
+  const end = track(shadowEnd, [
+    ['S4.1', 'Prod cohort 1 (~50 cities), radar skips them', 'cal', 3],
+    ['S4.2', 'Prod cohort 2 (all remaining cities); radar refresh suspended, kept deployed', 'wd', 1],
+    ['S5', 'Observation, radar suspended = instant rollback', 'cal', 7],
+    ['G2', 'Owner go: retire radar chain', 'wd', 1],
+    ['S6', 'Radar retirement (1 + 0.5 option)', 'wd', 2],
+  ]);
+  print('short plan ends before', end);
+  process.exit(0);
+}
 // Critical path, part 1: L0 (geo).
 const l0end = track(t0, [
   ['L0.a', 'Hygiene PR', 'wd', 2],
