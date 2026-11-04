@@ -4,9 +4,10 @@ Décisions prises **en autonomie** par le conductor (`claude:geo`, Opus 4.8) en 
 chacune validée par **double consensus** de deux conseillers Opus-4.8 indépendants quand elle
 est structurante. Elles sont **révisables** : ce journal existe pour la revue a posteriori.
 
-Format : `ADR-NNNN — titre · statut · date`. Statut ∈ {proposed, accepted, superseded, revisit}
+Format : `ADR-NNNN — titre · statut · date`. Statut ∈ {proposed, accepted, rejected, superseded, revisit}
 (`proposed` = record durable rédigé mais **pas encore ratifié owner** ; flip `accepted` UNIQUEMENT en
-référençant la ratification **owner-directe capturée** — jamais sur un relais ni un say-so conducteur).
+référençant la ratification **owner-directe capturée** — jamais sur un relais ni un say-so conducteur ;
+`rejected` = refusé par un record owner-direct, texte conservé pour mémoire).
 
 ---
 
@@ -899,6 +900,188 @@ pas modifié ; son test vérifie seulement que `gpt-6-astra` et `gemini-3.8-flas
 **Réfs.** ADR-0023 (geo possède les PV) · ADR-0024 (ban vision-chat Mistral) · ADR-0032 (PR #363, credential dans le
 pod) · radar-immobilier `813ffa6a` (fichiers ci-dessus) · `dde0e570` · `benchmark-v101b-2026-09-17.md` §1 ·
 `acquisition/src/pv-graphify-semantic-run.ts:6`.
+
+## ADR-0035 — **Radar PV scraping and signal detection move to geo, as an s3-dag DAG (cross-repo ADR, lot L0)** · rejected · 2026-11-04
+
+**Status `rejected` — on an owner-direct record**, captured first-hand by geo-cond. The text below is kept
+unchanged as the record of what was refused, so that it is not proposed again by mistake.
+
+> **Owner-direct record**, captured first-hand by geo-cond. Claude Code session
+> `dba0809b-0d5e-4026-946a-5560b13437ce` (geo-cond), owner message of **2026-11-04**, **verbatim**:
+> « je refuse ADR035, on le commit comme refusé pour ne pas l'oublier. L,objectif va être maintenant
+> qu'immo integre son geo en tant qu'app cluster mesh. si geo reprend vie plus tard en tant que service ce
+> sera managé en tant qu'app sentropic (par exemple pour les ressources réellement neutres comme les
+> surfaces geojson lot et pourquoi pas scrapping municipaux même si ca restera a définir, mais la détection
+> de signaux sera immo ».
+>
+> **Reading.**
+> - Radar PV scraping and signal detection do **not** move to geo. **Signal detection stays at immo.**
+> - The new target: immo integrates its geo as a **cluster-mesh app**.
+> - If geo comes back later as a service, it will be managed as a **sentropic app**. Candidates are the
+>   resources that are really neutral, such as lot geojson surfaces, and possibly municipal scraping. That
+>   scope is still to be defined.
+>
+> **Not decided by this record:** what happens to ADR-0023 (geo owns PV acquisition) and ADR-0034 (PV
+> extraction LLM). Both stand as written until a follow-up ADR, and their status against the new target is
+> `unknown`. The relayed answers to Q1/Q2 below lapse with this ADR.
+
+**Former status `proposed`.** Drafted by geo-cond as the geo counterpart of the radar-immobilier study
+"Consensus v3: moving radar PV scraping and signal detection to a managed DAG in geo" (immo conductor,
+2026-10-31; inputs: two independent proposals, geo review of v2 on `22d74b52`). The drafting go reached
+geo-cond **as a relay** from the immo conductor session, so it is not a record. Flip to `accepted` only on an
+**owner-direct record** captured first-hand, same pattern as ADR-0034. This ADR changes no code. It fixes the
+split, the contract and the gates that the later lots must follow. The radar side amends its own docs in
+a paired radar PR.
+
+**Context.**
+- ADR-0023 gives geo PV acquisition, indexing and the served PV events; immo stays a consumer. Owner record
+  of 2026-09-25 (ADR-0034): "à terme on reversera les job de pv d'immo vers geo".
+- Radar still runs its own PV chain: CronJob `radar-refresh-pv` (`0 5,11,17,23 * * *`, one sequential pod,
+  ~528 cities, at most 1 document per city per pass, keyring PVC singleton). Its live signals come from the
+  profile-driven LLM extraction, then the deterministic enrichment of `graphify-34-enrichment.ts` (`etape`,
+  `instrument`) and the materialization in `graph-store.ts`; `api/src/services/exploitation/signals.ts` only
+  feeds a count in the seed route (radar estimates, 2026-10-31). Kinds: `ppcmoi`, `derogation`,
+  `cptaq-dezonage`, `residential-rezoning`, `intention`, `precedent`. Radar docs still claim PV acquisition and signal
+  delivery for immo (radar `docs/architecture.md` l.560, `SPEC_EVOL_REFRESH_018.md` l.7), against ADR-0023.
+- Geo already has a PV chain: `acquisition/src/lib/pv-capture-backlog.ts`, `pv-capture-backlog-run.ts`,
+  `deploy/capture-job/cronjob-capture-refresh.yaml`, `deploy/k8s/pv-probable-backlog-cronjob.yaml`.
+  Two adapter sets and two PV ontologies now coexist, and the same municipal sites are scraped twice.
+- `MIGRATION_D1_SYNTHESIS.md` recommends `@sentropic/s3-dag` with Argo as documented fallback, subject to
+  4 owner proofs on a PV canary (`deploy/k8s/s3dag-canary-runbook.md`).
+
+**Decision (proposed).**
+
+1. **Split of ownership.**
+
+   | concern | owner | note |
+   |---|---|---|
+   | detect, capture, text, extraction, removal-only verification | geo | one chain; geo's `pv-capture-backlog` is extended, no new chain |
+   | reconcile into served PV events | geo | `SPEC_QC_ZONING_EVENTS_V2` (v2.1), `event_id = sha256(muni \| source_ref \| detection_anchor)` |
+   | signal detection | geo | radar's **live** path ported **unchanged**: profile-driven extraction with the shared profile (kinds, mandatory `evidenceRefs`, weak kinds capped, `needs_review`); radar's deterministic enrichment (`graphify-34-enrichment.ts`: `etape`, `instrument`) stays in radar for facets and vivier, and who derives `etape` in the contract is settled at L4 entry. `signals.ts` (seed route only) is not the reference |
+   | join to lot, zone, role (no owner fields, Loi 25) | geo | after the Loi 25 decision on role |
+   | canonical merge, facets, scoring, app | radar | radar stays the sole writer of its graph (`upsertGraphAtomic`); geo never writes it |
+   | PV ontology profile | radar + geo, jointly | one versioned artifact with a digest; a change needs both conductors' review and a digest bump; the digest is pinned in every run identity. Engram supplies bundle and validation mechanics only |
+
+   This extends ADR-0023 from events to signal detection, and narrows the immo part of ADR-0013 to canonical
+   merge, facets, scoring, app and ontology co-ownership.
+
+2. **Engine.** `@sentropic/s3-dag`, scope frozen (DAG known at build, no dynamic node). **One DAG run per
+   city** with a bounded document batch; `concurrencyKey = source host`. No dynamic fan-out is added; any
+   need for loops, signals or fan-out reopens a dossier. Re-examine the engine above 20 sustained concurrent
+   Jobs. If the canary fails one of the 4 proofs (crash recovery, real quota respect, complete immo
+   read-model, index rebuild from immutable S3 objects only), the fallback is Argo Workflows.
+
+3. **Capture and text.** `SPEC_CAPTURE_ON_CLUSTER`: raw bytes, fetch manifest (`url`, `retrieved_at`,
+   `http_status`, `sha256`) and logs go straight to S3 from the cluster; the manifest is the v2 proof.
+   Text: `pdftotext`, OCR `/v1/ocr` only. ADR-0024 is unchanged.
+
+4. **Contract** `s3://sentropic-geo/exports/immo/pv-signals/v1/` (preprod: `sentropic-geo-preprod`), same
+   mechanics as `SPEC_GEO_SERVED_CONTRACT`:
+   - `latest.json` → `snapshots/<sha256>.json` (city index: slug, revision sha256, object URI, counts) →
+     immutable per-city objects `cities/<slug>/<sha256>.json` (documents with `doc_sha`, `source_url`,
+     extraction CAS key, model receipts, `coverage_state`; events by `event_id`; signals with `kind`, `etape`,
+     `etape_date`, `zone_ref`, `no_lot`, `reglement_number`, `evidenceRefs`; joins);
+   - write order: per-city objects, then the snapshot, verify hashes, then CAS the pointer (`If-None-Match`,
+     then `If-Match`); extraction bodies and PDFs stay out of `exports/immo/` (CAS keys only);
+   - size budget: snapshot ≤ 1 MiB, per-city object ≤ 256 KiB, whole prefix ≤ 100 MiB including retained
+     revisions (older revisions pruned beyond it), because the backup copies `exports/immo/` as small JSON;
+   - radar joins on `event_id` and maps it to its `::` node ids; a geo signal that does not land in the
+     canonical graph stays `needs_review`, never dropped.
+
+   **Radar consumer side.** `radar-pv-consume` does no scraping, no LLM call and no local signal derivation.
+   The `event_id` → `::` mapping runs inside the guarded canonical merge (`upsertGraphAtomic`); facets and
+   scoring attach after it. `geo_resolutions` is fed from `join`; both current writers (`run-geo-mapper` and
+   the `populate-geo` daily CronJob) go shadow, then off, in L7.
+
+5. **LLM engine (amends ADR-0034, conditionally).** ADR-0034 stands until the owner answers Q1 below. Moving
+   extraction to the cluster-mesh gateway pool (pooled seats, budget admission, shared 429 cooldown, usage
+   receipts) replaces the in-pod transport of ADR-0034 item 4 and ADR-0032 option A (PR #363, `proposed`);
+   it needs Q1 answered first. Model policy (principal, fallback, removal-only verification, no default in
+   code, values in the git manifest, CI render guard) is kept as in ADR-0034.
+
+6. **Functions requested from other repos** (contracts in the study's request files, radar
+   `docs/spec/reports/etude-geo-dag/`): cluster-mesh F-CM1..F-CM8, among them F-CM1/F-CM2 (pool state, budget
+   admission, 429 cooldown) and F-CM3 (workload identity per lane service account), P1, part of L2, and
+   F-CM5 (MCP supervision over the s3-dag read-model); Engram F-EN1..F-EN9, among them F-EN4
+   (citation-preserving `mergeExtractions`, the reason for the Engram bump in L1; target 0.24.0, as no
+   published 0.23.x carries it).
+
+7. **Migration, no radar downtime.** The old path is never removed in the step that arms the new one.
+
+   | lot | content | rollback |
+   |---|---|---|
+   | L0 | this ADR; s3-dag canary on the existing PV chain (preprod bucket, runbook gates); paired radar doc PR; refresh-pv LLM baseline measured over 7 days (radar); hygiene below | n/a |
+   | L1 | radar to Engram 0.24.0 (+F-EN4); fix on purpose the stale `packageVersion: "0.18.0"` in the refresh run identity (`refresh-pv.ts:247`); shared profile v2.2 published with digest; geo graphify 0.17.1 PV profile aligned | repin Engram 0.21.2 |
+   | L2 | F-CM1..F-CM3 in preprod with one Job; flag `REFRESH_LLM_TRANSPORT=gateway` | flag back to `keyring` |
+   | L3 | `detect → capture → text` shadow on radar's 528 cities, one DAG per city | stop the DAG |
+   | L4 | extraction to promotion shadow on the Q2 sample; `radar-pv-consume` dry-run | stop |
+   | L5, L6 | preprod, then prod, city cohorts by allowlist; radar refresh skips them; rollback rehearsed once in preprod before L6 | remove the city from the allowlist + canonical pre-image |
+   | L7 | `join`; `geo_resolutions` from the contract; `run-geo-mapper` and `populate-geo` resolution shadow then off | re-enable the Jobs |
+   | L8 | retire `radar-refresh-pv`, `radar-refresh-pending-watchdog`, the keyring PVC, the PV use of RECUEIL (the module is shared and stays) and the `signals.ts` seed count; radar's enrichment stays; PV adapters move to geo `qc-sources` | pinned previous tag |
+
+   Hard order: no L1+ geo work before the canary proofs; no L3 without the `geo` namespace quota figure,
+   which poc-k8s holds (geo is the tenant using `tenant-quota`); no L3 before the L3 thresholds below are
+   confirmed, no L5 before L4 parity and the window are; no L8 while a city is outside the allowlist.
+   Refresh cadence does not regress versus today (4 passes a day). Geo lots respect the 2-open-PR limit and
+   each ends merged. Make targets, `ENV` last: geo `make pv-dag-render|apply|status ENV=preprod`, radar
+   `make pv-consume-render|apply|diff ENV=preprod`.
+
+8. **L0 hygiene (geo).** Deduplicate CronJob `geo-pv-backlog-pv-probable-20260728-b32de19169bc`, defined in
+   both `deploy/capture-job/cronjob-capture-refresh.yaml` and `deploy/k8s/pv-probable-backlog-cronjob.yaml`;
+   commit or drop the untracked local `deploy/k8s/geo-pv-refresh-cronjob.yaml`; pin images by digest. 0 Python
+   rule: `packages/geo-sources-americas/scripts/build-municipal-directory.py` (commit `7695b50b`) is on main,
+   to port to TS or remove (owner decision, not a PV blocker).
+
+**Gate values (proposed by the radar co-review, geo#427; both conductors confirm them in the L3/L4 PRs,
+the owner ratifies them with this ADR).** Radar baseline: last full sweep r3 (2026-09-05) reached 435 of 528
+cities (82.4 %), 93 broken sources (17.6 %); 19 906 PDF sha on 436 cities.
+- **L3 parity** (sha sets on the 183-day window, same cut-off both sides, 3 consecutive geo cycles): every
+  city with a non-empty radar set has a non-empty geo set, except ≤ 2 % (≤ 9 of 435), each with a cause;
+  recall of radar sha in geo ≥ 98 % overall and ≥ 95 % per city, cities below listed; geo-only documents
+  are reported as gains; geo city error rate ≤ 17.6 %, and no city radar reaches fails in geo on 2
+  consecutive cycles; text-extraction success on common PDFs ≥ radar's.
+- **L4 parity** (Q2 sample + `radar-pv-consume` dry-run): geo signals vs radar's live path (profile-driven
+  extraction + `graphify-34-enrichment.ts`) on the same extraction give identical signals (kind, `event_id`, `evidenceRefs`), 100 %, as a golden test; v101b
+  benchmark primary ≥ 95/100 and within 5 points of radar's same-run score, fallback ≥ 85/100; Jaccard on
+  `(event_id, kind)` ≥ 0.90 for `ppcmoi`, `derogation`, `cptaq-dezonage`, `residential-rezoning` and ≥ 0.80
+  for `intention`, `precedent`, per-kind count gap ≤ 10 %; `evidenceRefs` on 100 % of signals; 0 orphaned
+  facet; 100 % of `event_id` mapped to a `::` node or `needs_review`, 0 dropped, `needs_review` ≤ 5 %;
+  0 canonical node lost. `no-baseline` cities are reported apart.
+- **Observation window**: 7 days per cohort before widening (L5, L6); 28 days after the last cohort before
+  L8, radar CronJob kept deployed and suspended. Exit: 0 incomplete snapshot read as complete, `latest.json`
+  age ≤ 6 h at p95, 0 dropped signal, one preprod rollback rehearsed in the window.
+- **Shared profile location**: radar `radar/ontology/pv-signals/` (Engram project folder holding the
+  v2.2 profile), digest from Engram's bundle mechanics (F-EN2); geo consumes it read-only by
+  `git sha + digest` with a CI digest check, never as a fork.
+
+**Still open.** `geo` namespace quota figure: `unknown`, to request from poc-k8s before L3. Current cluster
+node count: `unverified`.
+
+**Owner questions attached to the ratification.**
+1. May the gateway pool personal Codex and Cloud Code seats for unattended batch extraction (terms of use;
+   cross-user grants are gated in the gateway pool)? If not, which provider accounts back it?
+2. What LLM budget, and on which sample, is accepted for the L4 shadow double run?
+
+Owner answers, **relayed** by the immo conductor on 2026-10-31 (relay, not a first-hand record; to be
+confirmed in the ratification record):
+1. Yes to pooling personal **Codex and Claude Code** seats in batch behind the gateway, provided their terms
+   of use allow it, checked before L2 (the question put to the owner named exactly these two). **Cloud Code**
+   (Google `CloudCodeRuntimeClient`, Gemini leg of ADR-0034) was not asked: `unknown`, question relayed to
+   the owner.
+2. Shadow budget up to 2× the current refresh LLM cost during coexistence, with a kill-switch above it.
+   No refresh-pv-specific baseline exists: radar's only figure is a monthly seat-cost report
+   (2026-08-12 → 2026-09-10, LLM allocation 96.48 CAD/month incl. ×1.15 margin, 12.37 B tokens, no
+   per-pipeline split). Therefore L0 measures the refresh-pv baseline (tokens and receipts per run over 7
+   days) and the 2× cap applies to that measured figure. The L4 sample stays open until then.
+
+**Consequence.** No code changes with this ADR. Geo work starts at the L0 canary, behind the existing
+runbook gates (VAP + run go, then ratification go). The study is kept durably in radar:
+rhanka/radar-immobilier#960 (`docs/spec/reports/etude-geo-dag/consensus-v3.md`), which also carries the
+radar-side doc notes.
+
+**Refs.** ADR-0013 · ADR-0023 · ADR-0024 · ADR-0032 (PR #363) · ADR-0034 · `MIGRATION_D1_SYNTHESIS.md` ·
+`SPEC_CAPTURE_ON_CLUSTER.md` · `SPEC_QC_ZONING_EVENTS_V2.md` · `SPEC_GEO_SERVED_CONTRACT.md` ·
+`deploy/k8s/s3dag-canary-runbook.md` · `deploy/ci/backup/README.md` · `packages/s3-dag/src/dag.ts`.
 
 ## Méthode de décision
 
