@@ -4,9 +4,10 @@ Décisions prises **en autonomie** par le conductor (`claude:geo`, Opus 4.8) en 
 chacune validée par **double consensus** de deux conseillers Opus-4.8 indépendants quand elle
 est structurante. Elles sont **révisables** : ce journal existe pour la revue a posteriori.
 
-Format : `ADR-NNNN — titre · statut · date`. Statut ∈ {proposed, accepted, superseded, revisit}
+Format : `ADR-NNNN — titre · statut · date`. Statut ∈ {proposed, accepted, rejected, superseded, revisit}
 (`proposed` = record durable rédigé mais **pas encore ratifié owner** ; flip `accepted` UNIQUEMENT en
-référençant la ratification **owner-directe capturée** — jamais sur un relais ni un say-so conducteur).
+référençant la ratification **owner-directe capturée** — jamais sur un relais ni un say-so conducteur ;
+`rejected` = refusé par un record owner-direct, texte conservé pour mémoire).
 
 ---
 
@@ -900,9 +901,31 @@ pas modifié ; son test vérifie seulement que `gpt-6-astra` et `gemini-3.8-flas
 pod) · radar-immobilier `813ffa6a` (fichiers ci-dessus) · `dde0e570` · `benchmark-v101b-2026-09-17.md` §1 ·
 `acquisition/src/pv-graphify-semantic-run.ts:6`.
 
-## ADR-0035 — **Radar PV scraping and signal detection move to geo, as an s3-dag DAG (cross-repo ADR, lot L0)** · proposed · 2026-10-31
+## ADR-0035 — **Radar PV scraping and signal detection move to geo, as an s3-dag DAG (cross-repo ADR, lot L0)** · rejected · 2026-11-04
 
-**Status `proposed`.** Drafted by geo-cond as the geo counterpart of the radar-immobilier study
+**Status `rejected` — on an owner-direct record**, captured first-hand by geo-cond. The text below is kept
+unchanged as the record of what was refused, so that it is not proposed again by mistake.
+
+> **Owner-direct record**, captured first-hand by geo-cond. Claude Code session
+> `dba0809b-0d5e-4026-946a-5560b13437ce` (geo-cond), owner message of **2026-11-04**, **verbatim**:
+> « je refuse ADR035, on le commit comme refusé pour ne pas l'oublier. L,objectif va être maintenant
+> qu'immo integre son geo en tant qu'app cluster mesh. si geo reprend vie plus tard en tant que service ce
+> sera managé en tant qu'app sentropic (par exemple pour les ressources réellement neutres comme les
+> surfaces geojson lot et pourquoi pas scrapping municipaux même si ca restera a définir, mais la détection
+> de signaux sera immo ».
+>
+> **Reading.**
+> - Radar PV scraping and signal detection do **not** move to geo. **Signal detection stays at immo.**
+> - The new target: immo integrates its geo as a **cluster-mesh app**.
+> - If geo comes back later as a service, it will be managed as a **sentropic app**. Candidates are the
+>   resources that are really neutral, such as lot geojson surfaces, and possibly municipal scraping. That
+>   scope is still to be defined.
+>
+> **Not decided by this record:** what happens to ADR-0023 (geo owns PV acquisition) and ADR-0034 (PV
+> extraction LLM). Both stand as written until a follow-up ADR, and their status against the new target is
+> `unknown`. The relayed answers to Q1/Q2 below lapse with this ADR.
+
+**Former status `proposed`.** Drafted by geo-cond as the geo counterpart of the radar-immobilier study
 "Consensus v3: moving radar PV scraping and signal detection to a managed DAG in geo" (immo conductor,
 2026-10-31; inputs: two independent proposals, geo review of v2 on `22d74b52`). The drafting go reached
 geo-cond **as a relay** from the immo conductor session, so it is not a record. Flip to `accepted` only on an
