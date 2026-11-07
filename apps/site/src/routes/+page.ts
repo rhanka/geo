@@ -1,4 +1,4 @@
-import { loadCatalog } from "$lib/catalog";
+import { loadCatalog } from "#lib/catalog.js";
 import type { PageLoad } from "./$types";
 
 /**
