@@ -3,26 +3,31 @@
 # least-priv qui déploie geo-api en PROD, ns `geo`, cluster live hlhedx). Analogue à l'atomic 54 du §5.
 #
 # ⚠ À LANCER PAR poc-k8s (admin cluster OVH + admin repo GitHub), APRÈS que l'owner ait créé l'Environment
-# geo-prod (cd-prod-owner-setup.sh). Mint un token BORNÉ (TokenRequest — rien d'éternel) pour le SA, assemble
-# un kubeconfig minimal (token SA seul, AUCUNE cred admin), le pousse en secret GitHub ENV-scopé geo-prod,
-# puis shred. Token JAMAIS imprimé (mktemp+chmod600+trap ; pas de echo ; pas de set -x). Atomic (mint+pose
-# en 1 session, pas de handoff de token). Idempotent + self-verify + fail-loud.
+# geo-prod (cd-prod-owner-setup.sh). Lit le token NON-EXPIRANT du SA depuis le Secret
+# `kubernetes.io/service-account-token` lié au SA (défaut geo/geo-cd-deployer-token, manifeste poc-k8s
+# tenants/geo/11-cd-deployer-token.yaml), assemble un kubeconfig minimal (token SA seul, AUCUNE cred admin),
+# le pousse en secret GitHub ENV-scopé geo-prod, puis shred. Token JAMAIS imprimé (mktemp+chmod600+trap ;
+# pas de echo ; pas de set -x). Atomic (lecture+pose en 1 session, pas de handoff de token). Idempotent +
+# self-verify + fail-loud.
 #
-# ⚠ Token BORNÉ ⇒ EXPIRE (TTL, plafonné cluster). Re-lancer AVANT expiry = rotation. La CI échoue loud à
-# expiry (pas de dégradation silencieuse).
+# Owner 2026-11-07 : « le token du ci cd doit pas avoir une durée limitée ». L'ancien mint borné
+# (`kubectl create token`, TTL 720h) expirait entre deux déploiements espacés (cd-prod 42370436908 en échec
+# « provide credentials »). NE PAS revenir à un token borné.
+# Révocation / rotation : poc-k8s supprime puis recrée le Secret (le token est invalidé immédiatement), puis
+# relance ce script. Procédure : runbook poc-k8s docs/runbooks/preprod-cred-governance.md, « Geo prod CD deployer ».
 #
 # PRÉREQUIS poc-k8s : le SA (défaut geo-cd-deployer) EXISTE dans ns geo AVEC un RBAC least-priv DEPLOY
-# (get/patch deployments + apply des ressources de l'overlay prod ; rollout). poc-k8s pose ce RBAC (domaine
-# cluster prod), comme geo-ci-rbac.yaml pour le §5 preprod.
+# (get/patch deployments + apply des ressources de l'overlay prod ; rollout), ET le Secret token du SA existe
+# et est peuplé. poc-k8s pose ces ressources (domaine cluster prod), comme geo-ci-rbac.yaml pour le §5 preprod.
 #
-# Variables : SA (défaut geo-cd-deployer). NS (défaut geo). GH_REPO (défaut rhanka/geo). TOKEN_TTL (défaut
-# 720h ; plafonné cluster). CLUSTER_NAME (défaut geo-prod). SECRET_ENV (défaut geo-prod). SECRET_NAME
+# Variables : SA (défaut geo-cd-deployer). NS (défaut geo). GH_REPO (défaut rhanka/geo). TOKEN_SECRET (défaut
+# geo-cd-deployer-token). CLUSTER_NAME (défaut geo-prod). SECRET_ENV (défaut geo-prod). SECRET_NAME
 # (défaut KUBE_CONFIG_DATA).
 set -euo pipefail
 SA="${SA:-geo-cd-deployer}"
 NS="${NS:-geo}"
 GH_REPO="${GH_REPO:-rhanka/geo}"
-TOKEN_TTL="${TOKEN_TTL:-720h}"
+TOKEN_SECRET="${TOKEN_SECRET:-geo-cd-deployer-token}"
 CLUSTER_NAME="${CLUSTER_NAME:-geo-prod}"
 SECRET_ENV="${SECRET_ENV:-geo-prod}"      # ENV-scope le secret (derrière required-reviewer=owner) — PAS repo-scopé
 SECRET_NAME="${SECRET_NAME:-KUBE_CONFIG_DATA}"
@@ -40,12 +45,20 @@ SERVER="$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.
 CADATA="$(kubectl config view --minify --raw -o jsonpath='{.clusters[0].cluster.certificate-authority-data}')"
 [ -n "$SERVER" ] && [ -n "$CADATA" ] || { echo "❌ server/CA introuvables dans le kubeconfig courant"; exit 1; }
 
-# Token BORNÉ via TokenRequest (jamais imprimé — écrit direct dans le kubeconfig temp).
+# Le Secret DOIT être un token de SA lié à CE SA (sinon on publierait le token d'une autre identité).
+TS_TYPE="$(kubectl -n "$NS" get secret "$TOKEN_SECRET" -o jsonpath='{.type}' 2>/dev/null || true)"
+TS_SA="$(kubectl -n "$NS" get secret "$TOKEN_SECRET" -o jsonpath='{.metadata.annotations.kubernetes\.io/service-account\.name}' 2>/dev/null || true)"
+[ "$TS_TYPE" = "kubernetes.io/service-account-token" ] && [ "$TS_SA" = "$SA" ] \
+  || { echo "❌ Secret ${NS}/${TOKEN_SECRET} absent ou pas un token du SA ${SA} (type='${TS_TYPE}', sa='${TS_SA}') — poc-k8s le pose d'abord (tenants/geo/11-cd-deployer-token.yaml)"; exit 1; }
+
+# Token NON-EXPIRANT lu depuis le Secret (jamais imprimé — écrit direct dans le kubeconfig temp).
 {
   kubectl --kubeconfig "$KCFG" config set-cluster "$CLUSTER_NAME" --server="$SERVER" >/dev/null
   kubectl --kubeconfig "$KCFG" config set "clusters.${CLUSTER_NAME}.certificate-authority-data" "$CADATA" >/dev/null
-  kubectl --kubeconfig "$KCFG" config set-credentials "$SA" \
-    --token="$(kubectl -n "$NS" create token "$SA" --duration="$TOKEN_TTL")" >/dev/null
+  TOKEN="$(kubectl -n "$NS" get secret "$TOKEN_SECRET" -o jsonpath='{.data.token}' | base64 -d)"
+  [ -n "$TOKEN" ] || { echo "❌ Secret ${NS}/${TOKEN_SECRET} sans token (pas encore peuplé par le token controller ?)"; exit 1; }
+  kubectl --kubeconfig "$KCFG" config set-credentials "$SA" --token="$TOKEN" >/dev/null
+  unset TOKEN
   kubectl --kubeconfig "$KCFG" config set-context cd-prod \
     --cluster="$CLUSTER_NAME" --user="$SA" --namespace="$NS" >/dev/null
   kubectl --kubeconfig "$KCFG" config use-context cd-prod >/dev/null
@@ -83,5 +96,5 @@ for CHECK in "patch deployments" "patch services" "create ingresses.networking.k
 done
 
 echo "✅ ${SECRET_NAME} posé (SA ${NS}/${SA}, cred admin JAMAIS incluse, env-scopé ${SECRET_ENV})."
-echo "   Rotation : token BORNÉ (TTL demandé=${TOKEN_TTL}, PLAFONNÉ par l'apiserver) → re-lancer AVANT expiry."
+echo "   Token NON-EXPIRANT (Secret ${NS}/${TOKEN_SECRET}). Rotation/révocation : poc-k8s recrée le Secret, puis re-lancer ce script."
 echo "   ⇒ cd-prod peut désormais déployer sur GO owner (dispatch + approbation environment ${SECRET_ENV})."
