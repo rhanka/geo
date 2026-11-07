@@ -129,9 +129,10 @@
   function onPick(event: Event): void {
     const value = (event.currentTarget as HTMLSelectElement).value;
     selected = null;
-    const target = new URL(page.url);
+    const target = new URL(page.url.href);
     target.searchParams.set("collection", value);
-    void goto(`${target.pathname}${target.search}`, { keepFocus: true, noScroll: true });
+    // SvelteKit 3: `reset: false` keeps scroll position and focus (was keepFocus + noScroll).
+    void goto(`${target.pathname}${target.search}`, { reset: false });
   }
 </script>
 
