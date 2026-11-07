@@ -124,9 +124,11 @@ export type {
   PointLayerOptions,
 } from "./point-layers.js";
 
-// MapLibre 6 worker initialization: GeoMap/GcpCalageUI call it themselves; an
-// application that also mounts maps directly (e.g. via geo-map-engine) may call
-// it once, before any map, with `await ensureMaplibreWorker(await import("maplibre-gl"))`.
+// MapLibre 6 worker initialization. The application provides the worker asset URL
+// once, before any map, e.g. with Vite:
+//   await ensureMaplibreWorker(await import("maplibre-gl"),
+//     async () => (await import("maplibre-gl/dist/maplibre-gl-worker.mjs?url")).default);
+// GeoMap/GcpCalageUI then keep that URL, and fail loudly when none is configured.
 export { ensureMaplibreWorker } from "./maplibre-worker.js";
 export type { MaplibreWorkerApi } from "./maplibre-worker.js";
 

@@ -487,6 +487,8 @@
       try {
         const maplibre = await import("maplibre-gl");
         const { Map: MapLibreMap, Marker, NavigationControl } = maplibre;
+        // Unmounted while MapLibre was loading: configure nothing, construct nothing.
+        if (disposed) return;
         await ensureMaplibreWorker(maplibre);
         await import("maplibre-gl/dist/maplibre-gl.css");
         if (disposed || !mapContainer) return;
