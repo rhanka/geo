@@ -21,12 +21,17 @@ one-time setup splits into two commands:
    Creates the `geo-prod` Environment with **required-reviewer=owner** (the GO gate). Idempotent, self-verified.
 
 2. **poc-k8s (OVH admin, once)** — `cd-prod-kubeconfig.sh`
-   Mints a **bounded** token for a least-priv SA in ns `geo`, assembles a kubeconfig (SA token only, no admin
-   cred), and posts it as the **env-scoped** secret `KUBE_CONFIG_DATA`. Atomic (mint+post in one session, no
-   token handoff), never prints the token, refuses if the Environment lacks the reviewer (no gate-bypass).
-   Prereq: poc-k8s has posed the SA + a least-priv **deploy** RBAC on ns `geo` (get/patch deployments +
-   apply the overlay resources), analogous to `geo-ci-rbac.yaml` for §5 preprod. Token is bounded ⇒ re-run
-   before expiry to rotate.
+   Reads the **non-expiring** token of a least-priv SA in ns `geo` from its `kubernetes.io/service-account-token`
+   Secret (`geo/geo-cd-deployer-token`, poc-k8s manifest `tenants/geo/11-cd-deployer-token.yaml`), assembles a
+   kubeconfig (SA token only, no admin cred), and posts it as the **env-scoped** secret `KUBE_CONFIG_DATA`.
+   Atomic (read+post in one session, no token handoff), never prints the token, refuses if the Environment
+   lacks the reviewer (no gate-bypass) or if the Secret is not a token of that SA.
+   Prereq: poc-k8s has posed the SA, the token Secret and a least-priv **deploy** RBAC on ns `geo` (get/patch
+   deployments + apply the overlay resources), analogous to `geo-ci-rbac.yaml` for §5 preprod.
+   **The CI/CD token must not have a bounded lifetime** (owner, 2026-11-07): the former 720h TokenRequest
+   expired between spaced deploys and failed cd-prod run 42370436908 with "provide credentials". Revocation /
+   rotation: poc-k8s deletes and recreates the Secret (revokes immediately), then re-runs this script — see the
+   poc-k8s runbook `docs/runbooks/preprod-cred-governance.md`, section "Geo prod CD deployer".
 
 After **both** (Environment + `KUBE_CONFIG_DATA`): every prod deploy is a single owner GO.
 
