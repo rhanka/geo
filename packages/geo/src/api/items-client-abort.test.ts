@@ -1,6 +1,6 @@
 /**
  * End-to-end checks of the 2026-10-12 leak paths through the real Node adapter
- * (`@hono/node-server` 2.1.0), not `app.request()`:
+ * (`@hono/node-server` 2.x), not `app.request()`:
  * - a client that disconnects while `/items` is still validating the object:
  *   the response is handed to the adapter after the socket already closed, so
  *   the adapter's close→cancel listener (attached when it starts writing) never
