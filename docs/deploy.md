@@ -24,7 +24,7 @@ host, so the apex Pages site and the `api.` k8s ingress do not collide.
   (`npm run build -w @sentropic/geo-core -w @sentropic/geo-ui-svelte`), then
   `npm --workspace @sentropic/geo-site run build`. The artifact uploaded is
   **`apps/site/build`** (the `adapter-static` output dir, configured in
-  `apps/site/svelte.config.js`).
+  `apps/site/vite.config.ts`, passed to the `sveltekit()` plugin).
 - **Custom domain / CNAME:** `apps/site/static/CNAME` contains
   `geo.sent-tech.ca`. `adapter-static` copies `static/` into the build verbatim,
   so the published artifact carries the `CNAME` file GitHub Pages needs to serve
@@ -36,9 +36,11 @@ host, so the apex Pages site and the `api.` k8s ingress do not collide.
 
 ## API base URL wiring (`PUBLIC_GEO_API_URL`)
 
-`apps/site/src/lib/catalog.ts` reads `PUBLIC_GEO_API_URL` via
-`$env/dynamic/public` (default `http://localhost:8787` for local dev). The Pages
-workflow sets it for the build:
+`apps/site/src/lib/catalog.ts` reads `PUBLIC_GEO_API_URL` from `$app/env/public`
+(default `http://localhost:8787` for local dev). SvelteKit 3 only exposes variables
+declared in `apps/site/src/env.ts`: it is declared `public` + `static`, i.e. inlined at
+build time (the site is prerendered with adapter-static). The Pages workflow sets it
+for the build:
 
 ```yaml
 env:

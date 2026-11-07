@@ -12,7 +12,7 @@
  */
 
 import type { MunicipalityT, PrioritizedCitiesOptionsT } from "./domain.js";
-import rawData from "./geo/municipalities.qc.json" assert { type: "json" };
+import rawData from "./geo/municipalities.qc.json" with { type: "json" };
 
 /**
  * Full sorted list of Québec municipalities (1 106 entries).
