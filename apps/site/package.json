@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "imports": {
+    "#lib": "./src/lib",
+    "#lib/*": "./src/lib/*"
+  },
   "description": "Site public geo.sent-tech.ca — catalogue et visionneuse des données géographiques (SvelteKit, design-system Sent Tech).",
   "scripts": {
     "dev": "vite dev",
@@ -23,8 +27,8 @@
     "maplibre-gl": "^6.4.1"
   },
   "devDependencies": {
-    "@sveltejs/adapter-static": "^3.0.10",
-    "@sveltejs/kit": "^2.70.2",
+    "@sveltejs/adapter-static": "^4.0.1",
+    "@sveltejs/kit": "^3.1.1",
     "@sveltejs/vite-plugin-svelte": "^7.1.2",
     "svelte": "^5.53.2",
     "svelte-check": "^4.3.4",

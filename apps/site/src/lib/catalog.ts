@@ -9,7 +9,7 @@
  * pages still render. Nothing here ever throws on a network failure.
  */
 
-import { env } from "$env/dynamic/public";
+import { PUBLIC_GEO_API_URL } from "$app/env/public";
 import { LICENSES, resolveLicense, type License } from "@sentropic/geo-core";
 import fallbackCollections from "./collections.fallback.json";
 
@@ -18,7 +18,7 @@ export const DEFAULT_API_URL = "http://localhost:8787";
 
 /** Public OGC API base URL (no trailing slash). */
 export function apiBaseUrl(): string {
-  const raw = env.PUBLIC_GEO_API_URL ?? DEFAULT_API_URL;
+  const raw = PUBLIC_GEO_API_URL ?? DEFAULT_API_URL;
   return raw.replace(/\/+$/, "");
 }
 

@@ -1,7 +1,7 @@
 import { error } from "@sveltejs/kit";
 import { isFeatureCollection } from "@sentropic/geo-core";
 import type { AdminFeatureCollection } from "@sentropic/geo-core";
-import { loadCatalogEntry, itemsUrlWithLimit } from "$lib/catalog";
+import { loadCatalogEntry, itemsUrlWithLimit } from "#lib/catalog.js";
 import type { PageLoad } from "./$types";
 
 // This route is NOT prerendered: the dataset GeoJSON is fetched at runtime in

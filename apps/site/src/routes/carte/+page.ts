@@ -1,6 +1,6 @@
 import { isFeatureCollection } from "@sentropic/geo-core";
 import type { AdminFeatureCollection } from "@sentropic/geo-core";
-import { itemsUrlWithLimit, loadCatalog, type CatalogEntry } from "$lib/catalog";
+import { itemsUrlWithLimit, loadCatalog, type CatalogEntry } from "#lib/catalog.js";
 import type { PageLoad } from "./$types";
 
 // Client-only: the map needs WebGL and the GeoJSON is fetched live from the OGC
