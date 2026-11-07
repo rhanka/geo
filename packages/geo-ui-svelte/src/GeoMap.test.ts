@@ -55,8 +55,9 @@ vi.mock("maplibre-gl", () => {
       this.handlers.get(`${type}:${layerId}`)?.(event);
     }
   }
-  // Named exports only, as MapLibre 6 ships no default export.
-  let workerUrl = "";
+  // Named exports only, as MapLibre 6 ships no default export. The application
+  // configures the worker asset at startup (the package ships no `?url` import).
+  let workerUrl = "/app/maplibre-gl-worker.mjs";
   return {
     getWorkerUrl: () => workerUrl,
     setWorkerUrl: (url: string) => {
