@@ -53,15 +53,25 @@ import maplibreWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url"; // 
 setWorkerUrl(maplibreWorkerUrl);
 ```
 
-`@sentropic/geo-ui-svelte` does this itself: `GeoMap` and `GcpCalageUI` call its exported
-`ensureMaplibreWorker(maplibre)` before their first map, which sets the same `?url` asset only
-when no worker URL is configured yet (an application-provided URL is never overwritten). An
-application mixing both packages can call `ensureMaplibreWorker(await import("maplibre-gl"))` once
-at startup so that whichever map mounts first finds the worker configured. That default relies on
-Vite's `?url` import (the UI ships Svelte source and already relies on the bundler for its CSS
-import); with another bundler, call `setWorkerUrl(<worker asset URL>)` yourself before the first
-map — the UI then never reaches its default, and an unresolved default throws explicitly instead
-of configuring an unusable worker.
+The same applies to `@sentropic/geo-ui-svelte`: the application configures the worker once at
+startup, for instance with the UI's exported helper:
+
+```ts
+import { ensureMaplibreWorker } from "@sentropic/geo-ui-svelte";
+
+await ensureMaplibreWorker(
+  await import("maplibre-gl"),
+  async () => (await import("maplibre-gl/dist/maplibre-gl-worker.mjs?url")).default, // Vite
+);
+```
+
+`GeoMap` and `GcpCalageUI` then call `ensureMaplibreWorker(maplibre)` before their first map: it
+keeps the configured URL (never overwritten) and throws explicitly when none is configured,
+instead of constructing a map whose worker never loads. The UI package itself ships **no**
+bundler query import (`?url`, `?worker`): the consumer's dependency optimizer pre-bundles it, and
+neither esbuild (Vite 6/7) nor Rolldown (Vite 8) can load such a specifier inside a dependency —
+up to geo-ui-svelte 0.6.4, `vite dev` stopped at startup unless the package was listed in
+`optimizeDeps.exclude`. A guard test (`no-query-imports.test.ts`) keeps it that way.
 
 Hosting requirements for the emitted worker asset (production):
 

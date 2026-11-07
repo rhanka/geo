@@ -53,9 +53,24 @@ describe("ensureMaplibreWorker", () => {
     expect(maplibre.url).toBe("/app/worker.mjs");
   });
 
-  it("resolves the real bundled worker asset through Vite's ?url import", async () => {
+  it("fails loudly without a loader when the application configured no worker URL", async () => {
     const maplibre = fakeMaplibre();
+    await expect(ensureMaplibreWorker(maplibre)).rejects.toThrow(/setWorkerUrl/);
+    expect(maplibre.url).toBe("");
+  });
+
+  it("keeps an application-provided worker URL when called without a loader (GeoMap path)", async () => {
+    const maplibre = fakeMaplibre("/app/worker.mjs");
     await ensureMaplibreWorker(maplibre);
+    expect(maplibre.url).toBe("/app/worker.mjs");
+  });
+
+  it("resolves the real worker asset through the documented application recipe (Vite ?url)", async () => {
+    const maplibre = fakeMaplibre();
+    await ensureMaplibreWorker(
+      maplibre,
+      async () => (await import("maplibre-gl/dist/maplibre-gl-worker.mjs?url")).default,
+    );
     expect(maplibre.url).toMatch(/maplibre-gl-worker.*\.mjs/);
   });
 });

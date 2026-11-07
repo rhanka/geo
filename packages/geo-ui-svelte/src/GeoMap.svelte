@@ -245,6 +245,8 @@
     void (async () => {
       const maplibre = await import("maplibre-gl");
       const { Map: MapLibreMap, NavigationControl, AttributionControl } = maplibre;
+      // Unmounted while MapLibre was loading: configure nothing, construct nothing.
+      if (disposed) return;
       await ensureMaplibreWorker(maplibre);
       // MapLibre's CSS is loaded dynamically too, so SSR never imports it.
       await import("maplibre-gl/dist/maplibre-gl.css");

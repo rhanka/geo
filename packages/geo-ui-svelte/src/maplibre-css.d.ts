@@ -6,7 +6,11 @@
  */
 declare module "maplibre-gl/dist/maplibre-gl.css";
 
-/** Vite `?url` import of the MapLibre 6 module worker (see `maplibre-worker.ts`). */
+/**
+ * Vite `?url` import of the MapLibre 6 module worker. Used ONLY by the test that
+ * exercises the documented application recipe (`maplibre-worker.test.ts`); shipped
+ * runtime code never imports a `?` specifier (see `no-query-imports.test.ts`).
+ */
 declare module "maplibre-gl/dist/maplibre-gl-worker.mjs?url" {
   const url: string;
   export default url;
