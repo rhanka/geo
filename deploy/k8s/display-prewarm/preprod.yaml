@@ -1,0 +1,117 @@
+# Display-mirror PREWARM — preprod (ns geo-preprod, bucket sentropic-geo-preprod).
+# SPEC: docs/spec/SPEC_DISPLAY_MIRROR.md § Publication. Code: packages/geo/src/display/prewarm*.ts.
+#
+# One pass over every served qc-lots-<slug> / qc-zonage-<slug> collection: builds the display
+# mirror (`normalized/_display/<id>/…`) next to the exact GeoJSON, so the first city click never
+# pays the build. Runs ON THE CLUSTER with the bucket's own creds — never from a workstation.
+#
+# Idempotent + resumable: a collection whose `current.json` has the current profile, the served
+# source key and the source's current ETag is skipped (1 GET + 1 HEAD). A pointer whose source
+# bytes already have a complete version (e.g. copied from prod by geo-preprod-sync) is re-pointed
+# without a build ("adopted"). Re-applying the Job after an interruption resumes where it stopped.
+#
+# Why a Job and not requests to geo-api: geo-api builds one mirror at a time on a 500m-limited
+# pod; ~2150 builds through it would keep its CPU busy for hours and starve the requests it serves.
+#
+# Output: one JSON line per collection on stdout (`kubectl logs`), a JSON summary last.
+# Exit 1 if any collection failed (re-apply: done ones are skipped).
+#
+# To apply (k8s session): replace REPLACE_WITH_POST_MERGE_GEO_DIGEST by the geo-api digest built
+# from main AFTER the merge of the prewarm PR (it must contain packages/geo/dist/display/prewarm-cli.js;
+# the digest deployed by cd-preprod for that commit), then `kubectl apply -f` this file.
+# Pre-req: the NetworkPolicy below if ns geo-preprod is egress default-deny (same S3 rule as the sync Job).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-geo-display-prewarm-egress
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/name: geo-display-prewarm
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: preprod
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: geo-display-prewarm
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - ipBlock:
+            cidr: 54.39.60.208/32 # S3 BHS (s3.bhs.io.cloud.ovh.net), same as geo-preprod-sync
+      ports:
+        - protocol: TCP
+          port: 443
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-display-prewarm
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/name: geo-display-prewarm
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: preprod
+spec:
+  # A retry resumes: collections already fresh are skipped.
+  backoffLimit: 3
+  # Estimated full pass at 1 CPU: ~3-6 h (see SPEC § Publication); hard stop at 12 h.
+  activeDeadlineSeconds: 43200
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geo-display-prewarm
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/instance: preprod
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: prewarm
+          # geo-api image (one image, several roles — Dockerfile copies packages/geo/dist).
+          image: REPLACE_WITH_POST_MERGE_GEO_DIGEST
+          workingDir: /app
+          command: ["node", "packages/geo/dist/display/prewarm-cli.js", "--store", "s3://sentropic-geo-preprod/normalized"]
+          env:
+            # IPv4 first: an AggregateError [ETIMEDOUT] is the happy-eyeballs bug, not an outage.
+            - name: NODE_OPTIONS
+              value: "--dns-result-order=ipv4first --max-old-space-size=768"
+            - name: AWS_MAX_ATTEMPTS
+              value: "10"
+          # S3_ENDPOINT / S3_REGION / S3_ACCESS_KEY / S3_SECRET_KEY — the creds geo-api preprod uses
+          # (it already writes `_display/` when it builds lazily).
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials-preprod
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              # One build at a time is CPU-bound on one core; 1Gi covers the largest lots shard
+              # (outputs are held compressed, the source is streamed).
+              cpu: "1"
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL

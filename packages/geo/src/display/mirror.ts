@@ -91,7 +91,7 @@ export function artifactKey(
   return `${DISPLAY_ROOT}/${collection}/${version}/${FILE[artifact]}.${EXT[encoding]}`;
 }
 
-function manifestKey(collection: string, version: string): string {
+export function manifestKey(collection: string, version: string): string {
   return `${DISPLAY_ROOT}/${collection}/${version}/manifest.json`;
 }
 
