@@ -17,6 +17,9 @@ import type {
   ReferentialFeature,
 } from "@sentropic/geo-core";
 
+import type { DisplayArtifact, DisplayEncoding } from "../display/mirror.js";
+import type { DisplayResult } from "../display/service.js";
+
 /**
  * A feature served by the API. Either a geometry-bearing administrative feature
  * or a (possibly null-geometry) referential crosswalk feature. The HTTP layer
@@ -126,6 +129,18 @@ export interface FeatureProvider {
    * read surfaces as unhealthy and releases its resources.
    */
   checkHealth?(signal?: AbortSignal): Promise<{ collection?: string }>;
+  /**
+   * Optional display mirror (`display/mirror.ts`): the precompressed display or
+   * index artifact of a collection, built/refreshed on demand. Resolves to
+   * `undefined` for an unknown collection; rejects when the mirror cannot be
+   * built or read (the route answers 503, never the exact geometry instead).
+   */
+  openDisplay?(
+    id: string,
+    artifact: DisplayArtifact,
+    encoding: DisplayEncoding,
+    signal?: AbortSignal,
+  ): Promise<DisplayResult | undefined>;
 }
 
 /**
