@@ -14,6 +14,8 @@
 export interface PutOptions {
   /** MIME type recorded with the object (e.g. `application/geo+json`). */
   contentType?: string;
+  /** Cancels the write (an S3 upload in flight is destroyed). Optional to honour. */
+  signal?: AbortSignal;
 }
 
 /** Options accepted by {@link Store.getStream}. */
@@ -39,7 +41,11 @@ export interface ObjectStat {
 export interface Store {
   /** Identity of the object at `key` without reading it, or `undefined` if absent. */
   stat?(key: string): Promise<ObjectStat | undefined>;
-  /** Write `body` at `key`, creating any intermediate structure. */
+  /**
+   * Write `body` at `key`, creating any intermediate structure. The caller may
+   * reuse or free `body`'s memory once the promise settles: an implementation
+   * that keeps the bytes (e.g. an in-memory store) must copy them.
+   */
   put(key: string, body: Uint8Array | string, opts?: PutOptions): Promise<void>;
   /** Read the bytes at `key`, or `undefined` if no object exists there. */
   get(key: string): Promise<Uint8Array | undefined>;
