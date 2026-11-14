@@ -82,9 +82,31 @@ export interface PrewarmReport {
   ms: number;
 }
 
+/**
+ * Default per-collection deadline of the prewarm sweep. The largest source
+ * (`qc-lots-montreal`) builds in ~560 s on 1 CPU; 20 min leaves room for a
+ * throttled CPU while still bounding a stalled collection.
+ */
+export const DEFAULT_COLLECTION_TIMEOUT_MS = 20 * 60_000;
+
+/** Raised (as the abort reason) when a collection exceeds its deadline. */
+export class CollectionTimeoutError extends Error {
+  constructor(readonly timeoutMs: number) {
+    super(`collection deadline exceeded (${timeoutMs} ms)`);
+    this.name = "CollectionTimeoutError";
+  }
+}
+
 export interface PrewarmOptions extends EnsureOptions {
   /** Collections processed in parallel (default 1: one build at a time). */
   concurrency?: number;
+  /**
+   * Deadline of one collection (default {@link DEFAULT_COLLECTION_TIMEOUT_MS};
+   * `0` disables). On expiry the collection is recorded `failed` with reason
+   * `timeout`, its work is aborted, and the sweep moves on; the next run retries
+   * it (the pointer is written last, so an aborted build leaves no partial mirror).
+   */
+  collectionTimeoutMs?: number;
   /** Called after each collection, in completion order. */
   onResult?: (result: PrewarmResult, done: number, total: number) => void;
   signal?: AbortSignal;
@@ -108,12 +130,21 @@ export async function prewarmDisplayMirrors(
     ...(options.build !== undefined ? { build: options.build } : {}),
     ...(options.now ? { now: options.now } : {}),
   };
+  const timeoutMs = options.collectionTimeoutMs ?? DEFAULT_COLLECTION_TIMEOUT_MS;
   await mapLimit(sources, options.concurrency ?? 1, async (source) => {
     if (options.signal?.aborted) return;
     const t0 = Date.now();
     let result: PrewarmResult;
+    const deadline = withDeadline(timeoutMs, options.signal);
     try {
-      const r = await ensureDisplayMirror(store, source.collection, source.sourceKey, ensureOptions);
+      const work = ensureDisplayMirror(store, source.collection, source.sourceKey, {
+        ...ensureOptions,
+        signal: deadline.signal,
+      });
+      // The race may leave `work` behind (a store call that ignores the
+      // signal): it settles later against an aborted signal; never unhandled.
+      work.catch(() => {});
+      const r = await Promise.race([work, deadline.expired]);
       result = {
         collection: r.collection,
         sourceKey: r.sourceKey,
@@ -123,13 +154,21 @@ export async function prewarmDisplayMirrors(
         ms: r.ms,
       };
     } catch (error) {
+      const timedOut = deadline.timedOut();
       result = {
         ...source,
         action: "failed",
-        error: error instanceof Error ? error.message : String(error),
+        ...(timedOut ? { reason: "timeout" } : {}),
+        error: timedOut
+          ? new CollectionTimeoutError(timeoutMs).message
+          : error instanceof Error
+            ? error.message
+            : String(error),
         ms: Date.now() - t0,
       };
       failures.push(result);
+    } finally {
+      deadline.clear();
     }
     counts[result.action]++;
     done++;
@@ -198,6 +237,50 @@ export async function warmViaApi(
     options.onResult?.(result, results.length, collections.length);
   }
   return results;
+}
+
+interface Deadline {
+  /** Aborted on expiry (reason {@link CollectionTimeoutError}) or with `parent`. */
+  signal: AbortSignal;
+  /** Rejects on expiry; never settles otherwise. */
+  expired: Promise<never>;
+  timedOut(): boolean;
+  clear(): void;
+}
+
+/**
+ * A per-collection deadline. The timer is deliberately NOT unref'd: when the
+ * only pending work is a promise that will never settle, the timer is what
+ * keeps the process alive to record the timeout and move on.
+ */
+function withDeadline(timeoutMs: number, parent?: AbortSignal): Deadline {
+  const controller = new AbortController();
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let fired = false;
+  const onParentAbort = (): void => controller.abort(parent?.reason);
+  if (parent) {
+    if (parent.aborted) onParentAbort();
+    else parent.addEventListener("abort", onParentAbort, { once: true });
+  }
+  const expired = new Promise<never>((_, reject) => {
+    if (timeoutMs <= 0) return;
+    timer = setTimeout(() => {
+      fired = true;
+      const error = new CollectionTimeoutError(timeoutMs);
+      controller.abort(error);
+      reject(error);
+    }, timeoutMs);
+  });
+  expired.catch(() => {});
+  return {
+    signal: controller.signal,
+    expired,
+    timedOut: () => fired,
+    clear: () => {
+      if (timer !== undefined) clearTimeout(timer);
+      parent?.removeEventListener("abort", onParentAbort);
+    },
+  };
 }
 
 async function mapLimit<T, U>(items: readonly T[], limit: number, fn: (item: T) => Promise<U>): Promise<U[]> {
