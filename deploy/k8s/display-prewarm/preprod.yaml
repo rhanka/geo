@@ -68,7 +68,8 @@ metadata:
 spec:
   # A retry resumes: collections already fresh are skipped.
   backoffLimit: 3
-  # Estimated full pass at 1 CPU: ~3-6 h (see SPEC § Publication); hard stop at 12 h.
+  # Estimated full pass at 1 CPU: ~3-6 h (see SPEC § Publication); this Job is capped at 500m
+  # (quota, see resources), so a pass that has to build everything takes longer; hard stop at 12 h.
   activeDeadlineSeconds: 43200
   ttlSecondsAfterFinished: 86400
   template:
@@ -105,9 +106,12 @@ spec:
               cpu: 250m
               memory: 256Mi
             limits:
-              # One build at a time is CPU-bound on one core; 1Gi covers the largest lots shard
-              # (outputs are held compressed, the source is streamed).
-              cpu: "1"
+              # CPU capped at 500m by the geo-preprod ResourceQuota `tenant-quota` (limits.cpu=2):
+              # geo-api 500m + other workload 250m + this Job 500m + geo-api rollout surge 500m
+              # (maxSurge 1) = 1750m <= 2. At cpu "1" (1750m used while the Job runs) a geo-api
+              # rollout is refused by the quota (cd-preprod run 43644279448). prod.yaml keeps 1 CPU.
+              # 1Gi covers the largest lots shard (outputs are held compressed, the source is streamed).
+              cpu: 500m
               memory: 1Gi
           securityContext:
             allowPrivilegeEscalation: false
