@@ -3,6 +3,15 @@
  * server exposes. Generated dynamically so the server URL reflects the request.
  */
 
+/** Opt-in rounding of served coordinates (representation only; default = exact). */
+const COORD_PRECISION_PARAM = {
+  name: "coordPrecision",
+  in: "query",
+  schema: { type: "integer", minimum: 0, maximum: 15 },
+  description:
+    "Round x/y to this many decimals (6 = ~5 cm). Omit for exact geometry. Consecutive duplicate vertices created by the rounding are dropped; rings keep >= 4 positions.",
+} as const;
+
 export function buildOpenApi(base: string): Record<string, unknown> {
   return {
     openapi: "3.0.3",
@@ -114,6 +123,7 @@ export function buildOpenApi(base: string): Record<string, unknown> {
               explode: false,
               description: "minx,miny,maxx,maxy (WGS84)",
             },
+            COORD_PRECISION_PARAM,
           ],
           responses: {
             "200": { description: "A GeoJSON FeatureCollection." },
@@ -128,6 +138,7 @@ export function buildOpenApi(base: string): Record<string, unknown> {
           parameters: [
             { name: "collectionId", in: "path", required: true, schema: { type: "string" } },
             { name: "featureId", in: "path", required: true, schema: { type: "string" } },
+            COORD_PRECISION_PARAM,
           ],
           responses: {
             "200": { description: "A GeoJSON Feature." },
