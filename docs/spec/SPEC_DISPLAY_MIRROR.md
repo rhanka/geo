@@ -261,6 +261,14 @@ about 2 to 4 s): a full pass at 1 CPU is in the 3 to 6 h range, dominated by the
 lots collections. The province-wide lot total is not measured here, so the range
 is an estimate.
 
+Job resources: prod runs at limits.cpu `1`. Preprod is capped at limits.cpu
+`500m` (request 250m, memory limit 1Gi on both): the `geo-preprod` ResourceQuota
+`tenant-quota` allows limits.cpu=2, and geo-api 500m + another workload 250m +
+the Job 500m + the geo-api rollout surge 500m (maxSurge 1, maxUnavailable 0) =
+1750m. At 1 CPU the Job left no room for the surge pod and a geo-api rollout was
+refused by the quota. A preprod pass that has to build everything is therefore
+slower than the 1 CPU estimate; after a sync most mirrors are adopted, not built.
+
 ### Preprod sync
 
 `scripts/geo-preprod-sync.mjs` copies prod's `_display/` with the data. After
