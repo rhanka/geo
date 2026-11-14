@@ -32,13 +32,31 @@ export interface Link {
 }
 
 /**
+ * The request URL as the client sees it. Behind the TLS-terminating ingress the
+ * pod receives plain `http://`, so links built from the raw request URL told
+ * clients to page over `http://` (a redirect at best, a connect timeout at
+ * worst). The ingress's `X-Forwarded-Proto` restores the scheme; only `http`
+ * and `https` are honoured (a spoofed value can only alter the caller's own
+ * links).
+ */
+export function publicUrlOf(requestUrl: string, forwardedProto?: string | null): URL {
+  const u = new URL(requestUrl);
+  const proto = forwardedProto?.split(",")[0]?.trim().toLowerCase();
+  if ((proto === "http" || proto === "https") && u.protocol !== `${proto}:`) {
+    const defaultPort = u.protocol === "http:" ? "80" : "443";
+    u.protocol = `${proto}:`;
+    if (u.port === defaultPort) u.port = "";
+  }
+  return u;
+}
+
+/**
  * Resolve the public base URL (scheme + host, no trailing slash) from the
  * request URL, so generated links are absolute and host-accurate behind any
  * mount point.
  */
-export function baseUrlOf(requestUrl: string): string {
-  const u = new URL(requestUrl);
-  return `${u.origin}`;
+export function baseUrlOf(requestUrl: string, forwardedProto?: string | null): string {
+  return publicUrlOf(requestUrl, forwardedProto).origin;
 }
 
 /** OGC collection object rendered for the API from a {@link CollectionInfo}. */
