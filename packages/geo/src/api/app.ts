@@ -31,6 +31,7 @@ import {
   MEDIA_JSON,
   MEDIA_OPENAPI,
   baseUrlOf,
+  publicUrlOf,
   renderCollection,
   type Link,
 } from "./ogc.js";
@@ -39,6 +40,13 @@ import type { ReglementDocProvider } from "./reglement-provider.js";
 import type { ByteStream } from "../storage/index.js";
 
 import { createBasemapApp } from "../basemap/endpoint.js";
+import { compressJson } from "./compress.js";
+import { parseCoordPrecision, withCoordPrecision } from "./precision.js";
+
+const INVALID_COORD_PRECISION = {
+  code: "InvalidParameter",
+  description: "coordPrecision must be an integer between 0 and 15",
+} as const;
 
 /** Default page size and the hard cap enforced on `?limit=`. */
 const DEFAULT_LIMIT = 100;
@@ -121,10 +129,12 @@ export function createApp(
   app.use("*", (c, next) =>
     c.req.path.startsWith("/basemap/2d") ? next() : openCors(c, next),
   );
+  // Brotli/gzip on the JSON/GeoJSON surface (streaming; PDFs untouched).
+  app.use("*", compressJson());
 
   // ── Landing page ──────────────────────────────────────────────────────────
   app.get("/", async (c) => {
-    const base = baseUrlOf(c.req.url);
+    const base = baseUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
     const coherence = await provider.getCoherence?.();
     const links: Link[] = [
       { href: `${base}/`, rel: "self", type: MEDIA_JSON, title: "This document" },
@@ -263,14 +273,14 @@ export function createApp(
 
   // ── OpenAPI definition ───────────────────────────────────────────────────────
   app.get("/api", (c) => {
-    const base = baseUrlOf(c.req.url);
+    const base = baseUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
     c.header("Content-Type", MEDIA_OPENAPI);
     return c.body(JSON.stringify(buildOpenApi(base)));
   });
 
   // ── Collections list ─────────────────────────────────────────────────────────
   app.get("/collections", async (c) => {
-    const base = baseUrlOf(c.req.url);
+    const base = baseUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
     const infos = await provider.listCollections();
     const links: Link[] = [
       { href: `${base}/collections`, rel: "self", type: MEDIA_JSON, title: "Collections" },
@@ -283,7 +293,7 @@ export function createApp(
 
   // ── Single collection ────────────────────────────────────────────────────────
   app.get("/collections/:collectionId", async (c) => {
-    const base = baseUrlOf(c.req.url);
+    const base = baseUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
     const id = c.req.param("collectionId");
     const info = await provider.getCollection(id);
     if (!info) return c.json({ code: "NotFound", description: `Unknown collection: ${id}` }, 404);
@@ -292,7 +302,7 @@ export function createApp(
 
   // ── Items (features) ─────────────────────────────────────────────────────────
   app.get("/collections/:collectionId/items", async (c) => {
-    const base = baseUrlOf(c.req.url);
+    const base = baseUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
     const id = c.req.param("collectionId");
 
     const bbox = parseBBox(c.req.query("bbox"));
@@ -302,9 +312,11 @@ export function createApp(
         400,
       );
     }
+    const coordPrecision = parseCoordPrecision(c.req.query("coordPrecision"));
+    if (coordPrecision === null) return c.json(INVALID_COORD_PRECISION, 400);
     const limit = parseLimit(c.req.query("limit"));
     const offset = parseOffset(c.req.query("offset"));
-    const selfUrl = new URL(c.req.url);
+    const selfUrl = publicUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
 
     const stream = provider.streamItems
       ? await provider.streamItems(id, bbox ? { bbox } : {}, c.req.raw.signal)
@@ -312,7 +324,11 @@ export function createApp(
     if (stream) {
       c.header("Content-Type", MEDIA_GEOJSON);
       return c.body(
-        streamItemsResponse(stream, { id, base, selfUrl, limit, offset }, c.req.raw.signal),
+        streamItemsResponse(
+          stream,
+          { id, base, selfUrl, limit, offset, coordPrecision },
+          c.req.raw.signal,
+        ),
       );
     }
 
@@ -347,7 +363,10 @@ export function createApp(
       links: Link[];
     } = {
       type: "FeatureCollection",
-      features: result.features,
+      features:
+        coordPrecision === undefined
+          ? result.features
+          : result.features.map((f) => withCoordPrecision(f, coordPrecision)),
       numberMatched: result.numberMatched,
       numberReturned: result.numberReturned,
       timeStamp: new Date().toISOString(),
@@ -360,11 +379,14 @@ export function createApp(
 
   // ── Single feature ───────────────────────────────────────────────────────────
   app.get("/collections/:collectionId/items/:featureId", async (c) => {
-    const base = baseUrlOf(c.req.url);
+    const base = baseUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
     const id = c.req.param("collectionId");
     const featureId = c.req.param("featureId");
+    const coordPrecision = parseCoordPrecision(c.req.query("coordPrecision"));
+    if (coordPrecision === null) return c.json(INVALID_COORD_PRECISION, 400);
 
-    const feature = await provider.getItem(id, featureId);
+    const found = await provider.getItem(id, featureId);
+    const feature = found ? withCoordPrecision(found, coordPrecision) : found;
     if (!feature) {
       return c.json(
         { code: "NotFound", description: `Unknown feature '${featureId}' in '${id}'` },
@@ -373,7 +395,12 @@ export function createApp(
     }
 
     const links: Link[] = [
-      { href: new URL(c.req.url).toString(), rel: "self", type: MEDIA_GEOJSON, title: "This feature" },
+      {
+        href: publicUrlOf(c.req.url, c.req.header("x-forwarded-proto")).toString(),
+        rel: "self",
+        type: MEDIA_GEOJSON,
+        title: "This feature",
+      },
       {
         href: `${base}/collections/${encodeURIComponent(id)}`,
         rel: "collection",
@@ -493,6 +520,8 @@ interface StreamResponseContext {
   selfUrl: URL;
   limit: number;
   offset: number;
+  /** `?coordPrecision=` — `undefined` keeps exact coordinates. */
+  coordPrecision: number | undefined;
 }
 
 /**
@@ -535,7 +564,8 @@ function streamItemsResponse(
           const comma = firstFeature ? "" : ",";
           firstFeature = false;
           numberReturned++;
-          controller.enqueue(encoder.encode(`${comma}${JSON.stringify(next.value)}`));
+          const feature = withCoordPrecision(next.value, context.coordPrecision);
+          controller.enqueue(encoder.encode(`${comma}${JSON.stringify(feature)}`));
           return;
         }
 
