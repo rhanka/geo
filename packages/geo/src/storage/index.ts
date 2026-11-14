@@ -14,7 +14,9 @@ export type { ByteStream, GetStreamOptions, ObjectStat, PutOptions, Store } from
 export { FsStore } from "./fs-store.js";
 export {
   S3Store,
+  DEFAULT_S3_HTTP_TIMEOUTS,
   READ_SERVER_S3_HTTP_TIMEOUTS,
+  s3HttpTimeoutsFromEnv,
   type S3HttpTimeouts,
   type S3StoreConfig,
 } from "./s3-store.js";
