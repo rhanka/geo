@@ -21,6 +21,8 @@ import {
   UploadPartCommand,
 } from "@aws-sdk/client-s3";
 
+import { publishDisplayAfterWrite } from "./display-publish.js";
+
 /**
  * Default creds file (never committed). Overridable with the `S3_ENV_FILE`
  * env var so a remote runner (e.g. the Scaleway normes job) can point at its
@@ -346,6 +348,8 @@ export async function putBytes(
       ...(contentType ? { ContentType: contentType } : {}),
     }),
   );
+  // Publication-time display mirror of a served collection (never throws).
+  await publishDisplayAfterWrite(s3, key, bucket);
 }
 
 /**
@@ -439,6 +443,9 @@ export async function putStream(
     }
     throw error;
   }
+  // Reached only after a completed multipart upload (the empty-body path went
+  // through putBytes, which publishes itself). Never throws.
+  await publishDisplayAfterWrite(s3, key, bucket);
 }
 
 /** PUT a new object once; an existing snapshot must never be replaced. */
@@ -521,6 +528,7 @@ export async function putBytesIfMatch(
       ...(contentType ? { ContentType: contentType } : {}),
     }),
   );
+  await publishDisplayAfterWrite(s3, key, bucket);
 }
 
 /** Delete a single object (idempotent — S3 delete of a missing key is a no-op). */

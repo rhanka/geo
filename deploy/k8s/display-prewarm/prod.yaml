@@ -1,0 +1,97 @@
+# Display-mirror PREWARM — PROD (ns geo, bucket sentropic-geo).
+# Same Job as preprod.yaml (read its header: purpose, idempotence, resume, output, exit codes).
+#
+# WARNING: apply ONLY after an explicit owner GO, once the prod geo-api runs an image that contains
+# packages/geo/dist/display/prewarm-cli.js (cd-prod promotion of the post-merge digest). Never
+# from a workstation. Run preprod.yaml first: in preprod a geo-preprod-sync after this prod pass
+# then only re-points the copied mirrors (no rebuild there).
+#
+# Pre-req: the `geo-s3-credentials` secret of ns geo must allow PutObject under
+# `normalized/_display/` (geo-api needs the same right for its lazy build).
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-geo-display-prewarm-egress
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: geo-display-prewarm
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: prod
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: geo-display-prewarm
+  policyTypes:
+    - Egress
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
+    - to:
+        - ipBlock:
+            cidr: 54.39.60.208/32 # S3 BHS (s3.bhs.io.cloud.ovh.net)
+      ports:
+        - protocol: TCP
+          port: 443
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-display-prewarm
+  namespace: geo
+  labels:
+    app.kubernetes.io/name: geo-display-prewarm
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: prod
+spec:
+  backoffLimit: 3
+  activeDeadlineSeconds: 43200
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: geo-display-prewarm
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/instance: prod
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: prewarm
+          image: REPLACE_WITH_PROD_GEO_DIGEST
+          workingDir: /app
+          command: ["node", "packages/geo/dist/display/prewarm-cli.js", "--store", "s3://sentropic-geo/normalized"]
+          env:
+            - name: NODE_OPTIONS
+              value: "--dns-result-order=ipv4first --max-old-space-size=768"
+            - name: AWS_MAX_ATTEMPTS
+              value: "10"
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL

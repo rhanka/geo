@@ -20,7 +20,7 @@
 // en get→put streaming (deux clients, isolation propre). Dest = `S3_*`.
 //
 // Usage : node scripts/geo-preprod-sync.mjs --coherence-id <id> [--source <s3uri>]
-//            [--dest <s3uri>] [--dry-run] [--limit <n>] [--concurrency <n>]
+//            [--dest <s3uri>] [--dry-run] [--limit <n>] [--concurrency <n>] [--no-display]
 //   (--prod-api conservé pour compat mais NON utilisé — le stamp vient de la source.)
 import { S3Client, ListObjectsV2Command, HeadObjectCommand, CopyObjectCommand, GetObjectCommand, PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 // Logique pure depuis le dist workspace (build requis : `npm run -w @sentropic/geo
@@ -30,11 +30,14 @@ import { S3Client, ListObjectsV2Command, HeadObjectCommand, CopyObjectCommand, G
 import { planFullMirror, pruneBoundExceeded, DEFAULT_MAX_DELETE_FRACTION, buildCoherenceManifest, coherenceManifestKeyFor, computeSetHash } from "../packages/geo/dist/preprod/index.js";
 // Options client S3 sûres OVH/Scaleway (coupe l'aws-chunked refusé au PUT) — factory
 // PARTAGÉ de la lib, pas un fix ad-hoc : serving + sync + tout writer en bénéficient.
-import { ovhSafeS3ClientOptions, isCanonicalGeojsonKey, servedDatasetIds } from "../packages/geo/dist/storage/index.js";
+import { ovhSafeS3ClientOptions, isCanonicalGeojsonKey, servedDatasetIds, S3Store } from "../packages/geo/dist/storage/index.js";
+// Miroirs d'affichage (SPEC_DISPLAY_MIRROR § Publication) : la copie emporte `_display/`
+// de la prod ; on re-pointe chaque miroir sur l'identité DEST de sa source (adopt).
+import { listDisplaySources, prewarmDisplayMirrors } from "../packages/geo/dist/display/index.js";
 import process from "node:process";
 
 // ── args ──────────────────────────────────────────────────────────────────────
-const opt = { source: "s3://sentropic-geo/normalized", dest: "s3://sentropic-geo-preprod/normalized", prodApi: "https://api.geo.sent-tech.ca", coherenceId: null, dryRun: false, limit: Infinity, concurrency: 16, maxDeleteFraction: DEFAULT_MAX_DELETE_FRACTION };
+const opt = { source: "s3://sentropic-geo/normalized", dest: "s3://sentropic-geo-preprod/normalized", prodApi: "https://api.geo.sent-tech.ca", coherenceId: null, dryRun: false, limit: Infinity, concurrency: 16, maxDeleteFraction: DEFAULT_MAX_DELETE_FRACTION, display: true };
 const argv = process.argv.slice(2);
 for (let i = 0; i < argv.length; i++) {
   const a = argv[i];
@@ -46,6 +49,7 @@ for (let i = 0; i < argv.length; i++) {
   else if (a === "--limit") opt.limit = Number(argv[++i]);
   else if (a === "--concurrency") opt.concurrency = Number(argv[++i]);
   else if (a === "--max-delete-fraction") opt.maxDeleteFraction = Number(argv[++i]);
+  else if (a === "--no-display") opt.display = false;
   else { console.error(`unknown arg: ${a}`); process.exit(2); }
 }
 
@@ -193,6 +197,32 @@ if (!source.complete || !destListing.complete) {
   pruneStatus = opt.dryRun ? "would-prune" : "pruned";
 }
 
+// 3) MIROIRS D'AFFICHAGE (lots/zonage) — la copie a emporté `_display/` de la prod, mais
+// son `source_etag` est l'ETag PROD ; une ETag dest différente le rendrait « stale » (premier
+// clic servi périmé + rebuild sur le pod). `adopt` = même octets source ⇒ version prod réutilisée,
+// seul `current.json` est réécrit. JAMAIS de build ici (budget du pod sync) : un `needs-build`
+// reste à la charge du Job de prewarm (deploy/k8s/display-prewarm/). Échec = bruyant sur stderr,
+// sans toucher au code de sortie (la parité DATA est faite ; le miroir est dérivé).
+let display = null;
+if (!opt.dryRun && opt.display) {
+  try {
+    const destStore = new S3Store({ bucket: dest.bucket, prefix: dest.prefix, client: destClient });
+    const sources = await listDisplaySources(destStore);
+    // `needs-build` n'est pas un échec : l'échantillon guide le Job de prewarm.
+    const needsBuild = [];
+    const report = await prewarmDisplayMirrors(destStore, sources, {
+      build: false,
+      concurrency: 4,
+      onResult: (r) => { if (r.action === "needs-build") needsBuild.push(r.collection); },
+    });
+    for (const f of report.failures) console.error(`# display DISPLAY_MIRROR_PUBLISH_FAILED ${f.collection}: ${f.error}`);
+    display = { total: report.total, counts: report.counts, failures: report.failures.map((f) => f.collection), ms: report.ms, needs_build_sample: needsBuild.slice(0, 20) };
+  } catch (e) {
+    console.error(`# display DISPLAY_MIRROR_PUBLISH_FAILED sweep: ${e instanceof Error ? e.message : String(e)}`);
+    display = { error: e instanceof Error ? e.message : String(e) };
+  }
+}
+
 // Cible de parité DATA canonique, dérivée du listing SOURCE (meta-exact, pas de prod-api).
 const served = await servedSetFromSource(source.keys.map((o) => o.key), source.complete);
 
@@ -213,6 +243,6 @@ console.log(JSON.stringify({
   copies: { planned: plan.copies.length, outcomes: copyTally },
   prune: { status: pruneStatus, planned: plan.deletes.length, outcomes: deleteTally, max_delete_fraction: opt.maxDeleteFraction, sample: plan.deletes.slice(0, 10) },
   skipped_source_coherence: plan.skipped,
-  served_count: served?.count ?? null, set_hash: served?.setHash ?? null, coherence_key: COHERENCE_KEY, stamped,
+  served_count: served?.count ?? null, set_hash: served?.setHash ?? null, coherence_key: COHERENCE_KEY, stamped, display,
 }, null, 2));
 process.exit(0);
