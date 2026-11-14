@@ -35,9 +35,12 @@ export interface S3StoreConfig {
   forcePathStyle?: boolean;
   /**
    * HTTP timeouts of the built client (ignored with an injected `client`).
-   * Opt-in: `requestTimeoutMs` runs until the response headers, which for a
-   * `PutObject` arrive only after the whole upload — so it is set by read-only
-   * servers (geo-api), never by default for writers.
+   * Absent → {@link DEFAULT_S3_HTTP_TIMEOUTS} (writer-safe bounds, so no call
+   * can wait forever). Present → used as given: a missing or `0` field is
+   * unbounded. `requestTimeoutMs` runs until the response headers, which for a
+   * `PutObject` arrive only after the whole upload — read-only servers (geo-api)
+   * pass the tight {@link READ_SERVER_S3_HTTP_TIMEOUTS}; writers keep the
+   * generous default.
    */
   httpTimeouts?: S3HttpTimeouts;
   /**
@@ -64,7 +67,31 @@ export interface S3HttpTimeouts {
    * socket — an exhausted pool fails instead of queueing forever.
    */
   requestTimeoutMs?: number;
+  /**
+   * Socket inactivity bound (no byte sent or received for this long), for the
+   * whole exchange: connect, upload, wait for headers and body download. Covers
+   * a peer that keeps the connection open but goes silent — which neither the
+   * SDK retries (`AWS_MAX_ATTEMPTS`, error-driven) nor TCP keepalive catch.
+   */
+  socketTimeoutMs?: number;
 }
+
+/**
+ * Default timeouts of a built S3 client when the caller passes none (writers:
+ * acquisition, display-mirror prewarm, publish hooks). Generous enough for a
+ * multi-hundred-MB upload on the cluster, finite so a stalled call fails (and
+ * is retried by the SDK) instead of hanging the process: a prewarm Job once sat
+ * 5 h at 0 CPU on one unbounded request. Each field can be overridden by the
+ * environment in {@link createStore} (`S3_CONNECTION_TIMEOUT_MS`,
+ * `S3_SOCKET_TIMEOUT_MS`, `S3_REQUEST_TIMEOUT_MS`; `0` disables one).
+ */
+export const DEFAULT_S3_HTTP_TIMEOUTS: Readonly<Required<S3HttpTimeouts>> = Object.freeze({
+  connectionTimeoutMs: 10_000,
+  // Above DEFAULT_BODY_IDLE_TIMEOUT_MS: a body stalled by S3 is released by the
+  // body guard first; this one catches the phases the guard does not cover.
+  socketTimeoutMs: 300_000,
+  requestTimeoutMs: 900_000,
+});
 
 /**
  * Timeouts for the S3 store of a read-only API server (`api/server.ts`, the
@@ -128,7 +155,10 @@ export class S3Store implements Store {
       Body: body,
     };
     if (opts?.contentType !== undefined) input.ContentType = opts.contentType;
-    await this.client.send(new PutObjectCommand(input));
+    await this.client.send(
+      new PutObjectCommand(input),
+      opts?.signal ? { abortSignal: opts.signal } : {},
+    );
   }
 
   async get(key: string): Promise<Uint8Array | undefined> {
@@ -235,6 +265,7 @@ function buildClient(config: S3StoreConfig): S3Client {
     requestHandler: {
       connectionTimeout?: number;
       requestTimeout?: number;
+      socketTimeout?: number;
       throwOnRequestTimeout?: boolean;
       httpsAgent: { keepAlive: boolean; maxSockets: number };
       httpAgent: { keepAlive: boolean; maxSockets: number };
@@ -246,15 +277,7 @@ function buildClient(config: S3StoreConfig): S3Client {
       httpAgent: { keepAlive: true, maxSockets: MAX_SOCKETS },
     },
   };
-  const timeouts = config.httpTimeouts;
-  if (timeouts?.connectionTimeoutMs !== undefined) {
-    opts.requestHandler.connectionTimeout = timeouts.connectionTimeoutMs;
-  }
-  if (timeouts?.requestTimeoutMs !== undefined) {
-    opts.requestHandler.requestTimeout = timeouts.requestTimeoutMs;
-    // Without this the SDK only logs a warning and keeps waiting.
-    opts.requestHandler.throwOnRequestTimeout = true;
-  }
+  Object.assign(opts.requestHandler, requestHandlerTimeouts(config.httpTimeouts ?? DEFAULT_S3_HTTP_TIMEOUTS));
   if (config.endpoint !== undefined) opts.endpoint = config.endpoint;
   if (config.region !== undefined) opts.region = config.region;
   if (config.accessKeyId !== undefined && config.secretAccessKey !== undefined) {
@@ -266,6 +289,46 @@ function buildClient(config: S3StoreConfig): S3Client {
   // OVH/Scaleway rejettent l'aws-chunked que le SDK v3 active par défaut →
   // options sûres partagées (write-safe). Cf. s3-client-config.ts.
   return new S3Client({ ...opts, ...ovhSafeS3ClientOptions() });
+}
+
+/** Request-handler fields of the SDK for `timeouts`; a missing or `0` bound is left unset (unbounded). */
+export function requestHandlerTimeouts(timeouts: S3HttpTimeouts): {
+  connectionTimeout?: number;
+  requestTimeout?: number;
+  socketTimeout?: number;
+  throwOnRequestTimeout?: boolean;
+} {
+  const out: ReturnType<typeof requestHandlerTimeouts> = {};
+  if (timeouts.connectionTimeoutMs) out.connectionTimeout = timeouts.connectionTimeoutMs;
+  if (timeouts.requestTimeoutMs) {
+    out.requestTimeout = timeouts.requestTimeoutMs;
+    // Without this the SDK only logs a warning and keeps waiting.
+    out.throwOnRequestTimeout = true;
+  }
+  if (timeouts.socketTimeoutMs) out.socketTimeout = timeouts.socketTimeoutMs;
+  return out;
+}
+
+/**
+ * `S3_CONNECTION_TIMEOUT_MS` / `S3_SOCKET_TIMEOUT_MS` / `S3_REQUEST_TIMEOUT_MS`
+ * overrides (non-negative integers, `0` = unbounded); `undefined` when none is
+ * set. Throws on a malformed value rather than silently running unbounded.
+ */
+export function s3HttpTimeoutsFromEnv(env: NodeJS.ProcessEnv = process.env): S3HttpTimeouts | undefined {
+  const fields: Array<[keyof S3HttpTimeouts, string]> = [
+    ["connectionTimeoutMs", "S3_CONNECTION_TIMEOUT_MS"],
+    ["socketTimeoutMs", "S3_SOCKET_TIMEOUT_MS"],
+    ["requestTimeoutMs", "S3_REQUEST_TIMEOUT_MS"],
+  ];
+  let out: S3HttpTimeouts | undefined;
+  for (const [field, name] of fields) {
+    const raw = env[name];
+    if (raw === undefined || raw.trim() === "") continue;
+    const n = Number(raw);
+    if (!Number.isInteger(n) || n < 0) throw new Error(`${name} must be a non-negative integer (ms), got ${JSON.stringify(raw)}`);
+    out = { ...out, [field]: n };
+  }
+  return out;
 }
 
 /** Trim leading/trailing slashes from a prefix; `undefined` → empty. */

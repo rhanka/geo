@@ -12,7 +12,13 @@
 import type { S3Client } from "@aws-sdk/client-s3";
 
 import { FsStore } from "./fs-store.js";
-import { S3Store, type S3HttpTimeouts, type S3StoreConfig } from "./s3-store.js";
+import {
+  DEFAULT_S3_HTTP_TIMEOUTS,
+  s3HttpTimeoutsFromEnv,
+  S3Store,
+  type S3HttpTimeouts,
+  type S3StoreConfig,
+} from "./s3-store.js";
 import type { Store } from "./store.js";
 
 /** A parsed store target. */
@@ -55,7 +61,11 @@ export interface CreateStoreOptions {
   accessKeyId?: string;
   secretAccessKey?: string;
   forcePathStyle?: boolean;
-  /** S3 only: client HTTP timeouts (opt-in, read-only servers). See {@link S3StoreConfig.httpTimeouts}. */
+  /**
+   * S3 only: client HTTP timeouts, used as given. Absent → the writer defaults
+   * ({@link DEFAULT_S3_HTTP_TIMEOUTS}) with any `S3_*_TIMEOUT_MS` environment
+   * override. See {@link S3StoreConfig.httpTimeouts}.
+   */
   httpTimeouts?: S3HttpTimeouts;
   /** S3 only: idle bound of an unread stream body. See {@link S3StoreConfig.bodyIdleTimeoutMs}. */
   bodyIdleTimeoutMs?: number;
@@ -77,7 +87,13 @@ export function createStore(uri: string, opts: CreateStoreOptions = {}): Store {
   if (parsed.prefix !== undefined) config.prefix = parsed.prefix;
   if (opts.bodyIdleTimeoutMs !== undefined) config.bodyIdleTimeoutMs = opts.bodyIdleTimeoutMs;
   if (opts.bodyHoldTimeoutMs !== undefined) config.bodyHoldTimeoutMs = opts.bodyHoldTimeoutMs;
-  if (opts.httpTimeouts !== undefined) config.httpTimeouts = opts.httpTimeouts;
+  if (opts.httpTimeouts !== undefined) {
+    config.httpTimeouts = opts.httpTimeouts;
+  } else {
+    // Environment overrides of the writer defaults (e.g. set by a Job manifest).
+    const fromEnv = s3HttpTimeoutsFromEnv();
+    if (fromEnv !== undefined) config.httpTimeouts = { ...DEFAULT_S3_HTTP_TIMEOUTS, ...fromEnv };
+  }
 
   if (opts.client !== undefined) {
     config.client = opts.client;
