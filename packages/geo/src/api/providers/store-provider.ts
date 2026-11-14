@@ -41,6 +41,12 @@ import type {
   ServedFeature,
 } from "../provider.js";
 import { geometryIntersectsBBox } from "../geo-util.js";
+import type { DisplayArtifact, DisplayEncoding } from "../../display/mirror.js";
+import {
+  DisplayService,
+  type DisplayResult,
+  type DisplayServiceOptions,
+} from "../../display/service.js";
 import { isCanonicalGeojsonKey, servedCollectionId, stemOf, type ByteStream, type Store } from "../../storage/index.js";
 
 const GEOJSON_SUFFIX = ".geojson";
@@ -69,14 +75,19 @@ export class StoreProvider implements FeatureProvider {
   #indexed: Promise<Map<string, StoreCollectionEntry>> | undefined;
   /** Dataset-level coherence manifest (freshness + completeness), set by {@link #index}. */
   #coherence: CoherenceInfo | undefined;
+  /** Display mirror (built lazily, keyed by collection id). */
+  #display: DisplayService | undefined;
 
   /**
    * @param store  The key→bytes object store to read from.
    * @param prefix Optional key prefix to scope the listing (e.g. `normalized`).
    */
-  constructor(store: Store, prefix = "") {
+  readonly #displayOptions: DisplayServiceOptions;
+
+  constructor(store: Store, prefix = "", options: { display?: DisplayServiceOptions } = {}) {
     this.#store = store;
     this.#prefix = prefix;
+    this.#displayOptions = options.display ?? {};
   }
 
   /** Force a re-list of the store on next access (e.g. after a data refresh). */
@@ -264,6 +275,19 @@ export class StoreProvider implements FeatureProvider {
       index++;
     }
     return matched;
+  }
+
+  async openDisplay(
+    id: string,
+    artifact: DisplayArtifact,
+    encoding: DisplayEncoding,
+    signal?: AbortSignal,
+  ): Promise<DisplayResult | undefined> {
+    const map = await this.#ensureIndexed();
+    const entry = map.get(id);
+    if (!entry) return undefined;
+    this.#display ??= new DisplayService(this.#store, this.#displayOptions);
+    return this.#display.open(id, entry.geojsonKey, artifact, encoding, signal);
   }
 
   /** Dataset-level coherence manifest, or `undefined` when no manifest exists. */
