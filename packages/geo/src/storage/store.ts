@@ -28,8 +28,17 @@ export interface GetStreamOptions {
 /** A byte source which yields bounded chunks instead of one whole object. */
 export type ByteStream = AsyncIterable<Uint8Array>;
 
+/** Cheap identity of a stored object (no body read). */
+export interface ObjectStat {
+  /** Changes whenever the object's bytes change (S3 ETag; size+mtime on disk). */
+  etag: string;
+  size: number;
+}
+
 /** A minimal key→bytes object store. */
 export interface Store {
+  /** Identity of the object at `key` without reading it, or `undefined` if absent. */
+  stat?(key: string): Promise<ObjectStat | undefined>;
   /** Write `body` at `key`, creating any intermediate structure. */
   put(key: string, body: Uint8Array | string, opts?: PutOptions): Promise<void>;
   /** Read the bytes at `key`, or `undefined` if no object exists there. */
