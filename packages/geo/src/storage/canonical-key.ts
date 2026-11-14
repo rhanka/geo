@@ -59,6 +59,35 @@ export function servedCollectionId(stem: string, datasetId: string | undefined):
   return datasetId ?? stem;
 }
 
+/** Layout of a canonical geojson key: nested is `<…>/<stem>/<stem>.geojson`. */
+export type ServedKeyLayout = "flat" | "nested";
+
+/** The layout of `geojsonKey`; a plain directory prefix is not a nested layout. */
+export function servedKeyLayout(geojsonKey: string): ServedKeyLayout {
+  const lastSlash = geojsonKey.lastIndexOf("/");
+  if (lastSlash === -1) return "flat";
+  const parentStart = geojsonKey.lastIndexOf("/", lastSlash - 1) + 1;
+  const parent = geojsonKey.slice(parentStart, lastSlash);
+  return parent === stemOf(geojsonKey) ? "nested" : "flat";
+}
+
+/**
+ * The served-contract tie-break between two canonical keys that resolve to the
+ * SAME collection id, `existing` sorting before `candidate` (the serving index
+ * walks keys in sorted order). Same stem in both layouts: nested wins. Otherwise
+ * (different stems, or same layout) the later key wins. Shared by the serving
+ * index and the display-mirror publication, so both pick the same source.
+ */
+export function preferServedKey(existing: string, candidate: string): string {
+  if (stemOf(existing) !== stemOf(candidate)) return candidate;
+  const existingLayout = servedKeyLayout(existing);
+  const candidateLayout = servedKeyLayout(candidate);
+  if (existingLayout !== candidateLayout) {
+    return candidateLayout === "nested" ? candidate : existing;
+  }
+  return candidate;
+}
+
 /**
  * The SERVED collection id SET derived from canonical `{key, datasetId?}` entries,
  * via {@link servedCollectionId} — deduped + sorted. The ONE derivation shared by
@@ -75,4 +104,22 @@ export function servedDatasetIds(
     ids.add(servedCollectionId(stemOf(e.key), e.datasetId));
   }
   return [...ids].sort();
+}
+
+/**
+ * The served SOURCE key of every collection id, from canonical `{key,
+ * datasetId?}` entries: the same selection as the serving index (sorted walk,
+ * {@link preferServedKey} on an id collision). Non-canonical keys are ignored.
+ */
+export function servedSourceKeys(
+  entries: readonly { key: string; datasetId?: string | undefined }[],
+): Map<string, string> {
+  const sorted = entries.filter((e) => isCanonicalGeojsonKey(e.key)).sort((a, b) => (a.key < b.key ? -1 : a.key > b.key ? 1 : 0));
+  const out = new Map<string, string>();
+  for (const e of sorted) {
+    const id = servedCollectionId(stemOf(e.key), e.datasetId);
+    const existing = out.get(id);
+    out.set(id, existing === undefined ? e.key : preferServedKey(existing, e.key));
+  }
+  return out;
 }
