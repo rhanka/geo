@@ -12,6 +12,19 @@ const COORD_PRECISION_PARAM = {
     "Round x/y to this many decimals (6 = ~5 cm). Omit for exact geometry. Consecutive duplicate vertices created by the rounding are dropped; rings keep >= 4 positions.",
 } as const;
 
+/** Precompressed, versioned display mirror of a whole collection (SPEC_DISPLAY_MIRROR). */
+const PROFILE_PARAM = {
+  name: "profile",
+  in: "query",
+  schema: { type: "string", enum: ["display", "index"] },
+  description:
+    "Serve the collection's display mirror instead of the exact geometry, in one response. " +
+    "`display`: geometry rounded to 6 decimals (7 or 8 when 6 would make a simple ring non-simple; exact as a last resort), properties verbatim. " +
+    "`index`: `geometry: null`, exact `bbox` per feature, properties verbatim. " +
+    "Not combinable with `bbox`, `offset` or `coordPrecision` (400). Response carries `ETag`, `X-Geo-Display-Profile`, `X-Geo-Display-Version` and, " +
+    "when the source changed since the build, `X-Geo-Display-Stale: 1`. 503 `DisplayUnavailable` when the mirror cannot be built; never the exact geometry instead.",
+} as const;
+
 export function buildOpenApi(base: string): Record<string, unknown> {
   return {
     openapi: "3.0.3",
@@ -124,10 +137,14 @@ export function buildOpenApi(base: string): Record<string, unknown> {
               description: "minx,miny,maxx,maxy (WGS84)",
             },
             COORD_PRECISION_PARAM,
+            PROFILE_PARAM,
           ],
           responses: {
             "200": { description: "A GeoJSON FeatureCollection." },
+            "304": { description: "With `profile`: the If-None-Match ETag still matches the current mirror version." },
+            "400": { description: "Invalid parameter (including `profile` combined with bbox/offset/coordPrecision)." },
             "404": { description: "Unknown collection." },
+            "503": { description: "With `profile`: the display mirror could not be built or read (`DisplayUnavailable`)." },
           },
         },
       },

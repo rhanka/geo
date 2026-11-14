@@ -15,7 +15,7 @@ import {
 } from "@aws-sdk/client-s3";
 
 import { ovhSafeS3ClientOptions } from "./s3-client-config.js";
-import type { ByteStream, GetStreamOptions, PutOptions, Store } from "./store.js";
+import type { ByteStream, GetStreamOptions, ObjectStat, PutOptions, Store } from "./store.js";
 
 /** Connection + addressing settings for an {@link S3Store}. */
 export interface S3StoreConfig {
@@ -160,6 +160,18 @@ export class S3Store implements Store {
       );
       if (out.Body === undefined) return undefined;
       return idleGuardedStream(out.Body, this.bodyGuard, opts?.signal);
+    } catch (err) {
+      if (isNotFound(err)) return undefined;
+      throw err;
+    }
+  }
+
+  async stat(key: string): Promise<ObjectStat | undefined> {
+    try {
+      const out = await this.client.send(
+        new HeadObjectCommand({ Bucket: this.bucket, Key: this.objectKey(key) }),
+      );
+      return { etag: String(out.ETag ?? ""), size: Number(out.ContentLength ?? 0) };
     } catch (err) {
       if (isNotFound(err)) return undefined;
       throw err;
