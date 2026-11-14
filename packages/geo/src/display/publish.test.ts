@@ -26,7 +26,8 @@ class MemStore implements Store {
   async put(key: string, body: Uint8Array | string): Promise<void> {
     if (this.failPutsUnder !== undefined && key.startsWith(this.failPutsUnder)) throw new Error("AccessDenied");
     this.puts++;
-    const bytes = typeof body === "string" ? new TextEncoder().encode(body) : body;
+    // Copy: the Store.put contract lets the caller free `body` once settled.
+    const bytes = typeof body === "string" ? new TextEncoder().encode(body) : body.slice();
     this.objects.set(key, { body: bytes, etag: `"e${++this.#writes}"` });
   }
   async get(key: string): Promise<Uint8Array | undefined> {

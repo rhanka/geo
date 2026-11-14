@@ -21,7 +21,8 @@ class MemStore implements Store {
   async put(key: string, body: Uint8Array | string): Promise<void> {
     if (this.failPuts) throw new Error("AccessDenied");
     this.puts++;
-    const bytes = typeof body === "string" ? new TextEncoder().encode(body) : body;
+    // Copy: the Store.put contract lets the caller free `body` once settled.
+    const bytes = typeof body === "string" ? new TextEncoder().encode(body) : body.slice();
     this.objects.set(key, { body: bytes, etag: `"e${++this.#writes}"` });
   }
   async get(key: string): Promise<Uint8Array | undefined> {
@@ -175,6 +176,44 @@ describe("buildDisplayMirror", () => {
       });
       expect(index.features[2]!.bbox).toBeNull();
     }
+  });
+
+  it("uploads one output at a time and frees each once its upload settled (bounded peak)", async () => {
+    const store = new MemStore();
+    await store.put("s.geojson", LOTS);
+    const put = store.put.bind(store);
+    const held: Array<{ key: string; body: Uint8Array; bytesAtPut: number }> = [];
+    let inFlight = 0;
+    store.put = async (key, body) => {
+      inFlight++;
+      expect(inFlight).toBe(1); // never two uploads at once
+      if (typeof body !== "string") held.push({ key, body, bytesAtPut: body.byteLength });
+      await new Promise((r) => setTimeout(r, 1));
+      await put(key, body);
+      inFlight--;
+    };
+
+    const m = await buildDisplayMirror(store, "c", "s.geojson");
+    expect(held.map((h) => h.key.split("/").at(-1))).toEqual(["index.json.br", "index.json.gz", "items.geojson.br", "items.geojson.gz"]);
+    expect(held.map((h) => h.bytesAtPut)).toEqual([m.artifacts.index.br, m.artifacts.index.gzip, m.artifacts.items.br, m.artifacts.items.gzip]);
+    // The memory behind each uploaded body was returned (a store must copy what it keeps).
+    expect(held.every((h) => h.body.byteLength === 0)).toBe(true);
+  });
+
+  it("frees its outputs when an upload fails, and never flips the pointer", async () => {
+    const store = new MemStore();
+    await store.put("s.geojson", LOTS);
+    const put = store.put.bind(store);
+    const held: Uint8Array[] = [];
+    store.put = async (key, body) => {
+      if (typeof body !== "string") held.push(body);
+      if (key.endsWith("items.geojson.br")) throw new Error("AccessDenied");
+      await put(key, body);
+    };
+    await expect(buildDisplayMirror(store, "c", "s.geojson")).rejects.toThrow("AccessDenied");
+    expect(held.length).toBe(3);
+    expect(held.every((b) => b.byteLength === 0)).toBe(true);
+    expect(await store.has(currentKey("c"))).toBe(false);
   });
 
   it("derives the version from the source bytes only", async () => {

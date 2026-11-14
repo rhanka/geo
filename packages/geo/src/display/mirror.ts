@@ -142,9 +142,59 @@ export function displayGeometry(geometry: Geometry | null): {
   return { geometry, precision: null };
 }
 
+/** ES2024 resizable `ArrayBuffer` (Node >= 20), not in the ES2023 lib typings. */
+interface ResizableArrayBuffer extends ArrayBuffer {
+  readonly maxByteLength: number;
+  resize(byteLength: number): void;
+}
+const ResizableArrayBuffer = ArrayBuffer as unknown as new (
+  byteLength: number,
+  options: { maxByteLength: number },
+) => ResizableArrayBuffer;
+
+/**
+ * Address space reserved per compressed output — virtual only, never committed
+ * beyond what is written (the largest output, `qc-lots-montreal` items, is
+ * ~112 MB; its uncompressed text ~680 MB).
+ */
+const MAX_COMPRESSED_BYTES = 2 ** 30;
+
+/**
+ * One contiguous, growable byte buffer whose memory is returned to the OS on
+ * {@link release} — deterministically, not at the next major GC. A list of
+ * chunks would need a concatenated copy to be uploaded (doubling the peak), and
+ * the released chunks would linger until V8 collects them.
+ */
+class GrowableBytes {
+  #buffer = new ResizableArrayBuffer(0, { maxByteLength: MAX_COMPRESSED_BYTES });
+  #length = 0;
+
+  append(chunk: Uint8Array): void {
+    const need = this.#length + chunk.byteLength;
+    if (need > this.#buffer.byteLength) {
+      if (need > MAX_COMPRESSED_BYTES) throw new Error(`display mirror: compressed output over ${MAX_COMPRESSED_BYTES} bytes`);
+      // Growing only extends the accessible range of the reservation: no copy.
+      this.#buffer.resize(Math.min(MAX_COMPRESSED_BYTES, Math.max(need, this.#buffer.byteLength * 2, 1 << 20)));
+    }
+    new Uint8Array(this.#buffer, this.#length, chunk.byteLength).set(chunk);
+    this.#length = need;
+  }
+
+  /** The bytes written so far (a view, valid until {@link release}). */
+  view(): Uint8Array {
+    this.#buffer.resize(this.#length);
+    return new Uint8Array(this.#buffer, 0, this.#length);
+  }
+
+  release(): void {
+    this.#buffer.resize(0);
+    this.#length = 0;
+  }
+}
+
 /** Collects one compressed output; awaits drain so memory stays bounded. */
 class Sink {
-  readonly #chunks: Buffer[] = [];
+  readonly #out = new GrowableBytes();
   readonly #encoder: BrotliCompress | Gzip;
   readonly #done: Promise<void>;
   bytes = 0;
@@ -159,11 +209,15 @@ class Sink {
             },
           })
         : createGzip({ level: 9 });
-    const chunks = this.#chunks;
+    const bytes = this.#out;
     const out = new Writable({
       write(chunk: Buffer, _enc, cb) {
-        chunks.push(chunk);
-        cb();
+        try {
+          bytes.append(chunk);
+          cb();
+        } catch (error) {
+          cb(error as Error);
+        }
       },
     });
     this.#done = new Promise((resolve, reject) => {
@@ -171,19 +225,29 @@ class Sink {
       out.on("error", reject);
       this.#encoder.on("error", reject);
     });
+    // Observed by write()/end(); never an unhandled rejection in between.
+    this.#done.catch(() => {});
     this.#encoder.pipe(out);
   }
 
   async write(text: string): Promise<void> {
     if (!this.#encoder.write(text)) {
-      await new Promise<void>((resolve) => this.#encoder.once("drain", resolve));
+      // A failed encoder never drains: its error ends the wait instead of hanging.
+      await Promise.race([new Promise<void>((resolve) => this.#encoder.once("drain", resolve)), this.#done]);
     }
   }
 
+  /** Finish the stream; the result is a view valid until {@link release}. */
   async end(): Promise<Uint8Array> {
     this.#encoder.end();
     await this.#done;
-    return Buffer.concat(this.#chunks);
+    return this.#out.view();
+  }
+
+  /** Return the output memory to the OS and free the encoder (idempotent). */
+  release(): void {
+    this.#encoder.destroy();
+    this.#out.release();
   }
 }
 
@@ -197,6 +261,11 @@ class Artifact {
     this.bytes += Buffer.byteLength(text);
     await Promise.all([this.br.write(text), this.gzip.write(text)]);
   }
+
+  release(): void {
+    this.br.release();
+    this.gzip.release();
+  }
 }
 
 async function* hashing(source: ByteStream, hash: ReturnType<typeof createHash>): ByteStream {
@@ -208,28 +277,53 @@ async function* hashing(source: ByteStream, hash: ReturnType<typeof createHash>)
 
 /**
  * Build and publish the display mirror of `collection` from its exact source
- * object, streaming (one feature in memory at a time; outputs held compressed).
- * Writes the version's objects, then flips `current.json` last.
+ * object, streaming (one feature in memory at a time; outputs held compressed,
+ * one contiguous buffer each). Writes the version's objects one at a time —
+ * each output is uploaded then freed before the next — and flips
+ * `current.json` last. `signal` aborts the build (no pointer flip).
  */
 export async function buildDisplayMirror(
   store: Store,
   collection: string,
   sourceKey: string,
-  options: { now?: () => Date } = {},
+  options: { now?: () => Date; signal?: AbortSignal } = {},
 ): Promise<DisplayManifest> {
+  const { signal } = options;
   const sourceEtag = (await store.stat?.(sourceKey))?.etag ?? "";
-  const source = store.getStream ? await store.getStream(sourceKey) : undefined;
+  signal?.throwIfAborted();
+  const source = store.getStream ? await store.getStream(sourceKey, signal ? { signal } : {}) : undefined;
   if (!source) throw new Error(`display mirror: source unreadable: ${sourceKey}`);
 
-  const hash = createHash("sha256");
   const items = new Artifact();
   const index = new Artifact();
+  try {
+    return await buildInto(store, collection, sourceKey, sourceEtag, source, items, index, options);
+  } finally {
+    // Success, failure or abort: free the outputs and the encoders now.
+    items.release();
+    index.release();
+  }
+}
+
+async function buildInto(
+  store: Store,
+  collection: string,
+  sourceKey: string,
+  sourceEtag: string,
+  source: ByteStream,
+  items: Artifact,
+  index: Artifact,
+  options: { now?: () => Date; signal?: AbortSignal },
+): Promise<DisplayManifest> {
+  const { signal } = options;
+  const hash = createHash("sha256");
   await items.write('{"type":"FeatureCollection","features":[');
   await index.write('{"type":"FeatureCollection","features":[');
 
   let features = 0;
   const precisionCounts: Record<string, number> = {};
   for await (const feature of parseFeatureCollectionStream(hashing(source, hash))) {
+    signal?.throwIfAborted();
     const sep = features === 0 ? "" : ",";
     features++;
     const display = displayGeometry(feature.geometry);
@@ -246,12 +340,28 @@ export async function buildDisplayMirror(
   await items.write(tail);
   await index.write(tail);
 
-  const [itemsBr, itemsGz, indexBr, indexGz] = await Promise.all([
-    items.br.end(),
-    items.gzip.end(),
-    index.br.end(),
-    index.gzip.end(),
-  ]);
+  // One output at a time: finish, upload, release. Each output is ONE growable
+  // buffer uploaded as is (no concatenated copy) and returned to the OS right
+  // after its upload. Before, the four outputs were concatenated next to their
+  // chunks and uploaded in parallel (TLS holds an encrypted copy of each
+  // in-flight body): ~1 GB peak on qc-lots-montreal, OOMKilled at 1Gi.
+  // Smallest (index) first, so the largest uploads happen once the rest is freed.
+  const putOptions = signal ? { signal } : undefined;
+  const compressed: Record<DisplayArtifact, Record<DisplayEncoding, number>> = {
+    items: { br: 0, gzip: 0 },
+    index: { br: 0, gzip: 0 },
+  };
+  for (const [artifact, outputs] of [["index", index], ["items", items]] as const) {
+    for (const encoding of ["br", "gzip"] as const) {
+      signal?.throwIfAborted();
+      const sink = outputs[encoding];
+      const bytes = await sink.end();
+      compressed[artifact][encoding] = bytes.byteLength;
+      // Store.put contract: the body is not retained once the promise settles.
+      await store.put(artifactKey(collection, version, artifact, encoding), bytes, putOptions);
+      sink.release();
+    }
+  }
 
   const manifest: DisplayManifest = {
     profile: DISPLAY_PROFILE,
@@ -265,21 +375,18 @@ export async function buildDisplayMirror(
     precision_counts: precisionCounts,
     fallback_exact: precisionCounts["exact"] ?? 0,
     artifacts: {
-      items: { bytes: items.bytes, br: itemsBr.byteLength, gzip: itemsGz.byteLength },
-      index: { bytes: index.bytes, br: indexBr.byteLength, gzip: indexGz.byteLength },
+      items: { bytes: items.bytes, ...compressed.items },
+      index: { bytes: index.bytes, ...compressed.index },
     },
   };
 
-  await Promise.all([
-    store.put(artifactKey(collection, version, "items", "br"), itemsBr),
-    store.put(artifactKey(collection, version, "items", "gzip"), itemsGz),
-    store.put(artifactKey(collection, version, "index", "br"), indexBr),
-    store.put(artifactKey(collection, version, "index", "gzip"), indexGz),
-  ]);
   const manifestJson = JSON.stringify(manifest);
-  await store.put(manifestKey(collection, version), manifestJson, { contentType: "application/json" });
+  const jsonPut = { contentType: "application/json", ...putOptions };
+  signal?.throwIfAborted();
+  await store.put(manifestKey(collection, version), manifestJson, jsonPut);
   // The pointer flips only once every object of the version is in place.
-  await store.put(currentKey(collection), manifestJson, { contentType: "application/json" });
+  signal?.throwIfAborted();
+  await store.put(currentKey(collection), manifestJson, jsonPut);
   return manifest;
 }
 

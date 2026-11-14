@@ -7,6 +7,12 @@
  *
  *   node packages/geo/dist/display/prewarm-cli.js --store s3://<bucket>/normalized
  *        [--collections a,b] [--limit N] [--concurrency 1] [--no-adopt] [--no-build]
+ *        [--collection-timeout-ms 1200000]
+ *
+ * `--collection-timeout-ms` bounds one collection (default 20 min, `0` = none):
+ * on expiry it is reported `{"action":"failed","reason":"timeout"}` and the
+ * sweep moves on; a re-run retries it. Each S3 call is also bounded by the
+ * store's HTTP timeouts (`S3_*_TIMEOUT_MS`, see `DEFAULT_S3_HTTP_TIMEOUTS`).
  *
  * API mode — read-only requests to a deployed geo-api, explicit list only:
  *
@@ -21,6 +27,7 @@ import { pathToFileURL } from "node:url";
 import { createStore, type Store } from "../storage/index.js";
 
 import {
+  DEFAULT_COLLECTION_TIMEOUT_MS,
   listDisplaySources,
   prewarmDisplayMirrors,
   warmViaApi,
@@ -35,10 +42,17 @@ export interface PrewarmCliArgs {
   concurrency: number;
   adopt: boolean;
   build: boolean;
+  /** Per-collection deadline in ms (store mode); `0` disables. */
+  collectionTimeoutMs: number;
 }
 
 export function parsePrewarmArgs(argv: readonly string[]): PrewarmCliArgs {
-  const args: PrewarmCliArgs = { concurrency: 1, adopt: true, build: true };
+  const args: PrewarmCliArgs = {
+    concurrency: 1,
+    adopt: true,
+    build: true,
+    collectionTimeoutMs: DEFAULT_COLLECTION_TIMEOUT_MS,
+  };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     const value = (): string => {
@@ -51,6 +65,7 @@ export function parsePrewarmArgs(argv: readonly string[]): PrewarmCliArgs {
     else if (a === "--collections") args.collections = value().split(",").map((s) => s.trim()).filter(Boolean);
     else if (a === "--limit") args.limit = positiveInt(a, value());
     else if (a === "--concurrency") args.concurrency = positiveInt(a, value());
+    else if (a === "--collection-timeout-ms") args.collectionTimeoutMs = nonNegativeInt(a, value());
     else if (a === "--no-adopt") args.adopt = false;
     else if (a === "--no-build") args.build = false;
     else throw new Error(`unknown argument: ${a}`);
@@ -65,6 +80,12 @@ export function parsePrewarmArgs(argv: readonly string[]): PrewarmCliArgs {
 function positiveInt(flag: string, raw: string): number {
   const n = Number(raw);
   if (!Number.isInteger(n) || n < 1) throw new Error(`${flag} must be a positive integer`);
+  return n;
+}
+
+function nonNegativeInt(flag: string, raw: string): number {
+  const n = Number(raw);
+  if (!Number.isInteger(n) || n < 0) throw new Error(`${flag} must be a non-negative integer`);
   return n;
 }
 
@@ -106,11 +127,12 @@ export async function runPrewarmCli(argv: readonly string[], deps: PrewarmCliDep
     sources = sources.filter((s) => wanted.has(s.collection));
   }
   if (args.limit !== undefined) sources = sources.slice(0, args.limit);
-  out(JSON.stringify({ start: { mode: "store", store: args.store, total: sources.length, concurrency: args.concurrency, adopt: args.adopt, build: args.build } }));
+  out(JSON.stringify({ start: { mode: "store", store: args.store, total: sources.length, concurrency: args.concurrency, adopt: args.adopt, build: args.build, collectionTimeoutMs: args.collectionTimeoutMs } }));
   const report = await prewarmDisplayMirrors(store, sources, {
     concurrency: args.concurrency,
     adopt: args.adopt,
     build: args.build,
+    collectionTimeoutMs: args.collectionTimeoutMs,
     onResult: (r, done, total) => out(JSON.stringify({ i: done, n: total, ...r })),
   });
   const failed = [...missing, ...report.failures.map((f) => f.collection)];
