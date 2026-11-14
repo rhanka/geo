@@ -9,7 +9,7 @@ import { createReadStream } from "node:fs";
 import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
 import { dirname, join, relative, sep } from "node:path";
 
-import type { ByteStream, PutOptions, Store } from "./store.js";
+import type { ByteStream, ObjectStat, PutOptions, Store } from "./store.js";
 
 /** A {@link Store} rooted at a local directory. */
 export class FsStore implements Store {
@@ -49,6 +49,16 @@ export class FsStore implements Store {
       throw err;
     }
     return readStream(path);
+  }
+
+  async stat(key: string): Promise<ObjectStat | undefined> {
+    try {
+      const s = await stat(this.pathFor(key));
+      return { etag: `${s.size}-${s.mtimeMs}`, size: s.size };
+    } catch (err) {
+      if (isErrno(err, "ENOENT")) return undefined;
+      throw err;
+    }
   }
 
   async has(key: string): Promise<boolean> {

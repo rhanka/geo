@@ -10,7 +10,7 @@
 
 export const VERSION = "0.1.0";
 
-export type { ByteStream, GetStreamOptions, PutOptions, Store } from "./store.js";
+export type { ByteStream, GetStreamOptions, ObjectStat, PutOptions, Store } from "./store.js";
 export { FsStore } from "./fs-store.js";
 export {
   S3Store,
