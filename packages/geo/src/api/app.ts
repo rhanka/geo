@@ -12,7 +12,11 @@
  *     `timeStamp`, and `links`.
  */
 
-import { Hono } from "hono";
+import { Duplex } from "node:stream";
+import type { ReadableWritablePair } from "node:stream/web";
+import { createGunzip } from "node:zlib";
+
+import { Hono, type Context } from "hono";
 import { cors } from "hono/cors";
 
 import type { FeatureCollection, Geometry } from "@sentropic/geo-core";
@@ -40,7 +44,9 @@ import type { ReglementDocProvider } from "./reglement-provider.js";
 import type { ByteStream } from "../storage/index.js";
 
 import { createBasemapApp } from "../basemap/endpoint.js";
-import { compressJson } from "./compress.js";
+import { compressJson, negotiateEncoding } from "./compress.js";
+import type { DisplayArtifact } from "../display/mirror.js";
+import type { DisplayResult } from "../display/service.js";
 import { parseCoordPrecision, withCoordPrecision } from "./precision.js";
 
 const INVALID_COORD_PRECISION = {
@@ -305,6 +311,12 @@ export function createApp(
     const base = baseUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
     const id = c.req.param("collectionId");
 
+    // Display mirror (`?profile=display|index`): the precompressed, versioned
+    // representation built from the exact source (display/mirror.ts). Whole
+    // collection in one read; never falls back to the exact geometry.
+    const profile = c.req.query("profile");
+    if (profile !== undefined) return serveDisplay(c, provider, id, profile);
+
     const bbox = parseBBox(c.req.query("bbox"));
     if (bbox === null) {
       return c.json(
@@ -467,6 +479,68 @@ export function createApp(
   }
 
   return app;
+}
+
+const DISPLAY_PROFILES: Record<string, DisplayArtifact> = { display: "items", index: "index" };
+
+async function serveDisplay(
+  c: Context,
+  provider: FeatureProvider,
+  id: string,
+  profile: string,
+): Promise<Response> {
+  const artifact = DISPLAY_PROFILES[profile];
+  if (!artifact) {
+    return c.json({ code: "InvalidParameter", description: "profile must be 'display' or 'index'" }, 400);
+  }
+  for (const param of ["bbox", "offset", "coordPrecision"]) {
+    if (c.req.query(param) !== undefined) {
+      return c.json(
+        {
+          code: "InvalidParameter",
+          description: `'${param}' is not supported with profile=${profile} (whole collection, fixed representation)`,
+        },
+        400,
+      );
+    }
+  }
+  if (!provider.openDisplay) {
+    return c.json({ code: "NotFound", description: "No display mirror for this data source" }, 404);
+  }
+
+  const accepted = negotiateEncoding(c.req.header("Accept-Encoding"));
+  let result: DisplayResult | undefined;
+  try {
+    result = await provider.openDisplay(id, artifact, accepted ?? "gzip", c.req.raw.signal);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`[display] ${id} ${profile}:`, error);
+    return c.json({ code: "DisplayUnavailable", description: `Display mirror unavailable for '${id}'` }, 503);
+  }
+  if (!result) return c.json({ code: "NotFound", description: `Unknown collection: ${id}` }, 404);
+
+  const etag = `"${result.manifest.version}-${artifact}-${result.encoding}"`;
+  c.header("ETag", etag);
+  c.header("Cache-Control", "no-cache");
+  c.header("X-Geo-Display-Profile", result.manifest.profile);
+  c.header("X-Geo-Display-Version", result.manifest.version);
+  if (result.stale) c.header("X-Geo-Display-Stale", "1");
+
+  const ifNoneMatch = c.req.header("If-None-Match");
+  if (ifNoneMatch && ifNoneMatch.split(",").some((t) => t.trim() === etag)) {
+    await result.stream[Symbol.asyncIterator]().return?.();
+    return c.body(null, 304);
+  }
+
+  c.header("Content-Type", MEDIA_GEOJSON);
+  const body = byteStreamToReadable(result.stream, c.req.raw.signal);
+  if (accepted) {
+    c.header("Content-Encoding", result.encoding);
+    return c.body(body);
+  }
+  // Client accepts neither br nor gzip: inflate the gzip artifact on the fly.
+  const gunzip = Duplex.toWeb(createGunzip()) as unknown as ReadableWritablePair<Uint8Array, Uint8Array>;
+  return c.body(body.pipeThrough(gunzip));
 }
 
 /**
