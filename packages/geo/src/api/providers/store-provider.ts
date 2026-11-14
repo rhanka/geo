@@ -47,7 +47,14 @@ import {
   type DisplayResult,
   type DisplayServiceOptions,
 } from "../../display/service.js";
-import { isCanonicalGeojsonKey, servedCollectionId, stemOf, type ByteStream, type Store } from "../../storage/index.js";
+import {
+  isCanonicalGeojsonKey,
+  preferServedKey,
+  servedCollectionId,
+  stemOf,
+  type ByteStream,
+  type Store,
+} from "../../storage/index.js";
 
 const GEOJSON_SUFFIX = ".geojson";
 const META_SUFFIX = ".meta.json";
@@ -371,32 +378,18 @@ function parseCoherence(text: string | undefined): CoherenceInfo | undefined {
     : info;
 }
 
-type CollectionLayout = "flat" | "nested";
-
-/** The nested layout is `<slug>/<slug>.geojson`; prefixes are not layouts. */
-function collectionLayout(geojsonKey: string): CollectionLayout {
-  const lastSlash = geojsonKey.lastIndexOf("/");
-  if (lastSlash === -1) return "flat";
-  const parentStart = geojsonKey.lastIndexOf("/", lastSlash - 1) + 1;
-  const parent = geojsonKey.slice(parentStart, lastSlash);
-  return parent === stemOf(geojsonKey) ? "nested" : "flat";
-}
-
 /**
- * Served-contract rule: when a collection exists in both layouts, use nested.
- * Equal layouts keep the prior sorted, last-key-wins behavior.
+ * Served-contract rule ({@link preferServedKey}, shared with the display-mirror
+ * publication): when a collection exists in both layouts, use nested. Equal
+ * layouts keep the prior sorted, last-key-wins behavior.
  */
 function selectServedEntry(
   existing: StoreCollectionEntry,
   candidate: StoreCollectionEntry,
 ): StoreCollectionEntry {
-  if (stemOf(existing.geojsonKey) !== stemOf(candidate.geojsonKey)) return candidate;
-  const existingLayout = collectionLayout(existing.geojsonKey);
-  const candidateLayout = collectionLayout(candidate.geojsonKey);
-  if (existingLayout !== candidateLayout) {
-    return candidateLayout === "nested" ? candidate : existing;
-  }
-  return candidate;
+  return preferServedKey(existing.geojsonKey, candidate.geojsonKey) === candidate.geojsonKey
+    ? candidate
+    : existing;
 }
 
 async function mapLimit<T, U>(

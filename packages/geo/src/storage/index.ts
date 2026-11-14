@@ -18,7 +18,16 @@ export {
   type S3HttpTimeouts,
   type S3StoreConfig,
 } from "./s3-store.js";
-export { isCanonicalGeojsonKey, stemOf, servedCollectionId, servedDatasetIds } from "./canonical-key.js";
+export {
+  isCanonicalGeojsonKey,
+  preferServedKey,
+  servedCollectionId,
+  servedDatasetIds,
+  servedKeyLayout,
+  servedSourceKeys,
+  stemOf,
+  type ServedKeyLayout,
+} from "./canonical-key.js";
 export {
   ovhSafeS3ClientOptions,
   OVH_S3_STREAM_BUFFER_BYTES,

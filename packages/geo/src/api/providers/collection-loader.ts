@@ -7,9 +7,24 @@
  * a time, so callers can paginate and write the OGC response as a stream.
  */
 
-import { isFeatureCollection, type CollectionMeta } from "@sentropic/geo-core";
+import type { CollectionMeta } from "@sentropic/geo-core";
 
 import type { ServedFeature } from "../provider.js";
+
+/**
+ * Same guard as `@sentropic/geo-core`'s `isFeatureCollection`, kept local so this
+ * module has no RUNTIME dependency on geo-core: the acquisition images run
+ * `packages/geo/src` through tsx without geo-core installed, and the display
+ * mirror (built at publication by the acquisition writers) reaches this module.
+ */
+function isFeatureCollection(value: unknown): boolean {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    (value as { type?: unknown }).type === "FeatureCollection" &&
+    Array.isArray((value as { features?: unknown }).features)
+  );
+}
 
 /** Type guard for a {@link CollectionMeta} (requires a string `datasetId`). */
 export function isMeta(value: unknown): value is CollectionMeta {
