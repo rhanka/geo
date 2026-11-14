@@ -10,6 +10,7 @@ import {
   type CaptureManifestLine,
 } from "../../../packages/qc-sources/src/capture/index.js";
 import { BUCKET, isServedZoneKey, getBytes, objectHead, copyObject } from "./s3.js";
+import { publishDisplayAfterWrite } from "./display-publish.js";
 
 export type GeometrySourceType = "wfs" | "arcgis" | "agol" | "geonet" | "jmap" | "geojson-officiel" | "pdf-zonage";
 export type GeometryMethod = "natif" | "georeference";
@@ -323,6 +324,8 @@ export async function putServedZoneGeojson(s3: S3Client, key: string, fc: Served
   assertServedZoneGeojson(key, fc);
   await assertNoServedPropertyKeysLost(s3, key, fc);
   await s3.send(new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: JSON.stringify(fc), ContentType: "application/geo+json" }));
+  // Publication-time display mirror (never throws; the exact write stands).
+  await publishDisplayAfterWrite(s3, key, BUCKET);
 }
 
 /**
@@ -357,6 +360,7 @@ export async function putServedZoneGeojsonIfMatch(
     ContentType: "application/geo+json",
     IfMatch: priorEtag,
   }));
+  await publishDisplayAfterWrite(s3, key, BUCKET);
 }
 
 /**
@@ -1063,5 +1067,6 @@ export async function putServedZoneAdditive(
   await s3.send(
     new PutObjectCommand({ Bucket: BUCKET, Key: key, Body: JSON.stringify(fc), ContentType: "application/geo+json" }),
   );
+  await publishDisplayAfterWrite(s3, key, BUCKET);
   return { features: nxtFeats.length };
 }
