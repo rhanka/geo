@@ -98,7 +98,12 @@ matches the output bytes.
   background rebuild is logged and retried on a later request.
 - Builds are single-flight per collection and serialized globally (one build at
   a time per pod) to bound CPU and memory. The build streams the source (one
-  feature in memory at a time) and holds the outputs compressed.
+  feature in memory at a time) and holds the four outputs compressed, each in
+  one growable buffer (no concatenated copy). They are uploaded one at a time,
+  smallest first, and each is returned to the OS as soon as its upload settled
+  (`Store.put` callers may free the body once the promise settles; an in-memory
+  store copies). Peak on `qc-lots-montreal` (680k lots, outputs 111 + 112 + 26
+  + 27 MB): see § Prewarm sweep.
 
 ## HTTP contract
 
@@ -213,7 +218,37 @@ every served lots/zonage source with the exact index rule, then calls
 (`--concurrency`). Idempotent and resumable: a fresh collection costs one GET and
 one HEAD, so a re-run after an interruption skips the work already done. One
 JSON line per collection, a JSON summary last, exit 1 when any collection
-failed. Options: `--collections a,b`, `--limit N`, `--no-adopt`, `--no-build`.
+failed. Options: `--collections a,b`, `--limit N`, `--no-adopt`, `--no-build`,
+`--collection-timeout-ms N`.
+
+Bounded by construction (no collection or S3 call can stall the sweep):
+
+- Per-collection deadline, default 20 min (`--collection-timeout-ms`, `0`
+  disables). On expiry the collection is reported
+  `{"action":"failed","reason":"timeout"}`, its work is aborted (signal passed
+  to the store's streams and writes, checked per feature; `current.json` is
+  written last, so no partial mirror becomes current) and the sweep moves on. A
+  re-run retries it.
+- Every S3 call of a store built without explicit timeouts (writers: this Job,
+  acquisition, publish hooks) is bounded by `DEFAULT_S3_HTTP_TIMEOUTS`
+  (`storage/s3-store.ts`): connect 10 s, socket inactivity 5 min, request until
+  response headers 15 min. A failed call is retried by the SDK
+  (`AWS_MAX_ATTEMPTS`). Overrides: `S3_CONNECTION_TIMEOUT_MS`,
+  `S3_SOCKET_TIMEOUT_MS`, `S3_REQUEST_TIMEOUT_MS` (`0` = unbounded). geo-api
+  keeps its explicit `READ_SERVER_S3_HTTP_TIMEOUTS`.
+
+Without these, the first preprod run (2026-11) sat ~5 h at 0 CPU after
+collection 420: the writer client had no HTTP timeout at all, so a request
+whose peer went silent never settled (the SDK retries only on an error).
+
+Memory (the same run was first OOMKilled at 1Gi on `qc-lots-montreal`). Peak
+RSS of one `qc-lots-montreal` build, Node 22, `--max-old-space-size=768`,
+source streamed from a read-only GET, uploads through the real S3 SDK over TLS
+to a local sink (no write to any bucket): **1004 MB before, 548 MB after**
+(the four outputs, 276 MB compressed, are now held once and uploaded one at a
+time; before, they were concatenated next to their chunks and uploaded in
+parallel, TLS holding an encrypted copy of each in-flight body). V8 heap stays
+under ~65 MB, so `--max-old-space-size` does not drive the peak.
 
 Why not through geo-api: the pod builds one mirror at a time under a 500m CPU
 limit; about 2150 builds through it would keep its CPU busy for hours and

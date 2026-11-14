@@ -117,17 +117,22 @@ async function adoptExistingVersion(
   collection: string,
   sourceKey: string,
   sourceEtag: string,
+  signal?: AbortSignal,
 ): Promise<DisplayManifest | undefined> {
   const hash = createHash("sha256");
   if (store.getStream) {
-    const stream = await store.getStream(sourceKey);
+    const stream = await store.getStream(sourceKey, signal ? { signal } : {});
     if (!stream) return undefined;
-    for await (const chunk of stream) hash.update(chunk);
+    for await (const chunk of stream) {
+      signal?.throwIfAborted();
+      hash.update(chunk);
+    }
   } else {
     const bytes = await store.get(sourceKey);
     if (!bytes) return undefined;
     hash.update(bytes);
   }
+  signal?.throwIfAborted();
   const sourceSha256 = hash.digest("hex");
   const version = displayVersion(sourceSha256);
   const existing = parseManifest(await readText(store, manifestKey(collection, version)));
@@ -147,7 +152,11 @@ async function adoptExistingVersion(
   // The ETag was read BEFORE the bytes: if the source changed in between, the
   // stamped ETag is already outdated and the next check rebuilds (fails safe).
   const pointer: DisplayManifest = { ...existing, collection, source_key: sourceKey, source_etag: sourceEtag };
-  await store.put(currentKey(collection), JSON.stringify(pointer), { contentType: "application/json" });
+  signal?.throwIfAborted();
+  await store.put(currentKey(collection), JSON.stringify(pointer), {
+    contentType: "application/json",
+    ...(signal ? { signal } : {}),
+  });
   return pointer;
 }
 
@@ -157,6 +166,12 @@ export interface EnsureOptions {
   /** Build when nothing fresh or adoptable exists (default true); false reports `needs-build`. */
   build?: boolean;
   now?: () => Date;
+  /**
+   * Cancels the call (e.g. a per-collection deadline): checked between steps
+   * and per feature, passed to the store's streams and writes. An abort never
+   * flips `current.json` to an incomplete version (the pointer is written last).
+   */
+  signal?: AbortSignal;
 }
 
 export type EnsureAction = "fresh" | "adopted" | "built" | "needs-build";
@@ -191,14 +206,21 @@ export async function ensureDisplayMirror(
     ...extra,
     ms: Date.now() - started,
   });
+  const { signal } = options;
+  signal?.throwIfAborted();
   const state = await displayMirrorFreshness(store, collection, sourceKey);
   if (state.fresh) return done("fresh", { version: state.manifest.version });
+  signal?.throwIfAborted();
   if (options.adopt !== false) {
-    const adopted = await adoptExistingVersion(store, collection, sourceKey, state.sourceEtag);
+    const adopted = await adoptExistingVersion(store, collection, sourceKey, state.sourceEtag, signal);
     if (adopted) return done("adopted", { reason: state.reason, version: adopted.version });
   }
   if (options.build === false) return done("needs-build", { reason: state.reason });
-  const manifest = await buildDisplayMirror(store, collection, sourceKey, options.now ? { now: options.now } : {});
+  signal?.throwIfAborted();
+  const manifest = await buildDisplayMirror(store, collection, sourceKey, {
+    ...(options.now ? { now: options.now } : {}),
+    ...(signal ? { signal } : {}),
+  });
   return done("built", { reason: state.reason, version: manifest.version });
 }
 
