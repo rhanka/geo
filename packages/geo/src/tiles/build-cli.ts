@@ -14,15 +14,18 @@
  * zoom tile count, max tile size and the no-drop / border checks.
  */
 
-import { createReadStream } from "node:fs";
-import { writeFile } from "node:fs/promises";
+import { closeSync, createReadStream, openSync, writeSync } from "node:fs";
+import { mkdtemp, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 
 import { parseFeatureCollectionStream } from "../api/providers/collection-loader.js";
 import { createStore } from "../storage/index.js";
 import { listDisplaySources } from "../display/prewarm.js";
 
-import { layerTilesToPmtiles, LayerTilesBuilder, TILE_DEFAULTS, type SourceFeature } from "./build.js";
+import { LayerTilesBuilder, TILE_DEFAULTS, writeSpooledPmtiles, type SourceFeature, type SpooledLayer } from "./build.js";
+import { FileSpool } from "./spool.js";
 import { citySlugFromCollection, profileForCollection } from "./profiles.js";
 
 export interface TilesCliArgs {
@@ -130,13 +133,39 @@ export async function runTilesCli(argv: readonly string[], out: (line: string) =
     borderCheck: args.borderCheck,
     citySlug: citySlugFromCollection(args.collection, profile),
   });
-  for await (const feature of parseFeatureCollectionStream(await openSource(args))) builder.add(feature as SourceFeature);
-  const loadMs = Math.round(performance.now() - tLoad);
-  const t0 = performance.now();
-  const built = builder.finish();
-  const archive = layerTilesToPmtiles(built, { name: args.collection });
-  const buildMs = Math.round(performance.now() - t0);
-  if (args.out !== undefined) await writeFile(args.out, archive);
+  // Same path as publication: tiles spooled to a temporary file, archive
+  // written from the spool; the directory is removed at the end.
+  const dir = await mkdtemp(join(process.env["TILES_TMPDIR"] ?? tmpdir(), "geo-tiles-cli-"));
+  let built: SpooledLayer;
+  let archiveBytes: number;
+  let loadMs: number;
+  let buildMs: number;
+  let compactMB: number;
+  try {
+    for await (const feature of parseFeatureCollectionStream(await openSource(args))) builder.add(feature as SourceFeature);
+    loadMs = Math.round(performance.now() - tLoad);
+    compactMB = Math.round(builder.compactBytes / 2 ** 20);
+    const t0 = performance.now();
+    const spool = new FileSpool(join(dir, "tiles.spool"));
+    try {
+      built = await builder.buildToSpool(spool);
+      const fd = openSync(args.out ?? join(dir, "archive.pmtiles"), "w");
+      try {
+        archiveBytes = writeSpooledPmtiles(built, spool, (chunk) => {
+          let written = 0;
+          while (written < chunk.length) written += writeSync(fd, chunk, written, chunk.length - written);
+        }, { name: args.collection });
+      } finally {
+        closeSync(fd);
+      }
+    } finally {
+      spool.close();
+    }
+    buildMs = Math.round(performance.now() - t0);
+  } finally {
+    builder.release();
+    await rm(dir, { recursive: true, force: true });
+  }
   const report = {
     collection: args.collection,
     layer: built.layer,
@@ -145,8 +174,9 @@ export async function runTilesCli(argv: readonly string[], out: (line: string) =
     options: { minZoom: args.minZoom, maxZoom: args.maxZoom, tolerance: args.tolerance, maxZoomTolerance: args.maxZoomTolerance, buffer: args.buffer, sharedBorders: args.sharedBorders },
     loadMs,
     buildMs,
+    compactMB,
     peakRssMB: Math.round(process.resourceUsage().maxRSS / 1024),
-    archiveBytes: archive.length,
+    archiveBytes,
     tiles: built.tileCount,
     fields: built.fields,
     ids: built.ids,

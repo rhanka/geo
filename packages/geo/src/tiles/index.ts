@@ -2,17 +2,24 @@
 
 export {
   buildLayerTiles,
+  DEFAULT_MAX_TILE_PAIRS,
   layerMetadata,
   layerTilesToPmtiles,
   LayerTilesBuilder,
   TILE_DEFAULTS,
   TileBudgetError,
+  writeSpooledPmtiles,
   type BuildTilesOptions,
   type BuiltTile,
+  type LayerSummary,
   type LayerTiles,
   type SourceFeature,
+  type SpooledLayer,
+  type TileRecord,
   type ZoomStats,
 } from "./build.js";
+export { Growable, simplifyFlat, type FlatRings, type SimplifiedRings, type SimplifyFlatOptions } from "./flat.js";
+export { FileSpool, MemorySpool, type TileSpool } from "./spool.js";
 export {
   buildTilesArchive,
   DEFAULT_TILES_SETTINGS,
@@ -28,6 +35,7 @@ export {
   tilesManifestKey,
   TilesTooLargeError,
   tilesVersion,
+  TILES_BUILDER_REVISION,
   TILES_MAX_FEATURE_BYTES,
   TILES_MAX_FEATURES,
   TILES_PROFILE,
@@ -54,7 +62,18 @@ export {
   type QRing,
 } from "./geometry.js";
 export { encodeMvt, type MvtLayer, type MvtPolygonFeature } from "./mvt.js";
-export { PmCompression, PmTileType, writePmtiles, zxyToTileId, type PmtilesTileInput, type PmtilesWriteOptions } from "./pmtiles.js";
+export {
+  layoutPmtiles,
+  PmCompression,
+  PmTileType,
+  tileHash,
+  writePmtiles,
+  zxyToTileId,
+  type PmtilesLayout,
+  type PmtilesLayoutTile,
+  type PmtilesTileInput,
+  type PmtilesWriteOptions,
+} from "./pmtiles.js";
 export {
   ByteLru,
   deserializeDirectory,

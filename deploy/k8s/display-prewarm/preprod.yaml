@@ -4,6 +4,10 @@
 # One pass over every served qc-lots-<slug> / qc-zonage-<slug> collection: builds the display
 # mirror (`normalized/_display/<id>/…`) next to the exact GeoJSON, so the first city click never
 # pays the build. Runs ON THE CLUSTER with the bucket's own creds — never from a workstation.
+# Since T1 (docs/spec/SPEC_VECTOR_TILES.md § Publication) each lots/zonage collection then gets its
+# vector tile archive (`normalized/_tiles/<id>/…`; tiles spooled under the container's temp dir,
+# `TILES_TMPDIR` to override, ~2x the archive, 76 MB for Montréal lots). `--no-tiles` / `--tiles-only`.
+# The creds must allow PutObject under `normalized/_tiles/` too.
 #
 # Idempotent + resumable: a collection whose `current.json` has the current profile, the served
 # source key and the source's current ETag is skipped (1 GET + 1 HEAD). A pointer whose source

@@ -27,9 +27,17 @@ class MemS3 {
         if (this.failPutsUnder !== undefined && key.startsWith(this.failPutsUnder)) {
           throw Object.assign(new Error("AccessDenied"), { name: "AccessDenied", $metadata: { httpStatusCode: 403 } });
         }
-        const raw = input["Body"] as string | Uint8Array;
+        const raw = input["Body"] as string | Uint8Array | AsyncIterable<Uint8Array>;
+        let body: Buffer;
+        if (typeof raw === "string" || raw instanceof Uint8Array) body = Buffer.from(raw);
+        else {
+          // A streamed body (S3Store.putFile): drain it.
+          const chunks: Buffer[] = [];
+          for await (const c of raw) chunks.push(Buffer.from(c));
+          body = Buffer.concat(chunks);
+        }
         const etag = `"m${++this.#writes}"`;
-        this.objects.set(key, { body: typeof raw === "string" ? Buffer.from(raw) : Buffer.from(raw), etag });
+        this.objects.set(key, { body, etag });
         return { ETag: etag };
       }
       case "GetObjectCommand": {

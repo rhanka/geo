@@ -6,7 +6,7 @@
 
 import type { Dirent } from "node:fs";
 import { createReadStream } from "node:fs";
-import { mkdir, open, readFile, readdir, rm, stat, writeFile, type FileHandle } from "node:fs/promises";
+import { copyFile, mkdir, open, readFile, readdir, rm, stat, writeFile, type FileHandle } from "node:fs/promises";
 import { dirname, join, relative, sep } from "node:path";
 
 import type { ByteStream, ObjectStat, PutOptions, Store } from "./store.js";
@@ -28,6 +28,12 @@ export class FsStore implements Store {
     const path = this.pathFor(key);
     await mkdir(dirname(path), { recursive: true });
     await writeFile(path, body);
+  }
+
+  async putFile(key: string, path: string, _opts?: PutOptions): Promise<void> {
+    const target = this.pathFor(key);
+    await mkdir(dirname(target), { recursive: true });
+    await copyFile(path, target);
   }
 
   async get(key: string): Promise<Uint8Array | undefined> {

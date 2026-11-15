@@ -2,9 +2,9 @@
 
 Status: **T1** — built at publication and by the prewarm sweep, published
 under `_tiles/`, served by geo-api (`GET /tiles/…`). Code:
-`packages/geo/src/tiles/{profiles,geometry,clip,mvt,pmtiles,pmtiles-reader,build,archive,service,build-cli}.ts`,
+`packages/geo/src/tiles/{profiles,geometry,flat,clip,mvt,pmtiles,pmtiles-reader,spool,build,archive,service,build-cli}.ts`,
 routes `serveTile` / `serveTileJson` in `packages/geo/src/api/app.ts`, tests
-`packages/geo/src/tiles/{tiles,serving}.test.ts`, package export
+`packages/geo/src/tiles/{tiles,serving,scale}.test.ts`, package export
 `@sentropic/geo/tiles`. T0 (prototype, PR #450) is kept below as history where
 it still applies.
 
@@ -18,7 +18,7 @@ it still applies.
 | 4 | `priorite`, `multifamilial4plus`, `potentialScore`, `fid` are **not** in the tiles: they are computed by immo, which joins them client-side by `noLot` (the feature id carries the identity). | `LOTS_PROFILE`, `ZONES_PROFILE` |
 | 5 | Serving `GET /tiles/{collectionId}/{z}/{x}/{y}.mvt` + `GET /tiles/{collectionId}.json` (TileJSON), from a per-collection PMTiles archive read by byte ranges; no build in the serving pod. | § Serving |
 | 6 | Publication: the display-mirror writer hook and the prewarm sweep also ensure the tile archive (fresh / adopt / build), version = hash(profile + settings + source sha256), `too-large` = skip with exit 0. | § Publication |
-| 7 | Montréal scale (streaming build, compact junction table, streamed PMTiles write, peak RSS < 900 MB). Until it lands, sources over the T1 budgets are refused `too-large` (§ Publication). | second T1 PR |
+| 7 | Montréal scale: streamed source, compact storage (typed arrays), partitioned junction table, tiles spooled to a file and the archive written from it, peak RSS < 900 MB. | § Scale |
 
 ## Why
 
@@ -69,10 +69,14 @@ Per layer, per zoom z in `[minZoom, maxZoom]`:
 
 1. **Project** every ring once to Web Mercator world coordinates in [0, 1]
    (y down).
-2. **Quantize** to the tile pixel grid of z: `round(world × 4096 × 2^z)`;
-   consecutive duplicate vertices are removed. A shared vertex lands on the same
-   integer point on both sides, so quantization never opens a gap. Grid unit at
-   Québec latitudes (46° N): z12 ≈ 1.66 m, z16 ≈ 0.10 m.
+2. **Quantize** to the tile pixel grid of z. Since the compact builder (§ Scale)
+   the coordinates are quantized ONCE at maxZoom (`round(world × 4096 × 2^maxZoom)`,
+   kept as `Int32`), and each lower zoom rounds them: `round(q_max / 2^(maxZoom − z))`
+   (T0 rounded the world coordinate at each zoom; the difference is at most one
+   unit of that zoom's grid). Consecutive duplicate vertices are removed. A
+   shared vertex lands on the same integer point on both sides, so quantization
+   never opens a gap. Grid unit at Québec latitudes (46° N): z12 ≈ 1.66 m,
+   z15 ≈ 0.21 m, z16 ≈ 0.10 m.
 3. **Shared-border simplification** over the whole layer: a vertex is a
    junction when it is seen with two different unordered neighbour pairs (the
    set of rings around it changes); every ring is cut at its junctions into
@@ -93,9 +97,9 @@ Per layer, per zoom z in `[minZoom, maxZoom]`:
    `missing` per zoom (features absent from every tile); the CLI exits 1 when it
    is not 0.
 6. **Encode** MVT 2.1 (exterior rings clockwise on screen, holes
-   counter-clockwise), gzip -9, and write one PMTiles v3 archive (clustered,
-   identical tile contents deduplicated, gzip directories, leaf directories when
-   the root would exceed 16 KiB).
+   counter-clockwise), gzip -9, tile by tile into a spool, and write one
+   PMTiles v3 archive (clustered, identical tile contents deduplicated, gzip
+   directories, leaf directories when the root would exceed 16 KiB).
 
 MVT feature id (T1, decision 2): lots → the lot number as an integer
 (`FeatureIdAssigner`, rule `noLot`); fallback `2^52 + ordinal` for a missing,
@@ -227,7 +231,8 @@ lots, no geometry): largest tile holds 72 894 lots at z12, 24 098 at z13, 6 957 
 z14, 2 335 at z15, 725 at z16 (41 tiles at z12). At the per-lot cost measured
 above, the largest z12 tile would be ≈ 3.7 MB raw / ≈ 1.8 MB gzip, z13 ≈ 1.2 MB /
 0.6 MB, z14 ≈ 0.37 MB / 0.18 MB. These sizes are an `unverified` extrapolation
-(Montréal was not tiled in T0).
+(Montréal was not tiled in T0). Measured in T1 (§ Scale, tiers applied): z12
+2.2 MB raw / 1.2 MB gzip, z13 0.73 / 0.42 MB, z14 0.37 / 0.18 MB.
 
 ## Archive granularity
 
@@ -303,14 +308,19 @@ Budgets (`TilesTooLargeError`, reason `too-large`, refused before any write and
 identically on every re-run):
 
 - one source Feature over `TILES_MAX_FEATURE_BYTES` (64 MiB of JSON);
-- more than `TILES_MAX_FEATURES` polygon features (T1 builder: 75 000, see
-  § Measurements T1 — Laval, 401 594 lots, peaks at 2.1 GB in that builder);
+- more than `TILES_MAX_FEATURES` polygon features (1 500 000, a safety bound
+  above the largest served city since the compact builder, § Scale; the first
+  T1 builder had 75 000 — Laval, 401 594 lots, peaked at 2.1 GB in it);
 - more than `DEFAULT_MAX_TILE_PAIRS` (2^23) (feature, tile) pairs at maxZoom,
   bbox estimate counted while reading (a polygon spanning a region, or
   coordinates outside the world, would need millions of clips).
 
 The source is streamed (`parseFeatureCollectionStream`, one parsed feature at
-a time, `LayerTilesBuilder.add`); the parsed collection is never held.
+a time, `LayerTilesBuilder.add`); the parsed collection is never held. The
+tiles go to a spool file and the archive is assembled into a second file in a
+temporary directory (`TILES_TMPDIR`, else the OS temp dir; removed whatever
+happens), then uploaded streamed (`Store.putFile`: one `PutObject` whose body
+is a read stream with its `ContentLength`).
 
 ## Serving (T1)
 
@@ -361,11 +371,70 @@ Alternative not taken: exposing the archive itself (`.pmtiles` with `Range`,
 `pmtiles` protocol in the client): less server CPU, but a client library, CORS
 on `Range` and CDN caching of byte ranges.
 
-## Measurements (T1)
+## Scale (T1, decision 7)
+
+The first T1 builder held every projected feature as JS objects, a `Map`
+entry per vertex for the junctions, every clipped part of a zoom and the whole
+archive in memory: `qc-lots-laval` (401 594 lots) peaked at 2.1 GB. The
+compact builder (`LayerTilesBuilder`, `flat.ts`, `spool.ts`):
+
+- **Streamed source**: `parseFeatureCollectionStream`, one parsed feature at a
+  time, never the collection (a > 512 MB GeoJSON is never one string).
+- **Compact storage**: coordinates quantized once at maxZoom in one growable
+  `Int32Array` (8 B per vertex; resizable `ArrayBuffer`, grown in place, freed
+  at once), ring offsets and exterior flags, feature → ring offsets, feature
+  ids (`Float64Array`), and one column per property (index into interned
+  values). Montréal: 157 MB for 680 087 lots.
+- **Junction table**: a typed open-addressing hash (25 B per slot: key,
+  neighbour pair, flag), filled partition by partition (vertices split by a
+  hash, 2^21 occurrences per partition, ~100 MB table, reset between
+  partitions); one junction flag byte per vertex. Same verdicts as the `Map`
+  version: `simplifyFlat` returns the rings of `simplifyLayer` on the same
+  input (tested with 1 and with many partitions).
+- **Per zoom**: the zoom's grid (rounded from maxZoom; at maxZoom the stored
+  array itself), the simplified copy, then tile by tile: clip, encode, gzip,
+  append to the spool. One tile is encoded at a time; a feature that only
+  survives as a marker re-encodes its tile (rare: slivers along tile edges).
+- **Archive**: `layoutPmtiles` plans directories from (tile id, length, hash);
+  `writeSpooledPmtiles` writes header and directories, then each distinct tile
+  copied from the spool in tile-id order, to a temporary file uploaded by
+  `Store.putFile`. Byte-identical to the in-memory writer (tested).
+- **Event loop**: `buildToSpool` yields between tiles (every ~50 ms of work)
+  and checks the abort signal, so the prewarm deadline can fire.
+
+Measured read-only on the public API (`?profile=display`, streamed into the
+builder over HTTP, tiles spooled to a temporary file, archive assembled then
+deleted, nothing kept), Node 22, `--max-old-space-size=768` (the prewarm Job's
+flag). Peak RSS includes the HTTP stream, Brotli decoding and parsing.
+
+| Collection | Features | Load + parse | Build (4 zooms + archive) | Peak RSS | Compact store | Archive | Tiles | Max tile gzip z12 / z13 / z14 / z15 |
+|---|---|---|---|---|---|---|---|---|
+| `qc-lots-montreal` | 680 087 | 13.7 s | 48.1 s | 820 MB (779 MB on a first run) | 157 MB | 76.3 MB | 2 568 | 1 213 / 418 / 176 / 67 KB |
+| `qc-lots-laval` | 401 594 | 11.3 s | 26.4 s | 584 MB (2 106 MB with the first T1 builder) | 143 MB | 45.1 MB | 1 367 | 1 213 / 418 / 176 / 67 KB |
+| `qc-lots-saint-eustache` | 16 036 | 1.1 s | 1.1 s | 197 MB | 4 MB | 2.00 MB | 187 | 173 / 164 / 86 / 42 KB |
+| `qc-lots-rawdon` | 9 298 | 1.3 s | 0.8 s | 162 MB | 4 MB | 1.60 MB | 341 | 101 / 61 / 44 / 19 KB |
+
+Features present at every zoom (`missing = 0`) for all of them (markers:
+montreal 611 at z12, 287 at z13, 117 at z14, 47 at z15). Junction partitions:
+montreal 4 / 5 / 6 at z12 / z13 / z14 (z15 is not simplified). Lot-number ids:
+montreal 663 126 + 16 961 non-numeric (fallback), laval 391 156 + 10 438.
+
+The largest z12 tile (77 409 lots, 1.2 MB gzip, 2.2 MB raw) is the decision-1
+trade-off ("every lot at z12") for the densest area; z13 stays under 420 KB
+gzip. That tile is byte-identical in `qc-lots-montreal` and `qc-lots-laval`
+(same 77 409 features): the two served collections share those lots (source
+overlap; cause `unverified`, outside the tiles).
+
+Prewarm Job budget: 1Gi limit, `--max-old-space-size=768`. The display step
+of the same collection runs before and is freed (548 MB peak, SPEC_DISPLAY_MIRROR).
+In the Job the source is the exact GeoJSON read from S3 (more digits than the
+display profile, same vertex count), so the parse cost is of the same order.
+
+## Measurements (T1, first builder — history)
 
 Same source and method as T0 (public API `?profile=display`, read-only,
 streamed into the builder, nothing kept on disk), T1 defaults (z12–z15, tiers,
-lot-number ids), T1 in-memory builder, Node 22.
+lot-number ids), first T1 builder (in memory, before § Scale), Node 22.
 
 | Collection | Features | Build (after load) | Peak RSS | Archive | Tiles | Max tile gzip z12 / z13 / z14 / z15 |
 |---|---|---|---|---|---|---|
