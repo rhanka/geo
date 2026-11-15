@@ -20,18 +20,23 @@
  */
 
 import { createHash } from "node:crypto";
+import { closeSync, openSync, writeSync } from "node:fs";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 
 import { FeatureTooLargeError, parseFeatureCollectionStream } from "../api/providers/collection-loader.js";
 import type { ByteStream, Store } from "../storage/index.js";
 
 import {
-  layerTilesToPmtiles,
   LayerTilesBuilder,
   TILE_DEFAULTS,
   TileBudgetError,
-  type LayerTiles,
+  writeSpooledPmtiles,
   type SourceFeature,
+  type SpooledLayer,
 } from "./build.js";
+import { FileSpool } from "./spool.js";
 import { citySlugFromCollection, profileForCollection, type FeatureIdStats, type LayerProfile } from "./profiles.js";
 
 export const TILES_PROFILE = "tiles-v1";
@@ -45,13 +50,19 @@ export const PMTILES_CONTENT_TYPE = "application/vnd.pmtiles";
 export const TILES_MAX_FEATURE_BYTES = 64 * 2 ** 20;
 
 /**
- * Largest number of polygon features one build accepts. The T1 builder holds
- * every projected feature, one zoom's clipped tiles and the whole archive in
- * memory (~5 KB per lot: `qc-lots-laval`, 401 594 lots, peaks at 2.1 GB);
- * above this the build is refused as `too-large` instead of risking the 1Gi
- * prewarm Job.
+ * Largest number of polygon features one build accepts. The compact builder
+ * holds ~8 B per vertex plus a few bytes per ring and feature, one zoom's
+ * simplified copy and a bounded junction table; tiles go to a spool file
+ * (SPEC_VECTOR_TILES.md § Scale: `qc-lots-montreal`, 680 087 lots, measured
+ * there). A safety bound well above the largest served city.
  */
-export const TILES_MAX_FEATURES = 75_000;
+export const TILES_MAX_FEATURES = 1_500_000;
+
+/**
+ * Revision of the builder's output bytes, part of the fingerprint: 2 = compact
+ * builder (coordinates quantized once at maxZoom, lower zooms rounded from it).
+ */
+export const TILES_BUILDER_REVISION = 2;
 
 /** Build options that change the tiles' bytes (hence the version). */
 export interface TilesBuildSettings {
@@ -69,7 +80,7 @@ export const DEFAULT_TILES_SETTINGS: Readonly<TilesBuildSettings> = Object.freez
 
 /** Profile + settings, canonical JSON: the part of the version that is not the source. */
 export function tilesFingerprint(profile: LayerProfile, settings: TilesBuildSettings = DEFAULT_TILES_SETTINGS): string {
-  const canonical = JSON.stringify({ profile: TILES_PROFILE, layer: profile, settings });
+  const canonical = JSON.stringify({ profile: TILES_PROFILE, builder: TILES_BUILDER_REVISION, layer: profile, settings });
   return createHash("sha256").update(canonical).digest("hex").slice(0, 16);
 }
 
@@ -169,6 +180,15 @@ export interface TilesBuildOptions {
   /** Default {@link TILES_MAX_FEATURES}. */
   maxFeatures?: number;
   settings?: TilesBuildSettings;
+  /** Parent of the temporary build directory (default `TILES_TMPDIR`, else the OS temp dir). */
+  tmpDir?: string;
+}
+
+/** Upload the assembled archive from its file: streamed when the store can, else read once. */
+async function putArchive(store: Store, key: string, path: string, putOptions: { signal: AbortSignal } | undefined): Promise<void> {
+  const opts = { contentType: PMTILES_CONTENT_TYPE, ...putOptions };
+  if (store.putFile) await store.putFile(key, path, opts);
+  else await store.put(key, await readFile(path), opts);
 }
 
 async function* hashing(source: ByteStream, hash: ReturnType<typeof createHash>): ByteStream {
@@ -210,39 +230,65 @@ export async function buildTilesArchive(
     citySlug: citySlugFromCollection(collection, profile),
     maxFeatures: options.maxFeatures ?? TILES_MAX_FEATURES,
   });
-  let built: LayerTiles;
+  // Tiles and the assembled archive go to a temporary directory (never the
+  // archive or every tile in memory); removed whatever happens.
+  const dir = await mkdtemp(join(options.tmpDir ?? process.env["TILES_TMPDIR"] ?? tmpdir(), "geo-tiles-"));
+  let built: SpooledLayer;
+  let version: string;
+  let sourceSha256: string;
+  let archiveBytes: number;
+  const fingerprint = tilesFingerprint(profile, settings);
+  const archivePath = join(dir, "archive.pmtiles");
+  const putOptions = signal ? { signal } : undefined;
   try {
-    for await (const feature of parseFeatureCollectionStream(hashing(source, hash), {
-      maxFeatureBytes: options.maxFeatureBytes ?? TILES_MAX_FEATURE_BYTES,
-    })) {
-      signal?.throwIfAborted();
-      builder.add(feature as SourceFeature);
+    const spool = new FileSpool(join(dir, "tiles.spool"));
+    try {
+      try {
+        for await (const feature of parseFeatureCollectionStream(hashing(source, hash), {
+          maxFeatureBytes: options.maxFeatureBytes ?? TILES_MAX_FEATURE_BYTES,
+        })) {
+          signal?.throwIfAborted();
+          builder.add(feature as SourceFeature);
+        }
+        signal?.throwIfAborted();
+        built = await builder.buildToSpool(spool, signal);
+      } catch (error) {
+        if (error instanceof FeatureTooLargeError || error instanceof TileBudgetError) {
+          throw new TilesTooLargeError(collection, sourceEtag, error.message);
+        }
+        throw error;
+      }
+      const missing = built.zooms.filter((z) => z.missing > 0);
+      if (missing.length > 0) {
+        // The no-drop guarantee is a contract of the tiles: never publish a violation.
+        throw new Error(`tiles: features missing for ${collection} at z${missing.map((z) => `${z.z}:${z.missing}`).join(",")}`);
+      }
+      sourceSha256 = hash.digest("hex");
+      version = tilesVersion(fingerprint, sourceSha256);
+      const fd = openSync(archivePath, "w");
+      try {
+        archiveBytes = writeSpooledPmtiles(
+          built,
+          spool,
+          (chunk) => {
+            let written = 0;
+            while (written < chunk.length) written += writeSync(fd, chunk, written, chunk.length - written);
+          },
+          { name: collection, tiles_version: version },
+        );
+      } finally {
+        closeSync(fd);
+      }
+    } finally {
+      spool.close();
     }
     signal?.throwIfAborted();
-    built = builder.finish();
-  } catch (error) {
-    if (error instanceof FeatureTooLargeError || error instanceof TileBudgetError) {
-      throw new TilesTooLargeError(collection, sourceEtag, error.message);
-    }
-    throw error;
+    await putArchive(store, tilesArchiveKey(collection, version), archivePath, putOptions);
+  } finally {
+    builder.release();
+    await rm(dir, { recursive: true, force: true });
   }
-  const missing = built.zooms.filter((z) => z.missing > 0);
-  if (missing.length > 0) {
-    // The no-drop guarantee is a contract of the tiles: never publish a violation.
-    throw new Error(`tiles: features missing for ${collection} at z${missing.map((z) => `${z.z}:${z.missing}`).join(",")}`);
-  }
-
-  const sourceSha256 = hash.digest("hex");
-  const fingerprint = tilesFingerprint(profile, settings);
-  const version = tilesVersion(fingerprint, sourceSha256);
   const builtAt = (options.now?.() ?? new Date()).toISOString();
-  let archive: Uint8Array | undefined = layerTilesToPmtiles(built, { name: collection, tiles_version: version });
-  built.tiles.length = 0;
-  const archiveBytes = archive.byteLength;
-  const putOptions = signal ? { signal } : undefined;
-  signal?.throwIfAborted();
-  await store.put(tilesArchiveKey(collection, version), archive, { contentType: PMTILES_CONTENT_TYPE, ...putOptions });
-  archive = undefined;
 
   const manifest: TilesManifest = {
     profile: TILES_PROFILE,

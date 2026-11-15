@@ -104,7 +104,7 @@ export interface SimplifyStats {
  * one safe integer (26 bits per axis: a layer may span 67 M units, i.e. about
  * 6 700 km at z16 / extent 4096).
  */
-const KEY_SPAN = 2 ** 26;
+export const KEY_SPAN = 2 ** 26;
 
 class VertexKeys {
   constructor(
@@ -222,7 +222,7 @@ function douglasPeucker(xs: ArrayLike<number>, ys: ArrayLike<number>, sqTol: num
  * (first, second) vertex keys forward vs backward), so the ring on the other
  * side of a shared arc keeps the very same vertices.
  */
-function simplifyByArcs(ring: QRing, keys: Float64Array, junctionAt: number[], sqTol: number): QRing {
+export function simplifyByArcs(ring: QRing, keys: Float64Array, junctionAt: number[], sqTol: number): QRing {
   const n = ring.length / 2;
   const keepRing = new Uint8Array(n);
   for (const j of junctionAt) keepRing[j] = 1;
@@ -260,7 +260,7 @@ function simplifyByArcs(ring: QRing, keys: Float64Array, junctionAt: number[], s
 }
 
 /** Plain per-ring Douglas–Peucker on a closed ring (split at the vertex farthest from vertex 0). */
-function simplifyRingAlone(ring: QRing, sqTol: number): QRing {
+export function simplifyRingAlone(ring: QRing, sqTol: number): QRing {
   const n = ring.length / 2;
   let far = 0;
   let farSq = -1;
