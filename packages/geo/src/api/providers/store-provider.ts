@@ -26,6 +26,11 @@
  * once per version (shared by concurrent requests, not cancelled when a client
  * leaves), and an unfiltered page then reads only `offset + limit` Features.
  *
+ * Both passes enforce a per-Feature byte cap (`GEO_MAX_FEATURE_BYTES`, default
+ * 16 MiB) on the raw bytes, so an oversized Feature never reaches `JSON.parse`
+ * in the serving pod: the request fails with {@link FeatureTooLargeError}
+ * (HTTP 503 `FeatureTooLarge`) and that verdict is cached per key and ETag.
+ *
  * No network or live S3 connection is touched at construction — `list`/`get`
  * are only called on first request — so the module is import-safe.
  */
@@ -33,8 +38,10 @@
 import { resolveLicense, type CollectionMeta, type License } from "@sentropic/geo-core";
 
 import {
+  FeatureTooLargeError,
   parseMeta,
   parseFeatureCollectionStream,
+  resolveServingMaxFeatureBytes,
   validateFeatureCollectionStream,
 } from "./collection-loader.js";
 import type {
@@ -72,10 +79,25 @@ const INDEX_CONCURRENCY = 32;
 
 const decoder = new TextDecoder();
 
-/** A validated source: its store identity and its Feature count. */
-interface SourceVerdict {
-  etag: string;
-  features: number;
+/**
+ * A source verdict at one store identity: valid with its Feature count, or
+ * refused because one Feature exceeds the serving cap. Both are deterministic
+ * for a given ETag, so both are cached; a read error or invalid bytes are not.
+ */
+type SourceVerdict =
+  | { etag: string; features: number; tooLarge?: undefined }
+  | { etag: string; tooLarge: FeatureTooLargeError };
+
+export interface StoreProviderOptions {
+  display?: DisplayServiceOptions;
+  /**
+   * Largest JSON text of one served Feature, enforced on the raw bytes of the
+   * items/getItem validation and served passes BEFORE `JSON.parse`. Past it the
+   * request fails with {@link FeatureTooLargeError} (HTTP 503 `FeatureTooLarge`)
+   * instead of OOM-killing the pod. Default: `GEO_MAX_FEATURE_BYTES`, else
+   * {@link SERVING_MAX_FEATURE_BYTES} (see `resolveServingMaxFeatureBytes`).
+   */
+  maxFeatureBytes?: number;
 }
 
 interface StoreCollectionEntry {
@@ -109,11 +131,15 @@ export class StoreProvider implements FeatureProvider {
    * @param prefix Optional key prefix to scope the listing (e.g. `normalized`).
    */
   readonly #displayOptions: DisplayServiceOptions;
+  /** Per-Feature byte cap of the serving path (see {@link StoreProviderOptions}). */
+  readonly #maxFeatureBytes: number;
 
-  constructor(store: Store, prefix = "", options: { display?: DisplayServiceOptions } = {}) {
+  constructor(store: Store, prefix = "", options: StoreProviderOptions = {}) {
     this.#store = store;
     this.#prefix = prefix;
     this.#displayOptions = options.display ?? {};
+    this.#maxFeatureBytes =
+      options.maxFeatureBytes ?? resolveServingMaxFeatureBytes(process.env["GEO_MAX_FEATURE_BYTES"]);
   }
 
   /** Force a re-list of the store on next access (e.g. after a data refresh). */
@@ -241,6 +267,7 @@ export class StoreProvider implements FeatureProvider {
     const map = await this.#ensureIndexed();
     const entry = map.get(id);
     if (!entry) return undefined;
+    const limits = { maxFeatureBytes: this.#maxFeatureBytes };
     try {
       // Validate the complete object before Hono commits a 200 (JSON.parse's
       // all-or-nothing contract, without retaining the feature collection).
@@ -254,23 +281,27 @@ export class StoreProvider implements FeatureProvider {
         // (the HTTP request's) releases the S3 read as soon as the client leaves.
         const validationSource = await this.#getStream(entry.geojsonKey, signal);
         if (!validationSource) return undefined;
-        await validateFeatureCollectionStream(validationSource);
+        await validateFeatureCollectionStream(validationSource, limits);
       } else {
         total = await untilAborted(this.#validatedCount(entry.geojsonKey, etag), signal);
       }
 
       // The served pass opens its S3 body only on the first pull: a response
       // that is never written (client gone during validation) then holds no
-      // pooled socket at all.
+      // pooled socket at all. It keeps the cap too (the object may have been
+      // replaced between the two passes).
       return {
         features: matchingFeatures(
-          parseFeatureCollectionStream(this.#lazyStream(entry.geojsonKey, signal)),
+          parseFeatureCollectionStream(this.#lazyStream(entry.geojsonKey, signal), limits),
           query.bbox,
         ),
         // Only an unfiltered query matches the whole validated collection.
         ...(total !== undefined && !query.bbox ? { numberMatched: total } : {}),
       };
-    } catch {
+    } catch (error) {
+      // An oversized Feature is a known, deterministic refusal: surface it so
+      // the API answers 503 `FeatureTooLarge` rather than 404 "unknown collection".
+      if (error instanceof FeatureTooLargeError) throw error;
       return undefined;
     }
   }
@@ -294,17 +325,30 @@ export class StoreProvider implements FeatureProvider {
    * source slower than the ingress timeout could never be served. It runs at
    * most once per key and ETag at a time; the S3 body guards bound its socket.
    * A failure (invalid bytes, read error) is not cached: the next request retries.
+   * A Feature over the serving cap IS cached (it cannot change at this ETag):
+   * the scan stops at that Feature, and later requests are refused at once
+   * without re-reading the object.
    */
   #validatedCount(key: string, etag: string): Promise<number> {
     const known = this.#verdicts.get(key);
-    if (known?.etag === etag) return Promise.resolve(known.features);
+    if (known?.etag === etag) {
+      return known.tooLarge ? Promise.reject(known.tooLarge) : Promise.resolve(known.features);
+    }
     const running = this.#validations.get(key);
     if (running?.etag === etag) return running.run;
 
     const run = (async () => {
       const source = await this.#openStream(key);
       if (!source) throw new Error(`object missing: ${key}`);
-      const { features } = await validateFeatureCollectionStream(source);
+      let features: number;
+      try {
+        ({ features } = await validateFeatureCollectionStream(source, {
+          maxFeatureBytes: this.#maxFeatureBytes,
+        }));
+      } catch (error) {
+        if (error instanceof FeatureTooLargeError) this.#verdicts.set(key, { etag, tooLarge: error });
+        throw error;
+      }
       // ETag read before the scan: if the object was replaced meanwhile, the
       // next request sees a new ETag and validates again.
       this.#verdicts.set(key, { etag, features });
