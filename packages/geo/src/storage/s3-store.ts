@@ -14,6 +14,9 @@ import {
   S3Client,
 } from "@aws-sdk/client-s3";
 
+import { createReadStream } from "node:fs";
+import { stat } from "node:fs/promises";
+
 import { ovhSafeS3ClientOptions } from "./s3-client-config.js";
 import type { ByteStream, GetStreamOptions, ObjectStat, PutOptions, Store } from "./store.js";
 
@@ -159,6 +162,29 @@ export class S3Store implements Store {
       new PutObjectCommand(input),
       opts?.signal ? { abortSignal: opts.signal } : {},
     );
+  }
+
+  /**
+   * One `PutObject` whose body is a read stream of the file, with its length
+   * declared (no chunked encoding): memory stays at the stream's buffers. A
+   * stream body cannot be replayed, so a failed attempt fails the call (the
+   * caller retries the whole publication).
+   */
+  async putFile(key: string, path: string, opts?: PutOptions): Promise<void> {
+    const { size } = await stat(path);
+    const input: {
+      Bucket: string;
+      Key: string;
+      Body: ReturnType<typeof createReadStream>;
+      ContentLength: number;
+      ContentType?: string;
+    } = { Bucket: this.bucket, Key: this.objectKey(key), Body: createReadStream(path), ContentLength: size };
+    if (opts?.contentType !== undefined) input.ContentType = opts.contentType;
+    try {
+      await this.client.send(new PutObjectCommand(input), opts?.signal ? { abortSignal: opts.signal } : {});
+    } finally {
+      input.Body.destroy();
+    }
   }
 
   async get(key: string): Promise<Uint8Array | undefined> {

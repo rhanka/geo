@@ -47,6 +47,12 @@ export interface Store {
    * that keeps the bytes (e.g. an in-memory store) must copy them.
    */
   put(key: string, body: Uint8Array | string, opts?: PutOptions): Promise<void>;
+  /**
+   * Write the content of the local file at `path` to `key`, streamed (the file
+   * is never read whole into memory). Optional: callers fall back to
+   * {@link put} with the file's bytes.
+   */
+  putFile?(key: string, path: string, opts?: PutOptions): Promise<void>;
   /** Read the bytes at `key`, or `undefined` if no object exists there. */
   get(key: string): Promise<Uint8Array | undefined>;
   /**
