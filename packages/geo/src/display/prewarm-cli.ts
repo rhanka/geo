@@ -7,7 +7,11 @@
  *
  *   node packages/geo/dist/display/prewarm-cli.js --store s3://<bucket>/normalized
  *        [--collections a,b] [--limit N] [--concurrency 1] [--no-adopt] [--no-build]
- *        [--collection-timeout-ms 1200000]
+ *        [--collection-timeout-ms 1200000] [--no-tiles | --tiles-only]
+ *
+ * Each collection gets its display mirror, then (lots/zonage) its vector tile
+ * archive (SPEC_VECTOR_TILES.md), each step under its own deadline.
+ * `--no-tiles` skips the tile step, `--tiles-only` the display step.
  *
  * `--collection-timeout-ms` bounds one collection (default 20 min, `0` = none):
  * on expiry it is reported `{"action":"failed","reason":"timeout"}` and the
@@ -47,6 +51,10 @@ export interface PrewarmCliArgs {
   build: boolean;
   /** Per-collection deadline in ms (store mode); `0` disables. */
   collectionTimeoutMs: number;
+  /** Display mirror step (store mode; `--tiles-only` turns it off). */
+  display: boolean;
+  /** Tile archive step (store mode; `--no-tiles` turns it off). */
+  tiles: boolean;
 }
 
 export function parsePrewarmArgs(argv: readonly string[]): PrewarmCliArgs {
@@ -55,6 +63,8 @@ export function parsePrewarmArgs(argv: readonly string[]): PrewarmCliArgs {
     adopt: true,
     build: true,
     collectionTimeoutMs: DEFAULT_COLLECTION_TIMEOUT_MS,
+    display: true,
+    tiles: true,
   };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -71,8 +81,11 @@ export function parsePrewarmArgs(argv: readonly string[]): PrewarmCliArgs {
     else if (a === "--collection-timeout-ms") args.collectionTimeoutMs = nonNegativeInt(a, value());
     else if (a === "--no-adopt") args.adopt = false;
     else if (a === "--no-build") args.build = false;
+    else if (a === "--no-tiles") args.tiles = false;
+    else if (a === "--tiles-only") args.display = false;
     else throw new Error(`unknown argument: ${a}`);
   }
+  if (!args.display && !args.tiles) throw new Error("--tiles-only and --no-tiles leave nothing to do");
   if ((args.store === undefined) === (args.api === undefined)) throw new Error("exactly one of --store or --api is required");
   if (args.api !== undefined && (!args.collections || args.collections.length === 0)) {
     throw new Error("--api needs an explicit --collections list (a full sweep through the serving pod would starve it)");
@@ -130,18 +143,25 @@ export async function runPrewarmCli(argv: readonly string[], deps: PrewarmCliDep
     sources = sources.filter((s) => wanted.has(s.collection));
   }
   if (args.limit !== undefined) sources = sources.slice(0, args.limit);
-  out(JSON.stringify({ start: { mode: "store", store: args.store, total: sources.length, concurrency: args.concurrency, adopt: args.adopt, build: args.build, collectionTimeoutMs: args.collectionTimeoutMs } }));
+  out(JSON.stringify({ start: { mode: "store", store: args.store, total: sources.length, concurrency: args.concurrency, adopt: args.adopt, build: args.build, collectionTimeoutMs: args.collectionTimeoutMs, display: args.display, tiles: args.tiles } }));
   const report = await prewarmDisplayMirrors(store, sources, {
     concurrency: args.concurrency,
     adopt: args.adopt,
     build: args.build,
     collectionTimeoutMs: args.collectionTimeoutMs,
+    display: args.display,
+    tiles: args.tiles,
     onResult: (r, done, total) => out(JSON.stringify({ i: done, n: total, ...r })),
   });
   const failed = [...missing, ...report.failures.map((f) => f.collection)];
   const tooLarge = report.failures.filter(isTooLarge).map((f) => f.collection);
-  out(JSON.stringify({ summary: { mode: "store", total: report.total, counts: report.counts, failed, tooLarge, ms: report.ms } }));
-  return storeExitCode(missing, report.failures);
+  const tiles = {
+    counts: report.tilesCounts,
+    failed: report.tilesFailures.map((f) => f.collection),
+    tooLarge: report.tilesFailures.filter((f) => f.tiles?.reason === "too-large").map((f) => f.collection),
+  };
+  out(JSON.stringify({ summary: { mode: "store", total: report.total, counts: report.counts, failed, tooLarge, tiles, ms: report.ms } }));
+  return storeExitCode(missing, report.failures, report.tilesFailures);
 }
 
 /** A deliberate refusal of a source over the builder's budgets. */
@@ -150,14 +170,20 @@ function isTooLarge(result: PrewarmResult): boolean {
 }
 
 /**
- * Exit status of a store sweep: 1 only when a collection failed for a reason
- * other than `too-large`. A `too-large` source is refused on purpose and fails
- * identically on every re-run (same bytes, same budgets): exiting 1 for it makes
- * the Job controller (backoffLimit) replay the whole sweep for nothing. It stays
- * visible: counted in `counts.failed`, listed in `failed` and in `tooLarge`.
+ * Exit status of a store sweep: 1 only when a collection failed (display or
+ * tiles step) for a reason other than `too-large`. A `too-large` source is
+ * refused on purpose and fails identically on every re-run (same bytes, same
+ * budgets): exiting 1 for it makes the Job controller (backoffLimit) replay the
+ * whole sweep for nothing. It stays visible: counted in `counts.failed` /
+ * `tiles.counts.failed`, listed in `failed` and in `tooLarge`.
  */
-export function storeExitCode(missing: readonly string[], failures: readonly PrewarmResult[]): number {
-  return missing.length > 0 || failures.some((f) => !isTooLarge(f)) ? 1 : 0;
+export function storeExitCode(
+  missing: readonly string[],
+  failures: readonly PrewarmResult[],
+  tilesFailures: readonly PrewarmResult[] = [],
+): number {
+  if (missing.length > 0 || failures.some((f) => !isTooLarge(f))) return 1;
+  return tilesFailures.some((f) => f.tiles?.reason !== "too-large") ? 1 : 0;
 }
 
 const invokedPath = process.argv[1];

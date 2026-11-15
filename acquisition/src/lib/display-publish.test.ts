@@ -156,6 +156,31 @@ describe("publication-time display mirror (writer hook)", () => {
     expect(displayPublishFailures().some((f) => f.status === "failed" && f.collection === "qc-lots-beta")).toBe(true);
   });
 
+  it("also publishes the vector tile archive of the collection (GEO_TILES_PUBLISH=0 turns that step off)", async () => {
+    const s3 = new MemS3();
+    await putBytes(s3 as never, "normalized/qc-lots/qc-lots-gamma.geojson", lots(2), "application/geo+json");
+    expect(s3.objects.has("normalized/_tiles/qc-lots-gamma/current.json")).toBe(true);
+    const current = JSON.parse(s3.objects.get("normalized/_tiles/qc-lots-gamma/current.json")!.body.toString()) as { version: string; features: number };
+    expect(current.features).toBe(2);
+    expect(s3.objects.has(`normalized/_tiles/qc-lots-gamma/${current.version}/qc-lots-gamma.pmtiles`)).toBe(true);
+
+    vi.stubEnv("GEO_TILES_PUBLISH", "0");
+    const off = new MemS3();
+    await putBytes(off as never, "normalized/qc-lots/qc-lots-gamma.geojson", lots(2), "application/geo+json");
+    expect(off.objects.has("normalized/_display/qc-lots-gamma/current.json")).toBe(true);
+    expect([...off.objects.keys()].some((k) => k.startsWith("normalized/_tiles/"))).toBe(false);
+  });
+
+  it("a failed tile build never fails the exact write nor the mirror; it is logged and recorded", async () => {
+    const s3 = new MemS3();
+    s3.failPutsUnder = "normalized/_tiles/";
+    const errors = vi.spyOn(console, "error").mockImplementation(() => {});
+    await putBytes(s3 as never, "normalized/qc-lots/qc-lots-delta.geojson", lots(1), "application/geo+json");
+    expect(s3.objects.has("normalized/_display/qc-lots-delta/current.json")).toBe(true);
+    expect(errors.mock.calls.some((c) => String(c[0]).includes("TILES_ARCHIVE_PUBLISH_FAILED"))).toBe(true);
+    expect(displayPublishFailures().some((f) => f.collection === "qc-lots-delta" && f.tiles?.status === "failed")).toBe(true);
+  });
+
   it("GEO_DISPLAY_PUBLISH=0 turns the hook off", async () => {
     vi.stubEnv("GEO_DISPLAY_PUBLISH", "0");
     const s3 = new MemS3();

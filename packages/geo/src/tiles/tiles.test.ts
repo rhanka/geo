@@ -10,9 +10,13 @@ import { describe, expect, it } from "vitest";
 
 import {
   buildLayerTiles,
+  FALLBACK_ID_BASE,
+  FeatureIdAssigner,
   layerTilesToPmtiles,
+  lotNumberId,
   LOTS_PROFILE,
   pickProperties,
+  tierProperties,
   profileForCollection,
   quantizeRing,
   simplifyLayer,
@@ -150,6 +154,26 @@ describe("profiles", () => {
     expect(props).toEqual({ noLot: "5 530 108", zoneCode: "RD-12", citySlug: "rawdon" });
   });
 
+  it("immo-computed properties and fid are not in the tiles", () => {
+    const props = pickProperties(
+      { noLot: 5530108, fid: 3, priorite: 1, multifamilial4plus: true, potentialScore: 0.4, potential_score: 0.4 },
+      LOTS_PROFILE,
+      undefined,
+    );
+    // noLot is emitted as a string (the numeric id carries the integer).
+    expect(props).toEqual({ noLot: "5530108" });
+    expect(pickProperties({ code: "A", fid: 1 }, ZONES_PROFILE, undefined)).toEqual({ code: "A" });
+  });
+
+  it("tiers: zoneCode / code only below z14", () => {
+    const full = { noLot: "1", zoneCode: "Z", tod: true, citySlug: "c" };
+    expect(tierProperties(full, LOTS_PROFILE, 12)).toEqual({ zoneCode: "Z" });
+    expect(tierProperties(full, LOTS_PROFILE, 13)).toEqual({ zoneCode: "Z" });
+    expect(tierProperties(full, LOTS_PROFILE, 14)).toBe(full);
+    expect(tierProperties({ code: "A", kind: "k" }, ZONES_PROFILE, 12)).toEqual({ code: "A" });
+    expect(tierProperties({ noLot: "1" }, LOTS_PROFILE, 12)).toEqual({});
+  });
+
   it("zones: alias zone → code, zone_code first, booleans/numbers kept", () => {
     expect(pickProperties({ zone: "A-1", kind: "residential", reglement_millesime: "1988" }, ZONES_PROFILE, "x")).toEqual({
       code: "A-1",
@@ -158,6 +182,64 @@ describe("profiles", () => {
       citySlug: "x",
     });
     expect(pickProperties({ zone_code: "B-2", zone: "A-1", affectation: null, proof: { a: 1 } }, ZONES_PROFILE, undefined)).toEqual({ code: "B-2" });
+  });
+});
+
+describe("feature ids", () => {
+  it("lot number without spaces, numeric only, below the fallback base", () => {
+    expect(lotNumberId("5 530 108")).toBe(5530108);
+    expect(lotNumberId(" 1 234 567 ")).toBe(1234567);
+    expect(lotNumberId(5530108)).toBe(5530108);
+    expect(lotNumberId("5530108-1")).toBeUndefined();
+    expect(lotNumberId("PC-1234")).toBeUndefined();
+    expect(lotNumberId("")).toBeUndefined();
+    expect(lotNumberId(1.5)).toBeUndefined();
+    expect(lotNumberId("9".repeat(17))).toBeUndefined();
+    expect(lotNumberId(String(FALLBACK_ID_BASE))).toBeUndefined();
+  });
+
+  it("falls back deterministically on missing, non-numeric and duplicated lot numbers, and counts them", () => {
+    const ids = new FeatureIdAssigner("noLot");
+    const got = [
+      ids.assign(0, { noLot: "5 530 108" }),
+      ids.assign(1, { NO_LOT: "1 000 001" }),
+      ids.assign(2, { noLot: null, lot_id: "77" }),
+      ids.assign(3, { noLot: "5530108" }), // duplicate of #0 → fallback
+      ids.assign(4, {}),
+      ids.assign(5, { noLot: "  " }),
+      ids.assign(6, { noLot: "PC-12" }),
+      ids.assign(7, null),
+    ];
+    expect(got).toEqual([
+      5530108,
+      1000001,
+      77,
+      FALLBACK_ID_BASE + 3,
+      FALLBACK_ID_BASE + 4,
+      FALLBACK_ID_BASE + 5,
+      FALLBACK_ID_BASE + 6,
+      FALLBACK_ID_BASE + 7,
+    ]);
+    expect(ids.stats).toEqual({ rule: "noLot", fromNoLot: 3, missingNoLot: 3, nonNumericNoLot: 1, duplicateNoLot: 1 });
+    expect(new Set(got).size).toBe(got.length);
+    expect(got.every(Number.isSafeInteger)).toBe(true);
+  });
+
+  it("zones use the source ordinal", () => {
+    const ids = new FeatureIdAssigner("ordinal");
+    expect([ids.assign(0, { noLot: "5" }), ids.assign(7, {})]).toEqual([0, 7]);
+  });
+
+  it("built lot tiles carry the lot number as feature id", () => {
+    const lots = gridLots(3).map((f, i) => ({ ...f, properties: { ...f.properties, noLot: `5 530 ${100 + i}` } }));
+    const built = buildLayerTiles(lots, LOTS_PROFILE, { minZoom: 12, maxZoom: 12 });
+    expect(built.ids).toMatchObject({ fromNoLot: 9, missingNoLot: 0, nonNumericNoLot: 0, duplicateNoLot: 0 });
+    const seen = new Set<number>();
+    for (const t of built.tiles) {
+      const layer = decode(t.gzip).layers.lots!;
+      for (let i = 0; i < layer.length; i++) seen.add(layer.feature(i).id!);
+    }
+    expect([...seen].sort()).toEqual(lots.map((_, i) => 5530100 + i));
   });
 });
 
@@ -229,26 +311,58 @@ describe("shared-border simplification", () => {
 describe("buildLayerTiles", () => {
   const lots = gridLots(12);
 
-  it("every lot is present at every zoom, z12 included, with whitelisted properties", () => {
+  it("every lot is present at every zoom, z12 included, with the properties of its zoom tier", () => {
     const built = buildLayerTiles(lots, LOTS_PROFILE, { minZoom: 12, maxZoom: 16, citySlug: "rawdon", borderCheck: true });
     for (const z of built.zooms) {
       expect(z.missing).toBe(0);
       expect(z.featuresPresent).toBe(lots.length);
       expect(z.unmatchedAfter!).toBeLessThanOrEqual(z.unmatchedBefore!);
     }
-    const ids = new Set<number>();
-    for (const t of built.tiles.filter((t) => t.z === 12)) {
-      const layer = decode(t.gzip).layers.lots!;
-      expect(layer.extent).toBe(4096);
+    // `${j}-${i}` is not a lot number: every id is the deterministic fallback.
+    expect(built.ids).toMatchObject({ fromNoLot: 0, nonNumericNoLot: lots.length });
+    for (const z of [12, 13, 14, 15, 16]) {
+      const ids = new Set<number>();
+      for (const t of built.tiles.filter((t) => t.z === z)) {
+        const layer = decode(t.gzip).layers.lots!;
+        expect(layer.extent).toBe(4096);
+        for (let i = 0; i < layer.length; i++) {
+          const f = layer.feature(i);
+          ids.add(f.id!);
+          expect(f.type).toBe(3);
+          const source = lots[f.id! - FALLBACK_ID_BASE]!.properties!;
+          if (z < 14) {
+            expect(Object.keys(f.properties)).toEqual(["zoneCode"]);
+          } else {
+            expect(Object.keys(f.properties).sort()).toEqual(["citySlug", "noLot", "zoneCode"]);
+            expect(f.properties.noLot).toBe(source.noLot);
+          }
+          expect(f.properties.zoneCode).toBe(source.zone_code);
+        }
+      }
+      expect(ids.size).toBe(lots.length);
+    }
+  });
+
+  it("defaults to z12–z15", () => {
+    const built = buildLayerTiles(lots.slice(0, 2), LOTS_PROFILE);
+    expect([built.minZoom, built.maxZoom]).toEqual([12, 15]);
+    expect(built.zooms.map((z) => z.z)).toEqual([12, 13, 14, 15]);
+  });
+
+  it("zones: ordinal ids, code only below z14, full whitelist from z14", () => {
+    const zones: SourceFeature[] = lots.slice(0, 3).map((f, i) => ({
+      ...f,
+      properties: { zone: `Z${i}`, kind: "residential", fid: 9, priorite: 1 },
+    }));
+    const built = buildLayerTiles(zones, ZONES_PROFILE, { minZoom: 13, maxZoom: 14, citySlug: "x" });
+    for (const t of built.tiles) {
+      const layer = decode(t.gzip).layers.zones!;
       for (let i = 0; i < layer.length; i++) {
         const f = layer.feature(i);
-        ids.add(f.id!);
-        expect(f.type).toBe(3);
-        expect(Object.keys(f.properties).sort()).toEqual(["citySlug", "noLot", "zoneCode"]);
-        expect(f.properties.noLot).toBe(lots[f.id!]!.properties!.noLot);
+        expect(f.properties.code).toBe(`Z${f.id}`);
+        expect(Object.keys(f.properties).sort()).toEqual(t.z < 14 ? ["code"] : ["citySlug", "code", "kind"]);
       }
     }
-    expect(ids.size).toBe(lots.length);
   });
 
   it("encodes exterior rings so that MVT readers classify one polygon per lot", () => {

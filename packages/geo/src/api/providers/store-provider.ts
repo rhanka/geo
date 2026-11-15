@@ -52,8 +52,11 @@ import type {
   ItemsResult,
   ItemsStream,
   ServedFeature,
+  TilesLookup,
 } from "../provider.js";
 import { geometryIntersectsBBox } from "../geo-util.js";
+import { profileForCollection } from "../../tiles/profiles.js";
+import { TileService, type TileServiceOptions } from "../../tiles/service.js";
 import type { DisplayArtifact, DisplayEncoding } from "../../display/mirror.js";
 import {
   DisplayService,
@@ -90,6 +93,7 @@ type SourceVerdict =
 
 export interface StoreProviderOptions {
   display?: DisplayServiceOptions;
+  tiles?: TileServiceOptions;
   /**
    * Largest JSON text of one served Feature, enforced on the raw bytes of the
    * items/getItem validation and served passes BEFORE `JSON.parse`. Past it the
@@ -131,6 +135,9 @@ export class StoreProvider implements FeatureProvider {
    * @param prefix Optional key prefix to scope the listing (e.g. `normalized`).
    */
   readonly #displayOptions: DisplayServiceOptions;
+  /** Vector tiles (published archives, ranged reads; never built here). */
+  #tiles: TileService | undefined;
+  readonly #tilesOptions: TileServiceOptions;
   /** Per-Feature byte cap of the serving path (see {@link StoreProviderOptions}). */
   readonly #maxFeatureBytes: number;
 
@@ -138,6 +145,7 @@ export class StoreProvider implements FeatureProvider {
     this.#store = store;
     this.#prefix = prefix;
     this.#displayOptions = options.display ?? {};
+    this.#tilesOptions = options.tiles ?? {};
     this.#maxFeatureBytes =
       options.maxFeatureBytes ?? resolveServingMaxFeatureBytes(process.env["GEO_MAX_FEATURE_BYTES"]);
   }
@@ -418,6 +426,22 @@ export class StoreProvider implements FeatureProvider {
     if (!entry) return undefined;
     this.#display ??= new DisplayService(this.#store, this.#displayOptions);
     return this.#display.open(id, entry.geojsonKey, artifact, encoding, signal);
+  }
+
+  async openTiles(id: string): Promise<TilesLookup> {
+    const map = await this.#ensureIndexed();
+    const entry = map.get(id);
+    if (!entry) return { kind: "unknown-collection" };
+    if (!profileForCollection(id)) return { kind: "not-tiled" };
+    const service = (this.#tiles ??= new TileService(this.#store, this.#tilesOptions));
+    const opened = await service.open(id, entry.geojsonKey);
+    if (!opened) return { kind: "no-archive" };
+    return {
+      kind: "ok",
+      manifest: opened.manifest,
+      stale: opened.stale,
+      tile: (z, x, y, signal) => service.tile(id, opened.manifest, z, x, y, signal),
+    };
   }
 
   /** Dataset-level coherence manifest, or `undefined` when no manifest exists. */

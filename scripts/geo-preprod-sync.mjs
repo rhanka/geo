@@ -216,7 +216,9 @@ if (!opt.dryRun && opt.display) {
       onResult: (r) => { if (r.action === "needs-build") needsBuild.push(r.collection); },
     });
     for (const f of report.failures) console.error(`# display DISPLAY_MIRROR_PUBLISH_FAILED ${f.collection}: ${f.error}`);
-    display = { total: report.total, counts: report.counts, failures: report.failures.map((f) => f.collection), ms: report.ms, needs_build_sample: needsBuild.slice(0, 20) };
+    // Tuiles vectorielles (SPEC_VECTOR_TILES § Publication) : même adoption de `_tiles/`, jamais de build ici.
+    for (const f of report.tilesFailures) console.error(`# tiles TILES_ARCHIVE_PUBLISH_FAILED ${f.collection}: ${f.tiles?.error}`);
+    display = { total: report.total, counts: report.counts, failures: report.failures.map((f) => f.collection), ms: report.ms, needs_build_sample: needsBuild.slice(0, 20), tiles: { counts: report.tilesCounts, failures: report.tilesFailures.map((f) => f.collection) } };
   } catch (e) {
     console.error(`# display DISPLAY_MIRROR_PUBLISH_FAILED sweep: ${e instanceof Error ? e.message : String(e)}`);
     display = { error: e instanceof Error ? e.message : String(e) };

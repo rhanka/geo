@@ -1,11 +1,11 @@
 /**
- * Vector-tile build CLI (T0 prototype, SPEC_VECTOR_TILES.md). Read-only on its
- * sources; writes one PMTiles archive to a LOCAL path (`--out`) or nothing.
- * Serving and publication-time builds are T1/T2.
+ * Vector-tile build CLI (measurement tool, SPEC_VECTOR_TILES.md). Read-only on
+ * its sources; writes one PMTiles archive to a LOCAL path (`--out`) or nothing.
+ * Publication (`_tiles/` on the store) is `archive.ts` (writer hook, prewarm).
  *
  *   node packages/geo/dist/tiles/build-cli.js --collection qc-lots-rawdon \
  *        (--api https://api.geo.sent-tech.ca | --store s3://<bucket>/normalized [--source-key k] | --file x.geojson) \
- *        [--out rawdon-lots.pmtiles] [--min-zoom 12] [--max-zoom 16] [--tolerance 1] \
+ *        [--out rawdon-lots.pmtiles] [--min-zoom 12] [--max-zoom 15] [--tolerance 1] \
  *        [--max-zoom-tolerance 0] [--buffer 64] [--no-shared-borders] [--border-check]
  *
  * `--api` reads `?profile=display` (one request; geometry rounded to 6
@@ -14,13 +14,15 @@
  * zoom tile count, max tile size and the no-drop / border checks.
  */
 
-import { readFile, writeFile } from "node:fs/promises";
+import { createReadStream } from "node:fs";
+import { writeFile } from "node:fs/promises";
 import { pathToFileURL } from "node:url";
 
+import { parseFeatureCollectionStream } from "../api/providers/collection-loader.js";
 import { createStore } from "../storage/index.js";
 import { listDisplaySources } from "../display/prewarm.js";
 
-import { buildLayerTiles, layerTilesToPmtiles, type SourceFeature } from "./build.js";
+import { layerTilesToPmtiles, LayerTilesBuilder, TILE_DEFAULTS, type SourceFeature } from "./build.js";
 import { citySlugFromCollection, profileForCollection } from "./profiles.js";
 
 export interface TilesCliArgs {
@@ -41,12 +43,12 @@ export interface TilesCliArgs {
 
 export function parseTilesArgs(argv: readonly string[]): TilesCliArgs {
   const args: Partial<TilesCliArgs> & Pick<TilesCliArgs, "minZoom" | "maxZoom" | "tolerance" | "maxZoomTolerance" | "buffer" | "sharedBorders" | "borderCheck"> = {
-    minZoom: 12,
-    maxZoom: 16,
-    tolerance: 1,
-    maxZoomTolerance: 0,
-    buffer: 64,
-    sharedBorders: true,
+    minZoom: TILE_DEFAULTS.minZoom,
+    maxZoom: TILE_DEFAULTS.maxZoom,
+    tolerance: TILE_DEFAULTS.tolerance,
+    maxZoomTolerance: TILE_DEFAULTS.maxZoomTolerance,
+    buffer: TILE_DEFAULTS.buffer,
+    sharedBorders: TILE_DEFAULTS.sharedBorders,
     borderCheck: false,
   };
   for (let i = 0; i < argv.length; i++) {
@@ -82,30 +84,26 @@ export function parseTilesArgs(argv: readonly string[]): TilesCliArgs {
   return args as TilesCliArgs;
 }
 
-async function loadFeatures(args: TilesCliArgs): Promise<SourceFeature[]> {
-  let text: string;
-  if (args.file !== undefined) {
-    text = await readFile(args.file, "utf8");
-  } else if (args.api !== undefined) {
+/** The source as a byte stream: never held whole (a > 512 MB source cannot be one string). */
+async function openSource(args: TilesCliArgs): Promise<AsyncIterable<Uint8Array>> {
+  if (args.file !== undefined) return createReadStream(args.file);
+  if (args.api !== undefined) {
     const url = `${args.api.replace(/\/+$/, "")}/collections/${encodeURIComponent(args.collection)}/items?profile=display`;
+    // fetch negotiates and inflates gzip/br itself.
     const res = await fetch(url);
-    if (!res.ok) throw new Error(`GET ${url} → ${res.status}`);
-    text = await res.text();
-  } else {
-    const store = createStore(args.store!);
-    let key = args.sourceKey;
-    if (key === undefined) {
-      const sources = await listDisplaySources(store, { filter: (c) => c === args.collection });
-      key = sources[0]?.sourceKey;
-      if (key === undefined) throw new Error(`not a served collection: ${args.collection}`);
-    }
-    const bytes = await store.get(key);
-    if (bytes === undefined) throw new Error(`source not found: ${key}`);
-    text = new TextDecoder().decode(bytes);
+    if (!res.ok || !res.body) throw new Error(`GET ${url} → ${res.status}`);
+    return res.body as unknown as AsyncIterable<Uint8Array>;
   }
-  const fc = JSON.parse(text) as { features?: SourceFeature[] };
-  if (!Array.isArray(fc.features)) throw new Error("source is not a FeatureCollection");
-  return fc.features;
+  const store = createStore(args.store!);
+  let key = args.sourceKey;
+  if (key === undefined) {
+    const sources = await listDisplaySources(store, { filter: (c) => c === args.collection });
+    key = sources[0]?.sourceKey;
+    if (key === undefined) throw new Error(`not a served collection: ${args.collection}`);
+  }
+  const stream = store.getStream ? await store.getStream(key) : undefined;
+  if (stream === undefined) throw new Error(`source not found: ${key}`);
+  return stream;
 }
 
 export async function runTilesCli(argv: readonly string[], out: (line: string) => void = (l) => console.log(l)): Promise<number> {
@@ -122,10 +120,7 @@ export async function runTilesCli(argv: readonly string[], out: (line: string) =
     return 2;
   }
   const tLoad = performance.now();
-  const features = await loadFeatures(args);
-  const loadMs = Math.round(performance.now() - tLoad);
-  const t0 = performance.now();
-  const built = buildLayerTiles(features, profile, {
+  const builder = new LayerTilesBuilder(profile, {
     minZoom: args.minZoom,
     maxZoom: args.maxZoom,
     tolerance: args.tolerance,
@@ -135,6 +130,10 @@ export async function runTilesCli(argv: readonly string[], out: (line: string) =
     borderCheck: args.borderCheck,
     citySlug: citySlugFromCollection(args.collection, profile),
   });
+  for await (const feature of parseFeatureCollectionStream(await openSource(args))) builder.add(feature as SourceFeature);
+  const loadMs = Math.round(performance.now() - tLoad);
+  const t0 = performance.now();
+  const built = builder.finish();
   const archive = layerTilesToPmtiles(built, { name: args.collection });
   const buildMs = Math.round(performance.now() - t0);
   if (args.out !== undefined) await writeFile(args.out, archive);
@@ -148,8 +147,9 @@ export async function runTilesCli(argv: readonly string[], out: (line: string) =
     buildMs,
     peakRssMB: Math.round(process.resourceUsage().maxRSS / 1024),
     archiveBytes: archive.length,
-    tiles: built.tiles.length,
+    tiles: built.tileCount,
     fields: built.fields,
+    ids: built.ids,
     zooms: built.zooms,
   };
   out(JSON.stringify(report));

@@ -20,6 +20,12 @@
  *
  * Opt-out: `GEO_DISPLAY_PUBLISH=0` (unit tests with fake S3 clients, or a bulk
  * job that runs the prewarm sweep afterwards).
+ *
+ * The same hook then publishes the collection's vector tile archive
+ * (`_tiles/…`, SPEC_VECTOR_TILES.md); its failure is reported in
+ * `outcome.tiles` with the `TILES_ARCHIVE_PUBLISH_FAILED` marker and counted
+ * in {@link displayPublishFailures}. Opt-out of that step alone:
+ * `GEO_TILES_PUBLISH=0`.
  */
 import type { S3Client } from "@aws-sdk/client-s3";
 // Explicit `.js` subpaths: they resolve through the package `exports` (dist) under
@@ -77,7 +83,16 @@ export async function publishDisplayAfterWrite(
     // A HEAD error falls through, so the publication below reports it loudly.
     if (!(await store.has(storeKey).catch(() => true))) return undefined;
   }
-  const outcome = await publishDisplayMirror(store, storeKey);
-  if (outcome.status === "failed") failures.push(outcome);
+  const outcome = await publishDisplayMirror(store, storeKey, { tiles: tilesPublishEnabled() });
+  if (outcome.status === "failed" || outcome.tiles?.status === "failed") failures.push(outcome);
   return outcome;
+}
+
+/**
+ * The tile archive step of the same hook (SPEC_VECTOR_TILES.md § Publication):
+ * on by default, `GEO_TILES_PUBLISH=0` turns it off alone (e.g. a bulk job that
+ * runs the prewarm sweep afterwards). `GEO_DISPLAY_PUBLISH=0` turns off both.
+ */
+export function tilesPublishEnabled(env: Record<string, string | undefined> = process.env): boolean {
+  return env["GEO_TILES_PUBLISH"] !== "0";
 }
