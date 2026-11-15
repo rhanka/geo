@@ -1,0 +1,87 @@
+# Feature-size SCAN — preprod (ns geo-preprod, bucket sentropic-geo-preprod). STRICTLY READ-ONLY.
+# Code: packages/geo/src/display/feature-size-scan*.ts. Context: PR #448 (serving path answers
+# 503 `FeatureTooLarge` for a collection with one Feature > GEO_MAX_FEATURE_BYTES, default 16 MiB).
+#
+# One pass over every served collection (same listing as the prewarm, the serving-index rule):
+# streams each source and counts the raw JSON bytes of each Feature (nothing decoded, nothing
+# retained, bounded memory). Writes nothing: the store is wrapped read-only in code (put/delete
+# throw). Re-running is safe (no state, no resume needed).
+#
+# Output (`kubectl logs`): one JSON line per collection {collection, sourceKey, features,
+# maxFeatureBytes, maxFeatureIndex, over8MiB, over16MiB, over32MiB, over64MiB, ms[, error]},
+# then a summary {total, scanned, failed, over8MiB[], over16MiB[], over32MiB[], over64MiB[], ms}
+# listing per bucket the collections with at least one Feature over it.
+# Exit 1 only if a collection could not be scanned; oversized Features are findings, not failures.
+#
+# Network: NO NetworkPolicy here. The pod carries `app.kubernetes.io/name: geo-display-prewarm`
+# so the existing `allow-geo-display-prewarm-egress` (preprod.yaml: DNS + S3 BHS 443) applies.
+# Pre-req: that NetworkPolicy is applied in geo-preprod.
+#
+# Credentials: geo-preprod has no read-only secret for sentropic-geo-preprod, so this uses the
+# same secret as the prewarm (geo-s3-credentials-preprod); the code only reads. Variant to scan
+# PROD with a read-only key: envFrom `geo-s3-credentials-prod-ro` (RO on sentropic-geo, same
+# S3 BHS endpoint, so the same NetworkPolicy) and `--store s3://sentropic-geo/normalized`.
+#
+# To apply (k8s session): replace REPLACE_WITH_POST_MERGE_GEO_DIGEST by the geo-api digest built
+# from main AFTER the merge of the PR that adds feature-size-scan-cli (it must contain
+# packages/geo/dist/display/feature-size-scan-cli.js), then `kubectl apply -f` this file.
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: geo-display-feature-scan
+  namespace: geo-preprod
+  labels:
+    app.kubernetes.io/name: geo-display-feature-scan
+    app.kubernetes.io/part-of: geo
+    app.kubernetes.io/instance: preprod
+spec:
+  # Read-only and deterministic: a failure is investigated, not retried blindly.
+  backoffLimit: 0
+  activeDeadlineSeconds: 21600
+  ttlSecondsAfterFinished: 86400
+  template:
+    metadata:
+      labels:
+        # Selected by allow-geo-display-prewarm-egress (preprod.yaml).
+        app.kubernetes.io/name: geo-display-prewarm
+        app.kubernetes.io/component: feature-scan
+        app.kubernetes.io/part-of: geo
+        app.kubernetes.io/instance: preprod
+    spec:
+      restartPolicy: Never
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: feature-scan
+          # geo-api image (one image, several roles — Dockerfile copies packages/geo/dist).
+          image: REPLACE_WITH_POST_MERGE_GEO_DIGEST
+          workingDir: /app
+          command: ["node", "packages/geo/dist/display/feature-size-scan-cli.js", "--store", "s3://sentropic-geo-preprod/normalized", "--concurrency", "2"]
+          env:
+            # IPv4 first: an AggregateError [ETIMEDOUT] is the happy-eyeballs bug, not an outage.
+            - name: NODE_OPTIONS
+              value: "--dns-result-order=ipv4first --max-old-space-size=384"
+            - name: AWS_MAX_ATTEMPTS
+              value: "10"
+          # S3_ENDPOINT / S3_REGION / S3_ACCESS_KEY / S3_SECRET_KEY (see Credentials above).
+          envFrom:
+            - secretRef:
+                name: geo-s3-credentials-preprod
+          resources:
+            requests:
+              cpu: 250m
+              memory: 256Mi
+            limits:
+              # 500m keeps the geo-preprod ResourceQuota headroom of preprod.yaml (geo-api rollout
+              # surge still fits). Memory: one S3 chunk per stream, no Feature retained.
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            capabilities:
+              drop:
+                - ALL
