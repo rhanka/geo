@@ -19,7 +19,9 @@
  *   node packages/geo/dist/display/prewarm-cli.js --api https://<host> --collections a,b
  *
  * One JSON line per collection on stdout, a JSON summary last. Exit 1 when any
- * collection failed, 2 on a usage error.
+ * collection failed for a reason other than `too-large` (store mode: such a
+ * source is refused on purpose, stays listed under `failed` and `tooLarge` in
+ * the summary, and does not fail the Job), 2 on a usage error.
  */
 
 import { pathToFileURL } from "node:url";
@@ -32,6 +34,7 @@ import {
   prewarmDisplayMirrors,
   warmViaApi,
   type DisplaySource,
+  type PrewarmResult,
 } from "./prewarm.js";
 
 export interface PrewarmCliArgs {
@@ -136,8 +139,25 @@ export async function runPrewarmCli(argv: readonly string[], deps: PrewarmCliDep
     onResult: (r, done, total) => out(JSON.stringify({ i: done, n: total, ...r })),
   });
   const failed = [...missing, ...report.failures.map((f) => f.collection)];
-  out(JSON.stringify({ summary: { mode: "store", total: report.total, counts: report.counts, failed, ms: report.ms } }));
-  return failed.length > 0 ? 1 : 0;
+  const tooLarge = report.failures.filter(isTooLarge).map((f) => f.collection);
+  out(JSON.stringify({ summary: { mode: "store", total: report.total, counts: report.counts, failed, tooLarge, ms: report.ms } }));
+  return storeExitCode(missing, report.failures);
+}
+
+/** A deliberate refusal of a source over the builder's budgets. */
+function isTooLarge(result: PrewarmResult): boolean {
+  return result.reason === "too-large";
+}
+
+/**
+ * Exit status of a store sweep: 1 only when a collection failed for a reason
+ * other than `too-large`. A `too-large` source is refused on purpose and fails
+ * identically on every re-run (same bytes, same budgets): exiting 1 for it makes
+ * the Job controller (backoffLimit) replay the whole sweep for nothing. It stays
+ * visible: counted in `counts.failed`, listed in `failed` and in `tooLarge`.
+ */
+export function storeExitCode(missing: readonly string[], failures: readonly PrewarmResult[]): number {
+  return missing.length > 0 || failures.some((f) => !isTooLarge(f)) ? 1 : 0;
 }
 
 const invokedPath = process.argv[1];
