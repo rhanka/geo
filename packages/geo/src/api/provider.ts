@@ -19,6 +19,8 @@ import type {
 
 import type { DisplayArtifact, DisplayEncoding } from "../display/mirror.js";
 import type { DisplayResult } from "../display/service.js";
+import type { TilesManifest } from "../tiles/archive.js";
+import type { TileBytes } from "../tiles/service.js";
 
 /**
  * A feature served by the API. Either a geometry-bearing administrative feature
@@ -149,7 +151,26 @@ export interface FeatureProvider {
     encoding: DisplayEncoding,
     signal?: AbortSignal,
   ): Promise<DisplayResult | undefined>;
+  /**
+   * Optional vector tiles (`tiles/service.ts`): the published tile archive of a
+   * collection. Never builds. Rejects when the archive cannot be read.
+   */
+  openTiles?(id: string): Promise<TilesLookup>;
 }
+
+/** Outcome of {@link FeatureProvider.openTiles}. */
+export type TilesLookup =
+  | { kind: "unknown-collection" }
+  /** The collection has no tile profile (not lots/zonage). */
+  | { kind: "not-tiled" }
+  /** Tiled collection without a published archive (publication/prewarm builds it). */
+  | { kind: "no-archive" }
+  | {
+      kind: "ok";
+      manifest: TilesManifest;
+      stale: boolean;
+      tile(z: number, x: number, y: number, signal?: AbortSignal): Promise<TileBytes | undefined>;
+    };
 
 /**
  * Dataset-level freshness + completeness manifest served for the preprod récup

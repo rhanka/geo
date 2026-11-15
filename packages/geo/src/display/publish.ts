@@ -33,6 +33,9 @@ import {
   type Store,
 } from "../storage/index.js";
 
+import type { EnsureTilesAction, EnsureTilesResult } from "../tiles/archive.js";
+import { profileForCollection } from "../tiles/profiles.js";
+
 import {
   artifactKey,
   buildDisplayMirror,
@@ -264,14 +267,72 @@ export async function resolvePublishedCollection(store: Store, writtenKey: strin
   return { kind: "target", collection, sourceKey: writtenKey };
 }
 
-export type PublishOutcome =
+/** Outcome of the tile archive step of the writer hook (SPEC_VECTOR_TILES.md § Publication). */
+export type TilesPublishOutcome =
+  | ({ status: EnsureTilesAction } & Omit<EnsureTilesResult, "action">)
+  | { status: "failed"; collection: string; reason?: string; error: string; ms: number };
+
+export type PublishOutcome = (
   | { status: "skipped"; key: string; reason: string; collection?: string }
   | ({ status: EnsureAction; key: string } & Omit<EnsureResult, "action">)
-  | { status: "failed"; key: string; collection?: string; error: string; ms: number };
+  | { status: "failed"; key: string; collection?: string; error: string; ms: number }
+) & {
+  /** Tile archive of the same collection, built after the display mirror (absent when skipped or disabled). */
+  tiles?: TilesPublishOutcome;
+};
 
 export interface PublishOptions extends EnsureOptions {
   /** Progress sink (default `console.log`); failures always also go to `console.error`. */
   log?: (line: string) => void;
+  /** Also publish the tile archive of lots/zonage collections (default true). */
+  tiles?: boolean;
+}
+
+/** A deliberate budget refusal (`TilesTooLargeError`, `DisplayTooLargeError`). */
+function isTooLargeError(error: unknown): boolean {
+  return typeof error === "object" && error !== null && (error as { reason?: unknown }).reason === "too-large";
+}
+
+/** Marker of a failed publication-time tile build in logs (grep/alert on it). */
+export const TILES_PUBLISH_FAILED = "TILES_ARCHIVE_PUBLISH_FAILED";
+
+/**
+ * Tile step of the writer hook: same freshness rule, no adoption (a write
+ * almost always changes the bytes). Never throws; a `too-large` source is
+ * reported (reason) and logged, not retried here.
+ */
+async function publishTilesStep(
+  store: Store,
+  collection: string,
+  sourceKey: string,
+  options: PublishOptions,
+  log: (line: string) => void,
+): Promise<TilesPublishOutcome | undefined> {
+  if (options.tiles === false || profileForCollection(collection) === undefined) return undefined;
+  const started = Date.now();
+  try {
+    // Loaded on demand: the tile builder (and its `pbf` dependency) must never
+    // break the display hook that every acquisition writer imports.
+    const { ensureTilesArchive } = await import("../tiles/archive.js");
+    const { action, ...rest } = await ensureTilesArchive(store, collection, sourceKey, {
+      adopt: false,
+      ...(options.build !== undefined ? { build: options.build } : {}),
+      ...(options.now ? { now: options.now } : {}),
+      ...(options.signal ? { signal: options.signal } : {}),
+    });
+    log(`[tiles-publish] ${action} ${collection}${rest.version ? ` version=${rest.version}` : ""} ms=${rest.ms}`);
+    return { status: action, ...rest };
+  } catch (error) {
+    const outcome: TilesPublishOutcome = {
+      status: "failed",
+      collection,
+      ...(isTooLargeError(error) ? { reason: "too-large" } : {}),
+      error: error instanceof Error ? error.message : String(error),
+      ms: Date.now() - started,
+    };
+    console.error(`[tiles-publish] ${TILES_PUBLISH_FAILED} ${JSON.stringify(outcome)}`);
+    return outcome;
+  }
 }
 
 /**
@@ -287,6 +348,7 @@ export async function publishDisplayMirror(
   const started = Date.now();
   const log = options.log ?? ((line: string) => console.log(line));
   let collection: string | undefined;
+  let sourceKey: string | undefined;
   try {
     const resolution = await resolvePublishedCollection(store, writtenKey);
     if (resolution.kind === "skip") {
@@ -298,12 +360,14 @@ export async function publishDisplayMirror(
       };
     }
     collection = resolution.collection;
+    sourceKey = resolution.sourceKey;
     const { action, ...rest } = await ensureDisplayMirror(store, resolution.collection, resolution.sourceKey, {
       adopt: false,
       ...options,
     });
     log(`[display-publish] ${action} ${rest.collection}${rest.version ? ` version=${rest.version}` : ""} ms=${rest.ms}`);
-    return { status: action, key: writtenKey, ...rest };
+    const tiles = await publishTilesStep(store, resolution.collection, resolution.sourceKey, options, log);
+    return { status: action, key: writtenKey, ...rest, ...(tiles ? { tiles } : {}) };
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     const outcome: PublishOutcome = {
@@ -316,6 +380,11 @@ export async function publishDisplayMirror(
     // Loud, machine-greppable, and never thrown: the exact write stands; the
     // prewarm sweep (or, at worst, the API's lazy build) repairs the mirror.
     console.error(`[display-publish] ${DISPLAY_PUBLISH_FAILED} ${JSON.stringify(outcome)}`);
+    // The tile archive does not depend on the display mirror: still try it.
+    if (collection !== undefined && sourceKey !== undefined) {
+      const tiles = await publishTilesStep(store, collection, sourceKey, options, log);
+      if (tiles) outcome.tiles = tiles;
+    }
     return outcome;
   }
 }

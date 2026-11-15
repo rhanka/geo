@@ -14,7 +14,7 @@
 
 import { Duplex } from "node:stream";
 import type { ReadableWritablePair } from "node:stream/web";
-import { createGunzip } from "node:zlib";
+import { createGunzip, gunzipSync } from "node:zlib";
 
 import { Hono, type Context } from "hono";
 import { cors } from "hono/cors";
@@ -39,13 +39,15 @@ import {
   renderCollection,
   type Link,
 } from "./ogc.js";
-import type { FeatureProvider, ItemsQuery, ItemsStream, ServedFeature } from "./provider.js";
+import type { FeatureProvider, ItemsQuery, ItemsStream, ServedFeature, TilesLookup } from "./provider.js";
+import { PmCompression } from "../tiles/pmtiles.js";
+import type { TileBytes } from "../tiles/service.js";
 import type { ReglementDocProvider } from "./reglement-provider.js";
 import type { ByteStream } from "../storage/index.js";
 import { FeatureTooLargeError } from "./providers/collection-loader.js";
 
 import { createBasemapApp } from "../basemap/endpoint.js";
-import { compressJson, negotiateEncoding } from "./compress.js";
+import { acceptsEncoding, compressJson, negotiateEncoding } from "./compress.js";
 import type { DisplayArtifact } from "../display/mirror.js";
 import type { DisplayResult } from "../display/service.js";
 import { parseCoordPrecision, withCoordPrecision } from "./precision.js";
@@ -467,6 +469,15 @@ export function createApp(
     return c.body(JSON.stringify(body));
   });
 
+  // ── Vector tiles (SPEC_VECTOR_TILES.md § Serving) ─────────────────────────────
+  // Published PMTiles archives read by byte ranges; never built in this pod.
+  app.get("/tiles/:file", (c) => {
+    const file = c.req.param("file");
+    if (!file.endsWith(".json")) return c.json({ code: "NotFound", description: `Unknown resource: /tiles/${file}` }, 404);
+    return serveTileJson(c, provider, file.slice(0, -".json".length));
+  });
+  app.get("/tiles/:collectionId/:z/:x/:file", (c) => serveTile(c, provider));
+
   // ── Basemap 2D mint (§5, FLAG-OFF by construction) ────────────────────────────
   // Mounts the Google Map Tiles 2D session-mint endpoint. INERT until the owner GO:
   // /basemap/2d/session answers 503 unless BASEMAP_2D_ENABLED=1 AND the restricted key is present
@@ -582,6 +593,136 @@ async function serveDisplay(
   // Client accepts neither br nor gzip: inflate the gzip artifact on the fly.
   const gunzip = Duplex.toWeb(createGunzip()) as unknown as ReadableWritablePair<Uint8Array, Uint8Array>;
   return c.body(body.pipeThrough(gunzip));
+}
+
+/** MVT media type (Mapbox vector tile spec). */
+export const MEDIA_MVT = "application/vnd.mapbox-vector-tile";
+/** A tile requested with `?v=<current version>`: content-addressed, cached for a year. */
+const TILE_CACHE_IMMUTABLE = "public, max-age=31536000, immutable";
+/** A tile requested without (or with another) `?v=`: the current version may change. */
+const TILE_CACHE_SHORT = "public, max-age=60";
+
+type TilesOk = Extract<TilesLookup, { kind: "ok" }>;
+
+async function lookupTiles(c: Context, provider: FeatureProvider, id: string): Promise<TilesOk | Response> {
+  if (!provider.openTiles) return c.json({ code: "NotFound", description: "No vector tiles for this data source" }, 404);
+  let lookup: TilesLookup;
+  try {
+    lookup = await provider.openTiles(id);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`[tiles] ${id}:`, error);
+    return c.json({ code: "TilesUnavailable", description: `Vector tiles unavailable for '${id}'` }, 503);
+  }
+  switch (lookup.kind) {
+    case "unknown-collection":
+      return c.json({ code: "NotFound", description: `Unknown collection: ${id}` }, 404);
+    case "not-tiled":
+      return c.json({ code: "NotFound", description: `Collection '${id}' has no vector tiles` }, 404);
+    case "no-archive":
+      // Never built in the serving pod: publication and the prewarm sweep build it.
+      return c.json({ code: "TilesUnavailable", description: `No published tile archive for '${id}'` }, 404);
+    default:
+      return lookup;
+  }
+}
+
+function tilesHeaders(c: Context, tiles: TilesOk): void {
+  c.header("X-Geo-Tiles-Version", tiles.manifest.version);
+  if (tiles.stale) c.header("X-Geo-Tiles-Stale", "1");
+}
+
+function matchesEtag(c: Context, etag: string): boolean {
+  const ifNoneMatch = c.req.header("If-None-Match");
+  return ifNoneMatch !== undefined && ifNoneMatch.split(",").some((t) => t.trim() === etag || t.trim() === "*");
+}
+
+/** `GET /tiles/{collectionId}.json` — TileJSON 3.0.0 of the current archive version (revalidated). */
+async function serveTileJson(c: Context, provider: FeatureProvider, id: string): Promise<Response> {
+  const tiles = await lookupTiles(c, provider, id);
+  if (tiles instanceof Response) return tiles;
+  const m = tiles.manifest;
+  const etag = `"${m.version}-tilejson"`;
+  c.header("ETag", etag);
+  c.header("Cache-Control", "no-cache");
+  tilesHeaders(c, tiles);
+  if (matchesEtag(c, etag)) return c.body(null, 304);
+  const base = baseUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
+  const [minLon, minLat, maxLon, maxLat] = m.bounds;
+  return c.json({
+    tilejson: "3.0.0",
+    name: id,
+    scheme: "xyz",
+    tiles: [`${base}/tiles/${encodeURIComponent(id)}/{z}/{x}/{y}.mvt?v=${m.version}`],
+    minzoom: m.minzoom,
+    maxzoom: m.maxzoom,
+    bounds: m.bounds,
+    center: [(minLon + maxLon) / 2, (minLat + maxLat) / 2, m.minzoom],
+    vector_layers: [{ id: m.layer, fields: m.fields, minzoom: m.minzoom, maxzoom: m.maxzoom }],
+    tiles_version: m.version,
+    tiles_profile: m.profile,
+    built_at: m.built_at,
+    source_sha256: m.source_sha256,
+    features: m.features,
+  });
+}
+
+const DIGITS = /^\d{1,9}$/;
+
+/** `GET /tiles/{collectionId}/{z}/{x}/{y}.mvt` — one tile, read by byte range from the archive. */
+async function serveTile(c: Context, provider: FeatureProvider): Promise<Response> {
+  const id = c.req.param("collectionId") ?? "";
+  const zs = c.req.param("z") ?? "";
+  const xs = c.req.param("x") ?? "";
+  const file = c.req.param("file") ?? "";
+  if (!file.endsWith(".mvt")) return c.json({ code: "NotFound", description: `Unknown tile format: ${file}` }, 404);
+  const ys = file.slice(0, -".mvt".length);
+  if (!DIGITS.test(zs) || !DIGITS.test(xs) || !DIGITS.test(ys)) {
+    return c.json({ code: "InvalidParameter", description: "z, x and y must be non-negative integers" }, 400);
+  }
+  const z = Number(zs);
+  const x = Number(xs);
+  const y = Number(ys);
+  const tiles = await lookupTiles(c, provider, id);
+  if (tiles instanceof Response) return tiles;
+  const m = tiles.manifest;
+  if (z < m.minzoom || z > m.maxzoom) {
+    return c.json({ code: "NotFound", description: `Zoom ${z} outside ${m.minzoom}–${m.maxzoom} (clients overzoom ${m.maxzoom})` }, 404);
+  }
+  const n = 2 ** z;
+  if (x >= n || y >= n) return c.json({ code: "NotFound", description: `Tile ${z}/${x}/${y} does not exist` }, 404);
+
+  const pinned = c.req.query("v") === m.version;
+  const etag = `"${m.version}-${z}-${x}-${y}"`;
+  c.header("Cache-Control", pinned ? TILE_CACHE_IMMUTABLE : TILE_CACHE_SHORT);
+  c.header("ETag", etag);
+  c.header("Vary", "Accept-Encoding");
+  tilesHeaders(c, tiles);
+  if (matchesEtag(c, etag)) return c.body(null, 304);
+
+  let tile: TileBytes | undefined;
+  try {
+    tile = await tiles.tile(z, x, y, c.req.raw.signal);
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(`[tiles] ${id} ${z}/${x}/${y}:`, error);
+    return c.json({ code: "TilesUnavailable", description: `Tile ${z}/${x}/${y} of '${id}' unavailable` }, 503);
+  }
+  // Inside the archive's zoom range but no feature there.
+  if (!tile) return c.body(null, 204);
+  c.header("Content-Type", MEDIA_MVT);
+  // Not JSON-family: compressJson leaves it alone, so the stored gzip is never re-encoded.
+  if (tile.compression === PmCompression.Gzip) {
+    if (acceptsEncoding(c.req.header("Accept-Encoding"), "gzip")) {
+      c.header("Content-Encoding", "gzip");
+      return c.body(tile.data as Uint8Array<ArrayBuffer>);
+    }
+    return c.body(gunzipSync(tile.data) as Uint8Array<ArrayBuffer>);
+  }
+  if (tile.compression === PmCompression.None) return c.body(tile.data as Uint8Array<ArrayBuffer>);
+  // eslint-disable-next-line no-console
+  console.error(`[tiles] ${id}: unsupported tile compression ${tile.compression}`);
+  return c.json({ code: "TilesUnavailable", description: `Tile ${z}/${x}/${y} of '${id}' unavailable` }, 503);
 }
 
 /**

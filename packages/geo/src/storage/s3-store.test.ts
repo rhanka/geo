@@ -131,6 +131,35 @@ describe("S3Store", () => {
     expect(await store.list()).toEqual(["top.json"]);
   });
 
+  it("getRange sends one ranged GetObject and never reads the whole object", async () => {
+    const body = Uint8Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]);
+    const commands: RecordedCommand[] = [];
+    const client = {
+      send: async (command: { constructor: { name: string }; input: Record<string, unknown> }) => {
+        commands.push({ name: command.constructor.name, input: command.input });
+        const key = command.input["Key"];
+        if (key !== "p/a.pmtiles") throw Object.assign(new Error("NoSuchKey"), { name: "NoSuchKey", $metadata: { httpStatusCode: 404 } });
+        const m = /^bytes=(\d+)-(\d+)$/.exec(String(command.input["Range"]));
+        const start = Number(m![1]);
+        if (start >= body.length) throw Object.assign(new Error("InvalidRange"), { name: "InvalidRange", $metadata: { httpStatusCode: 416 } });
+        const end = Math.min(Number(m![2]), body.length - 1);
+        return { Body: { transformToByteArray: async () => body.slice(start, end + 1) }, ContentRange: `bytes ${start}-${end}/${body.length}` };
+      },
+    } as unknown as S3Client;
+    const store = new S3Store({ bucket: "b", prefix: "p", client });
+    expect(Array.from((await store.getRange("a.pmtiles", 2, 3))!)).toEqual([2, 3, 4]);
+    expect(commands[0]).toEqual({ name: "GetObjectCommand", input: { Bucket: "b", Key: "p/a.pmtiles", Range: "bytes=2-4" } });
+    expect(Array.from((await store.getRange("a.pmtiles", 8, 16384))!)).toEqual([8, 9]);
+    expect((await store.getRange("a.pmtiles", 40, 4))!.length).toBe(0);
+    expect(await store.getRange("missing", 0, 4)).toBeUndefined();
+  });
+
+  it("getRange keeps the requested slice when the server ignores Range", async () => {
+    const { client } = fakeClient({ "p/a.bin": Uint8Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]) });
+    const store = new S3Store({ bucket: "b", prefix: "p", client });
+    expect(Array.from((await store.getRange("a.bin", 5, 2))!)).toEqual([5, 6]);
+  });
+
   it("deletes a key", async () => {
     const { client, objects } = fakeClient();
     const store = new S3Store({ bucket: "b", prefix: "p", client });
