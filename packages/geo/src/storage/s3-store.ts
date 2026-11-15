@@ -196,6 +196,40 @@ export class S3Store implements Store {
     }
   }
 
+  /** One byte range of an object (`Range: bytes=a-b`); never the whole body. */
+  async getRange(
+    key: string,
+    offset: number,
+    length: number,
+    opts?: GetStreamOptions,
+  ): Promise<Uint8Array | undefined> {
+    if (!Number.isSafeInteger(offset) || offset < 0 || !Number.isSafeInteger(length) || length < 0) {
+      throw new Error(`invalid byte range ${offset}+${length}`);
+    }
+    if (length === 0) return (await this.has(key)) ? new Uint8Array(0) : undefined;
+    try {
+      const out = await this.client.send(
+        new GetObjectCommand({
+          Bucket: this.bucket,
+          Key: this.objectKey(key),
+          Range: `bytes=${offset}-${offset + length - 1}`,
+        }),
+        opts?.signal ? { abortSignal: opts.signal } : {},
+      );
+      if (out.Body === undefined) return new Uint8Array(0);
+      const bytes = await bodyToBytes(idleGuardedStream(out.Body, this.bodyGuard, opts?.signal));
+      // A server that ignores Range sends the whole object (no Content-Range):
+      // keep the requested slice.
+      if (out.ContentRange === undefined && bytes.byteLength > length) return bytes.subarray(offset, offset + length);
+      return bytes.byteLength > length ? bytes.subarray(0, length) : bytes;
+    } catch (err) {
+      if (isNotFound(err)) return undefined;
+      // Range starting past the end of the object.
+      if (isInvalidRange(err)) return new Uint8Array(0);
+      throw err;
+    }
+  }
+
   async stat(key: string): Promise<ObjectStat | undefined> {
     try {
       const out = await this.client.send(
@@ -348,6 +382,13 @@ function isNotFound(err: unknown): boolean {
   if (e.name === "NotFound" || e.name === "NoSuchKey") return true;
   if (e.Code === "NoSuchKey") return true;
   return e.$metadata?.httpStatusCode === 404;
+}
+
+/** S3 416 `InvalidRange` (range starts at or past the end of the object). */
+function isInvalidRange(err: unknown): boolean {
+  if (typeof err !== "object" || err === null) return false;
+  const e = err as { name?: unknown; Code?: unknown; $metadata?: { httpStatusCode?: unknown } };
+  return e.name === "InvalidRange" || e.Code === "InvalidRange" || e.$metadata?.httpStatusCode === 416;
 }
 
 /**

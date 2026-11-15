@@ -6,7 +6,9 @@
  * ON THE CLUSTER (Job, geo-api image) with the store's own credentials, and
  * writes the mirrors next to the sources. It resolves every served source with
  * the exact serving-index rule (full listing + `.meta.json` datasetIds), then
- * calls {@link ensureDisplayMirror} per collection, sequentially by default.
+ * calls {@link ensureDisplayMirror} per collection, sequentially by default,
+ * then `ensureTilesArchive` (vector tiles, SPEC_VECTOR_TILES.md) for the same
+ * collection, each step under its own deadline.
  * Resumable and idempotent by construction: a fresh mirror costs one GET of
  * `current.json` and one HEAD of the source, so a re-run after an interruption
  * skips everything already done.
@@ -20,6 +22,8 @@
 
 import { parseMeta } from "../api/providers/collection-loader.js";
 import { isCanonicalGeojsonKey, servedSourceKeys, type Store } from "../storage/index.js";
+
+import type { EnsureTilesAction } from "../tiles/archive.js";
 
 import { DisplayTooLargeError } from "./mirror.js";
 import { ensureDisplayMirror, isDisplayPublishedCollection, type EnsureAction, type EnsureOptions } from "./publish.js";
@@ -66,20 +70,36 @@ export async function listDisplaySources(store: Store, options: ListSourcesOptio
     .sort((a, b) => (a.collection < b.collection ? -1 : a.collection > b.collection ? 1 : 0));
 }
 
-export interface PrewarmResult {
-  collection: string;
-  sourceKey: string;
-  action: EnsureAction | "failed";
+/** Tile archive step of one collection (SPEC_VECTOR_TILES.md § Publication). */
+export interface TilesStepResult {
+  action: EnsureTilesAction | "failed";
   version?: string;
   reason?: string;
   error?: string;
   ms: number;
 }
 
+export interface PrewarmResult {
+  collection: string;
+  sourceKey: string;
+  /** Display mirror step; `skipped` when the sweep runs tiles only. */
+  action: EnsureAction | "failed" | "skipped";
+  version?: string;
+  reason?: string;
+  error?: string;
+  ms: number;
+  /** Tile archive step (lots/zonage, unless disabled). */
+  tiles?: TilesStepResult;
+}
+
 export interface PrewarmReport {
   total: number;
-  counts: Record<EnsureAction | "failed", number>;
+  counts: Record<EnsureAction | "failed" | "skipped", number>;
+  /** Collections whose display step failed. */
   failures: PrewarmResult[];
+  tilesCounts: Record<EnsureTilesAction | "failed", number>;
+  /** Collections whose tile step failed. */
+  tilesFailures: PrewarmResult[];
   ms: number;
 }
 
@@ -110,6 +130,14 @@ export interface PrewarmOptions extends EnsureOptions {
    * `too-large` ({@link DisplayTooLargeError}) — never an OOM of the sweep.
    */
   collectionTimeoutMs?: number;
+  /** Ensure the display mirror (default true). */
+  display?: boolean;
+  /**
+   * Ensure the tile archive of lots/zonage collections (default true), after
+   * the display mirror, with its own deadline of `collectionTimeoutMs`. A
+   * `too-large` source is recorded with that reason, like the display step.
+   */
+  tiles?: boolean;
   /** Called after each collection, in completion order. */
   onResult?: (result: PrewarmResult, done: number, total: number) => void;
   signal?: AbortSignal;
@@ -125,8 +153,10 @@ export async function prewarmDisplayMirrors(
   options: PrewarmOptions = {},
 ): Promise<PrewarmReport> {
   const started = Date.now();
-  const counts: PrewarmReport["counts"] = { fresh: 0, adopted: 0, built: 0, "needs-build": 0, failed: 0 };
+  const counts: PrewarmReport["counts"] = { fresh: 0, adopted: 0, built: 0, "needs-build": 0, failed: 0, skipped: 0 };
+  const tilesCounts: PrewarmReport["tilesCounts"] = { fresh: 0, adopted: 0, built: 0, "needs-build": 0, failed: 0 };
   const failures: PrewarmResult[] = [];
+  const tilesFailures: PrewarmResult[] = [];
   let done = 0;
   const ensureOptions: EnsureOptions = {
     ...(options.adopt !== undefined ? { adopt: options.adopt } : {}),
@@ -134,51 +164,90 @@ export async function prewarmDisplayMirrors(
     ...(options.now ? { now: options.now } : {}),
   };
   const timeoutMs = options.collectionTimeoutMs ?? DEFAULT_COLLECTION_TIMEOUT_MS;
+  // Loaded on demand (see display/publish.ts): the display graph stays free of the tile builder.
+  const tilesModule = options.tiles === false ? undefined : await import("../tiles/archive.js");
   await mapLimit(sources, options.concurrency ?? 1, async (source) => {
     if (options.signal?.aborted) return;
-    const t0 = Date.now();
     let result: PrewarmResult;
-    const deadline = withDeadline(timeoutMs, options.signal);
-    try {
-      const work = ensureDisplayMirror(store, source.collection, source.sourceKey, {
-        ...ensureOptions,
-        signal: deadline.signal,
-      });
-      // The race may leave `work` behind (a store call that ignores the
-      // signal): it settles later against an aborted signal; never unhandled.
-      work.catch(() => {});
-      const r = await Promise.race([work, deadline.expired]);
-      result = {
-        collection: r.collection,
-        sourceKey: r.sourceKey,
-        action: r.action,
-        ...(r.version !== undefined ? { version: r.version } : {}),
-        ...(r.reason !== undefined ? { reason: r.reason } : {}),
-        ms: r.ms,
-      };
-    } catch (error) {
-      const timedOut = deadline.timedOut();
-      const tooLarge = !timedOut && error instanceof DisplayTooLargeError;
-      result = {
-        ...source,
-        action: "failed",
-        ...(timedOut ? { reason: "timeout" } : tooLarge ? { reason: "too-large" } : {}),
-        error: timedOut
-          ? new CollectionTimeoutError(timeoutMs).message
-          : error instanceof Error
-            ? error.message
-            : String(error),
-        ms: Date.now() - t0,
-      };
-      failures.push(result);
-    } finally {
-      deadline.clear();
+    if (options.display === false) {
+      result = { ...source, action: "skipped", ms: 0 };
+    } else {
+      const step = await withinDeadline(timeoutMs, options.signal, (signal) =>
+        ensureDisplayMirror(store, source.collection, source.sourceKey, { ...ensureOptions, signal }),
+      );
+      result = step.ok
+        ? {
+            collection: step.value.collection,
+            sourceKey: step.value.sourceKey,
+            action: step.value.action,
+            ...(step.value.version !== undefined ? { version: step.value.version } : {}),
+            ...(step.value.reason !== undefined ? { reason: step.value.reason } : {}),
+            ms: step.value.ms,
+          }
+        : { ...source, action: "failed", ...failureFields(step, timeoutMs, DisplayTooLargeError) };
+      if (result.action === "failed") failures.push(result);
+    }
+    if (tilesModule?.isTilesPublishedCollection(source.collection) && !options.signal?.aborted) {
+      const step = await withinDeadline(timeoutMs, options.signal, (signal) =>
+        tilesModule.ensureTilesArchive(store, source.collection, source.sourceKey, { ...ensureOptions, signal }),
+      );
+      result.tiles = step.ok
+        ? {
+            action: step.value.action,
+            ...(step.value.version !== undefined ? { version: step.value.version } : {}),
+            ...(step.value.reason !== undefined ? { reason: step.value.reason } : {}),
+            ms: step.value.ms,
+          }
+        : { action: "failed", ...failureFields(step, timeoutMs, tilesModule.TilesTooLargeError) };
+      tilesCounts[result.tiles.action]++;
+      if (result.tiles.action === "failed") tilesFailures.push(result);
     }
     counts[result.action]++;
     done++;
     options.onResult?.(result, done, sources.length);
   });
-  return { total: sources.length, counts, failures, ms: Date.now() - started };
+  return { total: sources.length, counts, failures, tilesCounts, tilesFailures, ms: Date.now() - started };
+}
+
+type StepOutcome<T> = { ok: true; value: T } | { ok: false; error: unknown; timedOut: boolean; ms: number };
+
+/** Run one step under its own deadline; never throws. */
+async function withinDeadline<T>(
+  timeoutMs: number,
+  parent: AbortSignal | undefined,
+  run: (signal: AbortSignal) => Promise<T>,
+): Promise<StepOutcome<T>> {
+  const t0 = Date.now();
+  const deadline = withDeadline(timeoutMs, parent);
+  try {
+    const work = run(deadline.signal);
+    // The race may leave `work` behind (a store call that ignores the
+    // signal): it settles later against an aborted signal; never unhandled.
+    work.catch(() => {});
+    return { ok: true, value: await Promise.race([work, deadline.expired]) };
+  } catch (error) {
+    return { ok: false, error, timedOut: deadline.timedOut(), ms: Date.now() - t0 };
+  } finally {
+    deadline.clear();
+  }
+}
+
+/** `reason` / `error` / `ms` of a failed step: `timeout`, `too-large` (an instance of `tooLarge`), or the error. */
+function failureFields(
+  step: { error: unknown; timedOut: boolean; ms: number },
+  timeoutMs: number,
+  tooLarge: new (...args: never[]) => Error,
+): { reason?: string; error: string; ms: number } {
+  const isTooLarge = !step.timedOut && step.error instanceof tooLarge;
+  return {
+    ...(step.timedOut ? { reason: "timeout" } : isTooLarge ? { reason: "too-large" } : {}),
+    error: step.timedOut
+      ? new CollectionTimeoutError(timeoutMs).message
+      : step.error instanceof Error
+        ? step.error.message
+        : String(step.error),
+    ms: step.ms,
+  };
 }
 
 export interface ApiWarmResult {

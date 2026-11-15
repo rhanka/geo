@@ -22,6 +22,8 @@ export {
   isDisplayPublishedCollection,
   publishDisplayMirror,
   resolvePublishedCollection,
+  TILES_PUBLISH_FAILED,
+  type TilesPublishOutcome,
   type EnsureAction,
   type EnsureOptions,
   type EnsureResult,
@@ -40,4 +42,5 @@ export {
   type PrewarmOptions,
   type PrewarmReport,
   type PrewarmResult,
+  type TilesStepResult,
 } from "./prewarm.js";

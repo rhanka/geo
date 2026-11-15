@@ -35,6 +35,14 @@ describe("FsStore", () => {
     expect(out).toEqual(body);
   });
 
+  it("getRange reads one byte range; short at the end; undefined when missing", async () => {
+    await store.put("a/b.bin", Uint8Array.from([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]));
+    expect(Array.from((await store.getRange("a/b.bin", 3, 4))!)).toEqual([3, 4, 5, 6]);
+    expect(Array.from((await store.getRange("a/b.bin", 8, 16))!)).toEqual([8, 9]);
+    expect((await store.getRange("a/b.bin", 20, 4))!.length).toBe(0);
+    expect(await store.getRange("a/missing.bin", 0, 4)).toBeUndefined();
+  });
+
   it("get returns undefined for a missing key", async () => {
     expect(await store.get("nope.json")).toBeUndefined();
   });
