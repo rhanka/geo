@@ -160,6 +160,34 @@ describe("S3Store", () => {
     expect(Array.from((await store.getRange("a.bin", 5, 2))!)).toEqual([5, 6]);
   });
 
+  it("putFile streams the file in one PutObject with its length and content type", async () => {
+    const { mkdtemp, rm, writeFile } = await import("node:fs/promises");
+    const { tmpdir } = await import("node:os");
+    const { join } = await import("node:path");
+    const dir = await mkdtemp(join(tmpdir(), "s3-putfile-"));
+    try {
+      const path = join(dir, "a.pmtiles");
+      const content = new Uint8Array(200_000).map((_, i) => i & 255);
+      await writeFile(path, content);
+      const received: Array<{ input: Record<string, unknown>; body: Buffer }> = [];
+      const client = {
+        send: async (command: { input: Record<string, unknown> }) => {
+          const chunks: Buffer[] = [];
+          for await (const c of command.input["Body"] as AsyncIterable<Buffer>) chunks.push(c);
+          received.push({ input: command.input, body: Buffer.concat(chunks) });
+          return {};
+        },
+      } as unknown as S3Client;
+      const store = new S3Store({ bucket: "b", prefix: "p", client });
+      await store.putFile("_tiles/x/v/x.pmtiles", path, { contentType: "application/vnd.pmtiles" });
+      expect(received).toHaveLength(1);
+      expect(received[0]!.input).toMatchObject({ Bucket: "b", Key: "p/_tiles/x/v/x.pmtiles", ContentLength: 200_000, ContentType: "application/vnd.pmtiles" });
+      expect(received[0]!.body.equals(Buffer.from(content))).toBe(true);
+    } finally {
+      await rm(dir, { recursive: true, force: true });
+    }
+  });
+
   it("deletes a key", async () => {
     const { client, objects } = fakeClient();
     const store = new S3Store({ bucket: "b", prefix: "p", client });

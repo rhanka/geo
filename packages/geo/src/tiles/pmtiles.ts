@@ -123,25 +123,47 @@ function writeUint64(view: DataView, at: number, value: number): void {
   view.setBigUint64(at, BigInt(value), true);
 }
 
-/** Write a complete PMTiles v3 archive in memory. */
-export function writePmtiles(tiles: readonly PmtilesTileInput[], options: PmtilesWriteOptions): Uint8Array {
-  const sorted = tiles
-    .map((t) => ({ tileId: zxyToTileId(t.z, t.x, t.y), data: t.data }))
-    .sort((a, b) => a.tileId - b.tileId);
+/** One tile of an archive layout: its id, its stored length and a hash of its bytes (deduplication). */
+export interface PmtilesLayoutTile {
+  tileId: number;
+  length: number;
+  hash: string;
+}
+
+export interface PmtilesLayout {
+  /** Header + root directory + metadata + leaf directories: the archive's first bytes. */
+  prefix: Uint8Array;
+  /**
+   * Indices (into the input) of the tiles whose bytes form the data section,
+   * in order, each written once (identical contents are deduplicated).
+   */
+  dataOrder: number[];
+  dataLength: number;
+  /** prefix + data. */
+  totalBytes: number;
+}
+
+/**
+ * Plan a PMTiles v3 archive without holding the tile bytes: directories,
+ * metadata and header from (id, length, hash) only. The caller then writes
+ * `prefix` followed by the bytes of `dataOrder`'s tiles (a streamed writer
+ * copies them from a spool file).
+ */
+export function layoutPmtiles(tiles: readonly PmtilesLayoutTile[], options: PmtilesWriteOptions): PmtilesLayout {
+  const order = tiles.map((_, i) => i).sort((a, b) => tiles[a]!.tileId - tiles[b]!.tileId);
   const entries: Entry[] = [];
   const contents = new Map<string, { offset: number; length: number }>();
-  const parts: Uint8Array[] = [];
+  const dataOrder: number[] = [];
   let dataLength = 0;
-  for (let i = 0; i < sorted.length; i++) {
-    const t = sorted[i]!;
-    if (i > 0 && sorted[i - 1]!.tileId === t.tileId) throw new Error(`duplicate tile id ${t.tileId}`);
-    const hash = createHash("sha256").update(t.data).digest("hex");
-    let content = contents.get(hash);
+  for (let k = 0; k < order.length; k++) {
+    const t = tiles[order[k]!]!;
+    if (k > 0 && tiles[order[k - 1]!]!.tileId === t.tileId) throw new Error(`duplicate tile id ${t.tileId}`);
+    let content = contents.get(t.hash);
     if (content === undefined) {
-      content = { offset: dataLength, length: t.data.length };
-      contents.set(hash, content);
-      parts.push(t.data);
-      dataLength += t.data.length;
+      content = { offset: dataLength, length: t.length };
+      contents.set(t.hash, content);
+      dataOrder.push(order[k]!);
+      dataLength += t.length;
     }
     const prev = entries[entries.length - 1];
     if (prev !== undefined && prev.offset === content.offset && prev.tileId + prev.runLength === t.tileId) {
@@ -150,7 +172,31 @@ export function writePmtiles(tiles: readonly PmtilesTileInput[], options: Pmtile
       entries.push({ tileId: t.tileId, offset: content.offset, length: content.length, runLength: 1 });
     }
   }
+  const prefix = archivePrefix(entries, options, dataLength, tiles.length, contents.size);
+  return { prefix, dataOrder, dataLength, totalBytes: prefix.length + dataLength };
+}
 
+/** sha256 hex of tile bytes (deduplication key). */
+export function tileHash(data: Uint8Array): string {
+  return createHash("sha256").update(data).digest("hex");
+}
+
+/** Write a complete PMTiles v3 archive in memory. */
+export function writePmtiles(tiles: readonly PmtilesTileInput[], options: PmtilesWriteOptions): Uint8Array {
+  const layout = layoutPmtiles(
+    tiles.map((t) => ({ tileId: zxyToTileId(t.z, t.x, t.y), length: t.data.length, hash: tileHash(t.data) })),
+    options,
+  );
+  return Buffer.concat([layout.prefix, ...layout.dataOrder.map((i) => tiles[i]!.data)]);
+}
+
+function archivePrefix(
+  entries: readonly Entry[],
+  options: PmtilesWriteOptions,
+  dataLength: number,
+  addressedTiles: number,
+  tileContents: number,
+): Uint8Array {
   const { root, leaves } = buildDirectories(entries);
   const metadata = gzipSync(Buffer.from(JSON.stringify(options.metadata), "utf8"));
 
@@ -171,9 +217,9 @@ export function writePmtiles(tiles: readonly PmtilesTileInput[], options: Pmtile
   writeUint64(view, 48, leaves.length);
   writeUint64(view, 56, dataOffset);
   writeUint64(view, 64, dataLength);
-  writeUint64(view, 72, sorted.length);
+  writeUint64(view, 72, addressedTiles);
   writeUint64(view, 80, entries.length);
-  writeUint64(view, 88, contents.size);
+  writeUint64(view, 88, tileContents);
   header[96] = 1; // clustered
   header[97] = PmCompression.Gzip; // internal compression
   header[98] = options.tileCompression;
@@ -191,5 +237,5 @@ export function writePmtiles(tiles: readonly PmtilesTileInput[], options: Pmtile
   view.setInt32(119, e7(center[0]), true);
   view.setInt32(123, e7(center[1]), true);
 
-  return Buffer.concat([header, root, metadata, leaves, ...parts]);
+  return Buffer.concat([header, root, metadata, leaves]);
 }

@@ -7,7 +7,10 @@
 # then only re-points the copied mirrors (no rebuild there).
 #
 # Pre-req: the `geo-s3-credentials` secret of ns geo must allow PutObject under
-# `normalized/_display/` (geo-api needs the same right for its lazy build).
+# `normalized/_display/` (geo-api needs the same right for its lazy build) and, since the T1
+# vector tiles (docs/spec/SPEC_VECTOR_TILES.md § Publication), under `normalized/_tiles/`
+# (geo-api only reads it, by byte ranges). Tiles are spooled under the container's temp dir
+# (`TILES_TMPDIR`; ~2x the archive, 76 MB for Montréal lots).
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
