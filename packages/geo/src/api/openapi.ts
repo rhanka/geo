@@ -168,6 +168,45 @@ export function buildOpenApi(base: string): Record<string, unknown> {
           },
         },
       },
+      "/tiles/{collectionId}.json": {
+        get: {
+          summary: "TileJSON of a collection's vector tiles (lots, zonage)",
+          operationId: "getTileJson",
+          parameters: [{ name: "collectionId", in: "path", required: true, schema: { type: "string" } }],
+          responses: {
+            "200": { description: "TileJSON 3.0.0; tile URLs carry `?v=<version>`. `Cache-Control: no-cache`." },
+            "304": { description: "The If-None-Match ETag still matches the current tiles version." },
+            "404": { description: "Unknown collection, collection without tiles, or no published archive (`TilesUnavailable`)." },
+            "503": { description: "The archive cannot be read (`TilesUnavailable`)." },
+          },
+        },
+      },
+      "/tiles/{collectionId}/{z}/{x}/{y}.mvt": {
+        get: {
+          summary: "One Mapbox vector tile (MVT 2.1) of a collection",
+          operationId: "getTile",
+          parameters: [
+            { name: "collectionId", in: "path", required: true, schema: { type: "string" } },
+            { name: "z", in: "path", required: true, schema: { type: "integer", minimum: 0 } },
+            { name: "x", in: "path", required: true, schema: { type: "integer", minimum: 0 } },
+            { name: "y", in: "path", required: true, schema: { type: "integer", minimum: 0 } },
+            {
+              name: "v",
+              in: "query",
+              schema: { type: "string" },
+              description: "Tiles version from the TileJSON: when it is the current one, the tile is cached a year (immutable).",
+            },
+          ],
+          responses: {
+            "200": { description: "`application/vnd.mapbox-vector-tile`, `Content-Encoding: gzip` when accepted." },
+            "204": { description: "No feature in this tile (inside the zoom range)." },
+            "304": { description: "The If-None-Match ETag still matches." },
+            "400": { description: "z, x or y is not an integer." },
+            "404": { description: "Zoom outside the archive's range (clients overzoom), tile outside the grid, unknown collection, or no published archive." },
+            "503": { description: "The archive cannot be read (`TilesUnavailable`)." },
+          },
+        },
+      },
     },
   };
 }

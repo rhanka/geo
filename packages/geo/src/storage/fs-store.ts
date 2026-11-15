@@ -6,7 +6,7 @@
 
 import type { Dirent } from "node:fs";
 import { createReadStream } from "node:fs";
-import { mkdir, readFile, readdir, rm, stat, writeFile } from "node:fs/promises";
+import { mkdir, open, readFile, readdir, rm, stat, writeFile, type FileHandle } from "node:fs/promises";
 import { dirname, join, relative, sep } from "node:path";
 
 import type { ByteStream, ObjectStat, PutOptions, Store } from "./store.js";
@@ -49,6 +49,28 @@ export class FsStore implements Store {
       throw err;
     }
     return readStream(path);
+  }
+
+  async getRange(key: string, offset: number, length: number): Promise<Uint8Array | undefined> {
+    let handle: FileHandle;
+    try {
+      handle = await open(this.pathFor(key), "r");
+    } catch (err) {
+      if (isErrno(err, "ENOENT")) return undefined;
+      throw err;
+    }
+    try {
+      const out = new Uint8Array(length);
+      let read = 0;
+      while (read < length) {
+        const { bytesRead } = await handle.read(out, read, length - read, offset + read);
+        if (bytesRead === 0) break;
+        read += bytesRead;
+      }
+      return read === length ? out : out.subarray(0, read);
+    } finally {
+      await handle.close();
+    }
   }
 
   async stat(key: string): Promise<ObjectStat | undefined> {

@@ -1,14 +1,47 @@
-/** Vector tiles (SPEC_VECTOR_TILES.md): T0 prototype — build MVT tiles and PMTiles archives. */
+/** Vector tiles (SPEC_VECTOR_TILES.md): build, publish (`_tiles/`), serve by byte ranges. */
 
 export {
   buildLayerTiles,
+  layerMetadata,
   layerTilesToPmtiles,
+  LayerTilesBuilder,
+  TILE_DEFAULTS,
+  TileBudgetError,
   type BuildTilesOptions,
   type BuiltTile,
   type LayerTiles,
   type SourceFeature,
   type ZoomStats,
 } from "./build.js";
+export {
+  buildTilesArchive,
+  DEFAULT_TILES_SETTINGS,
+  ensureTilesArchive,
+  isTilesPublishedCollection,
+  parseTilesManifest,
+  PMTILES_CONTENT_TYPE,
+  readTilesCurrent,
+  tilesArchiveKey,
+  tilesCurrentKey,
+  tilesFingerprint,
+  tilesFreshness,
+  tilesManifestKey,
+  TilesTooLargeError,
+  tilesVersion,
+  TILES_MAX_FEATURE_BYTES,
+  TILES_MAX_FEATURES,
+  TILES_PROFILE,
+  TILES_ROOT,
+  type EnsureTilesAction,
+  type EnsureTilesOptions,
+  type EnsureTilesResult,
+  type TilesBuildOptions,
+  type TilesBuildSettings,
+  type TilesFreshness,
+  type TilesManifest,
+  type TilesStaleReason,
+  type TilesZoomSummary,
+} from "./archive.js";
 export { clipRing, type Rect } from "./clip.js";
 export {
   lonLatToWorld,
@@ -23,13 +56,33 @@ export {
 export { encodeMvt, type MvtLayer, type MvtPolygonFeature } from "./mvt.js";
 export { PmCompression, PmTileType, writePmtiles, zxyToTileId, type PmtilesTileInput, type PmtilesWriteOptions } from "./pmtiles.js";
 export {
+  ByteLru,
+  deserializeDirectory,
+  findEntry,
+  parseHeader,
+  readHeaderAndRoot,
+  readTile,
+  type HeaderAndRoot,
+  type PmDirectory,
+  type PmHeader,
+  type RangeRead,
+} from "./pmtiles-reader.js";
+export {
   citySlugFromCollection,
+  FALLBACK_ID_BASE,
+  FeatureIdAssigner,
   LAYER_PROFILES,
+  lotNumberId,
   LOTS_PROFILE,
+  NO_LOT_SOURCES,
   pickProperties,
   profileForCollection,
+  tierProperties,
   ZONES_PROFILE,
+  type FeatureIdRule,
+  type FeatureIdStats,
   type LayerProfile,
   type PropertyRule,
   type TileValue,
 } from "./profiles.js";
+export { TileService, type OpenTiles, type TileBytes, type TileServiceOptions } from "./service.js";

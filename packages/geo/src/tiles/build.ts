@@ -10,11 +10,15 @@
  *   and queryable, and the shift is within the grid's own rounding;
  * - shared borders: simplification runs on arcs between junctions over the
  *   whole layer (geometry.ts), so neighbours keep identical borders;
- * - property whitelist: only the profile's properties reach the tile.
+ * - property whitelist: only the profile's properties reach the tile, by zoom
+ *   tier (`tierProperties`: lots carry only `zoneCode` below z14).
  *
- * The MVT feature id is the feature's ordinal in the source collection (the
- * served lots/zones carry no feature id). It is stable for one source version
- * only.
+ * MVT feature id: profile rule (`FeatureIdAssigner`) — lots: the lot number
+ * (`noLot` without spaces), with a deterministic fallback; zones: the source
+ * ordinal.
+ *
+ * Features are fed one at a time ({@link LayerTilesBuilder.add}), so a caller
+ * that streams the source never holds the parsed collection.
  */
 
 import { gzipSync } from "node:zlib";
@@ -31,7 +35,41 @@ import {
 } from "./geometry.js";
 import { encodeMvt, type MvtPolygonFeature } from "./mvt.js";
 import { PmCompression, PmTileType, writePmtiles } from "./pmtiles.js";
-import { pickProperties, type LayerProfile, type TileValue } from "./profiles.js";
+import {
+  FeatureIdAssigner,
+  pickProperties,
+  tierProperties,
+  type FeatureIdStats,
+  type LayerProfile,
+  type TileValue,
+} from "./profiles.js";
+
+/** Tile build defaults (T1): z12–z15, tolerance 1 below maxZoom, buffer 64, gzip -9. */
+export const TILE_DEFAULTS = Object.freeze({
+  minZoom: 12,
+  maxZoom: 15,
+  extent: 4096,
+  buffer: 64,
+  tolerance: 1,
+  maxZoomTolerance: 0,
+  sharedBorders: true,
+  gzipLevel: 9,
+});
+
+/**
+ * Default budget of (feature, tile) pairs at the max zoom: 8 Mi. Montréal's
+ * 680 087 lots touch about one z15 tile each; a single polygon spanning a
+ * whole region would need millions.
+ */
+export const DEFAULT_MAX_TILE_PAIRS = 2 ** 23;
+
+/** The source exceeds a build budget ({@link BuildTilesOptions.maxFeatures}); raised before the heavy work. */
+export class TileBudgetError extends Error {
+  constructor(detail: string) {
+    super(detail);
+    this.name = "TileBudgetError";
+  }
+}
 
 export interface SourceFeature {
   type?: string;
@@ -43,7 +81,7 @@ export interface SourceFeature {
 export interface BuildTilesOptions {
   /** Default 12. */
   minZoom?: number;
-  /** Default 16 (≈ 10 cm per tile unit at Québec latitudes, extent 4096). */
+  /** Default 15 (≈ 21 cm per tile unit at Québec latitudes, extent 4096); clients overzoom. */
   maxZoom?: number;
   /** Tile extent, default 4096. */
   extent?: number;
@@ -61,6 +99,20 @@ export interface BuildTilesOptions {
   gzipLevel?: number;
   /** City slug derived from the collection id — never read from the source. */
   citySlug?: string | undefined;
+  /** Refuse ({@link TileBudgetError}) a source with more polygon features than this. */
+  maxFeatures?: number;
+  /**
+   * Refuse ({@link TileBudgetError}) a source whose features touch more than
+   * this many (feature, tile) pairs at `maxZoom` (bbox estimate, counted while
+   * the source is read). Default {@link DEFAULT_MAX_TILE_PAIRS}. Bounds the CPU
+   * of a huge polygon (a zone covering a region is thousands of z15 tiles).
+   */
+  maxTilePairs?: number;
+  /**
+   * Receives each tile as soon as it is encoded; the tiles are then NOT kept
+   * in {@link LayerTiles.tiles} (bounded memory for a streaming writer).
+   */
+  onTile?: (tile: BuiltTile) => void;
 }
 
 export interface ZoomStats {
@@ -101,8 +153,12 @@ export interface LayerTiles {
   minZoom: number;
   maxZoom: number;
   fields: Record<string, string>;
+  /** Every tile, unless {@link BuildTilesOptions.onTile} consumed them. */
   tiles: BuiltTile[];
+  /** Number of tiles built (also with `onTile`). */
+  tileCount: number;
   zooms: ZoomStats[];
+  ids: FeatureIdStats;
 }
 
 interface PreparedFeature {
@@ -123,37 +179,111 @@ function polygonsOf(geometry: SourceFeature["geometry"]): number[][][][] | undef
   return undefined;
 }
 
-function prepare(features: readonly SourceFeature[], profile: LayerProfile, citySlug: string | undefined) {
-  const prepared: PreparedFeature[] = [];
-  let skippedNonPolygon = 0;
-  let minLon = Infinity;
-  let minLat = Infinity;
-  let maxLon = -Infinity;
-  let maxLat = -Infinity;
-  const fields: Record<string, string> = {};
-  features.forEach((f, ordinal) => {
+/**
+ * Accumulates the source one feature at a time (projected rings + whitelisted
+ * properties; the parsed GeoJSON is not retained), then builds every zoom.
+ */
+export class LayerTilesBuilder {
+  readonly #profile: LayerProfile;
+  readonly #options: BuildTilesOptions;
+  readonly #ids: FeatureIdAssigner;
+  readonly #prepared: PreparedFeature[] = [];
+  readonly #fields: Record<string, string> = {};
+  #ordinal = 0;
+  #skippedNonPolygon = 0;
+  #minLon = Infinity;
+  #minLat = Infinity;
+  #maxLon = -Infinity;
+  #maxLat = -Infinity;
+
+  constructor(profile: LayerProfile, options: BuildTilesOptions = {}) {
+    this.#profile = profile;
+    this.#options = options;
+    this.#ids = new FeatureIdAssigner(profile.featureId);
+  }
+
+  /** Polygon features added so far. */
+  get features(): number {
+    return this.#prepared.length;
+  }
+
+  add(f: SourceFeature): void {
+    const ordinal = this.#ordinal++;
     const polys = polygonsOf(f.geometry);
     if (!polys || polys.length === 0) {
-      skippedNonPolygon++;
+      this.#skippedNonPolygon++;
       return;
+    }
+    const max = this.#options.maxFeatures;
+    if (max !== undefined && this.#prepared.length >= max) {
+      throw new TileBudgetError(`more than ${max} polygon features`);
     }
     for (const poly of polys) {
       for (const ring of poly) {
         for (const p of ring) {
           const lon = p[0]!;
           const lat = p[1]!;
-          if (lon < minLon) minLon = lon;
-          if (lon > maxLon) maxLon = lon;
-          if (lat < minLat) minLat = lat;
-          if (lat > maxLat) maxLat = lat;
+          if (lon < this.#minLon) this.#minLon = lon;
+          if (lon > this.#maxLon) this.#maxLon = lon;
+          if (lat < this.#minLat) this.#minLat = lat;
+          if (lat > this.#maxLat) this.#maxLat = lat;
         }
       }
     }
-    const properties = pickProperties(f.properties, profile, citySlug);
-    for (const [k, v] of Object.entries(properties)) fields[k] ??= typeof v === "string" ? "String" : typeof v === "number" ? "Number" : "Boolean";
-    prepared.push({ id: ordinal, properties, polygons: polys.map((poly) => poly.map(projectRing)) });
-  });
-  return { prepared, skippedNonPolygon, bounds: [minLon, minLat, maxLon, maxLat] as [number, number, number, number], fields };
+    const properties = pickProperties(f.properties, this.#profile, this.#options.citySlug);
+    for (const [k, v] of Object.entries(properties)) {
+      this.#fields[k] ??= typeof v === "string" ? "String" : typeof v === "number" ? "Number" : "Boolean";
+    }
+    const id = this.#ids.assign(ordinal, f.properties);
+    const polygons = polys.map((poly) => poly.map(projectRing));
+    this.#countTilePairs(polygons);
+    this.#prepared.push({ id, properties, polygons });
+  }
+
+  #tilePairs = 0;
+
+  /** Tiles each exterior ring's bbox (+ buffer) touches at maxZoom, accumulated against the budget. */
+  #countTilePairs(polygons: WorldPolygon[]): void {
+    const z = this.#options.maxZoom ?? TILE_DEFAULTS.maxZoom;
+    const n = 2 ** z;
+    const pad = (this.#options.buffer ?? TILE_DEFAULTS.buffer) / (this.#options.extent ?? TILE_DEFAULTS.extent);
+    for (const poly of polygons) {
+      const ring = poly[0]!;
+      let minX = Infinity;
+      let minY = Infinity;
+      let maxX = -Infinity;
+      let maxY = -Infinity;
+      for (let i = 0; i < ring.length; i += 2) {
+        const x = ring[i]! * n;
+        const y = ring[i + 1]! * n;
+        if (x < minX) minX = x;
+        if (x > maxX) maxX = x;
+        if (y < minY) minY = y;
+        if (y > maxY) maxY = y;
+      }
+      if (!Number.isFinite(minX)) continue;
+      const tx0 = Math.max(0, Math.floor(minX - pad));
+      const tx1 = Math.min(n - 1, Math.floor(maxX + pad));
+      const ty0 = Math.max(0, Math.floor(minY - pad));
+      const ty1 = Math.min(n - 1, Math.floor(maxY + pad));
+      this.#tilePairs += Math.max(0, tx1 - tx0 + 1) * Math.max(0, ty1 - ty0 + 1);
+    }
+    const max = this.#options.maxTilePairs ?? DEFAULT_MAX_TILE_PAIRS;
+    if (this.#tilePairs > max) throw new TileBudgetError(`more than ${max} (feature, tile) pairs at z${z}`);
+  }
+
+  /** Build every tile of the layer, `minZoom` … `maxZoom`. */
+  finish(): LayerTiles {
+    return buildPrepared(
+      this.#prepared,
+      this.#profile,
+      this.#options,
+      this.#skippedNonPolygon,
+      [this.#minLon, this.#minLat, this.#maxLon, this.#maxLat],
+      this.#fields,
+      this.#ids.stats,
+    );
+  }
 }
 
 function quantizeFeature(f: PreparedFeature, scale: number): QPolygon[] {
@@ -191,19 +321,33 @@ function markerFor(f: PreparedFeature, scale: number): QPolygon[] {
 }
 
 /** Build every tile of one layer, `minZoom` … `maxZoom`. */
-export function buildLayerTiles(features: readonly SourceFeature[], profile: LayerProfile, options: BuildTilesOptions = {}): LayerTiles {
-  const minZoom = options.minZoom ?? 12;
-  const maxZoom = options.maxZoom ?? 16;
-  const extent = options.extent ?? 4096;
-  const buffer = options.buffer ?? 64;
-  const tolerance = options.tolerance ?? 1;
-  const maxZoomTolerance = options.maxZoomTolerance ?? 0;
-  const sharedBorders = options.sharedBorders ?? true;
-  const gzipLevel = options.gzipLevel ?? 9;
+export function buildLayerTiles(features: Iterable<SourceFeature>, profile: LayerProfile, options: BuildTilesOptions = {}): LayerTiles {
+  const builder = new LayerTilesBuilder(profile, options);
+  for (const f of features) builder.add(f);
+  return builder.finish();
+}
+
+function buildPrepared(
+  prepared: PreparedFeature[],
+  profile: LayerProfile,
+  options: BuildTilesOptions,
+  skippedNonPolygon: number,
+  bounds: [number, number, number, number],
+  fields: Record<string, string>,
+  ids: FeatureIdStats,
+): LayerTiles {
+  const minZoom = options.minZoom ?? TILE_DEFAULTS.minZoom;
+  const maxZoom = options.maxZoom ?? TILE_DEFAULTS.maxZoom;
+  const extent = options.extent ?? TILE_DEFAULTS.extent;
+  const buffer = options.buffer ?? TILE_DEFAULTS.buffer;
+  const tolerance = options.tolerance ?? TILE_DEFAULTS.tolerance;
+  const maxZoomTolerance = options.maxZoomTolerance ?? TILE_DEFAULTS.maxZoomTolerance;
+  const sharedBorders = options.sharedBorders ?? TILE_DEFAULTS.sharedBorders;
+  const gzipLevel = options.gzipLevel ?? TILE_DEFAULTS.gzipLevel;
   if (minZoom < 0 || maxZoom > 18 || minZoom > maxZoom) throw new Error(`zoom range out of bounds: ${minZoom}…${maxZoom}`);
 
-  const { prepared, skippedNonPolygon, bounds, fields } = prepare(features, profile, options.citySlug);
   const tiles: BuiltTile[] = [];
+  let tileCount = 0;
   const zooms: ZoomStats[] = [];
 
   for (let z = minZoom; z <= maxZoom; z++) {
@@ -263,10 +407,11 @@ export function buildLayerTiles(features: readonly SourceFeature[], profile: Lay
         const local = square.map((v, i) => v - (i % 2 === 0 ? tx : ty) * extent);
         perTile.set(tx * tilesPerAxis + ty, [[Int32Array.from(local)]]);
       }
+      const properties = tierProperties(f.properties, profile, z);
       for (const [key, polygons] of perTile) {
         let bucket = buckets.get(key);
         if (!bucket) buckets.set(key, (bucket = []));
-        bucket.push({ id: f.id, properties: f.properties, polygons });
+        bucket.push({ id: f.id, properties, polygons });
         present.add(fi);
       }
     });
@@ -281,7 +426,10 @@ export function buildLayerTiles(features: readonly SourceFeature[], profile: Lay
       const y = key % tilesPerAxis;
       const raw = encodeMvt([{ name: profile.layer, extent, features: list }]);
       const gz = gzipSync(raw, { level: gzipLevel });
-      tiles.push({ z, x, y, gzip: gz, bytes: raw.length });
+      const tile: BuiltTile = { z, x, y, gzip: gz, bytes: raw.length };
+      if (options.onTile) options.onTile(tile);
+      else tiles.push(tile);
+      tileCount++;
       maxTileBytes = Math.max(maxTileBytes, raw.length);
       maxTileGzipBytes = Math.max(maxTileGzipBytes, gz.length);
       totalTileBytes += raw.length;
@@ -309,7 +457,17 @@ export function buildLayerTiles(features: readonly SourceFeature[], profile: Lay
     });
   }
 
-  return { layer: profile.layer, features: prepared.length, skippedNonPolygon, bounds, minZoom, maxZoom, fields, tiles, zooms };
+  return { layer: profile.layer, features: prepared.length, skippedNonPolygon, bounds, minZoom, maxZoom, fields, tiles, tileCount, zooms, ids };
+}
+
+/** TileJSON-style metadata stored in the archive. */
+export function layerMetadata(built: Omit<LayerTiles, "tiles">, extraMetadata: Record<string, unknown> = {}): Record<string, unknown> {
+  return {
+    format: "pbf",
+    generator: "@sentropic/geo tiles",
+    vector_layers: [{ id: built.layer, fields: built.fields, minzoom: built.minZoom, maxzoom: built.maxZoom }],
+    ...extraMetadata,
+  };
 }
 
 /** Package built layer tiles into one PMTiles archive (gzip MVT). */
@@ -322,12 +480,7 @@ export function layerTilesToPmtiles(built: LayerTiles, extraMetadata: Record<str
       minZoom: built.minZoom,
       maxZoom: built.maxZoom,
       bounds: built.bounds,
-      metadata: {
-        format: "pbf",
-        generator: "@sentropic/geo tiles (T0)",
-        vector_layers: [{ id: built.layer, fields: built.fields, minzoom: built.minZoom, maxzoom: built.maxZoom }],
-        ...extraMetadata,
-      },
+      metadata: layerMetadata(built, extraMetadata),
     },
   );
 }

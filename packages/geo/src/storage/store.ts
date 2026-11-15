@@ -57,6 +57,13 @@ export interface Store {
    * must prefer it to {@link Store.get}.
    */
   getStream?(key: string, opts?: GetStreamOptions): Promise<ByteStream | undefined>;
+  /**
+   * Read `length` bytes of `key` starting at byte `offset` (S3 `GetObject`
+   * with `Range`), or `undefined` if no object exists there. A range that runs
+   * past the end of the object returns the bytes that exist (possibly none).
+   * Used to serve one tile out of a large archive without reading the archive.
+   */
+  getRange?(key: string, offset: number, length: number, opts?: GetStreamOptions): Promise<Uint8Array | undefined>;
   /** Whether an object exists at `key`. */
   has(key: string): Promise<boolean>;
   /** List keys, optionally restricted to those starting with `prefix`. */
