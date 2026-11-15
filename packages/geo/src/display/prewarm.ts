@@ -21,6 +21,7 @@
 import { parseMeta } from "../api/providers/collection-loader.js";
 import { isCanonicalGeojsonKey, servedSourceKeys, type Store } from "../storage/index.js";
 
+import { DisplayTooLargeError } from "./mirror.js";
 import { ensureDisplayMirror, isDisplayPublishedCollection, type EnsureAction, type EnsureOptions } from "./publish.js";
 
 const decoder = new TextDecoder();
@@ -105,6 +106,8 @@ export interface PrewarmOptions extends EnsureOptions {
    * `0` disables). On expiry the collection is recorded `failed` with reason
    * `timeout`, its work is aborted, and the sweep moves on; the next run retries
    * it (the pointer is written last, so an aborted build leaves no partial mirror).
+   * A source over the builder's budgets is recorded `failed` with reason
+   * `too-large` ({@link DisplayTooLargeError}) — never an OOM of the sweep.
    */
   collectionTimeoutMs?: number;
   /** Called after each collection, in completion order. */
@@ -155,10 +158,11 @@ export async function prewarmDisplayMirrors(
       };
     } catch (error) {
       const timedOut = deadline.timedOut();
+      const tooLarge = !timedOut && error instanceof DisplayTooLargeError;
       result = {
         ...source,
         action: "failed",
-        ...(timedOut ? { reason: "timeout" } : {}),
+        ...(timedOut ? { reason: "timeout" } : tooLarge ? { reason: "too-large" } : {}),
         error: timedOut
           ? new CollectionTimeoutError(timeoutMs).message
           : error instanceof Error
