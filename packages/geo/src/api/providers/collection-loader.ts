@@ -46,6 +46,29 @@ export function parseMeta(raw: string | undefined): CollectionMeta | undefined {
   }
 }
 
+/** A single Feature over the caller's `maxFeatureBytes`, detected before it is decoded. */
+export class FeatureTooLargeError extends Error {
+  constructor(
+    /** 0-based position of the Feature in the `features` array. */
+    readonly featureIndex: number,
+    /** Bytes of the Feature seen when the budget was exceeded (a lower bound). */
+    readonly bytes: number,
+    readonly maxFeatureBytes: number,
+  ) {
+    super(`GeoJSON Feature #${featureIndex} over ${maxFeatureBytes} bytes (at least ${bytes})`);
+    this.name = "FeatureTooLargeError";
+  }
+}
+
+export interface ParseFeatureStreamOptions {
+  /**
+   * Largest JSON text of one Feature, checked on the raw bytes BEFORE they are
+   * concatenated and parsed; past it the parse throws {@link FeatureTooLargeError}.
+   * Default: unbounded.
+   */
+  maxFeatureBytes?: number;
+}
+
 /**
  * Yield one GeoJSON Feature at a time from a FeatureCollection byte stream.
  * Only the current Feature is concatenated and decoded; all leading and
@@ -55,7 +78,11 @@ export function parseMeta(raw: string | undefined): CollectionMeta | undefined {
  */
 export async function* parseFeatureCollectionStream(
   source: AsyncIterable<Uint8Array>,
+  options: ParseFeatureStreamOptions = {},
 ): AsyncGenerator<ServedFeature> {
+  const maxFeatureBytes = options.maxFeatureBytes ?? Infinity;
+  let featureIndex = 0;
+  let featureBytes = 0;
   let rootDepth = 0;
   let inString = false;
   let escaped = false;
@@ -90,6 +117,7 @@ export async function* parseFeatureCollectionStream(
           featureDepth = 1;
           featureStart = index;
           featureParts = [];
+          featureBytes = 0;
           inString = false;
           escaped = false;
           continue;
@@ -110,10 +138,13 @@ export async function* parseFeatureCollectionStream(
         featureDepth--;
         if (featureDepth !== 0) continue;
 
+        featureBytes += index + 1 - featureStart;
+        if (featureBytes > maxFeatureBytes) throw new FeatureTooLargeError(featureIndex, featureBytes, maxFeatureBytes);
         featureParts.push(chunk.subarray(featureStart, index + 1));
         const raw = decodeParts(featureParts);
         featureParts = [];
         featureStart = -1;
+        featureIndex++;
         featuresState = "comma-or-end";
         let feature: unknown;
         try {
@@ -176,6 +207,8 @@ export async function* parseFeatureCollectionStream(
     // A feature can straddle arbitrary S3/FS chunk boundaries. Retain only
     // that feature's bytes, not the collection prefix or previous features.
     if (inFeatures && featureDepth > 0 && featureStart >= 0) {
+      featureBytes += chunk.byteLength - featureStart;
+      if (featureBytes > maxFeatureBytes) throw new FeatureTooLargeError(featureIndex, featureBytes, maxFeatureBytes);
       featureParts.push(chunk.subarray(featureStart));
       featureStart = 0;
     } else if (inString && stringStart >= 0) {
