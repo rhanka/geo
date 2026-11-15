@@ -277,6 +277,21 @@ The prewarm reports such a collection `{"action":"failed","reason":"too-large"}`
 and moves on. The API answers 503 `DisplayUnavailable` and replays the refusal
 without rebuilding while the source key and ETag are unchanged.
 
+The exact-geometry serving path (`/items`, `/items/:id`, `StoreProvider`) has
+its own, lower cap: `GEO_MAX_FEATURE_BYTES` (default `SERVING_MAX_FEATURE_BYTES`,
+16 MiB of JSON per Feature), checked on the raw bytes of the validation and
+served passes before `JSON.parse`. Measured `JSON.parse` cost of a MultiPolygon
+Feature: ~2.9x its JSON text retained, ~3.9x with the source string, plus the
+response serialization (~5x in all), and every concurrent request parses its
+own copy, against a ~384 MB V8 heap in the geo-api pod. A source over the cap is
+answered 503 `FeatureTooLarge` (the request is valid, the server cannot produce
+that representation within its memory budget; 413 would blame the request), and
+the refusal is cached per key + ETag like the validation verdict, so a repeated
+request does not re-read the object. Case: 2026-11-15, two geo-api OOM kills
+(`JsonParser::BuildJsonArray`) on
+`qc-zonage-montreal-cuvettes-retention-ruissellement-2021`, whose upstream file
+(205 MB) holds 4 MultiPolygon Features of 96.6, 61.5, 23.0 and 14.6 MiB.
+
 Why not through geo-api: the pod builds one mirror at a time under a 500m CPU
 limit; about 2150 builds through it would keep its CPU busy for hours and
 starve the requests it serves. API mode (`--api <base> --collections a,b`,

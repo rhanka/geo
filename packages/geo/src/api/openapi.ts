@@ -144,7 +144,11 @@ export function buildOpenApi(base: string): Record<string, unknown> {
             "304": { description: "With `profile`: the If-None-Match ETag still matches the current mirror version." },
             "400": { description: "Invalid parameter (including `profile` combined with bbox/offset/coordPrecision)." },
             "404": { description: "Unknown collection." },
-            "503": { description: "With `profile`: the display mirror could not be built or read (`DisplayUnavailable`)." },
+            "503": {
+              description:
+                "With `profile`: the display mirror could not be built or read (`DisplayUnavailable`). " +
+                "Without `profile`: a Feature of the source exceeds the serving byte limit (`FeatureTooLarge`).",
+            },
           },
         },
       },
@@ -160,6 +164,7 @@ export function buildOpenApi(base: string): Record<string, unknown> {
           responses: {
             "200": { description: "A GeoJSON Feature." },
             "404": { description: "Unknown collection or feature." },
+            "503": { description: "A Feature of the source exceeds the serving byte limit (`FeatureTooLarge`)." },
           },
         },
       },

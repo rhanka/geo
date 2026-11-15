@@ -60,6 +60,31 @@ export class FeatureTooLargeError extends Error {
   }
 }
 
+/**
+ * Default per-Feature cap of the SERVING path (StoreProvider items/getItem and
+ * their validation), overridable with `GEO_MAX_FEATURE_BYTES`.
+ *
+ * Measured cost of `JSON.parse` on a MultiPolygon Feature: the parsed graph
+ * retains ~2.9x the JSON text, ~3.9x with the source string, and the response
+ * re-serializes it (another 1x) — ~5x in all. The geo-api pod runs with a
+ * ~384 MB V8 heap: a 64 MiB Feature (~320 MB) does not fit beside the baseline
+ * heap, and every concurrent request parses its own copy. 16 MiB (~80 MB per
+ * in-flight Feature) leaves room for a few concurrent worst-case requests.
+ * The display builder keeps its own, larger budget (runs in its own Job).
+ */
+export const SERVING_MAX_FEATURE_BYTES = 16 * 1024 * 1024;
+
+/**
+ * The serving cap from a raw `GEO_MAX_FEATURE_BYTES` value: a positive integer
+ * (bytes), else {@link SERVING_MAX_FEATURE_BYTES}. There is no "unbounded"
+ * value on purpose: the serving pod must never JSON.parse an arbitrary Feature.
+ */
+export function resolveServingMaxFeatureBytes(raw: string | undefined): number {
+  if (raw === undefined || raw.trim() === "") return SERVING_MAX_FEATURE_BYTES;
+  const n = Number(raw);
+  return Number.isSafeInteger(n) && n > 0 ? n : SERVING_MAX_FEATURE_BYTES;
+}
+
 export interface ParseFeatureStreamOptions {
   /**
    * Largest JSON text of one Feature, checked on the raw bytes BEFORE they are
@@ -235,11 +260,20 @@ export async function* parseFeatureCollectionStream(
  * Resolves with the number of Features in the (valid) collection, so a caller
  * that caches the verdict can serve an exact `numberMatched` without draining
  * the object again.
+ *
+ * `options.maxFeatureBytes` bounds one Feature's JSON text exactly like
+ * {@link parseFeatureCollectionStream}: the scan throws
+ * {@link FeatureTooLargeError} as soon as the running byte count of the
+ * current Feature exceeds it, before those bytes are concatenated or parsed,
+ * so an oversized Feature never reaches `JSON.parse`.
  */
 export async function validateFeatureCollectionStream(
   source: AsyncIterable<Uint8Array>,
+  options: ParseFeatureStreamOptions = {},
 ): Promise<{ features: number }> {
+  const maxFeatureBytes = options.maxFeatureBytes ?? Infinity;
   let features = 0;
+  let featureBytes = 0;
   const prefix: Uint8Array[] = [];
   const suffix: Uint8Array[] = [];
 
@@ -285,6 +319,7 @@ export async function validateFeatureCollectionStream(
             featureDepth = 1;
             featureStart = index;
             featureParts = [];
+            featureBytes = 0;
             featureInString = false;
             featureEscaped = false;
             continue;
@@ -322,6 +357,8 @@ export async function validateFeatureCollectionStream(
         featureDepth--;
         if (featureDepth !== 0) continue;
 
+        featureBytes += index + 1 - featureStart;
+        if (featureBytes > maxFeatureBytes) throw new FeatureTooLargeError(features, featureBytes, maxFeatureBytes);
         featureParts.push(chunk.subarray(featureStart, index + 1));
         let feature: unknown;
         try {
@@ -390,6 +427,8 @@ export async function validateFeatureCollectionStream(
         prefixStringStart = 0;
       }
     } else if (mode === "features" && featureDepth > 0 && featureStart >= 0) {
+      featureBytes += chunk.byteLength - featureStart;
+      if (featureBytes > maxFeatureBytes) throw new FeatureTooLargeError(features, featureBytes, maxFeatureBytes);
       featureParts.push(chunk.subarray(featureStart));
       featureStart = 0;
     } else if (mode === "suffix") {
