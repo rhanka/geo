@@ -115,7 +115,7 @@ matches the output bytes.
 | `profile` with `bbox`, `offset` or `coordPrecision` | 400 `InvalidParameter` (whole collection, fixed representation) |
 | provider without a display mirror (non-store provider) | 404 `NotFound` |
 | unknown collection | 404 `NotFound` |
-| build or read failure | 503 `DisplayUnavailable` — never the exact geometry instead |
+| build or read failure (incl. a source over the builder's budgets, see § Prewarm sweep) | 503 `DisplayUnavailable` — never the exact geometry instead |
 | `If-None-Match` matches the ETag | 304, no body |
 | otherwise | 200, `Content-Type: application/geo+json` |
 
@@ -249,6 +249,33 @@ to a local sink (no write to any bucket): **1004 MB before, 548 MB after**
 time; before, they were concatenated next to their chunks and uploaded in
 parallel, TLS holding an encrypted copy of each in-flight body). V8 heap stays
 under ~65 MB, so `--max-old-space-size` does not drive the peak.
+
+Ring check (the next run was OOMKilled three times in a row at 1Gi on
+collection #1535 `qc-zonage-montreal-pum-2050-intensification-affectation`, a
+4.8 MB source of 716 features). One 5 729-edge ring has 5 037 edges in a
+single cell of the `isSimpleRing` grid (a detailed curve plus four long edges
+that set the bbox); the check deduplicated compared pairs with a `Set` of pair
+keys, i.e. 12.7 M entries, ~630 MB of heap for a 200 KB feature. The pairs are
+now compared once each in the first cell their two rectangles share (no
+bookkeeping; typed-array grid), so the compared pairs and the verdict are
+unchanged — and so are the artifact bytes and the version. Measured on that
+collection (fresh process, same flags): **peak RSS 538 MB before, 213 MB
+after**, build 6.0 s → 0.8 s.
+
+Budgets (fail cleanly instead of OOM; `DisplayTooLargeError`, reason
+`too-large`):
+
+- one source Feature over `DISPLAY_MAX_FEATURE_BYTES` (64 MiB of JSON), checked
+  on the raw bytes before parsing (a build costs ~5x a Feature's JSON);
+- one ring with more than `RING_PAIR_BUDGET` (2^27) candidate edge pairs,
+  counted before comparing (every ring the previous check could handle stays
+  under it: its `Set` was capped at 2^24 entries). A ring whose edge rectangles
+  would materialize more than 2^22 grid entries is checked by a sweep over the
+  same rectangles (O(n) memory, same pairs).
+
+The prewarm reports such a collection `{"action":"failed","reason":"too-large"}`
+and moves on. The API answers 503 `DisplayUnavailable` and replays the refusal
+without rebuilding while the source key and ETag are unchanged.
 
 Why not through geo-api: the pod builds one mirror at a time under a 500m CPU
 limit; about 2150 builds through it would keep its CPU busy for hours and
