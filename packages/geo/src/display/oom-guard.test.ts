@@ -18,7 +18,8 @@ import { StoreProvider } from "../api/providers/store-provider.js";
 import type { ByteStream, ObjectStat, Store } from "../storage/index.js";
 
 import { buildDisplayMirror, currentKey, DisplayTooLargeError } from "./mirror.js";
-import { prewarmDisplayMirrors } from "./prewarm.js";
+import { prewarmDisplayMirrors, type PrewarmResult } from "./prewarm.js";
+import { runPrewarmCli, storeExitCode } from "./prewarm-cli.js";
 import { isSimpleRing, RING_PAIR_BUDGET, RingTooComplexError } from "./ring.js";
 
 class MemStore implements Store {
@@ -214,6 +215,41 @@ describe("too-large sources fail cleanly", () => {
     ]);
     expect(report.counts).toMatchObject({ failed: 1, built: 1 });
     expect(report.failures[0]).toMatchObject({ collection: "qc-zonage-a", action: "failed", reason: "too-large" });
+  });
+
+  it("the prewarm CLI exits 0 on a too-large refusal alone, and keeps it visible in the summary", async () => {
+    const store = new MemStore();
+    await store.put("ca-qc-zonage/qc-zonage-a.geojson", fc(crowded));
+    await store.put("ca-qc-zonage/qc-zonage-b.geojson", fc({ type: "Polygon", coordinates: [[[0, 0], [1, 0], [1, 1], [0, 0]]] }));
+    const lines: string[] = [];
+    const code = await runPrewarmCli(["--store", "mem:"], { createStore: () => store, out: (l) => lines.push(l) });
+    expect(code).toBe(0);
+    const { summary } = JSON.parse(lines.at(-1)!) as {
+      summary: { counts: { failed: number; built: number }; failed: string[]; tooLarge: string[] };
+    };
+    expect(summary.counts).toMatchObject({ failed: 1, built: 1 });
+    expect(summary.failed).toEqual(["qc-zonage-a"]);
+    expect(summary.tooLarge).toEqual(["qc-zonage-a"]);
+  });
+
+  it("the prewarm CLI still exits 1 when another collection failed for any other reason", async () => {
+    const store = new MemStore();
+    await store.put("ca-qc-zonage/qc-zonage-a.geojson", fc(crowded));
+    await store.put("ca-qc-zonage/qc-zonage-c.geojson", "{ not geojson");
+    const lines: string[] = [];
+    const code = await runPrewarmCli(["--store", "mem:"], { createStore: () => store, out: (l) => lines.push(l) });
+    expect(code).toBe(1);
+    const { summary } = JSON.parse(lines.at(-1)!) as { summary: { failed: string[]; tooLarge: string[] } };
+    expect(summary.failed).toEqual(["qc-zonage-a", "qc-zonage-c"]);
+    expect(summary.tooLarge).toEqual(["qc-zonage-a"]);
+
+    // Exit-code rule on its own: unknown collections and non-too-large failures fail the run.
+    const tooLarge: PrewarmResult = { collection: "x", sourceKey: "x.geojson", action: "failed", reason: "too-large", ms: 0 };
+    const timeout: PrewarmResult = { collection: "y", sourceKey: "y.geojson", action: "failed", reason: "timeout", ms: 0 };
+    expect(storeExitCode([], [tooLarge])).toBe(0);
+    expect(storeExitCode([], [tooLarge, timeout])).toBe(1);
+    expect(storeExitCode(["z"], [tooLarge])).toBe(1);
+    expect(storeExitCode([], [])).toBe(0);
   });
 
   it("the API answers 503 DisplayUnavailable, and replays the refusal without rebuilding until the source changes", async () => {

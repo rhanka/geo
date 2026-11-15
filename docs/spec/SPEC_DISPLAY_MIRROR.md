@@ -218,8 +218,17 @@ every served lots/zonage source with the exact index rule, then calls
 (`--concurrency`). Idempotent and resumable: a fresh collection costs one GET and
 one HEAD, so a re-run after an interruption skips the work already done. One
 JSON line per collection, a JSON summary last, exit 1 when any collection
-failed. Options: `--collections a,b`, `--limit N`, `--no-adopt`, `--no-build`,
-`--collection-timeout-ms N`.
+failed for a reason other than `too-large`. Options: `--collections a,b`,
+`--limit N`, `--no-adopt`, `--no-build`, `--collection-timeout-ms N`.
+
+Exit status and `too-large`: a source over the builder's budgets (below) is
+refused on purpose and is refused identically on every re-run (same bytes, same
+budgets), so it does not make the sweep exit 1. It stays visible: counted in
+`counts.failed`, listed in `failed`, and listed again in `tooLarge` in the
+summary. Any other failure (timeout, read/write error, unknown collection)
+still exits 1. Reason: in preprod (2026-11) the Job exited 1 for its single
+`too-large` collection, and `backoffLimit: 3` replayed the whole 2152-collection
+pass three more times.
 
 Bounded by construction (no collection or S3 call can stall the sweep):
 
