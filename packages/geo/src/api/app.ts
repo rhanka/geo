@@ -600,8 +600,11 @@ interface StreamResponseContext {
 
 /**
  * Serialize a sequential feature source with pull-based backpressure. Counts
- * and `next` stay exact because the source is drained, but neither the source
- * collection nor a `limit=5000` response is assembled in an array/string.
+ * and `next` stay exact: when the provider supplies the total
+ * (`stream.numberMatched`), reading stops as soon as the page is complete and
+ * the source is released; otherwise the source is drained to count it. Neither
+ * the source collection nor a `limit=5000` response is assembled in an
+ * array/string.
  */
 function streamItemsResponse(
   stream: ItemsStream,
@@ -611,6 +614,15 @@ function streamItemsResponse(
   const encoder = new TextEncoder();
   const iterator = stream.features[Symbol.asyncIterator]();
   const dispose = releaseOnAbort(iterator, signal);
+  const knownTotal = stream.numberMatched;
+  // Features to pull at most: the whole source unless its total is known;
+  // none when the page starts past the end.
+  const stopAt =
+    knownTotal === undefined
+      ? Infinity
+      : context.offset >= knownTotal
+        ? 0
+        : Math.min(knownTotal, context.offset + context.limit);
   let headerWritten = false;
   let firstFeature = true;
   let numberMatched = 0;
@@ -627,6 +639,13 @@ function streamItemsResponse(
         }
 
         while (!exhausted) {
+          if (numberMatched >= stopAt) {
+            // Page complete and total known: release the source now.
+            exhausted = true;
+            // A failed release must not fail a complete page.
+            await Promise.resolve(iterator.return?.()).catch(() => {});
+            break;
+          }
           const next = await iterator.next();
           if (next.done) {
             exhausted = true;
@@ -657,6 +676,7 @@ function streamItemsResponse(
             title: "The collection",
           },
         ];
+        if (knownTotal !== undefined) numberMatched = knownTotal;
         if (context.offset + numberReturned < numberMatched) {
           const next = new URL(context.selfUrl.toString());
           next.searchParams.set("offset", String(context.offset + numberReturned));

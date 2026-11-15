@@ -20,6 +20,12 @@
  * This keeps `/collections` and `/collections/:id` OOM-safe when the bucket
  * contains large lot shards such as `qc-lots-*`.
  *
+ * Items requests validate the whole source before answering 200. With a store
+ * that exposes an object identity (`stat`, S3 ETag), the verdict and the
+ * Feature count are cached per identity: a large source is scanned in full
+ * once per version (shared by concurrent requests, not cancelled when a client
+ * leaves), and an unfiltered page then reads only `offset + limit` Features.
+ *
  * No network or live S3 connection is touched at construction — `list`/`get`
  * are only called on first request — so the module is import-safe.
  */
@@ -66,6 +72,12 @@ const INDEX_CONCURRENCY = 32;
 
 const decoder = new TextDecoder();
 
+/** A validated source: its store identity and its Feature count. */
+interface SourceVerdict {
+  etag: string;
+  features: number;
+}
+
 interface StoreCollectionEntry {
   /** Store key of the normalized GeoJSON payload. */
   geojsonKey: string;
@@ -84,6 +96,13 @@ export class StoreProvider implements FeatureProvider {
   #coherence: CoherenceInfo | undefined;
   /** Display mirror (built lazily, keyed by collection id). */
   #display: DisplayService | undefined;
+  /**
+   * Validation verdicts by GeoJSON key, valid while the source ETag is
+   * unchanged: a validated source is not re-read before each items response.
+   */
+  readonly #verdicts = new Map<string, SourceVerdict>();
+  /** In-flight validations by GeoJSON key (single-flight per key and ETag). */
+  readonly #validations = new Map<string, { etag: string; run: Promise<number> }>();
 
   /**
    * @param store  The key→bytes object store to read from.
@@ -198,15 +217,20 @@ export class StoreProvider implements FeatureProvider {
     const stream = await this.streamItems(id, query);
     if (!stream) return undefined;
     const features: ServedFeature[] = [];
-    let numberMatched = 0;
+    let pulled = 0;
     const offset = query.offset ?? 0;
     const limit = query.limit ?? Number.POSITIVE_INFINITY;
-    for await (const feature of stream.features) {
-      numberMatched++;
-      if (numberMatched <= offset || features.length >= limit) continue;
-      features.push(feature);
+    // A known total lets the page stop early, exactly like the HTTP stream.
+    const total = stream.numberMatched;
+    const stopAt = total === undefined ? Infinity : offset >= total ? 0 : Math.min(total, offset + limit);
+    if (pulled < stopAt) {
+      for await (const feature of stream.features) {
+        pulled++;
+        if (pulled > offset && features.length < limit) features.push(feature);
+        if (pulled >= stopAt) break;
+      }
     }
-    return { features, numberMatched, numberReturned: features.length };
+    return { features, numberMatched: stream.numberMatched ?? pulled, numberReturned: features.length };
   }
 
   async streamItems(
@@ -218,14 +242,22 @@ export class StoreProvider implements FeatureProvider {
     const entry = map.get(id);
     if (!entry) return undefined;
     try {
-      // Validate the complete object before Hono commits a 200. A second
-      // stream is deliberate: it preserves JSON.parse's all-or-nothing
-      // contract without retaining the feature collection in memory.
-      // `signal` (the HTTP request's) releases either S3 read as soon as the
-      // client leaves, even while a chunk is pending.
-      const validationSource = await this.#getStream(entry.geojsonKey, signal);
-      if (!validationSource) return undefined;
-      await validateFeatureCollectionStream(validationSource);
+      // Validate the complete object before Hono commits a 200 (JSON.parse's
+      // all-or-nothing contract, without retaining the feature collection).
+      // When the store exposes a stable identity (S3 ETag), the verdict and the
+      // Feature count are cached per identity, so a large source is read in
+      // full once per version instead of twice per request.
+      const etag = await this.#sourceEtag(entry.geojsonKey);
+      let total: number | undefined;
+      if (etag === undefined) {
+        // No identity to cache against: validate on every request. `signal`
+        // (the HTTP request's) releases the S3 read as soon as the client leaves.
+        const validationSource = await this.#getStream(entry.geojsonKey, signal);
+        if (!validationSource) return undefined;
+        await validateFeatureCollectionStream(validationSource);
+      } else {
+        total = await untilAborted(this.#validatedCount(entry.geojsonKey, etag), signal);
+      }
 
       // The served pass opens its S3 body only on the first pull: a response
       // that is never written (client gone during validation) then holds no
@@ -235,10 +267,57 @@ export class StoreProvider implements FeatureProvider {
           parseFeatureCollectionStream(this.#lazyStream(entry.geojsonKey, signal)),
           query.bbox,
         ),
+        // Only an unfiltered query matches the whole validated collection.
+        ...(total !== undefined && !query.bbox ? { numberMatched: total } : {}),
       };
     } catch {
       return undefined;
     }
+  }
+
+  /** The source's store identity, or `undefined` when the store cannot tell. */
+  async #sourceEtag(key: string): Promise<string | undefined> {
+    if (!this.#store.stat) return undefined;
+    try {
+      const etag = (await this.#store.stat(key))?.etag;
+      return etag ? etag : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
+  /**
+   * Feature count of a valid source at identity `etag`, validating it once.
+   * The validation is shared by concurrent requests and deliberately NOT tied
+   * to any request's signal: a client (or an ingress timeout) leaving during
+   * the scan of a large cold source must not throw the scan away, otherwise a
+   * source slower than the ingress timeout could never be served. It runs at
+   * most once per key and ETag at a time; the S3 body guards bound its socket.
+   * A failure (invalid bytes, read error) is not cached: the next request retries.
+   */
+  #validatedCount(key: string, etag: string): Promise<number> {
+    const known = this.#verdicts.get(key);
+    if (known?.etag === etag) return Promise.resolve(known.features);
+    const running = this.#validations.get(key);
+    if (running?.etag === etag) return running.run;
+
+    const run = (async () => {
+      const source = await this.#openStream(key);
+      if (!source) throw new Error(`object missing: ${key}`);
+      const { features } = await validateFeatureCollectionStream(source);
+      // ETag read before the scan: if the object was replaced meanwhile, the
+      // next request sees a new ETag and validates again.
+      this.#verdicts.set(key, { etag, features });
+      return features;
+    })();
+    // Observed by every awaiting request; never an unhandled rejection when all left.
+    run.catch(() => {});
+    const slot = { etag, run };
+    this.#validations.set(key, slot);
+    void run.finally(() => {
+      if (this.#validations.get(key) === slot) this.#validations.delete(key);
+    }).catch(() => {});
+    return run;
   }
 
   async *#lazyStream(key: string, signal?: AbortSignal): ByteStream {
@@ -306,6 +385,21 @@ export class StoreProvider implements FeatureProvider {
 
 async function* oneChunk(bytes: Uint8Array): ByteStream {
   yield bytes;
+}
+
+/**
+ * Await a shared `work` for one request: rejects as soon as `signal` aborts,
+ * without cancelling `work` itself (other requests, and the cached verdict,
+ * still get its result).
+ */
+function untilAborted<T>(work: Promise<T>, signal: AbortSignal | undefined): Promise<T> {
+  if (!signal) return work;
+  if (signal.aborted) return Promise.reject(signal.reason ?? new Error("aborted"));
+  return new Promise<T>((resolve, reject) => {
+    const onAbort = (): void => reject(signal.reason ?? new Error("aborted"));
+    signal.addEventListener("abort", onAbort, { once: true });
+    work.then(resolve, reject).finally(() => signal.removeEventListener("abort", onAbort));
+  });
 }
 
 /** Apply the optional bbox without retaining the matching feature sequence. */
