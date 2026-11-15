@@ -218,8 +218,17 @@ every served lots/zonage source with the exact index rule, then calls
 (`--concurrency`). Idempotent and resumable: a fresh collection costs one GET and
 one HEAD, so a re-run after an interruption skips the work already done. One
 JSON line per collection, a JSON summary last, exit 1 when any collection
-failed. Options: `--collections a,b`, `--limit N`, `--no-adopt`, `--no-build`,
-`--collection-timeout-ms N`.
+failed for a reason other than `too-large`. Options: `--collections a,b`,
+`--limit N`, `--no-adopt`, `--no-build`, `--collection-timeout-ms N`.
+
+Exit status and `too-large`: a source over the builder's budgets (below) is
+refused on purpose and is refused identically on every re-run (same bytes, same
+budgets), so it does not make the sweep exit 1. It stays visible: counted in
+`counts.failed`, listed in `failed`, and listed again in `tooLarge` in the
+summary. Any other failure (timeout, read/write error, unknown collection)
+still exits 1. Reason: in preprod (2026-11) the Job exited 1 for its single
+`too-large` collection, and `backoffLimit: 3` replayed the whole 2152-collection
+pass three more times.
 
 Bounded by construction (no collection or S3 call can stall the sweep):
 
@@ -276,6 +285,21 @@ Budgets (fail cleanly instead of OOM; `DisplayTooLargeError`, reason
 The prewarm reports such a collection `{"action":"failed","reason":"too-large"}`
 and moves on. The API answers 503 `DisplayUnavailable` and replays the refusal
 without rebuilding while the source key and ETag are unchanged.
+
+The exact-geometry serving path (`/items`, `/items/:id`, `StoreProvider`) has
+its own, lower cap: `GEO_MAX_FEATURE_BYTES` (default `SERVING_MAX_FEATURE_BYTES`,
+16 MiB of JSON per Feature), checked on the raw bytes of the validation and
+served passes before `JSON.parse`. Measured `JSON.parse` cost of a MultiPolygon
+Feature: ~2.9x its JSON text retained, ~3.9x with the source string, plus the
+response serialization (~5x in all), and every concurrent request parses its
+own copy, against a ~384 MB V8 heap in the geo-api pod. A source over the cap is
+answered 503 `FeatureTooLarge` (the request is valid, the server cannot produce
+that representation within its memory budget; 413 would blame the request), and
+the refusal is cached per key + ETag like the validation verdict, so a repeated
+request does not re-read the object. Case: 2026-11-15, two geo-api OOM kills
+(`JsonParser::BuildJsonArray`) on
+`qc-zonage-montreal-cuvettes-retention-ruissellement-2021`, whose upstream file
+(205 MB) holds 4 MultiPolygon Features of 96.6, 61.5, 23.0 and 14.6 MiB.
 
 Why not through geo-api: the pod builds one mirror at a time under a 500m CPU
 limit; about 2150 builds through it would keep its CPU busy for hours and
