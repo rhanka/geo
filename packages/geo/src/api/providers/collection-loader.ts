@@ -449,6 +449,155 @@ export async function validateFeatureCollectionStream(
   return { features };
 }
 
+/**
+ * Measure the JSON text of every Feature of a FeatureCollection byte stream
+ * WITHOUT decoding or retaining it: no `JSON.parse`, no concatenation, only a
+ * running byte count per Feature. Same boundary rules as
+ * {@link parseFeatureCollectionStream} (strings and escapes are tracked byte by
+ * byte, the root `features` key is located the same way), and the same count:
+ * from the Feature's `{` to its matching `}` inclusive — exactly the number the
+ * `maxFeatureBytes` cap compares (a Feature is refused when it is `> cap`).
+ *
+ * Memory stays bounded by one chunk plus the short root-level keys. Reading
+ * stops at the end of the `features` array (the envelope after it is not
+ * validated). Throws on a malformed `features` array, like the parser.
+ */
+export async function scanFeatureByteSizes(
+  source: AsyncIterable<Uint8Array>,
+  onFeature: (featureIndex: number, bytes: number) => void,
+): Promise<{ features: number }> {
+  let featureIndex = 0;
+  let featureBytes = 0;
+  let rootDepth = 0;
+  let inString = false;
+  let escaped = false;
+  let stringStart = -1;
+  let stringParts: Uint8Array[] = [];
+  let keyState: "none" | "features" = "none";
+  let expectedValue: "none" | "features" = "none";
+  let inFeatures = false;
+  let featuresState: "value-or-end" | "value-required" | "comma-or-end" = "value-or-end";
+  let featureDepth = 0;
+  let featureStart = -1;
+
+  for await (const chunk of source) {
+    for (let index = 0; index < chunk.byteLength; index++) {
+      const byte = chunk[index]!;
+
+      if (inFeatures) {
+        if (featureDepth === 0) {
+          if (featuresState === "comma-or-end") {
+            if (isWhitespace(byte)) continue;
+            if (byte === COMMA) {
+              featuresState = "value-required";
+              continue;
+            }
+            if (byte === CLOSE_ARRAY) return { features: featureIndex };
+            throw new Error("invalid GeoJSON features array separator");
+          }
+          if (isWhitespace(byte)) continue;
+          if (byte === CLOSE_ARRAY && featuresState === "value-or-end") return { features: featureIndex };
+          if (byte !== OPEN_OBJECT) throw new Error("GeoJSON features array contains a non-object value");
+          featureDepth = 1;
+          featureStart = index;
+          featureBytes = 0;
+          inString = false;
+          escaped = false;
+          continue;
+        }
+
+        if (inString) {
+          if (escaped) escaped = false;
+          else if (byte === BACKSLASH) escaped = true;
+          else if (byte === QUOTE) inString = false;
+          continue;
+        }
+        if (byte === QUOTE) {
+          inString = true;
+          continue;
+        }
+        if (byte === OPEN_OBJECT) featureDepth++;
+        if (byte !== CLOSE_OBJECT) continue;
+        featureDepth--;
+        if (featureDepth !== 0) continue;
+
+        featureBytes += index + 1 - featureStart;
+        onFeature(featureIndex, featureBytes);
+        featureStart = -1;
+        featureIndex++;
+        featuresState = "comma-or-end";
+        continue;
+      }
+
+      if (inString) {
+        if (escaped) {
+          escaped = false;
+          continue;
+        }
+        if (byte === BACKSLASH) {
+          escaped = true;
+          continue;
+        }
+        if (byte !== QUOTE) continue;
+        inString = false;
+        // Only a root-level string can be the `features` key: deeper strings
+        // (envelope properties) are skipped without being retained.
+        if (rootDepth === 1 && stringStart >= 0) {
+          stringParts.push(chunk.subarray(stringStart, index));
+          keyState = decodeJsonString(stringParts) === "features" ? "features" : "none";
+        } else {
+          keyState = "none";
+        }
+        stringParts = [];
+        stringStart = -1;
+        continue;
+      }
+
+      if (keyState !== "none") {
+        if (isWhitespace(byte)) continue;
+        expectedValue = byte === COLON ? keyState : "none";
+        keyState = "none";
+        continue;
+      }
+      if (expectedValue !== "none") {
+        if (isWhitespace(byte)) continue;
+        if (expectedValue === "features" && byte === OPEN_ARRAY) {
+          inFeatures = true;
+          expectedValue = "none";
+          continue;
+        }
+        throw new Error("invalid GeoJSON FeatureCollection header");
+      }
+
+      if (byte === QUOTE) {
+        inString = true;
+        stringStart = rootDepth === 1 ? index + 1 : -1;
+        stringParts = [];
+        continue;
+      }
+      if (byte === OPEN_OBJECT) rootDepth++;
+      else if (byte === CLOSE_OBJECT) rootDepth--;
+    }
+
+    if (inFeatures && featureDepth > 0 && featureStart >= 0) {
+      featureBytes += chunk.byteLength - featureStart;
+      featureStart = 0;
+    } else if (inString && stringStart >= 0) {
+      // A root-level key straddling chunks: keep only its bytes, and never more
+      // than a key can need (a long root-level string VALUE is not a key).
+      if (stringParts.reduce((n, p) => n + p.byteLength, 0) <= 64) {
+        stringParts.push(chunk.subarray(stringStart));
+        stringStart = 0;
+      } else {
+        stringParts = [];
+        stringStart = -1;
+      }
+    }
+  }
+
+  throw new Error("GeoJSON features array did not terminate");
+}
+
 const QUOTE = 0x22;
 const BACKSLASH = 0x5c;
 const OPEN_OBJECT = 0x7b;

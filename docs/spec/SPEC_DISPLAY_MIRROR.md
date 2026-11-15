@@ -301,6 +301,16 @@ request does not re-read the object. Case: 2026-11-15, two geo-api OOM kills
 `qc-zonage-montreal-cuvettes-retention-ruissellement-2021`, whose upstream file
 (205 MB) holds 4 MultiPolygon Features of 96.6, 61.5, 23.0 and 14.6 MiB.
 
+Which collections the cap refuses is measured, not guessed, by the read-only
+feature-size scan (`packages/geo/dist/display/feature-size-scan-cli.js --store
+s3://<bucket>/normalized`, Job `deploy/k8s/display-prewarm/feature-scan-preprod.yaml`):
+same listing as the prewarm (all served collections by default, `--display-only`
+for lots/zonage), same byte count as the cap (`scanFeatureByteSizes`: raw bytes
+from `{` to `}`, nothing decoded or retained), one JSON line per collection with
+`maxFeatureBytes` and the count of Features over 8 / 16 / 32 / 64 MiB, and a
+summary listing the collections over each bound. The store is wrapped read-only
+(writes throw).
+
 Why not through geo-api: the pod builds one mirror at a time under a 500m CPU
 limit; about 2150 builds through it would keep its CPU busy for hours and
 starve the requests it serves. API mode (`--api <base> --collections a,b`,
