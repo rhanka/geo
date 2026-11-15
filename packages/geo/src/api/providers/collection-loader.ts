@@ -231,10 +231,15 @@ export async function* parseFeatureCollectionStream(
  * reconstructed with an empty features array. Feature objects are individually
  * JSON.parse'd as they cross the scanner. Normalized GeoJSON has a bounded
  * envelope; the 912 MiB payload remains entirely outside V8's heap.
+ *
+ * Resolves with the number of Features in the (valid) collection, so a caller
+ * that caches the verdict can serve an exact `numberMatched` without draining
+ * the object again.
  */
 export async function validateFeatureCollectionStream(
   source: AsyncIterable<Uint8Array>,
-): Promise<void> {
+): Promise<{ features: number }> {
+  let features = 0;
   const prefix: Uint8Array[] = [];
   const suffix: Uint8Array[] = [];
 
@@ -330,6 +335,7 @@ export async function validateFeatureCollectionStream(
         featureParts = [];
         featureStart = -1;
         featuresState = "comma-or-end";
+        features++;
         continue;
       }
 
@@ -401,6 +407,7 @@ export async function validateFeatureCollectionStream(
     throw new Error("invalid GeoJSON FeatureCollection envelope");
   }
   if (!isFeatureCollection(parsed)) throw new Error("expected GeoJSON FeatureCollection");
+  return { features };
 }
 
 const QUOTE = 0x22;

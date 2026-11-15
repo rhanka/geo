@@ -84,6 +84,14 @@ export interface ItemsResult {
 export interface ItemsStream {
   /** All bbox-matching features in their served order; pagination is applied by the HTTP layer. */
   features: AsyncIterable<ServedFeature>;
+  /**
+   * Exact total of {@link features}, when the provider already knows it (e.g. an
+   * unfiltered query on a source whose validation verdict is cached). The HTTP
+   * layer then stops reading `features` once the page is complete instead of
+   * draining the whole source to count. Omitted when only a full drain can tell
+   * (bbox filter, cold source): the HTTP layer then counts as it streams.
+   */
+  numberMatched?: number;
 }
 
 /**
