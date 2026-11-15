@@ -67,6 +67,10 @@
       "types": "./dist/storage/index.d.ts",
       "import": "./dist/storage/index.js"
     },
+    "./tiles": {
+      "types": "./dist/tiles/index.d.ts",
+      "import": "./dist/tiles/index.js"
+    },
     "./preprod": {
       "types": "./dist/preprod/index.d.ts",
       "import": "./dist/preprod/index.js"
@@ -116,12 +120,15 @@
     "@turf/intersect": "^7.3.5",
     "commander": "^15.0.0",
     "hono": "^4.13.17",
+    "pbf": "5.1.2",
     "pg": "^8.21.0",
     "polyclip-ts": "^0.16.8",
     "proj4": "^2.20.9"
   },
   "devDependencies": {
+    "@mapbox/vector-tile": "3.0.0",
     "@types/pg": "^8.15.6",
-    "@types/proj4": "^2.5.6"
+    "@types/proj4": "^2.5.6",
+    "pmtiles": "4.5.0"
   }
 }

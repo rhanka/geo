@@ -343,4 +343,4 @@ exit code. `--no-display` skips the step.
 ## Out of scope
 
 - Garbage collection of old versions.
-- Simplification / tiling.
+- Simplification / tiling: see [SPEC_VECTOR_TILES.md](SPEC_VECTOR_TILES.md).
