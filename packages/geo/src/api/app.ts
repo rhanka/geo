@@ -42,12 +42,35 @@ import {
 import type { FeatureProvider, ItemsQuery, ItemsStream, ServedFeature } from "./provider.js";
 import type { ReglementDocProvider } from "./reglement-provider.js";
 import type { ByteStream } from "../storage/index.js";
+import { FeatureTooLargeError } from "./providers/collection-loader.js";
 
 import { createBasemapApp } from "../basemap/endpoint.js";
 import { compressJson, negotiateEncoding } from "./compress.js";
 import type { DisplayArtifact } from "../display/mirror.js";
 import type { DisplayResult } from "../display/service.js";
 import { parseCoordPrecision, withCoordPrecision } from "./precision.js";
+
+/**
+ * A collection whose source holds a Feature over the provider's serving cap
+ * (`GEO_MAX_FEATURE_BYTES`): refused before that Feature is parsed. 503, like
+ * `DisplayUnavailable`: the server cannot produce this representation within
+ * its memory budget (the request itself is fine, so not a 4xx; 413 is about
+ * the REQUEST content). It lasts until the source is republished, hence no
+ * `Retry-After`.
+ */
+function featureTooLarge(c: Context, id: string, error: FeatureTooLargeError): Response {
+  return c.json(
+    {
+      code: "FeatureTooLarge",
+      description:
+        `Collection '${id}' cannot be served: Feature #${error.featureIndex} exceeds the ` +
+        `${error.maxFeatureBytes}-byte serving limit (at least ${error.bytes} bytes)`,
+      featureIndex: error.featureIndex,
+      maxFeatureBytes: error.maxFeatureBytes,
+    },
+    503,
+  );
+}
 
 const INVALID_COORD_PRECISION = {
   code: "InvalidParameter",
@@ -330,9 +353,15 @@ export function createApp(
     const offset = parseOffset(c.req.query("offset"));
     const selfUrl = publicUrlOf(c.req.url, c.req.header("x-forwarded-proto"));
 
-    const stream = provider.streamItems
-      ? await provider.streamItems(id, bbox ? { bbox } : {}, c.req.raw.signal)
-      : undefined;
+    let stream: ItemsStream | undefined;
+    try {
+      stream = provider.streamItems
+        ? await provider.streamItems(id, bbox ? { bbox } : {}, c.req.raw.signal)
+        : undefined;
+    } catch (error) {
+      if (error instanceof FeatureTooLargeError) return featureTooLarge(c, id, error);
+      throw error;
+    }
     if (stream) {
       c.header("Content-Type", MEDIA_GEOJSON);
       return c.body(
@@ -345,7 +374,13 @@ export function createApp(
     }
 
     const query: ItemsQuery = { limit, offset, ...(bbox ? { bbox } : {}) };
-    const result = await provider.getItems(id, query);
+    let result: Awaited<ReturnType<FeatureProvider["getItems"]>>;
+    try {
+      result = await provider.getItems(id, query);
+    } catch (error) {
+      if (error instanceof FeatureTooLargeError) return featureTooLarge(c, id, error);
+      throw error;
+    }
     if (!result) {
       return c.json({ code: "NotFound", description: `Unknown collection: ${id}` }, 404);
     }
@@ -397,7 +432,13 @@ export function createApp(
     const coordPrecision = parseCoordPrecision(c.req.query("coordPrecision"));
     if (coordPrecision === null) return c.json(INVALID_COORD_PRECISION, 400);
 
-    const found = await provider.getItem(id, featureId);
+    let found: ServedFeature | undefined;
+    try {
+      found = await provider.getItem(id, featureId);
+    } catch (error) {
+      if (error instanceof FeatureTooLargeError) return featureTooLarge(c, id, error);
+      throw error;
+    }
     const feature = found ? withCoordPrecision(found, coordPrecision) : found;
     if (!feature) {
       return c.json(
