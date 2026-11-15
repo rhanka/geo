@@ -36,17 +36,45 @@ import { constants, createBrotliCompress, createGzip, type BrotliCompress, type 
 
 import type { Geometry, Position } from "@sentropic/geo-core";
 
-import { parseFeatureCollectionStream } from "../api/providers/collection-loader.js";
+import { FeatureTooLargeError, parseFeatureCollectionStream } from "../api/providers/collection-loader.js";
 import { geometryBBox } from "../api/geo-util.js";
 import { roundGeometry } from "../api/precision.js";
 import type { ServedFeature } from "../api/provider.js";
 import type { ByteStream, Store } from "../storage/index.js";
 
-import { isSimpleRing } from "./ring.js";
+import { isSimpleRing, RingTooComplexError } from "./ring.js";
 
 export const DISPLAY_PROFILE = "display-p6-v1";
 export const DISPLAY_PRECISION = 6;
 export const DISPLAY_ROOT = "_display";
+
+/**
+ * Largest JSON text of ONE source Feature the builder accepts (64 MiB),
+ * checked on the raw bytes before parsing. Building a Feature costs ~5x its
+ * JSON in memory (object graph, rounded copy, serialized output: measured
+ * ~376 MB for a 78 MB polygon), so this keeps one build well under the geo-api
+ * pod's 768 Mi; a lot or a zone is orders of magnitude below it.
+ */
+export const DISPLAY_MAX_FEATURE_BYTES = 64 * 2 ** 20;
+
+/**
+ * The source cannot be mirrored within the builder's memory/CPU budgets (one
+ * Feature over {@link DISPLAY_MAX_FEATURE_BYTES}, or a ring too complex to
+ * check). Raised before the heavy work, instead of an OOM. Deterministic for
+ * given source bytes: retrying the same source fails the same way.
+ */
+export class DisplayTooLargeError extends Error {
+  readonly reason = "too-large";
+  constructor(
+    readonly collection: string,
+    /** Source identity (ETag) the build read; the verdict holds while it is unchanged. */
+    readonly sourceEtag: string,
+    detail: string,
+  ) {
+    super(`display mirror too large for ${collection}: ${detail}`);
+    this.name = "DisplayTooLargeError";
+  }
+}
 
 export type DisplayArtifact = "items" | "index";
 export type DisplayEncoding = "br" | "gzip";
@@ -268,6 +296,13 @@ class Artifact {
   }
 }
 
+export interface BuildOptions {
+  now?: () => Date;
+  signal?: AbortSignal;
+  /** Per-Feature JSON budget (default {@link DISPLAY_MAX_FEATURE_BYTES}). */
+  maxFeatureBytes?: number;
+}
+
 async function* hashing(source: ByteStream, hash: ReturnType<typeof createHash>): ByteStream {
   for await (const chunk of source) {
     hash.update(chunk);
@@ -280,13 +315,14 @@ async function* hashing(source: ByteStream, hash: ReturnType<typeof createHash>)
  * object, streaming (one feature in memory at a time; outputs held compressed,
  * one contiguous buffer each). Writes the version's objects one at a time —
  * each output is uploaded then freed before the next — and flips
- * `current.json` last. `signal` aborts the build (no pointer flip).
+ * `current.json` last. `signal` aborts the build (no pointer flip). A source
+ * over the builder's budgets throws {@link DisplayTooLargeError} (no pointer flip).
  */
 export async function buildDisplayMirror(
   store: Store,
   collection: string,
   sourceKey: string,
-  options: { now?: () => Date; signal?: AbortSignal } = {},
+  options: BuildOptions = {},
 ): Promise<DisplayManifest> {
   const { signal } = options;
   const sourceEtag = (await store.stat?.(sourceKey))?.etag ?? "";
@@ -298,6 +334,11 @@ export async function buildDisplayMirror(
   const index = new Artifact();
   try {
     return await buildInto(store, collection, sourceKey, sourceEtag, source, items, index, options);
+  } catch (error) {
+    if (error instanceof FeatureTooLargeError || error instanceof RingTooComplexError) {
+      throw new DisplayTooLargeError(collection, sourceEtag, error.message);
+    }
+    throw error;
   } finally {
     // Success, failure or abort: free the outputs and the encoders now.
     items.release();
@@ -313,7 +354,7 @@ async function buildInto(
   source: ByteStream,
   items: Artifact,
   index: Artifact,
-  options: { now?: () => Date; signal?: AbortSignal },
+  options: BuildOptions,
 ): Promise<DisplayManifest> {
   const { signal } = options;
   const hash = createHash("sha256");
@@ -322,7 +363,9 @@ async function buildInto(
 
   let features = 0;
   const precisionCounts: Record<string, number> = {};
-  for await (const feature of parseFeatureCollectionStream(hashing(source, hash))) {
+  for await (const feature of parseFeatureCollectionStream(hashing(source, hash), {
+    maxFeatureBytes: options.maxFeatureBytes ?? DISPLAY_MAX_FEATURE_BYTES,
+  })) {
     signal?.throwIfAborted();
     const sep = features === 0 ? "" : ",";
     features++;
