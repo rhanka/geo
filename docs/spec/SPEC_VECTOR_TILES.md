@@ -1,8 +1,24 @@
 # SPEC — Vector tiles (lots, zones)
 
-Status: **T0 prototype** (build only, nothing served or deployed). Code:
-`packages/geo/src/tiles/{profiles,geometry,clip,mvt,pmtiles,build,build-cli}.ts`,
-tests `packages/geo/src/tiles/tiles.test.ts`, package export `@sentropic/geo/tiles`.
+Status: **T1** — built at publication and by the prewarm sweep, published
+under `_tiles/`, served by geo-api (`GET /tiles/…`). Code:
+`packages/geo/src/tiles/{profiles,geometry,clip,mvt,pmtiles,pmtiles-reader,build,archive,service,build-cli}.ts`,
+routes `serveTile` / `serveTileJson` in `packages/geo/src/api/app.ts`, tests
+`packages/geo/src/tiles/{tiles,serving}.test.ts`, package export
+`@sentropic/geo/tiles`. T0 (prototype, PR #450) is kept below as history where
+it still applies.
+
+## T1 decisions (conductor, 2026-11-15)
+
+| # | Decision | Where |
+|---|---|---|
+| 1 | Zoom range **z12–z15** (maxzoom 15, the client overzooms). Every lot present at z12 (no drop). Property tiers: z12–z13 carry only the feature id + `zoneCode` (lots) / `code` (zones); the full whitelist from z14. | `TILE_DEFAULTS`, `LayerProfile.lowZoomProperties` / `fullFromZoom`, `tierProperties` |
+| 2 | Lot feature id = the lot number without spaces (`"5 530 108"` → `5530108`). Missing, non-numeric or duplicated (already used by an earlier feature, source order) → `2^52 + ordinal`, counted in the manifest (`ids`). `noLot` stays a string property at z14+. Zones: ordinal id + `code`. | `FeatureIdAssigner`, `lotNumberId` |
+| 3 | Zones output property is `code` only (input alias `zone` → `code` kept, no `zone` output). | `ZONES_PROFILE` |
+| 4 | `priorite`, `multifamilial4plus`, `potentialScore`, `fid` are **not** in the tiles: they are computed by immo, which joins them client-side by `noLot` (the feature id carries the identity). | `LOTS_PROFILE`, `ZONES_PROFILE` |
+| 5 | Serving `GET /tiles/{collectionId}/{z}/{x}/{y}.mvt` + `GET /tiles/{collectionId}.json` (TileJSON), from a per-collection PMTiles archive read by byte ranges; no build in the serving pod. | § Serving |
+| 6 | Publication: the display-mirror writer hook and the prewarm sweep also ensure the tile archive (fresh / adopt / build), version = hash(profile + settings + source sha256), `too-large` = skip with exit 0. | § Publication |
+| 7 | Montréal scale (streaming build, compact junction table, streamed PMTiles write, peak RSS < 900 MB). Until it lands, sources over the T1 budgets are refused `too-large` (§ Publication). | second T1 PR |
 
 ## Why
 
@@ -12,9 +28,10 @@ city: `qc-lots-montreal` is 111 MB Brotli and more than 512 MB decoded, which a
 browser cannot parse. Vector tiles bound the payload by the viewport, not the
 city. Goal (owner decision 2026-11-13): cadastre visible from z12.
 
-## Requirements (T0)
+## Requirements
 
-- Layers `lots` (`qc-lots-<slug>`) and `zones` (`qc-zonage-<slug>`), z12 to z16.
+- Layers `lots` (`qc-lots-<slug>`) and `zones` (`qc-zonage-<slug>`), z12 to z15
+  (T0: z16).
 - **No feature dropping**: every lot is present at z12 (and at every other zoom).
 - **Shared-border-aware simplification**: adjacent lots show no gap or overlap.
 - Property whitelist per layer (below).
@@ -80,8 +97,14 @@ Per layer, per zoom z in `[minZoom, maxZoom]`:
    identical tile contents deduplicated, gzip directories, leaf directories when
    the root would exceed 16 KiB).
 
-MVT feature id = the feature's ordinal in the source collection: the served lots
-and zones carry no feature id (measured). It is stable for one source version only.
+MVT feature id (T1, decision 2): lots → the lot number as an integer
+(`FeatureIdAssigner`, rule `noLot`); fallback `2^52 + ordinal` for a missing,
+non-numeric or duplicated lot number (Québec lot numbers have 7 digits, so a
+fallback never collides with a lot-number id, and every id is a safe integer for
+MapLibre). Zones → the source ordinal (stable for one source version only). The
+counts are in the manifest (`ids.fromNoLot`, `missingNoLot`, `nonNumericNoLot`,
+`duplicateNoLot`). Measured (T1): rawdon 9 273 lot-number ids, 25 non-numeric;
+saint-eustache 15 751 lot-number ids, 285 non-numeric; no missing, no duplicate.
 
 ## Properties
 
@@ -89,35 +112,40 @@ A profile is a whitelist. Everything else is dropped from the tiles (the exact
 feature stays available through `/items`). A whitelisted property absent from the
 source, or null (MVT has no null), is absent from the tile: nothing is invented.
 
+Tiers (decision 1): below z14 a tile carries only the property in the
+"z12–z13" column; from z14 on, the full whitelist.
+
+Not in the tiles (decision 4): `priorite`, `multifamilial4plus`,
+`potentialScore` (lots) and `fid` (lots and zones). The first three were
+`missing source` in every served lot (T0 measurement); they are computed by
+immo, which joins them client-side by `noLot` / the feature id.
+
 ### `lots`
 
-| Tile property | Source property (first non-null) | rawdon (9 298) | saint-eustache (16 036) |
-|---|---|---|---|
-| `fid` | `fid` | `missing source` | `missing source` |
-| `noLot` | `noLot`, `NO_LOT`, `lot_id` | 9 298 | 16 036 |
-| `zoneCode` | `zone_code`, `code_zone`, `zoneCode` | 8 945 | 16 024 |
-| `citySlug` | derived from the collection id (not a source property) | all | all |
-| `priorite` | `priorite` | `missing source` | `missing source` |
-| `multifamilial4plus` | `multifamilial4plus` | `missing source` | `missing source` |
-| `tod` | `in_tod`, `tod` | key present, null on 100% (`source-gap`) | key present, null on 100% (`source-gap`) |
-| `potentialScore` | `potentialScore`, `potential_score` | `missing source` | `missing source` |
+| Tile property | z12–z13 | Source property (first non-null) | rawdon (9 298) | saint-eustache (16 036) |
+|---|---|---|---|---|
+| feature id | yes | lot number (see above) | 9 273 + 25 fallback | 15 751 + 285 fallback |
+| `noLot` (string) | no | `noLot`, `NO_LOT`, `lot_id` | 9 298 | 16 036 |
+| `zoneCode` | yes | `zone_code`, `code_zone`, `zoneCode` | 8 945 | 16 024 |
+| `citySlug` | no | derived from the collection id (not a source property) | all | all |
+| `tod` | no | `in_tod`, `tod` | key present, null on 100% (`source-gap`) | key present, null on 100% (`source-gap`) |
 
 ### `zones`
 
-| Tile property | Source property (first non-null) | rawdon (119) | saint-eustache (321) |
-|---|---|---|---|
-| `fid` | `fid` | `missing source` | `missing source` |
-| `code` | `zone_code`, `code`, `zone` (alias zone → code) | 119 | 321 |
-| `kind` | `kind` | 119 | key present, null on 100% |
-| `affectation` | `affectation` | `missing source` (no key) | key present, null on 100% |
-| `reglementMillesime` | `reglement_millesime`, `reglementMillesime` | key present, null on 100% | 321 |
-| `citySlug` | derived from the collection id | all | all |
+| Tile property | z12–z13 | Source property (first non-null) | rawdon (119) | saint-eustache (321) |
+|---|---|---|---|---|
+| feature id | yes | source ordinal | all | all |
+| `code` | yes | `zone_code`, `code`, `zone` (alias zone → code; no `zone` output) | 119 | 321 |
+| `kind` | no | `kind` | 119 | key present, null on 100% |
+| `affectation` | no | `affectation` | `missing source` (no key) | key present, null on 100% |
+| `reglementMillesime` | no | `reglement_millesime`, `reglementMillesime` | key present, null on 100% | 321 |
+| `citySlug` | no | derived from the collection id | all | all |
 
 `qc-zonage-saint-eustache` holds one feature with a null geometry
 (`zone_code: "null"`): it is counted in `skippedNonPolygon` and is not tiled
 (320 tiled zones).
 
-## Measurements (T0)
+## Measurements (T0, z12–z16, every property at every zoom — history)
 
 Source: the public API, `?profile=display` (one read-only request per collection;
 geometry rounded to 6 decimals by the display mirror), held in a scratch
@@ -215,67 +243,142 @@ multi-layer archive:
 Cost: two tile requests per viewport position instead of one. A provincial
 multi-city archive is a separate decision (below).
 
-## Proposed T1 (serving) and T2 (publication)
+## Storage (T1)
 
-Storage, next to the display mirror and under the same rules (`_`-prefixed keys
-are never collections):
+Next to the display mirror and under the same rules (`_`-prefixed keys are
+never indexed as collections, ADR-0027), in the store geo-api serves
+(`GEO_DATA_URI = s3://<bucket>/normalized`):
 
 ```
-_tiles/<collectionId>/current.json                 pointer, written LAST
-_tiles/<collectionId>/<version>/manifest.json      profile, source_key, source_etag, source_sha256, built_at, per-zoom stats
-_tiles/<collectionId>/<version>/tiles.pmtiles
+_tiles/<collectionId>/current.json                       pointer (copy of the manifest), written LAST
+_tiles/<collectionId>/<version>/manifest.json
+_tiles/<collectionId>/<version>/<collectionId>.pmtiles   PMTiles v3, gzip MVT tiles (Content-Type application/vnd.pmtiles)
 ```
 
-`version = sha256("tiles-v1\n" + profile + options + "\n" + source_sha256)[0:16]`.
+- `fingerprint = sha256(JSON{profile "tiles-v1", layer profile, build settings})[0:16]`
+  (whitelist, tiers, id rule, zooms, extent, buffer, tolerances, gzip level);
+  `version = sha256("tiles\n" + fingerprint + "\n" + source_sha256)[0:16]`: it
+  changes iff the source bytes, the profile or the settings change.
+- Publication order: archive, `manifest.json`, then `current.json`. A reader
+  following `current.json` always finds a complete version; an aborted build
+  never flips it. Old versions are left in place (no GC, as the display mirror).
+- Manifest: `profile`, `fingerprint`, `version`, `collection`, `layer`,
+  `source_key`, `source_etag`, `source_sha256`, `built_at`, `features`,
+  `skipped_non_polygon`, `minzoom`, `maxzoom`, `bounds`, `fields`,
+  `archive {bytes, tiles}`, `ids` (feature id counts), `zooms[]` (tiles,
+  missing, markers, max tile raw / gzip bytes, total gzip, max features per tile).
 
-Serving route (recommended): `GET /tiles/{collectionId}/{z}/{x}/{y}.mvt`, geo-api
-reading the archive by HTTP range from the store (header + root directory cached
-per version, leaf directories cached LRU, one range GET per tile):
+## Publication (T1)
 
-- `Content-Type: application/vnd.mapbox-vector-tile`, `Content-Encoding: gzip`
-  (stored gzip; inflated on the fly for a client that does not accept gzip);
-- `ETag: "<version>-<z>-<x>-<y>"`; tile URLs carry `?v=<version>` from a TileJSON
-  `GET /tiles/{collectionId}.json`, so tile responses are
-  `Cache-Control: public, max-age=31536000, immutable`; the TileJSON itself is
-  `Cache-Control: no-cache` (revalidated, 304);
-- tile inside the archive bounds but absent: `204 No Content`; outside the zoom
-  range or unknown collection: `404`;
-- `X-Geo-Tiles-Stale: 1` when the source changed after the version was built,
-  same freshness rule as the display mirror.
+Same freshness rule as the display mirror: fresh = `current.json` exists with
+profile `tiles-v1`, the current fingerprint, the served source key and its
+current ETag. Otherwise `ensureTilesArchive` (1) **adopts** an existing complete
+version of the same source bytes (one read of the source to hash it; only
+`current.json` is rewritten — a byte-identical rewrite, or a bucket copy where
+the ETag differs), (2) else **builds** (`buildTilesArchive`), or reports
+`needs-build` when building is disabled.
 
-Alternative: expose the archive itself (`/tiles/{collectionId}.pmtiles` with
-`Range`), the client using the `pmtiles` protocol. Less server CPU, but it adds a
-client library, CORS on `Range`, and CDN caching of byte ranges.
+- **Writer hook**: `publishDisplayMirror` (every served lots/zonage write in
+  acquisition, via `publishDisplayAfterWrite`) ensures the display mirror, then
+  the tile archive of the same collection (no adoption: a write changes the
+  bytes). Never throws; a failure is logged with `TILES_ARCHIVE_PUBLISH_FAILED`,
+  reported in `outcome.tiles` and counted in `displayPublishFailures()`; the
+  display mirror and the exact write are unaffected (and vice versa: a display
+  failure still tries the tiles). The tile module is loaded on demand, so the
+  display hook never depends on the tile builder loading. Opt-out of the tile
+  step alone: `GEO_TILES_PUBLISH=0`; `GEO_DISPLAY_PUBLISH=0` turns both off.
+  `pbf` is a dependency of the acquisition image (its own lockfile).
+- **Prewarm sweep** (`packages/geo/dist/display/prewarm-cli.js`, Job
+  `deploy/k8s/display-prewarm/`): per collection, the display step, then the
+  tile step, each with its own deadline (`--collection-timeout-ms`). One JSON
+  line per collection carries `tiles: {action, version, reason, error, ms}`; the
+  summary carries `tiles: {counts, failed, tooLarge}`. `--no-tiles` skips the
+  tile step, `--tiles-only` the display step. Exit 1 only for a failure other
+  than `too-large` (display or tiles).
+- **Preprod sync** (`scripts/geo-preprod-sync.mjs`) copies `_tiles/` with the
+  data and adopts the tile archives in the same no-build sweep as the display
+  mirrors (summary `display.tiles`).
 
-Publication (T2): build at publication through the same writer hook as the
-display mirror (`publishDisplayAfterWrite` path), plus a prewarm sweep Job on the
-cluster for existing cities, with the display mirror's budgets, deadline and
-`too-large` handling.
+Budgets (`TilesTooLargeError`, reason `too-large`, refused before any write and
+identically on every re-run):
 
-Scaling work required before Montréal:
+- one source Feature over `TILES_MAX_FEATURE_BYTES` (64 MiB of JSON);
+- more than `TILES_MAX_FEATURES` polygon features (T1 builder: 75 000, see
+  § Measurements T1 — Laval, 401 594 lots, peaks at 2.1 GB in that builder);
+- more than `DEFAULT_MAX_TILE_PAIRS` (2^23) (feature, tile) pairs at maxZoom,
+  bbox estimate counted while reading (a polygon spanning a region, or
+  coordinates outside the world, would need millions of clips).
 
-- stream the source (the display builder already streams one feature at a
-  time): a > 512 MB GeoJSON cannot be `JSON.parse`d in one string;
-- compact storage of projected rings (typed arrays) and a junction table that
-  does not keep one `Map` entry per vertex across the province (sort-based
-  junction detection);
-- stream tile data to a temporary object and write header and directories at
-  the end (the T0 writer holds the archive in memory).
+The source is streamed (`parseFeatureCollectionStream`, one parsed feature at
+a time, `LayerTilesBuilder.add`); the parsed collection is never held.
 
-## Open decisions
+## Serving (T1)
 
-1. **Dense cities at z12**: keep "every lot at z12" (Montréal's largest z12 tile
-   ≈ 1.8 MB gzip, estimate) or set a per-city minimum zoom by density (for
-   example z13 when a z12 tile exceeds N lots), or ship a lighter z12 (feature
-   id only, no properties; gain not measured).
-2. **Feature id**: source ordinal (stable per version only) vs a stable numeric
-   id (for lots, the lot number without spaces, e.g. `5530108`; zones have no
-   numeric key). Matters if immo keeps feature state across rebuilds.
-3. **Alias zone → code**: implemented as an input alias (a source `zone` feeds
-   `code`). If immo expects both `code` and `zone` in the tile, add an output
-   alias (≈ 2 B per feature).
-4. **Max zoom**: z16 (0.10 m) vs z15 (0.21 m, −30% archive).
-5. **Serving**: zxy route (recommended) vs PMTiles range serving.
-6. **Requested properties without source**: `priorite`, `multifamilial4plus`,
-   `potentialScore`, `fid` (lots), `fid` (zones) — owner of these values to be
-   named (immo computation, or a geo enrichment).
+geo-api never builds tiles. `StoreProvider.openTiles` resolves the served
+collection (same index as `/items`), its tile profile, and the published
+`current.json` (cached 10 s, like the display mirror); `TileService` reads the
+archive by byte ranges (`Store.getRange`: S3 `GetObject` with `Range`, never
+the whole object):
+
+- header + root directory: ONE range of the first 16 KiB, once per archive
+  version (single-flight, byte-bounded LRU, 8 MiB);
+- leaf directory: one range, cached in a byte-bounded LRU (16 MiB);
+- tile: one range of its own bytes.
+
+A tile request costs one ranged GET once the version's header is cached (two
+when its leaf directory is not), whatever the archive size.
+
+`GET /tiles/{collectionId}/{z}/{x}/{y}.mvt`
+
+| Case | Answer |
+|---|---|
+| z, x or y not an integer | 400 `InvalidParameter` |
+| unknown collection, or a collection without a tile profile (norms, …) | 404 `NotFound` |
+| tiled collection without a published archive | 404 `TilesUnavailable` (no lazy build) |
+| z outside `minzoom`…`maxzoom` (clients overzoom z15), x/y outside the grid, suffix not `.mvt` | 404 |
+| `If-None-Match` matches | 304, nothing read |
+| no feature in that tile | 204 |
+| archive unreadable | 503 `TilesUnavailable` |
+| otherwise | 200, `Content-Type: application/vnd.mapbox-vector-tile` |
+
+Headers (200, 204, 304): `ETag: "<version>-<z>-<x>-<y>"`,
+`Cache-Control: public, max-age=31536000, immutable` when `?v=` equals the
+current version (content-addressed), else `public, max-age=60`;
+`X-Geo-Tiles-Version`, `X-Geo-Tiles-Stale: 1` when the source changed (or is
+served from another key) after the version was built, `Vary: Accept-Encoding`.
+Encoding: tiles are stored gzip; a client that accepts gzip gets the stored
+bytes with `Content-Encoding: gzip`, another one gets them inflated. The MVT
+media type is not JSON-family, so the `compressJson` middleware never
+re-encodes them.
+
+`GET /tiles/{collectionId}.json` — TileJSON 3.0.0: `tiles` =
+`<base>/tiles/<id>/{z}/{x}/{y}.mvt?v=<version>`, `minzoom`, `maxzoom`,
+`bounds`, `center`, `vector_layers`, plus `tiles_version`, `tiles_profile`,
+`built_at`, `source_sha256`, `features`. `Cache-Control: no-cache`,
+`ETag: "<version>-tilejson"` (304), same 404/503 cases.
+
+Alternative not taken: exposing the archive itself (`.pmtiles` with `Range`,
+`pmtiles` protocol in the client): less server CPU, but a client library, CORS
+on `Range` and CDN caching of byte ranges.
+
+## Measurements (T1)
+
+Same source and method as T0 (public API `?profile=display`, read-only,
+streamed into the builder, nothing kept on disk), T1 defaults (z12–z15, tiers,
+lot-number ids), T1 in-memory builder, Node 22.
+
+| Collection | Features | Build (after load) | Peak RSS | Archive | Tiles | Max tile gzip z12 / z13 / z14 / z15 |
+|---|---|---|---|---|---|---|
+| `qc-lots-rawdon` | 9 298 | 0.54 s | 259 MB | 1.60 MB | 341 | 101 / 61 / 44 / 19 KB |
+| `qc-lots-saint-eustache` | 16 036 | 1.03 s | 328 MB | 2.00 MB | 187 | 173 / 164 / 86 / 42 KB |
+| `qc-lots-laval` | 401 594 | 35.9 s | 2 106 MB | 45.1 MB | 1 367 | 1 213 / 418 / 176 / 67 KB |
+
+Against T0 (z12–z16, every property at every zoom): saint-eustache z12 largest
+tile 488 → 321 KB raw (224 → 173 KB gzip), archive 3.10 → 2.00 MB. No-drop:
+`missing = 0` at every zoom (markers: laval 369 at z12).
+
+## Archive granularity, open points
+
+- A provincial multi-city archive remains out of scope (one archive per
+  served collection, § Archive granularity).
+- Garbage collection of old versions: none (as the display mirror).

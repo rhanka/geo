@@ -340,6 +340,13 @@ the copy it runs the sweep on the destination with `build: false` and
 preprod prewarm Job. A display failure is logged and does not change the sync's
 exit code. `--no-display` skips the step.
 
+## Vector tiles
+
+The same writer hook, prewarm sweep (step `tiles`, `--no-tiles`,
+`--tiles-only`) and preprod sync also publish the collection's vector tile
+archive under `_tiles/`: see [SPEC_VECTOR_TILES.md](SPEC_VECTOR_TILES.md)
+§ Publication.
+
 ## Out of scope
 
 - Garbage collection of old versions.

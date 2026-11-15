@@ -35,6 +35,14 @@ const COMPRESSIBLE = /^application\/(?:json|geo\+json|vnd\.oai\.openapi\+json)\b
  */
 export function negotiateEncoding(header: string | undefined | null): ContentEncoding | undefined {
   if (!header) return undefined;
+  if (acceptsEncoding(header, "br")) return "br";
+  if (acceptsEncoding(header, "gzip")) return "gzip";
+  return undefined;
+}
+
+/** Whether `Accept-Encoding` accepts `name` (`q > 0`, directly or through `*`). */
+export function acceptsEncoding(header: string | undefined | null, name: ContentEncoding): boolean {
+  if (!header) return false;
   const accepted = new Map<string, number>();
   for (const part of header.split(",")) {
     const [rawName, ...params] = part.trim().split(";");
@@ -50,10 +58,7 @@ export function negotiateEncoding(header: string | undefined | null): ContentEnc
     }
     accepted.set(name, q);
   }
-  const quality = (name: ContentEncoding): number => accepted.get(name) ?? accepted.get("*") ?? 0;
-  if (quality("br") > 0) return "br";
-  if (quality("gzip") > 0) return "gzip";
-  return undefined;
+  return (accepted.get(name) ?? accepted.get("*") ?? 0) > 0;
 }
 
 function encoder(encoding: ContentEncoding): Duplex {
