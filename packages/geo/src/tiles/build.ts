@@ -25,15 +25,18 @@
  * simplified with a partitioned junction table, then built tile by tile
  * (clip, encode, gzip, append to a {@link TileSpool}): only one tile is encoded
  * at a time and the tiles never accumulate in memory when the spool is a file.
+ * A feature spanning many tiles is clipped by a tile tree, column by column
+ * (`clipRingToColumns`, `clipColumnToTiles`: same coordinates as a per-tile
+ * clip, linear instead of tiles × vertices), and each distinct tile content is
+ * gzipped and spooled once ({@link TileRecords}: 13 B per tile).
  */
 
-import { gzipSync } from "node:zlib";
-
-import { clipRing, ringBBox, type Rect } from "./clip.js";
+import { clipColumnToTiles, clipRing, clipRingToColumns, ringBBox, tileRange, type Rect } from "./clip.js";
 import { Growable, simplifyFlat, type FlatRings } from "./flat.js";
 import { isUsableRing, lonLatToWorld, unmatchedEdgeLength, type QPolygon } from "./geometry.js";
 import { encodeMvt, type MvtPolygonFeature } from "./mvt.js";
-import { layoutPmtiles, PmCompression, PmTileType, tileHash, writePmtiles, zxyToTileId } from "./pmtiles.js";
+import { layoutPmtilesIndexed, PmCompression, PmTileType, writePmtiles, zxyToTileId } from "./pmtiles.js";
+import { TileContents, TileRecords } from "./records.js";
 import {
   FeatureIdAssigner,
   pickProperties,
@@ -61,6 +64,15 @@ export const TILE_DEFAULTS = Object.freeze({
  * whole region would need millions.
  */
 export const DEFAULT_MAX_TILE_PAIRS = 2 ** 23;
+
+/**
+ * Candidate tiles (sum of its exteriors' bbox tile ranges at the zoom) from
+ * which a feature is clipped to all its tiles at once (`clipRingToTiles`)
+ * instead of once per tile. Both paths give the same tiles byte for byte; this
+ * only trades the per-tile path's tiles × vertices CPU for holding the
+ * feature's clipped parts until its tiles are encoded.
+ */
+export const TILED_CLIP_FROM = 16;
 
 /** The source exceeds a build budget; raised before the heavy work. */
 export class TileBudgetError extends Error {
@@ -109,6 +121,8 @@ export interface BuildTilesOptions {
   maxTilePairs?: number;
   /** Vertex occurrences per junction-table partition (default 2^21). */
   partitionVertices?: number;
+  /** See {@link TILED_CLIP_FROM} (default); does not change the tiles. */
+  tiledClipFrom?: number;
 }
 
 export interface ZoomStats {
@@ -143,19 +157,7 @@ export interface BuiltTile {
   bytes: number;
 }
 
-/** One encoded tile in a spool. */
-export interface TileRecord {
-  z: number;
-  x: number;
-  y: number;
-  /** Offset and length of the gzip bytes in the spool. */
-  offset: number;
-  length: number;
-  /** Uncompressed MVT bytes. */
-  bytes: number;
-  /** sha256 of the gzip bytes (archive deduplication). */
-  hash: string;
-}
+export type { TileRecord } from "./records.js";
 
 /** Everything but the tile bytes. */
 export interface LayerSummary {
@@ -177,7 +179,8 @@ export interface LayerTiles extends LayerSummary {
 }
 
 export interface SpooledLayer extends LayerSummary {
-  records: TileRecord[];
+  /** Every tile (compact; each distinct content is spooled once). */
+  records: TileRecords;
 }
 
 function polygonsOf(geometry: SourceFeature["geometry"]): number[][][][] | undefined {
@@ -190,6 +193,25 @@ function polygonsOf(geometry: SourceFeature["geometry"]): number[][][][] | undef
     return out.length > 0 ? out : undefined;
   }
   return undefined;
+}
+
+/** One kept ring of a column-cut feature, reduced to one tile column. */
+interface ColumnPart {
+  fi: number;
+  ring: number;
+  /** -1 for an exterior; for a hole, its exterior ring. */
+  owner: number;
+  column: Int32Array;
+  ty0: number;
+  ty1: number;
+}
+
+/** A column-cut feature's polygons in one tile. */
+interface TiledPolygons {
+  fi: number;
+  polygons: Int32Array[][];
+  /** Exterior ring of the last polygon. */
+  exterior: number;
 }
 
 /** A property column: per feature, 0 (absent) or 1 + index into interned values. */
@@ -391,7 +413,7 @@ export class LayerTilesBuilder {
     let step = gen.next();
     while (!step.done) step = gen.next();
     const { records, ...summary } = step.value;
-    return { ...summary, tiles: records.map((r) => ({ z: r.z, x: r.x, y: r.y, gzip: spool.read(r.offset, r.length), bytes: r.bytes })) };
+    return { ...summary, tiles: [...records].map((r) => ({ z: r.z, x: r.x, y: r.y, gzip: spool.read(r.offset, r.length), bytes: r.bytes })) };
   }
 
   /**
@@ -428,10 +450,10 @@ export class LayerTilesBuilder {
 
   *#run(spool: TileSpool): Generator<void, SpooledLayer> {
     if (this.#released) throw new Error("tiles: builder already released");
-    const records: TileRecord[] = [];
+    const records = new TileRecords(new TileContents(spool, this.#s.gzipLevel));
     const zooms: ZoomStats[] = [];
     try {
-      for (let z = this.#s.minZoom; z <= this.#s.maxZoom; z++) zooms.push(yield* this.#zoom(z, spool, records));
+      for (let z = this.#s.minZoom; z <= this.#s.maxZoom; z++) zooms.push(yield* this.#zoom(z, records));
     } finally {
       this.release();
     }
@@ -514,9 +536,38 @@ export class LayerTilesBuilder {
     return [Math.floor(sx / n / d), Math.floor(sy / n / d)];
   }
 
-  *#zoom(z: number, spool: TileSpool, records: TileRecord[]): Generator<void, ZoomStats> {
+  /**
+   * The kept rings of feature `fi` cut into columns ({@link clipRingToColumns}),
+   * appended to `parts` per column in (feature, ring) order.
+   */
+  #columnParts(
+    fi: number,
+    coords: Int32Array,
+    ringStart: Uint32Array,
+    keep: Uint8Array,
+    extent: number,
+    buffer: number,
+    tilesPerAxis: number,
+    parts: Map<number, ColumnPart[]>,
+  ): void {
+    const exterior = this.#exterior.view();
+    let owner = -1;
+    for (let r = this.#featRing.get(fi); r < this.#featRing.get(fi + 1); r++) {
+      if (exterior[r]) owner = r;
+      if (!keep[r]) continue;
+      const ring = coords.subarray(2 * ringStart[r]!, 2 * ringStart[r + 1]!);
+      const range = tileRange(ringBBox(ring), extent, buffer, tilesPerAxis);
+      clipRingToColumns(ring, range, extent, buffer, (tx, column, ty0, ty1) => {
+        let list = parts.get(tx);
+        if (!list) parts.set(tx, (list = []));
+        list.push({ fi, ring: r, owner: exterior[r] ? -1 : owner, column, ty0, ty1 });
+      });
+    }
+  }
+
+  *#zoom(z: number, records: TileRecords): Generator<void, ZoomStats> {
     const t0 = performance.now();
-    const { extent, buffer, gzipLevel } = this.#s;
+    const { extent, buffer } = this.#s;
     const tilesPerAxis = 2 ** z;
     const featureCount = this.features;
     const exterior = this.#exterior.view();
@@ -558,8 +609,16 @@ export class LayerTilesBuilder {
 
     // 3. Tile lists: every tile each kept exterior's bbox (+ buffer) touches;
     //    a feature without polygon gets a marker in the tile of its centre.
+    //    A feature spanning many tiles is not listed per tile: its rings are
+    //    cut into columns here (linear), and each column is clipped to its
+    //    tiles when the sweep reaches it (step 4) — the same coordinates as a
+    //    per-tile `clipRing`, which reads every vertex of the feature for every
+    //    tile of its bboxes (tiles × vertices), and no per-tile state for the
+    //    millions of tiles a region-sized polygon covers.
     const lists = new Map<number, number[]>();
     const markers = new Map<number, [number, number]>();
+    const columnParts = new Map<number, ColumnPart[]>();
+    const tiledFrom = this.#options.tiledClipFrom ?? TILED_CLIP_FROM;
     const addTo = (key: number, fi: number): void => {
       let list = lists.get(key);
       if (!list) lists.set(key, (list = []));
@@ -577,15 +636,22 @@ export class LayerTilesBuilder {
         addTo(markerTile(fi), fi);
         continue;
       }
-      // Tiles of all its polygons, each once (a Set: a large zone spans thousands of tiles).
-      const seen = new Set<number>();
+      const ranges: [number, number, number, number][] = [];
+      let candidates = 0;
       for (let r = featRing[fi]!; r < featRing[fi + 1]!; r++) {
         if (!exterior[r] || !keep[r]) continue;
-        const bb = ringBBox(coords.subarray(2 * ringStart[r]!, 2 * ringStart[r + 1]!));
-        const tx0 = Math.max(0, Math.floor((bb.minX - buffer) / extent));
-        const tx1 = Math.min(tilesPerAxis - 1, Math.floor((bb.maxX + buffer) / extent));
-        const ty0 = Math.max(0, Math.floor((bb.minY - buffer) / extent));
-        const ty1 = Math.min(tilesPerAxis - 1, Math.floor((bb.maxY + buffer) / extent));
+        const range = tileRange(ringBBox(coords.subarray(2 * ringStart[r]!, 2 * ringStart[r + 1]!)), extent, buffer, tilesPerAxis);
+        ranges.push(range);
+        candidates += Math.max(0, range[1] - range[0] + 1) * Math.max(0, range[3] - range[2] + 1);
+      }
+      if (candidates >= tiledFrom) {
+        this.#columnParts(fi, coords, ringStart, keep, extent, buffer, tilesPerAxis, columnParts);
+        yield;
+        continue;
+      }
+      // Tiles of all its polygons, each once (a Set: a large zone spans thousands of tiles).
+      const seen = new Set<number>();
+      for (const [tx0, tx1, ty0, ty1] of ranges) {
         for (let tx = tx0; tx <= tx1; tx++) {
           for (let ty = ty0; ty <= ty1; ty++) seen.add(tx * tilesPerAxis + ty);
         }
@@ -593,19 +659,72 @@ export class LayerTilesBuilder {
       for (const key of seen) addTo(key, fi);
     }
 
-    // 4. Tile by tile: clip, encode, gzip, spool.
+    // 4. Column by column (tiles in increasing key = x · 2^z + y), tile by
+    //    tile: clip, encode, gzip (once per distinct content), spool.
     const present = new Uint8Array(featureCount);
-    const stats = { maxTileBytes: 0, maxTileGzipBytes: 0, totalTileBytes: 0, totalGzipBytes: 0, maxFeaturesPerTile: 0 };
-    const recordOf = new Map<number, number>();
-    const encodeTile = (key: number, list: readonly number[]): void => {
+    let maxFeaturesPerTile = 0;
+    const zoomStart = records.length;
+    let mainEnd = -1;
+    const keyOf = (i: number): number => records.x(i) * tilesPerAxis + records.y(i);
+    /** Record index of tile `key` in this zoom, or -1. */
+    const findRecord = (key: number): number => {
+      let lo = zoomStart;
+      let hi = mainEnd;
+      while (lo < hi) {
+        const mid = (lo + hi) >> 1;
+        if (keyOf(mid) < key) lo = mid + 1;
+        else hi = mid;
+      }
+      if (lo < mainEnd && keyOf(lo) === key) return lo;
+      for (let i = mainEnd; i < records.length; i++) if (keyOf(i) === key) return i;
+      return -1;
+    };
+    /** Clipped polygons of the column-cut features in column tx, rows ty0 … ty1: per row, in feature order. */
+    const columnTiles = (tx: number, ty0: number, ty1: number): Map<number, TiledPolygons[]> => {
+      const byRow = new Map<number, TiledPolygons[]>();
+      for (const p of columnParts.get(tx) ?? []) {
+        const a = Math.max(p.ty0, ty0);
+        const b = Math.min(p.ty1, ty1);
+        if (a > b) continue;
+        clipColumnToTiles(p.column, tx, a, b, extent, buffer, (ty, part) => {
+          let row = byRow.get(ty);
+          if (!row) byRow.set(ty, (row = []));
+          const last = row[row.length - 1];
+          if (p.owner === -1) {
+            if (last && last.fi === p.fi) {
+              last.polygons.push([part]);
+              last.exterior = p.ring;
+            } else {
+              row.push({ fi: p.fi, polygons: [[part]], exterior: p.ring });
+            }
+          } else if (last && last.fi === p.fi && last.exterior === p.owner) {
+            // A hole goes with its exterior's part in this tile (none: dropped).
+            last.polygons[last.polygons.length - 1]!.push(part);
+          }
+        });
+      }
+      return byRow;
+    };
+    const encodeTile = (key: number, list: readonly number[], tiled: readonly TiledPolygons[], redo: boolean): void => {
       const x = Math.floor(key / tilesPerAxis);
       const y = key % tilesPerAxis;
       const ox = x * extent;
       const oy = y * extent;
       const rect: Rect = { minX: ox - buffer, minY: oy - buffer, maxX: ox + extent + buffer, maxY: oy + extent + buffer };
       const features: MvtPolygonFeature[] = [];
-      for (const fi of list) {
-        let polygons: Int32Array[][];
+      // Listed and column-cut features, merged in feature order.
+      let i = 0;
+      let j = 0;
+      while (i < list.length || j < tiled.length) {
+        let fi: number;
+        let polygons: Int32Array[][] | undefined;
+        if (j >= tiled.length || (i < list.length && list[i]! <= tiled[j]!.fi)) {
+          fi = list[i++]!;
+          if (j < tiled.length && tiled[j]!.fi === fi) j++;
+        } else {
+          fi = tiled[j]!.fi;
+          polygons = tiled[j++]!.polygons;
+        }
         const marker = markers.get(fi);
         if (marker) {
           const [mx, my] = marker;
@@ -613,7 +732,7 @@ export class LayerTilesBuilder {
           const ly = my - oy;
           // Clockwise on screen (y down): positive shoelace area.
           polygons = [[Int32Array.from([lx, ly, lx + 1, ly, lx + 1, ly + 1, lx, ly + 1])]];
-        } else {
+        } else if (polygons === undefined) {
           polygons = [];
           let current: Int32Array[] | undefined;
           for (let r = featRing[fi]!; r < featRing[fi + 1]!; r++) {
@@ -635,22 +754,28 @@ export class LayerTilesBuilder {
       }
       // Only buffer-zone slivers that clipped to nothing: no tile (served 204).
       if (features.length === 0) return;
-      const raw = encodeMvt([{ name: this.#profile.layer, extent, features }]);
-      const gz = gzipSync(raw, { level: gzipLevel });
-      const record: TileRecord = { z, x, y, offset: spool.append(gz), length: gz.length, bytes: raw.length, hash: tileHash(gz) };
-      const at = recordOf.get(key);
-      if (at === undefined) {
-        recordOf.set(key, records.length);
-        records.push(record);
-      } else {
-        records[at] = record;
-      }
+      // A re-encoded tile only gains a marker: the running max is the final one.
+      maxFeaturesPerTile = Math.max(maxFeaturesPerTile, features.length);
+      const content = records.contents.add(encodeMvt([{ name: this.#profile.layer, extent, features }]));
+      const at = redo ? findRecord(key) : -1;
+      if (at === -1) records.push(z, x, y, content);
+      else records.setContent(at, content);
     };
-    const keys = [...lists.keys()].sort((a, b) => a - b);
-    for (const key of keys) {
-      encodeTile(key, lists.get(key)!);
-      yield;
+    const listedKeys = [...lists.keys()].sort((a, b) => a - b);
+    const columns = new Set<number>(columnParts.keys());
+    for (const key of listedKeys) columns.add(Math.floor(key / tilesPerAxis));
+    let k = 0;
+    for (const tx of [...columns].sort((a, b) => a - b)) {
+      const byRow = columnTiles(tx, 0, tilesPerAxis - 1);
+      const rows = new Set<number>(byRow.keys());
+      while (k < listedKeys.length && Math.floor(listedKeys[k]! / tilesPerAxis) === tx) rows.add(listedKeys[k++]! % tilesPerAxis);
+      for (const ty of [...rows].sort((a, b) => a - b)) {
+        const key = tx * tilesPerAxis + ty;
+        encodeTile(key, lists.get(key) ?? [], byRow.get(ty) ?? [], false);
+        yield;
+      }
     }
+    mainEnd = records.length;
 
     // 5. Features whose every clipped part degenerated (a sliver along tile
     //    edges): a marker in the tile of their centre, that tile re-encoded.
@@ -670,26 +795,31 @@ export class LayerTilesBuilder {
       redo.add(key);
     }
     for (const key of [...redo].sort((a, b) => a - b)) {
-      encodeTile(key, lists.get(key)!);
+      const tx = Math.floor(key / tilesPerAxis);
+      const ty = key % tilesPerAxis;
+      encodeTile(key, lists.get(key)!, columnTiles(tx, ty, ty).get(ty) ?? [], true);
       yield;
     }
 
     let featuresPresent = 0;
     for (let fi = 0; fi < featureCount; fi++) featuresPresent += present[fi]!;
-    for (const key of recordOf.keys()) {
-      const r = records[recordOf.get(key)!]!;
-      stats.maxTileBytes = Math.max(stats.maxTileBytes, r.bytes);
-      stats.maxTileGzipBytes = Math.max(stats.maxTileGzipBytes, r.length);
-      stats.totalTileBytes += r.bytes;
-      stats.totalGzipBytes += r.length;
-      stats.maxFeaturesPerTile = Math.max(stats.maxFeaturesPerTile, lists.get(key)!.length);
+    const stats = { maxTileBytes: 0, maxTileGzipBytes: 0, totalTileBytes: 0, totalGzipBytes: 0, maxFeaturesPerTile };
+    const { contents } = records;
+    for (let i = zoomStart; i < records.length; i++) {
+      const c = records.content(i);
+      const bytes = contents.bytes.get(c);
+      const length = contents.length.get(c);
+      stats.maxTileBytes = Math.max(stats.maxTileBytes, bytes);
+      stats.maxTileGzipBytes = Math.max(stats.maxTileGzipBytes, length);
+      stats.totalTileBytes += bytes;
+      stats.totalGzipBytes += length;
     }
     simplified.release();
     if (simplified.rings === quantized.rings) quantized.release();
 
     return {
       z,
-      tiles: recordOf.size,
+      tiles: records.length - zoomStart,
       featuresPresent,
       missing: featureCount - featuresPresent,
       markers: markerCount,
@@ -773,14 +903,22 @@ export function writeSpooledPmtiles(
   write: (chunk: Uint8Array) => void,
   extraMetadata: Record<string, unknown> = {},
 ): number {
-  const layout = layoutPmtiles(
-    built.records.map((r) => ({ tileId: zxyToTileId(r.z, r.x, r.y), length: r.length, hash: r.hash })),
+  const { records } = built;
+  const { contents } = records;
+  const layout = layoutPmtilesIndexed(
+    {
+      count: records.length,
+      contents: contents.count,
+      tileId: (i) => zxyToTileId(records.z(i), records.x(i), records.y(i)),
+      length: (i) => contents.length.get(records.content(i)),
+      content: (i) => records.content(i),
+    },
     archiveOptions(built, extraMetadata),
   );
   write(layout.prefix);
   for (const i of layout.dataOrder) {
-    const r = built.records[i]!;
-    write(spool.read(r.offset, r.length));
+    const c = records.content(i);
+    write(spool.read(contents.offset.get(c), contents.length.get(c)));
   }
   return layout.totalBytes;
 }

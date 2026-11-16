@@ -139,7 +139,7 @@ describe("spooled build", () => {
       const built = await builder.buildToSpool(spool);
       expect(built.zooms.some((z) => z.partitions > 1)).toBe(true);
       // No empty tile is stored (a tile whose candidates all clip to nothing is served 204).
-      expect(built.records.every((r) => r.bytes > 0)).toBe(true);
+      expect([...built.records].every((r) => r.bytes > 0)).toBe(true);
       const chunks: Uint8Array[] = [];
       const size = writeSpooledPmtiles(built, spool, (c) => chunks.push(c.slice()), { name: "n" });
       spool.close();
@@ -198,8 +198,11 @@ describe("spooled build", () => {
       expect(built.zooms.map((z) => z.missing)).toEqual([0, 0, 0, 0]);
       expect(built.zooms.some((z) => z.partitions > 1)).toBe(true);
       // Records only (no tile bytes) are kept; the bytes are in the spool file.
-      expect(spool.size).toBeGreaterThanOrEqual(built.records.reduce((s, r) => s + r.length, 0));
-      expect(built.records.every((r) => typeof r.offset === "number" && !("gzip" in r))).toBe(true);
+      // Each distinct content once in the spool.
+      const distinct = new Map([...built.records].map((r) => [r.offset, r.length]));
+      expect(distinct.size).toBe(built.records.contents.count);
+      expect(spool.size).toBeGreaterThanOrEqual([...distinct.values()].reduce((s, n) => s + n, 0));
+      expect([...built.records].every((r) => typeof r.offset === "number" && !("gzip" in r))).toBe(true);
       // JS heap growth stays far below the layer's tile bytes × zooms: one tile at a time.
       expect(heapPeak - heap0).toBeLessThan(200 * 2 ** 20);
       // The builder released its compact source.
@@ -242,7 +245,7 @@ describe("spooled build", () => {
       const spool = new FileSpool(join(dir, "s"));
       const file = await b.buildToSpool(spool);
       spool.close();
-      expect(file.records.map((r) => r.hash)).toEqual(mem.records.map((r) => r.hash));
+      expect([...file.records].map((r) => r.hash)).toEqual([...mem.records].map((r) => r.hash));
     } finally {
       await rm(dir, { recursive: true, force: true });
     }
