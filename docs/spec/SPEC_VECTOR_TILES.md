@@ -89,7 +89,10 @@ Per layer, per zoom z in `[minZoom, maxZoom]`:
    (< 3 vertices or zero area) keeps its quantized form (`fallbackRings`).
 4. **Clip** each polygon to every tile it touches, with a 64-unit buffer
    (Sutherland–Hodgman; intersections rounded from canonically ordered
-   endpoints, so both sides of a cut edge agree).
+   endpoints, so both sides of a cut edge agree). A feature whose exterior
+   bboxes span `TILED_CLIP_FROM` (16) tiles or more at the zoom is clipped by a
+   tile tree instead of tile by tile (§ Scale, *Large polygons*), with the
+   same output coordinates.
 5. **No-drop guarantee**: a feature whose exterior collapses on the grid of z
    (smaller than one unit), or whose every clipped part degenerates, is emitted
    as a one-unit square at its quantized position (`markers`). It stays present
@@ -395,12 +398,63 @@ compact builder (`LayerTilesBuilder`, `flat.ts`, `spool.ts`):
   array itself), the simplified copy, then tile by tile: clip, encode, gzip,
   append to the spool. One tile is encoded at a time; a feature that only
   survives as a marker re-encodes its tile (rare: slivers along tile edges).
-- **Archive**: `layoutPmtiles` plans directories from (tile id, length, hash);
+- **Archive**: `layoutPmtilesIndexed` plans directories from (tile id,
+  length, content id) in typed arrays (`layoutPmtiles`, by hash, wraps it);
   `writeSpooledPmtiles` writes header and directories, then each distinct tile
   copied from the spool in tile-id order, to a temporary file uploaded by
   `Store.putFile`. Byte-identical to the in-memory writer (tested).
+- **Tile index** (`records.ts`): 13 B per tile (z, x, y, content id) in typed
+  arrays; each distinct MVT content is gzipped, hashed and spooled once
+  (keyed by the sha256 of its MVT bytes; gzip is deterministic, so this is
+  the archive's own deduplication, done before compressing).
 - **Event loop**: `buildToSpool` yields between tiles (every ~50 ms of work)
   and checks the abort signal, so the prewarm deadline can fire.
+
+### Large polygons (2026-11-16)
+
+`qc-zonage-arcgis-mrc-beauharnois-salaberry-zone-agricole-transposee` (273
+features, 600 376 vertices; one MultiPolygon of 888 parts and 256 535
+vertices spans the province, bbox −79.8…−56.9 °E, 45.0…62.6 °N) hit the
+prewarm's 1 200 s per-collection deadline in its tiles step. Cause (CPU
+profile, z12 only: 676 s, 78 % in `clipRing`, 9 % in `encodeTile`): each
+tile of a feature's list clipped EVERY ring of the feature, reading all its
+vertices — tiles × vertices = 2.1·10^10 vertex visits at z12, 1.4·10^12 at
+z15 (5.3 M bbox tiles for that feature). Junction detection and
+Douglas–Peucker were negligible.
+
+- **Tile tree** (`clipRingToColumns` + `clipColumnToTiles`): a ring is split
+  recursively over its tile range, columns first, then rows within a column.
+  Each node drops the vertices that cannot change the clip of any of its
+  tiles: a vertex whose two neighbours carry the same region code as itself
+  (left / right of the node's buffered x span; within one column, whose tiles
+  share its x span exactly, also above / below the row range's buffered y
+  span). For a run of such vertices, the Sutherland–Hodgman passes before the
+  run's side keep it whole without intersections, and the side's pass emits
+  only the intersections of the run's two end edges, whose endpoints are
+  kept: every tile's clip is the very same point sequence (first and last
+  vertices are always kept, so the output keeps its rotation). Nodes the
+  reduced ring does not reach are pruned. Each level reads O(vertices +
+  boundary crossings); the tiles of a bbox the ring does not reach cost
+  nothing.
+- **Column sweep**: such a feature is not listed per tile. Its rings are cut
+  into columns once per zoom (linear memory), and the zoom is encoded column
+  by column in the same tile order (key `x · 2^z + y`), each column's parts
+  clipped to its rows when the sweep reaches it: no per-tile state for the
+  millions of tiles a region-sized polygon covers.
+- Below `TILED_CLIP_FROM` the per-tile path is unchanged (lots touch one to
+  four tiles). Both paths give byte-identical tiles (tested: tile tree vs
+  per-tile `clipRing` on random rings, builder with `tiledClipFrom` 1 vs
+  ∞), so the archives, hence `TILES_BUILDER_REVISION` and the versions, are
+  unchanged. Only the manifest statistic `maxFeaturesPerTile` now counts the
+  features actually encoded in a tile (it counted the candidates of the bbox
+  lists, some of which clip to nothing).
+
+Measured on that collection (display mirror from the public API, z12–z15,
+Node 22, one core): z12 alone 676 s / 475 MB peak RSS before, 0.7 s / 185 MB
+after (same archive bytes); z12–z15 after: 3 545 288 tiles (13.3 MB archive,
+identical contents deduplicated), 46 s, 370 MB peak RSS with
+`--max-old-space-size=768`. Before the tile index and the column sweep, the
+same build peaked at 3.6 GB (per-tile maps and records).
 
 Measured read-only on the public API (`?profile=display`, streamed into the
 builder over HTTP, tiles spooled to a temporary file, archive assembled then

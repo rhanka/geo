@@ -7,6 +7,7 @@ export {
   layerTilesToPmtiles,
   LayerTilesBuilder,
   TILE_DEFAULTS,
+  TILED_CLIP_FROM,
   TileBudgetError,
   writeSpooledPmtiles,
   type BuildTilesOptions,
@@ -50,7 +51,8 @@ export {
   type TilesStaleReason,
   type TilesZoomSummary,
 } from "./archive.js";
-export { clipRing, type Rect } from "./clip.js";
+export { clipColumnToTiles, clipRing, clipRingToColumns, clipRingToTiles, tileRange, type Rect } from "./clip.js";
+export { TileContents, TileRecords } from "./records.js";
 export {
   lonLatToWorld,
   quantizeRing,
@@ -64,11 +66,13 @@ export {
 export { encodeMvt, type MvtLayer, type MvtPolygonFeature } from "./mvt.js";
 export {
   layoutPmtiles,
+  layoutPmtilesIndexed,
   PmCompression,
   PmTileType,
   tileHash,
   writePmtiles,
   zxyToTileId,
+  type PmtilesIndexedTiles,
   type PmtilesLayout,
   type PmtilesLayoutTile,
   type PmtilesTileInput,
