@@ -13,6 +13,8 @@
 import { createHash } from "node:crypto";
 import { gzipSync } from "node:zlib";
 
+import { Growable } from "./flat.js";
+
 /** (4^z - 1) / 3: number of tiles in zooms 0 … z-1. */
 function tilesBelow(z: number): number {
   return (4 ** z - 1) / 3;
@@ -63,14 +65,48 @@ export interface PmtilesWriteOptions {
   metadata: Record<string, unknown>;
 }
 
-interface Entry {
-  tileId: number;
-  offset: number;
-  length: number;
-  runLength: number;
+/**
+ * Directory entries as parallel typed arrays (an archive may address millions
+ * of tiles: one JS object per entry does not fit a small pod).
+ */
+class Entries {
+  readonly tileId = new Growable(Float64Array, 2 ** 26);
+  readonly offset = new Growable(Float64Array, 2 ** 26);
+  readonly length = new Growable(Uint32Array, 2 ** 26);
+  readonly runLength = new Growable(Uint32Array, 2 ** 26);
+
+  get count(): number {
+    return this.tileId.length;
+  }
+
+  push(tileId: number, offset: number, length: number, runLength: number): void {
+    this.tileId.push(tileId);
+    this.offset.push(offset);
+    this.length.push(length);
+    this.runLength.push(runLength);
+  }
 }
 
-function writeVarint(out: number[], value: number): void {
+/** Growable byte buffer for the directory varints. */
+class ByteWriter {
+  #buf = new Uint8Array(1024);
+  length = 0;
+
+  push(b: number): void {
+    if (this.length === this.#buf.length) {
+      const next = new Uint8Array(this.#buf.length * 2);
+      next.set(this.#buf);
+      this.#buf = next;
+    }
+    this.#buf[this.length++] = b;
+  }
+
+  bytes(): Uint8Array {
+    return this.#buf.subarray(0, this.length);
+  }
+}
+
+function writeVarint(out: ByteWriter, value: number): void {
   let v = value;
   while (v >= 0x80) {
     out.push((v % 0x80) | 0x80);
@@ -79,42 +115,45 @@ function writeVarint(out: number[], value: number): void {
   out.push(v);
 }
 
-function serializeDirectory(entries: readonly Entry[]): Uint8Array {
-  const out: number[] = [];
-  writeVarint(out, entries.length);
+/** Directory of entries `from` … `to - 1`. */
+function serializeDirectory(e: Entries, from: number, to: number): Uint8Array {
+  const tileId = e.tileId.view();
+  const offset = e.offset.view();
+  const length = e.length.view();
+  const runLength = e.runLength.view();
+  const out = new ByteWriter();
+  writeVarint(out, to - from);
   let last = 0;
-  for (const e of entries) {
-    writeVarint(out, e.tileId - last);
-    last = e.tileId;
+  for (let i = from; i < to; i++) {
+    writeVarint(out, tileId[i]! - last);
+    last = tileId[i]!;
   }
-  for (const e of entries) writeVarint(out, e.runLength);
-  for (const e of entries) writeVarint(out, e.length);
-  entries.forEach((e, i) => {
-    const prev = entries[i - 1];
-    if (i > 0 && prev !== undefined && e.offset === prev.offset + prev.length) writeVarint(out, 0);
-    else writeVarint(out, e.offset + 1);
-  });
-  return gzipSync(Uint8Array.from(out));
+  for (let i = from; i < to; i++) writeVarint(out, runLength[i]!);
+  for (let i = from; i < to; i++) writeVarint(out, length[i]!);
+  for (let i = from; i < to; i++) {
+    if (i > from && offset[i] === offset[i - 1]! + length[i - 1]!) writeVarint(out, 0);
+    else writeVarint(out, offset[i]! + 1);
+  }
+  return gzipSync(out.bytes());
 }
 
 const HEADER_BYTES = 127;
 const ROOT_BUDGET = 16_384 - HEADER_BYTES;
 
-function buildDirectories(entries: readonly Entry[]): { root: Uint8Array; leaves: Uint8Array } {
-  const root = serializeDirectory(entries);
+function buildDirectories(entries: Entries): { root: Uint8Array; leaves: Uint8Array } {
+  const root = serializeDirectory(entries, 0, entries.count);
   if (root.length <= ROOT_BUDGET) return { root, leaves: new Uint8Array(0) };
   for (let leafSize = 4096; ; leafSize = Math.ceil(leafSize * 1.2)) {
-    const rootEntries: Entry[] = [];
+    const rootEntries = new Entries();
     const leafParts: Uint8Array[] = [];
     let offset = 0;
-    for (let i = 0; i < entries.length; i += leafSize) {
-      const chunk = entries.slice(i, i + leafSize);
-      const bytes = serializeDirectory(chunk);
-      rootEntries.push({ tileId: chunk[0]!.tileId, offset, length: bytes.length, runLength: 0 });
+    for (let i = 0; i < entries.count; i += leafSize) {
+      const bytes = serializeDirectory(entries, i, Math.min(entries.count, i + leafSize));
+      rootEntries.push(entries.tileId.get(i), offset, bytes.length, 0);
       leafParts.push(bytes);
       offset += bytes.length;
     }
-    const rootBytes = serializeDirectory(rootEntries);
+    const rootBytes = serializeDirectory(rootEntries, 0, rootEntries.count);
     if (rootBytes.length <= ROOT_BUDGET) return { root: rootBytes, leaves: Buffer.concat(leafParts) };
   }
 }
@@ -150,29 +189,68 @@ export interface PmtilesLayout {
  * copies them from a spool file).
  */
 export function layoutPmtiles(tiles: readonly PmtilesLayoutTile[], options: PmtilesWriteOptions): PmtilesLayout {
-  const order = tiles.map((_, i) => i).sort((a, b) => tiles[a]!.tileId - tiles[b]!.tileId);
-  const entries: Entry[] = [];
-  const contents = new Map<string, { offset: number; length: number }>();
+  const ids = new Map<string, number>();
+  const content = new Uint32Array(tiles.length);
+  tiles.forEach((t, i) => {
+    let id = ids.get(t.hash);
+    if (id === undefined) ids.set(t.hash, (id = ids.size));
+    content[i] = id;
+  });
+  return layoutPmtilesIndexed(
+    { count: tiles.length, contents: ids.size, tileId: (i) => tiles[i]!.tileId, length: (i) => tiles[i]!.length, content: (i) => content[i]! },
+    options,
+  );
+}
+
+/**
+ * Tiles of an archive layout by index: tile i has id `tileId(i)`, stored
+ * length `length(i)`, and content id `content(i)` in `[0, contents)` (two
+ * tiles with the same content id have the same bytes).
+ */
+export interface PmtilesIndexedTiles {
+  count: number;
+  contents: number;
+  tileId(i: number): number;
+  length(i: number): number;
+  content(i: number): number;
+}
+
+/**
+ * {@link layoutPmtiles} over tiles given by index and content id, in typed
+ * arrays: the same archive, without one object per tile.
+ */
+export function layoutPmtilesIndexed(tiles: PmtilesIndexedTiles, options: PmtilesWriteOptions): PmtilesLayout {
+  const n = tiles.count;
+  const ids = new Float64Array(n);
+  for (let i = 0; i < n; i++) ids[i] = tiles.tileId(i);
+  const order = new Uint32Array(n);
+  for (let i = 0; i < n; i++) order[i] = i;
+  order.sort((a, b) => ids[a]! - ids[b]!);
+  const entries = new Entries();
+  const contentOffset = new Float64Array(tiles.contents).fill(-1);
   const dataOrder: number[] = [];
+  let distinct = 0;
   let dataLength = 0;
-  for (let k = 0; k < order.length; k++) {
-    const t = tiles[order[k]!]!;
-    if (k > 0 && tiles[order[k - 1]!]!.tileId === t.tileId) throw new Error(`duplicate tile id ${t.tileId}`);
-    let content = contents.get(t.hash);
-    if (content === undefined) {
-      content = { offset: dataLength, length: t.length };
-      contents.set(t.hash, content);
-      dataOrder.push(order[k]!);
-      dataLength += t.length;
+  for (let k = 0; k < n; k++) {
+    const i = order[k]!;
+    const tileId = ids[i]!;
+    if (k > 0 && ids[order[k - 1]!] === tileId) throw new Error(`duplicate tile id ${tileId}`);
+    const c = tiles.content(i);
+    let offset = contentOffset[c]!;
+    if (offset === -1) {
+      offset = contentOffset[c] = dataLength;
+      dataOrder.push(i);
+      dataLength += tiles.length(i);
+      distinct++;
     }
-    const prev = entries[entries.length - 1];
-    if (prev !== undefined && prev.offset === content.offset && prev.tileId + prev.runLength === t.tileId) {
-      prev.runLength++;
+    const last = entries.count - 1;
+    if (last >= 0 && entries.offset.get(last) === offset && entries.tileId.get(last) + entries.runLength.get(last) === tileId) {
+      entries.runLength.set(last, entries.runLength.get(last) + 1);
     } else {
-      entries.push({ tileId: t.tileId, offset: content.offset, length: content.length, runLength: 1 });
+      entries.push(tileId, offset, tiles.length(i), 1);
     }
   }
-  const prefix = archivePrefix(entries, options, dataLength, tiles.length, contents.size);
+  const prefix = archivePrefix(entries, options, dataLength, n, distinct);
   return { prefix, dataOrder, dataLength, totalBytes: prefix.length + dataLength };
 }
 
@@ -191,7 +269,7 @@ export function writePmtiles(tiles: readonly PmtilesTileInput[], options: Pmtile
 }
 
 function archivePrefix(
-  entries: readonly Entry[],
+  entries: Entries,
   options: PmtilesWriteOptions,
   dataLength: number,
   addressedTiles: number,
@@ -218,7 +296,7 @@ function archivePrefix(
   writeUint64(view, 56, dataOffset);
   writeUint64(view, 64, dataLength);
   writeUint64(view, 72, addressedTiles);
-  writeUint64(view, 80, entries.length);
+  writeUint64(view, 80, entries.count);
   writeUint64(view, 88, tileContents);
   header[96] = 1; // clustered
   header[97] = PmCompression.Gzip; // internal compression
